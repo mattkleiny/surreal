@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="3">
+ <tileset firstgid="1" source="../../../Surreal.Example.Oubliette/Assets/tilesets/biome_desert.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="8" height="8">
+  <data encoding="csv">
+2,2,2,2,2,2,2,2,
+2,0,0,2,0,0,0,2,
+2,0,0,2,0,0,0,2,
+2,0,0,0,0,0,0,2,
+2,0,0,2,2,2,0,2,
+2,0,0,2,0,0,0,2,
+2,0,0,2,0,0,0,2,
+2,2,2,2,2,2,2,2
+</data>
+ </layer>
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="2" name="Player" x="86.0004" y="35.7065"/>
+ </objectgroup>
+</map>

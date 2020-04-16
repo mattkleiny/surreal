@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Description>Game framework and bootstrapping for Surreal.</Description>
+  </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Core\Surreal.Core.csproj" />
+    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
+  </ItemGroup>
+</Project>

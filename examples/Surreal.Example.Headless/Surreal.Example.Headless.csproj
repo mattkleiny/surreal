@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Headless</AssemblyName>
+    <RootNamespace>Headless</RootNamespace>
+    <Description>A super basic example of headless execution with Surreal.</Description>
+  </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <Import Project="..\..\Executables.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.Jam\Surreal.Jam.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(ProjectDir)\Resources\*.*" />
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
+    <Content Include="$(ProjectDir)\Assets\*.*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

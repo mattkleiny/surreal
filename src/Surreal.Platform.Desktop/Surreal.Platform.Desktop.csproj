@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Description>A Surreal platform implementation for desktop environments.</Description>
+    <RootNamespace>Surreal.Platform</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Audio\Surreal.Audio.csproj" />
+    <ProjectReference Include="..\Surreal.Compute\Surreal.Compute.csproj" />
+    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj" />
+    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTK.NetStandard" Version="1.0.7-prerelease" />
+  </ItemGroup>
+</Project>

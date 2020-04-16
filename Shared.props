@@ -1,0 +1,25 @@
+﻿<!-- common configuration for all projects -->
+<Project>
+  <PropertyGroup>
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Product>Surreal</Product>
+    <Authors>Matthew Kleinschafer</Authors>
+    <Company>MK Productions</Company>
+    <Copyright>Copyright© 2018, All Rights Reserved.</Copyright>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <Version>1.0.0.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\JetBrainsAnnotations.cs">
+      <Link>Shared\JetBrainsAnnotations.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\SharedPreconditions.cs">
+      <Link>Shared\SharedPreconditions.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Surreal.Core</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.Core\Surreal.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\*.*" />
+  </ItemGroup>
+</Project>

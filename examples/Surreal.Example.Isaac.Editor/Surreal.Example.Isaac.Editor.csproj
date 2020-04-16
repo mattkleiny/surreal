@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>IsaacEditor</AssemblyName>
+    <RootNamespace>IsaacEditor</RootNamespace>
+    <Description>An example editor based on Surreal; a simple Isaac-inspired dungeon crawler.</Description>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <Import Project="..\..\Executables.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.Editing\Surreal.Editing.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Jam\Surreal.Jam.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+    <ProjectReference Include="..\Surreal.Example.Isaac\Surreal.Example.Isaac.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(ProjectDir)\Resources\*.*" />
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
+    <Content Include="$(ProjectDir)\Assets\*.*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

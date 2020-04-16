@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Surreal.UI</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.UI\Surreal.UI.csproj" />
+  </ItemGroup>
+</Project>

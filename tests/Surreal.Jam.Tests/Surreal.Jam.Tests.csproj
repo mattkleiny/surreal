@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Surreal.Jam</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.Jam\Surreal.Jam.csproj" />
+  </ItemGroup>
+</Project>
