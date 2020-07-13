@@ -11,7 +11,7 @@ namespace Surreal.Graphics {
   public sealed class ColorPalette : IDisposable {
     private readonly Color[] colors;
 
-    private Pixmap?  pixmap;
+    private Image?   image;
     private Texture? texture;
 
     public ColorPalette(params Color[] colors) {
@@ -21,27 +21,27 @@ namespace Surreal.Graphics {
     public int Count => colors.Length;
     public ref Color this[int index] => ref colors[index];
 
-    public Pixmap ToPixmap() {
-      pixmap ??= new Pixmap(Count, 1);
+    public Image ToImage() {
+      image ??= new Image(Count, 1);
 
       for (var i = 0; i < Count; i++) {
-        pixmap[i, 0] = this[i];
+        image[i, 0] = this[i];
       }
 
-      return pixmap;
+      return image;
     }
 
     public Texture ToTexture(IGraphicsDevice device) {
-      var pixmap = ToPixmap();
+      var image = ToImage();
 
-      texture ??= device.Factory.CreateTexture(pixmap, filterMode: TextureFilterMode.Point);
-      texture.Upload(pixmap);
+      texture ??= device.Backend.CreateTexture(image, filterMode: TextureFilterMode.Point);
+      texture.Upload(image);
 
       return texture;
     }
 
     public void Dispose() {
-      pixmap?.Dispose();
+      image?.Dispose();
       texture?.Dispose();
     }
 

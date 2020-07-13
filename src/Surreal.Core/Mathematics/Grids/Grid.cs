@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Surreal.Mathematics.Grids {
-  public sealed class Grid<T> : IEnumerable<T>, IDirectAccessGrid<T> {
+  public sealed class Grid<T> : IEnumerable<T>, IGrid<T> {
     private readonly T[] elements;
 
     public Grid(int width, int height, T defaultValue = default) {
-      Check.That(width  > 0, "width > 0");
+      Check.That(width > 0, "width > 0");
       Check.That(height > 0, "height > 0");
 
       Width  = width;
@@ -20,20 +21,21 @@ namespace Surreal.Mathematics.Grids {
     public int Width  { get; }
     public int Height { get; }
 
+    T IGrid<T>.this[int x, int y] {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => this[x, y];
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      set => this[x, y] = value;
+    }
+
     public ref T this[int x, int y] {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
-        Check.That(x >= 0, "x >= 0");
-        Check.That(y >= 0, "y >= 0");
-        Check.That(x < Width, "x < Width");
-        Check.That(y < Height, "y < Height");
+        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
 
         return ref elements[x + y * Width];
       }
-    }
-
-    T IGrid<T>.this[int x, int y] {
-      get => this[x, y];
-      set => this[x, y] = value;
     }
 
     public void Fill(T value) {

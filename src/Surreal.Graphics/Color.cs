@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Surreal.Graphics {
+  // TODO: create a floating point representation of color?
+  
   [StructLayout(LayoutKind.Sequential)]
   public struct Color {
     public static Color FromPackedRGB(uint packed) => new Color(

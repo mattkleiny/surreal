@@ -4,10 +4,10 @@ using Surreal.Audio.SPI;
 using Surreal.Platform.Internal.Audio.Resources;
 
 namespace Surreal.Platform.Internal.Audio {
-  internal sealed class HeadlessAudioBackend : IAudioBackend, IAudioFactory {
+  internal sealed class HeadlessAudioBackend : IAudioBackend {
     private float masterVolume;
 
-    public IAudioFactory Factory => this;
+    public IAudioBackend Factory => this;
 
     public float MasterVolume {
       get => masterVolume;

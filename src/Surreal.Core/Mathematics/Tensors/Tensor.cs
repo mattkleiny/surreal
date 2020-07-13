@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Mathematics.Tensors {
   public abstract class Tensor<T> : IEnumerable<T>

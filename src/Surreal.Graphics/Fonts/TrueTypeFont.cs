@@ -18,7 +18,7 @@ namespace Surreal.Graphics.Fonts {
       this.collection = collection;
     }
 
-    public Pixmap ToPixmap(ReadOnlySpan<char> text, string name, float size, FontStyle style = FontStyle.Regular) {
+    public Image ToImage(ReadOnlySpan<char> text, string name, float size, FontStyle style = FontStyle.Regular) {
       var family = collection.Find(name);
       var font   = family.CreateFont(size, style);
 
@@ -31,7 +31,7 @@ namespace Surreal.Graphics.Fonts {
         renderer.RenderText(text[i..(i + 1)], options);
       }
 
-      return rasterizer.Pixmap;
+      return rasterizer.Image;
     }
 
     private sealed class GlyphRasterizer : IGlyphRenderer {
@@ -47,7 +47,7 @@ namespace Surreal.Graphics.Fonts {
         cutter = new SpriteSheetCutter(width, height, widthPerCell, heightPerCell);
       }
 
-      public Pixmap Pixmap => cutter.Pixmap;
+      public Image Image => cutter.Image;
 
       public void MoveTo(PointF point) {
         startPoint = point;

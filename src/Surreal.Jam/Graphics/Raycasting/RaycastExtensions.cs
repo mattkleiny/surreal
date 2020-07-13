@@ -1,7 +1,6 @@
 using System;
 using System.Numerics;
 using Surreal.Framework.Tiles;
-using Surreal.Graphics.Textures;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
@@ -46,7 +45,7 @@ namespace Surreal.Graphics.Raycasting {
       return position;
     }
 
-    public static TTile GetNearestTile<TTile>(this TileMap<TTile> map, Ray ray) {
+    public static TTile GetNearestTile<TTile>(this IGrid<TTile> grid, Ray ray) {
       var (origin, direction) = ray;
 
       var offsetX = 0f;
@@ -63,7 +62,7 @@ namespace Surreal.Graphics.Raycasting {
       var x = (int) (origin.X + offsetX);
       var y = (int) (origin.Y + offsetY);
 
-      return map[x, y];
+      return grid[x, y];
     }
 
     public static void DrawColoredColumn(this IGrid<Color> target, int sourceX, Vector2 point, float height, Color color) {
@@ -75,7 +74,7 @@ namespace Surreal.Graphics.Raycasting {
       }
     }
 
-    public static void DrawTexturedColumn(this IGrid<Color> target, int sourceX, PixmapRegion texture, Vector2 point, float height, Color dampenColor) {
+    public static void DrawTexturedColumn(this IGrid<Color> target, int sourceX, IGrid<Color> texture, Vector2 point, float height, Color dampenColor) {
       var start = (int) point.Y;
       var end   = (int) MathF.Ceiling(point.Y + height);
       var stepY = texture.Height / height;

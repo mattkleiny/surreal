@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Minecraft.Core.Coordinates;
 using Minecraft.Core.Generation;
 using Surreal.Framework.Voxels;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Minecraft.Core {
   public sealed class Region : IDisposable {

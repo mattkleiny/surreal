@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Surreal.Assets;
 using Surreal.Compute.Memory;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Compute {
   public abstract class ComputeResource : IDisposable {

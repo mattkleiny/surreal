@@ -23,6 +23,12 @@ namespace Surreal {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe bool EqualsFast<TEnum>(this TEnum value, TEnum other) 
+        where TEnum : unmanaged, Enum {
+      return value.AsInt() == other.AsInt();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TEnum SelectRandomly<TEnum>(this TEnum value, Random random)
         where TEnum : unmanaged, Enum {
       return GetMaskValues(value).SelectRandomly(random);

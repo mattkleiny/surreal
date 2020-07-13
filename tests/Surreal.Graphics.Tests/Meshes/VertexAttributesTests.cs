@@ -4,7 +4,7 @@ namespace Surreal.Graphics.Meshes {
   public class VertexAttributeTests {
     [Fact]
     public void it_should_resolve_attributes_in_order_from_metadata() {
-      var attributes = VertexAttributes.FromVertex<Vertex>();
+      var attributes = VertexAttributeSet.Create<Vertex>();
 
       Assert.Equal(2, attributes.Length);
 
@@ -14,7 +14,7 @@ namespace Surreal.Graphics.Meshes {
 
     [Fact]
     public void it_should_calculate_stride_correctly() {
-      var attributes = VertexAttributes.FromVertex<Vertex>();
+      var attributes = VertexAttributeSet.Create<Vertex>();
 
       Assert.Equal(12, attributes[0].Stride);
       Assert.Equal(4, attributes[1].Stride);
@@ -23,7 +23,7 @@ namespace Surreal.Graphics.Meshes {
 
     [Fact]
     public void it_should_calculate_offset_correctly() {
-      var attributes = VertexAttributes.FromVertex<Vertex>();
+      var attributes = VertexAttributeSet.Create<Vertex>();
 
       Assert.Equal(0, attributes[0].Offset);
       Assert.Equal(12, attributes[1].Offset);

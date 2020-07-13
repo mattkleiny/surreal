@@ -6,11 +6,11 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
         : base(format, filterMode, wrapMode) {
     }
 
-    protected override void Upload(ITextureData existingData, ITextureData newData) {
+    protected override void Upload(ITextureData? existingData, ITextureData newData) {
       // no-op
     }
 
-    public override void Download(Pixmap pixmap) {
+    public override void Download(Image image) {
       // no-op
     }
   }

@@ -2,7 +2,7 @@ using System;
 
 namespace Surreal.States {
   public class FSM<TState>
-      where TState : Enum {
+      where TState : unmanaged, Enum {
     public FSM(TState initialState = default) {
       CurrentState = initialState;
     }
@@ -13,7 +13,7 @@ namespace Surreal.States {
     public TState PreviousState { get; private set; }
 
     public void ChangeState(TState newState) {
-      if (!newState.Equals(CurrentState)) {
+      if (!newState.EqualsFast(CurrentState)) {
         PreviousState = CurrentState;
         CurrentState  = newState;
 

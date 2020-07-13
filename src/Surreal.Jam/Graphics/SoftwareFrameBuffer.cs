@@ -1,22 +1,21 @@
 using System;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics.Grids;
 
 namespace Surreal.Graphics {
   public sealed class SoftwareFrameBuffer : IDisposable {
-    private readonly Pixmap   pixmap;
+    private readonly Image   image;
     private          Texture? texture;
 
     public SoftwareFrameBuffer(int width, int height) {
       Check.That(width  > 0, "width > 0");
       Check.That(height > 0, "height > 0");
 
-      pixmap = new Pixmap(width, height);
-      Colors = pixmap.ToRegion();
+      image = new Image(width, height);
+      Colors = image.ToRegion();
     }
 
-    public PixmapRegion Colors { get; }
+    public ImageRegion Colors { get; }
 
     public int Width  => Colors.Width;
     public int Height => Colors.Height;
@@ -24,7 +23,7 @@ namespace Surreal.Graphics {
     public void Draw(SpriteBatch batch) {
       var device = batch.Device;
 
-      texture ??= device.Factory.CreateTexture(Colors.Pixmap, filterMode: TextureFilterMode.Point);
+      texture ??= device.Backend.CreateTexture(Colors.Image, filterMode: TextureFilterMode.Point);
       texture.Upload(Colors);
 
       batch.Draw(
@@ -43,7 +42,7 @@ namespace Surreal.Graphics {
 
     public void Dispose() {
       texture?.Dispose();
-      pixmap.Dispose();
+      image.Dispose();
     }
   }
 }

@@ -7,7 +7,7 @@ namespace Prelude.Core {
     private const int Width  = 640        / 2;
     private const int Height = Width / 16 * 9;
 
-    public TileMapRenderer(RaycastCamera camera, Atlas<PixmapRegion> textures)
+    public TileMapRenderer(RaycastCamera camera, Atlas<ImageRegion> textures)
         : base(camera, (Width, Height), textures) {
     }
   }

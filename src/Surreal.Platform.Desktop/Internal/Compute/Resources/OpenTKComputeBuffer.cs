@@ -8,26 +8,26 @@ using Surreal.Platform.Internal.Graphics.Resources;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
   internal sealed class OpenTKComputeBuffer : ComputeBuffer {
-    private readonly Pixmap        pixmap;
+    private readonly Image        image;
     private readonly OpenTKTexture texture;
 
     public OpenTKComputeBuffer(int width, int height)
         : base(Unsafe.SizeOf<byte>()) {
       // we're basically an OpenGL image with random access
-      pixmap  = new Pixmap(width, height);
-      texture = new OpenTKTexture(pixmap.Format, TextureFilterMode.Point, TextureWrapMode.Clamp);
+      image  = new Image(width, height);
+      texture = new OpenTKTexture(image.Format, TextureFilterMode.Point, TextureWrapMode.Clamp);
     }
 
     public override void Put<T>(Span<T> data) {
-      data.Cast<T, Color>().CopyTo(pixmap.Span);
+      data.Cast<T, Color>().CopyTo(image.Span);
 
-      texture.Upload(pixmap);
+      texture.Upload(image);
     }
 
     protected override void Dispose(bool managed) {
       if (managed) {
         texture.Dispose();
-        pixmap.Dispose();
+        image.Dispose();
       }
 
       base.Dispose(managed);

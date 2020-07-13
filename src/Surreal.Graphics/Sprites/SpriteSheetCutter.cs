@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics.Grids;
 
 namespace Surreal.Graphics.Sprites {
   public sealed class SpriteSheetCutter : IDisposable {
-    private readonly Queue<PixmapRegion> availableCells;
+    private readonly Queue<ImageRegion> availableCells;
 
     public SpriteSheetCutter(int width, int height, int widthPerCell, int heightPerCell, Color initialColor = default) {
       Check.That(width         > 0, "width > 0");
@@ -14,17 +13,17 @@ namespace Surreal.Graphics.Sprites {
       Check.That(widthPerCell  > 0, "widthPerCell > 0");
       Check.That(heightPerCell > 0, "heightPerCell > 0");
 
-      Pixmap = new Pixmap(width, height);
-      Pixmap.Fill(initialColor);
+      Image = new Image(width, height);
+      Image.Fill(initialColor);
 
       var horizontalCells = width  / widthPerCell;
       var verticalCells   = height / heightPerCell;
 
-      availableCells = new Queue<PixmapRegion>(horizontalCells * verticalCells);
+      availableCells = new Queue<ImageRegion>(horizontalCells * verticalCells);
 
       for (var y = 0; y < verticalCells; y++)
       for (var x = 0; x < horizontalCells; x++) {
-        var cell = Pixmap.ToRegion().Slice(
+        var cell = Image.ToRegion().Slice(
             x * horizontalCells,
             y * verticalCells,
             widthPerCell,
@@ -35,7 +34,7 @@ namespace Surreal.Graphics.Sprites {
       }
     }
 
-    public Pixmap Pixmap { get; }
+    public Image Image { get; }
 
     public IPlannedSprite AddSprite() {
       lock (availableCells) {
@@ -59,15 +58,15 @@ namespace Surreal.Graphics.Sprites {
     }
 
     public void Dispose() {
-      Pixmap.Dispose();
+      Image.Dispose();
     }
 
     private sealed class PlannedSprite : IPlannedSprite {
-      public PlannedSprite(PixmapRegion region) {
+      public PlannedSprite(ImageRegion region) {
         Region = region;
       }
 
-      public PixmapRegion Region { get; }
+      public ImageRegion Region { get; }
 
       public int Width   => Region.Width;
       public int Height  => Region.Height;
@@ -81,9 +80,9 @@ namespace Surreal.Graphics.Sprites {
     }
 
     private sealed class PlannedSpriteAnimation : IPlannedSpriteAnimation {
-      private readonly PixmapRegion[] regions;
+      private readonly ImageRegion[] regions;
 
-      public PlannedSpriteAnimation(PixmapRegion[] regions) {
+      public PlannedSpriteAnimation(ImageRegion[] regions) {
         this.regions = regions;
       }
 

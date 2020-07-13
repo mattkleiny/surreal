@@ -23,8 +23,8 @@ namespace Surreal.Diagnostics {
       return builder.ToString();
     }
 
-    public static Pixmap ToPixmap<T>(this IGrid<T> grid, Func<int, int, T, Color> painter, int scale = 1) {
-      var pixmap = new Pixmap(grid.Width * scale, grid.Height * scale);
+    public static Image ToImage<T>(this IGrid<T> grid, Func<int, int, T, Color> painter, int scale = 1) {
+      var image = new Image(grid.Width * scale, grid.Height * scale);
 
       for (var y = 0; y < grid.Height; y++)
       for (var x = 0; x < grid.Width; x++) {
@@ -33,11 +33,11 @@ namespace Surreal.Diagnostics {
 
         for (var yy = 0; yy < scale; yy++)
         for (var xx = 0; xx < scale; xx++) {
-          pixmap[x * scale + xx, y * scale + yy] = color;
+          image[x * scale + xx, y * scale + yy] = color;
         }
       }
 
-      return pixmap;
+      return image;
     }
   }
 }

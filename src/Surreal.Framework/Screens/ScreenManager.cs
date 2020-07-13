@@ -9,7 +9,7 @@ namespace Surreal.Framework.Screens {
         : base(game) {
     }
 
-    public event Action<IScreen?> ScreenChanged;
+    public event Action<IScreen?> ScreenChanged = null!;
 
     public IScreen? ActiveScreen   => screens.Last?.Value;
     public IScreen? PreviousScreen => screens.Last?.Previous?.Value;

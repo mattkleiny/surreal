@@ -7,20 +7,15 @@ namespace Surreal.Diagnostics {
       where TGame : GameJam {
     protected DiagnosticPlugin(TGame game)
         : base(game) {
+      Stage = new Stage(
+          viewport: StageViewports.Fixed(Size.X, Size.Y),
+          layout: new Rectangle(0f, 0f, Size.X, Size.Y)
+      );
     }
 
     public Vector2I Size      { get; set; } = new Vector2I(640, 480);
     public Stage    Stage     { get; set; }
     public bool     IsVisible { set; get; }
-
-    public override void Initialize() {
-      Stage = new Stage(
-          viewport: StageViewports.Fixed(Size.X, Size.Y),
-          layout: new Rectangle(0f, 0f, Size.X, Size.Y)
-      );
-
-      base.Initialize();
-    }
 
     public override void Begin() {
       base.Begin();

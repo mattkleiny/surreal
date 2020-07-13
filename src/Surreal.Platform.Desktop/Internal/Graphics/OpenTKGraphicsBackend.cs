@@ -3,9 +3,9 @@ using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
+using Surreal.Graphics.Experimental.Rendering;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Rendering;
 using Surreal.Graphics.SPI;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
@@ -13,18 +13,37 @@ using PrimitiveType = Surreal.Graphics.Meshes.PrimitiveType;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Platform.Internal.Graphics {
-  internal sealed class OpenTKGraphicsBackend : IGraphicsBackend, IGraphicsFactory, IDisposable {
+  internal sealed class OpenTKGraphicsBackend : IGraphicsBackend, IDisposable {
+    private OpenTKWindow window;
+
     public OpenTKGraphicsBackend(OpenTKWindow window) {
-      SwapChain = new OpenTKSwapChain(window);
-      Pipeline  = new OpenTKPipelineState();
+      this.window = window;
+
+      Pipeline = new OpenTKPipelineState();
     }
 
-    public IGraphicsFactory Factory => this;
-
-    public ISwapChain     SwapChain { get; }
     public IPipelineState Pipeline  { get; }
 
     public void BeginFrame() {
+    }
+
+    public void ClearColorBuffer(Color color) {
+      GL.ClearColor(
+          color.R / 255.0f,
+          color.G / 255.0f,
+          color.B / 255.0f,
+          color.A / 255.0f
+      );
+
+      GL.Clear(ClearBufferMask.ColorBufferBit);
+    }
+
+    public void ClearDepthBuffer() {
+      GL.Clear(ClearBufferMask.DepthBufferBit);
+    }
+
+    public void Present() {
+      window.Present();
     }
 
     public void DrawMeshIndexed(int count, PrimitiveType type) {
@@ -65,11 +84,11 @@ namespace Surreal.Platform.Internal.Graphics {
 
     public FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor) {
       var texture = (OpenTKTexture) CreateTexture(descriptor.Format, descriptor.FilterMode, TextureWrapMode.Clamp);
-      var pixmap  = new Pixmap(descriptor.Width, descriptor.Height);
+      var image   = new Image(descriptor.Width, descriptor.Height);
 
-      texture.Upload(pixmap);
+      texture.Upload(image);
 
-      return new OpenTKFrameBuffer(texture, pixmap);
+      return new OpenTKFrameBuffer(texture, image);
     }
 
     public void Dispose() {

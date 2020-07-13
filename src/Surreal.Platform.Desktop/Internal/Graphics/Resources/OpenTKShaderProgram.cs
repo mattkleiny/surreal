@@ -23,7 +23,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       GL.UseProgram(Id);
     }
 
-    public override void Bind(VertexAttributes attributes) {
+    public override void Bind(VertexAttributeSet attributes) {
       GL.UseProgram(Id);
 
       for (var i = 0; i < attributes.Length; i++) {

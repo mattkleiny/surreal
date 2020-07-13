@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Surreal.Mathematics.Linear;
 
 namespace Surreal.Graphics {
   [DebuggerDisplay("Viewport {X}, {Y}, {Width}, {Height}")]
@@ -19,8 +18,5 @@ namespace Surreal.Graphics {
       Width  = width;
       Height = height;
     }
-
-    public static implicit operator Rectangle(Viewport viewport)
-      => new Rectangle(viewport.X, viewport.Y, viewport.Width, viewport.Height);
   }
 }

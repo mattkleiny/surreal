@@ -4,8 +4,8 @@ using System.IO;
 using Minecraft.Core.Coordinates;
 using Minecraft.Core.Generation;
 using Surreal.Framework.Voxels;
+using Surreal.IO;
 using Surreal.Mathematics.Linear;
-using Surreal.Memory;
 
 namespace Minecraft.Core {
   public sealed class World : IDisposable {

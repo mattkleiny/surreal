@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
-using Surreal.Graphics.Rendering.Culling;
+using Surreal.Graphics.Experimental.Rendering.Culling;
 using Surreal.Timing;
 
 namespace Surreal.Framework.Scenes.Actors {

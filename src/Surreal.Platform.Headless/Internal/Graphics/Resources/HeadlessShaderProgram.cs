@@ -5,7 +5,7 @@ using Surreal.Mathematics.Linear;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
   internal sealed class HeadlessShaderProgram : ShaderProgram {
-    public override void Bind(VertexAttributes attributes) {
+    public override void Bind(VertexAttributeSet attributes) {
       // no-op
     }
 

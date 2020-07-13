@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Surreal.Memory;
 
 namespace Surreal.IO {
   public sealed class ResourceFileSystem : FileSystem {
@@ -50,5 +49,11 @@ namespace Surreal.IO {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string NormalizePath(string path) => path.Replace('/', '.');
+  }
+
+  public sealed class ResourceNotFoundException : Exception {
+    public ResourceNotFoundException(string message)
+        : base(message) {
+    }
   }
 }

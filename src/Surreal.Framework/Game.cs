@@ -27,18 +27,15 @@ namespace Surreal.Framework {
       Engine.Run(host, game);
     }
 
-    protected Game() {
-      loopTarget = new ProfiledLoopTarget(this);
-      Clock      = new FixedStepClock(16.Milliseconds());
-    }
+    protected Game() => loopTarget = new ProfiledLoopTarget(this);
 
-    public FixedStepClock    Clock    { get; }
-    public IPlatformHost     Host     { get; private set; }
-    public AssetManager      Assets   { get; } = new AssetManager();
-    public List<IGamePlugin> Plugins  { get; } = new List<IGamePlugin>();
-    public IServiceContainer Services { get; } = new ServiceContainer();
+    public IPlatformHost Host { get; private set; } = null!;
 
-    public ILoopStrategy LoopStrategy { get; set; } = new AveragingLoopStrategy();
+    public FixedStepClock    Clock        { get; }      = new FixedStepClock(16.Milliseconds());
+    public AssetManager      Assets       { get; }      = new AssetManager();
+    public IServiceContainer Services     { get; }      = new ServiceContainer();
+    public List<IGamePlugin> Plugins      { get; }      = new List<IGamePlugin>();
+    public ILoopStrategy     LoopStrategy { get; set; } = new AveragingLoopStrategy();
 
     internal void Initialize(IPlatformHost host) {
       Host = host;
@@ -79,7 +76,7 @@ namespace Surreal.Framework {
       registry.Add(new ResourceFileSystem());
     }
 
-    public void Tick(DeltaTime deltaTime) {
+    void IFrameListener.Tick(DeltaTime deltaTime) {
       var totalTime = DateTime.Now - startTime;
 
       Clock.Tick(deltaTime);

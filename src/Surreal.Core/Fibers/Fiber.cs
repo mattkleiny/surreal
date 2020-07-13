@@ -64,11 +64,9 @@ namespace Surreal.Fibers {
           await method(CancellationToken);
 
           Transition(FiberState.Running, FiberState.Completed);
-        }
-        catch (OperationCanceledException) {
+        } catch (OperationCanceledException) {
           Transition(FiberState.Running, FiberState.Cancelled);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
           Log.Error($"An unexpected error occurred whilst executing a fiber: {exception}");
 
           Exception = exception;

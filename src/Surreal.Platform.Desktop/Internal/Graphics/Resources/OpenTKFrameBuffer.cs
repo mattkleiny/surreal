@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Graphics.Rendering;
+using Surreal.Graphics.Experimental.Rendering;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
@@ -9,11 +9,11 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
     public readonly int Id = GL.GenFramebuffer();
 
     public override Texture Texture { get; }
-    public          Pixmap  Pixmap  { get; }
+    public          Image  Image  { get; }
 
-    public OpenTKFrameBuffer(Texture texture, Pixmap pixmap) {
+    public OpenTKFrameBuffer(Texture texture, Image image) {
       Texture = texture;
-      Pixmap  = pixmap;
+      Image  = image;
     }
 
     protected override void Dispose(bool managed) {
@@ -21,7 +21,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
 
       if (managed) {
         Texture.Dispose();
-        Pixmap.Dispose();
+        Image.Dispose();
       }
 
       base.Dispose(managed);

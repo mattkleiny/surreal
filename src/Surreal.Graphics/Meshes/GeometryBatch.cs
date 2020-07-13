@@ -4,9 +4,10 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Surreal.Collections;
 using Surreal.Graphics.Materials;
+using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Curves;
-using Surreal.Memory;
+using Surreal.Mathematics.Linear;
 using static Surreal.Maths;
 
 namespace Surreal.Graphics.Meshes {
@@ -29,7 +30,7 @@ namespace Surreal.Graphics.Meshes {
     }
 
     public static async Task<GeometryBatch> CreateDefaultAsync(IGraphicsDevice device) {
-      var shader = device.Factory.CreateShaderProgram(
+      var shader = device.Backend.CreateShaderProgram(
           await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.vert.glsl"),
           await Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.frag.glsl")
       );
@@ -73,7 +74,7 @@ namespace Surreal.Graphics.Meshes {
     public void DrawLine(Vector2 from, Vector2 to, Color color)
       => DrawPrimitive(stackalloc[] {from, to}, color, PrimitiveType.Lines);
 
-    public void DrawLine(LineSegment segment, Color color)
+    public void DrawLine(Line segment, Color color)
       => DrawPrimitive(stackalloc[] {segment.From, segment.To}, color, PrimitiveType.Lines);
 
     public void DrawLines(ReadOnlySpan<Vector2> points, Color color)

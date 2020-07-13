@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Surreal.Languages;
 using Surreal.Languages.Expressions;
 using Surreal.Languages.Lexing;
 using Surreal.Languages.Statements;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
-  public sealed class ConsoleLanguageParser : ILanguageParser {
+  public sealed class ConsoleLanguageParser {
     private static readonly RegexLexer<Token> Lexer = new RegexLexer<Token>(
         new RegexLexer<Token>.Rule(@"\s+", (lexeme, position) => new Token(TokenType.WhiteSpace, position, lexeme), disregard: true),
         new RegexLexer<Token>.Rule(@"\+|\-|\*|\/", (lexeme, position) => new Token(TokenType.Operator, position, lexeme)),
@@ -23,19 +22,17 @@ namespace Surreal.Diagnostics.Console.Interpreter {
     private Token NextToken    => tokens[position];
     private bool  IsAtEnd      => position >= tokens.Length;
 
-    public IEnumerable<Statement> ParseStatements(string raw) {
+    public ConsoleLanguageParser(string raw) {
       tokens = Lexer.Tokenize(raw).ToArray();
-
-      yield return ExpressionStatement();
     }
 
-    private Statement ExpressionStatement() {
+    public Statement Statement() {
       var expression = Expression();
 
       return new ExpressionStatement(expression);
     }
 
-    private Expression Expression() {
+    public Expression Expression() {
       throw new NotImplementedException();
     }
 

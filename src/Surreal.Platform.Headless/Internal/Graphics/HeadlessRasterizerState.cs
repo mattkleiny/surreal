@@ -1,5 +1,5 @@
 using Surreal.Graphics;
-using Surreal.Graphics.SPI.Rasterization;
+using Surreal.Graphics.SPI;
 
 namespace Surreal.Platform.Internal.Graphics {
   internal sealed class HeadlessRasterizerState : IRasterizerState {

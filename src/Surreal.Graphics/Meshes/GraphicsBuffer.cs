@@ -1,6 +1,6 @@
 ﻿using System;
 using Surreal.Assets;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Graphics.Meshes {
   public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate {

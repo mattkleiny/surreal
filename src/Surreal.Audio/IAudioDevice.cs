@@ -4,7 +4,6 @@ using Surreal.Audio.SPI;
 namespace Surreal.Audio {
   public interface IAudioDevice {
     IAudioBackend Backend { get; }
-    IAudioFactory Factory { get; }
 
     float MasterVolume { get; set; }
 

@@ -8,7 +8,6 @@ using Surreal.Collections;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.IO;
-using Surreal.Memory;
 
 namespace Surreal.Assets {
   // TODO: use proper centralized asset reference tracking, here

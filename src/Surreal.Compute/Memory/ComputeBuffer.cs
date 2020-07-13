@@ -1,6 +1,6 @@
 using System;
 using Surreal.Assets;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Compute.Memory {
   public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate {

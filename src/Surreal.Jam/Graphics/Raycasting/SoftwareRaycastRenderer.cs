@@ -9,14 +9,14 @@ using Surreal.Mathematics.Linear;
 namespace Surreal.Graphics.Raycasting {
   public class SoftwareRaycastRenderer<TTile> : IDisposable
       where TTile : IRaycastAwareTile {
-    private readonly RaycastCamera       camera;
-    private readonly Color               clearColor;
-    private readonly Atlas<PixmapRegion> textures;
+    private readonly RaycastCamera      camera;
+    private readonly Color              clearColor;
+    private readonly Atlas<ImageRegion> textures;
 
     public SoftwareRaycastRenderer(
         RaycastCamera camera,
         Vector2I resolution,
-        Atlas<PixmapRegion> textures,
+        Atlas<ImageRegion> textures,
         Color clearColor = default) {
       this.camera     = camera;
       this.textures   = textures;
@@ -29,7 +29,7 @@ namespace Surreal.Graphics.Raycasting {
 
     public void Render(IGraphicsDevice device, SpriteBatch batch, TileMap<TTile> map) {
       var scale = new Vector2(
-          (float) FrameBuffer.Width  / map.Width,
+          (float) FrameBuffer.Width / map.Width,
           (float) FrameBuffer.Height / map.Height
       );
 
@@ -50,8 +50,8 @@ namespace Surreal.Graphics.Raycasting {
       var direction = camera.Direction;
 
       var viewWidth  = (float) FrameBuffer.Width / FrameBuffer.Height;
-      var viewPlane  = direction.Orthogonal()    * viewWidth;
-      var viewCenter = position   + direction * camera.FocalLength;
+      var viewPlane  = direction.Orthogonal() * viewWidth;
+      var viewCenter = position + direction * camera.FocalLength;
       var viewStart  = viewCenter - viewPlane / 2f;
 
       var columns = FrameBuffer.Width;
@@ -71,8 +71,8 @@ namespace Surreal.Graphics.Raycasting {
 
         // compute wall properties
         var wallDistance  = (end - ray.Origin).Length();
-        var distanceRatio = viewPlaneDistance                                      / camera.FocalLength;
-        var perpendicular = wallDistance                                           / distanceRatio;
+        var distanceRatio = viewPlaneDistance / camera.FocalLength;
+        var perpendicular = wallDistance / distanceRatio;
         var height        = camera.WallHeight * camera.FocalLength / perpendicular * rows;
         var wallStart     = new Vector2(x, (rows - height) / 2f + camera.FudgeBias);
 
@@ -83,8 +83,7 @@ namespace Surreal.Graphics.Raycasting {
         if (Math.Abs(MathF.Floor(end.X) - end.X) < float.Epsilon) {
           dampen = Color.Clear;
           wallX  = end.Y - MathF.Floor(end.Y);
-        }
-        else {
+        } else {
           dampen = new Color(50, 50, 50, 0);
           wallX  = end.X - MathF.Floor(end.X);
         }
@@ -95,8 +94,7 @@ namespace Surreal.Graphics.Raycasting {
           var textureX = (int) (wallX * texture.Width);
 
           FrameBuffer.Colors.DrawTexturedColumn(textureX, texture, wallStart, height, dampen);
-        }
-        else {
+        } else {
           FrameBuffer.Colors.DrawColoredColumn(x, wallStart, height, tile.Color - dampen);
         }
 
@@ -105,9 +103,9 @@ namespace Surreal.Graphics.Raycasting {
         var floorStart   = (int) (wallStart.Y + height) + 1;
 
         for (var y = Math.Min(floorStart, rows); y < rows; y++) {
-          var normalizedY       = y / rows          * 2 - 1;
+          var normalizedY       = y / rows * 2 - 1;
           var wallPerpendicular = camera.WallHeight * camera.FocalLength / normalizedY;
-          var distance          = wallPerpendicular                      * distanceRatio;
+          var distance          = wallPerpendicular * distanceRatio;
           var mapPosition       = ray.Origin + ray.Direction * distance;
 
           var tileX = (int) MathF.Floor(mapPosition.X);

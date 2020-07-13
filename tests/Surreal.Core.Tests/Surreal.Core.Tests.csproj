@@ -11,4 +11,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\*.*" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data" />
+  </ItemGroup>
 </Project>

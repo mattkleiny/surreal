@@ -25,8 +25,8 @@ namespace Surreal.Framework.Scenes.Entities.Aspects {
         Aspect = aspect;
       }
 
-      public event Action<EntityId> EntityAdded;
-      public event Action<EntityId> EntityRemoved;
+      public event Action<EntityId> EntityAdded   = null!;
+      public event Action<EntityId> EntityRemoved = null!;
 
       public Aspect Aspect { get; }
 

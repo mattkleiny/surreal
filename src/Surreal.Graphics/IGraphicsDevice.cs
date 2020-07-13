@@ -4,11 +4,13 @@ using Surreal.Graphics.SPI;
 
 namespace Surreal.Graphics {
   public interface IGraphicsDevice {
-    IGraphicsBackend Backend { get; }
-    IGraphicsFactory Factory { get; }
+    IGraphicsBackend Backend  { get; }
+    IPipelineState   Pipeline { get; }
 
-    IPipelineState Pipeline { get; }
-    Viewport       Viewport { get; set; }
+    Viewport Viewport {
+      get => Pipeline.Rasterizer.Viewport;
+      set => Pipeline.Rasterizer.Viewport = value;
+    }
 
     void BeginFrame();
     void Clear(Color color);

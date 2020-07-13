@@ -10,19 +10,17 @@ using Surreal.Compute.Execution;
 using Surreal.Compute.SPI;
 using Surreal.Diagnostics.Console;
 using Surreal.Diagnostics.Console.Interpreter;
-using Surreal.Diagnostics.Editing;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Framework;
 using Surreal.Framework.Screens;
 using Surreal.Graphics;
+using Surreal.Graphics.Experimental.Shady;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
-using Surreal.Graphics.Materials.Shady;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.SPI;
 using Surreal.Graphics.Sprites;
-using Surreal.Graphics.Tessellation;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
@@ -69,7 +67,6 @@ namespace Surreal {
       if (EnableDebugTools) {
         Plugins.Add(new GameConsolePlugin(this));
         Plugins.Add(new ProfilerPlugin(this));
-        Plugins.Add(new EditorPlugin(this));
       }
 
       RegisterAssetLoaders(Assets);
@@ -134,12 +131,11 @@ namespace Surreal {
       assets.RegisterLoader(new TrueTypeFont.Loader());
       assets.RegisterLoader(new ColorPalette.Loader());
       assets.RegisterLoader(new ComputeProgram.Loader(ComputeDevice));
-      assets.RegisterLoader(new Pixmap.Loader());
+      assets.RegisterLoader(new Image.Loader());
       assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, hotReloading: EnableDebugTools));
       assets.RegisterLoader(new ShadyProgram.Loader());
       assets.RegisterLoader(new Texture.Loader(GraphicsDevice));
       assets.RegisterLoader(new WaveData.Loader());
-      assets.RegisterLoader(new VectorPath.Loader());
     }
 
     protected virtual void RegisterConsoleBindings(IConsoleInterpreterBindings bindings) {

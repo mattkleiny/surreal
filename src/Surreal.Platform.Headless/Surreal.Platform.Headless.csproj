@@ -13,7 +13,4 @@
     <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj" />
     <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Internal\Graphics\Services" />
-  </ItemGroup>
 </Project>

@@ -10,14 +10,14 @@ using Surreal.Timing;
 
 namespace Surreal.Framework {
   public static class Engine {
-    private static readonly ActionQueue    DefaultActionQueue    = new ActionQueue();
-    private static readonly FiberScheduler DefaultFiberScheduler = new FiberScheduler();
+    private static readonly ActionQueue    ActionQueue    = new ActionQueue();
+    private static readonly FiberScheduler FiberScheduler = new FiberScheduler();
 
     public static bool IsRunning { get; private set; }
 
-    public static void  Schedule(Action task)                          => DefaultActionQueue.Enqueue(task);
-    public static Fiber Schedule(Func<Task> method)                    => Fiber.Start(DefaultFiberScheduler, _ => method());
-    public static Fiber Schedule(Func<CancellationToken, Task> method) => Fiber.Start(DefaultFiberScheduler, method);
+    public static void  Schedule(Action task)                          => ActionQueue.Enqueue(task);
+    public static Fiber Schedule(Func<Task> method)                    => Fiber.Start(FiberScheduler, _ => method());
+    public static Fiber Schedule(Func<CancellationToken, Task> method) => Fiber.Start(FiberScheduler, method);
 
     public static void Run(IPlatformHost host, params IFrameListener[] listeners) {
       if (IsRunning) {
@@ -32,7 +32,7 @@ namespace Surreal.Framework {
       var clock = new Clock();
 
       while (IsRunning && !host.IsClosing) {
-        DefaultActionQueue.Execute();
+        ActionQueue.Execute();
 
         var deltaTime = clock.Tick();
 
@@ -42,7 +42,7 @@ namespace Surreal.Framework {
           listeners[i].Tick(deltaTime);
         }
 
-        DefaultFiberScheduler.Run();
+        FiberScheduler.Run();
       }
     }
 

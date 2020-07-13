@@ -1,7 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Surreal.Graphics.Meshes {
+  [MeansImplicitUse]
+  [AttributeUsage(AttributeTargets.Field)]
+  public sealed class VertexAttributeAttribute : Attribute {
+    public string     Alias      { get; set; } = string.Empty;
+    public int        Count      { get; set; }
+    public VertexType Type       { get; set; }
+    public bool       Normalized { get; set; }
+  }
+
   [DebuggerDisplay("{Alias}: {Count}")]
   public readonly struct VertexAttribute {
     public readonly string     Alias;
@@ -37,5 +50,51 @@ namespace Surreal.Graphics.Meshes {
           throw new ArgumentOutOfRangeException(nameof(type), type, null);
       }
     }
+  }
+
+  public sealed class VertexAttributeSet {
+    private readonly VertexAttribute[] attributes;
+
+    public static VertexAttributeSet Create<TVertex>()
+        where TVertex : unmanaged => new VertexAttributeSet(typeof(TVertex)
+        .GetMembers(BindingFlags.Public | BindingFlags.Instance)
+        .OfType<FieldInfo>()
+        .Where(member => member.GetCustomAttribute<VertexAttributeAttribute>() != null)
+        .Select(member => member.GetCustomAttribute<VertexAttributeAttribute>())
+        .ToArray());
+
+    private VertexAttributeSet(params VertexAttributeAttribute[] attributes) {
+      Check.That(attributes.Length > 0, "At least one attribute must be specified.");
+
+      this.attributes = CreateAttributes(attributes).ToArray();
+    }
+
+    public int Length => attributes.Length;
+    public int Stride { get; private set; }
+
+    public VertexAttribute this[int index] => attributes[index];
+
+    private IEnumerable<VertexAttribute> CreateAttributes(IEnumerable<VertexAttributeAttribute> attributes) {
+      var accumulator = 0;
+
+      foreach (var attribute in attributes) {
+        var result = new VertexAttribute(
+            alias: attribute.Alias,
+            count: attribute.Count,
+            type: attribute.Type,
+            normalized: attribute.Normalized,
+            offset: accumulator
+        );
+
+        accumulator += result.Stride;
+
+        yield return result;
+      }
+
+      // calculate total stride of the members
+      Stride = accumulator;
+    }
+
+    public override string ToString() => string.Join(", ", attributes.Select(it => it.ToString()).ToArray());
   }
 }

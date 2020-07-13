@@ -1,15 +1,15 @@
 using System.Linq;
 using Surreal.Collections;
 using Surreal.Graphics;
-using Surreal.Graphics.Textures;
 using Surreal.UI.Controls.Images;
+using Image = Surreal.Graphics.Textures.Image;
 
 namespace Surreal.Diagnostics.Profiling.Controls {
   internal sealed class SamplerGraph : GraphImage {
     private readonly InMemoryProfilerSampler sampler;
 
     public SamplerGraph(IGraphicsDevice device, InMemoryProfilerSampler sampler)
-        : base(device, new Pixmap(256, 256)) {
+        : base(device, new Image(256, 256)) {
       this.sampler = sampler;
     }
 

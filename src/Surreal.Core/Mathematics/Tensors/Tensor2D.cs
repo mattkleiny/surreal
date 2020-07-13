@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Surreal.IO;
 using Surreal.Mathematics.Grids;
-using Surreal.Memory;
 
 namespace Surreal.Mathematics.Tensors {
   [DebuggerDisplay("{ToDebuggerString()}")]

@@ -1,11 +1,24 @@
 ﻿using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.IO;
-using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures {
+  public enum TextureFilterMode {
+    Point,
+    Linear
+  }
+
+  public enum TextureFormat {
+    RGBA8888
+  }
+
+  public enum TextureWrapMode {
+    Clamp,
+    Repeat
+  }
+
   public abstract class Texture : GraphicsResource, IHasSizeEstimate {
-    private ITextureData data;
+    private ITextureData? data;
 
     protected Texture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) {
       Format     = format;
@@ -17,9 +30,9 @@ namespace Surreal.Graphics.Textures {
     public TextureFilterMode FilterMode { get; }
     public TextureWrapMode   WrapMode   { get; }
 
-    public int  Width  => data.Width;
-    public int  Height => data.Height;
-    public Size Size   => data.Size;
+    public int  Width  => data?.Width ?? 0;
+    public int  Height => data?.Height ?? 0;
+    public Size Size   => data?.Size ?? Size.Zero;
 
     public TextureRegion ToRegion() => new TextureRegion(this);
 
@@ -29,8 +42,8 @@ namespace Surreal.Graphics.Textures {
       this.data = data;
     }
 
-    protected abstract void Upload(ITextureData existingData, ITextureData newData);
-    public abstract    void Download(Pixmap pixmap);
+    protected abstract void Upload(ITextureData? existingData, ITextureData newData);
+    public abstract    void Download(Image image);
 
     public sealed class Loader : AssetLoader<Texture> {
       private readonly IGraphicsDevice   device;
@@ -47,8 +60,8 @@ namespace Surreal.Graphics.Textures {
       }
 
       public override async Task<Texture> LoadAsync(Path path, IAssetLoaderContext context) {
-        var pixmap  = await context.GetAsync<Pixmap>(path);
-        var texture = device.Factory.CreateTexture(pixmap, defaultFilterMode, defaultWrapMode);
+        var image   = await context.GetAsync<Image>(path);
+        var texture = device.Backend.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 
         return texture;
       }

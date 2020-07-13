@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Surreal.Memory;
 
 namespace Surreal.IO {
   public sealed class LocalFileSystem : FileSystem {
@@ -66,9 +65,9 @@ namespace Surreal.IO {
         watcher.Deleted += (sender, args) => Deleted?.Invoke(path);
       }
 
-      public event Action<Path> Created;
-      public event Action<Path> Modified;
-      public event Action<Path> Deleted;
+      public event Action<Path> Created  = null!;
+      public event Action<Path> Modified = null!;
+      public event Action<Path> Deleted  = null!;
 
       public void Dispose() {
         watcher.Dispose();

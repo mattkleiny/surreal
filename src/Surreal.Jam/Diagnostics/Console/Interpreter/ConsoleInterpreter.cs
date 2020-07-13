@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Surreal.Languages;
 using Surreal.Languages.Expressions;
 using Surreal.Languages.Visitors;
 
@@ -10,23 +9,18 @@ namespace Surreal.Diagnostics.Console.Interpreter {
   public sealed class ConsoleInterpreter : IConsoleInterpreter {
     private readonly BindingCollection bindings = new BindingCollection();
 
-    private readonly ILanguageParser  parser;
     private readonly ExecutionVisitor visitor;
 
-    public ConsoleInterpreter(Action<IConsoleInterpreterBindings> builder)
-        : this(new ConsoleLanguageParser(), builder) {
-    }
-
-    public ConsoleInterpreter(ILanguageParser parser, Action<IConsoleInterpreterBindings> builder) {
+    public ConsoleInterpreter(Action<IConsoleInterpreterBindings> builder) {
       builder(bindings);
 
-      this.parser = parser;
-      visitor     = new ExecutionVisitor(bindings);
+      visitor = new ExecutionVisitor(bindings);
     }
 
     public string? Evaluate(string raw) {
       try {
-        var statement = parser.ParseStatement(raw);
+        var parser    = new ConsoleLanguageParser(raw);
+        var statement = parser.Statement();
         var result    = statement.Accept(visitor);
 
         return result?.ToString() ?? "OK";

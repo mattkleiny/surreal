@@ -6,6 +6,6 @@ namespace Surreal.Graphics.Sprites {
     int OffsetX { get; }
     int OffsetY { get; }
 
-    PixmapRegion Region { get; }
+    ImageRegion Region { get; }
   }
 }

@@ -1,5 +1,6 @@
 using System.Numerics;
 using Surreal.Framework.Parameters;
+using Surreal.Graphics.Experimental.Rendering.PostProcessing;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Rendering.PostProcessing {

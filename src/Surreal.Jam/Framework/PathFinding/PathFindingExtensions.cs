@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Mathematics;
@@ -71,7 +72,7 @@ namespace Surreal.Framework.PathFinding {
         Vector2I start,
         Vector2I end,
         IReadOnlyDictionary<Vector2I, Vector2I> cameFrom) {
-      var points  = new SpanList<Vector2I>(stackalloc Vector2I[cameFrom.Count]);
+      var points  = new List<Vector2I>(cameFrom.Count);
       var current = end;
 
       while (current != start) {
@@ -85,10 +86,40 @@ namespace Surreal.Framework.PathFinding {
       }
 
       points.Add(start);
-
-      // TODO: reverse the points
+      points.Reverse();
 
       return new Path(points.ToArray());
+    }
+
+    private readonly struct UniformPathfindingGrid<T, TNeighbourhood> : IGrid<T>, IPathFindingGrid
+        where TNeighbourhood : struct, INeighbourhood {
+      private readonly IGrid<T> grid;
+      private readonly float    cost;
+
+      public UniformPathfindingGrid(IGrid<T> grid, float cost = 1f) {
+        this.grid = grid;
+        this.cost = cost;
+      }
+
+      public int Width  => grid.Width;
+      public int Height => grid.Height;
+
+      public T this[int x, int y] {
+        get => grid[x, y];
+        set => grid[x, y] = value;
+      }
+
+      public float GetCost(Vector2I from, Vector2I to) {
+        return cost;
+      }
+
+      public void GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
+        foreach (var neighbour in position.GetNeighbourhood<TNeighbourhood>()) {
+          if (neighbour != position && grid.Contains(position.X, position.Y)) {
+            results.Add(neighbour);
+          }
+        }
+      }
     }
   }
 }

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using NAudio.Wave;
 using Surreal.Assets;
 using Surreal.IO;
-using Surreal.Memory;
 
 namespace Surreal.Audio.Clips {
   public sealed class WaveData : IAudioData, IDisposable, IHasSizeEstimate {

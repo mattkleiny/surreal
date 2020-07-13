@@ -75,7 +75,6 @@ namespace Surreal.Platform {
     public void Tick(DeltaTime deltaTime) {
       if (!IsClosing) {
         window.Update();
-
         InputManager.Update();
 
         // show the window after the first frame is complete

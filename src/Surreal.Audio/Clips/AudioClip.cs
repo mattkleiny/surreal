@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.IO;
-using Surreal.Memory;
 
 namespace Surreal.Audio.Clips {
   public abstract class AudioClip : AudioResource, IHasSizeEstimate {
@@ -30,7 +29,7 @@ namespace Surreal.Audio.Clips {
       public override async Task<AudioClip> LoadAsync(Path path, IAssetLoaderContext context) {
         var waveform = await context.GetAsync<WaveData>(path);
 
-        return device.Factory.CreateAudioClip(waveform);
+        return device.Backend.CreateAudioClip(waveform);
       }
     }
   }

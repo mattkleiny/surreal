@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Surreal.Mathematics.Grids {
   public sealed class BitGrid : IGrid<bool> {
@@ -22,8 +23,23 @@ namespace Surreal.Mathematics.Grids {
     public int Height { get; }
 
     public bool this[int x, int y] {
-      get => elements[x + y * Width];
-      set => elements[x + y * Width] = value;
+      get {
+        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
+        
+        return elements[x + y * Width];
+      }
+      set {
+        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
+        
+        elements[x + y * Width] = value;
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Fill(bool value) {
+      elements.SetAll(value);
     }
   }
 }

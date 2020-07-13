@@ -1,5 +1,6 @@
 using System;
 using OpenTK.Input;
+using Surreal.Input;
 using Surreal.Input.Mouse;
 using Surreal.Mathematics.Linear;
 using MouseButton = Surreal.Input.Mouse.MouseButton;
@@ -12,9 +13,9 @@ namespace Surreal.Platform.Internal.Input {
       this.window = window;
     }
 
-    public event Action<MouseButton> ButtonPressed;
-    public event Action<MouseButton> ButtonReleased;
-    public event Action<Vector2I>    Moved;
+    public event Action<MouseButton> ButtonPressed  = null!;
+    public event Action<MouseButton> ButtonReleased = null!;
+    public event Action<Vector2I>    Moved          = null!;
 
     public Vector2I Position      => new Vector2I(CurrentState.X, CurrentState.Y);
     public Vector2I DeltaPosition => new Vector2I(CurrentState.X - PreviousState.X, CurrentState.Y - PreviousState.Y);

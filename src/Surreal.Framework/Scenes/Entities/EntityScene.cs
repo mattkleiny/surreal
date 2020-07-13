@@ -8,7 +8,7 @@ using Surreal.Framework.Scenes.Entities.Aspects;
 using Surreal.Framework.Scenes.Entities.Components;
 using Surreal.Framework.Scenes.Entities.Storage;
 using Surreal.Framework.Scenes.Entities.Systems;
-using Surreal.Graphics.Rendering.Culling;
+using Surreal.Graphics.Experimental.Rendering.Culling;
 using Surreal.Timing;
 
 namespace Surreal.Framework.Scenes.Entities {
@@ -26,6 +26,8 @@ namespace Surreal.Framework.Scenes.Entities {
       SystemManager    = new SystemManager(this);
     }
 
+    public event Action<IEntitySystem> SystemAdded = null!;
+
     public bool CompactOnDispose { get; set; } = true;
 
     internal AspectManager    AspectManager    { get; }
@@ -33,7 +35,6 @@ namespace Surreal.Framework.Scenes.Entities {
     internal EntityManager    EntityManager    { get; }
     internal SystemManager    SystemManager    { get; }
 
-    public event Action<IEntitySystem>  SystemAdded;
     public IReadOnlyList<IEntitySystem> Systems => SystemManager.Systems;
 
     public void RegisterComponent<T>(IComponentStorage<T> storage)

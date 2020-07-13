@@ -1,18 +1,24 @@
 using Surreal.Graphics;
+using Surreal.Graphics.Experimental.Rendering;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Rendering;
 using Surreal.Graphics.SPI;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 
 namespace Surreal.Platform.Internal.Graphics {
-  internal sealed class HeadlessGraphicsBackend : IGraphicsBackend, IGraphicsFactory {
-    public IGraphicsFactory Factory   => this;
-    public ISwapChain       SwapChain { get; } = new HeadlessSwapChain();
-    public IPipelineState   Pipeline  { get; } = new HeadlessPipelineState();
+  internal sealed class HeadlessGraphicsBackend : IGraphicsBackend {
+    public IPipelineState Pipeline { get; } = new HeadlessPipelineState();
 
     public void BeginFrame() {
+      // no-op
+    }
+
+    public void ClearColorBuffer(Color color) {
+      // no-op
+    }
+
+    public void ClearDepthBuffer() {
       // no-op
     }
 
@@ -25,6 +31,10 @@ namespace Surreal.Platform.Internal.Graphics {
     }
 
     public void EndFrame() {
+      // no-op
+    }
+
+    public void Present() {
       // no-op
     }
 

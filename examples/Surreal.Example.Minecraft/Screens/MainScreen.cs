@@ -7,13 +7,12 @@ using Minecraft.Core.Rendering;
 using Surreal.Assets;
 using Surreal.Framework;
 using Surreal.Framework.Screens;
-using Surreal.Framework.Simulations;
 using Surreal.Graphics.Cameras;
 using Surreal.Input.Keyboard;
 using Surreal.Mathematics.Linear;
 
 namespace Minecraft.Screens {
-  public sealed class MainScreen : SimulationScreen<MinecraftGame, ActorSimulation>, ILoadableScreen {
+  public sealed class MainScreen : GameScreen<MinecraftGame>, ILoadableScreen {
     private readonly PerspectiveCamera camera = new PerspectiveCamera(1920, 1080) {
         Position  = new Vector3(-10f, 45f, -10f),
         Direction = new Vector3(0f, 15f, 0f),
@@ -31,17 +30,13 @@ namespace Minecraft.Screens {
 
     public World World { get; set; }
 
-    protected override ActorSimulation CreateSimulation() {
-      return new ActorSimulation();
-    }
-
     protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);
 
       renderer = await WorldRenderer.CreateAsync(GraphicsDevice);
     }
 
-    public async Task LoadInBackgroundAsync(IAssetResolver assets) {
+    public async Task LoadInBackgroundAsync(IAssetResolver assets, ILoadNotifier notifier) {
       World = await Task.Run(() => World.CreateFinite(
           regionsPerWorld: new Volume(1, 1, 1),
           palette: Block.Palette,
@@ -54,6 +49,8 @@ namespace Minecraft.Screens {
           ),
           biomeSelector: BiomeSelectors.Always(Biome.Temperate)
       ));
+
+      notifier.Increment(1f);
     }
 
     public override void Initialize() {

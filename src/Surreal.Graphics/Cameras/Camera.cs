@@ -25,7 +25,7 @@ namespace Surreal.Graphics.Cameras {
       Update();
     }
 
-    public event Action Updated;
+    public event Action Updated = null!;
 
     public float Near {
       get => near;

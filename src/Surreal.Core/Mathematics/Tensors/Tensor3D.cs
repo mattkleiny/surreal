@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Mathematics.Tensors {
   [DebuggerDisplay("{ToDebuggerString()}")]

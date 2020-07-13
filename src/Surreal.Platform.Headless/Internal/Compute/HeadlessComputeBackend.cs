@@ -5,8 +5,8 @@ using Surreal.Compute.SPI;
 using Surreal.Platform.Internal.Compute.Resources;
 
 namespace Surreal.Platform.Internal.Compute {
-  internal sealed class HeadlessComputeBackend : IComputeBackend, IComputeFactory {
-    public IComputeFactory Factory => this;
+  internal sealed class HeadlessComputeBackend : IComputeBackend {
+    public IComputeBackend Factory => this;
 
     public ComputeBuffer CreateBuffer(int width, int height) {
       return new HeadlessComputeBuffer();

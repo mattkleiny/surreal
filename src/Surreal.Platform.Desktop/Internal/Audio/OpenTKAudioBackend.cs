@@ -6,12 +6,12 @@ using Surreal.Audio.SPI;
 using Surreal.Platform.Internal.Audio.Resources;
 
 namespace Surreal.Platform.Internal.Audio {
-  internal sealed class OpenTKAudioBackend : IAudioBackend, IAudioFactory, IDisposable {
+  internal sealed class OpenTKAudioBackend : IAudioBackend, IDisposable {
     private readonly AudioContext context = new AudioContext();
 
     private float masterVolume;
 
-    public IAudioFactory Factory => this;
+    public IAudioBackend Factory => this;
 
     public float MasterVolume {
       get => masterVolume;

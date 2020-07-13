@@ -18,7 +18,7 @@ namespace Surreal.Platform {
     public HeadlessInputManager    InputManager    { get; } = new HeadlessInputManager();
     public LocalFileSystem         FileSystem      { get; } = new LocalFileSystem();
 
-    public event Action<int, int> Resized;
+    public event Action<int, int> Resized = null!;
 
     public int  Width     { get; } = 1920;
     public int  Height    { get; } = 1080;

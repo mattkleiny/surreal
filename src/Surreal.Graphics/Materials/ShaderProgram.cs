@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Surreal.Assets;
-using Surreal.Graphics.Materials.Shady;
+using Surreal.Graphics.Experimental.Shady;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
@@ -12,7 +12,7 @@ using Surreal.States;
 
 namespace Surreal.Graphics.Materials {
   public abstract class ShaderProgram : GraphicsResource {
-    public abstract void Bind(VertexAttributes attributes);
+    public abstract void Bind(VertexAttributeSet attributes);
 
     public abstract void SetUniform(string alias, int scalar);
     public abstract void SetUniform(string alias, float scalar);
@@ -25,6 +25,27 @@ namespace Surreal.Graphics.Materials {
     public abstract void SetUniform(string alias, in Matrix2x2 matrix);
     public abstract void SetUniform(string alias, in Matrix3x2 matrix);
     public abstract void SetUniform(string alias, in Matrix4x4 matrix);
+
+    public sealed class Loader : AssetLoader<ShaderProgram> {
+      private readonly IGraphicsDevice device;
+      private readonly bool            hotReloading;
+
+      public Loader(IGraphicsDevice device, bool hotReloading) {
+        this.device       = device;
+        this.hotReloading = hotReloading;
+      }
+
+      public override async Task<ShaderProgram> LoadAsync(Path path, IAssetLoaderContext context) {
+        if (hotReloading && path.GetFileSystem().SupportsWatcher) {
+          return new HotLoadingShaderProgram(device, path);
+        }
+
+        var input  = await context.GetAsync<ShadyProgram>(path);
+        var output = input.Compile(device);
+
+        return output;
+      }
+    }
 
     private sealed class HotLoadingShaderProgram : ShaderProgram {
       private readonly IGraphicsDevice device;
@@ -58,7 +79,7 @@ namespace Surreal.Graphics.Materials {
         State.ChangeState(States.Invalid);
       }
 
-      public override void Bind(VertexAttributes attributes) {
+      public override void Bind(VertexAttributeSet attributes) {
         CheckValidity();
         Program!.Bind(attributes);
       }
@@ -138,27 +159,6 @@ namespace Surreal.Graphics.Materials {
         Dirty,
         Ready,
         Invalid,
-      }
-    }
-
-    public sealed class Loader : AssetLoader<ShaderProgram> {
-      private readonly IGraphicsDevice device;
-      private readonly bool            hotReloading;
-
-      public Loader(IGraphicsDevice device, bool hotReloading) {
-        this.device       = device;
-        this.hotReloading = hotReloading;
-      }
-
-      public override async Task<ShaderProgram> LoadAsync(Path path, IAssetLoaderContext context) {
-        if (hotReloading && path.GetFileSystem().SupportsWatcher) {
-          return new HotLoadingShaderProgram(device, path);
-        }
-
-        var input  = await context.GetAsync<ShadyProgram>(path);
-        var output = input.Compile(device);
-
-        return output;
       }
     }
   }

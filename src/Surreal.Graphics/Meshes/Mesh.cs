@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Diagnostics;
 using Surreal.Graphics.Materials;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Graphics.Meshes {
   [DebuggerDisplay("Mesh with {Vertices.Count} vertices and {Indices.Count} indices ~{Size}")]
-  public sealed class Mesh : IMesh, IDisposable {
+  public sealed class Mesh : IDisposable {
     private readonly IGraphicsDevice device;
 
     public static Mesh Create<TVertex>(IGraphicsDevice device)
         where TVertex : unmanaged {
-      return new Mesh(device, VertexAttributes.FromVertex<TVertex>());
+      return new Mesh(device, VertexAttributeSet.Create<TVertex>());
     }
 
-    public Mesh(IGraphicsDevice device, VertexAttributes attributes) {
+    private Mesh(IGraphicsDevice device, VertexAttributeSet attributes) {
       this.device = device;
 
       Attributes = attributes;
 
-      Vertices = device.Factory.CreateBuffer(stride: attributes.Stride);
-      Indices  = device.Factory.CreateBuffer(stride: sizeof(ushort));
+      Vertices = device.Backend.CreateBuffer(stride: attributes.Stride);
+      Indices  = device.Backend.CreateBuffer(stride: sizeof(ushort));
     }
 
     public GraphicsBuffer Vertices { get; }
     public GraphicsBuffer Indices  { get; }
 
-    public VertexAttributes Attributes { get; }
+    public VertexAttributeSet Attributes { get; }
 
     public int  TriangleCount => Vertices.Count / 3;
     public Size Size          => Vertices.Size + Indices.Size;

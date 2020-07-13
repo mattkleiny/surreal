@@ -3,6 +3,10 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 
 namespace Surreal.Collections {
+  public interface IPoolAware {
+    void Reset();
+  }
+
   [DebuggerDisplay("Pool {Occupied}/{Capacity}")]
   public sealed class ObjectPool<T> {
     private readonly ConcurrentBag<T> pool = new ConcurrentBag<T>();

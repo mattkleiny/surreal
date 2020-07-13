@@ -4,7 +4,7 @@ using System.Linq;
 using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Graphics {
   public abstract class GraphicsResource : IDisposable {

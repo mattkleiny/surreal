@@ -7,6 +7,5 @@ namespace Surreal.Compute {
     }
 
     public IComputeBackend Backend { get; }
-    public IComputeFactory Factory => Backend.Factory;
   }
 }

@@ -4,8 +4,8 @@ using Surreal;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Framework;
+using Surreal.Framework.Scenes.Actors;
 using Surreal.Framework.Screens;
-using Surreal.Framework.Simulations;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 using Surreal.Mathematics;
@@ -13,12 +13,13 @@ using Surreal.States;
 using Surreal.Timing;
 
 namespace Asteroids.Screens {
-  public sealed class MainScreen : SimulationScreen<AsteroidsGame, ActorSimulation> {
+  public sealed class MainScreen : GameScreen<AsteroidsGame> {
     public MainScreen(AsteroidsGame game)
         : base(game) {
     }
 
-    private EmbeddedTimer countdownTimer = new EmbeddedTimer(1.Seconds());
+    private readonly ActorScene    scene          = new ActorScene();
+    private          EmbeddedTimer countdownTimer = new EmbeddedTimer(1.Seconds());
 
     private Texture?   shipSprite;
     private Texture[]? asteroidSprites;
@@ -27,10 +28,6 @@ namespace Asteroids.Screens {
 
     public float    SpawnRadius   { get; set; } = 800f;
     public IntRange AsteroidRange { get; set; } = Range.Of(32, 128);
-
-    protected override ActorSimulation CreateSimulation() {
-      return new ActorSimulation();
-    }
 
     public override void Initialize() {
       base.Initialize();
@@ -59,11 +56,11 @@ namespace Asteroids.Screens {
     private void Restart(Seed seed = default) {
       var random = seed.ToRandom();
 
-      Simulation.Scene.Actors.Clear();
-      Simulation.Scene.Actors.Add(new Ship(shipSprite!));
+      scene.Actors.Clear();
+      scene.Actors.Add(new Ship(shipSprite!));
 
       for (var i = 0; i < random.NextRange(AsteroidRange); i++) {
-        Simulation.Scene.Actors.Add(new Asteroid(asteroidSprites!.SelectRandomly(random)) {
+        scene.Actors.Add(new Asteroid(asteroidSprites!.SelectRandomly(random)) {
             Position = random.NextUnitCircle() * SpawnRadius,
         });
       }
@@ -72,12 +69,16 @@ namespace Asteroids.Screens {
     public override void Input(GameTime time) {
       if (Keyboard.IsKeyPressed(Key.Escape)) Game.Exit();
       if (Keyboard.IsKeyPressed(Key.Space)) Restart();
+      
+      scene.Input(time.DeltaTime);
 
       base.Input(time);
     }
 
     public override void Update(GameTime time) {
       base.Update(time);
+
+      scene.Update(time.DeltaTime);
 
       if (State == States.Starting) {
         if (countdownTimer.Tick(time.DeltaTime)) {
@@ -87,6 +88,12 @@ namespace Asteroids.Screens {
           countdownTimer.Reset();
         }
       }
+    }
+
+    public override void Draw(GameTime time) {
+      base.Draw(time);
+
+      scene.Draw(time.DeltaTime);
     }
 
     public enum States {

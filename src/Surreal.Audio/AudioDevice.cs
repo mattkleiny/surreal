@@ -9,11 +9,10 @@ namespace Surreal.Audio {
 
     public AudioDevice(IAudioBackend backend, int initialVoices) {
       Backend    = backend;
-      sourcePool = backend.Factory.CreateAudioSourcePool(initialVoices);
+      sourcePool = backend.CreateAudioSourcePool(initialVoices);
     }
 
     public IAudioBackend Backend { get; }
-    public IAudioFactory Factory => Backend.Factory;
 
     public float MasterVolume {
       get => Backend.MasterVolume;

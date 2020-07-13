@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
-using Surreal.Memory;
+using Surreal.IO;
 
 namespace Surreal.Graphics.Sprites {
   // TODO: support multiple textures in the sprite batch simultaneously?
@@ -32,7 +32,7 @@ namespace Surreal.Graphics.Sprites {
     public static async Task<SpriteBatch> CreateDefaultAsync(IGraphicsDevice device, int spriteCount = 1000) {
       Check.That(spriteCount > 0, "spriteCount > 0");
 
-      var shader = device.Factory.CreateShaderProgram(
+      var shader = device.Backend.CreateShaderProgram(
           await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/SpriteBatch.vert.glsl"),
           await Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/SpriteBatch.frag.glsl")
       );
@@ -42,17 +42,13 @@ namespace Surreal.Graphics.Sprites {
 
     private SpriteBatch(IGraphicsDevice device, int spriteCount, ShaderProgram defaultShader, bool ownsDefaultShader) {
       Check.That(spriteCount > 0, "spriteCount > 0");
+      Check.That(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-      Device = device;
+      Device             = device;
+      MaximumVertexCount = spriteCount * 4;
 
       this.defaultShader     = defaultShader;
       this.ownsDefaultShader = ownsDefaultShader;
-
-      // cap the sprite count; there's a limit to how much vertex data we can batch
-      spriteCount = Math.Min(spriteCount, MaximumSpriteCount);
-
-      // prepare the mesh and index data
-      MaximumVertexCount = spriteCount * 4;
 
       vertices = Buffers.AllocateOffHeap<Vertex>(MaximumVertexCount);
       mesh     = Mesh.Create<Vertex>(device);

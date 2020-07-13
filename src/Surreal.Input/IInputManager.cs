@@ -5,6 +5,10 @@ namespace Surreal.Input {
   public interface IInputManager {
     IEnumerable<IInputDevice> Devices { get; }
 
+    bool HasDevice<TDevice>() {
+      return Devices.OfType<TDevice>().Any();
+    }
+    
     TDevice GetDevice<TDevice>()
         where TDevice : class, IInputDevice {
       return Devices.OfType<TDevice>().FirstOrDefault();

@@ -8,25 +8,19 @@ namespace Surreal.Graphics {
     public GraphicsDevice(IGraphicsBackend backend, IPlatformHost host) {
       Backend = backend;
 
-      Pipeline.Rasterizer.Viewport = new Viewport(host.Width, host.Height);
+      Backend.Pipeline.Rasterizer.Viewport = new Viewport(host.Width, host.Height);
     }
 
     public IGraphicsBackend Backend  { get; }
-    public IGraphicsFactory Factory  => Backend.Factory;
     public IPipelineState   Pipeline => Backend.Pipeline;
-
-    public Viewport Viewport {
-      get => Pipeline.Rasterizer.Viewport;
-      set => Pipeline.Rasterizer.Viewport = value;
-    }
 
     public void BeginFrame() {
       Backend.BeginFrame();
     }
 
     public void Clear(Color color) {
-      Backend.SwapChain.ClearColorBuffer(color);
-      Backend.SwapChain.ClearDepthBuffer();
+      Backend.ClearColorBuffer(color);
+      Backend.ClearDepthBuffer();
     }
 
     public void DrawMeshImmediate(Mesh mesh, ShaderProgram shader, int vertexCount, int indexCount, PrimitiveType type = PrimitiveType.Triangles) {
@@ -40,15 +34,14 @@ namespace Surreal.Graphics {
 
       if (indexCount > 0) {
         Backend.DrawMeshIndexed(indexCount, type);
-      }
-      else {
+      } else {
         Backend.DrawMesh(vertexCount, type);
       }
     }
 
     public void EndFrame() {
-      Backend.SwapChain.Present();
       Backend.EndFrame();
+      Backend.Present();
     }
   }
 }

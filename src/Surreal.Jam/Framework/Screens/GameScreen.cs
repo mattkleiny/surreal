@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Compute;
-using Surreal.Diagnostics.Editing;
 using Surreal.Graphics;
 using Surreal.Graphics.Sprites;
 using Surreal.Input;
@@ -13,7 +11,7 @@ using Surreal.Input.Mouse;
 using Surreal.Timing;
 
 namespace Surreal.Framework.Screens {
-  public abstract class GameScreen<TGame> : Screen, IEditableScreen
+  public abstract class GameScreen<TGame> : Screen
       where TGame : GameJam {
     protected GameScreen(TGame game)
         : base(game) {
@@ -44,14 +42,6 @@ namespace Surreal.Framework.Screens {
 
     protected virtual Task LoadContentAsync(IAssetResolver assets) {
       return Task.CompletedTask;
-    }
-
-    public virtual void GetEditorProperties(ICollection<EditorProperty> properties) {
-      properties.Add(EditorProperty.Anonymous(
-          name: nameof(Clock.TimeScale),
-          getter: () => Clock.TimeScale,
-          setter: value => Clock.TimeScale = value
-      ));
     }
 
     public override void Dispose() {

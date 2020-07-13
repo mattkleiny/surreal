@@ -64,8 +64,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    public override void Download(Pixmap pixmap) {
-      var pixels = pixmap.Span;
+    public override void Download(Image image) {
+      var pixels = image.Span;
 
       GL.BindTexture(TextureTarget.Texture2D, Id);
       GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref pixels.GetPinnableReference());

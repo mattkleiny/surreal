@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using OpenTK.Input;
+using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Key = Surreal.Input.Keyboard.Key;
 
@@ -12,8 +13,8 @@ namespace Surreal.Platform.Internal.Input {
       this.window = window;
     }
 
-    public event Action<Key> KeyPressed;
-    public event Action<Key> KeyReleased;
+    public event Action<Key> KeyPressed  = null!;
+    public event Action<Key> KeyReleased = null!;
 
     public bool IsKeyDown(Key key)     => CurrentState[Lookup[key]];
     public bool IsKeyUp(Key key)       => !CurrentState[Lookup[key]];
