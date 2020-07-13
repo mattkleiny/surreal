@@ -69,7 +69,7 @@ namespace Asteroids.Screens {
     public override void Input(GameTime time) {
       if (Keyboard.IsKeyPressed(Key.Escape)) Game.Exit();
       if (Keyboard.IsKeyPressed(Key.Space)) Restart();
-      
+
       scene.Input(time.DeltaTime);
 
       base.Input(time);

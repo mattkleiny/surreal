@@ -10,6 +10,7 @@ using Surreal.Framework;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.IO;
 using static Surreal.Maths;
 
 namespace Minecraft.Core.Rendering {
@@ -55,17 +56,17 @@ namespace Minecraft.Core.Rendering {
           var block = chunk[x, y, z];
           if (!block.IsSolid) continue; // don't render geometry for non-solid blocks
 
-          if (!chunk[x       - 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Left, block.Color);
-          if (!chunk[x       + 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Right, block.Color);
-          if (!chunk[x, y    + 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Top, block.Color);
-          if (!chunk[x, y    - 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Bottom, block.Color);
+          if (!chunk[x - 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Left, block.Color);
+          if (!chunk[x + 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Right, block.Color);
+          if (!chunk[x, y + 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Top, block.Color);
+          if (!chunk[x, y - 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Bottom, block.Color);
           if (!chunk[x, y, z - 1].IsSolid) tessellator.AddFace(x, y, z, Face.Front, block.Color);
           if (!chunk[x, y, z + 1].IsSolid) tessellator.AddFace(x, y, z, Face.Back, block.Color);
         }
 
-        tessellator.FinalizeStatistics();
-
         Engine.Schedule(() => {
+          using var _ = tessellator; // make sure to clean up tesselator resources
+
           // upload vertices/indices to the GPU
           mesh.Vertices.Put(tessellator.Vertices);
           mesh.Indices.Put(tessellator.Indices);
@@ -132,22 +133,22 @@ namespace Minecraft.Core.Rendering {
       }
     }
 
-    private sealed class Tessellator {
+    private sealed class Tessellator : IDisposable {
       private static readonly RingBuffer<int> VertexCountSamples = new RingBuffer<int>(30) {16_000}; // add a sane default to try and lower initial resize overhead
 
       private static int AverageVertexCount => VertexCountSamples.Sum() / Math.Max(1, VertexCountSamples.Count);
-      private static int AverageIndexCount  => AverageVertexCount * 3   / 2;
+      private static int AverageIndexCount  => AverageVertexCount * 3 / 2;
 
-      private readonly Bag<Vertex> vertices;
-      private readonly Bag<ushort> indices;
+      private readonly BufferList<Vertex> vertices;
+      private readonly BufferList<ushort> indices;
 
       public Tessellator()
           : this(AverageVertexCount, AverageIndexCount) {
       }
 
       private Tessellator(int vertexCapacity, int indexCapacity) {
-        vertices = new Bag<Vertex>(vertexCapacity);
-        indices  = new Bag<ushort>(indexCapacity);
+        vertices = new BufferList<Vertex>(Buffers.AllocateOffHeap<Vertex>(vertexCapacity));
+        indices  = new BufferList<ushort>(Buffers.AllocateOffHeap<ushort>(indexCapacity));
       }
 
       public Span<Vertex> Vertices => vertices.Span;
@@ -213,10 +214,13 @@ namespace Minecraft.Core.Rendering {
         }
       }
 
-      public void FinalizeStatistics() {
+      public void Dispose() {
         lock (VertexCountSamples) {
           VertexCountSamples.Add(vertices.Count);
         }
+
+        vertices.Dispose();
+        indices.Dispose();
       }
     }
   }
