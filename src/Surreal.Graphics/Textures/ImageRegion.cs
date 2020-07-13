@@ -8,7 +8,7 @@ using Surreal.Mathematics.Grids;
 
 namespace Surreal.Graphics.Textures {
   [DebuggerDisplay("Image Region {Width}x{Height} at ({OffsetX}, {OffsetY})")]
-  public sealed class ImageRegion : IGrid<Color>, ICanSubdivide<ImageRegion>, ITextureData {
+  public sealed class ImageRegion : IDisposable, IGrid<Color>, ICanSubdivide<ImageRegion>, ITextureData {
     public ImageRegion(Image image)
         : this(image, 0, 0, image.Width, image.Height) {
     }
@@ -61,6 +61,8 @@ namespace Surreal.Graphics.Textures {
       }
     }
 
-    public static implicit operator ImageRegion(Image image) => new ImageRegion(image);
+    public void Dispose() {
+      Image.Dispose();
+    }
   }
 }

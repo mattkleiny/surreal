@@ -57,10 +57,10 @@ namespace Asteroids.Screens {
       var random = seed.ToRandom();
 
       scene.Actors.Clear();
-      scene.Actors.Add(new Ship(shipSprite!));
+      scene.Actors.Add(new Ship(shipSprite!.ToRegion()));
 
       for (var i = 0; i < random.NextRange(AsteroidRange); i++) {
-        scene.Actors.Add(new Asteroid(asteroidSprites!.SelectRandomly(random)) {
+        scene.Actors.Add(new Asteroid(asteroidSprites!.SelectRandomly(random).ToRegion()) {
             Position = random.NextUnitCircle() * SpawnRadius,
         });
       }

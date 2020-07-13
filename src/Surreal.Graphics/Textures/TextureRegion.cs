@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Textures {
-  public sealed class TextureRegion : ICanSubdivide<TextureRegion> {
+  public sealed class TextureRegion : IDisposable, ICanSubdivide<TextureRegion> {
     public TextureRegion(Texture texture)
         : this(texture, 0, 0, texture.Width, texture.Height) {
     }
@@ -41,6 +42,8 @@ namespace Surreal.Graphics.Textures {
       }
     }
 
-    public static implicit operator TextureRegion(Texture texture) => new TextureRegion(texture);
+    public void Dispose() {
+      Texture.Dispose();
+    }
   }
 }

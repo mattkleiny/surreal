@@ -41,8 +41,10 @@ namespace Prelude.Screens {
     protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);
 
+      var image = await assets.GetAsync<Image>("Assets/textures.png");
+      
       atlas = Atlas<ImageRegion>.Create(
-          source: await assets.GetAsync<Image>("Assets/textures.png"),
+          source: image.ToRegion(),
           nameTemplate: "textures_",
           regionWidth: 16,
           regionHeight: 16

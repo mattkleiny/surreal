@@ -19,7 +19,7 @@ namespace Surreal.Graphics.Sprites {
       var scaledHalfHeight = region.Texture.Height * scale * pivot.Y;
 
       batch.Draw(
-          region: region.Texture,
+          region,
           x: position.X - scaledHalfWidth,
           y: position.Y - scaledHalfHeight,
           rotation: rotation,

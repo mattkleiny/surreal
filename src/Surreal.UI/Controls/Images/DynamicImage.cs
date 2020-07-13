@@ -5,12 +5,12 @@ using Surreal.Timing;
 
 namespace Surreal.UI.Controls.Images {
   public abstract class DynamicImage : Image {
-    public Graphics.Textures.Image Image  { get; }
+    public ImageRegion Image  { get; }
     public bool   IsDirty { get; set; } = false;
 
     public DynamicImage(IGraphicsDevice device, Graphics.Textures.Image image)
-        : base(device.Backend.CreateTexture(image)) {
-      Image = image;
+        : base(device.Backend.CreateTexture(image).ToRegion()) {
+      Image = image.ToRegion();
     }
 
     public override void Draw(DeltaTime deltaTime, SpriteBatch batch) {
