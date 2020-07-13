@@ -1,7 +1,5 @@
-namespace Surreal.Framework.Modifiers
-{
-  public enum ModifierType
-  {
+namespace Surreal.Framework.Modifiers {
+  public enum ModifierType {
     Additive,
     Cumulative,
     Multiplicative

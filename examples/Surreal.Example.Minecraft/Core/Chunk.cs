@@ -5,18 +5,15 @@ using Surreal.Mathematics.Linear;
 using Surreal.Mathematics.Tensors;
 using Surreal.Memory;
 
-namespace Minecraft.Core
-{
-  public sealed class Chunk : IChunkView
-  {
+namespace Minecraft.Core {
+  public sealed class Chunk : IChunkView {
     public delegate void BlockChangeHandler(int x, int y, int z, Block oldBlock, Block newBlock);
 
     private readonly IVoxelPalette<Block> palette;
     private readonly ChunkGenerator       generator;
     private readonly Tensor3D<ushort>     voxels;
 
-    public Chunk(IBuffer<ushort> buffer, IVoxelPalette<Block> palette, ChunkGenerator generator, ChunkPos position)
-    {
+    public Chunk(IBuffer<ushort> buffer, IVoxelPalette<Block> palette, ChunkGenerator generator, ChunkPos position) {
       this.palette   = palette;
       this.generator = generator;
 
@@ -25,8 +22,8 @@ namespace Minecraft.Core
       Position = position;
 
       Bounds = new AABB(
-        position - new Vector3I(Width, Height, Depth) / 2,
-        position + new Vector3I(Width, Height, Depth) / 2
+          position - new Vector3I(Width, Height, Depth) / 2,
+          position + new Vector3I(Width, Height, Depth) / 2
       );
     }
 
@@ -41,15 +38,12 @@ namespace Minecraft.Core
 
     public void Regenerate() => generator(this);
 
-    public ChunkSlice Slice(Vector3I offset, Volume dimensions)
-    {
+    public ChunkSlice Slice(Vector3I offset, Volume dimensions) {
       return new ChunkSlice(this, offset, dimensions);
     }
 
-    public Block this[int x, int y, int z]
-    {
-      get
-      {
+    public Block this[int x, int y, int z] {
+      get {
         if (x < 0 || x >= Width) return palette.Empty;
         if (y < 0 || y >= Height) return palette.Empty;
         if (z < 0 || z >= Depth) return palette.Empty;
@@ -58,15 +52,13 @@ namespace Minecraft.Core
 
         return palette[voxel];
       }
-      set
-      {
+      set {
         var voxel = voxels[x, y, z];
         var block = palette[voxel];
 
         voxels[x, y, z] = palette[value];
 
-        if (value != block)
-        {
+        if (value != block) {
           BlockChanged?.Invoke(x, y, z, block, value);
         }
       }

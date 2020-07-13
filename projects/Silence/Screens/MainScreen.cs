@@ -9,31 +9,25 @@ using Surreal.Framework.Simulations;
 using Surreal.Graphics;
 using Surreal.Input.Keyboard;
 
-namespace Silence.Screens
-{
-  public sealed class MainScreen : SimulationScreen<SilenceGame, ActorSimulation>, ILoadableScreen
-  {
+namespace Silence.Screens {
+  public sealed class MainScreen : SimulationScreen<SilenceGame, ActorSimulation>, ILoadableScreen {
     private const float Speed = 20f;
 
     private Vector2 position;
 
     public MainScreen(SilenceGame game)
-      : base(game)
-    {
+        : base(game) {
     }
 
-    protected override ActorSimulation CreateSimulation()
-    {
+    protected override ActorSimulation CreateSimulation() {
       return new GameSimulation(Game);
     }
 
-    Task ILoadableScreen.LoadInBackgroundAsync(IAssetResolver assets)
-    {
+    Task ILoadableScreen.LoadInBackgroundAsync(IAssetResolver assets) {
       return Task.CompletedTask;
     }
 
-    public override void Input(GameTime time)
-    {
+    public override void Input(GameTime time) {
       base.Input(time);
 
       var direction = Vector2.Zero;
@@ -46,8 +40,7 @@ namespace Silence.Screens
       position += direction * Speed * time.DeltaTime;
     }
 
-    public override void Draw(GameTime time)
-    {
+    public override void Draw(GameTime time) {
       base.Draw(time);
 
       Game.GeometryBatch.DrawCircle(position, 3f, Color.Red, 16);

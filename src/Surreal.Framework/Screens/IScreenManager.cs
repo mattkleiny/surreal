@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Surreal.Framework.Screens
-{
-  public interface IScreenManager : IGamePlugin
-  {
+namespace Surreal.Framework.Screens {
+  public interface IScreenManager : IGamePlugin {
     event Action<IScreen?> ScreenChanged;
 
     IScreen? ActiveScreen   { get; }

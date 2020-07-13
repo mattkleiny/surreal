@@ -1,9 +1,6 @@
-namespace Isaac.Core.Entities
-{
-  public readonly struct Damage
-  {
-    public Damage(int amount, DamageType type = DamageType.Physical)
-    {
+namespace Isaac.Core.Entities {
+  public readonly struct Damage {
+    public Damage(int amount, DamageType type = DamageType.Physical) {
       Amount = amount;
       Type   = type;
     }

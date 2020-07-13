@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Surreal.Input.Keyboard
-{
-  public interface IKeyboardDevice : IInputDevice
-  {
+namespace Surreal.Input.Keyboard {
+  public interface IKeyboardDevice : IInputDevice {
     event Action<Key> KeyPressed;
     event Action<Key> KeyReleased;
 

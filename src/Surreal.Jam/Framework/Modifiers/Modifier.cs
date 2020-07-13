@@ -1,9 +1,7 @@
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Framework.Modifiers
-{
-  public static class Modifier
-  {
+namespace Surreal.Framework.Modifiers {
+  public static class Modifier {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Modifier<T> Additive<T>(T amount)
       => new Modifier<T>(ModifierType.Additive, amount);
@@ -17,15 +15,12 @@ namespace Surreal.Framework.Modifiers
       => new Modifier<T>(ModifierType.Multiplicative, amount);
   }
 
-  public readonly struct Modifier<T>
-  {
+  public readonly struct Modifier<T> {
     public Modifier(ModifierType type, T amount)
-      : this(type, amount, (int) type)
-    {
+        : this(type, amount, (int) type) {
     }
 
-    public Modifier(ModifierType type, T amount, int order)
-    {
+    public Modifier(ModifierType type, T amount, int order) {
       Type   = type;
       Amount = amount;
       Order  = order;

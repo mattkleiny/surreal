@@ -1,6 +1,4 @@
-namespace Mindustry.Modules.Core.Model.Units
-{
-  public sealed class UnitType
-  {
+namespace Mindustry.Modules.Core.Model.Units {
+  public sealed class UnitType {
   }
 }

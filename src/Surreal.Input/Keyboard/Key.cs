@@ -1,7 +1,5 @@
-﻿namespace Surreal.Input.Keyboard
-{
-  public enum Key : ushort
-  {
+﻿namespace Surreal.Input.Keyboard {
+  public enum Key : ushort {
     F1,
     F2,
     F3,

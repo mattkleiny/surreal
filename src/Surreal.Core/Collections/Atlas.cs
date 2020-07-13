@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Surreal.Mathematics;
 
-namespace Surreal.Collections
-{
+namespace Surreal.Collections {
   public sealed class Atlas<T> : IReadOnlyList<T>
-    where T : ICanSubdivide<T>
-  {
+      where T : ICanSubdivide<T> {
     private readonly T[]                   regions;
     private readonly Dictionary<string, T> regionsByName;
 
-    public static Atlas<T> Create(T source, string nameTemplate, int regionWidth, int regionHeight)
-    {
+    public static Atlas<T> Create(T source, string nameTemplate, int regionWidth, int regionHeight) {
       Check.NotNullOrEmpty(nameTemplate, nameof(nameTemplate));
-      Check.That(regionWidth > 0, "regionWidth > 0");
+      Check.That(regionWidth  > 0, "regionWidth > 0");
       Check.That(regionHeight > 0, "regionHeight > 0");
 
       var i = 0; // track offset into region array
@@ -25,8 +22,7 @@ namespace Surreal.Collections
       return new Atlas<T>(regions, named);
     }
 
-    private Atlas(T[] regions, Dictionary<string, T> regionsByName)
-    {
+    private Atlas(T[] regions, Dictionary<string, T> regionsByName) {
       this.regions       = regions;
       this.regionsByName = regionsByName;
     }

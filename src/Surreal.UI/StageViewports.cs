@@ -2,12 +2,10 @@ using System;
 using System.Numerics;
 using Surreal.Graphics.Cameras;
 
-namespace Surreal.UI
-{
+namespace Surreal.UI {
   public delegate Matrix4x4 StageViewport();
 
-  public static class StageViewports
-  {
+  public static class StageViewports {
     private const float NearPlane = 0.1f;
     private const float FarPlane  = 1000f;
 

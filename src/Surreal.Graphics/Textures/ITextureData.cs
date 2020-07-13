@@ -1,10 +1,8 @@
 ﻿using System;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Textures
-{
-  public interface ITextureData
-  {
+namespace Surreal.Graphics.Textures {
+  public interface ITextureData {
     TextureFormat Format { get; }
 
     int  Width  { get; }

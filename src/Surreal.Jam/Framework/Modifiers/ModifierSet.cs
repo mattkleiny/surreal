@@ -3,12 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Surreal.Collections;
 
-namespace Surreal.Framework.Modifiers
-{
-  public abstract class ModifierSet<T> : IEnumerable<Modifier<T>>
-  {
-    private static readonly Comparison<Modifier<T>> ModifierOrder = (a, b) =>
-    {
+namespace Surreal.Framework.Modifiers {
+  public abstract class ModifierSet<T> : IEnumerable<Modifier<T>> {
+    private static readonly Comparison<Modifier<T>> ModifierOrder = (a, b) => {
       if (a.Order < b.Order) return -1;
       if (a.Order > b.Order) return 1;
 
@@ -18,10 +15,8 @@ namespace Surreal.Framework.Modifiers
     private readonly Bag<Modifier<T>> modifiers = new Bag<Modifier<T>>();
     private          bool             isDirty;
 
-    public T Apply(in T input)
-    {
-      if (isDirty)
-      {
+    public T Apply(in T input) {
+      if (isDirty) {
         modifiers.Sort(ModifierOrder);
         isDirty = false;
       }
@@ -31,20 +26,17 @@ namespace Surreal.Framework.Modifiers
 
     protected abstract T Calculate(T baseValue, ReadOnlySpan<Modifier<T>> modifiers);
 
-    public void Add(Modifier<T> modifier)
-    {
+    public void Add(Modifier<T> modifier) {
       modifiers.Add(modifier);
       isDirty = true;
     }
 
-    public void Remove(Modifier<T> modifier)
-    {
+    public void Remove(Modifier<T> modifier) {
       modifiers.Remove(modifier);
       isDirty = true;
     }
 
-    public void Clear()
-    {
+    public void Clear() {
       modifiers.Clear();
     }
 

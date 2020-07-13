@@ -8,10 +8,8 @@ using Surreal.Fibers;
 using Surreal.Platform;
 using Surreal.Timing;
 
-namespace Surreal.Framework
-{
-  public static class Engine
-  {
+namespace Surreal.Framework {
+  public static class Engine {
     private static readonly ActionQueue    DefaultActionQueue    = new ActionQueue();
     private static readonly FiberScheduler DefaultFiberScheduler = new FiberScheduler();
 
@@ -21,10 +19,8 @@ namespace Surreal.Framework
     public static Fiber Schedule(Func<Task> method)                    => Fiber.Start(DefaultFiberScheduler, _ => method());
     public static Fiber Schedule(Func<CancellationToken, Task> method) => Fiber.Start(DefaultFiberScheduler, method);
 
-    public static void Run(IPlatformHost host, params IFrameListener[] listeners)
-    {
-      if (IsRunning)
-      {
+    public static void Run(IPlatformHost host, params IFrameListener[] listeners) {
+      if (IsRunning) {
         throw new InvalidOperationException("The engine is already running, and cannot start again!");
       }
 
@@ -35,16 +31,14 @@ namespace Surreal.Framework
 
       var clock = new Clock();
 
-      while (IsRunning && !host.IsClosing)
-      {
+      while (IsRunning && !host.IsClosing) {
         DefaultActionQueue.Execute();
 
         var deltaTime = clock.Tick();
 
         host.Tick(deltaTime);
 
-        for (var i = 0; i < listeners.Length; i++)
-        {
+        for (var i = 0; i < listeners.Length; i++) {
           listeners[i].Tick(deltaTime);
         }
 
@@ -52,26 +46,22 @@ namespace Surreal.Framework
       }
     }
 
-    public static void Stop()
-    {
+    public static void Stop() {
       IsRunning = false;
     }
 
-    private sealed class Clock
-    {
+    private sealed class Clock {
       private readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
       public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
       public TimeSpan MaxDeltaTime    { get; } = (16 * 10).Milliseconds();
 
-      public DeltaTime Tick()
-      {
+      public DeltaTime Tick() {
         var delta = stopwatch.Elapsed;
 
         stopwatch.Restart();
 
-        if (delta > MaxDeltaTime)
-        {
+        if (delta > MaxDeltaTime) {
           delta = TargetDeltaTime;
         }
 

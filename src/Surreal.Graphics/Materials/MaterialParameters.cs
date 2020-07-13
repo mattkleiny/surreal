@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Surreal.Graphics.Materials
-{
-  public sealed class MaterialParameters : IEnumerable<KeyValuePair<string, object>>
-  {
+namespace Surreal.Graphics.Materials {
+  public sealed class MaterialParameters : IEnumerable<KeyValuePair<string, object>> {
     private readonly Dictionary<string, object> uniforms = new Dictionary<string, object>();
 
     public void Add(string key, object value) => uniforms.Add(key, value);
@@ -13,8 +11,7 @@ namespace Surreal.Graphics.Materials
     public bool ContainsKey(string key)       => uniforms.ContainsKey(key);
     public void Clear()                       => uniforms.Clear();
 
-    public void ApplyTo(ShaderProgram shader)
-    {
+    public void ApplyTo(ShaderProgram shader) {
       throw new NotImplementedException();
     }
 

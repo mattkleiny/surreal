@@ -6,26 +6,22 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Surreal.Memory;
 
-namespace Surreal.IO
-{
-  public sealed class ResourceFileSystem : FileSystem
-  {
+namespace Surreal.IO {
+  public sealed class ResourceFileSystem : FileSystem {
     private static Assembly[] GetDefaultAssemblies() => AppDomain.CurrentDomain
-      .GetAssemblies()
-      // dynamic assemblies do not support resources
-      .Where(assembly => !assembly.IsDynamic)
-      .ToArray();
+        .GetAssemblies()
+        // dynamic assemblies do not support resources
+        .Where(assembly => !assembly.IsDynamic)
+        .ToArray();
 
     private readonly Assembly[] assemblies;
 
     public ResourceFileSystem()
-      : this(GetDefaultAssemblies())
-    {
+        : this(GetDefaultAssemblies()) {
     }
 
     public ResourceFileSystem(params Assembly[] assemblies)
-      : base("resource", "resources", "embedded", "resx")
-    {
+        : base("resource", "resources", "embedded", "resx") {
       this.assemblies = assemblies;
     }
 
@@ -38,14 +34,11 @@ namespace Surreal.IO
     public override Task<bool> IsDirectoryAsync(string path) => throw new NotSupportedException();
     public override Task<bool> ExistsAsync(string path)      => throw new NotSupportedException();
 
-    public override Task<Stream> OpenInputStreamAsync(string path)
-    {
-      foreach (var assembly in assemblies)
-      {
+    public override Task<Stream> OpenInputStreamAsync(string path) {
+      foreach (var assembly in assemblies) {
         var stream = assembly.GetManifestResourceStream(NormalizePath(path));
 
-        if (stream != null)
-        {
+        if (stream != null) {
           return Task.FromResult(stream);
         }
       }

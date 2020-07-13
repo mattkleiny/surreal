@@ -1,7 +1,5 @@
-﻿namespace Surreal.Framework.Voxels
-{
-  public interface IVoxelPalette<TVoxel>
-  {
+﻿namespace Surreal.Framework.Voxels {
+  public interface IVoxelPalette<TVoxel> {
     TVoxel Empty { get; }
     int    Count { get; }
 

@@ -1,7 +1,5 @@
-namespace Surreal.Framework.Screens
-{
-  public interface IScreenPlugin
-  {
+namespace Surreal.Framework.Screens {
+  public interface IScreenPlugin {
     void Show();
     void Hide();
 
@@ -12,34 +10,26 @@ namespace Surreal.Framework.Screens
     void End();
   }
 
-  public abstract class ScreenPlugin : IScreenPlugin
-  {
-    public virtual void Show()
-    {
+  public abstract class ScreenPlugin : IScreenPlugin {
+    public virtual void Show() {
     }
 
-    public virtual void Hide()
-    {
+    public virtual void Hide() {
     }
 
-    public virtual void Begin()
-    {
+    public virtual void Begin() {
     }
 
-    public virtual void Input(GameTime time)
-    {
+    public virtual void Input(GameTime time) {
     }
 
-    public virtual void Update(GameTime time)
-    {
+    public virtual void Update(GameTime time) {
     }
 
-    public virtual void Draw(GameTime time)
-    {
+    public virtual void Draw(GameTime time) {
     }
 
-    public virtual void End()
-    {
+    public virtual void End() {
     }
   }
 }

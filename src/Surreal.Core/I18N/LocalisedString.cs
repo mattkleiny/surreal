@@ -1,15 +1,12 @@
 using System;
 using System.Diagnostics;
 
-namespace Surreal.I18N
-{
+namespace Surreal.I18N {
   [DebuggerDisplay("{Raw}: ({Final})")]
-  public readonly struct LocalisedString : IEquatable<LocalisedString>
-  {
+  public readonly struct LocalisedString : IEquatable<LocalisedString> {
     public static string T(string message) => TranslationProviders.Current(message);
 
-    private LocalisedString(string raw)
-    {
+    private LocalisedString(string raw) {
       Raw = raw;
     }
 

@@ -1,7 +1,5 @@
-﻿namespace Surreal.Diagnostics.Profiling
-{
-  public interface IProfilerFactory
-  {
+﻿namespace Surreal.Diagnostics.Profiling {
+  public interface IProfilerFactory {
     IProfiler GetProfiler(string category);
   }
 }

@@ -1,15 +1,12 @@
 ﻿using System;
 
-namespace Surreal.IO
-{
-  public readonly struct Path
-  {
+namespace Surreal.IO {
+  public readonly struct Path {
     private const string SchemeSeparator = "://";
 
     public static Path Parse(string uri) => new Path(ParseScheme(uri), ParseTarget(uri));
 
-    public Path(string scheme, string target)
-    {
+    public Path(string scheme, string target) {
       Scheme = scheme;
       Target = target;
     }
@@ -21,20 +18,16 @@ namespace Surreal.IO
 
     public override string ToString() => $"<{Scheme}:{Target}>";
 
-    private static string ParseScheme(string uri)
-    {
-      if (uri.Contains(SchemeSeparator))
-      {
+    private static string ParseScheme(string uri) {
+      if (uri.Contains(SchemeSeparator)) {
         return uri.Split(new[] {SchemeSeparator}, StringSplitOptions.RemoveEmptyEntries)[0];
       }
 
       return "local"; // no scheme on this URI; default to local file system
     }
 
-    private static string ParseTarget(string uri)
-    {
-      if (uri.Contains(SchemeSeparator))
-      {
+    private static string ParseTarget(string uri) {
+      if (uri.Contains(SchemeSeparator)) {
         return uri.Split(new[] {SchemeSeparator}, StringSplitOptions.RemoveEmptyEntries)[1];
       }
 

@@ -1,10 +1,8 @@
 ﻿using System;
 using Surreal.Timing;
 
-namespace Surreal.Framework.Scenes.Entities.Systems
-{
-  public interface IEntitySystem : IDisposable
-  {
+namespace Surreal.Framework.Scenes.Entities.Systems {
+  public interface IEntitySystem : IDisposable {
     void Initialize(EntityScene scene);
 
     void Begin();

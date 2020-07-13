@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Surreal.Framework.Scenes.Entities.Components
-{
+namespace Surreal.Framework.Scenes.Entities.Components {
   public interface IComponentMapper<T> : IEnumerable<T>
-    where T : IComponent
-  {
+      where T : IComponent {
     ref T Create(EntityId id);
     ref T Create(EntityId id, T instance);
     ref T Get(EntityId id);

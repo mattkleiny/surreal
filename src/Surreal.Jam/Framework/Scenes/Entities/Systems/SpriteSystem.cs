@@ -5,10 +5,8 @@ using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Sprites;
 using Surreal.Timing;
 
-namespace Surreal.Framework.Scenes.Entities.Systems
-{
-  public sealed class SpriteSystem : IteratingSystem
-  {
+namespace Surreal.Framework.Scenes.Entities.Systems {
+  public sealed class SpriteSystem : IteratingSystem {
     private readonly SpriteBatch batch;
     private readonly ICamera     camera;
 
@@ -16,35 +14,31 @@ namespace Surreal.Framework.Scenes.Entities.Systems
     private IComponentMapper<Sprite>?    sprites;
 
     public SpriteSystem(SpriteBatch batch, ICamera camera)
-      : base(Aspect.Of<Transform, Sprite>())
-    {
+        : base(Aspect.Of<Transform, Sprite>()) {
       this.batch  = batch;
       this.camera = camera;
     }
 
     public bool ClearTintAfterRender { get; set; } = true;
 
-    public override void Initialize(EntityScene scene)
-    {
+    public override void Initialize(EntityScene scene) {
       base.Initialize(scene);
 
       transforms = scene.GetComponentMapper<Transform>();
       sprites    = scene.GetComponentMapper<Sprite>();
     }
 
-    protected override void BeginDraw(DeltaTime deltaTime)
-    {
+    protected override void BeginDraw(DeltaTime deltaTime) {
       batch.Begin(in camera.ProjectionView);
     }
 
-    protected override void Draw(DeltaTime deltaTime, Entity entity)
-    {
+    protected override void Draw(DeltaTime deltaTime, Entity entity) {
       var transform = transforms!.Get(entity.Id);
       var sprite    = sprites!.Get(entity.Id);
 
       if (sprite.Texture == null) return; // no texture? no worries!
 
-      var scaledHalfWidth  = sprite.Texture.Width * sprite.Scale / 2f;
+      var scaledHalfWidth  = sprite.Texture.Width  * sprite.Scale / 2f;
       var scaledHalfHeight = sprite.Texture.Height * sprite.Scale / 2f;
 
       batch.Color = sprite.Tint;
@@ -52,21 +46,19 @@ namespace Surreal.Framework.Scenes.Entities.Systems
       // TODO: use pivoting mechanism here, instead
       // render the texture centered at the transform position relative to the sprite bounds and scale
       batch.Draw(
-        region: sprite.Texture,
-        x: transform.Position.X - scaledHalfWidth,
-        y: transform.Position.Y - scaledHalfHeight,
-        rotation: transform.Rotation,
-        width: sprite.Texture.Width * sprite.Scale,
-        height: sprite.Texture.Height * sprite.Scale
+          region: sprite.Texture,
+          x: transform.Position.X - scaledHalfWidth,
+          y: transform.Position.Y - scaledHalfHeight,
+          rotation: transform.Rotation,
+          width: sprite.Texture.Width   * sprite.Scale,
+          height: sprite.Texture.Height * sprite.Scale
       );
     }
 
-    protected override void EndDraw(DeltaTime deltaTime)
-    {
+    protected override void EndDraw(DeltaTime deltaTime) {
       batch.End();
 
-      if (ClearTintAfterRender)
-      {
+      if (ClearTintAfterRender) {
         batch.Color = Color.White;
       }
     }

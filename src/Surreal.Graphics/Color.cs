@@ -2,30 +2,28 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Surreal.Graphics
-{
+namespace Surreal.Graphics {
   [StructLayout(LayoutKind.Sequential)]
-  public struct Color
-  {
+  public struct Color {
     public static Color FromPackedRGB(uint packed) => new Color(
-      red: (byte) (packed >> 16 & 0xFF),
-      green: (byte) (packed >> 8 & 0xFF),
-      blue: (byte) (packed >> 0 & 0xFF)
+        red: (byte) (packed   >> 16 & 0xFF),
+        green: (byte) (packed >> 8  & 0xFF),
+        blue: (byte) (packed  >> 0  & 0xFF)
     );
 
     public static Color FromPackedRGBA(uint packed) => new Color(
-      red: (byte) (packed >> 24 & 0xFF),
-      green: (byte) (packed >> 16 & 0xFF),
-      blue: (byte) (packed >> 8 & 0xFF),
-      alpha: (byte) (packed >> 0 & 0xFF)
+        red: (byte) (packed   >> 24 & 0xFF),
+        green: (byte) (packed >> 16 & 0xFF),
+        blue: (byte) (packed  >> 8  & 0xFF),
+        alpha: (byte) (packed >> 0  & 0xFF)
     );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color Lerp(Color a, Color b, float t) => new Color(
-      (byte) Maths.Lerp(a.R, b.R, t),
-      (byte) Maths.Lerp(a.G, b.G, t),
-      (byte) Maths.Lerp(a.B, b.B, t),
-      (byte) Maths.Lerp(a.A, b.A, t)
+        (byte) Maths.Lerp(a.R, b.R, t),
+        (byte) Maths.Lerp(a.G, b.G, t),
+        (byte) Maths.Lerp(a.B, b.B, t),
+        (byte) Maths.Lerp(a.A, b.A, t)
     );
 
     public static readonly Color Black   = new Color(0, 0, 0);
@@ -39,8 +37,7 @@ namespace Surreal.Graphics
     public static readonly Color White   = new Color(255, 255, 255);
     public static readonly Color Clear   = new Color(0, 0, 0, 0);
 
-    public Color(byte red, byte green, byte blue, byte alpha = 255)
-    {
+    public Color(byte red, byte green, byte blue, byte alpha = 255) {
       R = red;
       G = green;
       B = blue;
@@ -59,18 +56,18 @@ namespace Surreal.Graphics
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color operator +(Color a, Color b) => new Color(
-      (byte) (a.R + b.R),
-      (byte) (a.G + b.G),
-      (byte) (a.B + b.B),
-      (byte) (a.A + b.A)
+        (byte) (a.R + b.R),
+        (byte) (a.G + b.G),
+        (byte) (a.B + b.B),
+        (byte) (a.A + b.A)
     );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color operator -(Color a, Color b) => new Color(
-      (byte) (a.R - b.R),
-      (byte) (a.G - b.G),
-      (byte) (a.B - b.B),
-      (byte) (a.A - b.A)
+        (byte) (a.R - b.R),
+        (byte) (a.G - b.G),
+        (byte) (a.B - b.B),
+        (byte) (a.A - b.A)
     );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -82,13 +79,12 @@ namespace Surreal.Graphics
       => (uint) ((first << 24) | (second << 16) | (third << 8) | (forth << 0));
   }
 
-  public static class ColorExtensions
-  {
+  public static class ColorExtensions {
     public static Color NextColor(this Random random) => new Color(
-      (byte) random.Next(0, 255),
-      (byte) random.Next(0, 255),
-      (byte) random.Next(0, 255),
-      (byte) random.Next(0, 255)
+        (byte) random.Next(0, 255),
+        (byte) random.Next(0, 255),
+        (byte) random.Next(0, 255),
+        (byte) random.Next(0, 255)
     );
   }
 }

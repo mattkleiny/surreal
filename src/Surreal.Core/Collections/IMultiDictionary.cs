@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace Surreal.Collections
-{
-  public interface IMultiDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, IReadOnlyList<TValue>>>
-  {
+namespace Surreal.Collections {
+  public interface IMultiDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, IReadOnlyList<TValue>>> {
     int Count { get; }
 
     IEnumerable<TKey>   Keys   { get; }

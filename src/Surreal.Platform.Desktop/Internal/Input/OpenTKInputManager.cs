@@ -1,14 +1,11 @@
 using System.Collections.Generic;
 using Surreal.Input;
 
-namespace Surreal.Platform.Internal.Input
-{
-  internal sealed class OpenTKInputManager : IInputManager
-  {
+namespace Surreal.Platform.Internal.Input {
+  internal sealed class OpenTKInputManager : IInputManager {
     private readonly List<IInputDevice> devices = new List<IInputDevice>();
 
-    public OpenTKInputManager(OpenTKWindow window)
-    {
+    public OpenTKInputManager(OpenTKWindow window) {
       Keyboard = new OpenTKKeyboardDevice(window);
       Mouse    = new OpenTKMouseDevice(window);
 
@@ -19,8 +16,7 @@ namespace Surreal.Platform.Internal.Input
     public OpenTKKeyboardDevice Keyboard { get; }
     public OpenTKMouseDevice    Mouse    { get; }
 
-    public void Update()
-    {
+    public void Update() {
       Keyboard.Update();
       Mouse.Update();
     }

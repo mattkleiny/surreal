@@ -1,7 +1,5 @@
-namespace Minecraft.Core.Generation
-{
-  public interface IChunkView
-  {
+namespace Minecraft.Core.Generation {
+  public interface IChunkView {
     int Width  { get; }
     int Height { get; }
     int Depth  { get; }

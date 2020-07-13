@@ -1,26 +1,21 @@
 using System;
 using System.Diagnostics;
 
-namespace Surreal.Timing
-{
+namespace Surreal.Timing {
   [DebuggerDisplay("Embedded timer every {frequency} (currently {accumulator}s)")]
-  public struct EmbeddedTimer
-  {
+  public struct EmbeddedTimer {
     private readonly TimeSpan frequency;
     private          float    accumulator;
 
-    public EmbeddedTimer(TimeSpan frequency)
-    {
+    public EmbeddedTimer(TimeSpan frequency) {
       this.frequency = frequency;
       accumulator    = 0f;
     }
 
-    public bool Tick(DeltaTime deltaTime)
-    {
+    public bool Tick(DeltaTime deltaTime) {
       accumulator += deltaTime;
 
-      if (accumulator >= frequency.TotalSeconds)
-      {
+      if (accumulator >= frequency.TotalSeconds) {
         accumulator = 0f;
         return true;
       }
@@ -28,8 +23,7 @@ namespace Surreal.Timing
       return false;
     }
 
-    public void Reset()
-    {
+    public void Reset() {
       accumulator = 0f;
     }
   }

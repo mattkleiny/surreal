@@ -3,10 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Surreal.Memory;
 
-namespace Surreal.IO
-{
-  public interface IFileSystem
-  {
+namespace Surreal.IO {
+  public interface IFileSystem {
     string       Name    { get; }
     ISet<string> Schemes { get; }
 

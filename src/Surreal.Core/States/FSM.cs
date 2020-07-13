@@ -1,12 +1,9 @@
 using System;
 
-namespace Surreal.States
-{
+namespace Surreal.States {
   public class FSM<TState>
-    where TState : Enum
-  {
-    public FSM(TState initialState = default)
-    {
+      where TState : Enum {
+    public FSM(TState initialState = default) {
       CurrentState = initialState;
     }
 
@@ -15,10 +12,8 @@ namespace Surreal.States
     public TState CurrentState  { get; private set; }
     public TState PreviousState { get; private set; }
 
-    public void ChangeState(TState newState)
-    {
-      if (!newState.Equals(CurrentState))
-      {
+    public void ChangeState(TState newState) {
+      if (!newState.Equals(CurrentState)) {
         PreviousState = CurrentState;
         CurrentState  = newState;
 

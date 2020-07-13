@@ -3,67 +3,53 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Platform.Internal.Graphics.Resources
-{
-  internal sealed class HeadlessShaderProgram : ShaderProgram
-  {
-    public override void Bind(VertexAttributes attributes)
-    {
+namespace Surreal.Platform.Internal.Graphics.Resources {
+  internal sealed class HeadlessShaderProgram : ShaderProgram {
+    public override void Bind(VertexAttributes attributes) {
       // no-op
     }
 
-    public override void SetUniform(string alias, int scalar)
-    {
+    public override void SetUniform(string alias, int scalar) {
       // no-op
     }
 
-    public override void SetUniform(string alias, float scalar)
-    {
+    public override void SetUniform(string alias, float scalar) {
       // no-op
     }
 
-    public override void SetUniform(string alias, Vector2I point)
-    {
+    public override void SetUniform(string alias, Vector2I point) {
       // no-op
     }
 
-    public override void SetUniform(string alias, Vector3I point)
-    {
+    public override void SetUniform(string alias, Vector3I point) {
       // no-op
     }
 
-    public override void SetUniform(string alias, Vector2 vector)
-    {
+    public override void SetUniform(string alias, Vector2 vector) {
       // no-op
     }
 
-    public override void SetUniform(string alias, Vector3 vector)
-    {
+    public override void SetUniform(string alias, Vector3 vector) {
       // no-op
     }
 
-    public override void SetUniform(string alias, Vector4 vector)
-    {
+    public override void SetUniform(string alias, Vector4 vector) {
       // no-op
     }
 
-    public override void SetUniform(string alias, Quaternion quaternion)
-    {
+    public override void SetUniform(string alias, Quaternion quaternion) {
       // no-op
     }
 
-    public override void SetUniform(string alias, in Matrix2x2 matrix)
-    {
+    public override void SetUniform(string alias, in Matrix2x2 matrix) {
       // no-op
     }
 
-    public override void SetUniform(string alias, in Matrix3x2 matrix)
-    {
+    public override void SetUniform(string alias, in Matrix3x2 matrix) {
       // no-op
     }
 
-    public override void SetUniform(string alias, in Matrix4x4 matrix)
-    {
+    public override void SetUniform(string alias, in Matrix4x4 matrix) {
       // no-op
     }
   }

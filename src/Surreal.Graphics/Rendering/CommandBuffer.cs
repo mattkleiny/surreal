@@ -1,10 +1,8 @@
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 
-namespace Surreal.Graphics.Rendering
-{
-  public abstract class CommandBuffer : GraphicsResource
-  {
+namespace Surreal.Graphics.Rendering {
+  public abstract class CommandBuffer : GraphicsResource {
     public abstract void SetRenderTarget(FrameBuffer target);
     public abstract void ClearRenderTarget(Color color, bool clearColor, bool clearDepth);
 

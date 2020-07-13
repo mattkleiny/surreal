@@ -1,9 +1,7 @@
 using Surreal.Languages.Expressions;
 
-namespace Surreal.Languages.Visitors
-{
-  public interface IExpressionVisitor<out T>
-  {
+namespace Surreal.Languages.Visitors {
+  public interface IExpressionVisitor<out T> {
     T Visit(UnaryExpression expression);
     T Visit(BinaryExpression expression);
     T Visit(VariableExpression expression);

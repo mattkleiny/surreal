@@ -1,7 +1,5 @@
-namespace Surreal.Platform
-{
-  public interface IDesktopPlatformHost : IPlatformHost
-  {
+namespace Surreal.Platform {
+  public interface IDesktopPlatformHost : IPlatformHost {
     string   Title          { get; set; }
     bool     IsVsyncEnabled { get; set; }
     new int  Width          { get; set; }

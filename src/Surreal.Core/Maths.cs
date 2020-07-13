@@ -5,10 +5,8 @@ using System.Threading;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal
-{
-  public static class Maths
-  {
+namespace Surreal {
+  public static class Maths {
     private static readonly ThreadLocal<Random> ThreadLocalRandom = new ThreadLocal<Random>(() => new Random(Environment.TickCount));
 
     public const float Pi  = 3.141593f;
@@ -42,8 +40,7 @@ namespace Surreal
     public static float Lerp(float a, float b, float t) => a + t * (b - a);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Clamp(int value, int lower, int upper)
-    {
+    public static int Clamp(int value, int lower, int upper) {
       if (value < lower) return lower;
       if (value > upper) return upper;
 
@@ -51,8 +48,7 @@ namespace Surreal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float Clamp(float value, float lower, float upper)
-    {
+    public static float Clamp(float value, float lower, float upper) {
       if (value < lower) return lower;
       if (value > upper) return upper;
 
@@ -60,10 +56,8 @@ namespace Surreal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Wrap(int value, int lower, int upper)
-    {
-      if (value < lower)
-      {
+    public static int Wrap(int value, int lower, int upper) {
+      if (value < lower) {
         return upper - (lower - value) % (upper - lower);
       }
 

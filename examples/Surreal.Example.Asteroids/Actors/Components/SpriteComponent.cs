@@ -4,28 +4,23 @@ using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using Surreal.Timing;
 
-namespace Asteroids.Actors.Components
-{
-  public sealed class SpriteComponent : ActorComponent<AsteroidActor>
-  {
+namespace Asteroids.Actors.Components {
+  public sealed class SpriteComponent : ActorComponent<AsteroidActor> {
     public TextureRegion? Sprite { get; set; }
 
     public SpriteComponent(AsteroidActor actor)
-      : base(actor)
-    {
+        : base(actor) {
     }
 
-    public override void Draw(DeltaTime deltaTime)
-    {
+    public override void Draw(DeltaTime deltaTime) {
       base.Draw(deltaTime);
 
-      if (Sprite != null)
-      {
+      if (Sprite != null) {
         AsteroidsGame.Current.SpriteBatch.DrawPivoted(
-          region: Sprite,
-          position: Actor.Position,
-          pivot: Pivot.Center,
-          rotation: Actor.Rotation
+            region: Sprite,
+            position: Actor.Position,
+            pivot: Pivot.Center,
+            rotation: Actor.Rotation
         );
       }
     }

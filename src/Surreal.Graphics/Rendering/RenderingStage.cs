@@ -1,7 +1,5 @@
-namespace Surreal.Graphics.Rendering
-{
-  public enum RenderingStage
-  {
+namespace Surreal.Graphics.Rendering {
+  public enum RenderingStage {
     BeforeAll,
     BeforeOpaque,
     AfterOpaque,

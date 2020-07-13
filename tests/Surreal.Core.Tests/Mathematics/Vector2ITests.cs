@@ -1,9 +1,7 @@
 ﻿using Xunit;
 
-namespace Surreal.Core.Mathematics
-{
-  public class Vector2ITests
-  {
+namespace Surreal.Core.Mathematics {
+  public class Vector2ITests {
     [Fact]
     public void it_should_add_scalars() => Assert.Equal(Maths.P(10, 10), Maths.P(5, 5) + 5);
 

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace Surreal.Diagnostics.Console
-{
-  public interface IGameConsole
-  {
+namespace Surreal.Diagnostics.Console {
+  public interface IGameConsole {
     IEnumerable<string> History { get; }
 
     void WriteLine(string element);

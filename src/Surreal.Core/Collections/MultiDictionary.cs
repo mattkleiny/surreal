@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Surreal.Collections
-{
-  public sealed class MultiDictionary<TKey, TValue> : IMultiDictionary<TKey, TValue>
-  {
+namespace Surreal.Collections {
+  public sealed class MultiDictionary<TKey, TValue> : IMultiDictionary<TKey, TValue> {
     private static readonly IReadOnlyList<TValue> EmptyList = new List<TValue>();
 
     private readonly Dictionary<TKey, List<TValue>> dictionary;
 
     public MultiDictionary()
-      : this(EqualityComparer<TKey>.Default)
-    {
+        : this(EqualityComparer<TKey>.Default) {
     }
 
-    public MultiDictionary(IEqualityComparer<TKey> comparer)
-    {
+    public MultiDictionary(IEqualityComparer<TKey> comparer) {
       dictionary = new Dictionary<TKey, List<TValue>>(comparer);
     }
 
@@ -24,12 +20,9 @@ namespace Surreal.Collections
     public IEnumerable<TKey>   Keys   => dictionary.Keys;
     public IEnumerable<TValue> Values => dictionary.Values.SelectMany(collection => collection);
 
-    public IReadOnlyList<TValue> this[TKey key]
-    {
-      get
-      {
-        if (ContainsKey(key))
-        {
+    public IReadOnlyList<TValue> this[TKey key] {
+      get {
+        if (ContainsKey(key)) {
           return GetListForKey(key);
         }
 
@@ -37,10 +30,8 @@ namespace Surreal.Collections
       }
     }
 
-    public bool TryGetValues(TKey key, out IReadOnlyList<TValue> values)
-    {
-      if (dictionary.TryGetValue(key, out var result))
-      {
+    public bool TryGetValues(TKey key, out IReadOnlyList<TValue> values) {
+      if (dictionary.TryGetValue(key, out var result)) {
         values = result;
         return true;
       }
@@ -51,8 +42,7 @@ namespace Surreal.Collections
 
     public void Add(TKey key, TValue value) => GetListForKey(key).Add(value);
 
-    public void Remove(TKey key, TValue value)
-    {
+    public void Remove(TKey key, TValue value) {
       var collection = GetListForKey(key);
       collection.Remove(value);
 
@@ -64,21 +54,17 @@ namespace Surreal.Collections
     public bool ContainsKey(TKey key) => dictionary.ContainsKey(key);
     public void Clear()               => dictionary.Clear();
 
-    public IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>> GetEnumerator()
-    {
+    public IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>> GetEnumerator() {
       // fixes some cast weirdness in KeyValuePair
-      foreach (var pair in dictionary)
-      {
+      foreach (var pair in dictionary) {
         yield return new KeyValuePair<TKey, IReadOnlyList<TValue>>(pair.Key, pair.Value);
       }
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    private List<TValue> GetListForKey(TKey key)
-    {
-      if (!dictionary.TryGetValue(key, out var list))
-      {
+    private List<TValue> GetListForKey(TKey key) {
+      if (!dictionary.TryGetValue(key, out var list)) {
         dictionary[key] = list = new List<TValue>();
       }
 

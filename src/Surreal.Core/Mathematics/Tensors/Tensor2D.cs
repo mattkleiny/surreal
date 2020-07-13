@@ -5,22 +5,18 @@ using System.Runtime.CompilerServices;
 using Surreal.Mathematics.Grids;
 using Surreal.Memory;
 
-namespace Surreal.Mathematics.Tensors
-{
+namespace Surreal.Mathematics.Tensors {
   [DebuggerDisplay("{ToDebuggerString()}")]
   public sealed class Tensor2D<T> : Tensor<T>, ITensor<T>, IGrid<T>
-    where T : unmanaged
-  {
+      where T : unmanaged {
     public Tensor2D(int width, int height)
-      : this(Buffers.Allocate<T>(width * height), width, height)
-    {
+        : this(Buffers.Allocate<T>(width * height), width, height) {
     }
 
     public Tensor2D(IBuffer<T> buffer, int width, int height)
-      : base(buffer)
-    {
-      Check.That(width > 0, "Width > 0");
-      Check.That(height > 0, "Height > 0");
+        : base(buffer) {
+      Check.That(width        > 0, "Width > 0");
+      Check.That(height       > 0, "Height > 0");
       Check.That(buffer.Count >= width * height, "buffer.Count >= width * height");
 
       Width  = width;
@@ -33,28 +29,23 @@ namespace Surreal.Mathematics.Tensors
     public int   Rank  => 2;
     public int[] Shape => new[] {Width, Height};
 
-    public T this[int x, int y]
-    {
+    public T this[int x, int y] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get
-      {
+      get {
         CheckBounds(x, y);
 
         return Buffer.Span[x + y * Width];
       }
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      set
-      {
+      set {
         CheckBounds(x, y);
 
         Buffer.Span[x + y * Width] = value;
       }
     }
 
-    T ITensor<T>.this[params int[] ranks]
-    {
-      get
-      {
+    T ITensor<T>.this[params int[] ranks] {
+      get {
         Check.That(ranks.Length == 2, "ranks.Length == 2");
 
         var x = ranks[0];
@@ -62,8 +53,7 @@ namespace Surreal.Mathematics.Tensors
 
         return this[x, y];
       }
-      set
-      {
+      set {
         Check.That(ranks.Length == 2, "ranks.Length == 2");
 
         var x = ranks[0];
@@ -76,8 +66,7 @@ namespace Surreal.Mathematics.Tensors
     [Conditional("DEBUG")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
-    private void CheckBounds(int x, int y)
-    {
+    private void CheckBounds(int x, int y) {
       if (x < 0 || x >= Width) throw new IndexOutOfRangeException($"{x} is not in the range [0, {Width})");
       if (y < 0 || y >= Height) throw new IndexOutOfRangeException($"{y} is not in the range [0, {Height})");
     }

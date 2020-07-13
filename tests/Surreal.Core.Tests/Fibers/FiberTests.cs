@@ -2,18 +2,14 @@
 using Surreal.Fibers;
 using Xunit;
 
-namespace Surreal.Core.Fibers
-{
-  public class FiberTests
-  {
+namespace Surreal.Core.Fibers {
+  public class FiberTests {
     [Fact]
-    public void it_should_execute_and_yield()
-    {
+    public void it_should_execute_and_yield() {
       var scheduler  = new FiberScheduler();
       var executions = 0;
 
-      Fiber.Start(scheduler, async () =>
-      {
+      Fiber.Start(scheduler, async () => {
         executions++;
         await Task.Yield();
         executions++;

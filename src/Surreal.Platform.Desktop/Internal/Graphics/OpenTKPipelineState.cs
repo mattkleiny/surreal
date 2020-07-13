@@ -6,10 +6,8 @@ using Surreal.Graphics.SPI;
 using Surreal.Graphics.SPI.Rasterization;
 using Surreal.Platform.Internal.Graphics.Resources;
 
-namespace Surreal.Platform.Internal.Graphics
-{
-  internal sealed class OpenTKPipelineState : IPipelineState
-  {
+namespace Surreal.Platform.Internal.Graphics {
+  internal sealed class OpenTKPipelineState : IPipelineState {
     private OpenTKFrameBuffer?    activeFrameBuffer;
     private OpenTKShaderProgram?  activeShader;
     private OpenTKGraphicsBuffer? activeVertexBuffer;
@@ -17,41 +15,33 @@ namespace Surreal.Platform.Internal.Graphics
 
     public FrameBuffer PrimaryFrameBuffer { get; } = new OpenTKPrimaryFrameBuffer();
 
-    public FrameBuffer? ActiveFrameBuffer
-    {
+    public FrameBuffer? ActiveFrameBuffer {
       get => activeFrameBuffer;
-      set
-      {
+      set {
         activeFrameBuffer = (OpenTKFrameBuffer?) value;
         GL.BindFramebuffer(FramebufferTarget.Framebuffer, activeFrameBuffer?.Id ?? 0);
       }
     }
 
-    public ShaderProgram? ActiveShader
-    {
+    public ShaderProgram? ActiveShader {
       get => activeShader;
-      set
-      {
+      set {
         activeShader = (OpenTKShaderProgram?) value;
         GL.UseProgram(activeShader?.Id ?? 0);
       }
     }
 
-    public GraphicsBuffer? ActiveVertexBuffer
-    {
+    public GraphicsBuffer? ActiveVertexBuffer {
       get => activeVertexBuffer;
-      set
-      {
+      set {
         activeVertexBuffer = (OpenTKGraphicsBuffer?) value;
         GL.BindBuffer(BufferTarget.ArrayBuffer, activeVertexBuffer?.Id ?? 0);
       }
     }
 
-    public GraphicsBuffer? ActiveIndexBuffer
-    {
+    public GraphicsBuffer? ActiveIndexBuffer {
       get => activeIndexBuffer;
-      set
-      {
+      set {
         activeIndexBuffer = (OpenTKGraphicsBuffer?) value;
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, activeIndexBuffer?.Id ?? 0);
       }

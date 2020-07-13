@@ -1,17 +1,13 @@
 using Surreal.Framework.Scenes.Entities;
 using Surreal.Framework.Scenes.Entities.Systems;
 
-namespace Surreal.Framework.Simulations
-{
-  public class EntitySimulation : SceneSimulation<EntityScene>
-  {
+namespace Surreal.Framework.Simulations {
+  public class EntitySimulation : SceneSimulation<EntityScene> {
     public EntitySimulation()
-      : base(new EntityScene())
-    {
+        : base(new EntityScene()) {
     }
 
-    public override void Initialize()
-    {
+    public override void Initialize() {
       base.Initialize();
 
       Scene.AddSystem(new EventSystem(Events));

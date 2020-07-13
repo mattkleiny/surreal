@@ -5,18 +5,15 @@ using Surreal.Mathematics;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Framework.PathFinding
-{
-  public static class PathFindingExtensions
-  {
+namespace Surreal.Framework.PathFinding {
+  public static class PathFindingExtensions {
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler(nameof(PathFindingExtensions));
 
     private const int MaxNeighbourCount = 16;
     private const int MaxPathSteps      = 100;
 
     public static Path FindPath<T, TNeighbourhood>(this IGrid<T> grid, Vector2I start, Vector2I end, Heuristic heuristic)
-      where TNeighbourhood : struct, INeighbourhood
-    {
+        where TNeighbourhood : struct, INeighbourhood {
       // distribute points uniformly and generically on the source grid, given a valid neighbourhood class for point comparison
       var pathfindingGrid = new UniformPathfindingGrid<T, TNeighbourhood>(grid);
 
@@ -24,8 +21,7 @@ namespace Surreal.Framework.PathFinding
     }
 
     public static Path FindPath<TGrid>(this TGrid grid, Vector2I start, Vector2I end, Heuristic heuristic)
-      where TGrid : IPathFindingGrid
-    {
+        where TGrid : IPathFindingGrid {
       using var _ = Profiler.Track(nameof(FindPath));
 
       var frontier  = new PriorityQueue<Vector2I>();
@@ -39,26 +35,21 @@ namespace Surreal.Framework.PathFinding
 
       var neighbours = new SpanList<Vector2I>(stackalloc Vector2I[MaxNeighbourCount]);
 
-      while (frontier.Count > 0 && costSoFar.Count < MaxPathSteps)
-      {
+      while (frontier.Count > 0 && costSoFar.Count < MaxPathSteps) {
         var current = frontier.Dequeue();
-        if (current == end)
-        {
+        if (current == end) {
           return RetracePath(start, end, cameFrom);
         }
 
         neighbours.Clear();
         grid.GetNeighbours(start, ref neighbours);
 
-        for (var i = 0; i < neighbours.Count; i++)
-        {
+        for (var i = 0; i < neighbours.Count; i++) {
           var neighbour = neighbours[i];
           var newCost   = costSoFar[current] + grid.GetCost(current, neighbour);
 
-          if (!costSoFar.ContainsKey(neighbour) || newCost < costSoFar[neighbour])
-          {
-            if (costSoFar.ContainsKey(neighbour))
-            {
+          if (!costSoFar.ContainsKey(neighbour) || newCost < costSoFar[neighbour]) {
+            if (costSoFar.ContainsKey(neighbour)) {
               costSoFar.Remove(neighbour);
               cameFrom.Remove(neighbour);
             }
@@ -77,19 +68,16 @@ namespace Surreal.Framework.PathFinding
     }
 
     private static Path RetracePath(
-      Vector2I start,
-      Vector2I end,
-      IReadOnlyDictionary<Vector2I, Vector2I> cameFrom)
-    {
+        Vector2I start,
+        Vector2I end,
+        IReadOnlyDictionary<Vector2I, Vector2I> cameFrom) {
       var points  = new SpanList<Vector2I>(stackalloc Vector2I[cameFrom.Count]);
       var current = end;
 
-      while (current != start)
-      {
+      while (current != start) {
         points.Add(current);
 
-        if (current == start)
-        {
+        if (current == start) {
           break;
         }
 

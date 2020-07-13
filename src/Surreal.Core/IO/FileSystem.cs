@@ -4,12 +4,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Surreal.Memory;
 
-namespace Surreal.IO
-{
-  public abstract class FileSystem : IFileSystem
-  {
-    protected FileSystem(params string[] schemes)
-    {
+namespace Surreal.IO {
+  public abstract class FileSystem : IFileSystem {
+    protected FileSystem(params string[] schemes) {
       Check.That(schemes.Length > 0, "schemes.Length > 0");
 
       Name    = schemes[0];
@@ -33,8 +30,7 @@ namespace Surreal.IO
     public abstract Task<Stream> OpenInputStreamAsync(string path);
     public abstract Task<Stream> OpenOutputStreamAsync(string path);
 
-    public virtual IPathWatcher WatchPath(Path path)
-    {
+    public virtual IPathWatcher WatchPath(Path path) {
       throw new NotSupportedException("This file system does not support path watching.");
     }
   }

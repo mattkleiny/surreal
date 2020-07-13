@@ -2,12 +2,9 @@ using System;
 using Surreal.Assets;
 using Surreal.Memory;
 
-namespace Surreal.Compute.Memory
-{
-  public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate
-  {
-    protected ComputeBuffer(int stride)
-    {
+namespace Surreal.Compute.Memory {
+  public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate {
+    protected ComputeBuffer(int stride) {
       Check.That(stride > 0, "stride > 0");
 
       Stride = stride;
@@ -18,6 +15,6 @@ namespace Surreal.Compute.Memory
     public Size Size   => new Size(Stride * Count);
 
     public abstract void Put<T>(Span<T> data)
-      where T : unmanaged;
+        where T : unmanaged;
   }
 }

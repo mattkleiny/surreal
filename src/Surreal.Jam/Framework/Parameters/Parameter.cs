@@ -1,27 +1,21 @@
-namespace Surreal.Framework.Parameters
-{
-  public abstract class Parameter
-  {
+namespace Surreal.Framework.Parameters {
+  public abstract class Parameter {
   }
 
-  public abstract class Parameter<T> : Parameter
-  {
+  public abstract class Parameter<T> : Parameter {
     private T value;
     private T overrideValue;
 
     private bool hasOverride;
 
-    protected Parameter(T value)
-    {
-      this.value = value;
+    protected Parameter(T value) {
+      this.value    = value;
+      overrideValue = default!;
     }
 
-    public virtual T Value
-    {
-      get
-      {
-        if (hasOverride)
-        {
+    public virtual T Value {
+      get {
+        if (hasOverride) {
           return overrideValue;
         }
 
@@ -30,15 +24,13 @@ namespace Surreal.Framework.Parameters
       set => this.value = value;
     }
 
-    public virtual void Override(T value)
-    {
+    public virtual void Override(T value) {
       overrideValue = value;
       hasOverride   = true;
     }
 
-    public void ResetOverride()
-    {
-      overrideValue = default;
+    public void ResetOverride() {
+      overrideValue = default!;
       hasOverride   = false;
     }
 

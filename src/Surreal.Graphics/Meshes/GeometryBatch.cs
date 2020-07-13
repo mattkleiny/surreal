@@ -9,12 +9,10 @@ using Surreal.Mathematics.Curves;
 using Surreal.Memory;
 using static Surreal.Maths;
 
-namespace Surreal.Graphics.Meshes
-{
+namespace Surreal.Graphics.Meshes {
   // TODO: support poly lines and normals for thick lines and animated edges
 
-  public sealed class GeometryBatch : IDisposable
-  {
+  public sealed class GeometryBatch : IDisposable {
     private const string ProjViewUniform = "u_projView";
 
     private readonly IDisposableBuffer<Vertex> vertices;
@@ -26,28 +24,25 @@ namespace Surreal.Graphics.Meshes
     private int vertexCount;
     private int indexCount;
 
-    public static GeometryBatch Create(IGraphicsDevice device, ShaderProgram shader)
-    {
+    public static GeometryBatch Create(IGraphicsDevice device, ShaderProgram shader) {
       return new GeometryBatch(device, shader, ownsDefaultShader: false);
     }
 
-    public static async Task<GeometryBatch> CreateDefaultAsync(IGraphicsDevice device)
-    {
+    public static async Task<GeometryBatch> CreateDefaultAsync(IGraphicsDevice device) {
       var shader = device.Factory.CreateShaderProgram(
-        await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.vert.glsl"),
-        await Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.frag.glsl")
+          await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.vert.glsl"),
+          await Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.frag.glsl")
       );
 
       return new GeometryBatch(device, shader, ownsDefaultShader: true);
     }
 
     private GeometryBatch(
-      IGraphicsDevice device,
-      ShaderProgram defaultShader,
-      bool ownsDefaultShader,
-      int maximumVertexCount = 16_000,
-      int maximumIndexCount = 16_000 * 6)
-    {
+        IGraphicsDevice device,
+        ShaderProgram defaultShader,
+        bool ownsDefaultShader,
+        int maximumVertexCount = 16_000,
+        int maximumIndexCount = 16_000 * 6) {
       Device = device;
 
       this.defaultShader     = defaultShader;
@@ -62,26 +57,24 @@ namespace Surreal.Graphics.Meshes
     public IGraphicsDevice Device       { get; }
     public ShaderProgram?  ActiveShader { get; private set; }
 
-    public void Begin(in Matrix4x4 projectionView)
-    {
+    public void Begin(in Matrix4x4 projectionView) {
       Begin(defaultShader, in projectionView);
     }
 
-    public void Begin(ShaderProgram shader, in Matrix4x4 projectionView)
-    {
+    public void Begin(ShaderProgram shader, in Matrix4x4 projectionView) {
       shader.SetUniform(ProjViewUniform, in projectionView);
 
       ActiveShader = shader;
     }
 
     public void DrawPoint(Vector2 position, Color color)
-      => DrawPrimitive(stackalloc[] { position }, color, PrimitiveType.Points);
+      => DrawPrimitive(stackalloc[] {position}, color, PrimitiveType.Points);
 
     public void DrawLine(Vector2 from, Vector2 to, Color color)
-      => DrawPrimitive(stackalloc[] { from, to }, color, PrimitiveType.Lines);
+      => DrawPrimitive(stackalloc[] {from, to}, color, PrimitiveType.Lines);
 
     public void DrawLine(LineSegment segment, Color color)
-      => DrawPrimitive(stackalloc[] { segment.From, segment.To }, color, PrimitiveType.Lines);
+      => DrawPrimitive(stackalloc[] {segment.From, segment.To}, color, PrimitiveType.Lines);
 
     public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
       => DrawPrimitive(points, color, PrimitiveType.Lines);
@@ -93,10 +86,10 @@ namespace Surreal.Graphics.Meshes
       => DrawPrimitive(points, color, PrimitiveType.LineStrip);
 
     public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-      => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.Triangles);
+      => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.Triangles);
 
     public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-      => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.LineLoop);
+      => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.LineLoop);
 
     public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
       => DrawQuad(center, size, color, PrimitiveType.Quads);
@@ -104,13 +97,11 @@ namespace Surreal.Graphics.Meshes
     public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
       => DrawQuad(center, size, color, PrimitiveType.LineLoop);
 
-    public void DrawCircle(Vector2 center, float radius, Color color, int segments)
-    {
+    public void DrawCircle(Vector2 center, float radius, Color color, int segments) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var increment = 360f / segments;
 
-      for (var theta = 0f; theta < 360f; theta += increment)
-      {
+      for (var theta = 0f; theta < 360f; theta += increment) {
         var x = radius * MathF.Cos(DegreesToRadians(theta)) + center.X;
         var y = radius * MathF.Sin(DegreesToRadians(theta)) + center.Y;
 
@@ -120,14 +111,12 @@ namespace Surreal.Graphics.Meshes
       DrawLineLoop(points.ToSpan(), color);
     }
 
-    public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments)
-    {
+    public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var length    = endAngle - startAngle;
       var increment = length / segments;
 
-      for (var theta = startAngle; theta < endAngle; theta += increment)
-      {
+      for (var theta = startAngle; theta < endAngle; theta += increment) {
         var x = radius * MathF.Cos(DegreesToRadians(theta)) + center.X;
         var y = radius * MathF.Sin(DegreesToRadians(theta)) + center.Y;
 
@@ -138,12 +127,10 @@ namespace Surreal.Graphics.Meshes
     }
 
     public void DrawCurve<TCurve>(TCurve curve, Color color, int resolution)
-      where TCurve : IPlanarCurve
-    {
+        where TCurve : IPlanarCurve {
       var points = new SpanList<Vector2>(stackalloc Vector2[resolution]);
 
-      for (var i = 0; i < resolution; i++)
-      {
+      for (var i = 0; i < resolution; i++) {
         var x = (float) i / resolution;
 
         points.Add(curve.SampleAt(x));
@@ -152,30 +139,26 @@ namespace Surreal.Graphics.Meshes
       DrawLineStrip(points.ToSpan(), color);
     }
 
-    public void DrawQuad(Vector2 center, Vector2 size, Color color, PrimitiveType type)
-    {
+    public void DrawQuad(Vector2 center, Vector2 size, Color color, PrimitiveType type) {
       var halfWidth  = size.X / 2f;
       var halfHeight = size.Y / 2f;
 
       DrawPrimitive(
-        points: stackalloc Vector2[]
-        {
-          new Vector2(center.X - halfWidth, center.Y - halfHeight),
-          new Vector2(center.X - halfWidth, center.Y + halfHeight),
-          new Vector2(center.X + halfWidth, center.Y + halfHeight),
-          new Vector2(center.X + halfWidth, center.Y - halfHeight),
-        },
-        color: color,
-        type: type
+          points: stackalloc Vector2[] {
+              new Vector2(center.X - halfWidth, center.Y - halfHeight),
+              new Vector2(center.X - halfWidth, center.Y + halfHeight),
+              new Vector2(center.X + halfWidth, center.Y + halfHeight),
+              new Vector2(center.X + halfWidth, center.Y - halfHeight),
+          },
+          color: color,
+          type: type
       );
     }
 
-    public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, PrimitiveType type)
-    {
+    public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, PrimitiveType type) {
       var destination = vertices.Span[vertexCount..];
 
-      for (var i = 0; i < points.Length; i++)
-      {
+      for (var i = 0; i < points.Length; i++) {
         ref var vertex = ref destination[i];
 
         vertex.Position = points[i];
@@ -187,12 +170,10 @@ namespace Surreal.Graphics.Meshes
       Flush(type);
     }
 
-    public void End()
-    {
+    public void End() {
     }
 
-    private void Flush(PrimitiveType type)
-    {
+    private void Flush(PrimitiveType type) {
       if (vertexCount == 0) return;
 
       mesh.Vertices.Put(vertices.Span.Slice(0, vertexCount));
@@ -204,10 +185,8 @@ namespace Surreal.Graphics.Meshes
       indexCount  = 0;
     }
 
-    public void Dispose()
-    {
-      if (ownsDefaultShader)
-      {
+    public void Dispose() {
+      if (ownsDefaultShader) {
         defaultShader.Dispose();
       }
 
@@ -218,25 +197,23 @@ namespace Surreal.Graphics.Meshes
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    private struct Vertex
-    {
+    private struct Vertex {
       [VertexAttribute(
-        Alias = "a_position",
-        Count = 2,
-        Type  = VertexType.Float
+          Alias = "a_position",
+          Count = 2,
+          Type  = VertexType.Float
       )]
       public Vector2 Position;
 
       [VertexAttribute(
-        Alias      = "a_color",
-        Count      = 4,
-        Type       = VertexType.UnsignedByte,
-        Normalized = true
+          Alias      = "a_color",
+          Count      = 4,
+          Type       = VertexType.UnsignedByte,
+          Normalized = true
       )]
       public Color Color;
 
-      public Vertex(Vector2 position, Color color)
-      {
+      public Vertex(Vector2 position, Color color) {
         Position = position;
         Color    = color;
       }

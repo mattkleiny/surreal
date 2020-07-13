@@ -10,23 +10,19 @@ using System.Reflection;
 using Surreal.Diagnostics.Logging;
 using Surreal.Framework;
 
-namespace Surreal
-{
-  public sealed class ModdingPlugin : GamePlugin
-  {
+namespace Surreal {
+  public sealed class ModdingPlugin : GamePlugin {
     private static readonly ILog Log = LogFactory.GetLog<ModdingPlugin>();
 
     private readonly CompositionHost                  host;
     private readonly Lazy<IEnumerable<IInstalledMod>> mods;
 
     public ModdingPlugin(Game game)
-      : this(game, basePath: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mods"))
-    {
+        : this(game, basePath: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mods")) {
     }
 
     public ModdingPlugin(Game game, string basePath, string searchPattern = "*Mod*.dll")
-      : base(game)
-    {
+        : base(game) {
       Check.NotNullOrEmpty(basePath, nameof(basePath));
 
       Registry = new ModRegistry(Game.Services);
@@ -39,72 +35,58 @@ namespace Surreal
 
     public IModRegistry Registry { get; }
 
-    public override void Initialize()
-    {
+    public override void Initialize() {
       base.Initialize();
 
-      foreach (var mod in Installed)
-      {
+      foreach (var mod in Installed) {
         Log.Trace($"Initializing mod: {mod.Metadata.Name} {mod.Metadata.Version}");
 
         mod.Instance.Initialize(Registry);
       }
     }
 
-    public override void Begin()
-    {
+    public override void Begin() {
       base.Begin();
 
-      foreach (var mod in Installed)
-      {
+      foreach (var mod in Installed) {
         mod.Instance.Begin();
       }
     }
 
-    public override void Input(GameTime time)
-    {
+    public override void Input(GameTime time) {
       base.Input(time);
 
-      foreach (var mod in Installed)
-      {
+      foreach (var mod in Installed) {
         mod.Instance.Input(time.DeltaTime);
       }
     }
 
-    public override void Update(GameTime time)
-    {
+    public override void Update(GameTime time) {
       base.Update(time);
 
-      foreach (var mod in Installed)
-      {
+      foreach (var mod in Installed) {
         mod.Instance.Update(time.DeltaTime);
       }
     }
 
-    public override void Draw(GameTime time)
-    {
+    public override void Draw(GameTime time) {
       base.Draw(time);
 
-      foreach (var mod in Installed)
-      {
+      foreach (var mod in Installed) {
         mod.Instance.Draw(time.DeltaTime);
       }
     }
 
-    public override void End()
-    {
+    public override void End() {
       base.End();
 
-      foreach (var mod in Installed)
-      {
+      foreach (var mod in Installed) {
         mod.Instance.End();
       }
     }
 
-    public override void Dispose()
-    {
-      foreach (var mod in Installed)
-      {
+    public override void Dispose() {
+      foreach (var mod in Installed) {
         mod.Instance.Dispose();
       }
 
@@ -113,34 +95,29 @@ namespace Surreal
       base.Dispose();
     }
 
-    private IEnumerable<IInstalledMod> LoadMods()
-    {
+    private IEnumerable<IInstalledMod> LoadMods() {
       return Log.Profile("Loading mods", () => host
-        .GetExports<ExportFactory<IMod, ExportModAttribute>>()
-        .Select(factory => new InstalledMod(factory))
-        .ToArray());
+          .GetExports<ExportFactory<IMod, ExportModAttribute>>()
+          .Select(factory => new InstalledMod(factory))
+          .ToArray());
     }
 
-    private static CompositionHost BuildCompositionHost(string basePath, string searchPattern)
-    {
-      if (!Directory.Exists(basePath))
-      {
+    private static CompositionHost BuildCompositionHost(string basePath, string searchPattern) {
+      if (!Directory.Exists(basePath)) {
         Directory.CreateDirectory(basePath);
       }
 
       var configuration = new ContainerConfiguration()
-        .WithAssembly(Assembly.GetEntryAssembly())
-        .WithAssemblies(Directory
-          .GetFiles(basePath, searchPattern, SearchOption.AllDirectories)
-          .Select(Assembly.LoadFile));
+          .WithAssembly(Assembly.GetEntryAssembly())
+          .WithAssemblies(Directory
+              .GetFiles(basePath, searchPattern, SearchOption.AllDirectories)
+              .Select(Assembly.LoadFile));
 
       return configuration.CreateContainer();
     }
 
-    private sealed class ModRegistry : IModRegistry
-    {
-      public ModRegistry(IServiceContainer services)
-      {
+    private sealed class ModRegistry : IModRegistry {
+      public ModRegistry(IServiceContainer services) {
         Services = services;
       }
 
@@ -148,10 +125,8 @@ namespace Surreal
     }
 
     [DebuggerDisplay("{Metadata.Name} v{Metadata.Version}")]
-    private sealed class InstalledMod : IInstalledMod
-    {
-      public InstalledMod(ExportFactory<IMod, ExportModAttribute> factory)
-      {
+    private sealed class InstalledMod : IInstalledMod {
+      public InstalledMod(ExportFactory<IMod, ExportModAttribute> factory) {
         Instance = factory.CreateExport().Value;
         Metadata = ExtractMetadata(factory.Metadata);
       }
@@ -159,8 +134,7 @@ namespace Surreal
       public IMod         Instance { get; }
       public IModMetadata Metadata { get; }
 
-      private ExportModAttribute ExtractMetadata(ExportModAttribute attribute)
-      {
+      private ExportModAttribute ExtractMetadata(ExportModAttribute attribute) {
         if (string.IsNullOrEmpty(attribute.Name)) attribute.Name       = Instance.GetType().Name;
         if (string.IsNullOrEmpty(attribute.Version)) attribute.Version = "0.1";
 

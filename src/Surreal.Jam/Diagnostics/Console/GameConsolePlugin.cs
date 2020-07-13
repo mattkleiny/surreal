@@ -4,20 +4,16 @@ using Surreal.Diagnostics.Console.Controls;
 using Surreal.Framework;
 using Surreal.Input.Keyboard;
 
-namespace Surreal.Diagnostics.Console
-{
-  public sealed class GameConsolePlugin : DiagnosticPlugin<GameJam>
-  {
+namespace Surreal.Diagnostics.Console {
+  public sealed class GameConsolePlugin : DiagnosticPlugin<GameJam> {
     public GameConsolePlugin(GameJam game)
-      : base(game)
-    {
+        : base(game) {
     }
 
     public IKeyboardDevice Keyboard => Game.Keyboard;
     public IGameConsole    Console  => Game.Console;
 
-    public override async Task LoadContentAsync(IAssetResolver assets)
-    {
+    public override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);
 
       var font = await assets.LoadDefaultFontAsync();
@@ -25,8 +21,7 @@ namespace Surreal.Diagnostics.Console
       Stage.Add(new GameConsolePanel(font, Console));
     }
 
-    public override void Input(GameTime time)
-    {
+    public override void Input(GameTime time) {
       if (Keyboard.IsKeyPressed(Key.Tilde)) IsVisible = !IsVisible;
 
       base.Input(time);

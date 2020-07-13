@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using Surreal.Memory;
 
-namespace Surreal.Mathematics.Tensors
-{
+namespace Surreal.Mathematics.Tensors {
   public abstract class Tensor<T> : IEnumerable<T>
-    where T : unmanaged
-  {
-    protected Tensor(IBuffer<T> buffer)
-    {
+      where T : unmanaged {
+    protected Tensor(IBuffer<T> buffer) {
       Buffer = buffer;
     }
 
@@ -26,14 +23,12 @@ namespace Surreal.Mathematics.Tensors
 
     protected static char GetSubscript(int n) => (char) int.Parse(("U+208" + n).Substring(2), NumberStyles.HexNumber);
 
-    public struct Enumerator : IEnumerator<T>
-    {
+    public struct Enumerator : IEnumerator<T> {
       private readonly Tensor<T> tensor;
       private          int       index;
 
       public Enumerator(Tensor<T> tensor)
-        : this()
-      {
+          : this() {
         this.tensor = tensor;
         Reset();
       }
@@ -43,8 +38,7 @@ namespace Surreal.Mathematics.Tensors
       public bool        MoveNext() => ++index < tensor.Buffer.Count;
       public void        Reset()    => index = -1;
 
-      public void Dispose()
-      {
+      public void Dispose() {
       }
     }
   }

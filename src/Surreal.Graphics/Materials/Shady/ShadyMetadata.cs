@@ -1,13 +1,10 @@
-namespace Surreal.Graphics.Materials.Shady
-{
-  public sealed class ShadyMetadata
-  {
+namespace Surreal.Graphics.Materials.Shady {
+  public sealed class ShadyMetadata {
     public string           Name        { get; }
     public string           Description { get; }
     public ShadyProgramType Type        { get; }
 
-    public ShadyMetadata(string name, string description, ShadyProgramType type)
-    {
+    public ShadyMetadata(string name, string description, ShadyProgramType type) {
       Name        = name;
       Description = description;
       Type        = type;

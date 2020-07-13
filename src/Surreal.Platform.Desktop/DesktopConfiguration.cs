@@ -1,9 +1,7 @@
 ﻿using Surreal.I18N;
 
-namespace Surreal.Platform
-{
-  public sealed class DesktopConfiguration
-  {
+namespace Surreal.Platform {
+  public sealed class DesktopConfiguration {
     public LocalisedString Title { get; set; } = "Surreal";
 
     public int? Width             { get; set; }

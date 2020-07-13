@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Surreal.Mathematics
-{
-  public static class Range
-  {
+namespace Surreal.Mathematics {
+  public static class Range {
     public static IntRange   Of(int min, int max)     => new IntRange(min, max);
     public static FloatRange Of(float min, float max) => new FloatRange(min, max);
 
@@ -12,36 +10,31 @@ namespace Surreal.Mathematics
     public static int   Clamp(this int value, IntRange range)         => Maths.Clamp(value, range.Min, range.Max);
     public static float Clamp(this float value, FloatRange range)     => Maths.Clamp(value, range.Min, range.Max);
 
-    public static bool Between(this int value, int min, int max)       => value > min && value < max;
-    public static bool Between(this float value, float min, float max) => value > min && value < max;
+    public static bool Between(this int value, int min, int max)       => value > min       && value < max;
+    public static bool Between(this float value, float min, float max) => value > min       && value < max;
     public static bool Between(this int value, IntRange range)         => value > range.Min && value < range.Max;
     public static bool Between(this float value, FloatRange range)     => value > range.Min && value < range.Max;
 
-    public static int ConvertRange(this int value, IntRange oldRange, IntRange newRange)
-    {
+    public static int ConvertRange(this int value, IntRange oldRange, IntRange newRange) {
       if (oldRange.Delta == 0) return newRange.Min;
 
       return (value - oldRange.Min) * newRange.Delta / oldRange.Delta + newRange.Min;
     }
 
-    public static float ConvertRange(this float value, FloatRange oldRange, FloatRange newRange)
-    {
+    public static float ConvertRange(this float value, FloatRange oldRange, FloatRange newRange) {
       if (Math.Abs(oldRange.Delta) < float.Epsilon) return newRange.Min;
 
       return (value - oldRange.Min) * newRange.Delta / oldRange.Delta + newRange.Min;
     }
   }
 
-  public readonly struct IntRange : IEquatable<IntRange>
-  {
-    public IntRange(int min, int max)
-    {
+  public readonly struct IntRange : IEquatable<IntRange> {
+    public IntRange(int min, int max) {
       Min = min;
       Max = max;
     }
 
-    public void Deconstruct(out int min, out int max)
-    {
+    public void Deconstruct(out int min, out int max) {
       min = Min;
       max = Max;
     }
@@ -66,16 +59,13 @@ namespace Surreal.Mathematics
     public static bool operator !=(IntRange left, IntRange right) => !left.Equals(right);
   }
 
-  public readonly struct FloatRange : IEquatable<FloatRange>
-  {
-    public FloatRange(float min, float max)
-    {
+  public readonly struct FloatRange : IEquatable<FloatRange> {
+    public FloatRange(float min, float max) {
       Min = min;
       Max = max;
     }
 
-    public void Deconstruct(out float min, out float max)
-    {
+    public void Deconstruct(out float min, out float max) {
       min = Min;
       max = Max;
     }
@@ -88,8 +78,8 @@ namespace Surreal.Mathematics
     public override string ToString() => $"{Min:F} to {Max:F}";
 
     public bool Equals(FloatRange other) =>
-      Math.Abs(Min - other.Min) < float.Epsilon &&
-      Math.Abs(Max - other.Max) < float.Epsilon;
+        Math.Abs(Min - other.Min) < float.Epsilon &&
+        Math.Abs(Max - other.Max) < float.Epsilon;
 
     public override bool Equals(object obj) => obj is FloatRange other && Equals(other);
 

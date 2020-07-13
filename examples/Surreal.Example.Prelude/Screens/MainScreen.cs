@@ -12,10 +12,8 @@ using Surreal.Graphics.Raycasting;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 
-namespace Prelude.Screens
-{
-  public class MainScreen : SimulationScreen<PreludeGame, ActorSimulation>
-  {
+namespace Prelude.Screens {
+  public class MainScreen : SimulationScreen<PreludeGame, ActorSimulation> {
     private readonly RaycastCamera camera = new RaycastCamera();
 
     private TileMapRenderer?     renderer;
@@ -23,61 +21,52 @@ namespace Prelude.Screens
     private TileMap<Tile>?       map;
 
     public MainScreen(PreludeGame game)
-      : base(game)
-    {
+        : base(game) {
     }
 
-    protected override ActorSimulation CreateSimulation()
-    {
+    protected override ActorSimulation CreateSimulation() {
       return new ActorSimulation();
     }
 
-    public override void Initialize()
-    {
+    public override void Initialize() {
       base.Initialize();
 
       renderer = new TileMapRenderer(camera, atlas!);
 
-      Simulation.Scene.Actors.Add(new PreludeActor()
-      {
-        new Player(map!, camera)
-        {
-          Position  = new Vector2(2, 2),
-          Direction = new Vector2(0, 1)
-        }
+      Simulation.Scene.Actors.Add(new PreludeActor() {
+          new Player(map!, camera) {
+              Position  = new Vector2(2, 2),
+              Direction = new Vector2(0, 1)
+          }
       });
     }
 
-    protected override async Task LoadContentAsync(IAssetResolver assets)
-    {
+    protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);
 
       atlas = Atlas<PixmapRegion>.Create(
-        source: await assets.GetAsync<Pixmap>("Assets/textures.png"),
-        nameTemplate: "textures_",
-        regionWidth: 16,
-        regionHeight: 16
+          source: await assets.GetAsync<Pixmap>("Assets/textures.png"),
+          nameTemplate: "textures_",
+          regionWidth: 16,
+          regionHeight: 16
       );
 
       map = await assets.GetAsync<TileMap<Tile>>("Assets/maps/map1.tmx");
     }
 
-    public override void Input(GameTime time)
-    {
+    public override void Input(GameTime time) {
       if (Keyboard.IsKeyPressed(Key.Escape)) Game.Exit();
 
       base.Input(time);
     }
 
-    public override void Draw(GameTime time)
-    {
+    public override void Draw(GameTime time) {
       renderer?.Render(GraphicsDevice, SpriteBatch, map!);
 
       base.Draw(time);
     }
 
-    public override void Dispose()
-    {
+    public override void Dispose() {
       base.Dispose();
 
       renderer?.Dispose();

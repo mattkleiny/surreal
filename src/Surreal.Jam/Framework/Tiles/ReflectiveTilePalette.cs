@@ -4,22 +4,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace Surreal.Framework.Tiles
-{
+namespace Surreal.Framework.Tiles {
   [DebuggerDisplay("Tile palette - {Count} tiles")]
   public sealed class ReflectiveTilePalette<TTile> : ITilePalette<TTile>
-    where TTile : IHasId
-  {
+      where TTile : IHasId {
     private readonly Dictionary<ushort, TTile> tileById;
     private readonly Dictionary<TTile, ushort> idByTile;
 
-    public ReflectiveTilePalette()
-    {
+    public ReflectiveTilePalette() {
       // scan all static members of the given type and add to container
       var tiles = typeof(TTile).GetFields(BindingFlags.Public | BindingFlags.Static)
-        .Where(field => typeof(TTile).IsAssignableFrom(field.FieldType))
-        .Select(field => (TTile) field.GetValue(null))
-        .ToList();
+          .Where(field => typeof(TTile).IsAssignableFrom(field.FieldType))
+          .Select(field => (TTile) field.GetValue(null))
+          .ToList();
 
       tileById = tiles.ToDictionary(tile => tile.Id, tile => tile);
       idByTile = tiles.ToDictionary(tile => tile, tile => tile.Id);
@@ -27,12 +24,9 @@ namespace Surreal.Framework.Tiles
 
     public int Count => tileById.Count;
 
-    public ushort this[TTile tile]
-    {
-      get
-      {
-        if (!idByTile.TryGetValue(tile, out var id))
-        {
+    public ushort this[TTile tile] {
+      get {
+        if (!idByTile.TryGetValue(tile, out var id)) {
           throw new Exception($"The given tile is not recognized: {tile}");
         }
 
@@ -40,12 +34,9 @@ namespace Surreal.Framework.Tiles
       }
     }
 
-    public TTile this[ushort id]
-    {
-      get
-      {
-        if (!tileById.TryGetValue(id, out var tile))
-        {
+    public TTile this[ushort id] {
+      get {
+        if (!tileById.TryGetValue(id, out var tile)) {
           throw new Exception($"The given tile id is not recognized: {id}");
         }
 

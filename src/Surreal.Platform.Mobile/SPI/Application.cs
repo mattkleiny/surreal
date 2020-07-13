@@ -1,9 +1,7 @@
 using Surreal.States;
 
-namespace Surreal.Platform.SPI
-{
-  public abstract class Application : Xamarin.Forms.Application, IApplication
-  {
+namespace Surreal.Platform.SPI {
+  public abstract class Application : Xamarin.Forms.Application, IApplication {
     public FSM<ApplicationState> State { get; } = new FSM<ApplicationState>(ApplicationState.Running);
 
     protected override void OnStart()  => State.ChangeState(ApplicationState.Running);

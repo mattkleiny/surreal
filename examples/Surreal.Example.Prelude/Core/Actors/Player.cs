@@ -6,21 +6,17 @@ using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 using Surreal.Timing;
 
-namespace Prelude.Core.Actors
-{
-  public class Player : PreludeActor
-  {
+namespace Prelude.Core.Actors {
+  public class Player : PreludeActor {
     private readonly TileMap<Tile> map;
     private readonly RaycastCamera camera;
 
-    public Player(TileMap<Tile> map, RaycastCamera camera)
-    {
+    public Player(TileMap<Tile> map, RaycastCamera camera) {
       this.map    = map;
       this.camera = camera;
     }
 
-    public override void Input(DeltaTime deltaTime)
-    {
+    public override void Input(DeltaTime deltaTime) {
       base.Input(deltaTime);
 
       var input = new Vector2I(0, 0);
@@ -32,24 +28,22 @@ namespace Prelude.Core.Actors
 
       var rotation = input.X * TurningSpeed * deltaTime;
       var matrix = Matrix2x2.CreateFromAngles(
-        MathF.Sin(rotation),
-        MathF.Cos(rotation)
+          MathF.Sin(rotation),
+          MathF.Cos(rotation)
       );
 
-      Direction = matrix * Direction;
+      Direction = matrix            * Direction;
       Velocity  = Direction * Speed * input.Y;
     }
 
-    public override void Update(DeltaTime deltaTime)
-    {
+    public override void Update(DeltaTime deltaTime) {
       base.Update(deltaTime);
 
       var oldPosition = Position;
 
       Position += Velocity * Speed * deltaTime;
 
-      if (IsIntersecting(map))
-      {
+      if (IsIntersecting(map)) {
         Position = oldPosition;
       }
 
@@ -57,13 +51,10 @@ namespace Prelude.Core.Actors
       camera.Direction = Direction;
     }
 
-    private bool IsIntersecting(IGrid<Tile> map)
-    {
+    private bool IsIntersecting(IGrid<Tile> map) {
       for (var y = (int) Bounds.Bottom; y <= (int) Bounds.Top; y++)
-      for (var x = (int) Bounds.Left; x <= (int) Bounds.Right; x++)
-      {
-        if (map[x, y].IsSolid)
-        {
+      for (var x = (int) Bounds.Left; x <= (int) Bounds.Right; x++) {
+        if (map[x, y].IsSolid) {
           return true;
         }
       }

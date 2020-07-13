@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Surreal.Mathematics.Linear
-{
-  public struct Vector2I : IEquatable<Vector2I>
-  {
+namespace Surreal.Mathematics.Linear {
+  public struct Vector2I : IEquatable<Vector2I> {
     public static readonly Vector2I Zero  = new Vector2I(0, 0);
     public static readonly Vector2I UnitX = new Vector2I(1, 0);
     public static readonly Vector2I UnitY = new Vector2I(0, 1);
@@ -12,14 +10,12 @@ namespace Surreal.Mathematics.Linear
     public int X;
     public int Y;
 
-    public Vector2I(int x, int y)
-    {
+    public Vector2I(int x, int y) {
       X = x;
       Y = y;
     }
 
-    public void Deconstruct(out int x, out int y)
-    {
+    public void Deconstruct(out int x, out int y) {
       x = X;
       y = Y;
     }
@@ -43,13 +39,11 @@ namespace Surreal.Mathematics.Linear
     public static implicit operator Vector2(Vector2I self)     => new Vector2(self.X, self.Y);
     public static implicit operator Vector2I((int, int) value) => new Vector2I(value.Item1, value.Item2);
 
-    public bool Equals(Vector2I other)
-    {
+    public bool Equals(Vector2I other) {
       return X == other.X && Y == other.Y;
     }
 
-    public override bool Equals(object obj)
-    {
+    public override bool Equals(object obj) {
       if (ReferenceEquals(null, obj)) return false;
       return obj is Vector2I other && Equals(other);
     }

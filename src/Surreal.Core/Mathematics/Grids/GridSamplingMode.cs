@@ -1,7 +1,5 @@
-namespace Surreal.Mathematics.Grids
-{
-  public enum GridSamplingMode
-  {
+namespace Surreal.Mathematics.Grids {
+  public enum GridSamplingMode {
     Clamp,
     ClampToDefault,
     Wrap

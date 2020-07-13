@@ -1,9 +1,7 @@
 using System;
 
-namespace Surreal.Languages.Text
-{
-  public abstract class SourceText
-  {
+namespace Surreal.Languages.Text {
+  public abstract class SourceText {
     public static SourceText FromString(string source) => new StringText(source);
 
     public abstract int                Length { get; }

@@ -1,6 +1,4 @@
-namespace Surreal.Physics.SPI
-{
-  public interface IPhysicsEngine
-  {
+namespace Surreal.Physics.SPI {
+  public interface IPhysicsEngine {
   }
 }

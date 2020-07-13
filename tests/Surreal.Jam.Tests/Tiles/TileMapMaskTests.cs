@@ -1,18 +1,14 @@
 ﻿using Surreal.Framework.Tiles;
 using Xunit;
 
-namespace Surreal.Jam.Tiles
-{
-  public class TileMapMaskTests
-  {
+namespace Surreal.Jam.Tiles {
+  public class TileMapMaskTests {
     [Fact]
-    public void it_should_mask_values_on_tile_maps()
-    {
-      var map = new TileMap<Tile>(512, 512, Tile.Palette)
-      {
-        [0, 0]     = Tile.Water,
-        [128, 128] = Tile.Water,
-        [511, 511] = Tile.Water
+    public void it_should_mask_values_on_tile_maps() {
+      var map = new TileMap<Tile>(512, 512, Tile.Palette) {
+          [0, 0]     = Tile.Water,
+          [128, 128] = Tile.Water,
+          [511, 511] = Tile.Water
       };
 
       var mask = new TileMapMask<Tile>(map, IsWaterTile);
@@ -25,8 +21,7 @@ namespace Surreal.Jam.Tiles
     }
 
     [Fact]
-    public void it_should_stay_current_with_updating_map()
-    {
+    public void it_should_stay_current_with_updating_map() {
       var map  = new TileMap<Tile>(512, 512, Tile.Palette);
       var mask = new TileMapMask<Tile>(map, IsWaterTile);
 

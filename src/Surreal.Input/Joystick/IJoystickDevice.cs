@@ -1,6 +1,4 @@
-namespace Surreal.Input.Joystick
-{
-  public interface IJoystickDevice : IInputDevice
-  {
+namespace Surreal.Input.Joystick {
+  public interface IJoystickDevice : IInputDevice {
   }
 }

@@ -1,12 +1,9 @@
 ﻿using Xunit;
 
-namespace Surreal.Graphics.Meshes
-{
-  public class VertexAttributeTests
-  {
+namespace Surreal.Graphics.Meshes {
+  public class VertexAttributeTests {
     [Fact]
-    public void it_should_resolve_attributes_in_order_from_metadata()
-    {
+    public void it_should_resolve_attributes_in_order_from_metadata() {
       var attributes = VertexAttributes.FromVertex<Vertex>();
 
       Assert.Equal(2, attributes.Length);
@@ -16,8 +13,7 @@ namespace Surreal.Graphics.Meshes
     }
 
     [Fact]
-    public void it_should_calculate_stride_correctly()
-    {
+    public void it_should_calculate_stride_correctly() {
       var attributes = VertexAttributes.FromVertex<Vertex>();
 
       Assert.Equal(12, attributes[0].Stride);
@@ -26,8 +22,7 @@ namespace Surreal.Graphics.Meshes
     }
 
     [Fact]
-    public void it_should_calculate_offset_correctly()
-    {
+    public void it_should_calculate_offset_correctly() {
       var attributes = VertexAttributes.FromVertex<Vertex>();
 
       Assert.Equal(0, attributes[0].Offset);

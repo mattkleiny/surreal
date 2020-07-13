@@ -9,13 +9,10 @@ using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Timing;
 
-namespace Isaac.Core.Entities.Systems
-{
-  public sealed class InputSystem : IteratingSystem
-  {
+namespace Isaac.Core.Entities.Systems {
+  public sealed class InputSystem : IteratingSystem {
     public InputSystem(OrthographicCamera camera, IKeyboardDevice keyboard, IMouseDevice mouse)
-      : base(Aspect.Of<Player, Transform>())
-    {
+        : base(Aspect.Of<Player, Transform>()) {
       Camera   = camera;
       Keyboard = keyboard;
       Mouse    = mouse;
@@ -27,8 +24,7 @@ namespace Isaac.Core.Entities.Systems
 
     public bool TrackPlayerMovements { get; set; } = false;
 
-    protected override void Input(DeltaTime deltaTime, Entity entity)
-    {
+    protected override void Input(DeltaTime deltaTime, Entity entity) {
       if (!entity.IsPlayer()) return; // TODO: remove this once the aspects are working
 
       ref var player    = ref entity.Get<Player>();
@@ -43,8 +39,7 @@ namespace Isaac.Core.Entities.Systems
 
       transform.Position += velocity * player.MoveSpeed * deltaTime;
 
-      if (TrackPlayerMovements)
-      {
+      if (TrackPlayerMovements) {
         Camera.Translate(new Vector3(velocity.X, velocity.Y, 0f));
       }
     }

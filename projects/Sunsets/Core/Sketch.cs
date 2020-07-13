@@ -1,25 +1,19 @@
-namespace Sunsets.Core
-{
-  public interface IPersona
-  {
+namespace Sunsets.Core {
+  public interface IPersona {
   }
 
-  public interface ISchedule
-  {
+  public interface ISchedule {
     ScheduleEntry GetEntry(WorldTime time);
   }
 
-  public readonly struct ScheduleEntry
-  {
+  public readonly struct ScheduleEntry {
   }
 
-  public readonly struct Radix
-  {
+  public readonly struct Radix {
     public int Value { get; }
     public int Bound { get; }
 
-    public Radix(int value, int bound)
-    {
+    public Radix(int value, int bound) {
       Bound = bound;
       Value = value % bound;
     }
@@ -27,7 +21,6 @@ namespace Sunsets.Core
     public static implicit operator int(Radix radix) => radix.Value;
   }
 
-  public readonly struct WorldTime
-  {
+  public readonly struct WorldTime {
   }
 }

@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Surreal.Timing
-{
+namespace Surreal.Timing {
   [DebuggerDisplay("{TimeSpan.TotalMilliseconds}ms")]
-  public readonly struct DeltaTime
-  {
-    public DeltaTime(float seconds)
-    {
+  public readonly struct DeltaTime {
+    public DeltaTime(float seconds) {
       TimeSpan = TimeSpan.FromSeconds(seconds);
     }
 
-    public DeltaTime(TimeSpan timeSpan)
-    {
+    public DeltaTime(TimeSpan timeSpan) {
       TimeSpan = timeSpan;
     }
 

@@ -3,19 +3,15 @@ using Surreal.Framework.Scenes.Actors;
 using Surreal.Input.Keyboard;
 using Surreal.Timing;
 
-namespace Asteroids.Actors.Components
-{
-  public sealed class InputComponent : ActorComponent<AsteroidActor>
-  {
+namespace Asteroids.Actors.Components {
+  public sealed class InputComponent : ActorComponent<AsteroidActor> {
     private Vector2 direction;
 
     public InputComponent(AsteroidActor actor)
-      : base(actor)
-    {
+        : base(actor) {
     }
 
-    public override void Input(DeltaTime deltaTime)
-    {
+    public override void Input(DeltaTime deltaTime) {
       base.Input(deltaTime);
 
       var direction = Vector2.Zero;
@@ -28,8 +24,7 @@ namespace Asteroids.Actors.Components
       this.direction = Vector2.Normalize(direction);
     }
 
-    public override void Update(DeltaTime deltaTime)
-    {
+    public override void Update(DeltaTime deltaTime) {
       base.Update(deltaTime);
 
       Actor.Position += direction * deltaTime;

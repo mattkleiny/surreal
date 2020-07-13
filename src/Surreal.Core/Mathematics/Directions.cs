@@ -1,10 +1,8 @@
 ﻿using System;
 
-namespace Surreal.Mathematics
-{
+namespace Surreal.Mathematics {
   [Flags]
-  public enum Directions : byte
-  {
+  public enum Directions : byte {
     None  = 0,
     North = 1 << 1,
     East  = 1 << 2,

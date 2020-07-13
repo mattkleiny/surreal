@@ -1,6 +1,4 @@
-namespace Surreal.Framework.Editing.Automata
-{
-  public interface IPushdownAutomata
-  {
+namespace Surreal.Framework.Editing.Automata {
+  public interface IPushdownAutomata {
   }
 }

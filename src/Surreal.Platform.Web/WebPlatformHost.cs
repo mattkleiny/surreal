@@ -2,12 +2,9 @@ using System;
 using Microsoft.JSInterop;
 using Surreal.Timing;
 
-namespace Surreal.Platform
-{
-  internal sealed class WebPlatformHost : IPlatformHost, IServiceProvider
-  {
-    public WebPlatformHost(IJSRuntime runtime, object canvas)
-    {
+namespace Surreal.Platform {
+  internal sealed class WebPlatformHost : IPlatformHost, IServiceProvider {
+    public WebPlatformHost(IJSRuntime runtime, object canvas) {
       Runtime = runtime;
       Canvas  = canvas;
     }
@@ -25,17 +22,14 @@ namespace Surreal.Platform
 
     public IServiceProvider Services => this;
 
-    object? IServiceProvider.GetService(Type serviceType)
-    {
+    object? IServiceProvider.GetService(Type serviceType) {
       return null;
     }
 
-    public void Tick(DeltaTime deltaTime)
-    {
+    public void Tick(DeltaTime deltaTime) {
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
     }
   }
 }

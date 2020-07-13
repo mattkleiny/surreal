@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Surreal.Mathematics.Linear
-{
-  public struct Vector3I : IEquatable<Vector3I>
-  {
+namespace Surreal.Mathematics.Linear {
+  public struct Vector3I : IEquatable<Vector3I> {
     public static readonly Vector3I Zero  = new Vector3I(0, 0, 0);
     public static readonly Vector3I UnitX = new Vector3I(1, 0, 0);
     public static readonly Vector3I UnitY = new Vector3I(0, 1, 0);
@@ -14,15 +12,13 @@ namespace Surreal.Mathematics.Linear
     public int Y;
     public int Z;
 
-    public Vector3I(int x, int y, int z)
-    {
+    public Vector3I(int x, int y, int z) {
       X = x;
       Y = y;
       Z = z;
     }
 
-    public void Deconstruct(out int x, out int y, out int z)
-    {
+    public void Deconstruct(out int x, out int y, out int z) {
       x = X;
       y = Y;
       z = Z;
@@ -47,13 +43,11 @@ namespace Surreal.Mathematics.Linear
     public static implicit operator Vector3(Vector3I self)          => new Vector3(self.X, self.Y, self.Z);
     public static implicit operator Vector3I((int, int, int) value) => new Vector3I(value.Item1, value.Item2, value.Item3);
 
-    public bool Equals(Vector3I other)
-    {
+    public bool Equals(Vector3I other) {
       return X == other.X && Y == other.Y && Z == other.Z;
     }
 
-    public override bool Equals(object obj)
-    {
+    public override bool Equals(object obj) {
       if (ReferenceEquals(null, obj)) return false;
       return obj is Vector3I other && Equals(other);
     }

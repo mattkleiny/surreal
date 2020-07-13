@@ -1,14 +1,12 @@
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 
-namespace Surreal.Platform.Internal.Graphics.Resources
-{
-  internal sealed class HeadlessFrameBuffer : FrameBuffer
-  {
+namespace Surreal.Platform.Internal.Graphics.Resources {
+  internal sealed class HeadlessFrameBuffer : FrameBuffer {
     public override Texture Texture { get; } = new HeadlessTexture(
-      format: TextureFormat.RGBA8888,
-      filterMode: TextureFilterMode.Point,
-      wrapMode: TextureWrapMode.Clamp
+        format: TextureFormat.RGBA8888,
+        filterMode: TextureFilterMode.Point,
+        wrapMode: TextureWrapMode.Clamp
     );
   }
 }

@@ -1,20 +1,15 @@
 using Surreal.Timing;
 
-namespace Surreal.Framework.Editing.Modes
-{
-  public sealed class EditorModeManager
-  {
+namespace Surreal.Framework.Editing.Modes {
+  public sealed class EditorModeManager {
     public EditorMode? CurrentMode { get; private set; }
 
-    public void ChangeTo(EditorMode mode)
-    {
-      if (CurrentMode != null && !CurrentMode.IsDisposed)
-      {
+    public void ChangeTo(EditorMode mode) {
+      if (CurrentMode != null && !CurrentMode.IsDisposed) {
         CurrentMode.Dispose();
       }
 
-      if (!mode.IsInitialized)
-      {
+      if (!mode.IsInitialized) {
         mode.Initialize();
       }
 
@@ -27,10 +22,8 @@ namespace Surreal.Framework.Editing.Modes
     public void Draw(DeltaTime time)   => CurrentMode?.Draw(time);
     public void End()                  => CurrentMode?.End();
 
-    public void Dispose()
-    {
-      if (CurrentMode != null && !CurrentMode.IsDisposed)
-      {
+    public void Dispose() {
+      if (CurrentMode != null && !CurrentMode.IsDisposed) {
         CurrentMode.Dispose();
       }
     }

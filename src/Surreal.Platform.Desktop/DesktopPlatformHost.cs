@@ -12,18 +12,15 @@ using Surreal.Platform.Internal.Graphics;
 using Surreal.Platform.Internal.Input;
 using Surreal.Timing;
 
-namespace Surreal.Platform
-{
-  internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider
-  {
-    private readonly OpenTKWindow        window;
+namespace Surreal.Platform {
+  internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider {
+    private readonly OpenTKWindow         window;
     private readonly DesktopConfiguration configuration;
 
     private readonly FrameCounter  frameCounter      = new FrameCounter();
     private readonly IntervalTimer frameDisplayTimer = new IntervalTimer(1.Seconds());
 
-    public DesktopPlatformHost(OpenTKWindow window, DesktopConfiguration configuration)
-    {
+    public DesktopPlatformHost(OpenTKWindow window, DesktopConfiguration configuration) {
       this.window        = window;
       this.configuration = configuration;
 
@@ -40,8 +37,7 @@ namespace Surreal.Platform
     public OpenTKInputManager    InputManager    { get; }
     public LocalFileSystem       FileSystem      { get; }
 
-    public event Action<int, int> Resized
-    {
+    public event Action<int, int> Resized {
       add => window.Resized += value;
       remove => window.Resized -= value;
     }
@@ -51,65 +47,54 @@ namespace Surreal.Platform
     public bool IsFocused => window.IsFocused;
     public bool IsClosing => window.IsClosing;
 
-    public int Width
-    {
+    public int Width {
       get => window.Width;
       set => window.Width = value;
     }
 
-    public int Height
-    {
+    public int Height {
       get => window.Height;
       set => window.Height = value;
     }
 
-    public bool IsVisible
-    {
+    public bool IsVisible {
       get => window.IsVisible;
       set => window.IsVisible = value;
     }
 
-    public string Title
-    {
+    public string Title {
       get => window.Title;
       set => window.Title = value;
     }
 
-    public bool IsVsyncEnabled
-    {
+    public bool IsVsyncEnabled {
       get => window.IsVsyncEnabled;
       set => window.IsVsyncEnabled = value;
     }
 
-    public void Tick(DeltaTime deltaTime)
-    {
-      if (!IsClosing)
-      {
+    public void Tick(DeltaTime deltaTime) {
+      if (!IsClosing) {
         window.Update();
 
         InputManager.Update();
 
         // show the window after the first frame is complete
-        if (configuration.WaitForFirstFrame && !window.IsVisible)
-        {
+        if (configuration.WaitForFirstFrame && !window.IsVisible) {
           window.IsVisible = true;
         }
 
         // show the game's FPS in the window title
-        if (configuration.ShowFPSInTitle)
-        {
+        if (configuration.ShowFPSInTitle) {
           frameCounter.Tick(deltaTime);
 
-          if (frameDisplayTimer.Tick())
-          {
+          if (frameDisplayTimer.Tick()) {
             Title = $"{configuration.Title} - {frameCounter.FramesPerSecond:F} FPS";
           }
         }
       }
     }
 
-    object? IServiceProvider.GetService(Type serviceType)
-    {
+    object? IServiceProvider.GetService(Type serviceType) {
       if (serviceType == typeof(IAudioBackend)) return AudioBackend;
       if (serviceType == typeof(IComputeBackend)) return ComputeBackend;
       if (serviceType == typeof(IGraphicsBackend)) return GraphicsBackend;
@@ -119,8 +104,7 @@ namespace Surreal.Platform
       return null;
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
       GraphicsBackend.Dispose();
       ComputeBackend.Dispose();
       AudioBackend.Dispose();

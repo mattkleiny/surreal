@@ -10,42 +10,36 @@ using Surreal.Diagnostics.Profiling;
 using Surreal.IO;
 using Surreal.Memory;
 
-namespace Surreal.Assets
-{
+namespace Surreal.Assets {
   // TODO: use proper centralized asset reference tracking, here
 
-  public sealed class AssetManager : IDisposable, IAssetManager
-  {
+  public sealed class AssetManager : IDisposable, IAssetManager {
     private static readonly ILog      Log      = LogFactory.GetLog<AssetManager>();
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<AssetManager>();
 
     private readonly Dictionary<string, object> assets =
-      new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<Type, IAssetLoader> loaders;
     private readonly AssetManager?                  parent;
 
     public AssetManager()
-      : this(Enumerable.Empty<IAssetLoader>())
-    {
+        : this(Enumerable.Empty<IAssetLoader>()) {
     }
 
     public AssetManager(AssetManager parent)
-      : this(parent.loaders.Values)
-    {
+        : this(parent.loaders.Values) {
       this.parent = parent;
     }
 
-    public AssetManager(IEnumerable<IAssetLoader> loaders)
-    {
+    public AssetManager(IEnumerable<IAssetLoader> loaders) {
       this.loaders = loaders.ToDictionary(loader => loader.AssetType);
     }
 
     public int  Count         => assets.Count;
     public Size EstimatedSize => assets.Values.OfType<IHasSizeEstimate>().Select(asset => asset.Size).Sum();
 
-    public void RegisterLoader(IAssetLoader loader)
-    {
+    public void RegisterLoader(IAssetLoader loader) {
       loaders[loader.AssetType] = loader;
     }
 
@@ -54,13 +48,11 @@ namespace Surreal.Assets
     public bool Contains<TAsset>(Path path)    => assets.ContainsKey(GetCacheKey(typeof(TAsset), path));
     public bool Contains(Type type, Path path) => assets.ContainsKey(GetCacheKey(type, path));
 
-    public async Task<TAsset> GetOrLoadAsync<TAsset>(Path path)
-    {
+    public async Task<TAsset> GetOrLoadAsync<TAsset>(Path path) {
       return (TAsset) await GetOrLoadAsync(typeof(TAsset), path);
     }
 
-    public async Task<object> GetOrLoadAsync(Type type, Path path)
-    {
+    public async Task<object> GetOrLoadAsync(Type type, Path path) {
       using var _ = Profiler.Track($"Loading:{type.Name}");
 
       Log.Trace($"Loading {type.Name} from {path}");
@@ -68,23 +60,19 @@ namespace Surreal.Assets
       return await GetOrLoadInnerAsync(type, path, new AssetLoaderContext(this));
     }
 
-    private async Task<object> GetOrLoadInnerAsync(Type type, Path path, AssetLoaderContext context)
-    {
-      if (!loaders.ContainsKey(type))
-      {
+    private async Task<object> GetOrLoadInnerAsync(Type type, Path path, AssetLoaderContext context) {
+      if (!loaders.ContainsKey(type)) {
         throw new UnsupportedAssetException($"An unsupported asset type was requested: {type}");
       }
 
       // if the parent exists and contains the asset already, delegate to it
-      if (parent?.Contains(type, path) == true)
-      {
+      if (parent?.Contains(type, path) == true) {
         return await parent!.GetOrLoadAsync(type, path);
       }
 
       var cacheKey = GetCacheKey(type, path);
 
-      return await assets.GetOrComputeAsync(cacheKey, async _ =>
-      {
+      return await assets.GetOrComputeAsync(cacheKey, async _ => {
         var loader = loaders[type];
 
         return await loader!.LoadAssetAsync(path, context);
@@ -92,25 +80,19 @@ namespace Surreal.Assets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static string GetCacheKey(Type type, Path path)
-    {
+    private static string GetCacheKey(Type type, Path path) {
       return $"{type.Name}:{path}";
     }
 
-    public void Dispose()
-    {
-      foreach (var asset in assets.Values)
-      {
-        if (asset is IDisposable disposable)
-        {
+    public void Dispose() {
+      foreach (var asset in assets.Values) {
+        if (asset is IDisposable disposable) {
           disposable.Dispose();
         }
       }
 
-      foreach (var loader in loaders.Values)
-      {
-        if (loader is IDisposable disposable)
-        {
+      foreach (var loader in loaders.Values) {
+        if (loader is IDisposable disposable) {
           disposable.Dispose();
         }
       }
@@ -122,17 +104,14 @@ namespace Surreal.Assets
     IEnumerator<object> IEnumerable<object>.                     GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.                                     GetEnumerator() => GetEnumerator();
 
-    private sealed class AssetLoaderContext : IAssetLoaderContext
-    {
+    private sealed class AssetLoaderContext : IAssetLoaderContext {
       private readonly AssetManager manager;
 
-      public AssetLoaderContext(AssetManager manager)
-      {
+      public AssetLoaderContext(AssetManager manager) {
         this.manager = manager;
       }
 
-      public async Task<TAsset> GetAsync<TAsset>(Path path)
-      {
+      public async Task<TAsset> GetAsync<TAsset>(Path path) {
         return (TAsset) await manager.GetOrLoadInnerAsync(typeof(TAsset), path, this);
       }
     }

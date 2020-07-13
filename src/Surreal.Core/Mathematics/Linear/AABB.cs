@@ -2,15 +2,12 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Mathematics.Linear
-{
-  public readonly struct AABB : IEquatable<AABB>
-  {
+namespace Surreal.Mathematics.Linear {
+  public readonly struct AABB : IEquatable<AABB> {
     public readonly Vector3 Min;
     public readonly Vector3 Max;
 
-    public AABB(Vector3 min, Vector3 max)
-    {
+    public AABB(Vector3 min, Vector3 max) {
       Min = min;
       Max = max;
     }
@@ -41,8 +38,7 @@ namespace Surreal.Mathematics.Linear
          vector.Z >= Min.Z &&
          vector.Z <= Max.Z;
 
-    public override bool Equals(object obj)
-    {
+    public override bool Equals(object obj) {
       if (ReferenceEquals(null, obj)) return false;
       return obj is AABB other && Equals(other);
     }

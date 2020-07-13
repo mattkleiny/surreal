@@ -5,10 +5,8 @@ using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Rendering.Culling;
 using Surreal.Graphics.Rendering.PostProcessing;
 
-namespace Avventura.Graphics
-{
-  public sealed class DedicatedRenderer : ForwardRenderer
-  {
+namespace Avventura.Graphics {
+  public sealed class DedicatedRenderer : ForwardRenderer {
     public PalettePass  PalettePass  { get; } = new PalettePass();
     public LightingPass LightingPass { get; } = new LightingPass();
 
@@ -18,13 +16,12 @@ namespace Avventura.Graphics
     public FastBloomEffect      BloomEffect        { get; } = new FastBloomEffect();
 
     public DedicatedRenderer(
-      IGraphicsDevice device,
-      ICullingStrategy cullingStrategy,
-      in FrameBufferDescriptor colorDescriptor,
-      in FrameBufferDescriptor depthDescriptor,
-      IAssetResolver assets)
-      : base(device, cullingStrategy, colorDescriptor, depthDescriptor, assets)
-    {
+        IGraphicsDevice device,
+        ICullingStrategy cullingStrategy,
+        in FrameBufferDescriptor colorDescriptor,
+        in FrameBufferDescriptor depthDescriptor,
+        IAssetResolver assets)
+        : base(device, cullingStrategy, colorDescriptor, depthDescriptor, assets) {
       Add(PalettePass);
       Add(LightingPass);
 

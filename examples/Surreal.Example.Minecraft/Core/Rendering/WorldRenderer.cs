@@ -8,10 +8,8 @@ using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 
-namespace Minecraft.Core.Rendering
-{
-  public sealed class WorldRenderer : IDisposable
-  {
+namespace Minecraft.Core.Rendering {
+  public sealed class WorldRenderer : IDisposable {
     private const string CameraUniform = "u_projView";
     private const string OffsetUniform = "u_offset";
 
@@ -20,31 +18,26 @@ namespace Minecraft.Core.Rendering
 
     private readonly ShaderProgram shader;
 
-    public static async Task<WorldRenderer> CreateAsync(IGraphicsDevice device)
-    {
+    public static async Task<WorldRenderer> CreateAsync(IGraphicsDevice device) {
       var shader = device.Factory.CreateShaderProgram(
-        await Shader.LoadAsync(ShaderType.Vertex, "resx://Minecraft.Resources.Shaders.Chunk.vert.glsl"),
-        await Shader.LoadAsync(ShaderType.Fragment, "resx://Minecraft.Resources.Shaders.Chunk.frag.glsl")
+          await Shader.LoadAsync(ShaderType.Vertex, "resx://Minecraft.Resources.Shaders.Chunk.vert.glsl"),
+          await Shader.LoadAsync(ShaderType.Fragment, "resx://Minecraft.Resources.Shaders.Chunk.frag.glsl")
       );
 
       return new WorldRenderer(shader);
     }
 
-    private WorldRenderer(ShaderProgram shader)
-    {
+    private WorldRenderer(ShaderProgram shader) {
       this.shader = shader;
     }
 
     public Neighborhood Neighborhood { get; set; }
 
-    public void Render(IGraphicsDevice device, World world, ICamera camera, bool wireframe)
-    {
+    public void Render(IGraphicsDevice device, World world, ICamera camera, bool wireframe) {
       shader.SetUniform(CameraUniform, in camera.ProjectionView);
 
-      foreach (var chunk in world.GetChunksInNeighborhood(Neighborhood))
-      {
-        if (!meshCache.TryGetValue(chunk, out var mesh))
-        {
+      foreach (var chunk in world.GetChunksInNeighborhood(Neighborhood)) {
+        if (!meshCache.TryGetValue(chunk, out var mesh)) {
           mesh = meshCache[chunk] = new ChunkMesh(device, chunk);
         }
 
@@ -57,10 +50,8 @@ namespace Minecraft.Core.Rendering
       }
     }
 
-    public void Dispose()
-    {
-      foreach (var mesh in meshCache.Values)
-      {
+    public void Dispose() {
+      foreach (var mesh in meshCache.Values) {
         mesh.Dispose();
       }
 

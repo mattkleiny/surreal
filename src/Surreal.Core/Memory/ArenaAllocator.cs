@@ -3,15 +3,12 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Memory
-{
-  public ref struct ArenaAllocator
-  {
+namespace Surreal.Memory {
+  public ref struct ArenaAllocator {
     private readonly Span<byte> buffer;
     private volatile int        position;
 
-    public ArenaAllocator(Span<byte> buffer)
-    {
+    public ArenaAllocator(Span<byte> buffer) {
       this.buffer = buffer;
 
       position = 0;
@@ -21,8 +18,7 @@ namespace Surreal.Memory
     public Size Remaining => new Size(buffer.Length - position);
 
     public unsafe ref T Allocate<T>()
-      where T : unmanaged
-    {
+        where T : unmanaged {
       var size    = sizeof(T);
       var pointer = Unsafe.AsPointer(ref buffer[position]);
 
@@ -34,8 +30,7 @@ namespace Surreal.Memory
       return ref Unsafe.AsRef<T>(pointer);
     }
 
-    public void Clear()
-    {
+    public void Clear() {
       buffer.Fill(default);
       position = 0;
     }
@@ -43,10 +38,8 @@ namespace Surreal.Memory
     [Conditional("DEBUG")]
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void CheckCapacity<T>(int size)
-    {
-      if (position + size > buffer.Length)
-      {
+    private void CheckCapacity<T>(int size) {
+      if (position + size > buffer.Length) {
         throw new Exception($"Not enough space on the arena allocator to allocate {typeof(T)}. Available {Remaining} of {Capacity}.");
       }
     }

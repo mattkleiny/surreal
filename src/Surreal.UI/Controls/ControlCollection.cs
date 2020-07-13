@@ -1,15 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Surreal.UI.Controls
-{
-  public sealed class ControlCollection : IEnumerable<Control>
-  {
+namespace Surreal.UI.Controls {
+  public sealed class ControlCollection : IEnumerable<Control> {
     private readonly List<Control> entries = new List<Control>();
     private readonly Control?      parent;
 
-    public ControlCollection(Control? parent)
-    {
+    public ControlCollection(Control? parent) {
       this.parent = parent;
     }
 
@@ -17,14 +14,12 @@ namespace Surreal.UI.Controls
 
     public Control this[int index] => entries[index];
 
-    public void Add(Control control)
-    {
+    public void Add(Control control) {
       control.Parent = parent;
       entries.Add(control);
     }
 
-    public void Remove(Control control)
-    {
+    public void Remove(Control control) {
       control.Parent = null;
       entries.Remove(control);
     }

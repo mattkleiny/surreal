@@ -1,6 +1,4 @@
-namespace Surreal.Framework.Editing.Controls
-{
-  public abstract class EditorControl
-  {
+namespace Surreal.Framework.Editing.Controls {
+  public abstract class EditorControl {
   }
 }

@@ -1,11 +1,8 @@
 using Surreal.Mathematics;
 
-namespace Surreal.Timing
-{
-  public readonly struct QuantisedTime
-  {
-    public QuantisedTime(float currentTime, float totalTime)
-    {
+namespace Surreal.Timing {
+  public readonly struct QuantisedTime {
+    public QuantisedTime(float currentTime, float totalTime) {
       CurrentTime = currentTime;
       TotalTime   = totalTime;
     }

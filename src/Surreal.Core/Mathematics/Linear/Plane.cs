@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Surreal.Mathematics.Linear
-{
-  public static class PlaneExtensions
-  {
-    public static Halfspace Test(this Plane plane, Vector3 vector)
-    {
+namespace Surreal.Mathematics.Linear {
+  public static class PlaneExtensions {
+    public static Halfspace Test(this Plane plane, Vector3 vector) {
       var dist = Plane.DotNormal(plane, vector) + plane.D;
 
-      if (Math.Abs(dist) < float.Epsilon)
-      {
+      if (Math.Abs(dist) < float.Epsilon) {
         return Halfspace.OnPlane;
       }
 
-      if (dist < 0)
-      {
+      if (dist < 0) {
         return Halfspace.Behind;
       }
 

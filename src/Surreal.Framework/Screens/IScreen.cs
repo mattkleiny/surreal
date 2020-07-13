@@ -1,10 +1,8 @@
 ﻿using System;
 using Surreal.Timing;
 
-namespace Surreal.Framework.Screens
-{
-  public interface IScreen : IDisposable
-  {
+namespace Surreal.Framework.Screens {
+  public interface IScreen : IDisposable {
     bool IsInitialized { get; }
     bool IsDisposed    { get; }
 

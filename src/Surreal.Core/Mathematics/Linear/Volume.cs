@@ -1,9 +1,6 @@
-namespace Surreal.Mathematics.Linear
-{
-  public readonly struct Volume
-  {
-    public Volume(int width, int height, int depth)
-    {
+namespace Surreal.Mathematics.Linear {
+  public readonly struct Volume {
+    public Volume(int width, int height, int depth) {
       Width  = width;
       Height = height;
       Depth  = depth;

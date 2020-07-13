@@ -8,12 +8,10 @@ using Surreal.Graphics;
 using Surreal.Mathematics.Curves;
 using Surreal.Timing;
 
-namespace Surreal.Framework
-{
+namespace Surreal.Framework {
   public delegate T Interpolator<T>(T a, T b, float t);
 
-  public static class TweeningExtensions
-  {
+  public static class TweeningExtensions {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Task TweenOverTime(this FloatParameter parameter, IClock clock, float a, float b, TimeSpan duration, AnimationCurve curve, CancellationToken cancellationToken = default)
       => TweenOverTime(parameter, clock, Maths.Lerp, a, b, duration, curve, cancellationToken);
@@ -39,7 +37,8 @@ namespace Surreal.Framework
       => TweenOverTime(parameter, clock, Vector4.Lerp, a, b, duration, curve, cancellationToken);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Task TweenOverTime<T>(this Parameter<T> parameter, IClock clock, Interpolator<T> evaluator, T a, T b, TimeSpan duration, AnimationCurve curve, CancellationToken cancellationToken = default)
+    public static Task TweenOverTime<T>(this Parameter<T> parameter, IClock clock, Interpolator<T> evaluator, T a, T b, TimeSpan duration, AnimationCurve curve,
+        CancellationToken cancellationToken = default)
       => clock.EvaluateOverTime(duration, time => parameter.Value = evaluator(a, b, curve(time.NormalizedTime)), cancellationToken);
   }
 }

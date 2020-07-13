@@ -1,7 +1,5 @@
-﻿namespace Isaac.Core.Maps
-{
-  public enum RoomType
-  {
+﻿namespace Isaac.Core.Maps {
+  public enum RoomType {
     Empty,
     Standard,
     Spawn,

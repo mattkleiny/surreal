@@ -1,10 +1,8 @@
 using Surreal.Audio.Clips;
 using Surreal.Audio.SPI;
 
-namespace Surreal.Audio
-{
-  public interface IAudioDevice
-  {
+namespace Surreal.Audio {
+  public interface IAudioDevice {
     IAudioBackend Backend { get; }
     IAudioFactory Factory { get; }
 

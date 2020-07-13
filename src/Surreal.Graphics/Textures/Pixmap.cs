@@ -10,15 +10,12 @@ using Surreal.IO;
 using Surreal.Mathematics.Grids;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Textures
-{
+namespace Surreal.Graphics.Textures {
   [DebuggerDisplay("Pixmap {Width}x{Height} ~{Size}")]
-  public sealed class Pixmap : IGrid<Color>, ITextureData, IDisposable
-  {
+  public sealed class Pixmap : IGrid<Color>, ITextureData, IDisposable {
     private readonly IDisposableBuffer<Color> buffer;
 
-    public static async Task<Pixmap> LoadAsync(Path path)
-    {
+    public static async Task<Pixmap> LoadAsync(Path path) {
       await using var stream = await path.OpenInputStreamAsync();
       using var       image  = Image.Load(stream);
 
@@ -29,9 +26,8 @@ namespace Surreal.Graphics.Textures
       return result;
     }
 
-    public Pixmap(int width, int height)
-    {
-      Check.That(width > 0, "width > 0");
+    public Pixmap(int width, int height) {
+      Check.That(width  > 0, "width > 0");
       Check.That(height > 0, "height > 0");
 
       Width  = width;
@@ -45,10 +41,9 @@ namespace Surreal.Graphics.Textures
     public int  Height { get; }
 
     public TextureFormat Format => TextureFormat.RGBA8888;
-    public Span<Color>   Span => buffer.Span;
+    public Span<Color>   Span   => buffer.Span;
 
-    public Color this[int x, int y]
-    {
+    public Color this[int x, int y] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => Span[x + y * Width];
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -57,8 +52,7 @@ namespace Surreal.Graphics.Textures
 
     public PixmapRegion ToRegion() => new PixmapRegion(this);
 
-    public async Task SaveAsync(Path path)
-    {
+    public async Task SaveAsync(Path path) {
       await using var stream = await path.OpenOutputStreamAsync();
       using var       image  = new Image<Rgba32>(Width, Height);
 
@@ -69,10 +63,8 @@ namespace Surreal.Graphics.Textures
 
     public void Dispose() => buffer.Dispose();
 
-    public sealed class Loader : AssetLoader<Pixmap>
-    {
-      public override async Task<Pixmap> LoadAsync(Path path, IAssetLoaderContext context)
-      {
+    public sealed class Loader : AssetLoader<Pixmap> {
+      public override async Task<Pixmap> LoadAsync(Path path, IAssetLoaderContext context) {
         return await Pixmap.LoadAsync(path);
       }
     }

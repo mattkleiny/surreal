@@ -10,10 +10,8 @@ using Surreal.Platform.Internal.Graphics;
 using Surreal.Platform.Internal.Input;
 using Surreal.Timing;
 
-namespace Surreal.Platform
-{
-  internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider
-  {
+namespace Surreal.Platform {
+  internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider {
     public HeadlessAudioBackend    AudioBackend    { get; } = new HeadlessAudioBackend();
     public HeadlessComputeBackend  ComputeBackend  { get; } = new HeadlessComputeBackend();
     public HeadlessGraphicsBackend GraphicsBackend { get; } = new HeadlessGraphicsBackend();
@@ -33,8 +31,7 @@ namespace Surreal.Platform
     public IHeadlessKeyboardDevice Keyboard => InputManager.Keyboard;
     public IHeadlessMouseDevice    Mouse    => InputManager.Mouse;
 
-    object? IServiceProvider.GetService(Type serviceType)
-    {
+    object? IServiceProvider.GetService(Type serviceType) {
       if (serviceType == typeof(IAudioBackend)) return AudioBackend;
       if (serviceType == typeof(IComputeBackend)) return ComputeBackend;
       if (serviceType == typeof(IGraphicsBackend)) return GraphicsBackend;
@@ -44,13 +41,11 @@ namespace Surreal.Platform
       return null;
     }
 
-    public void Tick(DeltaTime deltaTime)
-    {
+    public void Tick(DeltaTime deltaTime) {
       InputManager.Update();
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
       // no-op
     }
   }

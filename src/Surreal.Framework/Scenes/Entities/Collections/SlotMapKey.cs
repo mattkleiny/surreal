@@ -1,17 +1,13 @@
 using System;
 
-namespace Surreal.Framework.Scenes.Entities.Collections
-{
-  internal readonly struct SlotMapKey : IEquatable<SlotMapKey>
-  {
-    public SlotMapKey(int index, int version)
-    {
+namespace Surreal.Framework.Scenes.Entities.Collections {
+  internal readonly struct SlotMapKey : IEquatable<SlotMapKey> {
+    public SlotMapKey(int index, int version) {
       Index   = index;
       Version = version;
     }
 
-    public void Deconstruct(out int index, out int version)
-    {
+    public void Deconstruct(out int index, out int version) {
       index   = Index;
       version = Version;
     }
@@ -19,13 +15,11 @@ namespace Surreal.Framework.Scenes.Entities.Collections
     public readonly int Index;
     public readonly int Version;
 
-    public bool Equals(SlotMapKey other)
-    {
+    public bool Equals(SlotMapKey other) {
       return Index == other.Index && Version == other.Version;
     }
 
-    public override bool Equals(object obj)
-    {
+    public override bool Equals(object obj) {
       if (ReferenceEquals(null, obj)) return false;
 
       return obj is EntityId other && Equals(other);

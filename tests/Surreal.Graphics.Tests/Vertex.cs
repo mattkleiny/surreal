@@ -2,23 +2,21 @@
 using System.Runtime.InteropServices;
 using Surreal.Graphics.Meshes;
 
-namespace Surreal.Graphics
-{
+namespace Surreal.Graphics {
   [StructLayout(LayoutKind.Sequential)]
-  internal struct Vertex
-  {
+  internal struct Vertex {
     [VertexAttribute(
-      Alias = "a_position",
-      Count = 3,
-      Type  = VertexType.Float
+        Alias = "a_position",
+        Count = 3,
+        Type  = VertexType.Float
     )]
     public Vector3 Position;
 
     [VertexAttribute(
-      Alias      = "a_color",
-      Count      = 4,
-      Type       = VertexType.UnsignedByte,
-      Normalized = true
+        Alias      = "a_color",
+        Count      = 4,
+        Type       = VertexType.UnsignedByte,
+        Normalized = true
     )]
     public Color Color;
   }

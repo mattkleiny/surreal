@@ -5,23 +5,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Surreal.Diagnostics.Logging;
 
-namespace Surreal.Fibers
-{
-  public sealed class Fiber
-  {
+namespace Surreal.Fibers {
+  public sealed class Fiber {
     private static readonly ILog Log = LogFactory.GetLog<Fiber>();
 
     private static long NextFiberId;
 
     private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-    public static Fiber Start(FiberScheduler scheduler, Func<Task> method)
-    {
+    public static Fiber Start(FiberScheduler scheduler, Func<Task> method) {
       return Start(scheduler, _ => method());
     }
 
-    public static Fiber Start(FiberScheduler scheduler, Func<CancellationToken, Task> method)
-    {
+    public static Fiber Start(FiberScheduler scheduler, Func<CancellationToken, Task> method) {
       var fiber = new Fiber(scheduler);
 
       fiber.Execute(method);
@@ -29,8 +25,7 @@ namespace Surreal.Fibers
       return fiber;
     }
 
-    private Fiber(FiberScheduler scheduler)
-    {
+    private Fiber(FiberScheduler scheduler) {
       Id = Interlocked.Increment(ref NextFiberId);
 
       Scheduler              = scheduler;
@@ -44,44 +39,36 @@ namespace Surreal.Fibers
     public CancellationToken CancellationToken => cancellationTokenSource.Token;
 
     public bool IsCompleted => State == FiberState.Completed ||
-      State == FiberState.Faulted ||
-      State == FiberState.Cancelled;
+                               State == FiberState.Faulted   ||
+                               State == FiberState.Cancelled;
 
     public bool IsFaulted => State == FiberState.Faulted;
 
     internal FiberSynchronizationContext SynchronizationContext { get; }
 
-    public void Cancel()
-    {
+    public void Cancel() {
       cancellationTokenSource.Cancel();
     }
 
-    public void PropagateException()
-    {
-      if (Exception != null)
-      {
+    public void PropagateException() {
+      if (Exception != null) {
         ExceptionDispatchInfo.Capture(Exception).Throw();
       }
     }
 
-    private void Execute(Func<CancellationToken, Task> method)
-    {
+    private void Execute(Func<CancellationToken, Task> method) {
       Transition(FiberState.New, FiberState.Running);
 
-      Scheduler.Schedule(this, async () =>
-      {
-        try
-        {
+      Scheduler.Schedule(this, async () => {
+        try {
           await method(CancellationToken);
 
           Transition(FiberState.Running, FiberState.Completed);
         }
-        catch (OperationCanceledException)
-        {
+        catch (OperationCanceledException) {
           Transition(FiberState.Running, FiberState.Cancelled);
         }
-        catch (Exception exception)
-        {
+        catch (Exception exception) {
           Log.Error($"An unexpected error occurred whilst executing a fiber: {exception}");
 
           Exception = exception;
@@ -93,10 +80,8 @@ namespace Surreal.Fibers
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void Transition(FiberState required, FiberState desired)
-    {
-      if (!State.Equals(required))
-      {
+    private void Transition(FiberState required, FiberState desired) {
+      if (!State.Equals(required)) {
         throw new InvalidOperationException($"Expected to be in the {required} state, instead was in the {State} state.");
       }
 

@@ -1,7 +1,5 @@
-namespace Avventura.Model.Effects
-{
-  public enum EffectStatus
-  {
+namespace Avventura.Model.Effects {
+  public enum EffectStatus {
     Continue,
     Remove
   }

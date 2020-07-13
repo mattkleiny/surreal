@@ -4,12 +4,10 @@ using Surreal.Assets;
 using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 
-namespace Surreal.Framework.Screens
-{
+namespace Surreal.Framework.Screens {
   public abstract class LoadingScreen<TGame, TScreen> : GameScreen<TGame>
-    where TGame : GameJam
-    where TScreen : class, ILoadableScreen
-  {
+      where TGame : GameJam
+      where TScreen : class, ILoadableScreen {
     private static readonly ILog Log = LogFactory.GetLog<LoadingScreen<TGame, TScreen>>();
 
     private readonly Stopwatch stopwatch = new Stopwatch();
@@ -20,17 +18,15 @@ namespace Surreal.Framework.Screens
     private bool                   finalized;
 
     protected LoadingScreen(TGame game, TScreen screen)
-      : base(game)
-    {
+        : base(game) {
       this.screen = screen;
     }
 
     public int   ExpectedAssets => resolver?.ExpectedAssets ?? 1;
-    public int   LoadedAssets   => resolver?.LoadedAssets ?? 1;
+    public int   LoadedAssets   => resolver?.LoadedAssets   ?? 1;
     public float Progress       => (float) LoadedAssets / ExpectedAssets;
 
-    public override void Initialize()
-    {
+    public override void Initialize() {
       base.Initialize();
 
       // kick off a task to load and initialize the target state
@@ -40,20 +36,17 @@ namespace Surreal.Framework.Screens
       loadingTask = Task.Run(() => screen.LoadInBackgroundAsync(resolver));
     }
 
-    public override void Update(GameTime time)
-    {
+    public override void Update(GameTime time) {
       base.Update(time);
 
-      if (loadingTask?.IsCompleted == true && !finalized)
-      {
+      if (loadingTask?.IsCompleted == true && !finalized) {
         stopwatch.Stop();
 
         // waiting on the completed task will propagate any faults
         if (loadingTask.IsFaulted) loadingTask.Wait();
 
         // swap to the new state at the start of the next frame
-        Engine.Schedule(() =>
-        {
+        Engine.Schedule(() => {
           Log.Trace($"{screen.GetType().GetFullNameWithoutGenerics()} loaded successfully. Time taken: {stopwatch.Elapsed:g}");
 
           Game.Screens.Pop();
@@ -65,35 +58,29 @@ namespace Surreal.Framework.Screens
       }
     }
 
-    public override void Dispose()
-    {
-      if (!loadingTask?.IsCompleted ?? false)
-      {
+    public override void Dispose() {
+      if (!loadingTask?.IsCompleted ?? false) {
         screen.Dispose();
       }
 
       base.Dispose();
     }
 
-    private sealed class TrackingAssetResolver : IAssetResolver, IAssetManifest
-    {
+    private sealed class TrackingAssetResolver : IAssetResolver, IAssetManifest {
       private readonly IAssetResolver resolver;
 
-      public TrackingAssetResolver(IAssetResolver resolver)
-      {
+      public TrackingAssetResolver(IAssetResolver resolver) {
         this.resolver = resolver;
       }
 
       public int ExpectedAssets { get; private set; }
       public int LoadedAssets   { get; private set; }
 
-      public void Add<TAsset>(Path path)
-      {
+      public void Add<TAsset>(Path path) {
         ExpectedAssets++;
       }
 
-      public Task<TAsset> GetAsync<TAsset>(Path path)
-      {
+      public Task<TAsset> GetAsync<TAsset>(Path path) {
         var asset = resolver.GetAsync<TAsset>(path);
 
         LoadedAssets++;

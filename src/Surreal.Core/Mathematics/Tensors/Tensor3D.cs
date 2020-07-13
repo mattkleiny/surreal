@@ -4,23 +4,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Surreal.Memory;
 
-namespace Surreal.Mathematics.Tensors
-{
+namespace Surreal.Mathematics.Tensors {
   [DebuggerDisplay("{ToDebuggerString()}")]
   public sealed class Tensor3D<T> : Tensor<T>, ITensor<T>
-    where T : unmanaged
-  {
+      where T : unmanaged {
     public Tensor3D(int width, int height, int depth)
-      : this(Buffers.Allocate<T>(width * height * depth), width, height, depth)
-    {
+        : this(Buffers.Allocate<T>(width * height * depth), width, height, depth) {
     }
 
     public Tensor3D(IBuffer<T> buffer, int width, int height, int depth)
-      : base(buffer)
-    {
-      Check.That(width > 0, "Width > 0");
-      Check.That(height > 0, "Height > 0");
-      Check.That(depth > 0, "Depth > 0");
+        : base(buffer) {
+      Check.That(width        > 0, "Width > 0");
+      Check.That(height       > 0, "Height > 0");
+      Check.That(depth        > 0, "Depth > 0");
       Check.That(buffer.Count >= width * height * depth, "buffer.Count >= width * height * depth");
 
       Width  = width;
@@ -33,30 +29,25 @@ namespace Surreal.Mathematics.Tensors
     public int Depth  { get; }
 
     public int   Rank  => 3;
-    public int[] Shape => new[] { Width, Height, Depth };
+    public int[] Shape => new[] {Width, Height, Depth};
 
-    public T this[int x, int y, int z]
-    {
+    public T this[int x, int y, int z] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get
-      {
+      get {
         CheckBounds(x, y, z);
 
         return Buffer.Span[x + y * Width + z * Width * Height];
       }
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      set
-      {
+      set {
         CheckBounds(x, y, z);
 
         Buffer.Span[x + y * Width + z * Width * Height] = value;
       }
     }
 
-    T ITensor<T>.this[params int[] ranks]
-    {
-      get
-      {
+    T ITensor<T>.this[params int[] ranks] {
+      get {
         Check.That(ranks.Length == 3, "ranks.Length == 3");
 
         var x = ranks[0];
@@ -65,8 +56,7 @@ namespace Surreal.Mathematics.Tensors
 
         return this[x, y, z];
       }
-      set
-      {
+      set {
         Check.That(ranks.Length == 3, "ranks.Length == 3");
 
         var x = ranks[0];
@@ -80,8 +70,7 @@ namespace Surreal.Mathematics.Tensors
     [Conditional("DEBUG")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
-    private void CheckBounds(int x, int y, int z)
-    {
+    private void CheckBounds(int x, int y, int z) {
       if (x < 0 || x >= Width) throw new IndexOutOfRangeException($"{x} is not in the range [0, {Width})");
       if (y < 0 || y >= Height) throw new IndexOutOfRangeException($"{y} is not in the range [0, {Height})");
       if (z < 0 || z >= Depth) throw new IndexOutOfRangeException($"{z} is not in the range [0, {Depth})");

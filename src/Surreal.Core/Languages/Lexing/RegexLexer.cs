@@ -1,30 +1,24 @@
 using System.Text.RegularExpressions;
 
-namespace Surreal.Languages.Lexing
-{
+namespace Surreal.Languages.Lexing {
   public class RegexLexer<TToken> : StringLexer<TToken>
-    where TToken : struct
-  {
+      where TToken : struct {
     private readonly Rule[] rules;
 
-    public RegexLexer(params Rule[] rules)
-    {
+    public RegexLexer(params Rule[] rules) {
       this.rules = rules;
     }
 
-    protected sealed override bool TryMatch(string line, TokenPosition position, out TToken token, out int length, out bool ignore)
-    {
+    protected sealed override bool TryMatch(string line, TokenPosition position, out TToken token, out int length, out bool ignore) {
       token  = default;
       length = 0;
       ignore = false;
 
-      for (var index = 0; index < rules.Length; index++)
-      {
+      for (var index = 0; index < rules.Length; index++) {
         var rule  = rules[index];
         var match = rule.Regex.Match(line, position.Column);
 
-        if (match.Success && match.Index - position.Column == 0)
-        {
+        if (match.Success && match.Index - position.Column == 0) {
           token  = rule.Tokenizer(match.Value, position);
           length = match.Length;
           ignore = rule.Disregard;
@@ -36,14 +30,12 @@ namespace Surreal.Languages.Lexing
       return false;
     }
 
-    public sealed class Rule
-    {
+    public sealed class Rule {
       public Regex     Regex     { get; }
       public Tokenizer Tokenizer { get; }
       public bool      Disregard { get; }
 
-      public Rule(string pattern, Tokenizer tokenizer, bool disregard = false)
-      {
+      public Rule(string pattern, Tokenizer tokenizer, bool disregard = false) {
         Regex     = new Regex(pattern, RegexOptions.Compiled);
         Tokenizer = tokenizer;
         Disregard = disregard;

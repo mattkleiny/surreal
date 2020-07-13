@@ -1,15 +1,11 @@
-namespace Surreal.Framework.Editing.Graphs
-{
-  public interface IGraph
-  {
+namespace Surreal.Framework.Editing.Graphs {
+  public interface IGraph {
   }
 
-  public interface IGraphPin
-  {
+  public interface IGraphPin {
   }
 
-  public interface IGraphConnector
-  {
+  public interface IGraphConnector {
     IGraphPin From { get; }
     IGraphPin To   { get; }
   }

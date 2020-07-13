@@ -1,7 +1,5 @@
-﻿namespace Surreal.Graphics.Meshes
-{
-  public enum VertexType
-  {
+﻿namespace Surreal.Graphics.Meshes {
+  public enum VertexType {
     Byte,
     UnsignedByte,
     Short,

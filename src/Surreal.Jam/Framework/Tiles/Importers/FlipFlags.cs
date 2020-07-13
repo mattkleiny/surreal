@@ -1,10 +1,8 @@
 using System;
 
-namespace Surreal.Framework.Tiles.Importers
-{
+namespace Surreal.Framework.Tiles.Importers {
   [Flags]
-  public enum FlipFlags : uint
-  {
+  public enum FlipFlags : uint {
     None         = 0,
     Hexagonal120 = 0x10000000,
     Diagonal     = 0x20000000,

@@ -1,9 +1,7 @@
 using System;
 
-namespace Surreal
-{
-  public static class TimeExtensions
-  {
+namespace Surreal {
+  public static class TimeExtensions {
     public static TimeSpan Milliseconds(this int interval) => TimeSpan.FromMilliseconds(interval);
     public static TimeSpan Seconds(this int interval)      => TimeSpan.FromSeconds(interval);
     public static TimeSpan Minutes(this int interval)      => TimeSpan.FromMinutes(interval);

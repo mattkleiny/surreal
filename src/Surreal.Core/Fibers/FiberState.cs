@@ -1,7 +1,5 @@
-﻿namespace Surreal.Fibers
-{
-  public enum FiberState
-  {
+﻿namespace Surreal.Fibers {
+  public enum FiberState {
     New,
     Running,
     Completed,

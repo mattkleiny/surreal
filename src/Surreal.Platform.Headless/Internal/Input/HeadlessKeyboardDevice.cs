@@ -1,10 +1,8 @@
 using System;
 using Surreal.Input.Keyboard;
 
-namespace Surreal.Platform.Internal.Input
-{
-  internal sealed class HeadlessKeyboardDevice : IHeadlessKeyboardDevice
-  {
+namespace Surreal.Platform.Internal.Input {
+  internal sealed class HeadlessKeyboardDevice : IHeadlessKeyboardDevice {
     public event Action<Key> KeyPressed;
     public event Action<Key> KeyReleased;
 
@@ -13,8 +11,7 @@ namespace Surreal.Platform.Internal.Input
     public bool IsKeyPressed(Key key)  => false;
     public bool IsKeyReleased(Key key) => false;
 
-    public void Update()
-    {
+    public void Update() {
     }
   }
 }

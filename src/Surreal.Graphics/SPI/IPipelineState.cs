@@ -3,10 +3,8 @@ using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.SPI.Rasterization;
 
-namespace Surreal.Graphics.SPI
-{
-  public interface IPipelineState
-  {
+namespace Surreal.Graphics.SPI {
+  public interface IPipelineState {
     FrameBuffer      PrimaryFrameBuffer { get; }
     FrameBuffer?     ActiveFrameBuffer  { get; set; }
     ShaderProgram?   ActiveShader       { get; set; }

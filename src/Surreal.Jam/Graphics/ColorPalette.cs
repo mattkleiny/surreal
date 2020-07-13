@@ -7,37 +7,31 @@ using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Path = Surreal.IO.Path;
 
-namespace Surreal.Graphics
-{
-  public sealed class ColorPalette : IDisposable
-  {
+namespace Surreal.Graphics {
+  public sealed class ColorPalette : IDisposable {
     private readonly Color[] colors;
 
     private Pixmap?  pixmap;
     private Texture? texture;
 
-    public ColorPalette(params Color[] colors)
-    {
+    public ColorPalette(params Color[] colors) {
       this.colors = colors;
     }
 
     public int Count => colors.Length;
     public ref Color this[int index] => ref colors[index];
 
-    public Pixmap ToPixmap()
-    {
+    public Pixmap ToPixmap() {
       pixmap ??= new Pixmap(Count, 1);
 
-      for (var i = 0; i < Count; i++)
-      {
+      for (var i = 0; i < Count; i++) {
         pixmap[i, 0] = this[i];
       }
 
       return pixmap;
     }
 
-    public Texture ToTexture(IGraphicsDevice device)
-    {
+    public Texture ToTexture(IGraphicsDevice device) {
       var pixmap = ToPixmap();
 
       texture ??= device.Factory.CreateTexture(pixmap, filterMode: TextureFilterMode.Point);
@@ -46,16 +40,13 @@ namespace Surreal.Graphics
       return texture;
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
       pixmap?.Dispose();
       texture?.Dispose();
     }
 
-    public sealed class Loader : AssetLoader<ColorPalette>
-    {
-      public override async Task<ColorPalette> LoadAsync(Path path, IAssetLoaderContext context)
-      {
+    public sealed class Loader : AssetLoader<ColorPalette> {
+      public override async Task<ColorPalette> LoadAsync(Path path, IAssetLoaderContext context) {
         await using var stream = await path.OpenInputStreamAsync();
         using var       reader = new StreamReader(stream);
 
@@ -68,16 +59,14 @@ namespace Surreal.Graphics
         var count  = int.Parse(await reader.ReadLineAsync());
         var colors = new Color[count];
 
-        for (var i = 0; i < colors.Length; i++)
-        {
+        for (var i = 0; i < colors.Length; i++) {
           var line = await reader.ReadLineAsync();
           var raw = line.Split(' ')
-            .Select(_ => _.Trim())
-            .Select(byte.Parse)
-            .ToArray();
+              .Select(_ => _.Trim())
+              .Select(byte.Parse)
+              .ToArray();
 
-          if (raw.Length != 3)
-          {
+          if (raw.Length != 3) {
             throw new Exception($"Expected 3 but received {raw.Length} color values!");
           }
 

@@ -1,7 +1,5 @@
-﻿namespace Surreal.Graphics.Meshes
-{
-  public enum PrimitiveType
-  {
+﻿namespace Surreal.Graphics.Meshes {
+  public enum PrimitiveType {
     Points,
     Lines,
     LineStrip,

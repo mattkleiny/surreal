@@ -1,7 +1,5 @@
-namespace Surreal.Graphics.Materials
-{
-  public enum ShaderType
-  {
+namespace Surreal.Graphics.Materials {
+  public enum ShaderType {
     Compute,
     Vertex,
     Fragment,

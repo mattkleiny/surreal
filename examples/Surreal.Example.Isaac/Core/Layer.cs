@@ -1,7 +1,5 @@
-﻿namespace Isaac.Core
-{
-  public enum Layer
-  {
+﻿namespace Isaac.Core {
+  public enum Layer {
     Background,
     Foreground,
     Player

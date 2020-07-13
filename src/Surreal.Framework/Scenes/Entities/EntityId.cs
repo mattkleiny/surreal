@@ -1,26 +1,21 @@
 ﻿using System;
 using Surreal.Framework.Scenes.Entities.Collections;
 
-namespace Surreal.Framework.Scenes.Entities
-{
-  public readonly struct EntityId : IEquatable<EntityId>
-  {
+namespace Surreal.Framework.Scenes.Entities {
+  public readonly struct EntityId : IEquatable<EntityId> {
     internal readonly SlotMapKey Key;
 
-    internal EntityId(SlotMapKey key)
-    {
+    internal EntityId(SlotMapKey key) {
       Key = key;
     }
 
     internal int Index => Key.Index;
 
-    public bool Equals(EntityId other)
-    {
+    public bool Equals(EntityId other) {
       return Key == other.Key;
     }
 
-    public override bool Equals(object obj)
-    {
+    public override bool Equals(object obj) {
       if (ReferenceEquals(null, obj)) return false;
 
       return obj is EntityId other && Equals(other);

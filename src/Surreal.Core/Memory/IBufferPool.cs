@@ -1,8 +1,6 @@
-﻿namespace Surreal.Memory
-{
+﻿namespace Surreal.Memory {
   public interface IBufferPool<T>
-    where T : unmanaged
-  {
+      where T : unmanaged {
     IDisposableBuffer<T> Rent(int count);
   }
 }

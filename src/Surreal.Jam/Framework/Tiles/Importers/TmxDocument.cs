@@ -7,19 +7,14 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace Surreal.Framework.Tiles.Importers
-{
+namespace Surreal.Framework.Tiles.Importers {
   [XmlRoot("map")]
-  public sealed class TmxDocument
-  {
-    public static TmxDocument Load(Stream stream)
-    {
-      using (var reader = new XmlTextReader(stream))
-      {
-        var serializer = new XmlSerializer(typeof(TmxDocument));
+  public sealed class TmxDocument {
+    public static TmxDocument Load(Stream stream) {
+      using var reader     = new XmlTextReader(stream);
+      var       serializer = new XmlSerializer(typeof(TmxDocument));
 
-        return (TmxDocument) serializer.Deserialize(reader);
-      }
+      return (TmxDocument) serializer.Deserialize(reader);
     }
 
     [XmlAttribute("version")]    public string Version    { get; set; } = "1.0";
@@ -46,22 +41,19 @@ namespace Surreal.Framework.Tiles.Importers
 
     public PropertyElement? this[string key] => Properties.FirstOrDefault(_ => string.Equals(_.Name, key, StringComparison.OrdinalIgnoreCase));
 
-    public enum EncodingType
-    {
+    public enum EncodingType {
       [XmlEnum("xml")]    Xml    = 0,
       [XmlEnum("base64")] Base64 = 1,
       [XmlEnum("csv")]    Csv    = 2
     }
 
-    public enum CompressionType
-    {
+    public enum CompressionType {
       None                   = 0,
       [XmlEnum("gzip")] GZip = 1,
       [XmlEnum("zlib")] ZLib = 2
     }
 
-    public sealed class GroupElement
-    {
+    public sealed class GroupElement {
       [XmlAttribute("name")] public string Name { get; set; }
 
       [XmlElement("layer", typeof(LayerElement))]
@@ -71,24 +63,21 @@ namespace Surreal.Framework.Tiles.Importers
       public List<ObjectGroupElement> ObjectGroups { get; set; } = new List<ObjectGroupElement>();
     }
 
-    public sealed class ObjectGroupElement
-    {
+    public sealed class ObjectGroupElement {
       [XmlAttribute("name")] public string Name { get; set; }
 
       [XmlElement("object", typeof(ObjectElement))]
       public List<ObjectElement> Objects { get; set; } = new List<ObjectElement>();
     }
 
-    public sealed class ObjectElement
-    {
+    public sealed class ObjectElement {
       [XmlAttribute("name")] public string Name { get; set; }
       [XmlAttribute("type")] public string Type { get; set; }
       [XmlAttribute("x")]    public float  X    { get; set; }
       [XmlAttribute("y")]    public float  Y    { get; set; }
     }
 
-    public sealed class LayerElement
-    {
+    public sealed class LayerElement {
       [XmlAttribute("name")]    public string Name      { get; set; }
       [XmlAttribute("x")]       public int    X         { get; set; }
       [XmlAttribute("y")]       public int    Y         { get; set; }
@@ -100,16 +89,14 @@ namespace Surreal.Framework.Tiles.Importers
       public DataElement Data { get; set; }
     }
 
-    public sealed class DataElement : ChunkElement
-    {
+    public sealed class DataElement : ChunkElement {
       [XmlAttribute("encoding")]    public EncodingType    Encoding    { get; set; }
       [XmlAttribute("compression")] public CompressionType Compression { get; set; }
 
       public IEnumerable<uint> Decode() => Decode(Encoding, Compression);
     }
 
-    public class ChunkElement
-    {
+    public class ChunkElement {
       [XmlAttribute("x")]      public int    X      { get; set; }
       [XmlAttribute("y")]      public int    Y      { get; set; }
       [XmlAttribute("width")]  public int    Width  { get; set; }
@@ -119,12 +106,9 @@ namespace Surreal.Framework.Tiles.Importers
       [XmlElement("chunk", typeof(ChunkElement))]
       public List<ChunkElement> Chunks { get; set; } = new List<ChunkElement>();
 
-      public IEnumerable<uint> Decode(EncodingType encoding, CompressionType compression)
-      {
-        if (!string.IsNullOrEmpty(Data))
-        {
-          switch (encoding)
-          {
+      public IEnumerable<uint> Decode(EncodingType encoding, CompressionType compression) {
+        if (!string.IsNullOrEmpty(Data)) {
+          switch (encoding) {
             case EncodingType.Xml:    return DecodeXml();
             case EncodingType.Csv:    return DecodeCsv();
             case EncodingType.Base64: return DecodeBase64(compression);
@@ -136,29 +120,23 @@ namespace Surreal.Framework.Tiles.Importers
         return Enumerable.Empty<uint>();
       }
 
-      private IEnumerable<uint> DecodeXml()
-      {
-        foreach (var element in XElement.Parse(Data).Elements("tile"))
-        {
+      private IEnumerable<uint> DecodeXml() {
+        foreach (var element in XElement.Parse(Data).Elements("tile")) {
           yield return (uint) element.Attribute("gid");
         }
       }
 
-      private IEnumerable<uint> DecodeCsv()
-      {
+      private IEnumerable<uint> DecodeCsv() {
         var reader   = new StringReader(Data);
         var contents = reader.ReadToEnd();
 
-        foreach (var raw in contents.Split(','))
-        {
+        foreach (var raw in contents.Split(',')) {
           yield return Convert.ToUInt32(raw);
         }
       }
 
-      private IEnumerable<uint> DecodeBase64(CompressionType compression)
-      {
-        switch (compression)
-        {
+      private IEnumerable<uint> DecodeBase64(CompressionType compression) {
+        switch (compression) {
           case CompressionType.None: throw new NotImplementedException();
           case CompressionType.GZip: throw new NotImplementedException();
           case CompressionType.ZLib: throw new NotImplementedException();
@@ -168,8 +146,7 @@ namespace Surreal.Framework.Tiles.Importers
       }
     }
 
-    public enum PropertyType
-    {
+    public enum PropertyType {
       [XmlEnum("string")] String,
       [XmlEnum("int")]    Int,
       [XmlEnum("float")]  Float,
@@ -179,8 +156,7 @@ namespace Surreal.Framework.Tiles.Importers
     }
 
     [DebuggerDisplay("{Name}: {Value} ({Type})")]
-    public sealed class PropertyElement
-    {
+    public sealed class PropertyElement {
       [XmlAttribute("name")]  public string?      Name  { get; set; }
       [XmlAttribute("value")] public string?      Value { get; set; }
       [XmlAttribute("type")]  public PropertyType Type  { get; set; } = PropertyType.String;

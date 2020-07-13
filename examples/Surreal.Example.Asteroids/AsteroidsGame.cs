@@ -5,34 +5,27 @@ using Surreal.Framework;
 using Surreal.Graphics;
 using Surreal.Platform;
 
-namespace Asteroids
-{
-  public sealed class AsteroidsGame : GameJam<AsteroidsGame>
-  {
+namespace Asteroids {
+  public sealed class AsteroidsGame : GameJam<AsteroidsGame> {
     private static readonly Matrix4x4 ProjectionView = Matrix4x4.CreateOrthographic(1920f, 1080f, 0.1f, 300f);
 
-    public static void Main() => Start<AsteroidsGame>(new Configuration
-    {
-      Platform = new DesktopPlatform
-      {
-        Configuration =
-        {
-          Title          = "Asteroids",
-          IsVsyncEnabled = true,
-          ShowFPSInTitle = true
+    public static void Main() => Start<AsteroidsGame>(new Configuration {
+        Platform = new DesktopPlatform {
+            Configuration = {
+                Title          = "Asteroids",
+                IsVsyncEnabled = true,
+                ShowFPSInTitle = true
+            }
         }
-      }
     });
 
-    protected override void Initialize()
-    {
+    protected override void Initialize() {
       base.Initialize();
 
       Screens.Push(new MainScreen(this));
     }
 
-    protected override void Draw(GameTime time)
-    {
+    protected override void Draw(GameTime time) {
       GraphicsDevice.Clear(Color.Black);
       SpriteBatch.Begin(in ProjectionView);
 

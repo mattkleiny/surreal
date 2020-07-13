@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Surreal.Graphics.Meshes
-{
+namespace Surreal.Graphics.Meshes {
   [DebuggerDisplay("{Alias}: {Count}")]
-  public readonly struct VertexAttribute
-  {
+  public readonly struct VertexAttribute {
     public readonly string     Alias;
     public readonly int        Count;
     public readonly int        Size;
@@ -15,8 +13,7 @@ namespace Surreal.Graphics.Meshes
 
     public int Stride => Size * Count;
 
-    public VertexAttribute(string alias, int count, VertexType type, bool normalized, int offset)
-    {
+    public VertexAttribute(string alias, int count, VertexType type, bool normalized, int offset) {
       Normalized = normalized;
       Alias      = alias;
       Count      = count;
@@ -25,10 +22,8 @@ namespace Surreal.Graphics.Meshes
       Offset     = offset;
     }
 
-    private static int DetermineSize(VertexType type)
-    {
-      switch (type)
-      {
+    private static int DetermineSize(VertexType type) {
+      switch (type) {
         case VertexType.Byte:          return sizeof(byte);
         case VertexType.UnsignedByte:  return sizeof(byte);
         case VertexType.Short:         return sizeof(short);

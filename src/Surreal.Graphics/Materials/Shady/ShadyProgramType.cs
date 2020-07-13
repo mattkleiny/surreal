@@ -1,7 +1,5 @@
-namespace Surreal.Graphics.Materials.Shady
-{
-  public enum ShadyProgramType
-  {
+namespace Surreal.Graphics.Materials.Shady {
+  public enum ShadyProgramType {
     Sprite,
     Mesh,
     Compute,

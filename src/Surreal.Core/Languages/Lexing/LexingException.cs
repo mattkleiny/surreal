@@ -1,21 +1,16 @@
 using System;
 
-namespace Surreal.Languages.Lexing
-{
-  public sealed class LexingException : Exception
-  {
-    public LexingException()
-    {
+namespace Surreal.Languages.Lexing {
+  public sealed class LexingException : Exception {
+    public LexingException() {
     }
 
-    public LexingException(string message) 
-      : base(message)
-    {
+    public LexingException(string message)
+        : base(message) {
     }
 
-    public LexingException(string message, Exception innerException) 
-      : base(message, innerException)
-    {
+    public LexingException(string message, Exception innerException)
+        : base(message, innerException) {
     }
   }
 }

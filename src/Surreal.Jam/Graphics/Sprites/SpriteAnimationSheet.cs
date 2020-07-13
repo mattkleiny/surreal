@@ -3,19 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Surreal.Graphics.Sprites
-{
-  public sealed class SpriteAnimationSheet : IReadOnlyList<SpriteAnimation>
-  {
+namespace Surreal.Graphics.Sprites {
+  public sealed class SpriteAnimationSheet : IReadOnlyList<SpriteAnimation> {
     private readonly List<SpriteAnimation> animations = new List<SpriteAnimation>();
 
     public SpriteAnimationSheet()
-      : this(Enumerable.Empty<SpriteAnimation>())
-    {
+        : this(Enumerable.Empty<SpriteAnimation>()) {
     }
 
-    public SpriteAnimationSheet(IEnumerable<SpriteAnimation> animations)
-    {
+    public SpriteAnimationSheet(IEnumerable<SpriteAnimation> animations) {
       this.animations.AddRange(animations);
     }
 
@@ -26,16 +22,12 @@ namespace Surreal.Graphics.Sprites
 
     public SpriteAnimation this[int index] => animations[index];
 
-    public SpriteAnimation? this[string name]
-    {
-      get
-      {
-        for (var i = 0; i < animations.Count; i++)
-        {
+    public SpriteAnimation? this[string name] {
+      get {
+        for (var i = 0; i < animations.Count; i++) {
           var animation = animations[i];
 
-          if (name.Equals(animation.Name, StringComparison.OrdinalIgnoreCase))
-          {
+          if (name.Equals(animation.Name, StringComparison.OrdinalIgnoreCase)) {
             return animation;
           }
         }

@@ -2,13 +2,11 @@ using System;
 using Surreal.Input.Mouse;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Platform.Internal.Input
-{
-  internal sealed class HeadlessMouseDevice : IHeadlessMouseDevice
-  {
+namespace Surreal.Platform.Internal.Input {
+  internal sealed class HeadlessMouseDevice : IHeadlessMouseDevice {
     public event Action<MouseButton> ButtonPressed;
     public event Action<MouseButton> ButtonReleased;
-    public event Action<Vector2I>      Moved;
+    public event Action<Vector2I>    Moved;
 
     public Vector2I Position      { get; set; } = new Vector2I(0, 0);
     public Vector2I DeltaPosition => new Vector2I(0, 0);
@@ -21,8 +19,7 @@ namespace Surreal.Platform.Internal.Input
     public bool IsButtonPressed(MouseButton button)  => false;
     public bool IsButtonReleased(MouseButton button) => false;
 
-    public void Update()
-    {
+    public void Update() {
     }
   }
 }

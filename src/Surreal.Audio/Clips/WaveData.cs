@@ -5,14 +5,11 @@ using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Memory;
 
-namespace Surreal.Audio.Clips
-{
-  public sealed class WaveData : IAudioData, IDisposable, IHasSizeEstimate
-  {
+namespace Surreal.Audio.Clips {
+  public sealed class WaveData : IAudioData, IDisposable, IHasSizeEstimate {
     private readonly IDisposableBuffer<byte> buffer;
 
-    public WaveData(int sampleRate, int channels, int bitsPerSample)
-    {
+    public WaveData(int sampleRate, int channels, int bitsPerSample) {
       SampleRate    = sampleRate;
       Channels      = channels;
       BitsPerSample = bitsPerSample;
@@ -31,17 +28,14 @@ namespace Surreal.Audio.Clips
 
     public void Dispose() => buffer.Dispose();
 
-    public sealed class Loader : AssetLoader<WaveData>
-    {
-      public override async Task<WaveData> LoadAsync(Path path, IAssetLoaderContext context)
-      {
+    public sealed class Loader : AssetLoader<WaveData> {
+      public override async Task<WaveData> LoadAsync(Path path, IAssetLoaderContext context) {
         await using var stream = await path.OpenInputStreamAsync();
-        await using WaveStream reader = System.IO.Path.GetExtension(path.Target) switch
-        {
-          ".wav" => new WaveFileReader(stream),
-          ".mp3" => new Mp3FileReader(stream),
-          ".aiff" => new AiffFileReader(stream),
-          _ => throw new Exception($"An unrecognized file format was requested: {path}")
+        await using WaveStream reader = System.IO.Path.GetExtension(path.Target) switch {
+            ".wav"  => new WaveFileReader(stream),
+            ".mp3"  => new Mp3FileReader(stream),
+            ".aiff" => new AiffFileReader(stream),
+            _       => throw new Exception($"An unrecognized file format was requested: {path}")
         };
 
         var format = reader.WaveFormat;

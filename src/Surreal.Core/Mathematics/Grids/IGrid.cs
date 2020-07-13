@@ -1,7 +1,5 @@
-namespace Surreal.Mathematics.Grids
-{
-  public interface IGrid<T>
-  {
+namespace Surreal.Mathematics.Grids {
+  public interface IGrid<T> {
     int Width  { get; }
     int Height { get; }
 

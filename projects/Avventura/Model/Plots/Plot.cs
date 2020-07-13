@@ -3,14 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Avventura.Model.Plots
-{
-  public sealed class Plot : IEnumerable<PlotPoint>
-  {
+namespace Avventura.Model.Plots {
+  public sealed class Plot : IEnumerable<PlotPoint> {
     private readonly PlotPoint[] points;
 
-    public Plot(params PlotPoint[] points)
-    {
+    public Plot(params PlotPoint[] points) {
       this.points = points;
     }
 
@@ -21,10 +18,8 @@ namespace Avventura.Model.Plots
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
   }
 
-  public readonly struct PlotPoint
-  {
-    public static PlotPoint Blend(PlotPoint a, PlotPoint b, float t)
-    {
+  public readonly struct PlotPoint {
+    public static PlotPoint Blend(PlotPoint a, PlotPoint b, float t) {
       throw new NotImplementedException();
     }
   }

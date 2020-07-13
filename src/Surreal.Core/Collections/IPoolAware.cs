@@ -1,7 +1,5 @@
-namespace Surreal.Collections
-{
-  public interface IPoolAware
-  {
+namespace Surreal.Collections {
+  public interface IPoolAware {
     void Reset();
   }
 }

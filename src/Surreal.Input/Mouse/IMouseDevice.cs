@@ -1,10 +1,8 @@
 ﻿using System;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Input.Mouse
-{
-  public interface IMouseDevice : IInputDevice
-  {
+namespace Surreal.Input.Mouse {
+  public interface IMouseDevice : IInputDevice {
     event Action<MouseButton> ButtonPressed;
     event Action<MouseButton> ButtonReleased;
 

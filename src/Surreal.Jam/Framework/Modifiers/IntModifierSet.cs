@@ -1,20 +1,15 @@
 using System;
 
-namespace Surreal.Framework.Modifiers
-{
-  public sealed class IntModifierSet : ModifierSet<int>
-  {
-    protected override int Calculate(int baseValue, ReadOnlySpan<Modifier<int>> modifiers)
-    {
+namespace Surreal.Framework.Modifiers {
+  public sealed class IntModifierSet : ModifierSet<int> {
+    protected override int Calculate(int baseValue, ReadOnlySpan<Modifier<int>> modifiers) {
       var value      = baseValue;
       var cumulative = 0;
 
-      for (var i = 0; i < modifiers.Length; i++)
-      {
+      for (var i = 0; i < modifiers.Length; i++) {
         var modifier = modifiers[i];
 
-        switch (modifier.Type)
-        {
+        switch (modifier.Type) {
           case ModifierType.Additive:
             value += modifier.Amount;
             break;
@@ -29,8 +24,7 @@ namespace Surreal.Framework.Modifiers
         }
       }
 
-      if (cumulative > 0)
-      {
+      if (cumulative > 0) {
         value *= cumulative;
       }
 

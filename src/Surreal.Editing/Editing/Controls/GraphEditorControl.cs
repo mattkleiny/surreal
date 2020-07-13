@@ -1,6 +1,4 @@
-namespace Surreal.Framework.Editing.Controls
-{
-  public abstract class GraphEditorControl : EditorControl
-  {
+namespace Surreal.Framework.Editing.Controls {
+  public abstract class GraphEditorControl : EditorControl {
   }
 }

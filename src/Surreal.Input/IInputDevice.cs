@@ -1,6 +1,4 @@
-﻿namespace Surreal.Input
-{
-  public interface IInputDevice
-  {
+﻿namespace Surreal.Input {
+  public interface IInputDevice {
   }
 }

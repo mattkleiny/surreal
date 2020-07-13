@@ -1,7 +1,5 @@
-namespace Surreal.Graphics.Rendering.PostProcessing
-{
-  public enum PostProcessingEffectStage
-  {
+namespace Surreal.Graphics.Rendering.PostProcessing {
+  public enum PostProcessingEffectStage {
     BeforeAll,
     EarlyEffects,
     StandardEffects,

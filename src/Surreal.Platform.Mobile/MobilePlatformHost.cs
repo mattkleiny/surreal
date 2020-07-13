@@ -2,12 +2,9 @@ using System;
 using Surreal.Platform.SPI;
 using Surreal.Timing;
 
-namespace Surreal.Platform
-{
-  internal sealed class MobilePlatformHost : IPlatformHost, IServiceProvider
-  {
-    public MobilePlatformHost(IApplication application)
-    {
+namespace Surreal.Platform {
+  internal sealed class MobilePlatformHost : IPlatformHost, IServiceProvider {
+    public MobilePlatformHost(IApplication application) {
       Application = application;
     }
 
@@ -23,17 +20,14 @@ namespace Surreal.Platform
 
     public IServiceProvider Services => this;
 
-    object? IServiceProvider.GetService(Type serviceType)
-    {
+    object? IServiceProvider.GetService(Type serviceType) {
       return null;
     }
 
-    public void Tick(DeltaTime deltaTime)
-    {
+    public void Tick(DeltaTime deltaTime) {
     }
 
-    public void Dispose()
-    {
+    public void Dispose() {
     }
   }
 }

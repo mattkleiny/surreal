@@ -1,7 +1,5 @@
-namespace Surreal.Languages.Expressions
-{
-  public enum BinaryOperation
-  {
+namespace Surreal.Languages.Expressions {
+  public enum BinaryOperation {
     Plus,
     Minus,
     Times,

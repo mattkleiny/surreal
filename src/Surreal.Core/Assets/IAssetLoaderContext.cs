@@ -1,6 +1,4 @@
-﻿namespace Surreal.Assets
-{
-  public interface IAssetLoaderContext : IAssetResolver
-  {
+﻿namespace Surreal.Assets {
+  public interface IAssetLoaderContext : IAssetResolver {
   }
 }

@@ -1,6 +1,4 @@
-namespace Avventura.Model.Abilities
-{
-  public abstract class Ability
-  {
+namespace Avventura.Model.Abilities {
+  public abstract class Ability {
   }
 }

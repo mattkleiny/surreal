@@ -1,11 +1,8 @@
 ﻿using Surreal.Mathematics.Linear;
 
-namespace Surreal.Input.Touch
-{
-  public readonly struct Touch
-  {
-    public Touch(Vector2I position, float pressure)
-    {
+namespace Surreal.Input.Touch {
+  public readonly struct Touch {
+    public Touch(Vector2I position, float pressure) {
       Position = position;
       Pressure = pressure;
     }

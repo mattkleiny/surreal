@@ -1,10 +1,8 @@
 using System;
 using Surreal.Timing;
 
-namespace Surreal.Framework.Simulations
-{
-  public interface ISimulation : IDisposable
-  {
+namespace Surreal.Framework.Simulations {
+  public interface ISimulation : IDisposable {
     void Initialize();
     void Begin();
     void Input(DeltaTime deltaTime);

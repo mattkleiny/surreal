@@ -12,14 +12,11 @@ using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Timing;
 
-namespace Surreal.Framework.Screens
-{
+namespace Surreal.Framework.Screens {
   public abstract class GameScreen<TGame> : Screen, IEditableScreen
-    where TGame : GameJam
-  {
+      where TGame : GameJam {
     protected GameScreen(TGame game)
-      : base(game)
-    {
+        : base(game) {
       Assets = new AssetManager(Game.Assets);
       Clock  = Clocks.Relative(Game.Clock);
     }
@@ -39,29 +36,25 @@ namespace Surreal.Framework.Screens
 
     public AssetManager Assets { get; }
 
-    public override void Initialize()
-    {
+    public override void Initialize() {
       LoadContentAsync(Assets).Wait();
 
       base.Initialize();
     }
 
-    protected virtual Task LoadContentAsync(IAssetResolver assets)
-    {
+    protected virtual Task LoadContentAsync(IAssetResolver assets) {
       return Task.CompletedTask;
     }
 
-    public virtual void GetEditorProperties(ICollection<EditorProperty> properties)
-    {
+    public virtual void GetEditorProperties(ICollection<EditorProperty> properties) {
       properties.Add(EditorProperty.Anonymous(
-        name: nameof(Clock.TimeScale),
-        getter: () => Clock.TimeScale,
-        setter: value => Clock.TimeScale = value
+          name: nameof(Clock.TimeScale),
+          getter: () => Clock.TimeScale,
+          setter: value => Clock.TimeScale = value
       ));
     }
 
-    public override void Dispose()
-    {
+    public override void Dispose() {
       Assets.Dispose();
 
       base.Dispose();

@@ -1,7 +1,5 @@
-﻿namespace Surreal.Platform
-{
-  public interface IPlatform
-  {
+﻿namespace Surreal.Platform {
+  public interface IPlatform {
     IPlatformHost BuildHost();
   }
 }

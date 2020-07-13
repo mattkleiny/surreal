@@ -3,15 +3,11 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Surreal.Framework.Tiles.Importers
-{
+namespace Surreal.Framework.Tiles.Importers {
   [XmlRoot("tileset")]
-  public sealed class TsxDocument
-  {
-    public static TsxDocument Load(Stream stream)
-    {
-      using (var reader = new XmlTextReader(stream))
-      {
+  public sealed class TsxDocument {
+    public static TsxDocument Load(Stream stream) {
+      using (var reader = new XmlTextReader(stream)) {
         var serializer = new XmlSerializer(typeof(TsxDocument));
 
         return (TsxDocument) serializer.Deserialize(reader);
@@ -35,15 +31,13 @@ namespace Surreal.Framework.Tiles.Importers
     [XmlElement("tile", typeof(TileElement))]
     public List<TileElement> Tiles { get; set; } = new List<TileElement>();
 
-    public class ImageElement
-    {
+    public class ImageElement {
       [XmlAttribute("source")] public string Source { get; set; }
       [XmlAttribute("width")]  public int    Width  { get; set; }
       [XmlAttribute("height")] public int    Height { get; set; }
     }
 
-    public class TileElement
-    {
+    public class TileElement {
       [XmlAttribute("id")]   public int    Id   { get; set; }
       [XmlAttribute("type")] public string Type { get; set; }
 
@@ -51,14 +45,12 @@ namespace Surreal.Framework.Tiles.Importers
       public AnimationElement Animation { get; set; }
     }
 
-    public class AnimationElement
-    {
+    public class AnimationElement {
       [XmlElement("frame", typeof(FrameElement))]
       public List<FrameElement> Frames { get; set; } = new List<FrameElement>();
     }
 
-    public class FrameElement
-    {
+    public class FrameElement {
       [XmlAttribute("tileid")]   public int   Id       { get; set; }
       [XmlAttribute("duration")] public float Duration { get; set; }
     }

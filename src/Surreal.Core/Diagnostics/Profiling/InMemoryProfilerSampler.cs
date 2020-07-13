@@ -10,14 +10,11 @@ using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 using Path = Surreal.IO.Path;
 
-namespace Surreal.Diagnostics.Profiling
-{
-  public sealed class InMemoryProfilerSampler : IProfileSampler
-  {
+namespace Surreal.Diagnostics.Profiling {
+  public sealed class InMemoryProfilerSampler : IProfileSampler {
     private static readonly ILog Log = LogFactory.GetLog<InMemoryProfilerSampler>();
 
-    public InMemoryProfilerSampler(int sampleCount = 30)
-    {
+    public InMemoryProfilerSampler(int sampleCount = 30) {
       Check.That(sampleCount > 0, "sampleCount > 0");
 
       Samplers = new SamplerCollection(sampleCount);
@@ -25,13 +22,11 @@ namespace Surreal.Diagnostics.Profiling
 
     public SamplerCollection Samplers { get; }
 
-    public void Sample(string category, string task, TimeSpan duration)
-    {
+    public void Sample(string category, string task, TimeSpan duration) {
       Samplers.GetSampler(category, task).Record(duration);
     }
 
-    public async Task ExportToCSVAsync(Path path)
-    {
+    public async Task ExportToCSVAsync(Path path) {
       await using var stream = await path.OpenOutputStreamAsync();
       await using var writer = new StreamWriter(stream, Encoding.UTF8);
 
@@ -39,34 +34,29 @@ namespace Surreal.Diagnostics.Profiling
 
       await writer.WriteLineAsync("Category,Task,Maximum(ms),Minimum(ms),Average(ms)");
 
-      foreach (var sampler in Samplers)
-      {
+      foreach (var sampler in Samplers) {
         await writer.WriteLineAsync($"{sampler.Category},{sampler.Task},{sampler.Maximum.TotalMilliseconds:F},{sampler.Minimum.TotalMilliseconds:F},{sampler.Average.TotalMilliseconds:F}");
       }
     }
 
-    public sealed class SamplerCollection : IEnumerable<Sampler>
-    {
+    public sealed class SamplerCollection : IEnumerable<Sampler> {
       private readonly ConcurrentDictionary<string, Sampler> samplers = new ConcurrentDictionary<string, Sampler>(StringComparer.OrdinalIgnoreCase);
 
       private readonly int sampleCount;
 
-      public SamplerCollection(int sampleCount)
-      {
+      public SamplerCollection(int sampleCount) {
         Check.That(sampleCount > 0, "sampleCount > 0");
 
         this.sampleCount = sampleCount;
       }
 
-      public Sampler GetSampler(string category, string task)
-      {
+      public Sampler GetSampler(string category, string task) {
         Check.NotNullOrEmpty(category, nameof(category));
         Check.NotNullOrEmpty(task, nameof(task));
 
         var key = $"{category}:{task}";
 
-        if (!samplers.TryGetValue(key, out var sampler))
-        {
+        if (!samplers.TryGetValue(key, out var sampler)) {
           sampler = new Sampler(category, task, sampleCount);
           samplers.TryAdd(key, sampler);
         }
@@ -78,12 +68,10 @@ namespace Surreal.Diagnostics.Profiling
       IEnumerator IEnumerable.    GetEnumerator() => GetEnumerator();
     }
 
-    public sealed class Sampler : IEnumerable<TimeSpan>
-    {
+    public sealed class Sampler : IEnumerable<TimeSpan> {
       private readonly RingBuffer<TimeSpan> samples;
 
-      public Sampler(string category, string task, int sampleCount)
-      {
+      public Sampler(string category, string task, int sampleCount) {
         Category = category;
         Task     = task;
 
@@ -93,18 +81,16 @@ namespace Surreal.Diagnostics.Profiling
       public string Category { get; }
       public string Task     { get; }
 
-      public TimeSpan Maximum => samples.Max();
-      public TimeSpan Minimum => samples.Min();
-      public TimeSpan Average => samples.Average();
+      public TimeSpan Maximum => samples.FastMax();
+      public TimeSpan Minimum => samples.FastMin();
+      public TimeSpan Average => samples.FastAverage();
 
-      public void Record(TimeSpan duration)
-      {
+      public void Record(TimeSpan duration) {
         // serialized write access; unguarded read access.
         // we want to avoid race conditions in the RingBuffer as it's internally unguarded.
         // however, concurrent read access to samples is not a huge concern and if they
         // are out of sync between threads it's less relevant.
-        lock (samples)
-        {
+        lock (samples) {
           samples.Add(duration);
         }
       }

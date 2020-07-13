@@ -2,19 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Surreal.Graphics.Sprites
-{
-  public sealed class SpriteAnimation : IReadOnlyList<SpriteFrame>
-  {
+namespace Surreal.Graphics.Sprites {
+  public sealed class SpriteAnimation : IReadOnlyList<SpriteFrame> {
     private readonly List<SpriteFrame> frames = new List<SpriteFrame>();
 
     public SpriteAnimation(string name)
-      : this(name, Enumerable.Empty<SpriteFrame>())
-    {
+        : this(name, Enumerable.Empty<SpriteFrame>()) {
     }
 
-    public SpriteAnimation(string name, IEnumerable<SpriteFrame> frames)
-    {
+    public SpriteAnimation(string name, IEnumerable<SpriteFrame> frames) {
       Name = name;
 
       this.frames.AddRange(frames);
@@ -28,12 +24,9 @@ namespace Surreal.Graphics.Sprites
     public void Add(SpriteFrame frame)    => frames.Add(frame);
     public void Remove(SpriteFrame frame) => frames.Remove(frame);
 
-    public int Count
-    {
-      get
-      {
-        if (IsCycling)
-        {
+    public int Count {
+      get {
+        if (IsCycling) {
           // double the frames, minus the start and the end
           return 2 * frames.Count - 2;
         }
@@ -42,12 +35,9 @@ namespace Surreal.Graphics.Sprites
       }
     }
 
-    public SpriteFrame this[int index]
-    {
-      get
-      {
-        if (IsCycling && index >= frames.Count)
-        {
+    public SpriteFrame this[int index] {
+      get {
+        if (IsCycling && index >= frames.Count) {
           // cycle backwards after the end of the array
           return frames[Count - index];
         }

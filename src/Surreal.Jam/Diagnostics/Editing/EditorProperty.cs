@@ -2,10 +2,8 @@ using System;
 using System.Diagnostics;
 using Surreal.Framework.Parameters;
 
-namespace Surreal.Diagnostics.Editing
-{
-  public abstract class EditorProperty
-  {
+namespace Surreal.Diagnostics.Editing {
+  public abstract class EditorProperty {
     public static EditorProperty Anonymous<T>(string name, Func<T> getter, Action<T> setter)
       => new AnonymousProperty<T>(name, getter, setter);
 
@@ -19,13 +17,11 @@ namespace Surreal.Diagnostics.Editing
     public abstract void    Set(object? value);
 
     [DebuggerDisplay("AnonymousProperty (Name={Name}, Type={Type})")]
-    private sealed class AnonymousProperty<T> : EditorProperty
-    {
+    private sealed class AnonymousProperty<T> : EditorProperty {
       private readonly Func<T>   getter;
       private readonly Action<T> setter;
 
-      public AnonymousProperty(string name, Func<T> getter, Action<T> setter)
-      {
+      public AnonymousProperty(string name, Func<T> getter, Action<T> setter) {
         this.getter = getter;
         this.setter = setter;
 
@@ -36,17 +32,15 @@ namespace Surreal.Diagnostics.Editing
       public override Type   Type => typeof(T);
 
       public override object? Get()              => getter();
-      public override void    Set(object? value) => setter((T) value);
+      public override void    Set(object? value) => setter((T) value!);
     }
 
     [DebuggerDisplay("ParameterProperty (Name={Name}, Type={Type}, Value={parameter})")]
-    private sealed class ParameterProperty<T> : EditorProperty
-    {
+    private sealed class ParameterProperty<T> : EditorProperty {
       private readonly Parameter<T> parameter;
       private readonly bool         useOverride;
 
-      public ParameterProperty(string name, Parameter<T> parameter, bool useOverride = false)
-      {
+      public ParameterProperty(string name, Parameter<T> parameter, bool useOverride = false) {
         this.parameter   = parameter;
         this.useOverride = useOverride;
 
@@ -58,15 +52,12 @@ namespace Surreal.Diagnostics.Editing
 
       public override object? Get() => parameter.Value;
 
-      public override void Set(object? value)
-      {
-        if (useOverride)
-        {
-          parameter.Override((T) value);
+      public override void Set(object? value) {
+        if (useOverride) {
+          parameter.Override((T) value!);
         }
-        else
-        {
-          parameter.Value = (T) value;
+        else {
+          parameter.Value = (T) value!;
         }
       }
     }

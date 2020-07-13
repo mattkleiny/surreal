@@ -2,16 +2,13 @@
 using System.Composition;
 using JetBrains.Annotations;
 
-namespace Surreal
-{
+namespace Surreal {
   [MeansImplicitUse]
   [MetadataAttribute]
   [AttributeUsage(AttributeTargets.Class)]
-  public sealed class ExportModAttribute : ExportAttribute, IModMetadata
-  {
+  public sealed class ExportModAttribute : ExportAttribute, IModMetadata {
     public ExportModAttribute()
-      : base(typeof(IMod))
-    {
+        : base(typeof(IMod)) {
     }
 
     public string? Name        { get; set; }

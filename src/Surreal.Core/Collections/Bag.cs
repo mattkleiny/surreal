@@ -3,15 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Surreal.Collections
-{
+namespace Surreal.Collections {
   [DebuggerDisplay("Bag with {Count} elements")]
-  public sealed class Bag<T> : IReadOnlyList<T>
-  {
+  public sealed class Bag<T> : IReadOnlyList<T> {
     private T[] elements;
 
-    public Bag(int capacity = 16)
-    {
+    public Bag(int capacity = 16) {
       Check.That(capacity >= 0, "capacity >= 0");
 
       elements = new T[capacity];
@@ -22,11 +19,9 @@ namespace Surreal.Collections
     public Span<T> Span  => new Span<T>(elements, 0, Count);
     public int     Count { get; private set; }
 
-    public T this[int index]
-    {
+    public T this[int index] {
       get => elements[index];
-      set
-      {
+      set {
         if (index >= elements.Length) Grow(index * 2);
         if (index >= Count) Count = index + 1;
 
@@ -36,10 +31,8 @@ namespace Surreal.Collections
 
     public ref T Get(int index) => ref elements[index];
 
-    public void Add(T element)
-    {
-      if (Count == elements.Length)
-      {
+    public void Add(T element) {
+      if (Count == elements.Length) {
         Grow();
       }
 
@@ -47,12 +40,9 @@ namespace Surreal.Collections
       Count++;
     }
 
-    public void Remove(T element)
-    {
-      for (var index = elements.Length - 1; index >= 0; index--)
-      {
-        if (Equals(elements[index], element))
-        {
+    public void Remove(T element) {
+      for (var index = elements.Length - 1; index >= 0; index--) {
+        if (Equals(elements[index], element)) {
           --Count;
 
           elements[index] = elements[Count];
@@ -63,8 +53,7 @@ namespace Surreal.Collections
       }
     }
 
-    public T Remove(int index)
-    {
+    public T Remove(int index) {
       var result = elements[index];
 
       --Count;
@@ -75,28 +64,23 @@ namespace Surreal.Collections
       return result;
     }
 
-    public void Sort(Comparison<T> comparison)
-    {
+    public void Sort(Comparison<T> comparison) {
       Array.Sort(elements, Comparer<T>.Create(comparison));
     }
 
-    public void Clear()
-    {
-      for (var index = Count - 1; index >= 0; index--)
-      {
+    public void Clear() {
+      for (var index = Count - 1; index >= 0; index--) {
         elements[index] = default!;
       }
 
       Count = 0;
     }
 
-    private void Grow()
-    {
+    private void Grow() {
       Grow((int) (elements.Length * 1.5) + 1);
     }
 
-    private void Grow(int newCapacity)
-    {
+    private void Grow(int newCapacity) {
       var oldElements = elements;
       elements = new T[newCapacity];
 
@@ -107,14 +91,12 @@ namespace Surreal.Collections
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
 
-    public struct Enumerator : IEnumerator<T>
-    {
+    public struct Enumerator : IEnumerator<T> {
       private readonly Bag<T> bag;
       private          int    index;
 
       public Enumerator(Bag<T> bag)
-        : this()
-      {
+          : this() {
         this.bag = bag;
         Reset();
       }
@@ -124,8 +106,7 @@ namespace Surreal.Collections
       public bool        MoveNext() => ++index < bag.Count;
       public void        Reset()    => index = -1;
 
-      public void Dispose()
-      {
+      public void Dispose() {
       }
     }
   }

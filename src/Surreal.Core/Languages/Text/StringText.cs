@@ -1,13 +1,10 @@
 using System;
 
-namespace Surreal.Languages.Text
-{
-  internal sealed class StringText : SourceText
-  {
+namespace Surreal.Languages.Text {
+  internal sealed class StringText : SourceText {
     private readonly string source;
 
-    public StringText(string source)
-    {
+    public StringText(string source) {
       this.source = source;
     }
 

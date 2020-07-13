@@ -1,16 +1,12 @@
-﻿namespace Surreal.Diagnostics.Profiling
-{
-  public sealed class NullProfilerFactory : IProfilerFactory
-  {
+﻿namespace Surreal.Diagnostics.Profiling {
+  public sealed class NullProfilerFactory : IProfilerFactory {
     public static readonly NullProfilerFactory Instance = new NullProfilerFactory();
 
-    public IProfiler GetProfiler(string category)
-    {
+    public IProfiler GetProfiler(string category) {
       return NullProfiler.Instance;
     }
 
-    private sealed class NullProfiler : IProfiler
-    {
+    private sealed class NullProfiler : IProfiler {
 // ReSharper disable once MemberHidesStaticFromOuterClass
       public static readonly NullProfiler Instance = new NullProfiler();
 

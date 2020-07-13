@@ -2,12 +2,9 @@
 using Surreal.Assets;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Meshes
-{
-  public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
-  {
-    protected GraphicsBuffer(int stride)
-    {
+namespace Surreal.Graphics.Meshes {
+  public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate {
+    protected GraphicsBuffer(int stride) {
       Check.That(stride > 0, "stride > 0");
 
       Stride = stride;
@@ -18,6 +15,6 @@ namespace Surreal.Graphics.Meshes
     public Size Size   => new Size(Stride * Count);
 
     public abstract void Put<T>(Span<T> data)
-      where T : unmanaged;
+        where T : unmanaged;
   }
 }

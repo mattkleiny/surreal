@@ -1,26 +1,20 @@
-﻿namespace Surreal.Diagnostics.Profiling
-{
-  public sealed class SamplingProfilerFactory : IProfilerFactory
-  {
+﻿namespace Surreal.Diagnostics.Profiling {
+  public sealed class SamplingProfilerFactory : IProfilerFactory {
     private readonly IProfileSampler sampler;
 
-    public SamplingProfilerFactory(IProfileSampler sampler)
-    {
+    public SamplingProfilerFactory(IProfileSampler sampler) {
       this.sampler = sampler;
     }
 
-    public IProfiler GetProfiler(string category)
-    {
+    public IProfiler GetProfiler(string category) {
       return new SamplingProfiler(sampler, category);
     }
 
-    private sealed class SamplingProfiler : IProfiler
-    {
+    private sealed class SamplingProfiler : IProfiler {
       private readonly IProfileSampler sampler;
       private readonly string          category;
 
-      public SamplingProfiler(IProfileSampler sampler, string category)
-      {
+      public SamplingProfiler(IProfileSampler sampler, string category) {
         this.sampler  = sampler;
         this.category = category;
       }

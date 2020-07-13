@@ -1,29 +1,23 @@
 using System;
 using System.Diagnostics;
 
-namespace Surreal.Mathematics
-{
+namespace Surreal.Mathematics {
   [DebuggerDisplay("Seed {Value}")]
-  public readonly struct Seed : IEquatable<Seed>
-  {
+  public readonly struct Seed : IEquatable<Seed> {
     public static Seed NewRandomized() => new Seed(Maths.Random.Next());
 
     public readonly int Value;
 
-    public Seed(int value)
-    {
+    public Seed(int value) {
       Value = value;
     }
 
-    public Seed(string value)
-    {
+    public Seed(string value) {
       Value = value.GetHashCode();
     }
 
-    public Random ToRandom()
-    {
-      if (Value == 0)
-      {
+    public Random ToRandom() {
+      if (Value == 0) {
         return new Random(Maths.Random.Next());
       }
 

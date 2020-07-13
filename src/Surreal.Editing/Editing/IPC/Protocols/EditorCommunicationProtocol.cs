@@ -1,9 +1,7 @@
 using System;
 
-namespace Surreal.Framework.Editing.IPC.Protocols
-{
-  public sealed class EditorCommunicationProtocol : IDisposable
-  {
+namespace Surreal.Framework.Editing.IPC.Protocols {
+  public sealed class EditorCommunicationProtocol : IDisposable {
     private readonly ICommunicationChannel channel;
 
     public static EditorCommunicationProtocol CreateServer(string pipeName)
@@ -12,25 +10,21 @@ namespace Surreal.Framework.Editing.IPC.Protocols
     public static EditorCommunicationProtocol CreateClient(string pipeName, string serverName = ".")
       => new EditorCommunicationProtocol(PipeCommunicationChannel.CreateClient(pipeName, serverName));
 
-    private EditorCommunicationProtocol(ICommunicationChannel channel)
-    {
+    private EditorCommunicationProtocol(ICommunicationChannel channel) {
       this.channel = channel;
     }
 
     public void Dispose() => channel.Dispose();
 
-    private struct Packet
-    {
+    private struct Packet {
       public PacketType Type { get; }
 
-      public Packet(PacketType type)
-      {
+      public Packet(PacketType type) {
         Type = type;
       }
     }
 
-    private enum PacketType
-    {
+    private enum PacketType {
       ScreenChanged
     }
   }

@@ -1,6 +1,4 @@
-namespace Surreal.Framework.Editing.Modes.Scenes
-{
-  public abstract class SceneTool
-  {
+namespace Surreal.Framework.Editing.Modes.Scenes {
+  public abstract class SceneTool {
   }
 }
