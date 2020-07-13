@@ -87,7 +87,7 @@ namespace Surreal.Platform {
           frameCounter.Tick(deltaTime);
 
           if (frameDisplayTimer.Tick()) {
-            Title = $"{configuration.Title} - {frameCounter.FramesPerSecond:F} FPS";
+            Title = $"{configuration.Title.ToString()} - {frameCounter.FramesPerSecond:F} FPS";
           }
         }
       }

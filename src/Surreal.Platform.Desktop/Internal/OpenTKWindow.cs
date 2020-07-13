@@ -47,7 +47,7 @@ namespace Surreal.Platform.Internal {
       window.MakeCurrent();
     }
 
-    public event Action<int, int> Resized;
+    public event Action<int, int> Resized = null!;
 
     public bool IsFocused => window.Focused;
     public bool IsClosing => window.IsExiting;

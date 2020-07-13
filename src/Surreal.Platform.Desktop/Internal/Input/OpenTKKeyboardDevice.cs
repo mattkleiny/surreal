@@ -28,7 +28,7 @@ namespace Surreal.Platform.Internal.Input {
 
         // fire events, if necessary
         if (CurrentState != PreviousState) {
-          foreach (var key in Lookup.Keys) {
+          foreach (var (key, _) in Lookup) {
             if (IsKeyPressed(key)) KeyPressed?.Invoke(key);
             if (IsKeyReleased(key)) KeyReleased?.Invoke(key);
           }
