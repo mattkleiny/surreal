@@ -4,32 +4,26 @@ using Surreal.Input.Keyboard;
 using Surreal.Timing;
 
 namespace Asteroids.Actors.Components {
-  public sealed class InputComponent : ActorComponent<AsteroidActor> {
+  public sealed class InputComponent : ActorComponent<Actor> {
     private Vector2 direction;
 
-    public InputComponent(AsteroidActor actor)
-        : base(actor) {
-    }
+    public float Speed { get; set; } = 100f;
 
     public override void Input(DeltaTime deltaTime) {
       base.Input(deltaTime);
 
-      var direction = Vector2.Zero;
+      direction = Vector2.Zero;
 
-      if (AsteroidsGame.Current.Keyboard.IsKeyPressed(Key.W)) direction.Y += 1f;
-      if (AsteroidsGame.Current.Keyboard.IsKeyPressed(Key.S)) direction.Y -= 1f;
-      if (AsteroidsGame.Current.Keyboard.IsKeyPressed(Key.A)) direction.X -= 1f;
-      if (AsteroidsGame.Current.Keyboard.IsKeyPressed(Key.D)) direction.X += 1f;
-
-      this.direction = Vector2.Normalize(direction);
+      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.W)) direction.Y += 1f;
+      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.S)) direction.Y -= 1f;
+      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.A)) direction.X -= 1f;
+      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.D)) direction.X += 1f;
     }
 
     public override void Update(DeltaTime deltaTime) {
       base.Update(deltaTime);
 
-      Actor.Position += direction * deltaTime;
-
-      direction = Vector2.Zero;
+      Actor!.Position += direction * Speed * deltaTime;
     }
   }
 }

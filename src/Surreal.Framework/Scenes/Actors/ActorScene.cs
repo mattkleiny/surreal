@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
-using Surreal.Graphics.Experimental.Rendering.Culling;
 using Surreal.Timing;
 
 namespace Surreal.Framework.Scenes.Actors {
-  public class ActorScene : IScene, ICullingProvider, IDisposable {
+  public class ActorScene : IScene, IDisposable {
     [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<ActorScene>();
 
@@ -50,9 +48,6 @@ namespace Surreal.Framework.Scenes.Actors {
       for (var i = 0; i < Actors.Count; i++) {
         Actors[i].Dispose();
       }
-    }
-
-    void ICullingProvider.CullRenderers(in CullingViewport viewport, ref SpanList<CulledRenderer> results) {
     }
   }
 }

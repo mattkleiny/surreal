@@ -7,7 +7,7 @@ using Surreal.Mathematics.Linear;
 using Surreal.Timing;
 
 namespace Prelude.Core.Actors {
-  public class Player : PreludeActor {
+  public class Player : Actor {
     private readonly TileMap<Tile> map;
     private readonly RaycastCamera camera;
 

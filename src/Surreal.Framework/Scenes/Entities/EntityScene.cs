@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime;
-using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Framework.Scenes.Entities.Aspects;
 using Surreal.Framework.Scenes.Entities.Components;
 using Surreal.Framework.Scenes.Entities.Storage;
 using Surreal.Framework.Scenes.Entities.Systems;
-using Surreal.Graphics.Experimental.Rendering.Culling;
 using Surreal.Timing;
 
 namespace Surreal.Framework.Scenes.Entities {
-  public sealed class EntityScene : IScene, ICullingProvider, IDisposable {
+  public sealed class EntityScene : IScene, IDisposable {
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<EntityScene>();
 
     public EntityScene()
@@ -112,9 +110,6 @@ namespace Surreal.Framework.Scenes.Entities {
         GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
         GC.Collect();
       }
-    }
-
-    void ICullingProvider.CullRenderers(in CullingViewport viewport, ref SpanList<CulledRenderer> results) {
     }
   }
 }

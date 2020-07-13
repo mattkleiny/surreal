@@ -11,6 +11,7 @@ using Surreal.Framework.Tiles;
 using Surreal.Graphics.Raycasting;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
+using Actor = Prelude.Core.Actors.Actor;
 
 namespace Prelude.Screens {
   public class MainScreen : GameScreen<PreludeGame> {
@@ -30,7 +31,7 @@ namespace Prelude.Screens {
 
       renderer = new TileMapRenderer(camera, atlas!);
 
-      scene.Actors.Add(new PreludeActor() {
+      scene.Actors.Add(new Actor() {
           new Player(map!, camera) {
               Position  = new Vector2(2, 2),
               Direction = new Vector2(0, 1)

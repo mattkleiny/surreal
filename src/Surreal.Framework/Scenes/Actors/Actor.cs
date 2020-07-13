@@ -9,18 +9,19 @@ namespace Surreal.Framework.Scenes.Actors {
     private Matrix4x4 modelToWorld;
     private Matrix4x4 worldToModel;
 
-    public Actor?          Parent    { get; set; }
-    public ActorCollection Children  { get; }
-    public bool            IsEnabled { get; set; } = true;
-    public bool            IsVisible { get; set; } = true;
+    public Actor? Parent    { get; set; }
+    public bool   IsEnabled { get; set; } = true;
+    public bool   IsVisible { get; set; } = true;
 
-    public List<IActorComponent> Components { get; } = new List<IActorComponent>();
+    public ActorCollection     Children   { get; }
+    public ComponentCollection Components { get; }
 
     public ref readonly Matrix4x4 ModelToWorld => ref modelToWorld;
     public ref readonly Matrix4x4 WorldToModel => ref worldToModel;
 
     protected Actor() {
-      Children = new ActorCollection(this);
+      Children   = new ActorCollection(this);
+      Components = new ComponentCollection(this);
     }
 
     public void Add(Actor actor)    => Children.Add(actor);
