@@ -13,17 +13,6 @@ namespace Surreal.Framework.Scenes.Actors {
 
     public List<Actor> Actors { get; } = new List<Actor>();
 
-    public virtual void Begin() {
-      using var _ = Profiler.Track(nameof(Begin));
-
-      for (var i = 0; i < Actors.Count; i++) {
-        var actor = Actors[i];
-        if (actor.IsEnabled) {
-          actor.Begin();
-        }
-      }
-    }
-
     public virtual void Input(DeltaTime deltaTime) {
       using var _ = Profiler.Track(nameof(Input));
 
@@ -53,17 +42,6 @@ namespace Surreal.Framework.Scenes.Actors {
         var actor = Actors[i];
         if (actor.IsEnabled && actor.IsVisible) {
           actor.Draw(deltaTime);
-        }
-      }
-    }
-
-    public virtual void End() {
-      using var _ = Profiler.Track(nameof(End));
-
-      for (var i = 0; i < Actors.Count; i++) {
-        var actor = Actors[i];
-        if (actor.IsEnabled) {
-          actor.End();
         }
       }
     }

@@ -7,11 +7,9 @@ namespace Surreal.Framework {
     Task LoadContentAsync(IAssetResolver assets);
     void Initialize();
 
-    void Begin();
     void Input(GameTime time);
     void Update(GameTime time);
     void Draw(GameTime time);
-    void End();
   }
 
   public abstract class GamePlugin : GamePlugin<Game> {
@@ -35,9 +33,6 @@ namespace Surreal.Framework {
     public virtual void Initialize() {
     }
 
-    public virtual void Begin() {
-    }
-
     public virtual void Input(GameTime time) {
     }
 
@@ -45,9 +40,6 @@ namespace Surreal.Framework {
     }
 
     public virtual void Draw(GameTime time) {
-    }
-
-    public virtual void End() {
     }
 
     public virtual void Dispose() {

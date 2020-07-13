@@ -13,10 +13,8 @@ namespace Surreal.Framework.Screens {
     void Show();
     void Hide();
 
-    void Begin();
     void Input(GameTime time);
     void Update(GameTime time);
     void Draw(GameTime time);
-    void End();
   }
 }

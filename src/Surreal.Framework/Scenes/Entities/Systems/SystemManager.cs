@@ -32,12 +32,6 @@ namespace Surreal.Framework.Scenes.Entities.Systems {
       initialized = true;
     }
 
-    public void Begin() {
-      for (var i = 0; i < Systems.Count; i++) {
-        Systems[i].Begin();
-      }
-    }
-
     public void Input(DeltaTime deltaTime) {
       for (var i = 0; i < Systems.Count; i++) {
         Systems[i].Input(deltaTime);
@@ -53,12 +47,6 @@ namespace Surreal.Framework.Scenes.Entities.Systems {
     public void Draw(DeltaTime deltaTime) {
       for (var i = 0; i < Systems.Count; i++) {
         Systems[i].Draw(deltaTime);
-      }
-    }
-
-    public void End() {
-      for (var i = 0; i < Systems.Count; i++) {
-        Systems[i].End();
       }
     }
 

@@ -23,9 +23,6 @@ namespace Surreal.Framework.Screens {
     public virtual void Hide() {
     }
 
-    public virtual void Begin() {
-    }
-
     public virtual void Input(GameTime time) {
     }
 
@@ -33,9 +30,6 @@ namespace Surreal.Framework.Screens {
     }
 
     public virtual void Draw(GameTime time) {
-    }
-
-    public virtual void End() {
     }
 
     public virtual void Dispose() {

@@ -79,12 +79,6 @@ namespace Surreal.Framework.Scenes.Entities {
       SystemManager.Initialize();
     }
 
-    public void Begin() {
-      using var _ = Profiler.Track(nameof(Begin));
-
-      SystemManager.Begin();
-    }
-
     public void Input(DeltaTime deltaTime) {
       using var _ = Profiler.Track(nameof(Input));
 
@@ -95,23 +89,17 @@ namespace Surreal.Framework.Scenes.Entities {
       using var _ = Profiler.Track(nameof(Update));
 
       SystemManager.Update(deltaTime);
+      
+      if (EntityManager.Flush(out var addedEntities, out var removedEntities)) {
+        AspectManager.Refresh(addedEntities, removedEntities);
+        ComponentManager.Cull(removedEntities);
+      }
     }
 
     public void Draw(DeltaTime deltaTime) {
       using var _ = Profiler.Track(nameof(Draw));
 
       SystemManager.Draw(deltaTime);
-    }
-
-    public void End() {
-      using var _ = Profiler.Track(nameof(End));
-
-      SystemManager.End();
-
-      if (EntityManager.Flush(out var addedEntities, out var removedEntities)) {
-        AspectManager.Refresh(addedEntities, removedEntities);
-        ComponentManager.Cull(removedEntities);
-      }
     }
 
     public void Dispose() {

@@ -45,14 +45,6 @@ namespace Surreal {
       }
     }
 
-    public override void Begin() {
-      base.Begin();
-
-      foreach (var mod in Installed) {
-        mod.Instance.Begin();
-      }
-    }
-
     public override void Input(GameTime time) {
       base.Input(time);
 
@@ -74,14 +66,6 @@ namespace Surreal {
 
       foreach (var mod in Installed) {
         mod.Instance.Draw(time.DeltaTime);
-      }
-    }
-
-    public override void End() {
-      base.End();
-
-      foreach (var mod in Installed) {
-        mod.Instance.End();
       }
     }
 

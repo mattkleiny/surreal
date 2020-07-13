@@ -38,21 +38,6 @@ namespace Surreal.Framework.Scenes.Actors {
 
     protected abstract void ComputeModelToWorld(out Matrix4x4 modelToWorld);
 
-    public virtual void Begin() {
-      RecomputeTransform();
-
-      for (var i = 0; i < Components.Count; i++) {
-        Components[i].Begin();
-      }
-
-      for (var i = 0; i < Children.Count; i++) {
-        var child = Children[i];
-        if (child.IsEnabled) {
-          child.Begin();
-        }
-      }
-    }
-
     public virtual void Input(DeltaTime deltaTime) {
       for (var i = 0; i < Components.Count; i++) {
         Components[i].Input(deltaTime);
@@ -67,6 +52,8 @@ namespace Surreal.Framework.Scenes.Actors {
     }
 
     public virtual void Update(DeltaTime deltaTime) {
+      RecomputeTransform();
+
       for (var i = 0; i < Components.Count; i++) {
         Components[i].Update(deltaTime);
       }
@@ -88,19 +75,6 @@ namespace Surreal.Framework.Scenes.Actors {
         var child = Children[i];
         if (child.IsEnabled && child.IsVisible) {
           child.Draw(deltaTime);
-        }
-      }
-    }
-
-    public virtual void End() {
-      for (var i = 0; i < Components.Count; i++) {
-        Components[i].End();
-      }
-
-      for (var i = 0; i < Children.Count; i++) {
-        var child = Children[i];
-        if (child.IsEnabled) {
-          child.End();
         }
       }
     }

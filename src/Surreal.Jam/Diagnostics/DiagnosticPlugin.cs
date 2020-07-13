@@ -17,14 +17,6 @@ namespace Surreal.Diagnostics {
     public Stage    Stage     { get; set; }
     public bool     IsVisible { set; get; }
 
-    public override void Begin() {
-      base.Begin();
-
-      if (IsVisible) {
-        Stage.Begin();
-      }
-    }
-
     public override void Input(GameTime time) {
       base.Input(time);
 
@@ -46,14 +38,6 @@ namespace Surreal.Diagnostics {
 
       if (IsVisible) {
         Stage.Draw(time.DeltaTime, Game.SpriteBatch);
-      }
-    }
-
-    public override void End() {
-      base.End();
-
-      if (IsVisible) {
-        Stage.End();
       }
     }
 

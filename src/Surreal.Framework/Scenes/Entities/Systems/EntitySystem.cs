@@ -8,9 +8,6 @@ namespace Surreal.Framework.Scenes.Entities.Systems {
       World = scene;
     }
 
-    public virtual void Begin() {
-    }
-
     public virtual void Input(DeltaTime deltaTime) {
     }
 
@@ -18,9 +15,6 @@ namespace Surreal.Framework.Scenes.Entities.Systems {
     }
 
     public virtual void Draw(DeltaTime deltaTime) {
-    }
-
-    public virtual void End() {
     }
 
     public virtual void Dispose() {

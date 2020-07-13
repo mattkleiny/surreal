@@ -49,10 +49,6 @@ namespace Surreal.Framework.Screens {
       return null;
     }
 
-    public override void Begin() {
-      ActiveScreen?.Begin();
-    }
-
     public override void Input(GameTime time) {
       ActiveScreen?.Input(new GameTime(
           deltaTime: ActiveScreen.Clock.DeltaTime,
@@ -75,10 +71,6 @@ namespace Surreal.Framework.Screens {
           totalTime: time.TotalTime,
           isRunningSlowly: time.IsRunningSlowly
       ));
-    }
-
-    public override void End() {
-      ActiveScreen?.End();
     }
 
     public override void Dispose() {

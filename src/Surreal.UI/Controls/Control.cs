@@ -23,17 +23,6 @@ namespace Surreal.UI.Controls {
 
     protected abstract Rectangle ComputeLayout();
 
-    public virtual void Begin() {
-      layout = ComputeLayout();
-
-      for (var i = 0; i < Children.Count; i++) {
-        var control = Children[i];
-        if (control.IsEnabled) {
-          control.Begin();
-        }
-      }
-    }
-
     public virtual void Input(DeltaTime deltaTime) {
       for (var i = 0; i < Children.Count; i++) {
         var control = Children[i];
@@ -44,6 +33,8 @@ namespace Surreal.UI.Controls {
     }
 
     public virtual void Update(DeltaTime deltaTime) {
+      layout = ComputeLayout();
+
       for (var i = 0; i < Children.Count; i++) {
         var control = Children[i];
         if (control.IsEnabled) {
@@ -57,15 +48,6 @@ namespace Surreal.UI.Controls {
         var control = Children[i];
         if (control.IsEnabled && control.IsVisible) {
           control.Draw(deltaTime, batch);
-        }
-      }
-    }
-
-    public virtual void End() {
-      for (var i = 0; i < Children.Count; i++) {
-        var control = Children[i];
-        if (control.IsEnabled) {
-          control.End();
         }
       }
     }
