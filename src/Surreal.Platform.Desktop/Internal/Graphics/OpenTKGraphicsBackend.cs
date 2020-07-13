@@ -14,15 +14,15 @@ using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Platform.Internal.Graphics {
   internal sealed class OpenTKGraphicsBackend : IGraphicsBackend, IDisposable {
-    private OpenTKWindow window;
+    private readonly IDesktopWindow window;
 
-    public OpenTKGraphicsBackend(OpenTKWindow window) {
+    public OpenTKGraphicsBackend(IDesktopWindow window) {
       this.window = window;
 
       Pipeline = new OpenTKPipelineState();
     }
 
-    public IPipelineState Pipeline  { get; }
+    public IPipelineState Pipeline { get; }
 
     public void BeginFrame() {
     }

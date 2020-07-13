@@ -14,13 +14,13 @@ using Surreal.Platform.Internal.Input;
 
 namespace Surreal.Platform {
   internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider {
-    private readonly OpenTKWindow         window;
+    private readonly IDesktopWindow       window;
     private readonly DesktopConfiguration configuration;
 
     private readonly FrameCounter  frameCounter      = new FrameCounter();
     private readonly IntervalTimer frameDisplayTimer = new IntervalTimer(1.Seconds());
 
-    public DesktopPlatformHost(OpenTKWindow window, DesktopConfiguration configuration) {
+    public DesktopPlatformHost(IDesktopWindow window, DesktopConfiguration configuration) {
       this.window        = window;
       this.configuration = configuration;
 

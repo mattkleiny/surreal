@@ -6,7 +6,7 @@ using OpenTK;
 using OpenTK.Graphics;
 
 namespace Surreal.Platform.Internal {
-  internal sealed class OpenTKWindow : IDisposable {
+  internal sealed class OpenTKWindow : IDisposable, IDesktopWindow {
     private readonly GameWindow window;
 
     public OpenTKWindow(DesktopConfiguration configuration) {

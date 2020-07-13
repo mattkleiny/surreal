@@ -1,4 +1,5 @@
 ﻿using Surreal.I18N;
+using Surreal.Platform.Internal;
 
 namespace Surreal.Platform {
   public sealed class DesktopConfiguration {
@@ -10,5 +11,7 @@ namespace Surreal.Platform {
     public bool IsVsyncEnabled    { get; set; } = false;
     public bool WaitForFirstFrame { get; set; } = true;
     public bool ShowFPSInTitle    { get; set; } = false;
+
+    public IDesktopWindow? CustomWindow { get; set; }
   }
 }

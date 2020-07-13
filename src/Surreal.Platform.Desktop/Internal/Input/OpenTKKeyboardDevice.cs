@@ -7,9 +7,9 @@ using Key = Surreal.Input.Keyboard.Key;
 
 namespace Surreal.Platform.Internal.Input {
   internal sealed class OpenTKKeyboardDevice : BufferedInputDevice<KeyboardState>, IKeyboardDevice {
-    private readonly OpenTKWindow window;
+    private readonly IDesktopWindow window;
 
-    public OpenTKKeyboardDevice(OpenTKWindow window) {
+    public OpenTKKeyboardDevice(IDesktopWindow window) {
       this.window = window;
     }
 

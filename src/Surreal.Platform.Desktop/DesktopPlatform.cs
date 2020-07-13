@@ -5,7 +5,7 @@ namespace Surreal.Platform {
     public DesktopConfiguration Configuration { get; } = new DesktopConfiguration();
 
     public IPlatformHost BuildHost() {
-      var window = new OpenTKWindow(Configuration);
+      var window = Configuration.CustomWindow ?? new OpenTKWindow(Configuration);
 
       return new DesktopPlatformHost(window, Configuration);
     }

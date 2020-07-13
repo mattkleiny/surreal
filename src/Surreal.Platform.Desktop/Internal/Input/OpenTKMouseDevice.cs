@@ -7,9 +7,9 @@ using MouseButton = Surreal.Input.Mouse.MouseButton;
 
 namespace Surreal.Platform.Internal.Input {
   internal sealed class OpenTKMouseDevice : BufferedInputDevice<MouseState>, IMouseDevice {
-    private readonly OpenTKWindow window;
+    private readonly IDesktopWindow window;
 
-    public OpenTKMouseDevice(OpenTKWindow window) {
+    public OpenTKMouseDevice(IDesktopWindow window) {
       this.window = window;
     }
 
@@ -29,7 +29,7 @@ namespace Surreal.Platform.Internal.Input {
 
     public bool IsButtonDown(MouseButton button)     => CurrentState.IsButtonDown(Convert(button));
     public bool IsButtonUp(MouseButton button)       => CurrentState.IsButtonUp(Convert(button));
-    public bool IsButtonPressed(MouseButton button)  => CurrentState.IsButtonDown(Convert(button))  && PreviousState.IsButtonUp(Convert(button));
+    public bool IsButtonPressed(MouseButton button)  => CurrentState.IsButtonDown(Convert(button)) && PreviousState.IsButtonUp(Convert(button));
     public bool IsButtonReleased(MouseButton button) => PreviousState.IsButtonDown(Convert(button)) && CurrentState.IsButtonUp(Convert(button));
 
     public override void Update() {
@@ -53,7 +53,9 @@ namespace Surreal.Platform.Internal.Input {
             Moved?.Invoke(DeltaPosition);
           }
 
-          if (IsLockedToWindow) Mouse.SetPosition(window.Width / 2f, window.Height / 2f);
+          if (IsLockedToWindow) {
+            Mouse.SetPosition(window.Width / 2f, window.Height / 2f);
+          }
         }
       }
     }
