@@ -83,6 +83,9 @@ namespace Surreal.Framework {
       LoopStrategy.Tick(loopTarget, Clock.DeltaTime, totalTime);
     }
 
+    protected virtual void Begin(GameTime time) {
+    }
+
     protected virtual void Input(GameTime time) {
       for (var i = 0; i < Plugins.Count; i++) {
         Plugins[i].Input(time);
@@ -99,6 +102,9 @@ namespace Surreal.Framework {
       for (var i = 0; i < Plugins.Count; i++) {
         Plugins[i].Draw(time);
       }
+    }
+
+    protected virtual void End(GameTime time) {
     }
 
     protected virtual void OnResized(int width, int height) {
@@ -166,9 +172,11 @@ namespace Surreal.Framework {
             isRunningSlowly: averagedDeltaTime > TargetDeltaTime
         );
 
+        target.Begin(time);
         target.Input(time);
         target.Update(time);
         target.Draw(time);
+        target.End(time);
 
         return time;
       }
@@ -186,9 +194,11 @@ namespace Surreal.Framework {
             isRunningSlowly: deltaTime > TargetDeltaTime
         );
 
+        target.Begin(time);
         target.Input(time);
         target.Update(time);
         target.Draw(time);
+        target.End(time);
 
         return time;
       }
@@ -209,6 +219,7 @@ namespace Surreal.Framework {
 
         accumulator += deltaTime.TimeSpan.TotalSeconds;
 
+        target.Begin(time);
         target.Input(time);
 
         while (accumulator >= Step.TotalSeconds) {
@@ -224,15 +235,18 @@ namespace Surreal.Framework {
         }
 
         target.Draw(time);
+        target.End(time);
 
         return time;
       }
     }
 
     public interface ILoopTarget {
+      void Begin(GameTime time);
       void Input(GameTime time);
       void Update(GameTime time);
       void Draw(GameTime time);
+      void End(GameTime time);
     }
 
     private sealed class ProfiledLoopTarget : ILoopTarget {
@@ -240,6 +254,12 @@ namespace Surreal.Framework {
 
       public ProfiledLoopTarget(Game game) {
         this.game = game;
+      }
+
+      public void Begin(GameTime time) {
+        using var _ = Profiler.Track(nameof(Begin));
+
+        game.Begin(time);
       }
 
       public void Input(GameTime time) {
@@ -258,6 +278,12 @@ namespace Surreal.Framework {
         using var _ = Profiler.Track(nameof(Draw));
 
         game.Draw(time);
+      }
+
+      public void End(GameTime time) {
+        using var _ = Profiler.Track(nameof(End));
+
+        game.End(time);
       }
     }
 

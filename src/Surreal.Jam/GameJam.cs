@@ -149,6 +149,18 @@ namespace Surreal {
       GraphicsDevice.Viewport = new Viewport(width, height);
     }
 
+    protected override void Begin(GameTime time) {
+      GraphicsDevice.BeginFrame();
+
+      base.Begin(time);
+    }
+
+    protected override void End(GameTime time) {
+      base.End(time);
+
+      GraphicsDevice.EndFrame();
+    }
+
     public override void Dispose() {
       GeometryBatch.Dispose();
       SpriteBatch.Dispose();
