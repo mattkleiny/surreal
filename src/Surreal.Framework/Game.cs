@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.IO;
+using Surreal.Mathematics.Timing;
 using Surreal.Platform;
-using Surreal.Timing;
+using Surreal.Utilities;
 
 namespace Surreal.Framework {
   public abstract class Game : IDisposable, IFrameListener {
@@ -154,7 +156,7 @@ namespace Surreal.Framework {
       private readonly RingBuffer<TimeSpan> samples;
 
       public AveragingLoopStrategy(int samples = 10) {
-        Check.That(samples > 0, "samples > 0");
+        Debug.Assert(samples > 0, "samples > 0");
 
         this.samples = new RingBuffer<TimeSpan>(samples);
       }

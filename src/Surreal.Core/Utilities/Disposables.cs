@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Surreal {
+namespace Surreal.Utilities {
   public static class Disposables {
     public static IDisposable Anonymous(Action action) {
       return new AnonymousDisposable(action);

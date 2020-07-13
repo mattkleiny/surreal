@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Surreal.Diagnostics.Logging;
+using Surreal.Utilities;
 
 namespace Surreal.Framework.Screens {
   public abstract class LoadingScreen<TGame, TScreen> : GameScreen<TGame>, ILoadNotifier

@@ -4,7 +4,7 @@ using Surreal.Framework;
 using Surreal.Framework.Parameters;
 using Surreal.Graphics;
 using Surreal.Mathematics.Curves;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 using Xunit;
 
 namespace Surreal.Jam.Framework {

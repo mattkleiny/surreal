@@ -21,8 +21,8 @@ namespace Surreal.Mathematics.Curves {
     }
 
     public Vector2 SampleAt(Normal t) {
-      var x = MathF.Pow(1 - t, 2) * StartPoint.X + 2 * (1 - t) * t * ControlPoint.X + MathF.Pow(t, 2) * EndPoint.X;
-      var y = MathF.Pow(1 - t, 2) * StartPoint.Y + 2 * (1 - t) * t * ControlPoint.Y + MathF.Pow(t, 2) * EndPoint.Y;
+      var x = System.MathF.Pow(1 - t, 2) * StartPoint.X + 2 * (1 - t) * t * ControlPoint.X + System.MathF.Pow(t, 2) * EndPoint.X;
+      var y = System.MathF.Pow(1 - t, 2) * StartPoint.Y + 2 * (1 - t) * t * ControlPoint.Y + System.MathF.Pow(t, 2) * EndPoint.Y;
 
       return new Vector2(x, y);
     }

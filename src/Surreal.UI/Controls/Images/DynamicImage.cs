@@ -1,7 +1,7 @@
 using Surreal.Graphics;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.UI.Controls.Images {
   public abstract class DynamicImage : Image {

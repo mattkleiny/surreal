@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Surreal.IO;
 
 namespace Surreal.Collections {
@@ -17,7 +18,7 @@ namespace Surreal.Collections {
     public Span<T> Span     => buffer.Span;
 
     public void Add(T element) {
-      Check.That(Count < Capacity, "Count < Capacity");
+      Debug.Assert(Count < Capacity, "Count < Capacity");
 
       Span[Count++] = element;
     }

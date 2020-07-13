@@ -28,7 +28,7 @@ namespace Minecraft.Screens {
         : base(game) {
     }
 
-    public World World { get; set; }
+    public World World { get; set; } = null!;
 
     protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);

@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Surreal.Collections;
 using Surreal.Fibers;
+using Surreal.Mathematics.Timing;
 using Surreal.Platform;
-using Surreal.Timing;
 
 namespace Surreal.Framework {
   public static class Engine {

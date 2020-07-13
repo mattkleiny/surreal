@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Surreal.Timing {
+namespace Surreal.Mathematics.Timing {
   public interface IClock {
     float     TimeScale { get; set; }
     DeltaTime DeltaTime { get; }
@@ -29,13 +29,13 @@ namespace Surreal.Timing {
     public static IClock Relative(IClock other, float scale = 1f)
       => new AnonymousClock(() => new DeltaTime(other.DeltaTime * scale));
 
-    public static async Task EvaluateOverTime(this IClock clock, TimeSpan duration, Action<QuantisedTime> action, CancellationToken cancellationToken = default) {
+    public static async Task EvaluateOverTime(this IClock clock, TimeSpan duration, Action<Quanta> action, CancellationToken cancellationToken = default) {
       var currentTime  = 0f;
       var totalSeconds = (float) duration.TotalSeconds;
 
       while (currentTime <= totalSeconds && !cancellationToken.IsCancellationRequested) {
         currentTime += clock.DeltaTime;
-        action(new QuantisedTime(currentTime, totalSeconds));
+        action(new Quanta(currentTime, totalSeconds));
 
         await Task.Yield();
       }

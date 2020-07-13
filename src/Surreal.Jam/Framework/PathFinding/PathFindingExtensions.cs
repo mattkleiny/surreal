@@ -115,7 +115,7 @@ namespace Surreal.Framework.PathFinding {
 
       public void GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
         foreach (var neighbour in position.GetNeighbourhood<TNeighbourhood>()) {
-          if (neighbour != position && grid.Contains(position.X, position.Y)) {
+          if (neighbour != position && grid.IsValid(position.X, position.Y)) {
             results.Add(neighbour);
           }
         }

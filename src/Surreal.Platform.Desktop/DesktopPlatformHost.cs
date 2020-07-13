@@ -5,12 +5,12 @@ using Surreal.Diagnostics;
 using Surreal.Graphics.SPI;
 using Surreal.Input;
 using Surreal.IO;
+using Surreal.Mathematics.Timing;
 using Surreal.Platform.Internal;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;
 using Surreal.Platform.Internal.Graphics;
 using Surreal.Platform.Internal.Input;
-using Surreal.Timing;
 
 namespace Surreal.Platform {
   internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider {

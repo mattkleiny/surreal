@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Sprites {
   // TODO: support multiple textures in the sprite batch simultaneously?
@@ -24,13 +26,13 @@ namespace Surreal.Graphics.Sprites {
     private int      vertexCount;
 
     public static SpriteBatch Create(IGraphicsDevice device, ShaderProgram shader, int spriteCount = 1000) {
-      Check.That(spriteCount > 0, "spriteCount > 0");
+      Debug.Assert(spriteCount > 0, "spriteCount > 0");
 
       return new SpriteBatch(device, spriteCount, shader, ownsDefaultShader: false);
     }
 
     public static async Task<SpriteBatch> CreateDefaultAsync(IGraphicsDevice device, int spriteCount = 1000) {
-      Check.That(spriteCount > 0, "spriteCount > 0");
+      Debug.Assert(spriteCount > 0, "spriteCount > 0");
 
       var shader = device.Backend.CreateShaderProgram(
           await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/SpriteBatch.vert.glsl"),
@@ -41,8 +43,8 @@ namespace Surreal.Graphics.Sprites {
     }
 
     private SpriteBatch(IGraphicsDevice device, int spriteCount, ShaderProgram defaultShader, bool ownsDefaultShader) {
-      Check.That(spriteCount > 0, "spriteCount > 0");
-      Check.That(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
+      Debug.Assert(spriteCount > 0, "spriteCount > 0");
+      Debug.Assert(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
       Device             = device;
       MaximumVertexCount = spriteCount * 4;
@@ -72,17 +74,17 @@ namespace Surreal.Graphics.Sprites {
       ActiveShader = shader;
     }
 
-    public void Draw(Texture texture, float x, float y, float rotation, float width, float height)
+    public void Draw(Texture texture, float x, float y, Angle rotation, float width, float height)
       => DrawInternal(texture, x, y, width, height, rotation, 0, 0, texture.Width, texture.Height, Color);
 
-    public void Draw(TextureRegion region, float x, float y, float rotation, float width, float height)
+    public void Draw(TextureRegion region, float x, float y, Angle rotation, float width, float height)
       => DrawInternal(region.Texture, x, y, width, height, rotation, region.OffsetX, region.OffsetY, region.Width, region.Height, Color);
 
     private void DrawInternal(
         Texture texture,
         float x, float y,
         float width, float height,
-        float rotation,
+        Angle rotation,
         float sourceX, float sourceY,
         float sourceWidth, float sourceHeight,
         Color color) {
@@ -107,7 +109,7 @@ namespace Surreal.Graphics.Sprites {
       var extentY = y + height;
 
       // rotate coordinates about the z axis
-      if (MathF.Abs(rotation) > float.Epsilon) {
+      if (System.MathF.Abs(rotation.Radians) > float.Epsilon) {
         throw new NotImplementedException();
       }
 

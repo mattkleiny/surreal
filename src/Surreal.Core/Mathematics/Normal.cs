@@ -2,6 +2,9 @@ using System;
 
 namespace Surreal.Mathematics {
   public readonly struct Normal : IEquatable<Normal> {
+    public static Normal Zero => default;
+    public static Normal One  => new Normal(1f);
+
     public static readonly FloatRange Range = new FloatRange(0f, 1f);
 
     public Normal(float value) {

@@ -16,7 +16,7 @@ namespace Prelude {
         Platform = new DesktopPlatform {
             Configuration = {
                 Title          = "Prelude of the Chambered",
-                IsVsyncEnabled = false,
+                IsVsyncEnabled = true,
                 ShowFPSInTitle = true
             }
         },

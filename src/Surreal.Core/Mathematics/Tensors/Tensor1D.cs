@@ -14,8 +14,8 @@ namespace Surreal.Mathematics.Tensors {
 
     public Tensor1D(IBuffer<T> buffer, int length)
         : base(buffer) {
-      Check.That(length       > 0, "Length > 0");
-      Check.That(buffer.Count >= length, "buffer.Count >= length");
+      Debug.Assert(length       > 0, "Length > 0");
+      Debug.Assert(buffer.Count >= length, "buffer.Count >= length");
 
       Length = length;
     }
@@ -41,14 +41,14 @@ namespace Surreal.Mathematics.Tensors {
 
     T ITensor<T>.this[params int[] ranks] {
       get {
-        Check.That(ranks.Length == 1, "ranks.Length == 1");
+        Debug.Assert(ranks.Length == 1, "ranks.Length == 1");
 
         var index = ranks[0];
 
         return this[index];
       }
       set {
-        Check.That(ranks.Length == 1, "ranks.Length == 1");
+        Debug.Assert(ranks.Length == 1, "ranks.Length == 1");
 
         var index = ranks[0];
 

@@ -2,7 +2,7 @@ using Surreal.Framework.Scenes.Actors;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Asteroids.Actors.Components {
   public sealed class SpriteComponent : ActorComponent<Actor> {
@@ -19,7 +19,7 @@ namespace Asteroids.Actors.Components {
           region: Sprite,
           position: Actor!.Position,
           pivot: Pivot.Center,
-          rotation: 0f
+          rotation: Angle.Zero
       );
     }
   }

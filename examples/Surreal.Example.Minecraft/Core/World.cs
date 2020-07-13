@@ -21,8 +21,6 @@ namespace Minecraft.Core {
     }
 
     public static World CreateInfinite(string basePath, IVoxelPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
-      Check.NotNullOrEmpty(basePath, nameof(basePath));
-
       return new World(new StreamingRegionStrategy(basePath, palette, chunkGenerator, biomeSelector));
     }
 

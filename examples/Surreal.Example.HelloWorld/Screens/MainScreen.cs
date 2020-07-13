@@ -12,7 +12,7 @@ using Surreal.Mathematics.Curves;
 namespace HelloWorld.Screens {
   public sealed class MainScreen : GameScreen<HelloWorldGame> {
     private readonly OrthographicCamera camera = new OrthographicCamera(256 / 4, 144 / 4);
-    private          GeometryBatch      batch;
+    private          GeometryBatch      batch = null!;
 
     public MainScreen(HelloWorldGame game)
         : base(game) {

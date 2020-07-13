@@ -12,7 +12,7 @@ namespace Minecraft.Core.Coordinates {
     }
 
     public Neighborhood(Vector3I origin, int distance) {
-      Check.That(distance > 0, "distance > 0");
+      Debug.Assert(distance > 0, "distance > 0");
 
       Origin   = origin;
       Distance = distance;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Surreal.Collections;
 using Surreal.Framework.Scenes.Entities.Components;
 
@@ -13,7 +14,7 @@ namespace Surreal.Framework.Scenes.Entities.Storage {
     private readonly Bag<T>          components;
 
     public DenseComponentStorage(int initialCapacity = 10) {
-      Check.That(initialCapacity > 0, "initialCapacity > 0");
+      Debug.Assert(initialCapacity > 0, "initialCapacity > 0");
 
       components = new Bag<T>(initialCapacity);
     }

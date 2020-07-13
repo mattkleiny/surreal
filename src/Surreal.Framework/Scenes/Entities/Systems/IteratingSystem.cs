@@ -1,5 +1,5 @@
 ﻿using Surreal.Framework.Scenes.Entities.Aspects;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes.Entities.Systems {
   public abstract class IteratingSystem : SubscribedSystem {

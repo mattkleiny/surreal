@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Surreal.Graphics.Textures;
 
@@ -8,10 +9,10 @@ namespace Surreal.Graphics.Sprites {
     private readonly Queue<ImageRegion> availableCells;
 
     public SpriteSheetCutter(int width, int height, int widthPerCell, int heightPerCell, Color initialColor = default) {
-      Check.That(width         > 0, "width > 0");
-      Check.That(height        > 0, "height > 0");
-      Check.That(widthPerCell  > 0, "widthPerCell > 0");
-      Check.That(heightPerCell > 0, "heightPerCell > 0");
+      Debug.Assert(width         > 0, "width > 0");
+      Debug.Assert(height        > 0, "height > 0");
+      Debug.Assert(widthPerCell  > 0, "widthPerCell > 0");
+      Debug.Assert(heightPerCell > 0, "heightPerCell > 0");
 
       Image = new Image(width, height);
       Image.Fill(initialColor);
@@ -45,7 +46,7 @@ namespace Surreal.Graphics.Sprites {
     }
 
     public IPlannedSpriteAnimation AddSpriteAnimation(int cellCount) {
-      Check.That(cellCount > 0, "cellCount > 0");
+      Debug.Assert(cellCount > 0, "cellCount > 0");
 
       lock (availableCells) {
         var cells = Enumerable
@@ -93,8 +94,8 @@ namespace Surreal.Graphics.Sprites {
 
       public IPlannedSprite this[int index] {
         get {
-          Check.That(index >= 0, "index >= 0");
-          Check.That(index < regions.Length, "index < regions.Length");
+          Debug.Assert(index >= 0, "index >= 0");
+          Debug.Assert(index < regions.Length, "index < regions.Length");
 
           return new PlannedSprite(regions[index]);
         }

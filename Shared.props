@@ -19,8 +19,5 @@
     <Compile Include="..\..\src\JetBrainsAnnotations.cs">
       <Link>Shared\JetBrainsAnnotations.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\SharedPreconditions.cs">
-      <Link>Shared\SharedPreconditions.cs</Link>
-    </Compile>
   </ItemGroup>
 </Project>

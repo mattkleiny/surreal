@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Surreal.Diagnostics.Profiling {
     private static readonly ILog Log = LogFactory.GetLog<InMemoryProfilerSampler>();
 
     public InMemoryProfilerSampler(int sampleCount = 30) {
-      Check.That(sampleCount > 0, "sampleCount > 0");
+      Debug.Assert(sampleCount > 0, "sampleCount > 0");
 
       Samplers = new SamplerCollection(sampleCount);
     }
@@ -45,15 +46,12 @@ namespace Surreal.Diagnostics.Profiling {
       private readonly int sampleCount;
 
       public SamplerCollection(int sampleCount) {
-        Check.That(sampleCount > 0, "sampleCount > 0");
+        Debug.Assert(sampleCount > 0, "sampleCount > 0");
 
         this.sampleCount = sampleCount;
       }
 
       public Sampler GetSampler(string category, string task) {
-        Check.NotNullOrEmpty(category, nameof(category));
-        Check.NotNullOrEmpty(task, nameof(task));
-
         var key = $"{category}:{task}";
 
         if (!samplers.TryGetValue(key, out var sampler)) {

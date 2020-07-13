@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.SPI;
 using Surreal.Graphics.Textures;
@@ -9,21 +10,21 @@ namespace Surreal.Platform.Internal.Graphics {
     private readonly Texture[] textures;
 
     public OpenTKTextureUnits(int capacity) {
-      Check.That(capacity > 0, "capacity > 0");
+      Debug.Assert(capacity > 0, "capacity > 0");
 
       textures = new Texture[capacity + 1];
     }
 
     public Texture? this[int unit] {
       get {
-        Check.That(unit >= 0, "unit >= 0");
-        Check.That(unit < textures.Length, "unit < textures.Length");
+        Debug.Assert(unit >= 0, "unit >= 0");
+        Debug.Assert(unit < textures.Length, "unit < textures.Length");
 
         return textures[unit];
       }
       set {
-        Check.That(unit >= 0, "unit >= 0");
-        Check.That(unit < textures.Length, "unit < textures.Length");
+        Debug.Assert(unit >= 0, "unit >= 0");
+        Debug.Assert(unit < textures.Length, "unit < textures.Length");
 
         var texture = (OpenTKTexture) value!;
 

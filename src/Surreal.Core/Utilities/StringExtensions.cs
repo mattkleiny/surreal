@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Surreal {
+namespace Surreal.Utilities {
   public static class StringExtensions {
     public static StringBuilder AppendWithSeparator(this StringBuilder builder, string value, string seperator) {
       if (builder.Length > 0) {

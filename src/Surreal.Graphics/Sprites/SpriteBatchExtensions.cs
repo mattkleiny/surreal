@@ -13,7 +13,7 @@ namespace Surreal.Graphics.Sprites {
         TextureRegion region,
         Vector2 position,
         Pivot pivot = default,
-        float rotation = 0f,
+        Angle rotation = default,
         float scale = 1f) {
       var scaledHalfWidth  = region.Texture.Width * scale  * pivot.X;
       var scaledHalfHeight = region.Texture.Height * scale * pivot.Y;
@@ -45,7 +45,7 @@ namespace Surreal.Graphics.Sprites {
               region: glyph.Region,
               x: position.X + glyph.Bearing.X                  * scale,
               y: position.Y - (glyph.Size.Y - glyph.Bearing.Y) * scale,
-              rotation: 0f,
+              rotation: Angle.Zero, 
               width: glyph.Size.X  * scale,
               height: glyph.Size.Y * scale
           );

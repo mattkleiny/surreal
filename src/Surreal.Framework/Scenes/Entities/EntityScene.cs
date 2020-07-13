@@ -7,7 +7,7 @@ using Surreal.Framework.Scenes.Entities.Aspects;
 using Surreal.Framework.Scenes.Entities.Components;
 using Surreal.Framework.Scenes.Entities.Storage;
 using Surreal.Framework.Scenes.Entities.Systems;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes.Entities {
   public sealed class EntityScene : IScene, IDisposable {

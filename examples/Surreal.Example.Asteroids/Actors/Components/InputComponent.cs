@@ -1,7 +1,7 @@
 using System.Numerics;
 using Surreal.Framework.Scenes.Actors;
 using Surreal.Input.Keyboard;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Asteroids.Actors.Components {
   public sealed class InputComponent : ActorComponent<Actor> {

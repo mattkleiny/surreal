@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Numerics;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
+using Surreal.Utilities;
 using Rectangle = Surreal.Mathematics.Linear.Rectangle;
 
 namespace Surreal.Mathematics {

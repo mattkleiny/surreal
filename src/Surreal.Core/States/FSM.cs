@@ -1,4 +1,5 @@
 using System;
+using Surreal.Utilities;
 
 namespace Surreal.States {
   public class FSM<TState>

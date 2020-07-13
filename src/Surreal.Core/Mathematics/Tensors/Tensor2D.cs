@@ -15,9 +15,9 @@ namespace Surreal.Mathematics.Tensors {
 
     public Tensor2D(IBuffer<T> buffer, int width, int height)
         : base(buffer) {
-      Check.That(width        > 0, "Width > 0");
-      Check.That(height       > 0, "Height > 0");
-      Check.That(buffer.Count >= width * height, "buffer.Count >= width * height");
+      Debug.Assert(width        > 0, "Width > 0");
+      Debug.Assert(height       > 0, "Height > 0");
+      Debug.Assert(buffer.Count >= width * height, "buffer.Count >= width * height");
 
       Width  = width;
       Height = height;
@@ -46,7 +46,7 @@ namespace Surreal.Mathematics.Tensors {
 
     T ITensor<T>.this[params int[] ranks] {
       get {
-        Check.That(ranks.Length == 2, "ranks.Length == 2");
+        Debug.Assert(ranks.Length == 2, "ranks.Length == 2");
 
         var x = ranks[0];
         var y = ranks[1];
@@ -54,7 +54,7 @@ namespace Surreal.Mathematics.Tensors {
         return this[x, y];
       }
       set {
-        Check.That(ranks.Length == 2, "ranks.Length == 2");
+        Debug.Assert(ranks.Length == 2, "ranks.Length == 2");
 
         var x = ranks[0];
         var y = ranks[1];

@@ -6,7 +6,7 @@ namespace Surreal.Framework.PathFinding {
 
   public static class Heuristics {
     public static readonly Heuristic Identity  = (start, goal) => 1f;
-    public static readonly Heuristic Euclidean = (start, goal) => MathF.Abs(start.X - goal.X) + MathF.Abs(start.Y - goal.Y);
+    public static readonly Heuristic Euclidean = (start, goal) => System.MathF.Abs(start.X - goal.X) + System.MathF.Abs(start.Y - goal.Y);
     public static          Heuristic Constant(float value = 1f) => (start, goal) => value;
   }
 }

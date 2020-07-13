@@ -37,6 +37,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         this.bindings = bindings;
       }
 
+#pragma warning disable 8620
       public override object? Visit(CallExpression expression) {
         var symbol     = expression.Symbol.ToString();
         var parameters = expression.Parameters.Select(_ => _.Accept(this)).ToArray();
@@ -47,6 +48,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
 
         throw new Exception($"An unrecognized function was encountered: {symbol}");
       }
+#pragma warning restore 8620
 
       public override object? Visit(UnaryExpression expression) => expression.Operation switch {
           UnaryOperation.Not    => !IsTruthy(expression.Expression),
@@ -88,8 +90,6 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       }
 
       public void Add(string name, Binding binding) {
-        Check.NotNullOrEmpty(name, nameof(name));
-
         actionsByName.Add(name, parameters => {
           var result = binding(parameters);
 

@@ -4,6 +4,7 @@ using Surreal.Audio.Clips;
 using Surreal.Audio.Playback;
 using Surreal.Audio.SPI;
 using Surreal.Platform.Internal.Audio.Resources;
+using MathF = Surreal.Mathematics.MathF;
 
 namespace Surreal.Platform.Internal.Audio {
   internal sealed class OpenTKAudioBackend : IAudioBackend, IDisposable {
@@ -15,7 +16,7 @@ namespace Surreal.Platform.Internal.Audio {
 
     public float MasterVolume {
       get => masterVolume;
-      set => masterVolume = Maths.Clamp(value, 0f, 1f);
+      set => masterVolume = MathF.Clamp(value, 0f, 1f);
     }
 
     public AudioClip CreateAudioClip(IAudioData data) {

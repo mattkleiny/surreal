@@ -1,10 +1,12 @@
-﻿namespace Surreal.Timing {
+﻿using System.Diagnostics;
+
+namespace Surreal.Mathematics.Timing {
   public sealed class FrameTimer {
     private readonly int frameCount;
     private          int accumulator;
 
     public FrameTimer(int frameCount) {
-      Check.That(frameCount > 0, "frameCount > 0");
+      Debug.Assert(frameCount > 0, "frameCount > 0");
 
       this.frameCount = frameCount;
     }

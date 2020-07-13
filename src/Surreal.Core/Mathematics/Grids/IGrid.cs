@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Surreal.Collections;
@@ -21,7 +22,7 @@ namespace Surreal.Mathematics.Grids {
     T Sample(int x, int y, GridSamplingMode mode = GridSamplingMode.Assert) {
       switch (mode) {
         case GridSamplingMode.Assert: {
-          Check.That(Contains(x, y), "Contains(x,y)");
+          Debug.Assert(IsValid(x, y), "Contains(x,y)");
           break;
         }
         case GridSamplingMode.Clamp: {
@@ -44,13 +45,13 @@ namespace Surreal.Mathematics.Grids {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    bool Contains(int x, int y) {
+    bool IsValid(int x, int y) {
       return x >= 0 && x < Width && y >= 0 && y < Height;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     T TryGet(int x, int y, T defaultValue = default) {
-      return Contains(x, y) ? this[x, y] : defaultValue;
+      return IsValid(x, y) ? this[x, y] : defaultValue;
     }
 
     void Fill(T value) {
@@ -77,12 +78,12 @@ namespace Surreal.Mathematics.Grids {
       int     stepCount;
       Vector2 step;
 
-      if (MathF.Abs(direction.X) > MathF.Abs(direction.Y)) {
-        stepCount = (int) MathF.Ceiling(MathF.Abs(direction.X));
-        step      = new Vector2(1, direction.Y / direction.X) * MathF.Sign(direction.X);
+      if (System.MathF.Abs(direction.X) > System.MathF.Abs(direction.Y)) {
+        stepCount = (int) System.MathF.Ceiling(System.MathF.Abs(direction.X));
+        step      = new Vector2(1, direction.Y / direction.X) * System.MathF.Sign(direction.X);
       } else {
-        stepCount = (int) MathF.Ceiling(MathF.Abs(direction.Y));
-        step      = new Vector2(direction.X / direction.Y, 1) * MathF.Sign(direction.Y);
+        stepCount = (int) System.MathF.Ceiling(System.MathF.Abs(direction.Y));
+        step      = new Vector2(direction.X / direction.Y, 1) * System.MathF.Sign(direction.Y);
       }
 
       var point = from;
@@ -99,7 +100,7 @@ namespace Surreal.Mathematics.Grids {
 
     public static void DrawCurve<T, TCurve>(this IGrid<T> target, in TCurve curve, T value, int resolution = 32)
         where TCurve : struct, IPlanarCurve {
-      Check.That(resolution > 2, "resolution > 2");
+      Debug.Assert(resolution > 2, "resolution > 2");
 
       var points = new SpanList<Vector2>(stackalloc Vector2[resolution]);
 

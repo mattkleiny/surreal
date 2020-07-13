@@ -1,6 +1,6 @@
 ﻿using System;
 using Surreal.Diagnostics.Logging;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Diagnostics {
   public sealed class FrameReporter {

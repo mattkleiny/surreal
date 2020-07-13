@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Surreal.Framework.Scenes.Entities.Aspects;
 using Surreal.Framework.Scenes.Entities.Components;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes.Entities.Systems {
   public sealed class PhysicsSystem : SubscribedSystem {

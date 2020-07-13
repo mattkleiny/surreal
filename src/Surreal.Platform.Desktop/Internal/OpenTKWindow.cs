@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using OpenTK;
@@ -55,7 +56,7 @@ namespace Surreal.Platform.Internal {
     public int Width {
       get => window.Width;
       set {
-        Check.That(value > 0, "value > 0");
+        Debug.Assert(value > 0, "value > 0");
         window.Width = value;
       }
     }
@@ -63,7 +64,7 @@ namespace Surreal.Platform.Internal {
     public int Height {
       get => window.Height;
       set {
-        Check.That(value > 0, "value > 0");
+        Debug.Assert(value > 0, "value > 0");
         window.Height = value;
       }
     }

@@ -18,17 +18,17 @@ namespace Surreal.Graphics.Raycasting {
         float edgeDistanceY;
 
         if (direction.X > 0f) {
-          edgeDistanceX = MathF.Floor(position.X) + 1 - position.X;
+          edgeDistanceX = System.MathF.Floor(position.X) + 1 - position.X;
         }
         else {
-          edgeDistanceX = MathF.Ceiling(position.X) - 1 - position.X;
+          edgeDistanceX = System.MathF.Ceiling(position.X) - 1 - position.X;
         }
 
         if (direction.Y > 0f) {
-          edgeDistanceY = MathF.Floor(position.Y) + 1 - position.Y;
+          edgeDistanceY = System.MathF.Floor(position.Y) + 1 - position.Y;
         }
         else {
-          edgeDistanceY = MathF.Ceiling(position.Y) - 1 - position.Y;
+          edgeDistanceY = System.MathF.Ceiling(position.Y) - 1 - position.Y;
         }
 
         var step1 = new Vector2(edgeDistanceX, edgeDistanceX / slope);
@@ -51,11 +51,11 @@ namespace Surreal.Graphics.Raycasting {
       var offsetX = 0f;
       var offsetY = 0f;
 
-      if (Math.Abs(MathF.Floor(origin.X) - origin.X) < float.Epsilon) {
+      if (Math.Abs(System.MathF.Floor(origin.X) - origin.X) < float.Epsilon) {
         offsetX = direction.X > 0 ? 0 : -1;
       }
 
-      if (Math.Abs(MathF.Floor(origin.Y) - origin.Y) < float.Epsilon) {
+      if (Math.Abs(System.MathF.Floor(origin.Y) - origin.Y) < float.Epsilon) {
         offsetY = direction.Y > 0 ? 0 : -1;
       }
 
@@ -67,7 +67,7 @@ namespace Surreal.Graphics.Raycasting {
 
     public static void DrawColoredColumn(this IGrid<Color> target, int sourceX, Vector2 point, float height, Color color) {
       var start = (int) point.Y;
-      var end   = (int) MathF.Ceiling(point.Y + height);
+      var end   = (int) System.MathF.Ceiling(point.Y + height);
 
       for (var y = Math.Max(0, start); y < Math.Min(target.Height, end); y++) {
         target[(int) point.X, y] = color;
@@ -76,7 +76,7 @@ namespace Surreal.Graphics.Raycasting {
 
     public static void DrawTexturedColumn(this IGrid<Color> target, int sourceX, IGrid<Color> texture, Vector2 point, float height, Color dampenColor) {
       var start = (int) point.Y;
-      var end   = (int) MathF.Ceiling(point.Y + height);
+      var end   = (int) System.MathF.Ceiling(point.Y + height);
       var stepY = texture.Height / height;
 
       for (var y = Math.Max(0, start); y < Math.Min(target.Height, end); y++) {

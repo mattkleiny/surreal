@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Surreal.Collections;
 
-namespace Surreal {
+namespace Surreal.Utilities {
   public static class EnumExtensions {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasFlagFast<TEnum>(this TEnum value, TEnum comparand)

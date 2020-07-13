@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Surreal.Mathematics {
   [DebuggerDisplay("Seed {Value}")]
   public readonly struct Seed : IEquatable<Seed> {
-    public static Seed NewRandomized() => new Seed(Maths.Random.Next());
+    public static Seed NewRandomized() => new Seed(MathF.Random.Next());
 
     public readonly int Value;
 
@@ -18,7 +18,7 @@ namespace Surreal.Mathematics {
 
     public Random ToRandom() {
       if (Value == 0) {
-        return new Random(Maths.Random.Next());
+        return new Random(MathF.Random.Next());
       }
 
       return new Random(Value);

@@ -80,12 +80,12 @@ namespace Surreal.Graphics.Raycasting {
         Color dampen;
         float wallX;
 
-        if (Math.Abs(MathF.Floor(end.X) - end.X) < float.Epsilon) {
+        if (Math.Abs(System.MathF.Floor(end.X) - end.X) < float.Epsilon) {
           dampen = Color.Clear;
-          wallX  = end.Y - MathF.Floor(end.Y);
+          wallX  = end.Y - System.MathF.Floor(end.Y);
         } else {
           dampen = new Color(50, 50, 50, 0);
-          wallX  = end.X - MathF.Floor(end.X);
+          wallX  = end.X - System.MathF.Floor(end.X);
         }
 
         // draw walls
@@ -108,8 +108,8 @@ namespace Surreal.Graphics.Raycasting {
           var distance          = wallPerpendicular * distanceRatio;
           var mapPosition       = ray.Origin + ray.Direction * distance;
 
-          var tileX = (int) MathF.Floor(mapPosition.X);
-          var tileY = (int) MathF.Floor(mapPosition.Y);
+          var tileX = (int) System.MathF.Floor(mapPosition.X);
+          var tileY = (int) System.MathF.Floor(mapPosition.Y);
 
           var textureX = (int) (mapPosition.X - tileX) * floorTexture.Width;
           var textureY = (int) (mapPosition.Y - tileY) * floorTexture.Height;

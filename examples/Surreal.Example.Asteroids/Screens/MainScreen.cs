@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Asteroids.Actors;
-using Surreal;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Framework;
@@ -9,8 +8,8 @@ using Surreal.Framework.Screens;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 using Surreal.Mathematics;
+using Surreal.Mathematics.Timing;
 using Surreal.States;
-using Surreal.Timing;
 
 namespace Asteroids.Screens {
   public sealed class MainScreen : GameScreen<AsteroidsGame> {

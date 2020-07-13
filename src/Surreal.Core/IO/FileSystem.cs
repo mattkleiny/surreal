@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Surreal.IO {
 
   public abstract class FileSystem : IFileSystem {
     protected FileSystem(params string[] schemes) {
-      Check.That(schemes.Length > 0, "schemes.Length > 0");
+      Debug.Assert(schemes.Length > 0, "schemes.Length > 0");
 
       Name    = schemes[0];
       Schemes = new HashSet<string>(schemes);

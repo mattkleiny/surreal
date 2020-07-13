@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework {
   [DebuggerDisplay("{DeltaTime} since last frame")]

@@ -11,7 +11,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
-using static Surreal.Maths;
+using static Surreal.Mathematics.MathF;
 
 namespace Minecraft.Core.Rendering {
   public sealed class ChunkMesh : IDisposable {

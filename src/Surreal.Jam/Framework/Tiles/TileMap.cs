@@ -11,7 +11,7 @@ namespace Surreal.Framework.Tiles {
   public class TileMap<TTile> : IGrid<TTile> {
     public delegate void TileChangedEvent(int x, int y, TTile oldTile, TTile newTile);
 
-    private readonly Grid<ushort> tiles;
+    private readonly DenseGrid<ushort> tiles;
 
     public TileMap(int width, int height, ITilePalette<TTile> palette)
         : this(width, height, palette, palette[0]) {
@@ -20,7 +20,7 @@ namespace Surreal.Framework.Tiles {
     public TileMap(int width, int height, ITilePalette<TTile> palette, TTile defaultTile) {
       Palette = palette;
 
-      tiles = new Grid<ushort>(width, height);
+      tiles = new DenseGrid<ushort>(width, height);
       tiles.Fill(palette[defaultTile]);
     }
 
@@ -29,7 +29,7 @@ namespace Surreal.Framework.Tiles {
     public int Width  => tiles.Width;
     public int Height => tiles.Height;
 
-    public event TileChangedEvent TileChanged;
+    public event TileChangedEvent TileChanged = null!;
 
     public TTile this[int x, int y] {
       get => Palette[tiles[x, y]];
@@ -65,7 +65,7 @@ namespace Surreal.Framework.Tiles {
           var layer = input.Layers[i];
           if (layer.IsVisible != 1) continue;
 
-          var parsed = layer.Data.Decode().ToArray();
+          var parsed = layer.Data!.Decode().ToArray();
 
           for (var j = 0; j < parsed.Length; j++) {
             var x = j % layer.Width;

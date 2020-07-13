@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using MathF = Surreal.Mathematics.MathF;
 
 namespace Surreal.Graphics {
   // TODO: create a floating point representation of color?
@@ -22,10 +23,10 @@ namespace Surreal.Graphics {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color Lerp(Color a, Color b, float t) => new Color(
-        (byte) Maths.Lerp(a.R, b.R, t),
-        (byte) Maths.Lerp(a.G, b.G, t),
-        (byte) Maths.Lerp(a.B, b.B, t),
-        (byte) Maths.Lerp(a.A, b.A, t)
+        (byte) MathF.Lerp(a.R, b.R, t),
+        (byte) MathF.Lerp(a.G, b.G, t),
+        (byte) MathF.Lerp(a.B, b.B, t),
+        (byte) MathF.Lerp(a.A, b.A, t)
     );
 
     public static readonly Color Black   = new Color(0, 0, 0);

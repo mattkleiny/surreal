@@ -1,4 +1,4 @@
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes {
   public interface IScene {

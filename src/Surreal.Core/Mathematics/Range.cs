@@ -5,10 +5,10 @@ namespace Surreal.Mathematics {
     public static IntRange   Of(int min, int max)     => new IntRange(min, max);
     public static FloatRange Of(float min, float max) => new FloatRange(min, max);
 
-    public static int   Clamp(this int value, int min, int max)       => Maths.Clamp(value, min, max);
-    public static float Clamp(this float value, float min, float max) => Maths.Clamp(value, min, max);
-    public static int   Clamp(this int value, IntRange range)         => Maths.Clamp(value, range.Min, range.Max);
-    public static float Clamp(this float value, FloatRange range)     => Maths.Clamp(value, range.Min, range.Max);
+    public static int   Clamp(this int value, int min, int max)       => MathF.Clamp(value, min, max);
+    public static float Clamp(this float value, float min, float max) => MathF.Clamp(value, min, max);
+    public static int   Clamp(this int value, IntRange range)         => MathF.Clamp(value, range.Min, range.Max);
+    public static float Clamp(this float value, FloatRange range)     => MathF.Clamp(value, range.Min, range.Max);
 
     public static bool Between(this int value, int min, int max)       => value > min       && value < max;
     public static bool Between(this float value, float min, float max) => value > min       && value < max;

@@ -1,4 +1,4 @@
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes.Actors {
   public interface IActorComponent {

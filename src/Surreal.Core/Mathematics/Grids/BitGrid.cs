@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Surreal.Mathematics.Grids {
@@ -24,14 +25,14 @@ namespace Surreal.Mathematics.Grids {
 
     public bool this[int x, int y] {
       get {
-        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
-        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
+        Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
         
         return elements[x + y * Width];
       }
       set {
-        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
-        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
+        Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
         
         elements[x + y * Width] = value;
       }

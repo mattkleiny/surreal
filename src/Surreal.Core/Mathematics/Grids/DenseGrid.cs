@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Surreal.Mathematics.Grids {
-  public sealed class Grid<T> : IEnumerable<T>, IGrid<T> {
+  public sealed class DenseGrid<T> : IEnumerable<T>, IGrid<T> {
     private readonly T[] elements;
 
-    public Grid(int width, int height, T defaultValue = default) {
-      Check.That(width > 0, "width > 0");
-      Check.That(height > 0, "height > 0");
+    public DenseGrid(int width, int height, T defaultValue = default) {
+      Debug.Assert(width > 0, "width > 0");
+      Debug.Assert(height > 0, "height > 0");
 
       Width  = width;
       Height = height;
@@ -31,8 +32,8 @@ namespace Surreal.Mathematics.Grids {
     public ref T this[int x, int y] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
-        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
-        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
+        Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
         return ref elements[x + y * Width];
       }
@@ -49,10 +50,10 @@ namespace Surreal.Mathematics.Grids {
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
 
     public struct Enumerator : IEnumerator<T> {
-      private readonly Grid<T> grid;
+      private readonly DenseGrid<T> grid;
       private          int     index;
 
-      public Enumerator(Grid<T> grid)
+      public Enumerator(DenseGrid<T> grid)
           : this() {
         this.grid = grid;
         Reset();

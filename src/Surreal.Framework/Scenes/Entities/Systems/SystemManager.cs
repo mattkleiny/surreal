@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes.Entities.Systems {
   internal sealed class SystemManager {

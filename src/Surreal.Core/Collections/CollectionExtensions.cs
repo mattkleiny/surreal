@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Surreal.Mathematics;
 
 namespace Surreal.Collections {
   public static class CollectionExtensions {
@@ -30,53 +31,13 @@ namespace Surreal.Collections {
       array[toIndex]   = temp;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T SelectRandomly<T>(this IEnumerable<T> elements, Random random) {
-      var array = elements.ToArray();
+    public static void ShuffleInPlace<T>(this IList<T> elements, Random random) {
+      for (var i = 0; i < elements.Count; i++) {
+        // don't select from the entire array on subsequent loops
+        var j = random.Next(i, elements.Count);
 
-      if (array.Length > 0) {
-        return array[random.Next(0, array.Length)];
+        elements.Swap(i, j);
       }
-
-      return default!;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T SelectRandomly<T>(this IReadOnlyList<T> elements, Random random) {
-      if (elements.Count > 0) {
-        return elements[random.Next(0, elements.Count)];
-      }
-
-      return default!;
-    }
-
-    public static T SelectRandomlyWithChance<T>(this IEnumerable<T> sequence, Random random, Func<T, float> chanceProvider) {
-      var elements = sequence.ToArray();
-      if (elements.Length == 0) return default!;
-
-      // calculate total cumulative weight of all items
-      var cumulative = 0f;
-
-      for (var i = 0; i < elements.Length; i++) {
-        var element = elements[i];
-        cumulative += chanceProvider(element);
-      }
-
-      // roll the dice and try to find the most likely item
-      var dice = random.NextDouble() * cumulative;
-
-      for (var i = 0; i < elements.Length; i++) {
-        var element = elements[i];
-        var chance  = chanceProvider(element);
-
-        if (dice < chance) {
-          return element;
-        }
-
-        dice -= chance;
-      }
-
-      return elements[^1];
     }
 
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> sequence, Random random) {
@@ -90,6 +51,87 @@ namespace Surreal.Collections {
       }
 
       return array;
+    }
+
+    public static Queue<T> ToShuffledQueue<T>(this IEnumerable<T> enumerable, Random random) {
+      var queue = new Queue<T>();
+
+      foreach (var element in enumerable.Shuffle(random)) {
+        queue.Enqueue(element);
+      }
+
+      return queue;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T SelectRandomly<T>(this IReadOnlyList<T> elements, Random random) {
+      if (elements.Count > 0) {
+        return elements[random.Next(0, elements.Count)];
+      }
+
+      return default!;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T SelectRandomly<T>(this IEnumerable<T> elements, Random random) {
+      var array = elements.ToArray();
+
+      if (array.Length > 0) {
+        return array[random.Next(0, array.Length)];
+      }
+
+      return default!;
+    }
+
+    public static T? SelectRandomlyWithWeight<T>(this IEnumerable<T> sequence, Random random, Func<T, float> weightProvider)
+        where T : class {
+      var elements = sequence.ToArray();
+      if (elements.Length == 0) return default;
+
+      elements.ShuffleInPlace(random);
+
+      // calculate total cumulative weight of all items
+      var totalWeight = 0f;
+
+      for (var i = 0; i < elements.Length; i++) {
+        totalWeight += weightProvider(elements[i]);
+      }
+
+      // roll the dice and try to find the most likely item
+      var targetWeight = random.NextFloat() * totalWeight;
+
+      for (var i = 0; i < elements.Length; i++) {
+        var element = elements[i];
+        var weight  = weightProvider(element);
+
+        if (targetWeight < weight) {
+          return element;
+        }
+
+        targetWeight -= weight;
+      }
+
+      return elements[^1];
+    }
+
+    public static ListSlice<T> SelectAllWithWeight<T>(this IEnumerable<T> sequence, Random random, Func<T, float> weightProvider) {
+      var elements = new List<T>(sequence);
+      if (elements.Count == 0) return ListSlice<T>.Empty;
+
+      elements.ShuffleInPlace(random);
+
+      var chance = random.NextFloat();
+
+      for (var i = elements.Count - 1; i >= 0; i--) {
+        var element = elements[i];
+        var weight  = weightProvider(element);
+
+        if (weight < chance) {
+          elements.RemoveAt(i);
+        }
+      }
+
+      return elements;
     }
   }
 }

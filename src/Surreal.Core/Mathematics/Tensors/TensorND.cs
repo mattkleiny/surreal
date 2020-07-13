@@ -19,7 +19,7 @@ namespace Surreal.Mathematics.Tensors {
 
     public TensorND(IBuffer<T> buffer, params int[] shape)
         : base(buffer) {
-      Check.That(shape.Length > 0, "Length > 0");
+      Debug.Assert(shape.Length > 0, "Length > 0");
 
       Shape   = shape;
       offsets = CalculateOffsets(Shape);

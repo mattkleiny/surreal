@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Cameras {
   public sealed class OrthographicCamera : Camera {
@@ -13,7 +14,7 @@ namespace Surreal.Graphics.Cameras {
 
     public float Zoom {
       get => zoom;
-      set => zoom = Maths.Clamp(value, 0.1f, 10f);
+      set => zoom = MathF.Clamp(value, 0.1f, 10f);
     }
 
     protected override void Recalculate(out Matrix4x4 projection) {

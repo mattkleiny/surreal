@@ -47,13 +47,13 @@ namespace Surreal.Platform.Internal.Graphics {
     }
 
     public void DrawMeshIndexed(int count, PrimitiveType type) {
-      Check.That(count >= 0, "count >= 0");
+      Debug.Assert(count >= 0, "count >= 0");
 
       GL.DrawElements(ConvertPrimitiveType(type), count, DrawElementsType.UnsignedShort, IntPtr.Zero);
     }
 
     public void DrawMesh(int count, PrimitiveType type) {
-      Check.That(count >= 0, "count >= 0");
+      Debug.Assert(count >= 0, "count >= 0");
 
       GL.DrawArrays(ConvertPrimitiveType(type), 0, count);
     }

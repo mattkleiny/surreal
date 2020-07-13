@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Surreal.Timing {
+namespace Surreal.Mathematics.Timing {
   public sealed class IntervalTimer {
     private readonly TimeSpan interval;
 

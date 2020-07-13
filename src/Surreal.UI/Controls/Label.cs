@@ -4,7 +4,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Sprites;
 using Surreal.Mathematics.Linear;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.UI.Controls {
   public class Label : Control {

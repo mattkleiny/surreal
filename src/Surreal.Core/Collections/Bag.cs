@@ -9,7 +9,7 @@ namespace Surreal.Collections {
     private T[] elements;
 
     public Bag(int capacity = 16) {
-      Check.That(capacity >= 0, "capacity >= 0");
+      Debug.Assert(capacity >= 0, "capacity >= 0");
 
       elements = new T[capacity];
 

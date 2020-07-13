@@ -1,12 +1,11 @@
-﻿using System;
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Surreal.Mathematics;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal {
-  public static class Maths {
+namespace Surreal.Mathematics {
+  public static class MathF {
     private static readonly ThreadLocal<Random> ThreadLocalRandom = new ThreadLocal<Random>(() => new Random(Environment.TickCount));
 
     public const float Pi  = 3.141593f;

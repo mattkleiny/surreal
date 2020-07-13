@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Surreal.Timing {
+namespace Surreal.Mathematics.Timing {
   [DebuggerDisplay("Embedded timer every {frequency} (currently {accumulator}s)")]
   public struct EmbeddedTimer {
     private readonly TimeSpan frequency;

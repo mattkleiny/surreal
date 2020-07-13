@@ -1,4 +1,4 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Screens {
   public abstract class Screen : IScreen {

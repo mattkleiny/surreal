@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics {
   public sealed class SoftwareFrameBuffer : IDisposable {
@@ -8,8 +10,8 @@ namespace Surreal.Graphics {
     private          Texture? texture;
 
     public SoftwareFrameBuffer(int width, int height) {
-      Check.That(width  > 0, "width > 0");
-      Check.That(height > 0, "height > 0");
+      Debug.Assert(width  > 0, "width > 0");
+      Debug.Assert(height > 0, "height > 0");
 
       image = new Image(width, height);
       Colors = image.ToRegion();
@@ -30,7 +32,7 @@ namespace Surreal.Graphics {
           texture: texture,
           x: -device.Viewport.Width  / 2f,
           y: -device.Viewport.Height / 2f,
-          rotation: 0,
+          rotation: Angle.Zero, 
           width: device.Viewport.Width,
           height: device.Viewport.Height
       );

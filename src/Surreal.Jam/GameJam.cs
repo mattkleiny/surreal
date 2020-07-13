@@ -25,6 +25,7 @@ using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
+using Surreal.Utilities;
 
 namespace Surreal {
   public abstract class GameJam : Game {

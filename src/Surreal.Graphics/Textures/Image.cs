@@ -26,8 +26,8 @@ namespace Surreal.Graphics.Textures {
     }
 
     public Image(int width, int height) {
-      Check.That(width  > 0, "width > 0");
-      Check.That(height > 0, "height > 0");
+      Debug.Assert(width  > 0, "width > 0");
+      Debug.Assert(height > 0, "height > 0");
 
       Width  = width;
       Height = height;
@@ -44,14 +44,14 @@ namespace Surreal.Graphics.Textures {
 
     public Color this[int x, int y] {
       get {
-        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
-        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
+        Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
         return Span[x + y * Width];
       }
       set {
-        Check.That(x >= 0 && x < Width, "x >= 0 && x < Width");
-        Check.That(y >= 0 && y < Height, "y >= 0 && y < Height");
+        Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
+        Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
         Span[x + y * Width] = value;
       }

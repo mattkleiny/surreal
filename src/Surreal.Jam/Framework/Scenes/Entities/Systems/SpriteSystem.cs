@@ -1,9 +1,11 @@
-﻿using Surreal.Framework.Scenes.Entities.Aspects;
+﻿using System.Numerics;
+using Surreal.Framework.Scenes.Entities.Aspects;
 using Surreal.Framework.Scenes.Entities.Components;
 using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Sprites;
-using Surreal.Timing;
+using Surreal.Mathematics;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes.Entities.Systems {
   public sealed class SpriteSystem : IteratingSystem {
@@ -38,20 +40,14 @@ namespace Surreal.Framework.Scenes.Entities.Systems {
 
       if (sprite.Texture == null) return; // no texture? no worries!
 
-      var scaledHalfWidth  = sprite.Texture.Width  * sprite.Scale / 2f;
-      var scaledHalfHeight = sprite.Texture.Height * sprite.Scale / 2f;
-
       batch.Color = sprite.Tint;
 
-      // TODO: use pivoting mechanism here, instead
-      // render the texture centered at the transform position relative to the sprite bounds and scale
-      batch.Draw(
+      batch.DrawPivoted(
           region: sprite.Texture,
-          x: transform.Position.X - scaledHalfWidth,
-          y: transform.Position.Y - scaledHalfHeight,
+          position: transform.Position,
           rotation: transform.Rotation,
-          width: sprite.Texture.Width   * sprite.Scale,
-          height: sprite.Texture.Height * sprite.Scale
+          pivot: Pivot.Center,
+          scale: sprite.Scale
       );
     }
 

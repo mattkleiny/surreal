@@ -12,7 +12,7 @@ namespace Surreal.Collections {
     private readonly ConcurrentBag<T> pool = new ConcurrentBag<T>();
 
     public ObjectPool(int capacity) {
-      Check.That(capacity > 0, "capacity > 0");
+      Debug.Assert(capacity > 0, "capacity > 0");
 
       Capacity = capacity;
     }

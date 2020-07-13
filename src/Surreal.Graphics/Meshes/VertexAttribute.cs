@@ -64,7 +64,7 @@ namespace Surreal.Graphics.Meshes {
         .ToArray());
 
     private VertexAttributeSet(params VertexAttributeAttribute[] attributes) {
-      Check.That(attributes.Length > 0, "At least one attribute must be specified.");
+      Debug.Assert(attributes.Length > 0, "At least one attribute must be specified.");
 
       this.attributes = CreateAttributes(attributes).ToArray();
     }

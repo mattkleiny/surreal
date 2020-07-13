@@ -1,4 +1,5 @@
 ﻿using System;
+using Surreal.Utilities;
 
 namespace Surreal.Diagnostics.Profiling {
   public static class ProfilerFactory {

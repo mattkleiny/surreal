@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Surreal.Collections;
 using Surreal.Diagnostics.Console.Interpreter;
 
@@ -8,7 +9,7 @@ namespace Surreal.Diagnostics.Console {
     private readonly RingBuffer<string>  history;
 
     public GameConsole(IConsoleInterpreter interpreter, int capacity = 1000) {
-      Check.That(capacity > 0, "capacity > 0");
+      Debug.Assert(capacity > 0, "capacity > 0");
 
       this.interpreter = interpreter;
 

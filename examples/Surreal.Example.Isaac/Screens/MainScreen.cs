@@ -23,8 +23,10 @@ namespace Isaac.Screens {
       await base.LoadContentAsync(assets);
     }
 
-    public async Task LoadInBackgroundAsync(IAssetResolver assets, ILoadNotifier notifier) {
+    public Task LoadInBackgroundAsync(IAssetResolver assets, ILoadNotifier notifier) {
       notifier.Increment(1f);
+
+      return Task.CompletedTask;
     }
 
     public override void Initialize() {

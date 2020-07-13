@@ -1,11 +1,12 @@
 using System;
+using System.Diagnostics;
 using Surreal.Assets;
 using Surreal.IO;
 
 namespace Surreal.Compute.Memory {
   public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate {
     protected ComputeBuffer(int stride) {
-      Check.That(stride > 0, "stride > 0");
+      Debug.Assert(stride > 0, "stride > 0");
 
       Stride = stride;
     }

@@ -4,7 +4,7 @@ using Surreal.Graphics.Raycasting;
 using Surreal.Input.Keyboard;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Prelude.Core.Actors {
   public class Player : Actor {

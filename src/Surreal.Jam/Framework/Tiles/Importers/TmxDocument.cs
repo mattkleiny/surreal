@@ -54,7 +54,7 @@ namespace Surreal.Framework.Tiles.Importers {
     }
 
     public sealed class GroupElement {
-      [XmlAttribute("name")] public string Name { get; set; }
+      [XmlAttribute("name")] public string? Name { get; set; }
 
       [XmlElement("layer", typeof(LayerElement))]
       public List<LayerElement> Layers { get; set; } = new List<LayerElement>();
@@ -64,21 +64,21 @@ namespace Surreal.Framework.Tiles.Importers {
     }
 
     public sealed class ObjectGroupElement {
-      [XmlAttribute("name")] public string Name { get; set; }
+      [XmlAttribute("name")] public string? Name { get; set; }
 
       [XmlElement("object", typeof(ObjectElement))]
       public List<ObjectElement> Objects { get; set; } = new List<ObjectElement>();
     }
 
     public sealed class ObjectElement {
-      [XmlAttribute("name")] public string Name { get; set; }
-      [XmlAttribute("type")] public string Type { get; set; }
+      [XmlAttribute("name")] public string? Name { get; set; }
+      [XmlAttribute("type")] public string? Type { get; set; }
       [XmlAttribute("x")]    public float  X    { get; set; }
       [XmlAttribute("y")]    public float  Y    { get; set; }
     }
 
     public sealed class LayerElement {
-      [XmlAttribute("name")]    public string Name      { get; set; }
+      [XmlAttribute("name")]    public string? Name      { get; set; }
       [XmlAttribute("x")]       public int    X         { get; set; }
       [XmlAttribute("y")]       public int    Y         { get; set; }
       [XmlAttribute("width")]   public int    Width     { get; set; }
@@ -86,7 +86,7 @@ namespace Surreal.Framework.Tiles.Importers {
       [XmlAttribute("visible")] public int    IsVisible { get; set; } = 1;
 
       [XmlElement("data", typeof(DataElement))]
-      public DataElement Data { get; set; }
+      public DataElement? Data { get; set; }
     }
 
     public sealed class DataElement : ChunkElement {
@@ -101,7 +101,7 @@ namespace Surreal.Framework.Tiles.Importers {
       [XmlAttribute("y")]      public int    Y      { get; set; }
       [XmlAttribute("width")]  public int    Width  { get; set; }
       [XmlAttribute("height")] public int    Height { get; set; }
-      [XmlText]                public string Data   { get; set; }
+      [XmlText]                public string? Data   { get; set; }
 
       [XmlElement("chunk", typeof(ChunkElement))]
       public List<ChunkElement> Chunks { get; set; } = new List<ChunkElement>();

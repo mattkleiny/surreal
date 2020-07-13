@@ -1,7 +1,7 @@
 ﻿using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
+using Surreal.Mathematics.Timing;
 using Surreal.Platform;
-using Surreal.Timing;
 
 namespace Surreal.Framework.Scenes.Entities.Systems {
   public sealed class CameraSystem : EntitySystem {

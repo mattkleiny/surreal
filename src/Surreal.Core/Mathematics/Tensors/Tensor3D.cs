@@ -14,10 +14,10 @@ namespace Surreal.Mathematics.Tensors {
 
     public Tensor3D(IBuffer<T> buffer, int width, int height, int depth)
         : base(buffer) {
-      Check.That(width        > 0, "Width > 0");
-      Check.That(height       > 0, "Height > 0");
-      Check.That(depth        > 0, "Depth > 0");
-      Check.That(buffer.Count >= width * height * depth, "buffer.Count >= width * height * depth");
+      Debug.Assert(width        > 0, "Width > 0");
+      Debug.Assert(height       > 0, "Height > 0");
+      Debug.Assert(depth        > 0, "Depth > 0");
+      Debug.Assert(buffer.Count >= width * height * depth, "buffer.Count >= width * height * depth");
 
       Width  = width;
       Height = height;
@@ -48,7 +48,7 @@ namespace Surreal.Mathematics.Tensors {
 
     T ITensor<T>.this[params int[] ranks] {
       get {
-        Check.That(ranks.Length == 3, "ranks.Length == 3");
+        Debug.Assert(ranks.Length == 3, "ranks.Length == 3");
 
         var x = ranks[0];
         var y = ranks[1];
@@ -57,7 +57,7 @@ namespace Surreal.Mathematics.Tensors {
         return this[x, y, z];
       }
       set {
-        Check.That(ranks.Length == 3, "ranks.Length == 3");
+        Debug.Assert(ranks.Length == 3, "ranks.Length == 3");
 
         var x = ranks[0];
         var y = ranks[1];

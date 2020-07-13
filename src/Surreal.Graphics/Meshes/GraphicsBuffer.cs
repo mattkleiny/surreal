@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using Surreal.Assets;
 using Surreal.IO;
 
 namespace Surreal.Graphics.Meshes {
   public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate {
     protected GraphicsBuffer(int stride) {
-      Check.That(stride > 0, "stride > 0");
+      Debug.Assert(stride > 0, "stride > 0");
 
       Stride = stride;
     }

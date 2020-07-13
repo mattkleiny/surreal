@@ -1,5 +1,5 @@
 ﻿using System;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Screens {
   public interface IScreen : IDisposable {

@@ -1,6 +1,6 @@
 using Surreal.Graphics.Sprites;
 using Surreal.Mathematics.Linear;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 using Surreal.UI.Controls;
 
 namespace Surreal.UI {

@@ -18,7 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{C7D8E4F6-4F56-4BFB-B2CF-7DEC63ED215C}"
 ProjectSection(SolutionItems) = preProject
 	src\JetBrainsAnnotations.cs = src\JetBrainsAnnotations.cs
-	src\SharedPreconditions.cs = src\SharedPreconditions.cs
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5B995C24-B8BE-46E8-8B0B-1254641F31A0}"

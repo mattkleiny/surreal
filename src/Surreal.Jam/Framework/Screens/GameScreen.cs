@@ -8,7 +8,7 @@ using Surreal.Graphics.Sprites;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Screens {
   public abstract class GameScreen<TGame> : Screen

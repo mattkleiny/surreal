@@ -23,8 +23,6 @@ namespace Surreal {
 
     public ModdingPlugin(Game game, string basePath, string searchPattern = "*Mod*.dll")
         : base(game) {
-      Check.NotNullOrEmpty(basePath, nameof(basePath));
-
       Registry = new ModRegistry(Game.Services);
 
       host = BuildCompositionHost(basePath, searchPattern);

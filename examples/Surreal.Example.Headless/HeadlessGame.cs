@@ -3,6 +3,7 @@ using Surreal;
 using Surreal.Diagnostics;
 using Surreal.Diagnostics.Logging;
 using Surreal.Framework;
+using Surreal.Mathematics.Timing;
 using Surreal.Platform;
 
 namespace Headless {

@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using Surreal.Input.Keyboard;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.Graphics.Cameras {
   public sealed class TopDownCameraController : ICameraController {

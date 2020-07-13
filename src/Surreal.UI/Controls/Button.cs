@@ -2,8 +2,9 @@ using System;
 using System.Numerics;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
+using Surreal.Mathematics;
 using Surreal.Mathematics.Linear;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.UI.Controls {
   public class Button : Control {
@@ -28,7 +29,7 @@ namespace Surreal.UI.Controls {
           region: Texture,
           x: Position.X,
           y: Position.Y,
-          rotation: 0f,
+          rotation: Angle.Zero, 
           width: Texture.Width   * Scale.X,
           height: Texture.Height * Scale.Y
       );

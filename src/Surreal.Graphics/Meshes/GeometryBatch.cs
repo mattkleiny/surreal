@@ -8,7 +8,7 @@ using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Curves;
 using Surreal.Mathematics.Linear;
-using static Surreal.Maths;
+using static Surreal.Mathematics.MathF;
 
 namespace Surreal.Graphics.Meshes {
   // TODO: support poly lines and normals for thick lines and animated edges
@@ -103,8 +103,8 @@ namespace Surreal.Graphics.Meshes {
       var increment = 360f / segments;
 
       for (var theta = 0f; theta < 360f; theta += increment) {
-        var x = radius * MathF.Cos(DegreesToRadians(theta)) + center.X;
-        var y = radius * MathF.Sin(DegreesToRadians(theta)) + center.Y;
+        var x = radius * System.MathF.Cos(DegreesToRadians(theta)) + center.X;
+        var y = radius * System.MathF.Sin(DegreesToRadians(theta)) + center.Y;
 
         points.Add(new Vector2(x, y));
       }
@@ -118,8 +118,8 @@ namespace Surreal.Graphics.Meshes {
       var increment = length / segments;
 
       for (var theta = startAngle; theta < endAngle; theta += increment) {
-        var x = radius * MathF.Cos(DegreesToRadians(theta)) + center.X;
-        var y = radius * MathF.Sin(DegreesToRadians(theta)) + center.Y;
+        var x = radius * System.MathF.Cos(DegreesToRadians(theta)) + center.X;
+        var y = radius * System.MathF.Sin(DegreesToRadians(theta)) + center.Y;
 
         points.Add(new Vector2(x, y));
       }

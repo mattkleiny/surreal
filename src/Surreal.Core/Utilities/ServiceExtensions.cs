@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 
-namespace Surreal {
+namespace Surreal.Utilities {
   public static class ServiceExtensions {
     public static TService? GetService<TService>(this IServiceProvider services)
         where TService : class {

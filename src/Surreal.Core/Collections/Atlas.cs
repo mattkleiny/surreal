@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Surreal.Mathematics;
 
@@ -10,9 +11,8 @@ namespace Surreal.Collections {
     private readonly Dictionary<string, T> regionsByName;
 
     public static Atlas<T> Create(T source, string nameTemplate, int regionWidth, int regionHeight) {
-      Check.NotNullOrEmpty(nameTemplate, nameof(nameTemplate));
-      Check.That(regionWidth  > 0, "regionWidth > 0");
-      Check.That(regionHeight > 0, "regionHeight > 0");
+      Debug.Assert(regionWidth  > 0, "regionWidth > 0");
+      Debug.Assert(regionHeight > 0, "regionHeight > 0");
 
       var i = 0; // track offset into region array
 

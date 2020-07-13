@@ -1,4 +1,5 @@
 ﻿using System;
+using Surreal.Utilities;
 
 namespace Surreal.Diagnostics.Logging {
   public static class LogFactory {

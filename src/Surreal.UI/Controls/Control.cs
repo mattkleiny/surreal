@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Surreal.Graphics.Sprites;
 using Surreal.Mathematics.Linear;
-using Surreal.Timing;
+using Surreal.Mathematics.Timing;
 
 namespace Surreal.UI.Controls {
   public abstract class Control : IDisposable, IEnumerable<Control> {

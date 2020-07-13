@@ -2,6 +2,7 @@ using System.Diagnostics;
 using OpenTK.Audio.OpenAL;
 using Surreal.Audio.Clips;
 using Surreal.Audio.Playback;
+using Surreal.Mathematics;
 
 namespace Surreal.Platform.Internal.Audio.Resources {
   [DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
@@ -17,7 +18,7 @@ namespace Surreal.Platform.Internal.Audio.Resources {
 
     public override float Volume {
       get => volume;
-      set => volume = Maths.Clamp(value, 0f, 1f);
+      set => volume = MathF.Clamp(value, 0f, 1f);
     }
 
     public override bool IsPlaying {

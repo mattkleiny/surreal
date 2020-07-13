@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Linear;
+using MathF = Surreal.Mathematics.MathF;
 
 namespace Surreal.Graphics.Cameras {
   public abstract class Camera : ICamera {
@@ -14,8 +16,8 @@ namespace Surreal.Graphics.Cameras {
     private Frustum   frustum;
 
     protected Camera(int viewportWidth, int viewportHeight) {
-      Check.That(viewportWidth  > 0, "viewportWidth > 0");
-      Check.That(viewportHeight > 0, "viewportHeight > 0");
+      Debug.Assert(viewportWidth  > 0, "viewportWidth > 0");
+      Debug.Assert(viewportHeight > 0, "viewportHeight > 0");
 
       Viewport = new Viewport(
           width: viewportWidth,
@@ -29,12 +31,12 @@ namespace Surreal.Graphics.Cameras {
 
     public float Near {
       get => near;
-      set => near = Maths.Clamp(value, 0f, float.MaxValue);
+      set => near = MathF.Clamp(value, 0f, float.MaxValue);
     }
 
     public float Far {
       get => far;
-      set => far = Maths.Clamp(value, 0f, float.MaxValue);
+      set => far = MathF.Clamp(value, 0f, float.MaxValue);
     }
 
     public Vector3 Position  { get; set; } = Vector3.Zero;
