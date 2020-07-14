@@ -1,42 +1,37 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Surreal.Languages.Lexing {
   public abstract class StringLexer<TToken> : Lexer<TToken>
       where TToken : struct {
-    public override async Task<IEnumerable<TToken>> TokenizeAsync(TextReader reader) {
-      string line;
+    protected abstract bool TryMatch(
+        ReadOnlySpan<char> characters,
+        TokenPosition position,
+        out TToken token,
+        out int length,
+        out bool ignore
+    );
 
-      var currentLine = 1;
-      var results     = new List<TToken>();
+    public override IEnumerable<TToken> Tokenize(SourceText text) {
+      var span = text.Span;
 
-      while ((line = await reader.ReadLineAsync()) != null) {
-        if (!string.IsNullOrEmpty(line)) {
-          var currentColumn = 0;
+      for (var start = 0; start < span.Length; start++)
+      for (var end = start; end < span.Length; end++) {
+        if (span[end] != '\n') continue; // find the end of hte line
 
-          while (currentColumn < line.Length) {
-            var position = new TokenPosition(currentLine, currentColumn);
+        var line     = span[start..end];
+        var position = new TokenPosition(0, 0);
 
-            if (TryMatch(line, position, out var token, out var length, out var ignore)) {
-              if (!ignore) {
-                results.Add(token);
-              }
-
-              currentColumn += length;
-            }
-            else {
-              throw new LexingException($"Unrecognized symbol {line[currentColumn]} at line {currentLine}, column {currentColumn}");
-            }
+        if (TryMatch(line, position, out var token, out var length, out var ignore)) {
+          if (!ignore) {
+            yield return token;
           }
 
-          currentLine += 1;
+          start += length;
+        } else {
+          throw new LexingException($"An unrecognized token was encountered: {line.ToString()}");
         }
       }
-
-      return results;
     }
-
-    protected abstract bool TryMatch(string line, TokenPosition position, out TToken token, out int length, out bool ignore);
   }
 }

@@ -16,7 +16,7 @@ namespace Isaac.Screens {
     private readonly EntityScene        scene  = new EntityScene();
 
     public MainScreen(IsaacGame game)
-      : base(game) {
+        : base(game) {
     }
 
     protected override async Task LoadContentAsync(IAssetResolver assets) {
@@ -37,7 +37,7 @@ namespace Isaac.Screens {
       scene.RegisterComponent(new DenseComponentStorage<Sprite>());
 
       scene.AddSystem(new PhysicsSystem {
-        Gravity = Vector2.Zero,
+          Gravity = Vector2.Zero,
       });
 
       scene.AddSystem(new CameraSystem(camera, Game.Host));

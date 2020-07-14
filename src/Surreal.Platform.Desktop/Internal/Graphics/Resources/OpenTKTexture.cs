@@ -48,8 +48,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
             type: pixelType,
             pixels: ref newData.Span.GetPinnableReference()
         );
-      }
-      else {
+      } else {
         GL.TexSubImage2D(
             target: TextureTarget.Texture2D,
             level: 0,
@@ -64,11 +63,16 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    public override void Download(Image image) {
-      var pixels = image.Span;
-
+    public override Image Download() {
       GL.BindTexture(TextureTarget.Texture2D, Id);
-      GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref pixels.GetPinnableReference());
+      GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
+      GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
+
+      var image = new Image(width, height);
+
+      GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref image.Span.GetPinnableReference());
+
+      return image;
     }
 
     protected override void Dispose(bool managed) {

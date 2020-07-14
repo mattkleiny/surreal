@@ -27,7 +27,7 @@ namespace Surreal.Graphics.Raycasting {
 
     public SoftwareFrameBuffer FrameBuffer { get; }
 
-    public void Render(IGraphicsDevice device, SpriteBatch batch, TileMap<TTile> map) {
+    public void Render(SpriteBatch batch, TileMap<TTile> map) {
       var scale = new Vector2(
           (float) FrameBuffer.Width / map.Width,
           (float) FrameBuffer.Height / map.Height

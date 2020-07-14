@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Surreal.Languages.Expressions;
-using Surreal.Languages.Visitors;
+using Surreal.Languages;
+using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
   public sealed class ConsoleInterpreter : IConsoleInterpreter {
@@ -19,13 +19,12 @@ namespace Surreal.Diagnostics.Console.Interpreter {
 
     public string? Evaluate(string raw) {
       try {
-        var parser    = new ConsoleLanguageParser(raw);
-        var statement = parser.Statement();
-        var result    = statement.Accept(visitor);
+        var text   = SourceText.FromString(raw);
+        var parser = new ConsoleLanguageParser(text);
+        var result = parser.Expression().Accept(visitor);
 
         return result?.ToString() ?? "OK";
-      }
-      catch (Exception exception) {
+      } catch (Exception exception) {
         return exception.Message;
       }
     }
@@ -38,7 +37,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       }
 
 #pragma warning disable 8620
-      public override object? Visit(CallExpression expression) {
+      public override object? Visit(Call expression) {
         var symbol     = expression.Symbol.ToString();
         var parameters = expression.Parameters.Select(_ => _.Accept(this)).ToArray();
 
@@ -50,13 +49,13 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       }
 #pragma warning restore 8620
 
-      public override object? Visit(UnaryExpression expression) => expression.Operation switch {
+      public override object? Visit(Unary expression) => expression.Operation switch {
           UnaryOperation.Not    => !IsTruthy(expression.Expression),
           UnaryOperation.Negate => -ToNumber(expression.Expression),
           _                     => throw new NotSupportedException($"The operator '{expression.Operation}' is not supported"),
       };
 
-      public override object? Visit(BinaryExpression expression) => expression.Operation switch {
+      public override object? Visit(Binary expression) => expression.Operation switch {
           BinaryOperation.Plus   => ToNumber(expression.Left) + ToNumber(expression.Right),
           BinaryOperation.Minus  => ToNumber(expression.Left) - ToNumber(expression.Right),
           BinaryOperation.Times  => ToNumber(expression.Left) * ToNumber(expression.Right),
@@ -64,16 +63,16 @@ namespace Surreal.Diagnostics.Console.Interpreter {
           _                      => throw new NotSupportedException($"The operator '{expression.Operation}' is not supported"),
       };
 
-      public override object? Visit(LiteralExpression expression) => expression.Value;
+      public override object? Visit(Literal expression) => expression.Value;
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      private bool IsTruthy(Expression expression) => To<bool>(expression);
+      private bool IsTruthy(ConsoleExpression expression) => To<bool>(expression);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      private float ToNumber(Expression expression) => To<float>(expression);
+      private float ToNumber(ConsoleExpression expression) => To<float>(expression);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      private T To<T>(Expression expression) {
+      private T To<T>(ConsoleExpression expression) {
         var value = expression.Accept(this);
         if (value is T type) return type;
 

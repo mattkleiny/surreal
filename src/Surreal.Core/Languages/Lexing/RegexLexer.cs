@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace Surreal.Languages.Lexing {
@@ -9,14 +10,18 @@ namespace Surreal.Languages.Lexing {
       this.rules = rules;
     }
 
-    protected sealed override bool TryMatch(string line, TokenPosition position, out TToken token, out int length, out bool ignore) {
+    protected override bool TryMatch(
+        ReadOnlySpan<char> characters,
+        TokenPosition position,
+        out TToken token,
+        out int length,
+        out bool ignore) {
       token  = default;
       length = 0;
       ignore = false;
 
-      for (var index = 0; index < rules.Length; index++) {
-        var rule  = rules[index];
-        var match = rule.Regex.Match(line, position.Column);
+      foreach (var rule in rules) {
+        var match = rule.Regex.Match(characters.ToString(), position.Column);
 
         if (match.Success && match.Index - position.Column == 0) {
           token  = rule.Tokenizer(match.Value, position);

@@ -10,8 +10,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       // no-op
     }
 
-    public override void Download(Image image) {
-      // no-op
+    public override Image Download() {
+      return new Image(0, 0);
     }
   }
 }

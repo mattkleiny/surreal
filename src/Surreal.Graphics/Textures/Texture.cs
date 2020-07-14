@@ -42,8 +42,9 @@ namespace Surreal.Graphics.Textures {
       this.data = data;
     }
 
+    public abstract Image Download();
+
     protected abstract void Upload(ITextureData? existingData, ITextureData newData);
-    public abstract    void Download(Image image);
 
     public sealed class Loader : AssetLoader<Texture> {
       private readonly IGraphicsDevice   device;

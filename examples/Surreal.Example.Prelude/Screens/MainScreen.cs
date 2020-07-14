@@ -31,11 +31,9 @@ namespace Prelude.Screens {
 
       renderer = new TileMapRenderer(camera, atlas!);
 
-      scene.Actors.Add(new Actor() {
-          new Player(map!, camera) {
-              Position  = new Vector2(2, 2),
-              Direction = new Vector2(0, 1)
-          }
+      scene.Actors.Add(new Player(map!, camera) {
+          Position  = new Vector2(2, 2),
+          Direction = new Vector2(0, 1)
       });
     }
 
@@ -43,7 +41,7 @@ namespace Prelude.Screens {
       await base.LoadContentAsync(assets);
 
       var image = await assets.GetAsync<Image>("Assets/textures.png");
-      
+
       atlas = Atlas<ImageRegion>.Create(
           source: image.ToRegion(),
           nameTemplate: "textures_",
@@ -58,21 +56,21 @@ namespace Prelude.Screens {
       if (Keyboard.IsKeyPressed(Key.Escape)) Game.Exit();
 
       base.Input(time);
-      
+
       scene.Input(time.DeltaTime);
     }
 
     public override void Update(GameTime time) {
       base.Update(time);
-      
+
       scene.Update(time.DeltaTime);
     }
 
     public override void Draw(GameTime time) {
-      renderer?.Render(GraphicsDevice, SpriteBatch, map!);
+      renderer?.Render(SpriteBatch, map!);
 
       base.Draw(time);
-      
+
       scene.Draw(time.DeltaTime);
     }
 

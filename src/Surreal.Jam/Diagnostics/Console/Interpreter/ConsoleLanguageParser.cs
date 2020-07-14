@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Surreal.Languages.Expressions;
+using Surreal.Languages;
 using Surreal.Languages.Lexing;
-using Surreal.Languages.Statements;
+using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
   public sealed class ConsoleLanguageParser {
@@ -15,49 +14,43 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         new RegexLexer<Token>.Rule(@"'[A-Za-z0-9]'", (lexeme, position) => new Token(TokenType.String, position, lexeme.Trim('.')))
     );
 
-    private Token[] tokens;
-    private int     position;
+    private readonly Token[] tokens;
+    private          int     position;
 
     private Token CurrentToken => tokens[position - 1];
     private Token NextToken    => tokens[position];
     private bool  IsAtEnd      => position >= tokens.Length;
 
-    public ConsoleLanguageParser(string raw) {
-      tokens = Lexer.Tokenize(raw).ToArray();
+    public ConsoleLanguageParser(SourceText text) {
+      tokens = Lexer.Tokenize(text).ToArray();
     }
 
-    public Statement Statement() {
-      var expression = Expression();
-
-      return new ExpressionStatement(expression);
-    }
-
-    public Expression Expression() {
+    public ConsoleExpression Expression() {
       throw new NotImplementedException();
     }
 
-    private CallExpression CallExpression() {
+    private Call CallExpression() {
       throw new NotImplementedException();
     }
 
-    private UnaryExpression UnaryExpression() {
+    private Unary UnaryExpression() {
       var operation  = UnaryOperator();
       var expression = Literal();
 
-      return new UnaryExpression(operation, expression);
+      return new Unary(operation, expression);
     }
 
-    private BinaryExpression BinaryExpression() {
+    private Binary BinaryExpression() {
       var left      = Literal();
       var operation = BinaryOperator();
       var right     = Literal();
 
-      return new BinaryExpression(operation, left, right);
+      return new Binary(operation, left, right);
     }
 
-    private LiteralExpression Literal() {
-      if (Match(TokenType.Number)) return new LiteralExpression(CurrentToken.Lexeme);
-      if (Match(TokenType.String)) return new LiteralExpression(CurrentToken.Lexeme);
+    private Literal Literal() {
+      if (Match(TokenType.Number)) return new Literal(CurrentToken.Lexeme);
+      if (Match(TokenType.String)) return new Literal(CurrentToken.Lexeme);
 
       throw Error();
     }
