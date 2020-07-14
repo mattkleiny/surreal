@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
-using Surreal.Audio.SPI;
 using Surreal.Compute;
 using Surreal.Compute.Execution;
-using Surreal.Compute.SPI;
 using Surreal.Diagnostics.Console;
 using Surreal.Diagnostics.Console.Interpreter;
 using Surreal.Diagnostics.Logging;
@@ -19,7 +17,6 @@ using Surreal.Graphics.Experimental.Shady;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.SPI;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
@@ -41,7 +38,6 @@ namespace Surreal {
     public SpriteBatch     SpriteBatch    { get; private set; } = null!;
     public GeometryBatch   GeometryBatch  { get; private set; } = null!;
 
-    public virtual int      AudioSourceHint  => 256;
     public virtual int      SpriteCountHint  => 200;
     public virtual bool     EnableDebugTools => Debugger.IsAttached;
     public virtual LogLevel DefaultLogLevel  => LogLevel.Trace;
@@ -50,14 +46,14 @@ namespace Surreal {
       Console = new GameConsole(new ConsoleInterpreter(RegisterConsoleBindings));
 
       LogFactory.Current = new CompositeLogFactory(
-          new ConsoleLogFactory(DefaultLogLevel),
-          new DebugLogFactory(DefaultLogLevel),
-          new GameConsoleLogFactory(Console, DefaultLogLevel)
+        new ConsoleLogFactory(DefaultLogLevel),
+        new DebugLogFactory(DefaultLogLevel),
+        new GameConsoleLogFactory(Console, DefaultLogLevel)
       );
 
-      AudioDevice    = CreateAudioDevice(Host.Services.GetRequiredService<IAudioBackend>());
-      ComputeDevice  = CreateComputeDevice(Host.Services.GetRequiredService<IComputeBackend>());
-      GraphicsDevice = CreateGraphicsDevice(Host.Services.GetRequiredService<IGraphicsBackend>());
+      AudioDevice    = Host.Services.GetRequiredService<IAudioDevice>();
+      ComputeDevice  = Host.Services.GetRequiredService<IComputeDevice>();
+      GraphicsDevice = Host.Services.GetRequiredService<IGraphicsDevice>();
 
       Screens = new ScreenManager(this);
       Mods    = new ModdingPlugin(this);
@@ -82,28 +78,6 @@ namespace Surreal {
 
       SpriteBatch   = await CreateSpriteBatchAsync(SpriteCountHint);
       GeometryBatch = await GeometryBatch.CreateDefaultAsync(GraphicsDevice);
-    }
-
-    protected virtual IAudioDevice CreateAudioDevice(IAudioBackend backend) {
-      return new AudioDevice(backend, AudioSourceHint) {
-          MasterVolume = 1f
-      };
-    }
-
-    protected virtual IComputeDevice CreateComputeDevice(IComputeBackend backend) {
-      return new ComputeDevice(backend);
-    }
-
-    protected virtual IGraphicsDevice CreateGraphicsDevice(IGraphicsBackend backend) {
-      return new GraphicsDevice(backend, Host) {
-          Pipeline = {
-              Rasterizer = {
-                  Viewport              = new Viewport(Host.Width, Host.Height),
-                  IsBlendingEnabled     = true,
-                  IsDepthTestingEnabled = false
-              }
-          }
-      };
     }
 
     protected virtual async Task<SpriteBatch> CreateSpriteBatchAsync(int spriteCountHint) {
@@ -136,7 +110,7 @@ namespace Surreal {
       assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, hotReloading: EnableDebugTools));
       assets.RegisterLoader(new ShadyProgram.Loader());
       assets.RegisterLoader(new Texture.Loader(GraphicsDevice));
-      assets.RegisterLoader(new WaveData.Loader());
+      assets.RegisterLoader(new AudioBuffer.Loader());
     }
 
     protected virtual void RegisterConsoleBindings(IConsoleInterpreterBindings bindings) {
@@ -160,6 +134,7 @@ namespace Surreal {
       base.End(time);
 
       GraphicsDevice.EndFrame();
+      GraphicsDevice.Present();
     }
 
     public override void Dispose() {

@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Graphics.SPI;
+using Surreal.Graphics;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 

@@ -17,8 +17,8 @@ namespace Surreal.Graphics.Experimental.Rendering.Passes {
     public PostProcessingPass(IGraphicsDevice device, IAssetResolver assets, FrameBufferDescriptor bufferDescriptor) {
       shaderFactory = new ShaderFactory(assets);
 
-      buffer1 = device.Backend.CreateFrameBuffer(bufferDescriptor);
-      buffer2 = device.Backend.CreateFrameBuffer(bufferDescriptor);
+      buffer1 = device.CreateFrameBuffer(bufferDescriptor);
+      buffer2 = device.CreateFrameBuffer(bufferDescriptor);
     }
 
     RenderingStage IRenderingPass.Stage => RenderingStage.BeforePostProcessing;

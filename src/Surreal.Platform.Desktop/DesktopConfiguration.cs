@@ -1,5 +1,4 @@
 ﻿using Surreal.I18N;
-using Surreal.Platform.Internal;
 
 namespace Surreal.Platform {
   public sealed class DesktopConfiguration {
@@ -9,7 +8,7 @@ namespace Surreal.Platform {
     public int? Height            { get; set; }
     public bool IsResizable       { get; set; } = true;
     public bool IsVsyncEnabled    { get; set; } = false;
-    public bool WaitForFirstFrame { get; set; } = true;
+    public bool WaitForFirstFrame { get; set; } = false;
     public bool ShowFPSInTitle    { get; set; } = false;
 
     public IDesktopWindow? CustomWindow { get; set; }

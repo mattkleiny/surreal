@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <IsPackable>false</IsPackable>
     <RootNamespace>Surreal.Core</RootNamespace>
   </PropertyGroup>
   <Import Project="..\..\Tests.props" />
@@ -10,8 +9,5 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\*.*" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data" />
   </ItemGroup>
 </Project>

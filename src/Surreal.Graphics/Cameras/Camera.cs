@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Numerics;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Linear;
-using MathF = Surreal.Mathematics.MathF;
 
 namespace Surreal.Graphics.Cameras {
   public abstract class Camera : ICamera {
@@ -31,12 +30,12 @@ namespace Surreal.Graphics.Cameras {
 
     public float Near {
       get => near;
-      set => near = MathF.Clamp(value, 0f, float.MaxValue);
+      set => near = Maths.Clamp(value, 0f, float.MaxValue);
     }
 
     public float Far {
       get => far;
-      set => far = MathF.Clamp(value, 0f, float.MaxValue);
+      set => far = Maths.Clamp(value, 0f, float.MaxValue);
     }
 
     public Vector3 Position  { get; set; } = Vector3.Zero;

@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Surreal.Collections {
   public readonly struct ListSlice<T> : IEnumerable<T> {
@@ -10,44 +10,37 @@ namespace Surreal.Collections {
     private readonly List<T> list;
 
     public ListSlice(List<T> list)
-        : this(list, 0, list.Count) {
+      : this(list, 0, list.Count) {
     }
 
-    public ListSlice(List<T> list, int offset, int count) {
+    public ListSlice(List<T> list, int offset, int length) {
       Debug.Assert(offset >= 0, "offset >= 0");
-      Debug.Assert(count >= 0, "count >= 0");
+      Debug.Assert(length >= 0, "count >= 0");
 
       this.list = list;
 
       Offset = offset;
-      Count  = count;
+      Length = length;
     }
 
     public int Offset { get; }
-    public int Count  { get; }
+    public int Length { get; }
 
-    public T this[int index] {
+    public T this[Index index] {
+      get => list[Offset + index.GetOffset(Length)];
+      set => list[Offset + index.GetOffset(Length)] = value;
+    }
+
+    public ListSlice<T> this[Range range] {
       get {
-        Debug.Assert(index >= 0, "index >= 0");
-        Debug.Assert(index < Count, "index < Count");
+        var (offset, length) = range.GetOffsetAndLength(Length);
 
-        return list[Offset + index];
-      }
-      set {
-        Debug.Assert(index >= 0, "index >= 0");
-        Debug.Assert(index < Count, "index < Count");
-
-        list[Offset + index] = value;
+        return new ListSlice<T>(list, offset, length);
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Swap(int fromIndex, int toIndex) {
-      list.Swap(fromIndex, toIndex);
-    }
-
-    public Enumerator             GetEnumerator() => new Enumerator(this);
-    IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+    public Enumerator GetEnumerator() => new Enumerator(this);
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
     public static implicit operator ListSlice<T>(List<T> list) => new ListSlice<T>(list);
@@ -57,7 +50,7 @@ namespace Surreal.Collections {
       private          int          index;
 
       public Enumerator(ListSlice<T> slice)
-          : this() {
+        : this() {
         this.slice = slice;
         Reset();
       }
@@ -65,8 +58,8 @@ namespace Surreal.Collections {
       public T           Current => slice[index];
       object IEnumerator.Current => Current!;
 
-      public bool MoveNext() => ++index < slice.Count;
-      public void Reset()    => index = -1;
+      public bool MoveNext() => ++index < slice.Length;
+      public void Reset() => index = -1;
 
       public void Dispose() {
       }

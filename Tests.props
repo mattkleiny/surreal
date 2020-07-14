@@ -2,6 +2,7 @@
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.4.0" />

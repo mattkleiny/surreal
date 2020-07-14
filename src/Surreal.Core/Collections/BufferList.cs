@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Surreal.IO;
 
 namespace Surreal.Collections {
@@ -14,11 +13,17 @@ namespace Surreal.Collections {
     }
 
     public int     Count    { get; private set; }
-    public int     Capacity => buffer.Count;
+    public int     Capacity => buffer.Length;
     public Span<T> Span     => buffer.Span;
 
     public void Add(T element) {
-      Debug.Assert(Count < Capacity, "Count < Capacity");
+      if (Count >= Capacity) {
+        if (buffer is IResizableBuffer<T> resizable) {
+          resizable.Resize(Count * 2);
+        } else {
+          throw new Exception("BufferList overflow!");
+        }
+      }
 
       Span[Count++] = element;
     }
@@ -36,7 +41,6 @@ namespace Surreal.Collections {
     public struct Enumerator : IEnumerator<T> {
       private readonly BufferList<T> list;
       private          int           index;
-      private          int           touched;
 
       public Enumerator(BufferList<T> list)
           : this() {

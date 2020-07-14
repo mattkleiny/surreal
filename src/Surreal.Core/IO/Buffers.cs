@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace Surreal.IO {
   public interface IBuffer<T>
       where T : unmanaged {
-    int     Count  { get; }
+    int     Length { get; }
     int     Stride { get; }
     Size    Size   { get; }
     Span<T> Span   { get; }
@@ -18,6 +18,11 @@ namespace Surreal.IO {
     void Fill(T value);
 
     IBuffer<T> Slice(int offset, int size);
+  }
+
+  public interface IResizableBuffer<T> : IBuffer<T>
+      where T : unmanaged {
+    void Resize(int newLength);
   }
 
   public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable
@@ -45,12 +50,12 @@ namespace Surreal.IO {
     private abstract class AbstractBuffer<T> : IBuffer<T>
         where T : unmanaged {
       protected AbstractBuffer(int count) {
-        Count = count;
+        Length = count;
       }
 
-      public int  Count  { get; }
+      public int  Length { get; protected set; }
       public int  Stride => Unsafe.SizeOf<T>();
-      public Size Size   => new Size(Count * Stride);
+      public Size Size   => new Size(Length * Stride);
 
       public abstract Span<T> Span { get; }
 
@@ -61,9 +66,9 @@ namespace Surreal.IO {
     }
 
     [DebuggerDisplay("{Size} allocated on-heap")]
-    private sealed class HeapBuffer<T> : AbstractBuffer<T>
+    private sealed class HeapBuffer<T> : AbstractBuffer<T>, IResizableBuffer<T>
         where T : unmanaged {
-      private readonly T[] elements;
+      private T[] elements;
 
       public HeapBuffer(int count)
           : base(count) {
@@ -71,13 +76,18 @@ namespace Surreal.IO {
       }
 
       public override Span<T> Span => new Span<T>(elements);
+
+      public void Resize(int newLength) {
+        Array.Resize(ref elements, newLength);
+        Length = newLength;
+      }
     }
 
     [DebuggerDisplay("{Size} allocated off-heap")]
-    private sealed class OffHeapBuffer<T> : AbstractBuffer<T>, IDisposableBuffer<T>
+    private sealed class OffHeapBuffer<T> : AbstractBuffer<T>, IResizableBuffer<T>, IDisposableBuffer<T>
         where T : unmanaged {
-      private readonly IntPtr address;
-      private          bool   disposed;
+      private IntPtr address;
+      private bool   disposed;
 
       public OffHeapBuffer(int count)
           : base(count) {
@@ -88,8 +98,16 @@ namespace Surreal.IO {
       public override unsafe Span<T> Span {
         get {
           CheckNotDisposed();
-          return new Span<T>(address.ToPointer(), Count);
+
+          return new Span<T>(address.ToPointer(), Length);
         }
+      }
+
+      public void Resize(int newLength) {
+        CheckNotDisposed();
+
+        address = Marshal.ReAllocHGlobal(address, new IntPtr(newLength));
+        Length  = newLength;
       }
 
       public void Dispose() {
@@ -173,7 +191,7 @@ namespace Surreal.IO {
         this.offset = offset;
       }
 
-      public override Span<T> Span => source.Span.Slice(offset, Count);
+      public override Span<T> Span => source.Span.Slice(offset, Length);
     }
 
     private sealed class HeapBufferPool<T> : IBufferPool<T>

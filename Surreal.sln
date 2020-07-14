@@ -70,6 +70,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.UI.Tests", "tests\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor", "src\Surreal.Editor\Surreal.Editor.csproj", "{F124117E-F62F-451F-B829-4ED62372B43A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Audio.Tests", "tests\Surreal.Audio.Tests\Surreal.Audio.Tests.csproj", "{D96536B9-0B92-4C2C-9CC4-F631B859E10D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -168,6 +170,10 @@ Global
 		{F124117E-F62F-451F-B829-4ED62372B43A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F124117E-F62F-451F-B829-4ED62372B43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F124117E-F62F-451F-B829-4ED62372B43A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D96536B9-0B92-4C2C-9CC4-F631B859E10D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D96536B9-0B92-4C2C-9CC4-F631B859E10D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D96536B9-0B92-4C2C-9CC4-F631B859E10D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D96536B9-0B92-4C2C-9CC4-F631B859E10D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,5 +193,6 @@ Global
 		{1A9C80BC-C2FF-418E-B6AE-15B6FEA59EEE} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{F668126A-6AA9-4081-8AB1-1B6626DDFF7D} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{0F8066B6-429C-4A6A-A6C6-75AA3DD91BCE} = {9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}
+		{D96536B9-0B92-4C2C-9CC4-F631B859E10D} = {9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}
 	EndGlobalSection
 EndGlobal

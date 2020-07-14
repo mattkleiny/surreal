@@ -20,7 +20,7 @@ namespace Surreal.Graphics.Experimental.Rendering {
     }
 
     private static ShaderProgram CreateBlitProgram(IGraphicsDevice device) {
-      return device.Backend.CreateShaderProgram(
+      return device.CreateShaderProgram(
           Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/Blit.vert.glsl").Result,
           Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/Blit.frag.glsl").Result
       );
@@ -29,14 +29,14 @@ namespace Surreal.Graphics.Experimental.Rendering {
     private static Mesh CreateFullscreenMesh(IGraphicsDevice device) {
       var mesh = Mesh.Create<Vertex>(device);
 
-      mesh.Vertices.Put(stackalloc[] {
+      mesh.Vertices.Write(stackalloc[] {
           new Vertex(0, 0),
           new Vertex(0, 1),
           new Vertex(1, 1),
           new Vertex(1, 0)
       });
 
-      mesh.Indices.Put(stackalloc[] {
+      mesh.Indices.Write(stackalloc[] {
           0, 1, 2,
           2, 3, 1
       });

@@ -5,7 +5,7 @@ using System.Threading;
 using Surreal.Mathematics.Linear;
 
 namespace Surreal.Mathematics {
-  public static class MathF {
+  public static class Maths {
     private static readonly ThreadLocal<Random> ThreadLocalRandom = new ThreadLocal<Random>(() => new Random(Environment.TickCount));
 
     public const float Pi  = 3.141593f;

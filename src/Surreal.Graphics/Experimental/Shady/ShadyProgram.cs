@@ -37,7 +37,7 @@ namespace Surreal.Graphics.Experimental.Shady {
     }
 
     public ShaderProgram Compile(IGraphicsDevice device) {
-      return device.Backend.CreateShaderProgram(Shaders);
+      return device.CreateShaderProgram(Shaders);
     }
 
     public sealed class Loader : AssetLoader<ShadyProgram> {

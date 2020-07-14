@@ -18,7 +18,7 @@ namespace Surreal.UI.Controls.Images {
 
       EvaluateCurve(ref heights);
 
-      var width = image.Width / heights.Count;
+      var width = image.Width / heights.Length;
 
       for (var x = 1; x < width; x++) {
         var from = new Vector2(x - 1, heights[x - 1]);

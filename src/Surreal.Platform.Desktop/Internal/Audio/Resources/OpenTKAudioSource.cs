@@ -9,16 +9,16 @@ namespace Surreal.Platform.Internal.Audio.Resources {
   internal sealed class OpenTKAudioSource : AudioSource {
     public readonly int Id = AL.GenSource();
 
-    private readonly OpenTKAudioBackend backend;
+    private readonly OpenTKAudioDevice device;
     private          float              volume;
 
-    public OpenTKAudioSource(OpenTKAudioBackend backend) {
-      this.backend = backend;
+    public OpenTKAudioSource(OpenTKAudioDevice device) {
+      this.device = device;
     }
 
     public override float Volume {
       get => volume;
-      set => volume = MathF.Clamp(value, 0f, 1f);
+      set => volume = Maths.Clamp(value, 0f, 1f);
     }
 
     public override bool IsPlaying {
@@ -32,7 +32,7 @@ namespace Surreal.Platform.Internal.Audio.Resources {
     public override void Play(AudioClip clip) {
       var innerClip = (OpenTKAudioClip) clip;
 
-      AL.Source(Id, ALSourcef.Gain, volume * backend.MasterVolume);
+      AL.Source(Id, ALSourcef.Gain, volume * device.MasterVolume);
       AL.Source(Id, ALSourcei.Buffer, innerClip.Id);
       AL.SourcePlay(Id);
     }

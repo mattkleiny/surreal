@@ -25,7 +25,7 @@ namespace Surreal.Graphics {
     public void Draw(SpriteBatch batch) {
       var device = batch.Device;
 
-      texture ??= device.Backend.CreateTexture(Colors.Image, filterMode: TextureFilterMode.Point);
+      texture ??= device.CreateTexture(Colors.Image, filterMode: TextureFilterMode.Point);
       texture.Upload(Colors);
 
       batch.Draw(

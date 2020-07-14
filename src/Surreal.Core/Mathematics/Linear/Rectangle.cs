@@ -32,32 +32,40 @@ namespace Surreal.Mathematics.Linear {
     public float Right  { get; }
     public float Bottom { get; }
 
-    public float Width  => Right  - Left;
+    public float Width  => Right - Left;
     public float Height => Bottom - Top;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(Vector2I point)
-      => point.X >= Left   &&
-         point.X <= Right  &&
+      => point.X >= Left &&
+         point.X <= Right &&
          point.Y >= Bottom &&
          point.Y <= Top;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(Vector2 vector)
-      => vector.X >= Left   &&
-         vector.X <= Right  &&
+      => vector.X >= Left &&
+         vector.X <= Right &&
          vector.Y >= Bottom &&
          vector.Y <= Top;
 
     public static Rectangle operator *(Rectangle rectangle, float value) => new Rectangle(
-        left: rectangle.Left * value, top: rectangle.Top * value, right: rectangle.Right * value, bottom: rectangle.Bottom * value);
+      left: rectangle.Left * value,
+      top: rectangle.Top * value,
+      right: rectangle.Right * value,
+      bottom: rectangle.Bottom * value
+    );
 
     public static Rectangle operator *(Rectangle rectangle, Vector2 value) => new Rectangle(
-        left: rectangle.Left * value.X, top: rectangle.Top * value.Y, right: rectangle.Right * value.X, bottom: rectangle.Bottom * value.Y);
+      left: rectangle.Left * value.X,
+      top: rectangle.Top * value.Y,
+      right: rectangle.Right * value.X,
+      bottom: rectangle.Bottom * value.Y
+    );
 
     public bool Equals(Rectangle other) {
-      return Left.Equals(other.Left)   &&
-             Top.Equals(other.Top)     &&
+      return Left.Equals(other.Left) &&
+             Top.Equals(other.Top) &&
              Right.Equals(other.Right) &&
              Bottom.Equals(other.Bottom);
     }

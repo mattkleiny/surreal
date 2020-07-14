@@ -11,6 +11,7 @@ namespace Surreal.Mathematics.Tensors {
     }
 
     public IBuffer<T> Buffer { get; }
+    public int        Length => Buffer.Length;
     public int        Stride => Buffer.Stride;
     public Size       Size   => Buffer.Size;
 
@@ -35,7 +36,7 @@ namespace Surreal.Mathematics.Tensors {
 
       public T           Current    => tensor.Buffer.Span[index];
       object IEnumerator.Current    => Current;
-      public bool        MoveNext() => ++index < tensor.Buffer.Count;
+      public bool        MoveNext() => ++index < tensor.Length;
       public void        Reset()    => index = -1;
 
       public void Dispose() {

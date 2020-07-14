@@ -1,7 +1,10 @@
-using Surreal.Compute.SPI;
+using System;
+using Surreal.Compute.Execution;
+using Surreal.Compute.Memory;
 
 namespace Surreal.Compute {
   public interface IComputeDevice {
-    IComputeBackend Backend { get; }
+    ComputeBuffer  CreateBuffer();
+    ComputeProgram CreateProgram(ReadOnlySpan<byte> raw);
   }
 }

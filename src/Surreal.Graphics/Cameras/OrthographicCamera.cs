@@ -14,7 +14,7 @@ namespace Surreal.Graphics.Cameras {
 
     public float Zoom {
       get => zoom;
-      set => zoom = MathF.Clamp(value, 0.1f, 10f);
+      set => zoom = Maths.Clamp(value, 0.1f, 10f);
     }
 
     protected override void Recalculate(out Matrix4x4 projection) {

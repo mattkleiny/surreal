@@ -25,9 +25,9 @@ namespace Surreal.Graphics.Experimental.Rendering {
       this.device          = device;
       this.cullingStrategy = cullingStrategy;
 
-      commandBuffer   = device.Backend.CreateCommandBuffer();
-      colorAttachment = device.Backend.CreateFrameBuffer(colorDescriptor);
-      depthAttachment = device.Backend.CreateFrameBuffer(depthDescriptor);
+      commandBuffer   = device.CreateCommandBuffer();
+      colorAttachment = device.CreateFrameBuffer(colorDescriptor);
+      depthAttachment = device.CreateFrameBuffer(depthDescriptor);
     }
 
     public void Add(IRenderingPass pass)    => passesByStage.Add(pass.Stage, pass);

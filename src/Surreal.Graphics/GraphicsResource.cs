@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Surreal.Assets;
-using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
 
 namespace Surreal.Graphics {
   public abstract class GraphicsResource : IDisposable {
-    private static readonly IList<GraphicsResource> Resources = new List<GraphicsResource>();
+    private static readonly List<GraphicsResource> Resources = new List<GraphicsResource>();
 
-    public static Size AllocatedBufferSize  => Resources.OfType<GraphicsBuffer>().Select(buffer => buffer.Size).Sum();
     public static Size AllocatedTextureSize => Resources.OfType<Texture>().Select(texture => texture.Size).Sum();
     public static Size TotalAllocatedSize   => Resources.OfType<IHasSizeEstimate>().Select(resource => resource.Size).Sum();
 

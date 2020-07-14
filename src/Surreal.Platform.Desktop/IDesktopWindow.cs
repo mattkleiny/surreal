@@ -1,6 +1,6 @@
 using System;
 
-namespace Surreal.Platform.Internal {
+namespace Surreal.Platform {
   public interface IDesktopWindow : IDisposable {
     event Action<int, int> Resized;
 

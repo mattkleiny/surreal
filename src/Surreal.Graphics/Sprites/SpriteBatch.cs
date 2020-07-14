@@ -34,7 +34,7 @@ namespace Surreal.Graphics.Sprites {
     public static async Task<SpriteBatch> CreateDefaultAsync(IGraphicsDevice device, int spriteCount = 1000) {
       Debug.Assert(spriteCount > 0, "spriteCount > 0");
 
-      var shader = device.Backend.CreateShaderProgram(
+      var shader = device.CreateShaderProgram(
           await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/SpriteBatch.vert.glsl"),
           await Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/SpriteBatch.frag.glsl")
       );
@@ -160,7 +160,7 @@ namespace Surreal.Graphics.Sprites {
 
       Device.Pipeline.TextureUnits[0] = lastTexture;
 
-      mesh.Vertices.Put(vertices.Span.Slice(0, vertexCount));
+      mesh.Vertices.Write(vertices.Span[0..indexCount]);
 
       mesh.DrawImmediate(ActiveShader!, vertexCount, indexCount); // 6 indices per sprite
 
@@ -179,7 +179,7 @@ namespace Surreal.Graphics.Sprites {
         indices[i + 5] = j;
       }
 
-      mesh.Indices.Put(indices);
+      mesh.Indices.Write(indices);
     }
 
     public void Dispose() {

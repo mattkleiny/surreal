@@ -34,7 +34,7 @@ namespace Surreal.Graphics {
     public Texture ToTexture(IGraphicsDevice device) {
       var image = ToImage();
 
-      texture ??= device.Backend.CreateTexture(image, filterMode: TextureFilterMode.Point);
+      texture ??= device.CreateTexture(image, filterMode: TextureFilterMode.Point);
       texture.Upload(image);
 
       return texture;

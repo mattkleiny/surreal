@@ -19,7 +19,7 @@ namespace Minecraft.Core.Rendering {
     private readonly ShaderProgram shader;
 
     public static async Task<WorldRenderer> CreateAsync(IGraphicsDevice device) {
-      var shader = device.Backend.CreateShaderProgram(
+      var shader = device.CreateShaderProgram(
           await Shader.LoadAsync(ShaderType.Vertex, "resx://Minecraft.Resources.Shaders.Chunk.vert.glsl"),
           await Shader.LoadAsync(ShaderType.Fragment, "resx://Minecraft.Resources.Shaders.Chunk.frag.glsl")
       );

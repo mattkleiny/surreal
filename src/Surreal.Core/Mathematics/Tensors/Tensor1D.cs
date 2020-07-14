@@ -15,7 +15,7 @@ namespace Surreal.Mathematics.Tensors {
     public Tensor1D(IBuffer<T> buffer, int length)
         : base(buffer) {
       Debug.Assert(length       > 0, "Length > 0");
-      Debug.Assert(buffer.Count >= length, "buffer.Count >= length");
+      Debug.Assert(buffer.Length >= length, "buffer.Length >= length");
 
       Length = length;
     }

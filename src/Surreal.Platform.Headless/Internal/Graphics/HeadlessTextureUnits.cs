@@ -1,4 +1,4 @@
-using Surreal.Graphics.SPI;
+using Surreal.Graphics;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Platform.Internal.Graphics {

@@ -45,7 +45,7 @@ namespace Surreal.Framework.PathFinding {
         neighbours.Clear();
         grid.GetNeighbours(start, ref neighbours);
 
-        for (var i = 0; i < neighbours.Count; i++) {
+        for (var i = 0; i < neighbours.Length; i++) {
           var neighbour = neighbours[i];
           var newCost   = costSoFar[current] + grid.GetCost(current, neighbour);
 

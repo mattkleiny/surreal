@@ -1,12 +1,11 @@
 using System;
-using Surreal.Audio.SPI;
-using Surreal.Compute.SPI;
+using Surreal.Audio;
+using Surreal.Compute;
 using Surreal.Diagnostics;
-using Surreal.Graphics.SPI;
+using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.IO;
 using Surreal.Mathematics.Timing;
-using Surreal.Platform.Internal;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;
 using Surreal.Platform.Internal.Graphics;
@@ -14,72 +13,51 @@ using Surreal.Platform.Internal.Input;
 
 namespace Surreal.Platform {
   internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider {
-    private readonly IDesktopWindow       window;
     private readonly DesktopConfiguration configuration;
 
     private readonly FrameCounter  frameCounter      = new FrameCounter();
     private readonly IntervalTimer frameDisplayTimer = new IntervalTimer(1.Seconds());
 
     public DesktopPlatformHost(IDesktopWindow window, DesktopConfiguration configuration) {
-      this.window        = window;
       this.configuration = configuration;
 
-      AudioBackend    = new OpenTKAudioBackend();
-      ComputeBackend  = new OpenTKComputeBackend();
-      GraphicsBackend = new OpenTKGraphicsBackend(window);
-      InputManager    = new OpenTKInputManager(window);
-      FileSystem      = new LocalFileSystem();
+      Window         = window;
+      AudioDevice    = new OpenTKAudioDevice();
+      ComputeDevice  = new OpenTKComputeDevice();
+      GraphicsDevice = new OpenTKGraphicsDevice(window);
+      InputManager   = new OpenTKInputManager(window);
+      FileSystem     = new LocalFileSystem();
     }
 
-    public OpenTKAudioBackend    AudioBackend    { get; }
-    public OpenTKComputeBackend  ComputeBackend  { get; }
-    public OpenTKGraphicsBackend GraphicsBackend { get; }
-    public OpenTKInputManager    InputManager    { get; }
-    public LocalFileSystem       FileSystem      { get; }
+    public IDesktopWindow       Window         { get; }
+    public OpenTKAudioDevice    AudioDevice    { get; }
+    public OpenTKComputeDevice  ComputeDevice  { get; }
+    public OpenTKGraphicsDevice GraphicsDevice { get; }
+    public OpenTKInputManager   InputManager   { get; }
+    public LocalFileSystem      FileSystem     { get; }
 
     public event Action<int, int> Resized {
-      add => window.Resized += value;
-      remove => window.Resized -= value;
+      add => Window.Resized += value;
+      remove => Window.Resized -= value;
     }
 
     public IServiceProvider Services => this;
 
-    public bool IsFocused => window.IsFocused;
-    public bool IsClosing => window.IsClosing;
+    public int Width  => Window.Width;
+    public int Height => Window.Height;
 
-    public int Width {
-      get => window.Width;
-      set => window.Width = value;
-    }
-
-    public int Height {
-      get => window.Height;
-      set => window.Height = value;
-    }
-
-    public bool IsVisible {
-      get => window.IsVisible;
-      set => window.IsVisible = value;
-    }
-
-    public string Title {
-      get => window.Title;
-      set => window.Title = value;
-    }
-
-    public bool IsVsyncEnabled {
-      get => window.IsVsyncEnabled;
-      set => window.IsVsyncEnabled = value;
-    }
+    public bool IsFocused => Window.IsFocused;
+    public bool IsClosing => Window.IsClosing;
+    public bool IsVisible => Window.IsVisible;
 
     public void Tick(DeltaTime deltaTime) {
       if (!IsClosing) {
-        window.Update();
+        Window.Update();
         InputManager.Update();
 
         // show the window after the first frame is complete
-        if (configuration.WaitForFirstFrame && !window.IsVisible) {
-          window.IsVisible = true;
+        if (configuration.WaitForFirstFrame && !Window.IsVisible) {
+          Window.IsVisible = true;
         }
 
         // show the game's FPS in the window title
@@ -87,16 +65,17 @@ namespace Surreal.Platform {
           frameCounter.Tick(deltaTime);
 
           if (frameDisplayTimer.Tick()) {
-            Title = $"{configuration.Title.ToString()} - {frameCounter.FramesPerSecond:F} FPS";
+            Window.Title = $"{configuration.Title.ToString()} - {frameCounter.FramesPerSecond:F} FPS";
           }
         }
       }
     }
 
     object? IServiceProvider.GetService(Type serviceType) {
-      if (serviceType == typeof(IAudioBackend)) return AudioBackend;
-      if (serviceType == typeof(IComputeBackend)) return ComputeBackend;
-      if (serviceType == typeof(IGraphicsBackend)) return GraphicsBackend;
+      if (serviceType == typeof(IDesktopWindow)) return Window;
+      if (serviceType == typeof(IAudioDevice)) return AudioDevice;
+      if (serviceType == typeof(IComputeDevice)) return ComputeDevice;
+      if (serviceType == typeof(IGraphicsDevice)) return GraphicsDevice;
       if (serviceType == typeof(IInputManager)) return InputManager;
       if (serviceType == typeof(IFileSystem)) return FileSystem;
 
@@ -104,11 +83,11 @@ namespace Surreal.Platform {
     }
 
     public void Dispose() {
-      GraphicsBackend.Dispose();
-      ComputeBackend.Dispose();
-      AudioBackend.Dispose();
+      GraphicsDevice.Dispose();
+      ComputeDevice.Dispose();
+      AudioDevice.Dispose();
 
-      window.Dispose();
+      Window.Dispose();
     }
   }
 }

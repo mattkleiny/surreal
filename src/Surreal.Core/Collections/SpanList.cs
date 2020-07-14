@@ -2,38 +2,38 @@ using System;
 using System.Diagnostics;
 
 namespace Surreal.Collections {
-  [DebuggerDisplay("SpanList {Count}/{Capacity}")]
+  [DebuggerDisplay("SpanList {Length}/{Capacity}")]
   public ref struct SpanList<T>
-      where T : unmanaged {
+    where T : unmanaged {
     private readonly Span<T> span;
 
     public SpanList(Span<T> span) {
       this.span = span;
 
-      Count = 0;
+      Length = 0;
     }
 
-    public int Count    { get; private set; }
+    public int Length   { get; private set; }
     public int Capacity => span.Length;
 
-    public T this[int index] {
+    public T this[Index index] {
       get => span[index];
       set => span[index] = value;
     }
 
     public void Add(T element) {
-      if (Count > Capacity) {
+      if (Length > Capacity) {
         throw new Exception("Cannot add any more elements, it will overflow the buffer!");
       }
 
-      span[Count++] = element;
+      span[Length++] = element;
     }
 
     public void Clear() {
-      Count = 0;
+      Length = 0;
     }
 
-    public ReadOnlySpan<T> ToSpan()  => span[..Count];
-    public T[]             ToArray() => ToSpan().ToArray();
+    public ReadOnlySpan<T> ToSpan() => span[..Length];
+    public T[] ToArray() => ToSpan().ToArray();
   }
 }

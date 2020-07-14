@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
-using Surreal.Assets;
 using Surreal.IO;
 
 namespace Surreal.Graphics.Meshes {
-  public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate {
-    protected GraphicsBuffer(int stride) {
-      Debug.Assert(stride > 0, "stride > 0");
+  public abstract class GraphicsBuffer : GraphicsResource, IHardwareBuffer {
+    public int Length { get; protected set; }
 
-      Stride = stride;
-    }
+    public abstract Span<T> Read<T>(Range range)
+        where T : unmanaged;
 
-    public int  Stride { get; }
-    public int  Count  { get; protected set; }
-    public Size Size   => new Size(Stride * Count);
-
-    public abstract void Put<T>(Span<T> data)
+    public abstract void Write<T>(Span<T> data)
         where T : unmanaged;
   }
 }

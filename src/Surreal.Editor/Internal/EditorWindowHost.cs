@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Interop;
 using OpenTK.Graphics;
 using OpenTK.Platform;
-using Surreal.Platform.Internal;
+using Surreal.Platform;
 
 namespace Surreal.Editor.Internal {
   internal sealed class EditorWindowHost : HwndHost, IDesktopWindow, IWindowInfo {

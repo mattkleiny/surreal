@@ -1,5 +1,5 @@
 using System;
-using static Surreal.Mathematics.MathF;
+using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Mathematics {
   public readonly struct Angle : IEquatable<Angle>, IComparable<Angle>, IComparable {

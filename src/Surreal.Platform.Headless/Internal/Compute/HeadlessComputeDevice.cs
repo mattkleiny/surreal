@@ -1,14 +1,12 @@
 using System;
+using Surreal.Compute;
 using Surreal.Compute.Execution;
 using Surreal.Compute.Memory;
-using Surreal.Compute.SPI;
 using Surreal.Platform.Internal.Compute.Resources;
 
 namespace Surreal.Platform.Internal.Compute {
-  internal sealed class HeadlessComputeBackend : IComputeBackend {
-    public IComputeBackend Factory => this;
-
-    public ComputeBuffer CreateBuffer(int width, int height) {
+  internal sealed class HeadlessComputeDevice : IComputeDevice {
+    public ComputeBuffer CreateBuffer() {
       return new HeadlessComputeBuffer();
     }
 

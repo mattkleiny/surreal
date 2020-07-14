@@ -14,10 +14,10 @@ namespace Surreal.Mathematics.Tensors {
 
     public Tensor3D(IBuffer<T> buffer, int width, int height, int depth)
         : base(buffer) {
-      Debug.Assert(width        > 0, "Width > 0");
-      Debug.Assert(height       > 0, "Height > 0");
-      Debug.Assert(depth        > 0, "Depth > 0");
-      Debug.Assert(buffer.Count >= width * height * depth, "buffer.Count >= width * height * depth");
+      Debug.Assert(width > 0, "Width > 0");
+      Debug.Assert(height > 0, "Height > 0");
+      Debug.Assert(depth > 0, "Depth > 0");
+      Debug.Assert(buffer.Length >= width * height * depth, "buffer.Length >= width * height * depth");
 
       Width  = width;
       Height = height;

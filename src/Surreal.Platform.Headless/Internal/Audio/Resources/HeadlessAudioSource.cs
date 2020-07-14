@@ -8,7 +8,7 @@ namespace Surreal.Platform.Internal.Audio.Resources {
 
     public override float Volume {
       get => volume;
-      set => volume = MathF.Clamp(value, 0f, 1f);
+      set => volume = Maths.Clamp(value, 0f, 1f);
     }
 
     public override bool IsPlaying => false;

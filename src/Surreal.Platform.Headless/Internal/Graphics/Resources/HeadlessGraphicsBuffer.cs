@@ -3,11 +3,11 @@ using Surreal.Graphics.Meshes;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
   internal sealed class HeadlessGraphicsBuffer : GraphicsBuffer {
-    public HeadlessGraphicsBuffer(int stride)
-        : base(stride) {
+    public override Span<T> Read<T>(Range range) {
+      return Span<T>.Empty;
     }
 
-    public override void Put<T>(Span<T> data) {
+    public override void Write<T>(Span<T> data) {
       // no-op
     }
   }

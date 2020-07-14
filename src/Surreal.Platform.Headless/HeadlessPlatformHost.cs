@@ -1,7 +1,7 @@
 using System;
-using Surreal.Audio.SPI;
-using Surreal.Compute.SPI;
-using Surreal.Graphics.SPI;
+using Surreal.Audio;
+using Surreal.Compute;
+using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.IO;
 using Surreal.Mathematics.Timing;
@@ -12,11 +12,11 @@ using Surreal.Platform.Internal.Input;
 
 namespace Surreal.Platform {
   internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider {
-    public HeadlessAudioBackend    AudioBackend    { get; } = new HeadlessAudioBackend();
-    public HeadlessComputeBackend  ComputeBackend  { get; } = new HeadlessComputeBackend();
-    public HeadlessGraphicsBackend GraphicsBackend { get; } = new HeadlessGraphicsBackend();
-    public HeadlessInputManager    InputManager    { get; } = new HeadlessInputManager();
-    public LocalFileSystem         FileSystem      { get; } = new LocalFileSystem();
+    public HeadlessAudioDevice   AudioDevice   { get; } = new HeadlessAudioDevice();
+    public HeadlessComputeDevice ComputeDevice { get; } = new HeadlessComputeDevice();
+    public HeadlessGraphicsDevice GraphicsDevice { get; } = new HeadlessGraphicsDevice();
+    public HeadlessInputManager   InputManager   { get; } = new HeadlessInputManager();
+    public LocalFileSystem        FileSystem     { get; } = new LocalFileSystem();
 
     public event Action<int, int> Resized = null!;
 
@@ -32,9 +32,9 @@ namespace Surreal.Platform {
     public IHeadlessMouseDevice    Mouse    => InputManager.Mouse;
 
     object? IServiceProvider.GetService(Type serviceType) {
-      if (serviceType == typeof(IAudioBackend)) return AudioBackend;
-      if (serviceType == typeof(IComputeBackend)) return ComputeBackend;
-      if (serviceType == typeof(IGraphicsBackend)) return GraphicsBackend;
+      if (serviceType == typeof(IAudioDevice)) return AudioDevice;
+      if (serviceType == typeof(IComputeDevice)) return ComputeDevice;
+      if (serviceType == typeof(IGraphicsDevice)) return GraphicsDevice;
       if (serviceType == typeof(IInputManager)) return InputManager;
       if (serviceType == typeof(IFileSystem)) return FileSystem;
 

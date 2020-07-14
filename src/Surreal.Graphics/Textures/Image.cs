@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
@@ -26,7 +25,7 @@ namespace Surreal.Graphics.Textures {
     }
 
     public Image(int width, int height) {
-      Debug.Assert(width  > 0, "width > 0");
+      Debug.Assert(width > 0, "width > 0");
       Debug.Assert(height > 0, "height > 0");
 
       Width  = width;
@@ -57,7 +56,6 @@ namespace Surreal.Graphics.Textures {
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Fill(Color value) {
       Span.Fill(value);
     }

@@ -17,6 +17,8 @@ namespace Surreal.Mathematics.Linear {
       height = Height;
     }
 
+    public override string ToString() => $"{Width}x{Height} ({Total} units)";
+
     public override bool Equals(object obj) {
       if (ReferenceEquals(null, obj)) return false;
       return obj is Area other && Equals(other);
@@ -31,7 +33,5 @@ namespace Surreal.Mathematics.Linear {
 
     public static bool operator ==(Area left, Area right) => left.Equals(right);
     public static bool operator !=(Area left, Area right) => !left.Equals(right);
-
-    public override string ToString() => $"{Width}x{Height} ({Total} units)";
   }
 }

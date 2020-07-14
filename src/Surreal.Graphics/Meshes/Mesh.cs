@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using Surreal.Graphics.Materials;
-using Surreal.IO;
 
 namespace Surreal.Graphics.Meshes {
-  [DebuggerDisplay("Mesh with {Vertices.Count} vertices and {Indices.Count} indices ~{Size}")]
+  [DebuggerDisplay("Mesh with {Vertices.Length} vertices and {Indices.Length} indices")]
   public sealed class Mesh : IDisposable {
     private readonly IGraphicsDevice device;
 
     public static Mesh Create<TVertex>(IGraphicsDevice device)
-        where TVertex : unmanaged {
+      where TVertex : unmanaged {
       return new Mesh(device, VertexAttributeSet.Create<TVertex>());
     }
 
@@ -18,8 +17,8 @@ namespace Surreal.Graphics.Meshes {
 
       Attributes = attributes;
 
-      Vertices = device.Backend.CreateBuffer(stride: attributes.Stride);
-      Indices  = device.Backend.CreateBuffer(stride: sizeof(ushort));
+      Vertices = device.CreateBuffer();
+      Indices  = device.CreateBuffer();
     }
 
     public GraphicsBuffer Vertices { get; }
@@ -27,11 +26,8 @@ namespace Surreal.Graphics.Meshes {
 
     public VertexAttributeSet Attributes { get; }
 
-    public int  TriangleCount => Vertices.Count / 3;
-    public Size Size          => Vertices.Size + Indices.Size;
-
     public void DrawImmediate(ShaderProgram shader, PrimitiveType type = PrimitiveType.Triangles) {
-      DrawImmediate(shader, Vertices.Count, Indices.Count, type);
+      DrawImmediate(shader, Vertices.Length, Indices.Length, type);
     }
 
     public void DrawImmediate(ShaderProgram shader, int vertexCount, int indexCount, PrimitiveType type = PrimitiveType.Triangles) {

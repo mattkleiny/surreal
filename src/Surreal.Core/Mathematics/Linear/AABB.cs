@@ -12,6 +12,11 @@ namespace Surreal.Mathematics.Linear {
       Max = max;
     }
 
+    public void Deconstruct(out Vector3 min, out Vector3 max) {
+      min = Min;
+      max = Max;
+    }
+
     public float X => Min.X;
     public float Y => Min.Y;
     public float Z => Min.Y;
@@ -43,8 +48,8 @@ namespace Surreal.Mathematics.Linear {
       return obj is AABB other && Equals(other);
     }
 
-    public          bool Equals(AABB other) => Min.Equals(other.Min) && Max.Equals(other.Max);
-    public override int  GetHashCode()      => HashCode.Combine(Min, Max);
+    public bool Equals(AABB other) => Min.Equals(other.Min) && Max.Equals(other.Max);
+    public override int GetHashCode() => HashCode.Combine(Min, Max);
 
     public static bool operator ==(AABB left, AABB right) => left.Equals(right);
     public static bool operator !=(AABB left, AABB right) => !left.Equals(right);

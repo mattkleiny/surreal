@@ -61,7 +61,7 @@ namespace Surreal.Graphics.Textures {
 
       public override async Task<Texture> LoadAsync(Path path, IAssetLoaderContext context) {
         var image   = await context.GetAsync<Image>(path);
-        var texture = device.Backend.CreateTexture(image, defaultFilterMode, defaultWrapMode);
+        var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 
         return texture;
       }

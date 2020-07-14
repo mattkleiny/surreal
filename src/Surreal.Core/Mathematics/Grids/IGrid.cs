@@ -108,7 +108,7 @@ namespace Surreal.Mathematics.Grids {
         points.Add(curve.SampleAt(i / (float) points.Capacity));
       }
 
-      for (var i = 1; i < points.Count; i++) {
+      for (var i = 1; i < points.Length; i++) {
         target.DrawLine(points[i - 1], points[i], value);
       }
     }

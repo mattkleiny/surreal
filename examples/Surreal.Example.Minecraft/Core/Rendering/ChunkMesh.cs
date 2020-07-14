@@ -11,7 +11,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
-using static Surreal.Mathematics.MathF;
+using static Surreal.Mathematics.Maths;
 
 namespace Minecraft.Core.Rendering {
   public sealed class ChunkMesh : IDisposable {
@@ -65,11 +65,11 @@ namespace Minecraft.Core.Rendering {
         }
 
         Engine.Schedule(() => {
-          using var _ = tessellator; // make sure to clean up tesselator resources
+          using var _ = tessellator; // make sure to clean up tessellator resources
 
           // upload vertices/indices to the GPU
-          mesh.Vertices.Put(tessellator.Vertices);
-          mesh.Indices.Put(tessellator.Indices);
+          mesh.Vertices.Write(tessellator.Vertices);
+          mesh.Indices.Write(tessellator.Indices);
 
           IsReady = true;
         });
@@ -147,8 +147,8 @@ namespace Minecraft.Core.Rendering {
       }
 
       private Tessellator(int vertexCapacity, int indexCapacity) {
-        vertices = new BufferList<Vertex>(Buffers.AllocateOffHeap<Vertex>(vertexCapacity));
-        indices  = new BufferList<ushort>(Buffers.AllocateOffHeap<ushort>(indexCapacity));
+        vertices = new BufferList<Vertex>(Buffers.Allocate<Vertex>(vertexCapacity));
+        indices  = new BufferList<ushort>(Buffers.Allocate<ushort>(indexCapacity));
       }
 
       public Span<Vertex> Vertices => vertices.Span;

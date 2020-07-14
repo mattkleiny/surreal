@@ -2,15 +2,18 @@ using Surreal.Graphics;
 using Surreal.Graphics.Experimental.Rendering;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.SPI;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 
 namespace Surreal.Platform.Internal.Graphics {
-  internal sealed class HeadlessGraphicsBackend : IGraphicsBackend {
+  internal sealed class HeadlessGraphicsDevice : IGraphicsDevice {
     public IPipelineState Pipeline { get; } = new HeadlessPipelineState();
 
     public void BeginFrame() {
+      // no-op
+    }
+
+    public void Clear(Color color) {
       // no-op
     }
 
@@ -30,6 +33,10 @@ namespace Surreal.Platform.Internal.Graphics {
       // no-op
     }
 
+    public void DrawMeshImmediate(Mesh mesh, ShaderProgram shader, int vertexCount, int indexCount, PrimitiveType type = PrimitiveType.Triangles) {
+      // no-op
+    }
+
     public void EndFrame() {
       // no-op
     }
@@ -42,8 +49,8 @@ namespace Surreal.Platform.Internal.Graphics {
       return new HeadlessCommandBuffer();
     }
 
-    public GraphicsBuffer CreateBuffer(int stride) {
-      return new HeadlessGraphicsBuffer(stride);
+    public GraphicsBuffer CreateBuffer() {
+      return new HeadlessGraphicsBuffer();
     }
 
     public ShaderProgram CreateShaderProgram(params Shader[] shaders) {

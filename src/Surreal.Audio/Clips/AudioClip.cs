@@ -7,14 +7,12 @@ namespace Surreal.Audio.Clips {
   public abstract class AudioClip : AudioResource, IHasSizeEstimate {
     private IAudioData? data;
 
-    public TimeSpan Duration  => data?.Duration   ?? TimeSpan.MinValue;
-    public int      Frequency => data?.SampleRate ?? 0;
-    public Size     Size      => data?.Size       ?? Size.Zero;
+    public TimeSpan Duration => data?.Duration ?? TimeSpan.MinValue;
+    public Size     Size     => data?.Size     ?? Size.Zero;
 
-    public void Upload(IAudioData data) {
-      Upload(this.data, data);
-
-      this.data = data;
+    public void Upload(IAudioData newData) {
+      Upload(data, newData);
+      data = newData;
     }
 
     protected abstract void Upload(IAudioData? existingData, IAudioData newData);
@@ -27,9 +25,9 @@ namespace Surreal.Audio.Clips {
       }
 
       public override async Task<AudioClip> LoadAsync(Path path, IAssetLoaderContext context) {
-        var waveform = await context.GetAsync<WaveData>(path);
+        var buffer = await context.GetAsync<AudioBuffer>(path);
 
-        return device.Backend.CreateAudioClip(waveform);
+        return device.CreateAudioClip(buffer);
       }
     }
   }

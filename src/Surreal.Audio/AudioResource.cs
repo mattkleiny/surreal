@@ -7,23 +7,10 @@ using Surreal.IO;
 
 namespace Surreal.Audio {
   public abstract class AudioResource : IDisposable {
-    private static readonly IList<AudioResource> Resources = new List<AudioResource>();
+    private static readonly List<AudioResource> Resources = new List<AudioResource>();
 
-    public static Size AllocatedClipSize {
-      get {
-        lock (Resources) {
-          return Resources.OfType<AudioClip>().Select(clip => clip.Size).Sum();
-        }
-      }
-    }
-
-    public static Size TotalAllocatedSize {
-      get {
-        lock (Resources) {
-          return Resources.OfType<IHasSizeEstimate>().Select(resource => resource.Size).Sum();
-        }
-      }
-    }
+    public static Size AllocatedClipSize  => Resources.OfType<AudioClip>().Select(clip => clip.Size).Sum();
+    public static Size TotalAllocatedSize => Resources.OfType<IHasSizeEstimate>().Select(resource => resource.Size).Sum();
 
     private static void Track(AudioResource resource) {
       lock (Resources) {

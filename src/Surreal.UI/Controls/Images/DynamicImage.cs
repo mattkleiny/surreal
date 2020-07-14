@@ -5,11 +5,11 @@ using Surreal.Mathematics.Timing;
 
 namespace Surreal.UI.Controls.Images {
   public abstract class DynamicImage : Image {
-    public ImageRegion Image  { get; }
-    public bool   IsDirty { get; set; } = false;
+    public ImageRegion Image   { get; }
+    public bool        IsDirty { get; set; } = false;
 
     public DynamicImage(IGraphicsDevice device, Graphics.Textures.Image image)
-        : base(device.Backend.CreateTexture(image).ToRegion()) {
+      : base(device.CreateTexture(image).ToRegion()) {
       Image = image.ToRegion();
     }
 

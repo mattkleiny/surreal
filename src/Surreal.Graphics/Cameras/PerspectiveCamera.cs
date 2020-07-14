@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using static Surreal.Mathematics.MathF;
+using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Cameras {
   public sealed class PerspectiveCamera : Camera {

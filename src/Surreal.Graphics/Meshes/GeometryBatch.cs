@@ -8,7 +8,7 @@ using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Curves;
 using Surreal.Mathematics.Linear;
-using static Surreal.Mathematics.MathF;
+using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Meshes {
   // TODO: support poly lines and normals for thick lines and animated edges
@@ -30,7 +30,7 @@ namespace Surreal.Graphics.Meshes {
     }
 
     public static async Task<GeometryBatch> CreateDefaultAsync(IGraphicsDevice device) {
-      var shader = device.Backend.CreateShaderProgram(
+      var shader = device.CreateShaderProgram(
           await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.vert.glsl"),
           await Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.frag.glsl")
       );
@@ -177,8 +177,8 @@ namespace Surreal.Graphics.Meshes {
     private void Flush(PrimitiveType type) {
       if (vertexCount == 0) return;
 
-      mesh.Vertices.Put(vertices.Span.Slice(0, vertexCount));
-      mesh.Indices.Put(indices.Span.Slice(0, indexCount));
+      mesh.Vertices.Write(vertices.Span[..vertexCount]);
+      mesh.Indices.Write(indices.Span[..indexCount]);
 
       mesh.DrawImmediate(ActiveShader!, vertexCount, indexCount, type);
 

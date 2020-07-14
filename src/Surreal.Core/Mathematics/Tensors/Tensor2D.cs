@@ -15,9 +15,9 @@ namespace Surreal.Mathematics.Tensors {
 
     public Tensor2D(IBuffer<T> buffer, int width, int height)
         : base(buffer) {
-      Debug.Assert(width        > 0, "Width > 0");
-      Debug.Assert(height       > 0, "Height > 0");
-      Debug.Assert(buffer.Count >= width * height, "buffer.Count >= width * height");
+      Debug.Assert(width > 0, "Width > 0");
+      Debug.Assert(height > 0, "Height > 0");
+      Debug.Assert(buffer.Length >= width * height, "buffer.Length >= width * height");
 
       Width  = width;
       Height = height;
