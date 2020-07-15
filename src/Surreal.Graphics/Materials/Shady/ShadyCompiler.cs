@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Surreal.Graphics.Materials.Preprocessor.Backends;
+using Surreal.Graphics.Materials.Shady.Backends;
 
-namespace Surreal.Graphics.Materials.Preprocessor {
+namespace Surreal.Graphics.Materials.Shady {
   internal sealed class ShadyCompiler {
     private readonly ICompilerBackend backend;
 
@@ -9,7 +9,10 @@ namespace Surreal.Graphics.Materials.Preprocessor {
       this.backend = backend;
     }
 
-    public Shader Compile(ShadyProgramType programType, ShaderType shaderType, IEnumerable<ShadyStatement> statements) {
+    public Shader Compile(
+        ShadyProgramType programType,
+        ShaderType shaderType,
+        IEnumerable<ShadyStatement> statements) {
       return new Shader(shaderType, backend.Compile(programType, shaderType, statements));
     }
   }

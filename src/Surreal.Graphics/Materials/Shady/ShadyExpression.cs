@@ -1,4 +1,4 @@
-namespace Surreal.Graphics.Materials.Preprocessor {
+namespace Surreal.Graphics.Materials.Shady {
   internal abstract class ShadyExpression {
     public abstract T Accept<T>(Visitor<T> visitor);
 
@@ -9,15 +9,14 @@ namespace Surreal.Graphics.Materials.Preprocessor {
     }
 
     public enum UnaryOperation {
-      Not,
-      Negate,
+      Not
     }
 
     public enum BinaryOperation {
       Plus,
       Minus,
       Times,
-      Divide,
+      Divide
     }
 
     public sealed class Literal : ShadyExpression {

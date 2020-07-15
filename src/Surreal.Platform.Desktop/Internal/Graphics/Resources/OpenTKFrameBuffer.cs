@@ -9,11 +9,11 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
     public readonly int Id = GL.GenFramebuffer();
 
     public override Texture Texture { get; }
-    public          Image  Image  { get; }
+    public          Image   Image   { get; }
 
     public OpenTKFrameBuffer(Texture texture, Image image) {
       Texture = texture;
-      Image  = image;
+      Image   = image;
     }
 
     protected override void Dispose(bool managed) {

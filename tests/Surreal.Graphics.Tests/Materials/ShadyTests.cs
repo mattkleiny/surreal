@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Surreal.Graphics.Materials.Preprocessor;
+using Surreal.Graphics.Materials.Shady;
 using Surreal.Languages;
 using Xunit;
 

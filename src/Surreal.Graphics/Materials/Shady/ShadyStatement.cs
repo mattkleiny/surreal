@@ -1,31 +1,31 @@
 using System.Collections.Generic;
 
-namespace Surreal.Graphics.Materials.Preprocessor {
+namespace Surreal.Graphics.Materials.Shady {
   internal abstract class ShadyStatement {
     public abstract T Accept<T>(Visitor<T> visitor);
 
     public abstract class Visitor<T> {
-      public virtual T Visit(MetadataDeclaration statement) => default!;
-      public virtual T Visit(ShaderDeclaration statement)   => default!;
-      public virtual T Visit(UniformDefinition statement)   => default!;
-      public virtual T Visit(FunctionDefinition statement)  => default!;
+      public virtual T Visit(MetadataDecl statement) => default!;
+      public virtual T Visit(ShaderDecl statement)   => default!;
+      public virtual T Visit(UniformDecl statement)  => default!;
+      public virtual T Visit(FunctionDecl statement) => default!;
     }
 
-    public sealed class MetadataDeclaration : ShadyStatement {
+    public sealed class MetadataDecl : ShadyStatement {
       public ShadyMetadata Metadata { get; }
 
-      public MetadataDeclaration(ShadyMetadata metadata) {
+      public MetadataDecl(ShadyMetadata metadata) {
         Metadata = metadata;
       }
 
       public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
-    public sealed class ShaderDeclaration : ShadyStatement {
+    public sealed class ShaderDecl : ShadyStatement {
       public ShaderType                  Type       { get; }
       public IEnumerable<ShadyStatement> Statements { get; }
 
-      public ShaderDeclaration(ShaderType type, IEnumerable<ShadyStatement> statements) {
+      public ShaderDecl(ShaderType type, IEnumerable<ShadyStatement> statements) {
         Type       = type;
         Statements = statements;
       }
@@ -33,11 +33,11 @@ namespace Surreal.Graphics.Materials.Preprocessor {
       public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
-    public sealed class UniformDefinition : ShadyStatement {
+    public sealed class UniformDecl : ShadyStatement {
       public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
-    public sealed class FunctionDefinition : ShadyStatement {
+    public sealed class FunctionDecl : ShadyStatement {
       public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
   }

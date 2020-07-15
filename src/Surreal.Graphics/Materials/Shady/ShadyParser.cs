@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Surreal.Languages;
 using Surreal.Languages.Lexing;
 using Surreal.Languages.Parsing;
-using static Surreal.Graphics.Materials.Preprocessor.ShadyStatement;
+using static Surreal.Graphics.Materials.Shady.ShadyStatement;
 
-namespace Surreal.Graphics.Materials.Preprocessor {
+namespace Surreal.Graphics.Materials.Shady {
   internal sealed class ShadyParser : DescentParser<ShadyParser.TokenType> {
     private static readonly RegexLexer<Token> Lexer = new RegexLexer<Token>(
         new RegexLexer<Token>.Rule(@"\s+", (lexeme, position) => new Token(TokenType.WhiteSpace, position, lexeme), disregard: true),
@@ -18,11 +18,11 @@ namespace Surreal.Graphics.Materials.Preprocessor {
         : base(Lexer.Tokenize(text)) {
     }
 
-    public MetadataDeclaration MetadataDeclaration() {
+    public MetadataDecl MetadataDeclaration() {
       throw new NotImplementedException();
     }
 
-    public IEnumerable<ShaderDeclaration> ShaderDeclarations() {
+    public IEnumerable<ShaderDecl> ShaderDeclarations() {
       throw new NotImplementedException();
     }
 

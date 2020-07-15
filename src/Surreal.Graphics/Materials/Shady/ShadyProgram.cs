@@ -2,11 +2,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Surreal.Assets;
-using Surreal.Graphics.Materials.Preprocessor.Backends;
+using Surreal.Graphics.Materials.Shady.Backends;
 using Surreal.IO;
 using Surreal.Languages;
 
-namespace Surreal.Graphics.Materials.Preprocessor {
+namespace Surreal.Graphics.Materials.Shady {
   public enum ShadyProgramType {
     Sprite,
     Mesh,

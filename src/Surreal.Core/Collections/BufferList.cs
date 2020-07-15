@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Surreal.IO;
 
 namespace Surreal.Collections {
-  public sealed class BufferList<T> : IEnumerable<T>, IDisposable
+  public sealed class BufferList<T> : IDisposable, IReadOnlyList<T>
       where T : unmanaged {
     private readonly IBuffer<T> buffer;
 
@@ -15,6 +15,9 @@ namespace Surreal.Collections {
     public int     Count    { get; private set; }
     public int     Capacity => buffer.Length;
     public Span<T> Span     => buffer.Span;
+
+    public T this[int index] => Span[index];
+    public T this[Index index] => Span[index];
 
     public void Add(T element) {
       if (Count >= Capacity) {

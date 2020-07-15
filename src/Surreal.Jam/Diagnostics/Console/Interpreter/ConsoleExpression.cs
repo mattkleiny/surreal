@@ -24,9 +24,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Value = value;
       }
 
-      public override T Accept<T>(Visitor<T> visitor) {
-        return visitor.Visit(this);
-      }
+      public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
     [DebuggerDisplay("{Operation} {Expression}")]
@@ -39,9 +37,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Expression = expression;
       }
 
-      public override T Accept<T>(Visitor<T> visitor) {
-        return visitor.Visit(this);
-      }
+      public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
     [DebuggerDisplay("{Left} {Operation} {Right}")]
@@ -56,9 +52,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Right     = right;
       }
 
-      public override T Accept<T>(Visitor<T> visitor) {
-        return visitor.Visit(this);
-      }
+      public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
     [DebuggerDisplay("Call {Symbol}")]
@@ -71,9 +65,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Parameters = parameters;
       }
 
-      public override T Accept<T>(Visitor<T> visitor) {
-        return visitor.Visit(this);
-      }
+      public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
     [DebuggerDisplay("Variable {Name}")]
@@ -84,9 +76,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Name = name;
       }
 
-      public override T Accept<T>(Visitor<T> visitor) {
-        return visitor.Visit(this);
-      }
+      public override T Accept<T>(Visitor<T> visitor) => visitor.Visit(this);
     }
 
     public abstract class Visitor<T> {

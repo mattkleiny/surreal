@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Text;
 
 namespace Surreal.Collections {
-  public struct BitArray32 : IEquatable<BitArray32>, IEnumerable<bool> {
+  public struct BitArray32 : IEquatable<BitArray32>, IReadOnlyList<bool> {
     public static BitArray32 Empty => default;
 
     private uint bits;
@@ -31,11 +31,16 @@ namespace Surreal.Collections {
 
         var mask = 1u << index;
 
-        if (value)
+        if (value) {
           bits |= mask;
-        else
+        } else {
           bits &= ~mask;
+        }
       }
+    }
+
+    public void Clear() {
+      bits = 0;
     }
 
     public override bool Equals(object obj)     => obj is BitArray32 array && bits == array.bits;
@@ -56,6 +61,8 @@ namespace Surreal.Collections {
     public Enumerator                   GetEnumerator() => new Enumerator(bits);
     IEnumerator<bool> IEnumerable<bool>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.            GetEnumerator() => GetEnumerator();
+
+    int IReadOnlyCollection<bool>.Count => Length;
 
     public struct Enumerator : IEnumerator<bool> {
       private readonly uint bits;
