@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
@@ -29,27 +28,19 @@ namespace Surreal.IO {
       where T : unmanaged {
   }
 
-  public interface IBufferPool<T>
-      where T : unmanaged {
-    IDisposableBuffer<T> Rent(int count);
-  }
-
   public static class Buffers {
     public static IBuffer<T> Allocate<T>(int count)
-        where T : unmanaged => new HeapBuffer<T>(count);
+        where T : unmanaged => new ManagedBuffer<T>(count);
 
     public static IDisposableBuffer<T> AllocateOffHeap<T>(int count)
-        where T : unmanaged => new OffHeapBuffer<T>(count);
-
-    public static IBufferPool<T> AllocatePool<T>(int maxBufferSize = 1048576, int bucketSize = 50)
-        where T : unmanaged => new HeapBufferPool<T>(maxBufferSize, bucketSize);
+        where T : unmanaged => new UnmanagedBuffer<T>(count);
 
     public static IDisposableBuffer<T> MapFromFile<T>(string path, int offset, int length)
         where T : unmanaged => new MemoryMappedBuffer<T>(path, offset, length);
 
-    private abstract class AbstractBuffer<T> : IBuffer<T>
+    private abstract class Buffer<T> : IBuffer<T>
         where T : unmanaged {
-      protected AbstractBuffer(int count) {
+      protected Buffer(int count) {
         Length = count;
       }
 
@@ -62,15 +53,29 @@ namespace Surreal.IO {
       public void Clear()       => Fill(default);
       public void Fill(T value) => Span.Fill(value);
 
-      public virtual IBuffer<T> Slice(int offset, int size) => new BufferSlice<T>(this, offset, size);
+      public virtual IBuffer<T> Slice(int offset, int size) => new BufferSlice(this, offset, size);
+
+      [DebuggerDisplay("{Size} sliced from ({source})")]
+      private sealed class BufferSlice : Buffer<T> {
+        private readonly IBuffer<T> source;
+        private readonly int        offset;
+
+        public BufferSlice(IBuffer<T> source, int offset, int count)
+            : base(count) {
+          this.source = source;
+          this.offset = offset;
+        }
+
+        public override Span<T> Span => source.Span.Slice(offset, Length);
+      }
     }
 
     [DebuggerDisplay("{Size} allocated on-heap")]
-    private sealed class HeapBuffer<T> : AbstractBuffer<T>, IResizableBuffer<T>
+    private sealed class ManagedBuffer<T> : Buffer<T>, IResizableBuffer<T>
         where T : unmanaged {
       private T[] elements;
 
-      public HeapBuffer(int count)
+      public ManagedBuffer(int count)
           : base(count) {
         elements = new T[count];
       }
@@ -84,12 +89,12 @@ namespace Surreal.IO {
     }
 
     [DebuggerDisplay("{Size} allocated off-heap")]
-    private sealed class OffHeapBuffer<T> : AbstractBuffer<T>, IResizableBuffer<T>, IDisposableBuffer<T>
+    private sealed class UnmanagedBuffer<T> : Buffer<T>, IResizableBuffer<T>, IDisposableBuffer<T>
         where T : unmanaged {
       private IntPtr address;
       private bool   disposed;
 
-      public OffHeapBuffer(int count)
+      public UnmanagedBuffer(int count)
           : base(count) {
         address = Marshal.AllocHGlobal(count * Stride);
         Clear(); // zero-fill the array
@@ -121,13 +126,13 @@ namespace Surreal.IO {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       private void CheckNotDisposed() {
         if (disposed) {
-          throw new ObjectDisposedException(nameof(OffHeapBuffer<T>));
+          throw new ObjectDisposedException(nameof(UnmanagedBuffer<T>));
         }
       }
     }
 
     [DebuggerDisplay("{Size} mapped from {path}")]
-    private sealed unsafe class MemoryMappedBuffer<T> : AbstractBuffer<T>, IDisposableBuffer<T>
+    private sealed unsafe class MemoryMappedBuffer<T> : Buffer<T>, IDisposableBuffer<T>
         where T : unmanaged {
 // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
       private readonly string                   path;
@@ -155,6 +160,7 @@ namespace Surreal.IO {
       public override Span<T> Span {
         get {
           CheckNotDisposed();
+
           return new Span<T>(pointer, (int) accessor.Capacity);
         }
       }
@@ -174,54 +180,7 @@ namespace Surreal.IO {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       private void CheckNotDisposed() {
         if (disposed) {
-          throw new ObjectDisposedException(nameof(OffHeapBuffer<T>));
-        }
-      }
-    }
-
-    [DebuggerDisplay("{Size} sliced from ({source})")]
-    private sealed class BufferSlice<T> : AbstractBuffer<T>
-        where T : unmanaged {
-      private readonly IBuffer<T> source;
-      private readonly int        offset;
-
-      public BufferSlice(IBuffer<T> source, int offset, int count)
-          : base(count) {
-        this.source = source;
-        this.offset = offset;
-      }
-
-      public override Span<T> Span => source.Span.Slice(offset, Length);
-    }
-
-    private sealed class HeapBufferPool<T> : IBufferPool<T>
-        where T : unmanaged {
-      private readonly ArrayPool<T> pool;
-
-      public HeapBufferPool(int maxBufferSize, int bucketSize) {
-        pool = ArrayPool<T>.Create(maxBufferSize, bucketSize);
-      }
-
-      public IDisposableBuffer<T> Rent(int count) {
-        return new PooledBuffer(this, pool.Rent(count));
-      }
-
-      [DebuggerDisplay("{Size} rented from {parent}")]
-      private sealed class PooledBuffer : AbstractBuffer<T>, IDisposableBuffer<T> {
-        private readonly HeapBufferPool<T> parent;
-        private          T[]               array;
-
-        public PooledBuffer(HeapBufferPool<T> parent, T[] array)
-            : base(array.Length) {
-          this.parent = parent;
-          this.array  = array;
-        }
-
-        public override Span<T> Span => new Span<T>(array);
-
-        public void Dispose() {
-          parent.pool.Return(array, true);
-          array = null!; // drop reference to pooled data
+          throw new ObjectDisposedException(nameof(UnmanagedBuffer<T>));
         }
       }
     }

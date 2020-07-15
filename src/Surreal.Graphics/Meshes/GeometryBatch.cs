@@ -103,8 +103,8 @@ namespace Surreal.Graphics.Meshes {
       var increment = 360f / segments;
 
       for (var theta = 0f; theta < 360f; theta += increment) {
-        var x = radius * System.MathF.Cos(DegreesToRadians(theta)) + center.X;
-        var y = radius * System.MathF.Sin(DegreesToRadians(theta)) + center.Y;
+        var x = radius * MathF.Cos(DegreesToRadians(theta)) + center.X;
+        var y = radius * MathF.Sin(DegreesToRadians(theta)) + center.Y;
 
         points.Add(new Vector2(x, y));
       }
@@ -118,8 +118,8 @@ namespace Surreal.Graphics.Meshes {
       var increment = length / segments;
 
       for (var theta = startAngle; theta < endAngle; theta += increment) {
-        var x = radius * System.MathF.Cos(DegreesToRadians(theta)) + center.X;
-        var y = radius * System.MathF.Sin(DegreesToRadians(theta)) + center.Y;
+        var x = radius * MathF.Cos(DegreesToRadians(theta)) + center.X;
+        var y = radius * MathF.Sin(DegreesToRadians(theta)) + center.Y;
 
         points.Add(new Vector2(x, y));
       }

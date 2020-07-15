@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
@@ -9,7 +10,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
   internal sealed class OpenTKGraphicsBuffer : GraphicsBuffer {
     public readonly int Id = GL.GenBuffer();
 
-    public override Span<T> Read<T>(Range range) {
+    public override Memory<T> Read<T>(Range range) {
       GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
       GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out int sizeInBytes);
 
@@ -35,6 +36,10 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       GL.BufferData(BufferTarget.ArrayBuffer, bytes, ref data.GetPinnableReference(), BufferUsageHint.StaticDraw);
 
       Length = data.Length;
+    }
+
+    public override MemoryManager<T> Pin<T>() {
+      return new OpenTKMemoryManager<T>(Id, BufferTarget.ArrayBuffer);
     }
 
     protected override void Dispose(bool managed) {

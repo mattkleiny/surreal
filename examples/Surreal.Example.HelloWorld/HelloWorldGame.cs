@@ -1,4 +1,3 @@
-using System;
 using HelloWorld.Screens;
 using Surreal;
 using Surreal.Framework;
@@ -21,12 +20,6 @@ namespace HelloWorld {
       base.Initialize();
 
       Screens.Push(new MainScreen(this));
-
-      using var buffer = ComputeDevice.CreateBuffer();
-
-      buffer.Write(stackalloc Color[100]);
-
-      var colors = buffer.Read<Color>(Range.All);
     }
 
     protected override void Draw(GameTime time) {

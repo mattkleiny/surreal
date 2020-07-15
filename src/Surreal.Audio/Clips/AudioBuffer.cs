@@ -21,8 +21,6 @@ namespace Surreal.Audio.Clips {
     public Size       Size => buffer.Size;
     public Span<byte> Span => buffer.Span;
 
-    public ref byte GetPinnableReference() => ref Span.GetPinnableReference();
-
     public void Dispose() => buffer.Dispose();
 
     public sealed class Loader : AssetLoader<AudioBuffer> {
