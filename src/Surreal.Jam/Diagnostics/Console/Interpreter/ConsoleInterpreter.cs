@@ -29,7 +29,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       }
     }
 
-    private sealed class ExecutionVisitor : RecursiveVisitor<object?> {
+    private sealed class ExecutionVisitor : Visitor<object?> {
       private readonly BindingCollection bindings;
 
       public ExecutionVisitor(BindingCollection bindings) {

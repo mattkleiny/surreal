@@ -30,6 +30,8 @@ namespace Surreal.Diagnostics.Console {
       }
     }
 
-    public void Clear() => history.Clear();
+    public void Clear() {
+      history.Clear();
+    }
   }
 }

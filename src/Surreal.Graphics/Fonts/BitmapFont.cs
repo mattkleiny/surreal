@@ -62,9 +62,14 @@ namespace Surreal.Graphics.Fonts {
     }
 
     public sealed class Loader : AssetLoader<BitmapFont> {
+      private readonly CharacterSet characterSet;
+
+      public Loader(CharacterSet characterSet) {
+        this.characterSet = characterSet;
+      }
+
       public override Task<BitmapFont> LoadAsync(Path path, IAssetLoaderContext context) {
         // TODO: actually implement me
-
         return Task.FromResult(new BitmapFont(Array.Empty<Glyph>()));
       }
     }

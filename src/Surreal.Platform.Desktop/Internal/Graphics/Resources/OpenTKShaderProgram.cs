@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using OpenTK.Graphics.OpenGL;
+using Surreal.Collections;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
@@ -44,7 +45,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    private void Link(ReadOnlySpan<Shader> shaders) {
+    private void Link(ArraySlice<Shader> shaders) {
       var shaderIds = new int[shaders.Length];
 
       GL.UseProgram(Id);
@@ -92,51 +93,35 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
     }
 
     public override void SetUniform(string alias, int scalar) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform1(location, scalar);
+      GL.Uniform1(GetUniformLocation(alias), scalar);
     }
 
     public override void SetUniform(string alias, float scalar) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform1(location, scalar);
+      GL.Uniform1(GetUniformLocation(alias), scalar);
     }
 
     public override void SetUniform(string alias, Vector2I point) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform2(location, point.X, point.Y);
+      GL.Uniform2(GetUniformLocation(alias), point.X, point.Y);
     }
 
     public override void SetUniform(string alias, Vector3I point) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform3(location, point.X, point.Y, point.Z);
+      GL.Uniform3(GetUniformLocation(alias), point.X, point.Y, point.Z);
     }
 
     public override void SetUniform(string alias, Vector2 vector) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform2(location, vector.X, vector.Y);
+      GL.Uniform2(GetUniformLocation(alias), vector.X, vector.Y);
     }
 
     public override void SetUniform(string alias, Vector3 vector) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform3(location, vector.X, vector.Y, vector.Z);
+      GL.Uniform3(GetUniformLocation(alias), vector.X, vector.Y, vector.Z);
     }
 
     public override void SetUniform(string alias, Vector4 vector) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform4(location, vector.W, vector.X, vector.Y, vector.Z);
+      GL.Uniform4(GetUniformLocation(alias), vector.W, vector.X, vector.Y, vector.Z);
     }
 
     public override void SetUniform(string alias, Quaternion quaternion) {
-      var location = GetUniformLocation(alias);
-
-      GL.Uniform4(location, quaternion.W, quaternion.X, quaternion.Y, quaternion.Z);
+      GL.Uniform4(GetUniformLocation(alias), quaternion.W, quaternion.X, quaternion.Y, quaternion.Z);
     }
 
     public override unsafe void SetUniform(string alias, in Matrix2x2 matrix) {
@@ -146,7 +131,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       var     elements = (float*) Unsafe.AsPointer(ref source);
 
       GL.UniformMatrix4(location, 1, false, elements);
-    }
+    }  
 
     public override unsafe void SetUniform(string alias, in Matrix3x2 matrix) {
       var location = GetUniformLocation(alias);

@@ -17,7 +17,9 @@ namespace Surreal.Diagnostics.Console {
       this.formatter = formatter;
     }
 
-    public ILog GetLog(string category) => new GameConsoleLog(console, category, minLevel, formatter);
+    public ILog GetLog(string category) {
+      return new GameConsoleLog(console, category, minLevel, formatter);
+    }
 
     private sealed class GameConsoleLog : ILog {
       private readonly IGameConsole console;

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Isaac.Screens;
 using Surreal;
+using Surreal.Assets;
 using Surreal.Framework;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
@@ -10,20 +11,22 @@ using Surreal.Platform;
 namespace Isaac {
   public sealed class IsaacGame : GameJam<IsaacGame> {
     public static void Main() => Start<IsaacGame>(new Configuration {
-      Platform = new DesktopPlatform {
-        Configuration = {
-          Title          = "The Binding of Isaac",
-          IsVsyncEnabled = true,
-          ShowFPSInTitle = true,
+        Platform = new DesktopPlatform {
+            Configuration = {
+                Title          = "The Binding of Isaac",
+                IsVsyncEnabled = true,
+                ShowFPSInTitle = true,
+            }
         }
-      }
     });
+
+    public ColorPalette Palette { get; private set; } = null!;
 
     protected override async Task<SpriteBatch> CreateSpriteBatchAsync(int spriteCountHint) {
       var shader = GraphicsDevice.CreateShaderProgram(
-        // we use a custom sprite batch shader across the entire game; this shader supports palette shifting and other sprite effects.
-        await Shader.LoadAsync(ShaderType.Vertex, "resx://Isaac/Resources/Shaders/SpriteBatch.vert.glsl"),
-        await Shader.LoadAsync(ShaderType.Fragment, "resx://Isaac/Resources/Shaders/SpriteBatch.frag.glsl")
+          // we use a custom sprite batch shader across the entire game; this shader supports palette shifting and other sprite effects.
+          await Shader.LoadAsync(ShaderType.Vertex, "resx://Isaac/Resources/Shaders/SpriteBatch.vert.glsl"),
+          await Shader.LoadAsync(ShaderType.Fragment, "resx://Isaac/Resources/Shaders/SpriteBatch.frag.glsl")
       );
 
       return SpriteBatch.Create(GraphicsDevice, shader, spriteCountHint);
@@ -33,6 +36,12 @@ namespace Isaac {
       base.Initialize();
 
       Screens.Push(new MainScreen(this).LoadAsync());
+    }
+
+    protected override async Task LoadContentAsync(IAssetResolver assets) {
+      await base.LoadContentAsync(assets);
+
+      Palette = await assets.GetAsync<ColorPalette>("Assets/palettes/standard.pal");
     }
 
     protected override void Draw(GameTime time) {

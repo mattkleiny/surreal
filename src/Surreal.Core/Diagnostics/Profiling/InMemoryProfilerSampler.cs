@@ -40,32 +40,6 @@ namespace Surreal.Diagnostics.Profiling {
       }
     }
 
-    public sealed class SamplerCollection : IEnumerable<Sampler> {
-      private readonly ConcurrentDictionary<string, Sampler> samplers = new ConcurrentDictionary<string, Sampler>(StringComparer.OrdinalIgnoreCase);
-
-      private readonly int sampleCount;
-
-      public SamplerCollection(int sampleCount) {
-        Debug.Assert(sampleCount > 0, "sampleCount > 0");
-
-        this.sampleCount = sampleCount;
-      }
-
-      public Sampler GetSampler(string category, string task) {
-        var key = $"{category}:{task}";
-
-        if (!samplers.TryGetValue(key, out var sampler)) {
-          sampler = new Sampler(category, task, sampleCount);
-          samplers.TryAdd(key, sampler);
-        }
-
-        return sampler;
-      }
-
-      public IEnumerator<Sampler> GetEnumerator() => samplers.Values.GetEnumerator();
-      IEnumerator IEnumerable.    GetEnumerator() => GetEnumerator();
-    }
-
     public sealed class Sampler : IEnumerable<TimeSpan> {
       private readonly RingBuffer<TimeSpan> samples;
 
@@ -96,6 +70,32 @@ namespace Surreal.Diagnostics.Profiling {
       public RingBuffer<TimeSpan>.Enumerator      GetEnumerator() => samples.GetEnumerator();
       IEnumerator<TimeSpan> IEnumerable<TimeSpan>.GetEnumerator() => GetEnumerator();
       IEnumerator IEnumerable.                    GetEnumerator() => GetEnumerator();
+    }
+
+    public sealed class SamplerCollection : IEnumerable<Sampler> {
+      private readonly ConcurrentDictionary<string, Sampler> samplers = new ConcurrentDictionary<string, Sampler>(StringComparer.OrdinalIgnoreCase);
+
+      private readonly int sampleCount;
+
+      public SamplerCollection(int sampleCount) {
+        Debug.Assert(sampleCount > 0, "sampleCount > 0");
+
+        this.sampleCount = sampleCount;
+      }
+
+      public Sampler GetSampler(string category, string task) {
+        var key = $"{category}:{task}";
+
+        if (!samplers.TryGetValue(key, out var sampler)) {
+          sampler = new Sampler(category, task, sampleCount);
+          samplers.TryAdd(key, sampler);
+        }
+
+        return sampler;
+      }
+
+      public IEnumerator<Sampler> GetEnumerator() => samplers.Values.GetEnumerator();
+      IEnumerator IEnumerable.    GetEnumerator() => GetEnumerator();
     }
   }
 }

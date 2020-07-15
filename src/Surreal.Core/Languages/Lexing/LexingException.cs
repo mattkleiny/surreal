@@ -2,15 +2,11 @@ using System;
 
 namespace Surreal.Languages.Lexing {
   public sealed class LexingException : Exception {
-    public LexingException() {
-    }
-
-    public LexingException(string message)
+    public LexingException(string message, in TokenPosition position)
         : base(message) {
+      Position = position;
     }
 
-    public LexingException(string message, Exception innerException)
-        : base(message, innerException) {
-    }
+    public TokenPosition Position { get; }
   }
 }

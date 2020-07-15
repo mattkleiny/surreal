@@ -13,9 +13,9 @@ using Surreal.Diagnostics.Profiling;
 using Surreal.Framework;
 using Surreal.Framework.Screens;
 using Surreal.Graphics;
-using Surreal.Graphics.Experimental.Shady;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Preprocessor;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
@@ -102,7 +102,7 @@ namespace Surreal {
 
     protected virtual void RegisterAssetLoaders(AssetManager assets) {
       assets.RegisterLoader(new AudioClip.Loader(AudioDevice));
-      assets.RegisterLoader(new BitmapFont.Loader());
+      assets.RegisterLoader(new BitmapFont.Loader(CharacterSet.Standard));
       assets.RegisterLoader(new TrueTypeFont.Loader());
       assets.RegisterLoader(new ColorPalette.Loader());
       assets.RegisterLoader(new ComputeProgram.Loader(ComputeDevice));

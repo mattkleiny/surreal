@@ -48,6 +48,8 @@ namespace Surreal.IO {
 
     public static IFileSystem GetFileSystem(this Path path) => FileSystems.GetForScheme(path.Scheme);
 
+    public static string GetExtension(this Path path) => System.IO.Path.GetExtension(path.Target);
+
     public static async Task<bool> ExistsAsync(this Path path)      => await path.GetFileSystem().ExistsAsync(path.Target);
     public static async Task<bool> IsFileAsync(this Path path)      => await path.GetFileSystem().IsFileAsync(path.Target);
     public static async Task<bool> IsDirectoryAsync(this Path path) => await path.GetFileSystem().IsDirectoryAsync(path.Target);

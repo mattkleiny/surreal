@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Surreal.Assets;
-using Surreal.Graphics.Experimental.Shady;
+using Surreal.Graphics.Materials.Preprocessor;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
@@ -41,7 +41,7 @@ namespace Surreal.Graphics.Materials {
         }
 
         var input  = await context.GetAsync<ShadyProgram>(path);
-        var output = input.Compile(device);
+        var output = input.ToShaderProgram(device);
 
         return output;
       }
@@ -70,7 +70,7 @@ namespace Surreal.Graphics.Materials {
         State.ChangeState(States.Dirty);
 
         ShadyProgram.LoadAsync(path).ContinueWith(previous => {
-          Program = previous.Result.Compile(device);
+          Program = previous.Result.ToShaderProgram(device);
           State.ChangeState(States.Ready);
         });
       }

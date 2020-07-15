@@ -1,8 +1,7 @@
 using System;
-using Surreal.IO;
 
 namespace Surreal.Compute.Memory {
-  public abstract class ComputeBuffer : ComputeResource, IHardwareBuffer {
+  public abstract class ComputeBuffer : ComputeResource {
     public int Length { get; protected set; }
 
     public abstract Span<T> Read<T>(Range range)

@@ -20,7 +20,8 @@ namespace Surreal.Platform.Internal.Compute.Resources {
 
       var offsetInBytes = offset * sizeOfT;
 
-      // allocate enough space in the local heap. TODO: perhaps offer an overload where the caller can provide their own buffer?
+      // allocate enough space in the local heap.
+      // TODO: perhaps offer an overload where the caller can provide their own buffer?
       var buffer = new T[length];
 
       GL.GetBufferSubData(BufferTarget.CopyWriteBuffer, new IntPtr(offsetInBytes), new IntPtr(sizeInBytes), ref buffer[0]);

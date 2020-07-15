@@ -160,8 +160,7 @@ namespace Surreal.Graphics.Sprites {
 
       Device.Pipeline.TextureUnits[0] = lastTexture;
 
-      mesh.Vertices.Write(vertices.Span[0..indexCount]);
-
+      mesh.Vertices.Write(vertices.Span[..indexCount]);
       mesh.DrawImmediate(ActiveShader!, vertexCount, indexCount); // 6 indices per sprite
 
       vertexCount = 0;

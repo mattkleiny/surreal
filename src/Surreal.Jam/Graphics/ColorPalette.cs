@@ -47,14 +47,25 @@ namespace Surreal.Graphics {
 
     public sealed class Loader : AssetLoader<ColorPalette> {
       public override async Task<ColorPalette> LoadAsync(Path path, IAssetLoaderContext context) {
+        var palette = path.GetExtension().ToLower() switch {
+            ".pal" => await ParseJascAsync(path),
+            _      => throw new Exception($"An unrecognized palette format was requested: {path}")
+        };
+
+        return palette;
+      }
+
+      private static async Task<ColorPalette> ParseJascAsync(Path path) {
         await using var stream = await path.OpenInputStreamAsync();
         using var       reader = new StreamReader(stream);
 
-        if (await reader.ReadLineAsync() != "JASC-PAL")
+        if (await reader.ReadLineAsync() != "JASC-PAL") {
           throw new Exception("An unrecognized palette format was encountered!");
+        }
 
-        if (await reader.ReadLineAsync() != "0100")
+        if (await reader.ReadLineAsync() != "0100") {
           throw new Exception("An unrecognized palette format was encountered!");
+        }
 
         var count  = int.Parse(await reader.ReadLineAsync());
         var colors = new Color[count];

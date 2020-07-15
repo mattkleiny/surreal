@@ -29,7 +29,9 @@ namespace Surreal.Framework {
       Engine.Run(host, game);
     }
 
-    protected Game() => loopTarget = new ProfiledLoopTarget(this);
+    protected Game() {
+      loopTarget = new ProfiledLoopTarget(this);
+    }
 
     public IPlatformHost Host { get; private set; } = null!;
 

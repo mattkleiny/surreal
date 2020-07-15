@@ -2,45 +2,11 @@ using System.Diagnostics;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
   public abstract class ConsoleExpression {
-    public abstract T Accept<T>(IVisitor<T> visitor);
+    public abstract T Accept<T>(Visitor<T> visitor);
 
-    public interface IVisitor<out T> {
-      T Visit(Unary expression);
-      T Visit(Binary expression);
-      T Visit(VariableExpression expression);
-      T Visit(Literal expression);
-      T Visit(Call expression);
-    }
-
-    public abstract class RecursiveVisitor<T> : IVisitor<T> {
-      public virtual T Visit(Unary expression) {
-        expression.Expression.Accept(this);
-
-        return default!;
-      }
-
-      public virtual T Visit(Binary expression) {
-        expression.Left.Accept(this);
-        expression.Right.Accept(this);
-
-        return default!;
-      }
-
-      public virtual T Visit(VariableExpression expression) {
-        return default!;
-      }
-
-      public virtual T Visit(Literal expression) {
-        return default!;
-      }
-
-      public virtual T Visit(Call expression) {
-        foreach (var parameter in expression.Parameters) {
-          parameter.Accept(this);
-        }
-
-        return default!;
-      }
+    public enum UnaryOperation {
+      Not,
+      Negate,
     }
 
     public enum BinaryOperation {
@@ -50,9 +16,17 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       Divide,
     }
 
-    public enum UnaryOperation {
-      Not,
-      Negate,
+    [DebuggerDisplay("{Value}")]
+    public sealed class Literal : ConsoleExpression {
+      public object Value { get; }
+
+      public Literal(object value) {
+        Value = value;
+      }
+
+      public override T Accept<T>(Visitor<T> visitor) {
+        return visitor.Visit(this);
+      }
     }
 
     [DebuggerDisplay("{Operation} {Expression}")]
@@ -65,7 +39,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Expression = expression;
       }
 
-      public override T Accept<T>(IVisitor<T> visitor) {
+      public override T Accept<T>(Visitor<T> visitor) {
         return visitor.Visit(this);
       }
     }
@@ -82,20 +56,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Right     = right;
       }
 
-      public override T Accept<T>(IVisitor<T> visitor) {
-        return visitor.Visit(this);
-      }
-    }
-
-    [DebuggerDisplay("{Value}")]
-    public sealed class Literal : ConsoleExpression {
-      public object Value { get; }
-
-      public Literal(object value) {
-        Value = value;
-      }
-
-      public override T Accept<T>(IVisitor<T> visitor) {
+      public override T Accept<T>(Visitor<T> visitor) {
         return visitor.Visit(this);
       }
     }
@@ -110,21 +71,52 @@ namespace Surreal.Diagnostics.Console.Interpreter {
         Parameters = parameters;
       }
 
-      public override T Accept<T>(IVisitor<T> visitor) {
+      public override T Accept<T>(Visitor<T> visitor) {
         return visitor.Visit(this);
       }
     }
 
     [DebuggerDisplay("Variable {Name}")]
-    public sealed class VariableExpression : ConsoleExpression {
+    public sealed class Variable : ConsoleExpression {
       public string Name { get; }
 
-      public VariableExpression(string name) {
+      public Variable(string name) {
         Name = name;
       }
 
-      public override T Accept<T>(IVisitor<T> visitor) {
+      public override T Accept<T>(Visitor<T> visitor) {
         return visitor.Visit(this);
+      }
+    }
+
+    public abstract class Visitor<T> {
+      public virtual T Visit(Unary expression) {
+        expression.Expression.Accept(this);
+
+        return default!;
+      }
+
+      public virtual T Visit(Binary expression) {
+        expression.Left.Accept(this);
+        expression.Right.Accept(this);
+
+        return default!;
+      }
+
+      public virtual T Visit(Variable expression) {
+        return default!;
+      }
+
+      public virtual T Visit(Literal expression) {
+        return default!;
+      }
+
+      public virtual T Visit(Call expression) {
+        foreach (var parameter in expression.Parameters) {
+          parameter.Accept(this);
+        }
+
+        return default!;
       }
     }
   }

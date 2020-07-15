@@ -3,9 +3,9 @@ using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
-using Surreal.Graphics.Experimental.Rendering;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 using PrimitiveType = Surreal.Graphics.Meshes.PrimitiveType;
@@ -33,10 +33,10 @@ namespace Surreal.Platform.Internal.Graphics {
 
     public void ClearColorBuffer(Color color) {
       GL.ClearColor(
-        color.R / 255.0f,
-        color.G / 255.0f,
-        color.B / 255.0f,
-        color.A / 255.0f
+          color.R / 255.0f,
+          color.G / 255.0f,
+          color.B / 255.0f,
+          color.A / 255.0f
       );
 
       GL.Clear(ClearBufferMask.ColorBufferBit);
@@ -47,11 +47,11 @@ namespace Surreal.Platform.Internal.Graphics {
     }
 
     public void DrawMeshImmediate(
-      Mesh mesh,
-      ShaderProgram shader,
-      int vertexCount,
-      int indexCount,
-      PrimitiveType type = PrimitiveType.Triangles) {
+        Mesh mesh,
+        ShaderProgram shader,
+        int vertexCount,
+        int indexCount,
+        PrimitiveType type = PrimitiveType.Triangles) {
       if (vertexCount == 0) return; // empty mesh? don't render
 
       Pipeline.ActiveShader       = shader;
@@ -73,10 +73,6 @@ namespace Surreal.Platform.Internal.Graphics {
 
     public void EndFrame() {
       GL.Flush();
-    }
-
-    public CommandBuffer CreateCommandBuffer() {
-      return new OpenTKCommandBuffer(this);
     }
 
     public GraphicsBuffer CreateBuffer() {
@@ -120,14 +116,14 @@ namespace Surreal.Platform.Internal.Graphics {
     }
 
     private static OpenTK.Graphics.OpenGL.PrimitiveType ConvertPrimitiveType(PrimitiveType type) => type switch {
-      PrimitiveType.Points    => OpenTK.Graphics.OpenGL.PrimitiveType.Points,
-      PrimitiveType.Lines     => OpenTK.Graphics.OpenGL.PrimitiveType.Lines,
-      PrimitiveType.LineStrip => OpenTK.Graphics.OpenGL.PrimitiveType.LineStrip,
-      PrimitiveType.LineLoop  => OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop,
-      PrimitiveType.Triangles => OpenTK.Graphics.OpenGL.PrimitiveType.Triangles,
-      PrimitiveType.Quads     => OpenTK.Graphics.OpenGL.PrimitiveType.Quads,
-      PrimitiveType.QuadStrip => OpenTK.Graphics.OpenGL.PrimitiveType.QuadStrip,
-      _                       => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested.")
+        PrimitiveType.Points => OpenTK.Graphics.OpenGL.PrimitiveType.Points,
+        PrimitiveType.Lines => OpenTK.Graphics.OpenGL.PrimitiveType.Lines,
+        PrimitiveType.LineStrip => OpenTK.Graphics.OpenGL.PrimitiveType.LineStrip,
+        PrimitiveType.LineLoop => OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop,
+        PrimitiveType.Triangles => OpenTK.Graphics.OpenGL.PrimitiveType.Triangles,
+        PrimitiveType.Quads => OpenTK.Graphics.OpenGL.PrimitiveType.Quads,
+        PrimitiveType.QuadStrip => OpenTK.Graphics.OpenGL.PrimitiveType.QuadStrip,
+        _ => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested.")
     };
 
     [Conditional("DEBUG")]
@@ -135,17 +131,17 @@ namespace Surreal.Platform.Internal.Graphics {
       var errorCode = GL.GetError();
       if (errorCode != ErrorCode.NoError) {
         throw new PlatformException(errorCode switch {
-          ErrorCode.InvalidEnum                 => "An invalid OpenGL enum was passed.",
-          ErrorCode.InvalidValue                => "An invalid OpenGL value was passed.",
-          ErrorCode.InvalidOperation            => "An invalid OpenGL operation was attempted.",
-          ErrorCode.StackOverflow               => "The OpenGL stack has overflowed.",
-          ErrorCode.StackUnderflow              => "The OpenGL stack has underflowed.",
-          ErrorCode.OutOfMemory                 => "OpenGL is out of memory.",
-          ErrorCode.InvalidFramebufferOperation => "An invalid OpenGL frame buffer operation was attempted.",
-          ErrorCode.ContextLost                 => "The OpenGL context was lost.",
-          ErrorCode.TableTooLarge               => "The OpenGL table is too large.",
-          ErrorCode.TextureTooLargeExt          => "The OpenGL texture is too large.",
-          _                                     => "An unexpected OpenGL error occurred."
+            ErrorCode.InvalidEnum                 => "An invalid OpenGL enum was passed.",
+            ErrorCode.InvalidValue                => "An invalid OpenGL value was passed.",
+            ErrorCode.InvalidOperation            => "An invalid OpenGL operation was attempted.",
+            ErrorCode.StackOverflow               => "The OpenGL stack has overflowed.",
+            ErrorCode.StackUnderflow              => "The OpenGL stack has underflowed.",
+            ErrorCode.OutOfMemory                 => "OpenGL is out of memory.",
+            ErrorCode.InvalidFramebufferOperation => "An invalid OpenGL frame buffer operation was attempted.",
+            ErrorCode.ContextLost                 => "The OpenGL context was lost.",
+            ErrorCode.TableTooLarge               => "The OpenGL table is too large.",
+            ErrorCode.TextureTooLargeExt          => "The OpenGL texture is too large.",
+            _                                     => "An unexpected OpenGL error occurred."
         });
       }
     }

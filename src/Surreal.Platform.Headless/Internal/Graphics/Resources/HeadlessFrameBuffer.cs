@@ -1,4 +1,4 @@
-using Surreal.Graphics.Experimental.Rendering;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {

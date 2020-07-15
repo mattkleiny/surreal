@@ -21,6 +21,7 @@ namespace Surreal.Languages.Lexing {
       ignore = false;
 
       foreach (var rule in rules) {
+        // TODO: replace this .ToString() with a non-allocating version, if it ever becomes available
         var match = rule.Regex.Match(characters.ToString(), position.Column);
 
         if (match.Success && match.Index - position.Column == 0) {

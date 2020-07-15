@@ -1,9 +1,43 @@
 using System;
 using System.Collections.Generic;
+using Surreal.IO;
 
 namespace Surreal.Languages.Lexing {
   public abstract class StringLexer<TToken> : Lexer<TToken>
       where TToken : struct {
+    public override IEnumerable<TToken> Tokenize(SourceText text) {
+      var results = new List<TToken>();
+      var buffer  = text.Span;
+
+      var lineNumber   = 0;
+      var columnNumber = 0;
+
+      while (buffer.Length > 0) {
+        var line    = buffer.Split('\n');
+        var segment = line;
+
+        while (segment.Length > 0) {
+          var position = new TokenPosition(lineNumber, columnNumber);
+
+          if (!TryMatch(segment, position, out var token, out var length, out var ignore)) {
+            throw new LexingException($"An unrecognized token was encountered: {segment.ToString()}", position);
+          }
+
+          if (!ignore) {
+            results.Add(token);
+          }
+
+          segment      =  segment.Slice(length);
+          columnNumber += length;
+        }
+
+        lineNumber++;
+        columnNumber = 0;
+      }
+
+      return results;
+    }
+
     protected abstract bool TryMatch(
         ReadOnlySpan<char> characters,
         TokenPosition position,
@@ -11,27 +45,5 @@ namespace Surreal.Languages.Lexing {
         out int length,
         out bool ignore
     );
-
-    public override IEnumerable<TToken> Tokenize(SourceText text) {
-      var span = text.Span;
-
-      for (var start = 0; start < span.Length; start++)
-      for (var end = start; end < span.Length; end++) {
-        if (span[end] != '\n') continue; // find the end of hte line
-
-        var line     = span[start..end];
-        var position = new TokenPosition(0, 0);
-
-        if (TryMatch(line, position, out var token, out var length, out var ignore)) {
-          if (!ignore) {
-            yield return token;
-          }
-
-          start += length;
-        } else {
-          throw new LexingException($"An unrecognized token was encountered: {line.ToString()}");
-        }
-      }
-    }
   }
 }

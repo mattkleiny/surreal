@@ -8,7 +8,7 @@ namespace Surreal.Graphics.Meshes {
     private readonly IGraphicsDevice device;
 
     public static Mesh Create<TVertex>(IGraphicsDevice device)
-      where TVertex : unmanaged {
+        where TVertex : unmanaged {
       return new Mesh(device, VertexAttributeSet.Create<TVertex>());
     }
 

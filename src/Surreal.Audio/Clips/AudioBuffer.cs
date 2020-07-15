@@ -28,11 +28,11 @@ namespace Surreal.Audio.Clips {
     public sealed class Loader : AssetLoader<AudioBuffer> {
       public override async Task<AudioBuffer> LoadAsync(Path path, IAssetLoaderContext context) {
         await using var stream = await path.OpenInputStreamAsync();
-        await using WaveStream reader = System.IO.Path.GetExtension(path.Target) switch {
-          ".wav"  => new WaveFileReader(stream),
-          ".mp3"  => new Mp3FileReader(stream),
-          ".aiff" => new AiffFileReader(stream),
-          _       => throw new Exception($"An unrecognized file format was requested: {path}")
+        await using WaveStream reader = path.GetExtension() switch {
+            ".wav"  => new WaveFileReader(stream),
+            ".mp3"  => new Mp3FileReader(stream),
+            ".aiff" => new AiffFileReader(stream),
+            _       => throw new Exception($"An unrecognized file format was requested: {path}")
         };
 
         var format = reader.WaveFormat;

@@ -1,6 +1,6 @@
 using Surreal.Graphics.Textures;
 
-namespace Surreal.Graphics.Experimental.Rendering {
+namespace Surreal.Graphics.Rendering {
   public readonly struct FrameBufferDescriptor {
     public int Width  { get; }
     public int Height { get; }

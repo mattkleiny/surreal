@@ -74,6 +74,8 @@ namespace Surreal.Graphics.Meshes {
 
     public VertexAttribute this[int index] => attributes[index];
 
+    public override string ToString() => string.Join(", ", attributes.Select(it => it.ToString()).ToArray());
+
     private IEnumerable<VertexAttribute> CreateAttributes(IEnumerable<VertexAttributeAttribute> attributes) {
       var accumulator = 0;
 
@@ -94,7 +96,5 @@ namespace Surreal.Graphics.Meshes {
       // calculate total stride of the members
       Stride = accumulator;
     }
-
-    public override string ToString() => string.Join(", ", attributes.Select(it => it.ToString()).ToArray());
   }
 }
