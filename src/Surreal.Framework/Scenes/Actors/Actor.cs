@@ -8,15 +8,25 @@ namespace Surreal.Framework.Scenes.Actors {
   public abstract class Actor : IDisposable, IEnumerable<Actor> {
     private Matrix4x4 modelToWorld;
     private Matrix4x4 worldToModel;
+    private bool      isEnabled = true;
+    private bool      isVisible = true;
 
     public Actor?              Parent     { get; set; }
     public ActorCollection     Children   { get; }
     public ComponentCollection Components { get; }
-    public bool                IsEnabled  { get; set; } = true;
-    public bool                IsVisible  { get; set; } = true;
 
     public ref readonly Matrix4x4 ModelToWorld => ref modelToWorld;
     public ref readonly Matrix4x4 WorldToModel => ref worldToModel;
+
+    public bool IsEnabled {
+      get => isEnabled && (Parent?.IsEnabled).GetValueOrDefault(true);
+      set => isEnabled = value;
+    }
+
+    public bool IsVisible {
+      get => isVisible && (Parent?.IsVisible).GetValueOrDefault(true);
+      set => isVisible = value;
+    }
 
     protected Actor() {
       Children   = new ActorCollection(this);

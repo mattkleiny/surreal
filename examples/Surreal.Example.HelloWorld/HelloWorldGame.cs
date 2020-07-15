@@ -1,6 +1,5 @@
 using HelloWorld.Screens;
 using Surreal;
-using Surreal.Collections;
 using Surreal.Framework;
 using Surreal.Graphics;
 using Surreal.Platform;

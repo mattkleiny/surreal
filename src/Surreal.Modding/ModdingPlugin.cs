@@ -8,14 +8,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Surreal.Diagnostics.Logging;
+using Surreal.Diagnostics.Profiling;
 using Surreal.Framework;
 
 namespace Surreal {
   public sealed class ModdingPlugin : GamePlugin {
-    private static readonly ILog Log = LogFactory.GetLog<ModdingPlugin>();
+    private static readonly ILog      Log      = LogFactory.GetLog<ModdingPlugin>();
+    private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<ModdingPlugin>();
 
-    private readonly CompositionHost                  host;
-    private readonly Lazy<IEnumerable<IInstalledMod>> mods;
+    private readonly CompositionHost host;
+    private          InstalledMod[]  mods = null!;
 
     public ModdingPlugin(Game game)
         : this(game, basePath: Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mods")) {
@@ -26,15 +28,15 @@ namespace Surreal {
       Registry = new ModRegistry(Game.Services);
 
       host = BuildCompositionHost(basePath, searchPattern);
-      mods = new Lazy<IEnumerable<IInstalledMod>>(LoadMods);
     }
 
-    public IEnumerable<IInstalledMod> Installed => mods.Value;
-
-    public IModRegistry Registry { get; }
+    public IReadOnlyList<IInstalledMod> Installed => mods;
+    public IModRegistry                 Registry  { get; }
 
     public override void Initialize() {
       base.Initialize();
+
+      mods = LoadMods();
 
       foreach (var mod in Installed) {
         Log.Trace($"Initializing mod: {mod.Metadata.Name} {mod.Metadata.Version}");
@@ -44,32 +46,34 @@ namespace Surreal {
     }
 
     public override void Input(GameTime time) {
-      base.Input(time);
+      using var _ = Profiler.Track(nameof(Input));
 
-      foreach (var mod in Installed) {
-        mod.Instance.Input(time.DeltaTime);
+      for (var i = 0; i < mods.Length; i++) {
+        mods[i].Instance.Input(time.DeltaTime);
       }
     }
 
     public override void Update(GameTime time) {
-      base.Update(time);
+      using var _ = Profiler.Track(nameof(Update));
 
-      foreach (var mod in Installed) {
-        mod.Instance.Update(time.DeltaTime);
+      for (var i = 0; i < mods.Length; i++) {
+        mods[i].Instance.Update(time.DeltaTime);
       }
     }
 
     public override void Draw(GameTime time) {
-      base.Draw(time);
+      using var _ = Profiler.Track(nameof(Draw));
 
-      foreach (var mod in Installed) {
-        mod.Instance.Draw(time.DeltaTime);
+      for (var i = 0; i < mods.Length; i++) {
+        mods[i].Instance.Draw(time.DeltaTime);
       }
     }
 
     public override void Dispose() {
-      foreach (var mod in Installed) {
-        mod.Instance.Dispose();
+      if (mods != null) {
+        for (var i = 0; i < mods.Length; i++) {
+          mods[i].Instance.Dispose();
+        }
       }
 
       host?.Dispose();
@@ -77,7 +81,7 @@ namespace Surreal {
       base.Dispose();
     }
 
-    private IEnumerable<IInstalledMod> LoadMods() {
+    private InstalledMod[] LoadMods() {
       return Log.Profile("Loading mods", () => host
           .GetExports<ExportFactory<IMod, ExportModAttribute>>()
           .Select(factory => new InstalledMod(factory))

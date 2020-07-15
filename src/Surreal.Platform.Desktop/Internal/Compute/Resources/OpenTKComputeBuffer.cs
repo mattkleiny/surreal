@@ -4,9 +4,10 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Compute.Memory;
+using Surreal.IO;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
-  [DebuggerDisplay("Compute buffer with {Length} elements")]
+  [DebuggerDisplay("Compute buffer with {Length} elements ({Size})")]
   internal sealed class OpenTKComputeBuffer : ComputeBuffer {
     public readonly int Id = GL.GenBuffer();
 
@@ -37,6 +38,7 @@ namespace Surreal.Platform.Internal.Compute.Resources {
       GL.BufferData(BufferTarget.CopyWriteBuffer, bytes, ref data.GetPinnableReference(), BufferUsageHint.DynamicCopy);
 
       Length = data.Length;
+      Size   = new Size(bytes);
     }
 
     public override MemoryManager<T> Pin<T>() {

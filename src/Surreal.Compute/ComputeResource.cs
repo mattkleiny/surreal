@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Surreal.Assets;
+using Surreal.Compute.Memory;
 using Surreal.IO;
 
 namespace Surreal.Compute {
   public abstract class ComputeResource : IDisposable {
     private static readonly IList<ComputeResource> Resources = new List<ComputeResource>();
 
-    public static Size TotalAllocatedSize => Resources.OfType<IHasSizeEstimate>().Select(resource => resource.Size).Sum();
+    public static Size TotalBufferSize    => Resources.OfType<ComputeBuffer>().Select(_ => _.Size).Sum();
+    public static Size TotalAllocatedSize => Resources.OfType<IHasSizeEstimate>().Select(_ => _.Size).Sum();
 
     private static void Track(ComputeResource resource) {
       lock (Resources) {

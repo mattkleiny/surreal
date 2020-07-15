@@ -10,8 +10,8 @@ namespace Surreal.Audio {
   public abstract class AudioResource : IDisposable {
     private static readonly List<AudioResource> Resources = new List<AudioResource>();
 
-    public static Size AllocatedClipSize  => Resources.OfType<AudioClip>().Select(clip => clip.Size).Sum();
-    public static Size TotalAllocatedSize => Resources.OfType<IHasSizeEstimate>().Select(resource => resource.Size).Sum();
+    public static Size AllocatedClipSize  => Resources.OfType<AudioClip>().Select(_ => _.Size).Sum();
+    public static Size TotalAllocatedSize => Resources.OfType<IHasSizeEstimate>().Select(_ => _.Size).Sum();
 
     private static void Track(AudioResource resource) {
       lock (Resources) {

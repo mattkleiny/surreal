@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Buffers;
+using Surreal.Assets;
+using Surreal.IO;
 
 namespace Surreal.Graphics.Meshes {
-  public abstract class GraphicsBuffer : GraphicsResource {
-    public int Length { get; protected set; }
+  public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate {
+    public int  Length { get; protected set; }
+    public Size Size   { get; protected set; }
 
     public abstract Memory<T> Read<T>(Range range)
         where T : unmanaged;
