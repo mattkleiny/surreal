@@ -19,9 +19,7 @@ namespace Surreal.Assets {
     public abstract Task<TAsset> LoadAsync(Path path, IAssetLoaderContext context);
 
     async Task<object> IAssetLoader.LoadAssetAsync(Path path, IAssetLoaderContext context) {
-      var asset = await LoadAsync(path, context);
-
-      return asset!;
+      return await LoadAsync(path, context);
     }
   }
 }

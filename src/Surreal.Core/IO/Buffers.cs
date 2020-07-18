@@ -32,8 +32,8 @@ namespace Surreal.IO {
     public static IBuffer<T> Allocate<T>(int count)
         where T : unmanaged => new ManagedBuffer<T>(count);
 
-    public static IDisposableBuffer<T> AllocateOffHeap<T>(int count)
-        where T : unmanaged => new UnmanagedBuffer<T>(count);
+    public static IDisposableBuffer<T> AllocateOffHeap<T>(int count, bool zeroFill = true)
+        where T : unmanaged => new UnmanagedBuffer<T>(count, zeroFill);
 
     public static IDisposableBuffer<T> MapFromFile<T>(string path, int offset, int length)
         where T : unmanaged => new MemoryMappedBuffer<T>(path, offset, length);
@@ -94,10 +94,13 @@ namespace Surreal.IO {
       private IntPtr address;
       private bool   disposed;
 
-      public UnmanagedBuffer(int count)
+      public UnmanagedBuffer(int count, bool zeroFill)
           : base(count) {
         address = Marshal.AllocHGlobal(count * Stride);
-        Clear(); // zero-fill the array
+
+        if (zeroFill) {
+          Clear();
+        }
       }
 
       public override unsafe Span<T> Span {

@@ -34,7 +34,6 @@ namespace Surreal {
     public IMouseDevice    Mouse          { get; private set; } = null!;
     public IScreenManager  Screens        { get; private set; } = null!;
     public IGameConsole    Console        { get; private set; } = null!;
-    public ModdingPlugin   Mods           { get; private set; } = null!;
     public SpriteBatch     SpriteBatch    { get; private set; } = null!;
     public GeometryBatch   GeometryBatch  { get; private set; } = null!;
 
@@ -46,9 +45,9 @@ namespace Surreal {
       Console = new GameConsole(new ConsoleInterpreter(RegisterConsoleBindings));
 
       LogFactory.Current = new CompositeLogFactory(
-        new ConsoleLogFactory(DefaultLogLevel),
-        new DebugLogFactory(DefaultLogLevel),
-        new GameConsoleLogFactory(Console, DefaultLogLevel)
+          new ConsoleLogFactory(DefaultLogLevel),
+          new DebugLogFactory(DefaultLogLevel),
+          new GameConsoleLogFactory(Console, DefaultLogLevel)
       );
 
       AudioDevice    = Host.Services.GetRequiredService<IAudioDevice>();
@@ -56,10 +55,8 @@ namespace Surreal {
       GraphicsDevice = Host.Services.GetRequiredService<IGraphicsDevice>();
 
       Screens = new ScreenManager(this);
-      Mods    = new ModdingPlugin(this);
 
       Plugins.Add(Screens);
-      Plugins.Add(Mods);
 
       if (EnableDebugTools) {
         Plugins.Add(new GameConsolePlugin(this));

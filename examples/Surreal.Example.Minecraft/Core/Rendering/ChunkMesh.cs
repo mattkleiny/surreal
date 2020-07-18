@@ -47,33 +47,33 @@ namespace Minecraft.Core.Rendering {
     }
 
     private void Invalidate() => Task.Run(() => {
-      using (Profiler.Track(nameof(Invalidate))) {
-        var tessellator = new Tessellator();
+      using var _ = Profiler.Track(nameof(Invalidate));
 
-        for (var z = 0; z < chunk.Depth; z++)
-        for (var y = 0; y < chunk.Height; y++)
-        for (var x = 0; x < chunk.Width; x++) {
-          var block = chunk[x, y, z];
-          if (!block.IsSolid) continue; // don't render geometry for non-solid blocks
+      var tessellator = new Tessellator();
 
-          if (!chunk[x - 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Left, block.Color);
-          if (!chunk[x + 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Right, block.Color);
-          if (!chunk[x, y + 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Top, block.Color);
-          if (!chunk[x, y - 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Bottom, block.Color);
-          if (!chunk[x, y, z - 1].IsSolid) tessellator.AddFace(x, y, z, Face.Front, block.Color);
-          if (!chunk[x, y, z + 1].IsSolid) tessellator.AddFace(x, y, z, Face.Back, block.Color);
-        }
+      for (var z = 0; z < chunk.Depth; z++)
+      for (var y = 0; y < chunk.Height; y++)
+      for (var x = 0; x < chunk.Width; x++) {
+        var block = chunk[x, y, z];
+        if (!block.IsSolid) continue; // don't render geometry for non-solid blocks
 
-        Engine.Schedule(() => {
-          using var _ = tessellator; // make sure to clean up tessellator resources
-
-          // upload vertices/indices to the GPU
-          mesh.Vertices.Write(tessellator.Vertices);
-          mesh.Indices.Write(tessellator.Indices);
-
-          IsReady = true;
-        });
+        if (!chunk[x - 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Left, block.Color);
+        if (!chunk[x + 1, y, z].IsSolid) tessellator.AddFace(x, y, z, Face.Right, block.Color);
+        if (!chunk[x, y + 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Top, block.Color);
+        if (!chunk[x, y - 1, z].IsSolid) tessellator.AddFace(x, y, z, Face.Bottom, block.Color);
+        if (!chunk[x, y, z - 1].IsSolid) tessellator.AddFace(x, y, z, Face.Front, block.Color);
+        if (!chunk[x, y, z + 1].IsSolid) tessellator.AddFace(x, y, z, Face.Back, block.Color);
       }
+
+      Engine.Schedule(() => {
+        // upload vertices/indices to the GPU
+        mesh.Vertices.Write(tessellator.Vertices);
+        mesh.Indices.Write(tessellator.Indices);
+
+        IsReady = true;
+
+        tessellator.Dispose();
+      });
     });
 
     public void Dispose() {
@@ -134,7 +134,8 @@ namespace Minecraft.Core.Rendering {
     }
 
     private sealed class Tessellator : IDisposable {
-      private static readonly RingBuffer<int> VertexCountSamples = new RingBuffer<int>(30) {16_000}; // add a sane default to try and lower initial resize overhead
+      private static readonly RingBuffer<int>
+          VertexCountSamples = new RingBuffer<int>(30) {16_000}; // add a sane default to try and lower initial resize overhead
 
       private static int AverageVertexCount => VertexCountSamples.Sum() / Math.Max(1, VertexCountSamples.Count);
       private static int AverageIndexCount  => AverageVertexCount * 3 / 2;

@@ -17,11 +17,9 @@ namespace Surreal.Platform.Internal.Graphics {
 
     public OpenTKGraphicsDevice(IDesktopWindow window) {
       this.window = window;
-
-      Pipeline = new OpenTKPipelineState();
     }
 
-    public IPipelineState Pipeline { get; }
+    public IPipelineState Pipeline { get; } = new OpenTKPipelineState();
 
     public void BeginFrame() {
     }
