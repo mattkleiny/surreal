@@ -65,13 +65,9 @@ namespace Surreal.Diagnostics.Console.Interpreter {
 
       public override object? Visit(Literal expression) => expression.Value;
 
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      private bool IsTruthy(ConsoleExpression expression) => To<bool>(expression);
-
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      private bool  IsTruthy(ConsoleExpression expression) => To<bool>(expression);
       private float ToNumber(ConsoleExpression expression) => To<float>(expression);
 
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       private T To<T>(ConsoleExpression expression) {
         var value = expression.Accept(this);
         if (value is T type) return type;

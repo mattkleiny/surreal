@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Surreal.Assets;
+using Surreal.Framework.Palettes;
 using Surreal.Framework.Tiles.Importers;
 using Surreal.IO;
 using Surreal.Mathematics.Grids;
@@ -13,18 +14,18 @@ namespace Surreal.Framework.Tiles {
 
     private readonly DenseGrid<ushort> tiles;
 
-    public TileMap(int width, int height, ITilePalette<TTile> palette)
+    public TileMap(int width, int height, IPalette<TTile> palette)
         : this(width, height, palette, palette[0]) {
     }
 
-    public TileMap(int width, int height, ITilePalette<TTile> palette, TTile defaultTile) {
+    public TileMap(int width, int height, IPalette<TTile> palette, TTile defaultTile) {
       Palette = palette;
 
       tiles = new DenseGrid<ushort>(width, height);
       tiles.Fill(palette[defaultTile]);
     }
 
-    public ITilePalette<TTile> Palette { get; }
+    public IPalette<TTile> Palette { get; }
 
     public int Width  => tiles.Width;
     public int Height => tiles.Height;
@@ -45,11 +46,19 @@ namespace Surreal.Framework.Tiles {
     public sealed class TmxLoader : AssetLoader<TileMap<TTile>> {
       public delegate TTile TileConverter(uint gid);
 
-      private readonly ITilePalette<TTile> palette;
-      private readonly TileConverter       converter;
-      private readonly TTile               defaultTile;
+      private readonly IPalette<TTile> palette;
+      private readonly TileConverter   converter;
+      private readonly TTile           defaultTile;
 
-      public TmxLoader(ITilePalette<TTile> palette, TileConverter converter, TTile defaultTile) {
+      public TmxLoader(IPalette<TTile> palette)
+          : this(palette, palette.Empty) {
+      }
+
+      public TmxLoader(IPalette<TTile> palette, TTile defaultTile)
+          : this(palette, id => palette[(ushort) id], defaultTile) {
+      }
+
+      public TmxLoader(IPalette<TTile> palette, TileConverter converter, TTile defaultTile) {
         this.palette     = palette;
         this.converter   = converter;
         this.defaultTile = defaultTile;

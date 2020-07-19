@@ -10,10 +10,6 @@ namespace Surreal.Framework.Tiles {
     private readonly TileMap<TTile> map;
     private readonly TileSelector   selector;
 
-    public TileMapMask(TileMap<TTile> map)
-        : this(map, (x, y, tile) => false) {
-    }
-
     public TileMapMask(TileMap<TTile> map, TileSelector selector) {
       this.map      = map;
       this.selector = selector;
@@ -46,6 +42,8 @@ namespace Surreal.Framework.Tiles {
       mask[x + y * Width] = selector(x, y, newTile);
     }
 
-    public void Dispose() => map.TileChanged -= OnTileChanged;
+    public void Dispose() {
+      map.TileChanged -= OnTileChanged;
+    }
   }
 }

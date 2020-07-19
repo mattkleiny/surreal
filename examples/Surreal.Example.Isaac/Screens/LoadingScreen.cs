@@ -10,15 +10,15 @@ using Surreal.Graphics.Sprites;
 namespace Isaac.Screens {
   public static class LoadingScreens {
     public static LoadingScreen LoadAsync<TScreen>(this TScreen screen)
-        where TScreen : GameScreen<IsaacGame>, ILoadableScreen {
+        where TScreen : GameScreen<Game>, ILoadableScreen {
       return new LoadingScreen(screen.Game, screen);
     }
   }
 
-  public sealed class LoadingScreen : LoadingScreen<IsaacGame, ILoadableScreen> {
+  public sealed class LoadingScreen : LoadingScreen<Game, ILoadableScreen> {
     private BitmapFont? font;
 
-    public LoadingScreen(IsaacGame game, ILoadableScreen screen)
+    public LoadingScreen(Game game, ILoadableScreen screen)
         : base(game, screen) {
     }
 

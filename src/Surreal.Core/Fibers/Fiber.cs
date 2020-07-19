@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Surreal.Diagnostics.Logging;
 
 namespace Surreal.Fibers {
+  // TODO: implement no-allocation FiberTask helpers and async method builder.
+
   public sealed class Fiber {
     private static readonly ILog Log = LogFactory.GetLog<Fiber>();
 
@@ -39,7 +40,7 @@ namespace Surreal.Fibers {
     public CancellationToken CancellationToken => cancellationTokenSource.Token;
 
     public bool IsCompleted => State == FiberState.Completed ||
-                               State == FiberState.Faulted   ||
+                               State == FiberState.Faulted ||
                                State == FiberState.Cancelled;
 
     public bool IsFaulted => State == FiberState.Faulted;
@@ -77,7 +78,6 @@ namespace Surreal.Fibers {
       });
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void Transition(FiberState required, FiberState desired) {
       if (!State.Equals(required)) {
         throw new InvalidOperationException($"Expected to be in the {required} state, instead was in the {State} state.");

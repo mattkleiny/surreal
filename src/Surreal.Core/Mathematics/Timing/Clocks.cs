@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,9 +24,9 @@ namespace Surreal.Mathematics.Timing {
   }
 
   public static class Clocks {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IClock Relative(IClock other, float scale = 1f)
-      => new AnonymousClock(() => new DeltaTime(other.DeltaTime * scale));
+    public static IClock Relative(IClock other, float scale = 1f) {
+      return new AnonymousClock(() => new DeltaTime(other.DeltaTime * scale));
+    }
 
     public static async Task EvaluateOverTime(this IClock clock, TimeSpan duration, Action<Quanta> action, CancellationToken cancellationToken = default) {
       var currentTime  = 0f;

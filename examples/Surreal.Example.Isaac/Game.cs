@@ -9,8 +9,8 @@ using Surreal.Graphics.Sprites;
 using Surreal.Platform;
 
 namespace Isaac {
-  public sealed class IsaacGame : GameJam<IsaacGame> {
-    public static void Main() => Start<IsaacGame>(new Configuration {
+  public sealed class Game : GameJam<Game> {
+    public static void Main() => Start<Game>(new Configuration {
         Platform = new DesktopPlatform {
             Configuration = {
                 Title          = "The Binding of Isaac",

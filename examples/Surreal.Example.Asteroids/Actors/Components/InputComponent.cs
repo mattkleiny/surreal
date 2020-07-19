@@ -14,10 +14,10 @@ namespace Asteroids.Actors.Components {
 
       direction = Vector2.Zero;
 
-      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.W)) direction.Y += 1f;
-      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.S)) direction.Y -= 1f;
-      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.A)) direction.X -= 1f;
-      if (AsteroidsGame.Current.Keyboard.IsKeyDown(Key.D)) direction.X += 1f;
+      if (Game.Current.Keyboard.IsKeyDown(Key.W)) direction.Y += 1f;
+      if (Game.Current.Keyboard.IsKeyDown(Key.S)) direction.Y -= 1f;
+      if (Game.Current.Keyboard.IsKeyDown(Key.A)) direction.X -= 1f;
+      if (Game.Current.Keyboard.IsKeyDown(Key.D)) direction.X += 1f;
     }
 
     public override void Update(DeltaTime deltaTime) {

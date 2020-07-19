@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using Surreal.Mathematics.Linear;
 
 namespace Minecraft.Core.Generation {
@@ -35,7 +34,6 @@ namespace Minecraft.Core.Generation {
     }
 
     [Conditional("DEBUG")]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     private void CheckBounds(int x, int y, int z) {
       if (x < 0 || x >= Width) throw new IndexOutOfRangeException($"x is not in the range [0, {Width})");

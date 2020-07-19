@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Surreal.Framework;
 using Surreal.Framework.Parameters;
+using Surreal.Framework.Tweening;
 using Surreal.Graphics;
 using Surreal.Mathematics.Curves;
 using Surreal.Mathematics.Timing;
@@ -17,8 +18,7 @@ namespace Surreal.Jam.Framework {
           clock: FixedStepClock.Default,
           a: Color.Black,
           b: Color.White,
-          duration: 10.Seconds(),
-          curve: AnimationCurves.Linear
+          animation: new TweenAnimation(10.Seconds(), AnimationCurves.Linear)
       );
 
       Assert.Equal(Color.White, parameter.Value);
@@ -32,8 +32,7 @@ namespace Surreal.Jam.Framework {
           clock: FixedStepClock.Default,
           a: Color.Black,
           b: Color.White,
-          duration: 10.Seconds(),
-          curve: AnimationCurves.InverseLinear
+          animation: new TweenAnimation(10.Seconds(), AnimationCurves.InverseLinear)
       );
 
       Assert.Equal(Color.Black, parameter.Value);
@@ -47,12 +46,16 @@ namespace Surreal.Jam.Framework {
           clock: FixedStepClock.Default,
           a: Color.Black,
           b: Color.White,
-          duration: 10.Seconds(),
-          curve: AnimationCurves.PlanarX(new QuadraticBezierCurve(
-              startPoint: Vector2.Zero,
-              controlPoint: new Vector2(0f, 1f),
-              endPoint: Vector2.One
-          ))
+          animation: new TweenAnimation(
+              duration: 10.Seconds(),
+              curve: AnimationCurves.PlanarX(
+                  new QuadraticBezierCurve(
+                      startPoint: Vector2.Zero,
+                      controlPoint: new Vector2(0f, 1f),
+                      endPoint: Vector2.One
+                  )
+              )
+          )
       );
 
       Assert.Equal(Color.White, parameter.Value);

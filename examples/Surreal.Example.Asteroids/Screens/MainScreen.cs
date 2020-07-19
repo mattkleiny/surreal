@@ -12,8 +12,8 @@ using Surreal.Mathematics.Timing;
 using Surreal.States;
 
 namespace Asteroids.Screens {
-  public sealed class MainScreen : GameScreen<AsteroidsGame> {
-    public MainScreen(AsteroidsGame game)
+  public sealed class MainScreen : GameScreen<Game> {
+    public MainScreen(Game game)
         : base(game) {
     }
 

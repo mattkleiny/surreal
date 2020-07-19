@@ -2,27 +2,26 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Prelude.Core;
 using Prelude.Core.Actors;
+using Prelude.Graphics;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Framework;
 using Surreal.Framework.Scenes.Actors;
 using Surreal.Framework.Screens;
 using Surreal.Framework.Tiles;
-using Surreal.Graphics.Raycasting;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
-using Actor = Prelude.Core.Actors.Actor;
 
 namespace Prelude.Screens {
-  public class MainScreen : GameScreen<PreludeGame> {
-    private readonly ActorScene    scene  = new ActorScene();
-    private readonly RaycastCamera camera = new RaycastCamera();
+  public class MainScreen : GameScreen<Game> {
+    private readonly ActorScene scene  = new ActorScene();
+    private readonly Camera     camera = new Camera();
 
     private TileMapRenderer?    renderer;
     private Atlas<ImageRegion>? atlas;
     private TileMap<Tile>?      map;
 
-    public MainScreen(PreludeGame game)
+    public MainScreen(Game game)
         : base(game) {
     }
 

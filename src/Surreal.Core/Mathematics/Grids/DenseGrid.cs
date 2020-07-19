@@ -30,7 +30,6 @@ namespace Surreal.Mathematics.Grids {
     }
 
     public ref T this[int x, int y] {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
         Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
         Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
@@ -51,7 +50,7 @@ namespace Surreal.Mathematics.Grids {
 
     public struct Enumerator : IEnumerator<T> {
       private readonly DenseGrid<T> grid;
-      private          int     index;
+      private          int          index;
 
       public Enumerator(DenseGrid<T> grid)
           : this() {

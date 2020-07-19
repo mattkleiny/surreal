@@ -1,20 +1,28 @@
 using System;
 using System.Numerics;
+using Prelude.Core;
 using Surreal.Collections;
 using Surreal.Framework.Tiles;
+using Surreal.Graphics;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Graphics.Raycasting {
-  public class SoftwareRaycastRenderer<TTile> : IDisposable
-      where TTile : IRaycastAwareTile {
-    private readonly RaycastCamera      camera;
+namespace Prelude.Graphics {
+  public sealed class TileMapRenderer : IDisposable {
+    private const int Width  = 640 / 2;
+    private const int Height = Width / 16 * 9;
+
+    private readonly Camera             camera;
     private readonly Color              clearColor;
     private readonly Atlas<ImageRegion> textures;
 
-    public SoftwareRaycastRenderer(
-        RaycastCamera camera,
+    public TileMapRenderer(Camera camera, Atlas<ImageRegion> textures)
+        : this(camera, (Width, Height), textures, Color.White) {
+    }
+
+    public TileMapRenderer(
+        Camera camera,
         Vector2I resolution,
         Atlas<ImageRegion> textures,
         Color clearColor = default) {
@@ -22,12 +30,12 @@ namespace Surreal.Graphics.Raycasting {
       this.textures   = textures;
       this.clearColor = clearColor;
 
-      FrameBuffer = new SoftwareFrameBuffer(resolution.X, resolution.Y);
+      FrameBuffer = new FrameBuffer(resolution.X, resolution.Y);
     }
 
-    public SoftwareFrameBuffer FrameBuffer { get; }
+    public FrameBuffer FrameBuffer { get; }
 
-    public void Render(SpriteBatch batch, TileMap<TTile> map) {
+    public void Render(SpriteBatch batch, TileMap<Tile> map) {
       var scale = new Vector2(
           (float) FrameBuffer.Width / map.Width,
           (float) FrameBuffer.Height / map.Height
@@ -40,11 +48,11 @@ namespace Surreal.Graphics.Raycasting {
       FrameBuffer.Draw(batch);
     }
 
-    protected virtual void BeforeRender(Vector2 scale) {
+    private void BeforeRender(Vector2 scale) {
       FrameBuffer.Clear(clearColor);
     }
 
-    protected virtual void RenderMap(TileMap<TTile> map, Vector2 scale) {
+    private void RenderMap(TileMap<Tile> map, Vector2 scale) {
       // prepare camera and viewport
       var position  = camera.Position;
       var direction = camera.Direction;
@@ -80,12 +88,12 @@ namespace Surreal.Graphics.Raycasting {
         Color dampen;
         float wallX;
 
-        if (Math.Abs(System.MathF.Floor(end.X) - end.X) < float.Epsilon) {
+        if (Math.Abs(MathF.Floor(end.X) - end.X) < float.Epsilon) {
           dampen = Color.Clear;
-          wallX  = end.Y - System.MathF.Floor(end.Y);
+          wallX  = end.Y - MathF.Floor(end.Y);
         } else {
           dampen = new Color(50, 50, 50, 0);
-          wallX  = end.X - System.MathF.Floor(end.X);
+          wallX  = end.X - MathF.Floor(end.X);
         }
 
         // draw walls
@@ -108,8 +116,8 @@ namespace Surreal.Graphics.Raycasting {
           var distance          = wallPerpendicular * distanceRatio;
           var mapPosition       = ray.Origin + ray.Direction * distance;
 
-          var tileX = (int) System.MathF.Floor(mapPosition.X);
-          var tileY = (int) System.MathF.Floor(mapPosition.Y);
+          var tileX = (int) MathF.Floor(mapPosition.X);
+          var tileY = (int) MathF.Floor(mapPosition.Y);
 
           var textureX = (int) (mapPosition.X - tileX) * floorTexture.Width;
           var textureY = (int) (mapPosition.Y - tileY) * floorTexture.Height;
@@ -122,7 +130,7 @@ namespace Surreal.Graphics.Raycasting {
       }
     }
 
-    protected virtual void AfterRender(Vector2 scale) {
+    private void AfterRender(Vector2 scale) {
     }
 
     public void Dispose() {

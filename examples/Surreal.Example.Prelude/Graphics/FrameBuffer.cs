@@ -1,19 +1,20 @@
 using System;
 using System.Diagnostics;
+using Surreal.Graphics;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
-namespace Surreal.Graphics {
-  public sealed class SoftwareFrameBuffer : IDisposable {
-    private readonly Image   image;
+namespace Prelude.Graphics {
+  public sealed class FrameBuffer : IDisposable {
+    private readonly Image    image;
     private          Texture? texture;
 
-    public SoftwareFrameBuffer(int width, int height) {
-      Debug.Assert(width  > 0, "width > 0");
+    public FrameBuffer(int width, int height) {
+      Debug.Assert(width > 0, "width > 0");
       Debug.Assert(height > 0, "height > 0");
 
-      image = new Image(width, height);
+      image  = new Image(width, height);
       Colors = image.ToRegion();
     }
 
@@ -30,9 +31,9 @@ namespace Surreal.Graphics {
 
       batch.Draw(
           texture: texture,
-          x: -device.Viewport.Width  / 2f,
+          x: -device.Viewport.Width / 2f,
           y: -device.Viewport.Height / 2f,
-          rotation: Angle.Zero, 
+          rotation: Angle.Zero,
           width: device.Viewport.Width,
           height: device.Viewport.Height
       );

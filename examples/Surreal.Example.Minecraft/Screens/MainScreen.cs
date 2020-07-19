@@ -12,7 +12,7 @@ using Surreal.Input.Keyboard;
 using Surreal.Mathematics.Linear;
 
 namespace Minecraft.Screens {
-  public sealed class MainScreen : GameScreen<MinecraftGame>, ILoadableScreen {
+  public sealed class MainScreen : GameScreen<Game>, ILoadableScreen {
     private readonly PerspectiveCamera camera = new PerspectiveCamera(1920, 1080) {
         Position  = new Vector3(-10f, 45f, -10f),
         Direction = new Vector3(0f, 15f, 0f),
@@ -24,7 +24,7 @@ namespace Minecraft.Screens {
 
     private bool wireframe;
 
-    public MainScreen(MinecraftGame game)
+    public MainScreen(Game game)
         : base(game) {
     }
 

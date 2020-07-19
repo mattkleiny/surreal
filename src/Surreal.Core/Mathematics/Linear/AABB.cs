@@ -25,7 +25,6 @@ namespace Surreal.Mathematics.Linear {
     public float Height => Max.Y - Min.Y;
     public float Depth  => Max.Z - Min.Z;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(Vector3I point)
       => point.X >= Min.X &&
          point.X <= Max.X &&
@@ -34,7 +33,6 @@ namespace Surreal.Mathematics.Linear {
          point.Z >= Min.Z &&
          point.Z <= Max.Z;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(Vector3 vector)
       => vector.X >= Min.X &&
          vector.X <= Max.X &&
@@ -48,8 +46,8 @@ namespace Surreal.Mathematics.Linear {
       return obj is AABB other && Equals(other);
     }
 
-    public bool Equals(AABB other) => Min.Equals(other.Min) && Max.Equals(other.Max);
-    public override int GetHashCode() => HashCode.Combine(Min, Max);
+    public          bool Equals(AABB other) => Min.Equals(other.Min) && Max.Equals(other.Max);
+    public override int  GetHashCode()      => HashCode.Combine(Min, Max);
 
     public static bool operator ==(AABB left, AABB right) => left.Equals(right);
     public static bool operator !=(AABB left, AABB right) => !left.Equals(right);

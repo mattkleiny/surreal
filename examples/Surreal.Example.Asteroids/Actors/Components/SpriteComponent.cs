@@ -15,7 +15,7 @@ namespace Asteroids.Actors.Components {
     public override void Draw(DeltaTime deltaTime) {
       base.Draw(deltaTime);
 
-      AsteroidsGame.Current.SpriteBatch.DrawPivoted(
+      Game.Current.SpriteBatch.DrawPivoted(
           region: Sprite,
           position: Actor!.Position,
           pivot: Pivot.Center,

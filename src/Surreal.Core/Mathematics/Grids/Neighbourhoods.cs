@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Surreal.Mathematics.Linear;
 
 namespace Surreal.Mathematics.Grids {
@@ -10,12 +9,10 @@ namespace Surreal.Mathematics.Grids {
   }
 
   public readonly struct MooreNeighbourhood : INeighbourhood {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool MoveNext(ref int index) {
       return ++index < 9;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector2I GetOffset(int index) {
       var y = index / 3 - 1;
       var x = index % 3 - 1;
@@ -25,12 +22,10 @@ namespace Surreal.Mathematics.Grids {
   }
 
   public readonly struct VonNeumannNeighbourhood : INeighbourhood {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool MoveNext(ref int index) {
       return ++index < 5;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector2I GetOffset(int index) {
       if (index <= 2) {
         var x = index % 3 - 1;
@@ -45,18 +40,15 @@ namespace Surreal.Mathematics.Grids {
   }
 
   public static class Neighbourhoods {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static NeighbourhoodEnumerator<TNeighbourhood> GetNeighbourhood<TNeighbourhood>(this Vector2I center)
         where TNeighbourhood : struct, INeighbourhood {
       return new NeighbourhoodEnumerator<TNeighbourhood>(center, default);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static NeighbourhoodEnumerator<MooreNeighbourhood> GetMooreNeighbourhood(this Vector2I center) {
       return new NeighbourhoodEnumerator<MooreNeighbourhood>(center, default);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static NeighbourhoodEnumerator<VonNeumannNeighbourhood> GetVonNeumannNeighbourhood(this Vector2I center) {
       return new NeighbourhoodEnumerator<VonNeumannNeighbourhood>(center, default);
     }

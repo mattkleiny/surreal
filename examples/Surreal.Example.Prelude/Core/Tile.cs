@@ -1,12 +1,10 @@
 using System.Diagnostics;
-using Surreal.Framework;
-using Surreal.Framework.Tiles;
+using Surreal.Framework.Palettes;
 using Surreal.Graphics;
-using Surreal.Graphics.Raycasting;
 
 namespace Prelude.Core {
   [DebuggerDisplay("{Id} - {Name}")]
-  public sealed class Tile : IHasId, IRaycastAwareTile {
+  public sealed class Tile : IHasId {
     public static readonly Tile Void  = new Tile(id: 0, name: "Void", isSolid: false, Color.Black);
     public static readonly Tile Empty = new Tile(id: 1, name: "Floor", isSolid: false, Color.Black);
 
@@ -14,7 +12,7 @@ namespace Prelude.Core {
         Texture = "textures_0"
     };
 
-    public static readonly ITilePalette<Tile> Palette = new ReflectiveTilePalette<Tile>();
+    public static readonly IPalette<Tile> Palette = new StaticPalette<Tile>();
 
     public Tile(ushort id, string name, bool isSolid, Color color) {
       Id      = id;

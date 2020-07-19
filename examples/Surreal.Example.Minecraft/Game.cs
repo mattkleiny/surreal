@@ -5,8 +5,8 @@ using Surreal.Graphics;
 using Surreal.Platform;
 
 namespace Minecraft {
-  public sealed class MinecraftGame : GameJam<MinecraftGame> {
-    public static void Main() => Start<MinecraftGame>(new Configuration {
+  public sealed class Game : GameJam<Game> {
+    public static void Main() => Start<Game>(new Configuration {
         Platform = new DesktopPlatform {
             Configuration = {
                 Title          = "Minecraft",

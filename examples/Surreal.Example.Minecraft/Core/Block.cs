@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Surreal.Framework;
-using Surreal.Framework.Voxels;
+using Surreal.Framework.Palettes;
 using Surreal.Graphics;
 
 namespace Minecraft.Core {
@@ -26,7 +26,7 @@ namespace Minecraft.Core {
         Color = Color.Grey
     };
 
-    public static readonly IVoxelPalette<Block> Palette = new ReflectiveVoxelPalette<Block>(typeof(Block));
+    public static readonly IPalette<Block> Palette = new StaticPalette<Block>();
 
     public ushort Id      { get; }
     public string Name    { get; private set; } = string.Empty;

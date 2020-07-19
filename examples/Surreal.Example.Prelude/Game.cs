@@ -9,10 +9,10 @@ using Surreal.Graphics;
 using Surreal.Platform;
 
 namespace Prelude {
-  public sealed class PreludeGame : GameJam<PreludeGame> {
+  public sealed class Game : GameJam<Game> {
     private static readonly Matrix4x4 ProjectionView = Matrix4x4.CreateOrthographic(1920f, 1080f, 0.1f, 300f);
 
-    public static void Main() => Start<PreludeGame>(new Configuration {
+    public static void Main() => Start<Game>(new Configuration {
         Platform = new DesktopPlatform {
             Configuration = {
                 Title          = "Prelude of the Chambered",
@@ -25,11 +25,7 @@ namespace Prelude {
     protected override void RegisterAssetLoaders(AssetManager assets) {
       base.RegisterAssetLoaders(assets);
 
-      assets.RegisterLoader(new TileMap<Tile>.TmxLoader(
-          palette: Tile.Palette,
-          converter: gid => Tile.Palette[(ushort) gid],
-          defaultTile: Tile.Void
-      ));
+      assets.RegisterLoader(new TileMap<Tile>.TmxLoader(Tile.Palette));
     }
 
     protected override void Initialize() {

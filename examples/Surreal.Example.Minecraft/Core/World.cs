@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Minecraft.Core.Coordinates;
 using Minecraft.Core.Generation;
-using Surreal.Framework.Voxels;
+using Surreal.Framework;
+using Surreal.Framework.Palettes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
 
@@ -16,11 +17,11 @@ namespace Minecraft.Core {
     private readonly IRegionStrategy strategy;
     private          Neighborhood    neighborhood;
 
-    public static World CreateFinite(Volume regionsPerWorld, IVoxelPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
+    public static World CreateFinite(Volume regionsPerWorld, IPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
       return new World(new FixedRegionStrategy(regionsPerWorld, palette, chunkGenerator, biomeSelector));
     }
 
-    public static World CreateInfinite(string basePath, IVoxelPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
+    public static World CreateInfinite(string basePath, IPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
       return new World(new StreamingRegionStrategy(basePath, palette, chunkGenerator, biomeSelector));
     }
 
@@ -64,7 +65,7 @@ namespace Minecraft.Core {
       private readonly IDisposableBuffer<ushort> buffer;
       private readonly Region[,,]                regions;
 
-      public FixedRegionStrategy(Volume regionsPerWorld, IVoxelPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
+      public FixedRegionStrategy(Volume regionsPerWorld, IPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
         this.regionsPerWorld = regionsPerWorld;
 
         // open an off-heap representation of the entire world's data and share it amongst all child regions
@@ -88,7 +89,7 @@ namespace Minecraft.Core {
       public Region? GetRegion(RegionPos position) {
         var (x, y, z) = position;
 
-        if (x >= 0 && x < regionsPerWorld.Width  &&
+        if (x >= 0 && x < regionsPerWorld.Width &&
             y >= 0 && y < regionsPerWorld.Height &&
             z >= 0 && z < regionsPerWorld.Depth) {
           return regions[x, y, z];
@@ -106,12 +107,12 @@ namespace Minecraft.Core {
     private sealed class StreamingRegionStrategy : IRegionStrategy {
       private readonly Dictionary<RegionPos, Region> regions = new Dictionary<RegionPos, Region>();
 
-      private readonly string               basePath;
-      private readonly IVoxelPalette<Block> palette;
-      private readonly ChunkGenerator       chunkGenerator;
-      private readonly BiomeSelector        biomeSelector;
+      private readonly string          basePath;
+      private readonly IPalette<Block> palette;
+      private readonly ChunkGenerator  chunkGenerator;
+      private readonly BiomeSelector   biomeSelector;
 
-      public StreamingRegionStrategy(string basePath, IVoxelPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
+      public StreamingRegionStrategy(string basePath, IPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
         this.basePath       = basePath;
         this.palette        = palette;
         this.chunkGenerator = chunkGenerator;

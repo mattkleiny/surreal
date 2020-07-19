@@ -11,11 +11,11 @@ using Surreal.Graphics.Cameras;
 using Surreal.Input.Keyboard;
 
 namespace Isaac.Screens {
-  public sealed class MainScreen : GameScreen<IsaacGame>, ILoadableScreen {
+  public sealed class MainScreen : GameScreen<Game>, ILoadableScreen {
     private readonly OrthographicCamera camera = new OrthographicCamera(256, 144);
     private readonly EntityScene        scene  = new EntityScene();
 
-    public MainScreen(IsaacGame game)
+    public MainScreen(Game game)
         : base(game) {
     }
 

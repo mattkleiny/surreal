@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics {
   // TODO: create a floating point representation of color?
-  
+
   [StructLayout(LayoutKind.Sequential)]
   public struct Color {
     public static Color FromPackedRGB(uint packed) => new Color(
-        red: (byte) (packed   >> 16 & 0xFF),
-        green: (byte) (packed >> 8  & 0xFF),
-        blue: (byte) (packed  >> 0  & 0xFF)
+        red: (byte) (packed >> 16 & 0xFF),
+        green: (byte) (packed >> 8 & 0xFF),
+        blue: (byte) (packed >> 0 & 0xFF)
     );
 
     public static Color FromPackedRGBA(uint packed) => new Color(
-        red: (byte) (packed   >> 24 & 0xFF),
+        red: (byte) (packed >> 24 & 0xFF),
         green: (byte) (packed >> 16 & 0xFF),
-        blue: (byte) (packed  >> 8  & 0xFF),
-        alpha: (byte) (packed >> 0  & 0xFF)
+        blue: (byte) (packed >> 8 & 0xFF),
+        alpha: (byte) (packed >> 0 & 0xFF)
     );
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color Lerp(Color a, Color b, float t) => new Color(
         (byte) Maths.Lerp(a.R, b.R, t),
         (byte) Maths.Lerp(a.G, b.G, t),
@@ -57,7 +55,6 @@ namespace Surreal.Graphics {
 
     public override string ToString() => $"RGBA({R}, {G}, {B}, {A})";
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color operator +(Color a, Color b) => new Color(
         (byte) (a.R + b.R),
         (byte) (a.G + b.G),
@@ -65,7 +62,6 @@ namespace Surreal.Graphics {
         (byte) (a.A + b.A)
     );
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Color operator -(Color a, Color b) => new Color(
         (byte) (a.R - b.R),
         (byte) (a.G - b.G),
@@ -73,11 +69,9 @@ namespace Surreal.Graphics {
         (byte) (a.A - b.A)
     );
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Pack(byte first, byte second, byte third)
       => (uint) ((first << 24) | (second << 16) | (third << 8));
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Pack(byte first, byte second, byte third, byte forth)
       => (uint) ((first << 24) | (second << 16) | (third << 8) | (forth << 0));
   }

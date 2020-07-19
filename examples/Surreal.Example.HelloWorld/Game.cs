@@ -1,18 +1,17 @@
-using System.Numerics;
-using Asteroids.Screens;
+using HelloWorld.Screens;
 using Surreal;
 using Surreal.Framework;
+using Surreal.Framework.Parameters;
+using Surreal.Framework.Tweening;
 using Surreal.Graphics;
 using Surreal.Platform;
 
-namespace Asteroids {
-  public sealed class AsteroidsGame : GameJam<AsteroidsGame> {
-    private static readonly Matrix4x4 ProjectionView = Matrix4x4.CreateOrthographic(1920f, 1080f, 0.1f, 300f);
-
-    public static void Main() => Start<AsteroidsGame>(new Configuration {
+namespace HelloWorld {
+  public sealed class Game : GameJam<Game> {
+    public static void Main() => Start<Game>(new Configuration {
         Platform = new DesktopPlatform {
             Configuration = {
-                Title          = "Asteroids",
+                Title          = "Hello, Surreal!",
                 IsVsyncEnabled = true,
                 ShowFPSInTitle = true
             }
@@ -23,15 +22,16 @@ namespace Asteroids {
       base.Initialize();
 
       Screens.Push(new MainScreen(this));
+
+      FloatParameter parameter = new FloatParameter(0f);
+
+      parameter.TweenOverTime(0f, 1f, TweenAnimation.Default);
     }
 
     protected override void Draw(GameTime time) {
       GraphicsDevice.Clear(Color.Black);
-      SpriteBatch.Begin(in ProjectionView);
 
       base.Draw(time);
-
-      SpriteBatch.End();
     }
   }
 }

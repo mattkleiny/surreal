@@ -73,34 +73,27 @@ namespace Surreal.Framework.Tiles.Importers {
     public sealed class ObjectElement {
       [XmlAttribute("name")] public string? Name { get; set; }
       [XmlAttribute("type")] public string? Type { get; set; }
-      [XmlAttribute("x")]    public float  X    { get; set; }
-      [XmlAttribute("y")]    public float  Y    { get; set; }
+      [XmlAttribute("x")]    public float   X    { get; set; }
+      [XmlAttribute("y")]    public float   Y    { get; set; }
     }
 
     public sealed class LayerElement {
       [XmlAttribute("name")]    public string? Name      { get; set; }
-      [XmlAttribute("x")]       public int    X         { get; set; }
-      [XmlAttribute("y")]       public int    Y         { get; set; }
-      [XmlAttribute("width")]   public int    Width     { get; set; }
-      [XmlAttribute("height")]  public int    Height    { get; set; }
-      [XmlAttribute("visible")] public int    IsVisible { get; set; } = 1;
+      [XmlAttribute("x")]       public int     X         { get; set; }
+      [XmlAttribute("y")]       public int     Y         { get; set; }
+      [XmlAttribute("width")]   public int     Width     { get; set; }
+      [XmlAttribute("height")]  public int     Height    { get; set; }
+      [XmlAttribute("visible")] public int     IsVisible { get; set; } = 1;
 
       [XmlElement("data", typeof(DataElement))]
       public DataElement? Data { get; set; }
     }
 
-    public sealed class DataElement : ChunkElement {
-      [XmlAttribute("encoding")]    public EncodingType    Encoding    { get; set; }
-      [XmlAttribute("compression")] public CompressionType Compression { get; set; }
-
-      public IEnumerable<uint> Decode() => Decode(Encoding, Compression);
-    }
-
     public class ChunkElement {
-      [XmlAttribute("x")]      public int    X      { get; set; }
-      [XmlAttribute("y")]      public int    Y      { get; set; }
-      [XmlAttribute("width")]  public int    Width  { get; set; }
-      [XmlAttribute("height")] public int    Height { get; set; }
+      [XmlAttribute("x")]      public int     X      { get; set; }
+      [XmlAttribute("y")]      public int     Y      { get; set; }
+      [XmlAttribute("width")]  public int     Width  { get; set; }
+      [XmlAttribute("height")] public int     Height { get; set; }
       [XmlText]                public string? Data   { get; set; }
 
       [XmlElement("chunk", typeof(ChunkElement))]
@@ -144,6 +137,13 @@ namespace Surreal.Framework.Tiles.Importers {
 
         throw new ArgumentOutOfRangeException(nameof(compression));
       }
+    }
+
+    public sealed class DataElement : ChunkElement {
+      [XmlAttribute("encoding")]    public EncodingType    Encoding    { get; set; }
+      [XmlAttribute("compression")] public CompressionType Compression { get; set; }
+
+      public IEnumerable<uint> Decode() => Decode(Encoding, Compression);
     }
 
     public enum PropertyType {

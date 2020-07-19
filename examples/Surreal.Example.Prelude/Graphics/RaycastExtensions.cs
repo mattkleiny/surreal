@@ -1,15 +1,14 @@
 using System;
 using System.Numerics;
+using Prelude.Core;
 using Surreal.Framework.Tiles;
+using Surreal.Graphics;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Graphics.Raycasting {
-  // TODO: clean this up (whew)
-
+namespace Prelude.Graphics {
   public static class RaycastExtensions {
-    public static Vector2 CastRay<TTile>(this TileMap<TTile> map, Ray ray)
-        where TTile : IRaycastAwareTile {
+    public static Vector2 CastRay(this TileMap<Tile> map, Ray ray) {
       var (position, direction) = ray;
       var slope = direction.X / direction.Y;
 
@@ -18,26 +17,23 @@ namespace Surreal.Graphics.Raycasting {
         float edgeDistanceY;
 
         if (direction.X > 0f) {
-          edgeDistanceX = System.MathF.Floor(position.X) + 1 - position.X;
-        }
-        else {
-          edgeDistanceX = System.MathF.Ceiling(position.X) - 1 - position.X;
+          edgeDistanceX = MathF.Floor(position.X) + 1 - position.X;
+        } else {
+          edgeDistanceX = MathF.Ceiling(position.X) - 1 - position.X;
         }
 
         if (direction.Y > 0f) {
-          edgeDistanceY = System.MathF.Floor(position.Y) + 1 - position.Y;
-        }
-        else {
-          edgeDistanceY = System.MathF.Ceiling(position.Y) - 1 - position.Y;
+          edgeDistanceY = MathF.Floor(position.Y) + 1 - position.Y;
+        } else {
+          edgeDistanceY = MathF.Ceiling(position.Y) - 1 - position.Y;
         }
 
         var step1 = new Vector2(edgeDistanceX, edgeDistanceX / slope);
-        var step2 = new Vector2(edgeDistanceY                * slope, edgeDistanceY);
+        var step2 = new Vector2(edgeDistanceY * slope, edgeDistanceY);
 
         if (step1.LengthSquared() < step2.LengthSquared()) {
           position += step1;
-        }
-        else {
+        } else {
           position += step2;
         }
       } while (!map.GetNearestTile(new Ray(position, direction)).IsSolid);
@@ -45,17 +41,17 @@ namespace Surreal.Graphics.Raycasting {
       return position;
     }
 
-    public static TTile GetNearestTile<TTile>(this IGrid<TTile> grid, Ray ray) {
+    public static Tile GetNearestTile(this IGrid<Tile> grid, Ray ray) {
       var (origin, direction) = ray;
 
       var offsetX = 0f;
       var offsetY = 0f;
 
-      if (Math.Abs(System.MathF.Floor(origin.X) - origin.X) < float.Epsilon) {
+      if (Math.Abs(MathF.Floor(origin.X) - origin.X) < float.Epsilon) {
         offsetX = direction.X > 0 ? 0 : -1;
       }
 
-      if (Math.Abs(System.MathF.Floor(origin.Y) - origin.Y) < float.Epsilon) {
+      if (Math.Abs(MathF.Floor(origin.Y) - origin.Y) < float.Epsilon) {
         offsetY = direction.Y > 0 ? 0 : -1;
       }
 
@@ -65,18 +61,29 @@ namespace Surreal.Graphics.Raycasting {
       return grid[x, y];
     }
 
-    public static void DrawColoredColumn(this IGrid<Color> target, int sourceX, Vector2 point, float height, Color color) {
+    public static void DrawColoredColumn(
+        this IGrid<Color> target,
+        int sourceX,
+        Vector2 point,
+        float height,
+        Color color) {
       var start = (int) point.Y;
-      var end   = (int) System.MathF.Ceiling(point.Y + height);
+      var end   = (int) MathF.Ceiling(point.Y + height);
 
       for (var y = Math.Max(0, start); y < Math.Min(target.Height, end); y++) {
         target[(int) point.X, y] = color;
       }
     }
 
-    public static void DrawTexturedColumn(this IGrid<Color> target, int sourceX, IGrid<Color> texture, Vector2 point, float height, Color dampenColor) {
+    public static void DrawTexturedColumn(
+        this IGrid<Color> target,
+        int sourceX,
+        IGrid<Color> texture,
+        Vector2 point,
+        float height,
+        Color dampenColor) {
       var start = (int) point.Y;
-      var end   = (int) System.MathF.Ceiling(point.Y + height);
+      var end   = (int) MathF.Ceiling(point.Y + height);
       var stepY = texture.Height / height;
 
       for (var y = Math.Max(0, start); y < Math.Min(target.Height, end); y++) {

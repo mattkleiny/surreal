@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using Surreal.Collections;
 using Surreal.Mathematics.Curves;
 using Surreal.Mathematics.Linear;
@@ -44,12 +43,10 @@ namespace Surreal.Mathematics.Grids {
       return this[x, y];
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     bool IsValid(int x, int y) {
       return x >= 0 && x < Width && y >= 0 && y < Height;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     T TryGet(int x, int y, T defaultValue = default) {
       return IsValid(x, y) ? this[x, y] : defaultValue;
     }
@@ -78,12 +75,12 @@ namespace Surreal.Mathematics.Grids {
       int     stepCount;
       Vector2 step;
 
-      if (System.MathF.Abs(direction.X) > System.MathF.Abs(direction.Y)) {
-        stepCount = (int) System.MathF.Ceiling(System.MathF.Abs(direction.X));
-        step      = new Vector2(1, direction.Y / direction.X) * System.MathF.Sign(direction.X);
+      if (MathF.Abs(direction.X) > MathF.Abs(direction.Y)) {
+        stepCount = (int) MathF.Ceiling(MathF.Abs(direction.X));
+        step      = new Vector2(1, direction.Y / direction.X) * MathF.Sign(direction.X);
       } else {
-        stepCount = (int) System.MathF.Ceiling(System.MathF.Abs(direction.Y));
-        step      = new Vector2(direction.X / direction.Y, 1) * System.MathF.Sign(direction.Y);
+        stepCount = (int) MathF.Ceiling(MathF.Abs(direction.Y));
+        step      = new Vector2(direction.X / direction.Y, 1) * MathF.Sign(direction.Y);
       }
 
       var point = from;

@@ -1,6 +1,6 @@
 ﻿using Minecraft.Core.Coordinates;
 using Minecraft.Core.Generation;
-using Surreal.Framework.Voxels;
+using Surreal.Framework.Palettes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
 using Surreal.Mathematics.Tensors;
@@ -9,11 +9,11 @@ namespace Minecraft.Core {
   public sealed class Chunk : IChunkView {
     public delegate void BlockChangeHandler(int x, int y, int z, Block oldBlock, Block newBlock);
 
-    private readonly IVoxelPalette<Block> palette;
-    private readonly ChunkGenerator       generator;
-    private readonly Tensor3D<ushort>     voxels;
+    private readonly IPalette<Block>  palette;
+    private readonly ChunkGenerator   generator;
+    private readonly Tensor3D<ushort> voxels;
 
-    public Chunk(IBuffer<ushort> buffer, IVoxelPalette<Block> palette, ChunkGenerator generator, ChunkPos position) {
+    public Chunk(IBuffer<ushort> buffer, IPalette<Block> palette, ChunkGenerator generator, ChunkPos position) {
       this.palette   = palette;
       this.generator = generator;
 

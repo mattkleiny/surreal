@@ -41,8 +41,9 @@ namespace Surreal.Mathematics.Curves {
     );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (float c0, float c1, float c2) GetDerivativeCoefficients(Normal t)
-      => (c0: 2f * t - 2f, c1: -4f * t + 2f, c2: 2f * t);
+    private static (float c0, float c1, float c2) GetDerivativeCoefficients(Normal t) {
+      return (c0: 2f * t - 2f, c1: -4f * t + 2f, c2: 2f * t);
+    }
 
     public bool Equals(QuadraticBezierCurve other) =>
         StartPoint.Equals(other.StartPoint)     &&

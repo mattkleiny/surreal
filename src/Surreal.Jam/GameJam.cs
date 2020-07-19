@@ -26,6 +26,8 @@ using Surreal.Utilities;
 
 namespace Surreal {
   public abstract class GameJam : Game {
+    public new static GameJam Current => (GameJam) Game.Current;
+
     public IAudioDevice    AudioDevice    { get; private set; } = null!;
     public IComputeDevice  ComputeDevice  { get; private set; } = null!;
     public IGraphicsDevice GraphicsDevice { get; private set; } = null!;
@@ -144,10 +146,6 @@ namespace Surreal {
 
   public abstract class GameJam<TSelf> : GameJam
       where TSelf : GameJam<TSelf> {
-    public static TSelf Current { get; private set; } = null!;
-
-    protected GameJam() {
-      Current = (TSelf) this;
-    }
+    public new static TSelf Current => (TSelf) GameJam.Current;
   }
 }

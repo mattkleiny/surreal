@@ -15,7 +15,8 @@ namespace Surreal.Collections {
       return dictionary[key];
     }
 
-    public static async Task<TValue> GetOrComputeAsync<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, Task<TValue>> asyncValueProvider) {
+    public static async Task<TValue> GetOrComputeAsync<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key,
+        Func<TKey, Task<TValue>> asyncValueProvider) {
       if (!dictionary.ContainsKey(key)) {
         dictionary[key] = await asyncValueProvider(key);
       }
@@ -23,7 +24,6 @@ namespace Surreal.Collections {
       return dictionary[key];
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Swap<T>(this IList<T> array, int fromIndex, int toIndex) {
       var temp = array[fromIndex];
 
@@ -63,7 +63,6 @@ namespace Surreal.Collections {
       return queue;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T SelectRandomly<T>(this IReadOnlyList<T> elements, Random random) {
       if (elements.Count > 0) {
         return elements[random.Next(0, elements.Count)];
@@ -72,7 +71,6 @@ namespace Surreal.Collections {
       return default!;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T SelectRandomly<T>(this IEnumerable<T> elements, Random random) {
       var array = elements.ToArray();
 

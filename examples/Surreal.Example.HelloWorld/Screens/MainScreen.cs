@@ -10,11 +10,11 @@ using Surreal.Input.Keyboard;
 using Surreal.Mathematics.Curves;
 
 namespace HelloWorld.Screens {
-  public sealed class MainScreen : GameScreen<HelloWorldGame> {
+  public sealed class MainScreen : GameScreen<Game> {
     private readonly OrthographicCamera camera = new OrthographicCamera(256 / 4, 144 / 4);
     private          GeometryBatch      batch = null!;
 
-    public MainScreen(HelloWorldGame game)
+    public MainScreen(Game game)
         : base(game) {
     }
 

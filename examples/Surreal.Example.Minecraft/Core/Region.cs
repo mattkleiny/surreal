@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Minecraft.Core.Coordinates;
 using Minecraft.Core.Generation;
-using Surreal.Framework.Voxels;
+using Surreal.Framework;
+using Surreal.Framework.Palettes;
 using Surreal.IO;
 
 namespace Minecraft.Core {
   public sealed class Region : IDisposable {
-    private readonly IVoxelPalette<Block> palette;
-    private readonly ChunkGenerator       chunkGenerator;
+    private readonly IPalette<Block> palette;
+    private readonly ChunkGenerator  chunkGenerator;
 
     private readonly Dictionary<ChunkPos, Chunk> chunks;
     private readonly IBuffer<ushort>             buffer;
 
-    public Region(IBuffer<ushort> buffer, IVoxelPalette<Block> palette, ChunkGenerator chunkGenerator, Biome biome) {
+    public Region(IBuffer<ushort> buffer, IPalette<Block> palette, ChunkGenerator chunkGenerator, Biome biome) {
       this.buffer         = buffer;
       this.palette        = palette;
       this.chunkGenerator = chunkGenerator;

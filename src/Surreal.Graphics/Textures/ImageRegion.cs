@@ -36,7 +36,6 @@ namespace Surreal.Graphics.Textures {
       set => Image[OffsetX + x, OffsetY + y] = value;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Fill(Color value) {
       Span.Fill(value);
     }
