@@ -1,17 +1,18 @@
-namespace Surreal.Framework.Parameters {
-  public abstract class Parameter {
-  }
+using System;
 
-  public abstract class Parameter<T> : Parameter {
+namespace Surreal.Framework.Parameters {
+  public class Parameter<T> {
     private T value;
     private T overrideValue;
 
     private bool hasOverride;
 
-    protected Parameter(T value) {
+    public Parameter(T value) {
       this.value    = value;
       overrideValue = default!;
     }
+
+    public event Action<T> Changed = null!;
 
     public virtual T Value {
       get {
@@ -21,7 +22,11 @@ namespace Surreal.Framework.Parameters {
 
         return value;
       }
-      set => this.value = value;
+      set {
+        this.value = value;
+
+        Changed?.Invoke(value);
+      }
     }
 
     public virtual void Override(T value) {

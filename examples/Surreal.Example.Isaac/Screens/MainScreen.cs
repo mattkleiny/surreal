@@ -1,9 +1,10 @@
-﻿using Isaac.Core.Dungeons;
+﻿using System.Numerics;
+using Isaac.Core;
+using Isaac.Core.Mobs;
 using Surreal.Framework;
+using Surreal.Framework.Scenes.Actors;
 using Surreal.Framework.Screens;
-using Surreal.Graphics.Cameras;
 using Surreal.Input.Keyboard;
-using Surreal.Mathematics.Linear;
 
 namespace Isaac.Screens {
   public sealed class MainScreen : GameScreen<Game> {
@@ -11,22 +12,17 @@ namespace Isaac.Screens {
         : base(game) {
     }
 
-    public OrthographicCamera Camera { get; } = new OrthographicCamera(256 / 2, 144 / 2);
-    public Floor              Floor  { get; } = new Floor();
+    public ActorScene Scene     { get; } = new ActorScene();
+    public CameraRig  CameraRig { get; } = new CameraRig();
 
     public override void Initialize() {
       base.Initialize();
 
-      var room = Floor[0, 0] = new Room {
-          Type = RoomType.Start
-      };
-
-      room.AddRoom(Direction.North)
-          .AddRoom(Direction.North, RoomType.Item)
-          .AddRoom(Direction.East)
-          .AddRoom(Direction.East)
-          .AddRoom(Direction.South, RoomType.Boss)
-          .AddRoom(Direction.West, RoomType.Secret);
+      Scene.Actors.Add(CameraRig);
+      Scene.Actors.Add(new Dungeon());
+      Scene.Actors.Add(new Player());
+      Scene.Actors.Add(new Monster {Position = Vector2.UnitX * 1});
+      Scene.Actors.Add(new Monster {Position = Vector2.UnitY * 2});
     }
 
     public override void Input(GameTime time) {
@@ -34,17 +30,23 @@ namespace Isaac.Screens {
         Game.Exit();
       }
 
-      base.Input(time);
+      Scene.Input(time.DeltaTime);
+    }
+
+    public override void Update(GameTime time) {
+      Scene.Update(time.DeltaTime);
     }
 
     public override void Draw(GameTime time) {
-      base.Draw(time);
+      GeometryBatch.Begin(in CameraRig.Camera.ProjectionView);
 
-      GeometryBatch.Begin(in Camera.ProjectionView);
-
-      Floor.DrawGizmos(GeometryBatch);
+      Scene.Draw(time.DeltaTime);
 
       GeometryBatch.End();
+    }
+
+    public override void Dispose() {
+      Scene.Dispose();
     }
   }
 }
