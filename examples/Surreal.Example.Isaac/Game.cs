@@ -30,7 +30,7 @@ namespace Isaac {
     protected override void Initialize() {
       base.Initialize();
 
-      Screens.Push(new MainScreen(this).LoadAsync());
+      Screens.Push(new MainScreen(this));
     }
   }
 }

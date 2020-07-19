@@ -1,47 +1,28 @@
-﻿using System.Numerics;
-using System.Threading.Tasks;
-using Surreal.Assets;
+﻿using Isaac.Core;
 using Surreal.Framework;
-using Surreal.Framework.Scenes.Entities;
-using Surreal.Framework.Scenes.Entities.Components;
-using Surreal.Framework.Scenes.Entities.Storage;
-using Surreal.Framework.Scenes.Entities.Systems;
 using Surreal.Framework.Screens;
 using Surreal.Graphics.Cameras;
 using Surreal.Input.Keyboard;
+using Surreal.Mathematics.Linear;
 
 namespace Isaac.Screens {
-  public sealed class MainScreen : GameScreen<Game>, ILoadableScreen {
+  public sealed class MainScreen : GameScreen<Game> {
     private readonly OrthographicCamera camera = new OrthographicCamera(256, 144);
-    private readonly EntityScene        scene  = new EntityScene();
 
     public MainScreen(Game game)
         : base(game) {
     }
 
-    protected override async Task LoadContentAsync(IAssetResolver assets) {
-      await base.LoadContentAsync(assets);
-    }
-
-    public Task LoadInBackgroundAsync(IAssetResolver assets, ILoadNotifier notifier) {
-      notifier.Increment(1f);
-
-      return Task.CompletedTask;
-    }
+    public Floor Floor { get; } = new Floor();
 
     public override void Initialize() {
       base.Initialize();
 
-      scene.RegisterComponent(new DenseComponentStorage<Transform>());
-      scene.RegisterComponent(new DenseComponentStorage<RigidBody>());
-      scene.RegisterComponent(new DenseComponentStorage<Sprite>());
-
-      scene.AddSystem(new PhysicsSystem {
-          Gravity = Vector2.Zero,
-      });
-
-      scene.AddSystem(new CameraSystem(camera, Game.Host));
-      scene.AddSystem(new SpriteSystem(SpriteBatch, camera));
+      Floor[0, 0]  = new Room {NormalDoors = Directions.North | Directions.South};
+      Floor[-1, 0] = new Room {NormalDoors = Directions.East, SecretDoors = Directions.North};
+      Floor[0, 1]  = new Room {NormalDoors = Directions.West, SecretDoors = Directions.South};
+      Floor[0, 2]  = new Room {NormalDoors = Directions.South};
+      Floor[2, 2]  = new Room {NormalDoors = Directions.North};
     }
 
     public override void Input(GameTime time) {
@@ -50,20 +31,16 @@ namespace Isaac.Screens {
       }
 
       base.Input(time);
-
-      scene.Input(time.DeltaTime);
-    }
-
-    public override void Update(GameTime time) {
-      base.Update(time);
-
-      scene.Update(time.DeltaTime);
     }
 
     public override void Draw(GameTime time) {
       base.Draw(time);
 
-      scene.Draw(time.DeltaTime);
+      GeometryBatch.Begin(in camera.ProjectionView);
+
+      Floor.DrawGizmos(GeometryBatch);
+
+      GeometryBatch.End();
     }
   }
 }

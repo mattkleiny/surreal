@@ -26,5 +26,7 @@ namespace Isaac.Core {
 
     public static bool operator ==(DoorMask left, DoorMask right) => left.Equals(right);
     public static bool operator !=(DoorMask left, DoorMask right) => !left.Equals(right);
+
+    public static implicit operator DoorMask(Directions directions) => new DoorMask(directions);
   }
 }

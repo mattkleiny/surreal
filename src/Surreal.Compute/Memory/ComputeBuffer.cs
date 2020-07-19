@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using Surreal.Assets;
 using Surreal.IO;
 
@@ -12,9 +11,6 @@ namespace Surreal.Compute.Memory {
         where T : unmanaged;
 
     public abstract void Write<T>(Span<T> data)
-        where T : unmanaged;
-
-    public abstract MemoryManager<T> Pin<T>()
         where T : unmanaged;
   }
 }

@@ -7,6 +7,17 @@ namespace Surreal.Graphics {
 
   [StructLayout(LayoutKind.Sequential)]
   public struct Color : IEquatable<Color> {
+    public static readonly Color Black   = new Color(0, 0, 0);
+    public static readonly Color Red     = new Color(255, 0, 0);
+    public static readonly Color Green   = new Color(0, 255, 0);
+    public static readonly Color Blue    = new Color(0, 0, 255);
+    public static readonly Color Yellow  = new Color(255, 255, 0);
+    public static readonly Color Magenta = new Color(255, 0, 255);
+    public static readonly Color Grey    = new Color(205, 205, 205);
+    public static readonly Color Brown   = new Color(168, 42, 42);
+    public static readonly Color White   = new Color(255, 255, 255);
+    public static readonly Color Clear   = new Color(0, 0, 0, 0);
+
     public static Color FromPackedRGB(uint packed) => new Color(
         red: (byte) (packed >> 16 & 0xFF),
         green: (byte) (packed >> 8 & 0xFF),
@@ -26,18 +37,7 @@ namespace Surreal.Graphics {
         (byte) Maths.Lerp(a.B, b.B, t),
         (byte) Maths.Lerp(a.A, b.A, t)
     );
-
-    public static readonly Color Black   = new Color(0, 0, 0);
-    public static readonly Color Red     = new Color(255, 0, 0);
-    public static readonly Color Green   = new Color(0, 255, 0);
-    public static readonly Color Blue    = new Color(0, 0, 255);
-    public static readonly Color Yellow  = new Color(255, 255, 0);
-    public static readonly Color Magenta = new Color(255, 0, 255);
-    public static readonly Color Grey    = new Color(205, 205, 205);
-    public static readonly Color Brown   = new Color(168, 42, 42);
-    public static readonly Color White   = new Color(255, 255, 255);
-    public static readonly Color Clear   = new Color(0, 0, 0, 0);
-
+    
     public Color(byte red, byte green, byte blue, byte alpha = 255) {
       R = red;
       G = green;

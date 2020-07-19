@@ -5,7 +5,6 @@ using Surreal;
 using Surreal.Assets;
 using Surreal.Framework;
 using Surreal.Framework.Tiles;
-using Surreal.Graphics;
 using Surreal.Platform;
 
 namespace Prelude {

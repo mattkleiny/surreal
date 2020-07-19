@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using Surreal.Compute.Memory;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
@@ -10,10 +9,6 @@ namespace Surreal.Platform.Internal.Compute.Resources {
 
     public override void Write<T>(Span<T> data) {
       // no-op
-    }
-
-    public override MemoryManager<T> Pin<T>() {
-      throw new NotImplementedException();
     }
   }
 }

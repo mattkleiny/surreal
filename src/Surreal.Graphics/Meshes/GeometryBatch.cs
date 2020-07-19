@@ -98,7 +98,7 @@ namespace Surreal.Graphics.Meshes {
     public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
       => DrawQuad(center, size, color, PrimitiveType.LineLoop);
 
-    public void DrawCircle(Vector2 center, float radius, Color color, int segments) {
+    public void DrawCircle(Vector2 center, float radius, Color color, int segments = 16) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var increment = 360f / segments;
 
@@ -112,7 +112,7 @@ namespace Surreal.Graphics.Meshes {
       DrawLineLoop(points.ToSpan(), color);
     }
 
-    public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments) {
+    public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var length    = endAngle - startAngle;
       var increment = length / segments;

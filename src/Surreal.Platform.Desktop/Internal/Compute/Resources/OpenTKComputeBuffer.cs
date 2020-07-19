@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
@@ -39,10 +38,6 @@ namespace Surreal.Platform.Internal.Compute.Resources {
 
       Length = data.Length;
       Size   = new Size(bytes);
-    }
-
-    public override MemoryManager<T> Pin<T>() {
-      return new OpenTKMemoryManager<T>(Id, BufferTarget.CopyWriteBuffer);
     }
 
     protected override void Dispose(bool managed) {

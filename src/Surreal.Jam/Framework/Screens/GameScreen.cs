@@ -4,6 +4,7 @@ using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Compute;
 using Surreal.Graphics;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Sprites;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
@@ -31,6 +32,7 @@ namespace Surreal.Framework.Screens {
     public IMouseDevice    Mouse          => Game.Mouse;
     public IScreenManager  Screens        => Game.Screens;
     public SpriteBatch     SpriteBatch    => Game.SpriteBatch;
+    public GeometryBatch   GeometryBatch  => Game.GeometryBatch;
 
     public AssetManager Assets { get; }
 

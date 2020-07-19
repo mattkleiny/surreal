@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Surreal.Collections {
   [DebuggerDisplay("SpanList {Length}/{Capacity}")]
   public ref struct SpanList<T>
-    where T : unmanaged {
+      where T : unmanaged {
     private readonly Span<T> span;
 
     public SpanList(Span<T> span) {
@@ -33,7 +33,7 @@ namespace Surreal.Collections {
       Length = 0;
     }
 
-    public ReadOnlySpan<T> ToSpan() => span[..Length];
-    public T[] ToArray() => ToSpan().ToArray();
+    public Span<T> ToSpan()  => span[..Length];
+    public T[]     ToArray() => ToSpan().ToArray();
   }
 }

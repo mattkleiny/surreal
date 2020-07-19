@@ -34,6 +34,9 @@ namespace Surreal.Mathematics.Linear {
     public float Width  => Right - Left;
     public float Height => Bottom - Top;
 
+    public Vector2 Center => new Vector2(Left + Width / 2f, Bottom + Height / 2f);
+    public Vector2 Size   => new Vector2(Width, Height);
+
     public bool Contains(Vector2I point)
       => point.X >= Left &&
          point.X <= Right &&

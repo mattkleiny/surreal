@@ -11,7 +11,8 @@ namespace Surreal.Audio.Clips {
     public readonly int Channels;
     public readonly int BitsPerSample;
 
-    public int BitsPerSecond => Frequency * Channels * BitsPerSample;
+    public int   BitsPerSecond  => Frequency * Channels * BitsPerSample;
+    public float BytesPerSecond => BitsPerSecond / 8f;
 
     public AudioSampleRate(int frequency, int channels, int bitsPerSample) {
       Frequency     = frequency;
@@ -27,8 +28,7 @@ namespace Surreal.Audio.Clips {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Size CalculateSize(TimeSpan duration) {
-      // calculate the size of the audio data at the given duration
-      return new Size((int) Math.Ceiling(duration.TotalSeconds * (BitsPerSecond / 8f)));
+      return new Size((int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond));
     }
 
     public override string ToString() {
@@ -36,8 +36,8 @@ namespace Surreal.Audio.Clips {
     }
 
     public bool Equals(AudioSampleRate other) {
-      return Frequency     == other.Frequency &&
-             Channels      == other.Channels  &&
+      return Frequency == other.Frequency &&
+             Channels == other.Channels &&
              BitsPerSample == other.BitsPerSample;
     }
 
