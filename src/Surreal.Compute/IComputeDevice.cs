@@ -4,7 +4,7 @@ using Surreal.Compute.Memory;
 
 namespace Surreal.Compute {
   public interface IComputeDevice {
-    ComputeBuffer  CreateBuffer();
-    ComputeProgram CreateProgram(ReadOnlySpan<byte> raw);
+    ComputeBuffer<T> CreateBuffer<T>() where T : unmanaged;
+    ComputeProgram   CreateProgram(ReadOnlySpan<byte> raw);
   }
 }

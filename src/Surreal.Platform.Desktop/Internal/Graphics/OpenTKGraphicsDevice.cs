@@ -44,12 +44,13 @@ namespace Surreal.Platform.Internal.Graphics {
       GL.Clear(ClearBufferMask.DepthBufferBit);
     }
 
-    public void DrawMeshImmediate(
-        Mesh mesh,
+    public void DrawMeshImmediate<TVertex>(
+        Mesh<TVertex> mesh,
         ShaderProgram shader,
         int vertexCount,
         int indexCount,
-        PrimitiveType type = PrimitiveType.Triangles) {
+        PrimitiveType type = PrimitiveType.Triangles)
+        where TVertex : unmanaged {
       if (vertexCount == 0) return; // empty mesh? don't render
 
       Pipeline.ActiveShader       = shader;
@@ -73,8 +74,8 @@ namespace Surreal.Platform.Internal.Graphics {
       GL.Flush();
     }
 
-    public GraphicsBuffer CreateBuffer() {
-      return new OpenTKGraphicsBuffer();
+    public GraphicsBuffer<T> CreateBuffer<T>() where T : unmanaged {
+      return new OpenTKGraphicsBuffer<T>();
     }
 
     public ShaderProgram CreateShaderProgram(params Shader[] shaders) {
@@ -114,14 +115,14 @@ namespace Surreal.Platform.Internal.Graphics {
     }
 
     private static OpenTK.Graphics.OpenGL.PrimitiveType ConvertPrimitiveType(PrimitiveType type) => type switch {
-        PrimitiveType.Points => OpenTK.Graphics.OpenGL.PrimitiveType.Points,
-        PrimitiveType.Lines => OpenTK.Graphics.OpenGL.PrimitiveType.Lines,
+        PrimitiveType.Points    => OpenTK.Graphics.OpenGL.PrimitiveType.Points,
+        PrimitiveType.Lines     => OpenTK.Graphics.OpenGL.PrimitiveType.Lines,
         PrimitiveType.LineStrip => OpenTK.Graphics.OpenGL.PrimitiveType.LineStrip,
-        PrimitiveType.LineLoop => OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop,
+        PrimitiveType.LineLoop  => OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop,
         PrimitiveType.Triangles => OpenTK.Graphics.OpenGL.PrimitiveType.Triangles,
-        PrimitiveType.Quads => OpenTK.Graphics.OpenGL.PrimitiveType.Quads,
+        PrimitiveType.Quads     => OpenTK.Graphics.OpenGL.PrimitiveType.Quads,
         PrimitiveType.QuadStrip => OpenTK.Graphics.OpenGL.PrimitiveType.QuadStrip,
-        _ => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested.")
+        _                       => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested.")
     };
 
     [Conditional("DEBUG")]

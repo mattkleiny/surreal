@@ -16,20 +16,20 @@ namespace Surreal.Graphics {
     void ClearColorBuffer(Color color);
     void ClearDepthBuffer();
 
-    void DrawMeshImmediate(
-        Mesh mesh,
+    void DrawMeshImmediate<TVertex>(
+        Mesh<TVertex> mesh,
         ShaderProgram shader,
         int vertexCount,
         int indexCount,
         PrimitiveType type = PrimitiveType.Triangles
-    );
+    ) where TVertex : unmanaged;
 
     void BeginFrame();
     void EndFrame();
     void Present();
 
-    GraphicsBuffer CreateBuffer();
-    ShaderProgram  CreateShaderProgram(params Shader[] shaders);
+    GraphicsBuffer<T> CreateBuffer<T>() where T : unmanaged;
+    ShaderProgram     CreateShaderProgram(params Shader[] shaders);
 
     Texture CreateTexture(
         TextureFormat format = TextureFormat.RGBA8888,

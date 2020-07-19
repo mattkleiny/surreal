@@ -17,13 +17,13 @@ namespace Minecraft.Core.Rendering {
   public sealed class ChunkMesh : IDisposable {
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<ChunkMesh>();
 
-    private readonly Chunk chunk;
-    private readonly Mesh  mesh;
+    private readonly Chunk        chunk;
+    private readonly Mesh<Vertex> mesh;
 
     public ChunkMesh(IGraphicsDevice device, Chunk chunk) {
       this.chunk = chunk;
 
-      mesh = Mesh.Create<Vertex>(device);
+      mesh = new Mesh<Vertex>(device);
 
       chunk.BlockChanged += OnBlockChanged;
     }

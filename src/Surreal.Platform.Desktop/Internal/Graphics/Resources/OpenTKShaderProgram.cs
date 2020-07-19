@@ -11,10 +11,12 @@ using Surreal.Mathematics.Linear;
 using ShaderType = OpenTK.Graphics.OpenGL.ShaderType;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
-  internal sealed class OpenTKShaderProgram : ShaderProgram {
+  internal sealed class OpenTKShaderProgram : ShaderProgram, IHasNativeId {
     private readonly Dictionary<string, int> locationCache = new Dictionary<string, int>();
 
     public readonly int Id = GL.CreateProgram();
+
+    int IHasNativeId.Id => Id;
 
     public OpenTKShaderProgram(params Shader[] shaders) {
       Link(shaders);

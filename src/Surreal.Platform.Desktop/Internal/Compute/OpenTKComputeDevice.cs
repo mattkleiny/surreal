@@ -6,8 +6,8 @@ using Surreal.Platform.Internal.Compute.Resources;
 
 namespace Surreal.Platform.Internal.Compute {
   internal sealed class OpenTKComputeDevice : IComputeDevice, IDisposable {
-    public ComputeBuffer CreateBuffer() {
-      return new OpenTKComputeBuffer();
+    public ComputeBuffer<T> CreateBuffer<T>() where T : unmanaged {
+      return new OpenTKComputeBuffer<T>();
     }
 
     public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw) {

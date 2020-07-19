@@ -7,19 +7,21 @@ using Surreal.IO;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
   [DebuggerDisplay("Graphics buffer with {Length} elements ({Size})")]
-  internal sealed class OpenTKGraphicsBuffer : GraphicsBuffer {
-    public readonly int Id = GL.GenBuffer();
+  internal sealed class OpenTKGraphicsBuffer<T> : GraphicsBuffer<T>, IHasNativeId
+      where T : unmanaged {
+    private static readonly int Stride = Unsafe.SizeOf<T>();
+    private readonly        int Id     = GL.GenBuffer();
 
-    public override Memory<T> Read<T>(Range range) {
+    int IHasNativeId.Id => Id;
+
+    public override Memory<T> Read(Range range) {
       GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
       GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out int sizeInBytes);
 
-      var sizeOfT = Unsafe.SizeOf<T>();
-
-      var count = sizeInBytes / sizeOfT;
+      var count = sizeInBytes / Stride;
       var (offset, length) = range.GetOffsetAndLength(count);
 
-      var offsetInBytes = offset * sizeOfT;
+      var offsetInBytes = offset * Stride;
 
       // allocate enough space in the local heap. TODO: perhaps offer an overload where the caller can provide their own buffer?
       var buffer = new T[length];
@@ -29,8 +31,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       return buffer;
     }
 
-    public override void Write<T>(Span<T> data) {
-      var bytes = data.Length * Unsafe.SizeOf<T>();
+    public override void Write(Span<T> data) {
+      var bytes = data.Length * Stride;
 
       GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
       GL.BufferData(BufferTarget.ArrayBuffer, bytes, ref data.GetPinnableReference(), BufferUsageHint.StaticDraw);

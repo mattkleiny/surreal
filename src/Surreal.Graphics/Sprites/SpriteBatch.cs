@@ -18,7 +18,7 @@ namespace Surreal.Graphics.Sprites {
     private const string ProjViewUniform    = "u_projView";
 
     private readonly IDisposableBuffer<Vertex> vertices;
-    private readonly Mesh                      mesh;
+    private readonly Mesh<Vertex>              mesh;
     private readonly ShaderProgram             defaultShader;
     private readonly bool                      ownsDefaultShader;
 
@@ -53,7 +53,7 @@ namespace Surreal.Graphics.Sprites {
       this.ownsDefaultShader = ownsDefaultShader;
 
       vertices = Buffers.AllocateOffHeap<Vertex>(MaximumVertexCount);
-      mesh     = Mesh.Create<Vertex>(device);
+      mesh     = new Mesh<Vertex>(device);
 
       CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
     }
@@ -99,17 +99,17 @@ namespace Surreal.Graphics.Sprites {
       }
 
       // calculate u/v extents
-      var u  = sourceX                  / texture.Width;
+      var u  = sourceX / texture.Width;
       var v  = (sourceY + sourceHeight) / texture.Height;
-      var u2 = (sourceX + sourceWidth)  / texture.Width;
-      var v2 = sourceY                  / texture.Height;
+      var u2 = (sourceX + sourceWidth) / texture.Width;
+      var v2 = sourceY / texture.Height;
 
       // calculate shape extents
       var extentX = x + width;
       var extentY = y + height;
 
       // rotate coordinates about the z axis
-      if (System.MathF.Abs(rotation.Radians) > float.Epsilon) {
+      if (MathF.Abs(rotation.Radians) > float.Epsilon) {
         throw new NotImplementedException();
       }
 

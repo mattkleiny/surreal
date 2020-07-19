@@ -33,7 +33,13 @@ namespace Surreal.Platform.Internal.Graphics {
       // no-op
     }
 
-    public void DrawMeshImmediate(Mesh mesh, ShaderProgram shader, int vertexCount, int indexCount, PrimitiveType type = PrimitiveType.Triangles) {
+    public void DrawMeshImmediate<TVertex>(
+        Mesh<TVertex> mesh,
+        ShaderProgram shader,
+        int vertexCount,
+        int indexCount,
+        PrimitiveType type = PrimitiveType.Triangles)
+        where TVertex : unmanaged {
       // no-op
     }
 
@@ -45,8 +51,8 @@ namespace Surreal.Platform.Internal.Graphics {
       // no-op
     }
 
-    public GraphicsBuffer CreateBuffer() {
-      return new HeadlessGraphicsBuffer();
+    public GraphicsBuffer<T> CreateBuffer<T>() where T : unmanaged {
+      return new HeadlessGraphicsBuffer<T>();
     }
 
     public ShaderProgram CreateShaderProgram(params Shader[] shaders) {

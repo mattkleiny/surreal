@@ -2,12 +2,13 @@ using System;
 using Surreal.Compute.Memory;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
-  internal sealed class HeadlessComputeBuffer : ComputeBuffer {
-    public override Memory<T> Read<T>(Range range) {
+  internal sealed class HeadlessComputeBuffer<T> : ComputeBuffer<T>
+      where T : unmanaged {
+    public override Memory<T> Read(Range range) {
       return Memory<T>.Empty;
     }
 
-    public override void Write<T>(Span<T> data) {
+    public override void Write(Span<T> data) {
       // no-op
     }
   }

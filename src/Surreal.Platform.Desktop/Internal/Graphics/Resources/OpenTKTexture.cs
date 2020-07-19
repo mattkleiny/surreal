@@ -6,8 +6,10 @@ using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
   [DebuggerDisplay("Texture {Width}x{Height} @ {Format} ~{Size}")]
-  internal sealed class OpenTKTexture : Texture {
+  internal sealed class OpenTKTexture : Texture, IHasNativeId {
     public readonly int Id = GL.GenTexture();
+
+    int IHasNativeId.Id => Id;
 
     public OpenTKTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
         : this(data.Format, filterMode, wrapMode) {

@@ -6,8 +6,8 @@ using Surreal.Platform.Internal.Compute.Resources;
 
 namespace Surreal.Platform.Internal.Compute {
   internal sealed class HeadlessComputeDevice : IComputeDevice {
-    public ComputeBuffer CreateBuffer() {
-      return new HeadlessComputeBuffer();
+    public ComputeBuffer<T> CreateBuffer<T>() where T : unmanaged {
+      return new HeadlessComputeBuffer<T>();
     }
 
     public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw) {

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Surreal.Collections;
 using Surreal.Graphics.Materials;
 using Surreal.IO;
-using Surreal.Mathematics;
 using Surreal.Mathematics.Curves;
 using Surreal.Mathematics.Linear;
 using static Surreal.Mathematics.Maths;
@@ -18,7 +17,7 @@ namespace Surreal.Graphics.Meshes {
 
     private readonly IDisposableBuffer<Vertex> vertices;
     private readonly IDisposableBuffer<ushort> indices;
-    private readonly Mesh                      mesh;
+    private readonly Mesh<Vertex>              mesh;
     private readonly ShaderProgram             defaultShader;
     private readonly bool                      ownsDefaultShader;
 
@@ -52,7 +51,7 @@ namespace Surreal.Graphics.Meshes {
       vertices = Buffers.AllocateOffHeap<Vertex>(maximumVertexCount);
       indices  = Buffers.AllocateOffHeap<ushort>(maximumIndexCount);
 
-      mesh = Mesh.Create<Vertex>(device);
+      mesh = new Mesh<Vertex>(device);
     }
 
     public IGraphicsDevice Device       { get; }
