@@ -1,7 +1,5 @@
 ﻿using Minecraft.Screens;
 using Surreal;
-using Surreal.Framework;
-using Surreal.Graphics;
 using Surreal.Platform;
 
 namespace Minecraft {
@@ -25,12 +23,6 @@ namespace Minecraft {
       GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
 
       Screens.Push(new MainScreen(this).LoadAsync());
-    }
-
-    protected override void Draw(GameTime time) {
-      GraphicsDevice.Clear(Color.Black);
-
-      base.Draw(time);
     }
   }
 }

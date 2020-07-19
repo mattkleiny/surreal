@@ -34,13 +34,16 @@ namespace Prelude {
       Screens.Push(new MainScreen(this));
     }
 
-    protected override void Draw(GameTime time) {
-      GraphicsDevice.Clear(Color.Black);
+    protected override void Begin(GameTime time) {
+      base.Begin(time);
+
       SpriteBatch.Begin(in ProjectionView);
+    }
 
-      base.Draw(time);
-
+    protected override void End(GameTime time) {
       SpriteBatch.End();
+
+      base.End(time);
     }
   }
 }

@@ -44,7 +44,7 @@ namespace Surreal.Framework {
     public List<IGamePlugin> Plugins      { get; }      = new List<IGamePlugin>();
     public ILoopStrategy     LoopStrategy { get; set; } = new AveragingLoopStrategy();
 
-    internal void Initialize(IPlatformHost host) {
+    protected internal void Initialize(IPlatformHost host) {
       Host = host;
 
       Initialize();

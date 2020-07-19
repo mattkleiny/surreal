@@ -6,7 +6,7 @@ namespace Surreal.Graphics {
   // TODO: create a floating point representation of color?
 
   [StructLayout(LayoutKind.Sequential)]
-  public struct Color {
+  public struct Color : IEquatable<Color> {
     public static Color FromPackedRGB(uint packed) => new Color(
         red: (byte) (packed >> 16 & 0xFF),
         green: (byte) (packed >> 8 & 0xFF),
@@ -55,6 +55,22 @@ namespace Surreal.Graphics {
 
     public override string ToString() => $"RGBA({R}, {G}, {B}, {A})";
 
+    public bool Equals(Color other) {
+      return R == other.R &&
+             G == other.G &&
+             B == other.B &&
+             A == other.A;
+    }
+
+    public override bool Equals(object? obj) {
+      return obj is Color other && Equals(other);
+    }
+
+    public override int GetHashCode() => HashCode.Combine(R, G, B, A);
+
+    public static bool operator ==(Color left, Color right) => left.Equals(right);
+    public static bool operator !=(Color left, Color right) => !left.Equals(right);
+
     public static Color operator +(Color a, Color b) => new Color(
         (byte) (a.R + b.R),
         (byte) (a.G + b.G),
@@ -69,11 +85,13 @@ namespace Surreal.Graphics {
         (byte) (a.A - b.A)
     );
 
-    private static uint Pack(byte first, byte second, byte third)
-      => (uint) ((first << 24) | (second << 16) | (third << 8));
+    private static uint Pack(byte first, byte second, byte third) {
+      return (uint) ((first << 24) | (second << 16) | (third << 8));
+    }
 
-    private static uint Pack(byte first, byte second, byte third, byte forth)
-      => (uint) ((first << 24) | (second << 16) | (third << 8) | (forth << 0));
+    private static uint Pack(byte first, byte second, byte third, byte forth) {
+      return (uint) ((first << 24) | (second << 16) | (third << 8) | (forth << 0));
+    }
   }
 
   public static class ColorExtensions {
