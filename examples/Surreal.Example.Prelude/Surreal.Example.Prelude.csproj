@@ -1,14 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Prelude</AssemblyName>
     <RootNamespace>Prelude</RootNamespace>
     <ApplicationIcon>./Prelude.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a software-rendered dungeon crawler based on a game by Notch.</Description>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <OutputType>WinExe</OutputType>
   </PropertyGroup>
   <Import Project="..\..\Shared.props" />
   <Import Project="..\..\Executables.props" />

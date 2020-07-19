@@ -1,13 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>HelloWorld</AssemblyName>
     <RootNamespace>HelloWorld</RootNamespace>
     <Description>A super basic example of bootstrapping with Surreal.</Description>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <OutputType>WinExe</OutputType>
   </PropertyGroup>
   <Import Project="..\..\Shared.props" />
   <Import Project="..\..\Executables.props" />

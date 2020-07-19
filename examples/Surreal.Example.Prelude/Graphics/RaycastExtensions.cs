@@ -3,6 +3,7 @@ using System.Numerics;
 using Prelude.Core;
 using Surreal.Framework.Tiles;
 using Surreal.Graphics;
+using Surreal.Graphics.Textures;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
@@ -41,7 +42,7 @@ namespace Prelude.Graphics {
       return position;
     }
 
-    public static Tile GetNearestTile(this IGrid<Tile> grid, Ray ray) {
+    public static Tile GetNearestTile(this TileMap<Tile> grid, Ray ray) {
       var (origin, direction) = ray;
 
       var offsetX = 0f;
@@ -62,7 +63,7 @@ namespace Prelude.Graphics {
     }
 
     public static void DrawColoredColumn(
-        this IGrid<Color> target,
+        this ImageRegion target,
         int sourceX,
         Vector2 point,
         float height,
@@ -76,9 +77,9 @@ namespace Prelude.Graphics {
     }
 
     public static void DrawTexturedColumn(
-        this IGrid<Color> target,
+        this ImageRegion target,
         int sourceX,
-        IGrid<Color> texture,
+        ImageRegion texture,
         Vector2 point,
         float height,
         Color dampenColor) {

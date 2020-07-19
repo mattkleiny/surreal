@@ -1,14 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Isaac</AssemblyName>
     <RootNamespace>Isaac</RootNamespace>
     <ApplicationIcon>./Isaac.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a simple Isaac-inspired dungeon crawler.</Description>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <OutputType>WinExe</OutputType>
   </PropertyGroup>
   <Import Project="..\..\Shared.props" />
   <Import Project="..\..\Executables.props" />
