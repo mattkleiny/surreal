@@ -6,11 +6,13 @@ using Surreal.Mathematics;
 
 namespace Surreal.Platform.Internal.Audio.Resources {
   [DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
-  internal sealed class OpenTKAudioSource : AudioSource {
-    public readonly int Id = AL.GenSource();
+  internal sealed class OpenTKAudioSource : AudioSource, IHasNativeId {
+    private readonly int Id = AL.GenSource();
+
+    int IHasNativeId.Id => Id;
 
     private readonly OpenTKAudioDevice device;
-    private          float              volume;
+    private          float             volume;
 
     public OpenTKAudioSource(OpenTKAudioDevice device) {
       this.device = device;

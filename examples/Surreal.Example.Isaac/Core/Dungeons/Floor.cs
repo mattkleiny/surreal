@@ -1,8 +1,9 @@
+using System;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
-namespace Isaac.Core {
+namespace Isaac.Core.Dungeons {
   public sealed class Floor {
     private readonly SparseGrid<Room> rooms = new SparseGrid<Room>(room => room.Position);
 
@@ -17,9 +18,18 @@ namespace Isaac.Core {
         rooms[position] = value;
 
         if (value != null) {
+          value.Floor    = this;
           value.Position = position;
         }
       }
+    }
+
+    public void Add(Room room) {
+      if (rooms[room.Position] != null) {
+        throw new Exception($"The cell at {room.Position} is already occupied!");
+      }
+
+      this[room.Position] = room;
     }
 
     public void DrawGizmos(GeometryBatch batch) {

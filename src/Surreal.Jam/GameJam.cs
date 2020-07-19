@@ -76,12 +76,8 @@ namespace Surreal {
     protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);
 
-      SpriteBatch   = await CreateSpriteBatchAsync(SpriteCountHint);
+      SpriteBatch   = await SpriteBatch.CreateDefaultAsync(GraphicsDevice);
       GeometryBatch = await GeometryBatch.CreateDefaultAsync(GraphicsDevice);
-    }
-
-    protected virtual async Task<SpriteBatch> CreateSpriteBatchAsync(int spriteCountHint) {
-      return await SpriteBatch.CreateDefaultAsync(GraphicsDevice, spriteCountHint);
     }
 
     protected override void RegisterServices(IServiceContainer services) {

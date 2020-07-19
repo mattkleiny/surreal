@@ -156,13 +156,10 @@ namespace Surreal.Graphics.Meshes {
     }
 
     public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, PrimitiveType type) {
-      var destination = vertices.Span[vertexCount..];
+      var destination = new SpanList<Vertex>(vertices.Span[vertexCount..points.Length]);
 
       for (var i = 0; i < points.Length; i++) {
-        ref var vertex = ref destination[i];
-
-        vertex.Position = points[i];
-        vertex.Color    = color;
+        destination.Add(new Vertex(points[i], color));
       }
 
       vertexCount += points.Length;

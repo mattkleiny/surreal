@@ -37,7 +37,7 @@ namespace Surreal.Graphics.Materials {
 
       public override async Task<ShaderProgram> LoadAsync(Path path, IAssetLoaderContext context) {
         if (hotReloading && path.GetFileSystem().SupportsWatcher) {
-          return new HotLoadingShaderProgram(device, path);
+          return new HotReloadProxy(device, path);
         }
 
         var input  = await context.GetAsync<ShadyProgram>(path);
@@ -47,7 +47,7 @@ namespace Surreal.Graphics.Materials {
       }
     }
 
-    private sealed class HotLoadingShaderProgram : ShaderProgram {
+    private sealed class HotReloadProxy : ShaderProgram {
       private readonly IGraphicsDevice device;
       private readonly IPathWatcher    watcher;
 
@@ -55,7 +55,7 @@ namespace Surreal.Graphics.Materials {
       public Path           Path    { get; }
       public ShaderProgram? Program { get; private set; }
 
-      public HotLoadingShaderProgram(IGraphicsDevice device, Path path) {
+      public HotReloadProxy(IGraphicsDevice device, Path path) {
         this.device = device;
 
         Path = path;
@@ -142,6 +142,7 @@ namespace Surreal.Graphics.Materials {
       protected override void Dispose(bool managed) {
         if (managed) {
           watcher.Dispose();
+          Program?.Dispose();
         }
 
         base.Dispose(managed);

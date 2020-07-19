@@ -6,7 +6,7 @@ using Surreal.Graphics.Textures;
 namespace Surreal.Platform.Internal.Graphics.Resources {
   [DebuggerDisplay("Render Target {Texture.Width}x{Texture.Height} @ {Texture.Format} ~{Texture.Size}")]
   internal sealed class OpenTKFrameBuffer : FrameBuffer, IHasNativeId {
-    public readonly int Id = GL.GenFramebuffer();
+    private readonly int Id = GL.GenFramebuffer();
 
     public override Texture Texture { get; }
     public          Image   Image   { get; }

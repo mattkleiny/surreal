@@ -14,7 +14,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
   internal sealed class OpenTKShaderProgram : ShaderProgram, IHasNativeId {
     private readonly Dictionary<string, int> locationCache = new Dictionary<string, int>();
 
-    public readonly int Id = GL.CreateProgram();
+    private readonly int Id = GL.CreateProgram();
 
     int IHasNativeId.Id => Id;
 
@@ -133,7 +133,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       var     elements = (float*) Unsafe.AsPointer(ref source);
 
       GL.UniformMatrix4(location, 1, false, elements);
-    }  
+    }
 
     public override unsafe void SetUniform(string alias, in Matrix3x2 matrix) {
       var location = GetUniformLocation(alias);

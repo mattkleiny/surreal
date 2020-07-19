@@ -25,11 +25,11 @@ namespace Surreal.Platform.Internal.Graphics {
     }
 
     public void Clear(Color color) {
-      ClearDepthBuffer();
-      ClearColorBuffer(color);
+      ClearDepth();
+      ClearColor(color);
     }
 
-    public void ClearColorBuffer(Color color) {
+    public void ClearColor(Color color) {
       GL.ClearColor(
           color.R / 255.0f,
           color.G / 255.0f,
@@ -40,7 +40,7 @@ namespace Surreal.Platform.Internal.Graphics {
       GL.Clear(ClearBufferMask.ColorBufferBit);
     }
 
-    public void ClearDepthBuffer() {
+    public void ClearDepth() {
       GL.Clear(ClearBufferMask.DepthBufferBit);
     }
 

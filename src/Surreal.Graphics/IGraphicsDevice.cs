@@ -13,8 +13,8 @@ namespace Surreal.Graphics {
     }
 
     void Clear(Color color);
-    void ClearColorBuffer(Color color);
-    void ClearDepthBuffer();
+    void ClearColor(Color color);
+    void ClearDepth();
 
     void DrawMeshImmediate<TVertex>(
         Mesh<TVertex> mesh,

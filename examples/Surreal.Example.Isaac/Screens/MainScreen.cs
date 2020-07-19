@@ -1,4 +1,4 @@
-﻿using Isaac.Core;
+﻿using Isaac.Core.Dungeons;
 using Surreal.Framework;
 using Surreal.Framework.Screens;
 using Surreal.Graphics.Cameras;
@@ -7,22 +7,26 @@ using Surreal.Mathematics.Linear;
 
 namespace Isaac.Screens {
   public sealed class MainScreen : GameScreen<Game> {
-    private readonly OrthographicCamera camera = new OrthographicCamera(256, 144);
-
     public MainScreen(Game game)
         : base(game) {
     }
 
-    public Floor Floor { get; } = new Floor();
+    public OrthographicCamera Camera { get; } = new OrthographicCamera(256 / 2, 144 / 2);
+    public Floor              Floor  { get; } = new Floor();
 
     public override void Initialize() {
       base.Initialize();
 
-      Floor[0, 0]  = new Room {NormalDoors = Directions.North | Directions.South};
-      Floor[-1, 0] = new Room {NormalDoors = Directions.East, SecretDoors = Directions.North};
-      Floor[0, 1]  = new Room {NormalDoors = Directions.West, SecretDoors = Directions.South};
-      Floor[0, 2]  = new Room {NormalDoors = Directions.South};
-      Floor[2, 2]  = new Room {NormalDoors = Directions.North};
+      var room = Floor[0, 0] = new Room {
+          Type = RoomType.Start
+      };
+
+      room.AddRoom(Direction.North)
+          .AddRoom(Direction.North, RoomType.Item)
+          .AddRoom(Direction.East)
+          .AddRoom(Direction.East)
+          .AddRoom(Direction.South, RoomType.Boss)
+          .AddRoom(Direction.West, RoomType.Secret);
     }
 
     public override void Input(GameTime time) {
@@ -36,7 +40,7 @@ namespace Isaac.Screens {
     public override void Draw(GameTime time) {
       base.Draw(time);
 
-      GeometryBatch.Begin(in camera.ProjectionView);
+      GeometryBatch.Begin(in Camera.ProjectionView);
 
       Floor.DrawGizmos(GeometryBatch);
 

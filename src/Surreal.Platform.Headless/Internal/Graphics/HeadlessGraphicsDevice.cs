@@ -17,11 +17,11 @@ namespace Surreal.Platform.Internal.Graphics {
       // no-op
     }
 
-    public void ClearColorBuffer(Color color) {
+    public void ClearColor(Color color) {
       // no-op
     }
 
-    public void ClearDepthBuffer() {
+    public void ClearDepth() {
       // no-op
     }
 
