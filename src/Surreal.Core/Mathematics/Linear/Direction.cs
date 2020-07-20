@@ -13,6 +13,16 @@ namespace Surreal.Mathematics.Linear {
   }
 
   public static class DirectionExtensions {
+    public static Direction NextDirection(this Random random) {
+      return random.Next(4) switch {
+          0 => Direction.North,
+          1 => Direction.South,
+          2 => Direction.East,
+          3 => Direction.West,
+          _ => throw new Exception("Unexpected value encountered!")
+      };
+    }
+
     public static Direction Opposite(this Direction direction) {
       var opposite = Direction.None;
 

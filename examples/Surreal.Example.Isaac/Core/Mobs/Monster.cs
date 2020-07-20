@@ -4,7 +4,11 @@ using Surreal.Mathematics.Timing;
 
 namespace Isaac.Core.Mobs {
   public sealed class Monster : Mob {
-    public Parameter<Brain> Brain { get; } = new Parameter<Brain>(SimpletonBrain.Instance);
+    public Monster(Brain brain) {
+      Brain = new Parameter<Brain>(brain);
+    }
+
+    public Parameter<Brain> Brain { get; }
 
     public override void Update(DeltaTime deltaTime) {
       base.Update(deltaTime);

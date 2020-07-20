@@ -25,6 +25,16 @@ namespace Isaac.Core.Dungeons {
     public DoorMask   SecretDoors = DoorMask.None;
     public RoomType   Type        = RoomType.Standard;
 
+    public bool TryAddRoom(out Room room, Direction direction, RoomType type = RoomType.Standard) {
+      if (Floor?[Position + direction.ToVector2I()] != null) {
+        room = this;
+        return false;
+      }
+
+      room = AddRoom(direction, type);
+      return true;
+    }
+
     public Room AddRoom(Direction direction, RoomType type = RoomType.Standard) {
       var room = new Room {
           Parent   = this,

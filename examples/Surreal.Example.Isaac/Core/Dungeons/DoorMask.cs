@@ -13,6 +13,8 @@ namespace Isaac.Core.Dungeons {
       this.doors = doors;
     }
 
+    public Direction UnusedDoors => Direction.All & ~doors;
+
     public bool HasDoor(Direction direction)    => doors.HasFlagFast(direction);
     public void AddDoor(Direction direction)    => doors |= direction;
     public void RemoveDoor(Direction direction) => doors &= ~direction;

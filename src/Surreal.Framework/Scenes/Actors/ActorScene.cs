@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Scenes.Actors {
-  public class ActorScene : IScene, IDisposable {
-    [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
+  public sealed class ActorScene : IScene, IDisposable {
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<ActorScene>();
 
     public List<Actor> Actors { get; } = new List<Actor>();
 
-    public virtual void Input(DeltaTime deltaTime) {
+    public void Input(DeltaTime deltaTime) {
       using var _ = Profiler.Track(nameof(Input));
 
       for (var i = 0; i < Actors.Count; i++) {
@@ -22,7 +20,7 @@ namespace Surreal.Framework.Scenes.Actors {
       }
     }
 
-    public virtual void Update(DeltaTime deltaTime) {
+    public void Update(DeltaTime deltaTime) {
       using var _ = Profiler.Track(nameof(Update));
 
       for (var i = 0; i < Actors.Count; i++) {
@@ -33,7 +31,7 @@ namespace Surreal.Framework.Scenes.Actors {
       }
     }
 
-    public virtual void Draw(DeltaTime deltaTime) {
+    public void Draw(DeltaTime deltaTime) {
       using var _ = Profiler.Track(nameof(Draw));
 
       for (var i = 0; i < Actors.Count; i++) {
@@ -44,7 +42,7 @@ namespace Surreal.Framework.Scenes.Actors {
       }
     }
 
-    public virtual void Dispose() {
+    public void Dispose() {
       for (var i = 0; i < Actors.Count; i++) {
         Actors[i].Dispose();
       }
