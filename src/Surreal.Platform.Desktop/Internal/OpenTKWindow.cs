@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Reflection;
 using OpenTK;
 using OpenTK.Graphics;
 
 namespace Surreal.Platform.Internal {
-  internal sealed class OpenTKWindow : IDisposable, IDesktopWindow {
+  internal sealed class OpenTKWindow : IDesktopWindow {
     private readonly GameWindow window;
 
     public OpenTKWindow(DesktopConfiguration configuration) {
       window = new GameWindow(
-          width: configuration.Width   ?? 1024,
+          width: configuration.Width ?? 1024,
           height: configuration.Height ?? 768,
           mode: GraphicsMode.Default,
           title: configuration.Title,
@@ -30,17 +29,16 @@ namespace Surreal.Platform.Internal {
         if (assembly != null) {
           window.Icon = Icon.ExtractAssociatedIcon(assembly.Location);
         }
-      }
-      catch {
+      } catch {
         // no-op
       }
 
       // set default width/height based on monitor resolution
-      if (configuration.Width  == null) Width  = DisplayDevice.Default.Width  * 5 / 6;
+      if (configuration.Width == null) Width   = DisplayDevice.Default.Width * 5 / 6;
       if (configuration.Height == null) Height = DisplayDevice.Default.Height * 5 / 6;
 
       // center on-screen
-      window.X = DisplayDevice.Default.Width  / 2 - Width  / 2;
+      window.X = DisplayDevice.Default.Width / 2 - Width / 2;
       window.Y = DisplayDevice.Default.Height / 2 - Height / 2;
 
       window.Resize += (sender, args) => Resized?.Invoke(Width, Height);

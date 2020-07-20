@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Shaders;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
+using Color = Surreal.Graphics.Color;
+using Image = Surreal.Graphics.Textures.Image;
 using PrimitiveType = Surreal.Graphics.Meshes.PrimitiveType;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
@@ -78,7 +81,7 @@ namespace Surreal.Platform.Internal.Graphics {
       return new OpenTKGraphicsBuffer<T>();
     }
 
-    public ShaderProgram CreateShaderProgram(params Shader[] shaders) {
+    public ShaderProgram CreateShaderProgram(IReadOnlyList<Shader> shaders) {
       return new OpenTKShaderProgram(shaders);
     }
 

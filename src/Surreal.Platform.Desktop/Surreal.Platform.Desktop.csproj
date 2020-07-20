@@ -13,6 +13,6 @@
     <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenTK.NetStandard" Version="1.0.7-prerelease" />
+    <PackageReference Include="OpenTK.NetStandard" Version="1.0.5.22" />
   </ItemGroup>
 </Project>

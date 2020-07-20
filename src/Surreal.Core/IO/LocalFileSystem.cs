@@ -63,7 +63,11 @@ namespace Surreal.IO {
         watcher.Changed += (sender, args) => Modified?.Invoke(path);
         watcher.Renamed += (sender, args) => Modified?.Invoke(path);
         watcher.Deleted += (sender, args) => Deleted?.Invoke(path);
+
+        Path = path;
       }
+
+      public Path Path { get; }
 
       public event Action<Path> Created  = null!;
       public event Action<Path> Modified = null!;

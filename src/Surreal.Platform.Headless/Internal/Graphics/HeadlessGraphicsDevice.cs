@@ -1,5 +1,6 @@
+using System.Collections.Generic;
 using Surreal.Graphics;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Shaders;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
@@ -55,7 +56,7 @@ namespace Surreal.Platform.Internal.Graphics {
       return new HeadlessGraphicsBuffer<T>();
     }
 
-    public ShaderProgram CreateShaderProgram(params Shader[] shaders) {
+    public ShaderProgram CreateShaderProgram(IReadOnlyList<Shader> shaders) {
       return new HeadlessShaderProgram();
     }
 

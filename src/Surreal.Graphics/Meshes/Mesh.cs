@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Shaders;
 
 namespace Surreal.Graphics.Meshes {
+  // TODO: create a mesh builder/mesh templates for common shapes
+  
   [DebuggerDisplay("Mesh with {Vertices.Length} vertices and {Indices.Length} indices")]
   public sealed class Mesh<TVertex> : IDisposable
       where TVertex : unmanaged {

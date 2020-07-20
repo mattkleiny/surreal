@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Minecraft.Core.Coordinates;
 using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Shaders;
 using Surreal.Graphics.Meshes;
 
 namespace Minecraft.Core.Rendering {

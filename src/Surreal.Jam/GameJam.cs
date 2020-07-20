@@ -14,14 +14,14 @@ using Surreal.Framework;
 using Surreal.Framework.Screens;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
-using Surreal.Graphics.Materials;
-using Surreal.Graphics.Materials.Shady;
+using Surreal.Graphics.Materials.Shaders;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
+using Surreal.Languages;
 using Surreal.Utilities;
 
 namespace Surreal {
@@ -103,8 +103,8 @@ namespace Surreal {
       assets.RegisterLoader(new ColorPalette.Loader());
       assets.RegisterLoader(new ComputeProgram.Loader(ComputeDevice));
       assets.RegisterLoader(new Image.Loader());
-      assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, hotReloading: EnableDebugTools));
-      assets.RegisterLoader(new ShadyProgram.Loader());
+      assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, new SpirvShaderCompiler(), hotReloading: EnableDebugTools));
+      assets.RegisterLoader(new SourceText.Loader());
       assets.RegisterLoader(new Texture.Loader(GraphicsDevice));
       assets.RegisterLoader(new AudioBuffer.Loader());
     }

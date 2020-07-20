@@ -8,7 +8,7 @@ using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Framework;
 using Surreal.Graphics;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Shaders;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
 using static Surreal.Mathematics.Maths;

@@ -4,8 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Collections;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Shaders;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
 using ShaderType = OpenTK.Graphics.OpenGL.ShaderType;
@@ -18,7 +17,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
 
     int IHasNativeId.Id => Id;
 
-    public OpenTKShaderProgram(params Shader[] shaders) {
+    public OpenTKShaderProgram(IReadOnlyList<Shader> shaders) {
       Link(shaders);
     }
 
@@ -47,14 +46,14 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    private void Link(ArraySlice<Shader> shaders) {
-      var shaderIds = new int[shaders.Length];
+    private void Link(IReadOnlyList<Shader> shaders) {
+      var shaderIds = new int[shaders.Count];
 
       GL.UseProgram(Id);
 
-      for (var i = 0; i < shaders.Length; i++) {
+      for (var i = 0; i < shaders.Count; i++) {
         var shader = shaders[i];
-        var code   = Encoding.UTF8.GetString(shader.Raw);
+        var code   = Encoding.UTF8.GetString(shader.Bytes.ToArray());
 
         var shaderId = shaderIds[i] = GL.CreateShader(ConvertShaderType(shader.Type));
 
@@ -159,12 +158,12 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       base.Dispose(managed);
     }
 
-    private static ShaderType ConvertShaderType(Surreal.Graphics.Materials.ShaderType shaderType) {
+    private static ShaderType ConvertShaderType(Surreal.Graphics.Materials.Shaders.ShaderType shaderType) {
       switch (shaderType) {
-        case Surreal.Graphics.Materials.ShaderType.Compute:  return ShaderType.ComputeShader;
-        case Surreal.Graphics.Materials.ShaderType.Vertex:   return ShaderType.VertexShader;
-        case Surreal.Graphics.Materials.ShaderType.Fragment: return ShaderType.FragmentShader;
-        case Surreal.Graphics.Materials.ShaderType.Geometry: return ShaderType.GeometryShader;
+        case Surreal.Graphics.Materials.Shaders.ShaderType.Compute:  return ShaderType.ComputeShader;
+        case Surreal.Graphics.Materials.Shaders.ShaderType.Vertex:   return ShaderType.VertexShader;
+        case Surreal.Graphics.Materials.Shaders.ShaderType.Fragment: return ShaderType.FragmentShader;
+        case Surreal.Graphics.Materials.Shaders.ShaderType.Geometry: return ShaderType.GeometryShader;
 
         default:
           throw new ArgumentOutOfRangeException(nameof(shaderType), shaderType, null);

@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Compute.Execution;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Materials.Shaders;
 using Surreal.Platform.Internal.Graphics.Resources;
-using ShaderType = Surreal.Graphics.Materials.ShaderType;
+using ShaderType = Surreal.Graphics.Materials.Shaders.ShaderType;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
   internal sealed class OpenTKComputeProgram : ComputeProgram {
@@ -13,7 +13,7 @@ namespace Surreal.Platform.Internal.Compute.Resources {
     public OpenTKComputeProgram(ReadOnlySpan<byte> raw) {
       var shader = new Shader(ShaderType.Compute, raw.ToArray());
 
-      computeShader = new OpenTKShaderProgram(shader);
+      computeShader = new OpenTKShaderProgram(new[] {shader});
     }
 
     public override void Execute(int groupsX, int groupsY, int groupsZ) {
