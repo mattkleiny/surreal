@@ -8,7 +8,7 @@ using Surreal.Mathematics.Timing;
 namespace Prelude.Core.Actors {
   public class Player : Actor {
     private readonly TileMap<Tile> map;
-    private readonly Camera camera;
+    private readonly Camera        camera;
 
     public Player(TileMap<Tile> map, Camera camera) {
       this.map    = map;
@@ -31,7 +31,7 @@ namespace Prelude.Core.Actors {
           MathF.Cos(rotation)
       );
 
-      Direction = matrix            * Direction;
+      Direction = matrix * Direction;
       Velocity  = Direction * Speed * input.Y;
     }
 

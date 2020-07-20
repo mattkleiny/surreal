@@ -2,6 +2,7 @@
 using Isaac.Core;
 using Isaac.Core.Mobs;
 using Surreal.Framework;
+using Surreal.Framework.Scenes;
 using Surreal.Framework.Scenes.Actors;
 using Surreal.Framework.Screens;
 using Surreal.Input.Keyboard;
@@ -18,6 +19,8 @@ namespace Isaac.Screens {
     public override void Initialize() {
       base.Initialize();
 
+      Plugins.Add(new ScenePlugin(Scene));
+
       Scene.Actors.Add(CameraRig);
       Scene.Actors.Add(new Dungeon());
       Scene.Actors.Add(new Player());
@@ -26,27 +29,17 @@ namespace Isaac.Screens {
     }
 
     public override void Input(GameTime time) {
-      if (Keyboard.IsKeyPressed(Key.Escape)) {
-        Game.Exit();
-      }
+      if (Keyboard.IsKeyPressed(Key.Escape)) Game.Exit();
 
-      Scene.Input(time.DeltaTime);
-    }
-
-    public override void Update(GameTime time) {
-      Scene.Update(time.DeltaTime);
+      base.Input(time);
     }
 
     public override void Draw(GameTime time) {
       GeometryBatch.Begin(in CameraRig.Camera.ProjectionView);
 
-      Scene.Draw(time.DeltaTime);
+      base.Draw(time);
 
       GeometryBatch.End();
-    }
-
-    public override void Dispose() {
-      Scene.Dispose();
     }
   }
 }

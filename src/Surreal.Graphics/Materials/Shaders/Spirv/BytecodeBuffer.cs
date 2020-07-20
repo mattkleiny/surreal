@@ -22,4 +22,4 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
 
     public static implicit operator Memory<byte>(BytecodeBuffer buffer) => buffer[..];
   }
-}S
+}

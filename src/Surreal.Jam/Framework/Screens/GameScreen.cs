@@ -9,7 +9,6 @@ using Surreal.Graphics.Sprites;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
-using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Screens {
   public abstract class GameScreen<TGame> : Screen
@@ -17,24 +16,21 @@ namespace Surreal.Framework.Screens {
     protected GameScreen(TGame game)
         : base(game) {
       Assets = new AssetManager(Game.Assets);
-      Clock  = Clocks.Relative(Game.Clock);
     }
 
     public new TGame Game => (TGame) base.Game;
 
-    public IServiceProvider Services => Game.Services;
-
-    public IAudioDevice    AudioDevice    => Game.AudioDevice;
-    public IComputeDevice  ComputeDevice  => Game.ComputeDevice;
-    public IGraphicsDevice GraphicsDevice => Game.GraphicsDevice;
-    public IInputManager   InputManager   => Game.InputManager;
-    public IKeyboardDevice Keyboard       => Game.Keyboard;
-    public IMouseDevice    Mouse          => Game.Mouse;
-    public IScreenManager  Screens        => Game.Screens;
-    public SpriteBatch     SpriteBatch    => Game.SpriteBatch;
-    public GeometryBatch   GeometryBatch  => Game.GeometryBatch;
-
-    public AssetManager Assets { get; }
+    public AssetManager     Assets         { get; }
+    public IServiceProvider Services       => Game.Services;
+    public IAudioDevice     AudioDevice    => Game.AudioDevice;
+    public IComputeDevice   ComputeDevice  => Game.ComputeDevice;
+    public IGraphicsDevice  GraphicsDevice => Game.GraphicsDevice;
+    public IInputManager    InputManager   => Game.InputManager;
+    public IKeyboardDevice  Keyboard       => Game.Keyboard;
+    public IMouseDevice     Mouse          => Game.Mouse;
+    public IScreenManager   Screens        => Game.Screens;
+    public SpriteBatch      SpriteBatch    => Game.SpriteBatch;
+    public GeometryBatch    GeometryBatch  => Game.GeometryBatch;
 
     public override void Initialize() {
       LoadContentAsync(Assets).Wait();

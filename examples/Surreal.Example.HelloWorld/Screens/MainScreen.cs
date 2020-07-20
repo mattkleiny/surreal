@@ -1,27 +1,17 @@
 using System.Numerics;
-using System.Threading.Tasks;
-using Surreal.Assets;
 using Surreal.Framework;
 using Surreal.Framework.Screens;
 using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
-using Surreal.Graphics.Meshes;
 using Surreal.Input.Keyboard;
 using Surreal.Mathematics.Curves;
 
 namespace HelloWorld.Screens {
   public sealed class MainScreen : GameScreen<Game> {
     private readonly OrthographicCamera camera = new OrthographicCamera(256 / 4, 144 / 4);
-    private          GeometryBatch      batch = null!;
 
     public MainScreen(Game game)
         : base(game) {
-    }
-
-    protected override async Task LoadContentAsync(IAssetResolver assets) {
-      await base.LoadContentAsync(assets);
-
-      batch = await GeometryBatch.CreateDefaultAsync(GraphicsDevice);
     }
 
     public override void Input(GameTime time) {
@@ -30,39 +20,35 @@ namespace HelloWorld.Screens {
       base.Input(time);
     }
 
-    public override void Update(GameTime time) {
-      camera.Update();
-    }
-
     public override void Draw(GameTime time) {
-      batch.Begin(in camera.ProjectionView);
+      GeometryBatch.Begin(in camera.ProjectionView);
 
-      batch.DrawLine(
+      GeometryBatch.DrawLine(
           from: -new Vector2(256, 144) / 2f,
-          to: new Vector2(256, 144)    / 2f,
+          to: new Vector2(256, 144) / 2f,
           color: Color.Red
       );
 
-      batch.DrawCircle(
+      GeometryBatch.DrawCircle(
           center: new Vector2(-4f, 4f),
           radius: 5f,
           color: Color.Blue,
           segments: 32
       );
 
-      batch.DrawSolidQuad(
+      GeometryBatch.DrawSolidQuad(
           center: Vector2.Zero,
           size: new Vector2(5f, 10f),
           color: Color.Blue
       );
 
-      batch.DrawWireQuad(
+      GeometryBatch.DrawWireQuad(
           center: Vector2.Zero,
           size: new Vector2(5f, 10f) * 2f,
           color: Color.Green
       );
 
-      batch.DrawArc(
+      GeometryBatch.DrawArc(
           center: Vector2.Zero,
           startAngle: 0f,
           endAngle: 90f,
@@ -71,21 +57,21 @@ namespace HelloWorld.Screens {
           segments: 32
       );
 
-      batch.DrawSolidTriangle(
+      GeometryBatch.DrawSolidTriangle(
           a: Vector2.Zero,
           b: new Vector2(-16f, 16f),
           c: new Vector2(16f, 16f),
           color: Color.Magenta
       );
 
-      batch.DrawWireTriangle(
+      GeometryBatch.DrawWireTriangle(
           a: Vector2.Zero,
           b: new Vector2(-16f, -16f),
           c: new Vector2(16f, -16f),
           color: Color.Green
       );
 
-      batch.DrawCurve(
+      GeometryBatch.DrawCurve(
           curve: new QuadraticBezierCurve(
               startPoint: new Vector2(-16f, -16f),
               controlPoint: new Vector2(-16, 16),
@@ -95,13 +81,7 @@ namespace HelloWorld.Screens {
           resolution: 32
       );
 
-      batch.End();
-    }
-
-    public override void Dispose() {
-      batch?.Dispose();
-
-      base.Dispose();
+      GeometryBatch.End();
     }
   }
 }
