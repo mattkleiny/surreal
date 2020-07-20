@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Surreal.Languages;
 using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 

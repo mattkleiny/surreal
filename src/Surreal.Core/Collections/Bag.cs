@@ -16,8 +16,9 @@ namespace Surreal.Collections {
       Count = 0;
     }
 
-    public Span<T> Span  => new Span<T>(elements, 0, Count);
-    public int     Count { get; private set; }
+    public Span<T>   Span   => new Span<T>(elements, 0, Count);
+    public Memory<T> Memory => new Memory<T>(elements, 0, Count);
+    public int       Count  { get; private set; }
 
     public T this[int index] {
       get => elements[index];

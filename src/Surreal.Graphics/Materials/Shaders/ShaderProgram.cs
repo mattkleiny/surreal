@@ -31,10 +31,10 @@ namespace Surreal.Graphics.Materials.Shaders {
 
     public sealed class Loader : AssetLoader<ShaderProgram> {
       private readonly IGraphicsDevice device;
-      private readonly ShaderCompiler  compiler;
+      private readonly IShaderCompiler compiler;
       private readonly bool            hotReloading;
 
-      public Loader(IGraphicsDevice device, ShaderCompiler compiler, bool hotReloading) {
+      public Loader(IGraphicsDevice device, IShaderCompiler compiler, bool hotReloading) {
         this.device       = device;
         this.compiler     = compiler;
         this.hotReloading = hotReloading;

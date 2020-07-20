@@ -5,8 +5,9 @@ using Surreal.Assets;
 using Surreal.IO;
 
 namespace Surreal.Languages {
-  public abstract class SourceText {
-    public static SourceText FromString(string source) => new StringText(source);
+  public abstract class SourceText : IDisposable {
+    public static       SourceText       FromString(string source) => new StringText(source);
+    public static async Task<SourceText> FromPathAsync(Path path)  => new MemoryMappedText(path, await path.GetSizeAsync());
 
     public char this[Index index] => Span[index];
     public ReadOnlySpan<char> this[Range range] => Span[range];
@@ -15,6 +16,9 @@ namespace Surreal.Languages {
 
     public override string ToString()            => ToString(Range.All);
     public          string ToString(Range range) => Span[range].ToString();
+
+    public virtual void Dispose() {
+    }
 
     [DebuggerDisplay("String source {Span.Length} characters")]
     private sealed class StringText : SourceText {
@@ -25,6 +29,20 @@ namespace Surreal.Languages {
       }
 
       public override ReadOnlySpan<char> Span => source;
+    }
+
+    [DebuggerDisplay("Memory-mapped source {Span.Length} characters")]
+    private sealed class MemoryMappedText : SourceText {
+      private readonly IDisposableBuffer<char> buffer;
+
+      public MemoryMappedText(Path path, int size) {
+        // TODO: interpret this correctly, somehow
+        buffer = Buffers.MapFromFile<char>(path.Target, 0, size);
+      }
+
+      public override ReadOnlySpan<char> Span => buffer.Span;
+
+      public override void Dispose() => buffer.Dispose();
     }
 
     public sealed class Loader : AssetLoader<SourceText> {

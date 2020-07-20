@@ -3,58 +3,43 @@ using System.Collections.Generic;
 using static Surreal.Graphics.Materials.Shaders.ShaderExpression;
 using static Surreal.Graphics.Materials.Shaders.ShaderStatement;
 
-namespace Surreal.Graphics.Materials.Shaders {
-  public abstract class ShaderCompiler {
-    public abstract Shader Compile(
-        ShaderProgramType programType,
-        ShaderType shaderType,
-        IEnumerable<UniformDeclaration> uniforms,
-        IEnumerable<FunctionDeclaration> functions
-    );
-  }
-
-  public sealed class SpirvShaderCompiler : ShaderCompiler {
-    public override Shader Compile(
+namespace Surreal.Graphics.Materials.Shaders.Spirv {
+  public sealed class SpirvShaderCompiler : IShaderCompiler {
+    public Shader Compile(
         ShaderProgramType programType,
         ShaderType shaderType,
         IEnumerable<UniformDeclaration> uniforms,
         IEnumerable<FunctionDeclaration> functions) {
-      var builder     = new ModuleBuilder(programType);
-      var transformer = new Transformer(builder);
+      var module   = BuildModule(programType, shaderType, uniforms, functions);
+      var bytecode = module.Compile();
+
+      return new Shader(shaderType, bytecode);
+    }
+
+    private static SpirvModule BuildModule(
+        ShaderProgramType programType,
+        ShaderType shaderType,
+        IEnumerable<UniformDeclaration> uniforms,
+        IEnumerable<FunctionDeclaration> functions) {
+      var module      = new SpirvModule();
+      var transformer = new Transformer(module);
+
+      foreach (var uniform in uniforms) {
+        uniform.Accept(transformer);
+      }
 
       foreach (var function in functions) {
         function.Accept(transformer);
       }
 
-      var module = builder.Build();
-
-      return new Shader(shaderType, module.Compile());
-    }
-
-    private sealed class Module {
-      public Memory<byte> Compile() {
-        throw new NotImplementedException();
-      }
-    }
-
-    private sealed class ModuleBuilder {
-      public ModuleBuilder(ShaderProgramType programType) {
-        throw new NotImplementedException();
-      }
-
-      public Module Build() {
-        throw new NotImplementedException();
-      }
-    }
-
-    private abstract class Instruction {
+      return module;
     }
 
     private sealed class Transformer : ShaderStatement.IVisitor<Instruction[]>, ShaderExpression.IVisitor<Instruction[]> {
-      private readonly ModuleBuilder builder;
+      private readonly SpirvModule module;
 
-      public Transformer(ModuleBuilder builder) {
-        this.builder = builder;
+      public Transformer(SpirvModule module) {
+        this.module = module;
       }
 
       public Instruction[] Visit(MetadataDeclaration statement) {

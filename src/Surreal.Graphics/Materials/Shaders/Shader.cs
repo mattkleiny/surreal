@@ -15,12 +15,12 @@ namespace Surreal.Graphics.Materials.Shaders {
       return new Shader(type, await path.ReadAllBytesAsync());
     }
 
-    public ShaderType   Type  { get; }
-    public Memory<byte> Bytes { get; }
+    public ShaderType   Type     { get; }
+    public Memory<byte> Bytecode { get; }
 
-    public Shader(ShaderType type, Memory<byte> bytes) {
-      Type  = type;
-      Bytes = bytes;
+    public Shader(ShaderType type, Memory<byte> bytecode) {
+      Type     = type;
+      Bytecode = bytecode;
     }
   }
 }

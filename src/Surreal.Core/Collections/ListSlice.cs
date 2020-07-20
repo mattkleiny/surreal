@@ -13,6 +13,15 @@ namespace Surreal.Collections {
         : this(list, 0, list.Count) {
     }
 
+    public ListSlice(IReadOnlyList<T> list, Range range) {
+      var (offset, length) = range.GetOffsetAndLength(list.Count);
+
+      this.list = list;
+
+      Offset = offset;
+      Length = length;
+    }
+
     public ListSlice(IReadOnlyList<T> list, int offset, int length) {
       Debug.Assert(offset >= 0, "offset >= 0");
       Debug.Assert(length >= 0, "count >= 0");

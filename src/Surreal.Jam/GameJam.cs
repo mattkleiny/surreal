@@ -15,6 +15,7 @@ using Surreal.Framework.Screens;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials.Shaders;
+using Surreal.Graphics.Materials.Shaders.Spirv;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;

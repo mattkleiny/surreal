@@ -53,7 +53,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
 
       for (var i = 0; i < shaders.Count; i++) {
         var shader = shaders[i];
-        var code   = Encoding.UTF8.GetString(shader.Bytes.ToArray());
+        var code   = Encoding.UTF8.GetString(shader.Bytecode.ToArray());
 
         var shaderId = shaderIds[i] = GL.CreateShader(ConvertShaderType(shader.Type));
 
