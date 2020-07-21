@@ -60,7 +60,8 @@ namespace Isaac.Core.Dungeons {
     public void DrawGizmos(GeometryBatch batch) {
       var center = new Vector2(Position.X * Size.X, Position.Y * Size.Y);
 
-      batch.DrawWireQuad(center, Size, Type switch {
+      batch.DrawWireQuad(center, Size, Color.White);
+      batch.DrawWireQuad(center, new Vector2(Size.X - 2f, Size.Y - 2f), Type switch {
           RoomType.Standard => Color.White,
           RoomType.Start    => Color.Green,
           RoomType.Boss     => Color.Red,

@@ -44,6 +44,8 @@ namespace Isaac.Core.Dungeons {
           goto generate;
         }
       }
+
+      room.Type = RoomType.Boss;
     });
 
     private static DungeonGenerator Factory(Action<Dungeon, Random> factory) => seed => {

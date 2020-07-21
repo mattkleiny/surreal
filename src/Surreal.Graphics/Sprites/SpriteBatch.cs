@@ -161,12 +161,12 @@ namespace Surreal.Graphics.Sprites {
       Device.Pipeline.TextureUnits[0] = lastTexture;
 
       mesh.Vertices.Write(vertices.Span[..indexCount]);
-      mesh.DrawImmediate(ActiveShader!, vertexCount, indexCount); // 6 indices per sprite
+      mesh.DrawImmediate(ActiveShader!, vertexCount, indexCount);
 
       vertexCount = 0;
     }
 
-    private unsafe void CreateIndices(int indexCount) {
+    private void CreateIndices(int indexCount) {
       Span<ushort> indices = stackalloc ushort[indexCount];
 
       for (ushort i = 0, j = 0; i < indexCount; i += 6, j += 4) {
