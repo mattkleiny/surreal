@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Surreal.Assets;
+using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Textures {
@@ -27,7 +30,7 @@ namespace Surreal.Graphics.Textures {
     }
 
     public IEnumerable<TextureRegion> Subdivide(int regionWidth, int regionHeight) {
-      var regionsX = Width  / regionWidth;
+      var regionsX = Width / regionWidth;
       var regionsY = Height / regionHeight;
 
       for (var y = 0; y < regionsY; y++)
@@ -44,6 +47,14 @@ namespace Surreal.Graphics.Textures {
 
     public void Dispose() {
       Texture.Dispose();
+    }
+
+    public sealed class Loader : AssetLoader<TextureRegion> {
+      public override async Task<TextureRegion> LoadAsync(Path path, IAssetLoaderContext context) {
+        var texture = await context.GetAsync<Texture>(path);
+
+        return texture.ToRegion();
+      }
     }
   }
 }

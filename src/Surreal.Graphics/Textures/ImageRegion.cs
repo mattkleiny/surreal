@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Grids;
@@ -62,6 +64,14 @@ namespace Surreal.Graphics.Textures {
 
     public void Dispose() {
       Image.Dispose();
+    }
+
+    public sealed class Loader : AssetLoader<ImageRegion> {
+      public override async Task<ImageRegion> LoadAsync(Path path, IAssetLoaderContext context) {
+        var image = await context.GetAsync<Image>(path);
+
+        return image.ToRegion();
+      }
     }
   }
 }

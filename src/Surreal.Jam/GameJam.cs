@@ -104,9 +104,11 @@ namespace Surreal {
       assets.RegisterLoader(new ColorPalette.Loader());
       assets.RegisterLoader(new ComputeProgram.Loader(ComputeDevice));
       assets.RegisterLoader(new Image.Loader());
+      assets.RegisterLoader(new ImageRegion.Loader());
       assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, new SpirvShaderCompiler(), hotReloading: EnableDebugTools));
       assets.RegisterLoader(new SourceText.Loader());
       assets.RegisterLoader(new Texture.Loader(GraphicsDevice));
+      assets.RegisterLoader(new TextureRegion.Loader());
       assets.RegisterLoader(new AudioBuffer.Loader());
     }
 
