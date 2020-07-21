@@ -10,8 +10,7 @@ namespace Surreal.Diagnostics.Console {
         : base(game) {
     }
 
-    public IKeyboardDevice Keyboard => Game.Keyboard;
-    public IGameConsole    Console  => Game.Console;
+    public IGameConsole Console => Game.Console;
 
     public override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);

@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Surreal.IO {
+namespace Surreal.IO.VFS {
   public sealed class LocalFileSystem : FileSystem {
     private static readonly string PathSeparator = System.IO.Path.PathSeparator.ToString();
 

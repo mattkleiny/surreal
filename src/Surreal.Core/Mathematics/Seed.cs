@@ -32,7 +32,5 @@ namespace Surreal.Mathematics {
 
     public static bool operator ==(Seed left, Seed right) => left.Equals(right);
     public static bool operator !=(Seed left, Seed right) => !left.Equals(right);
-
-    public static implicit operator int(Seed seed) => seed.Value;
   }
 }

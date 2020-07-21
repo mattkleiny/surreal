@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Surreal.IO {
+namespace Surreal.IO.VFS {
   public sealed class ResourceFileSystem : FileSystem {
     private static Assembly[] GetDefaultAssemblies() => AppDomain.CurrentDomain
         .GetAssemblies()

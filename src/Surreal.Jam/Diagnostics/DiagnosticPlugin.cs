@@ -1,4 +1,5 @@
 using Surreal.Framework;
+using Surreal.Input.Keyboard;
 using Surreal.Mathematics.Linear;
 using Surreal.UI;
 
@@ -16,6 +17,8 @@ namespace Surreal.Diagnostics {
     public Vector2I Size      { get; set; } = new Vector2I(640, 480);
     public Stage    Stage     { get; set; }
     public bool     IsVisible { set; get; }
+
+    public IKeyboardDevice Keyboard => Game.Keyboard;
 
     public override void Input(GameTime time) {
       base.Input(time);

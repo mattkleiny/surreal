@@ -8,19 +8,20 @@ namespace Surreal.Diagnostics.Console.Interpreter {
   public sealed class ConsoleInterpreter : IConsoleInterpreter {
     private readonly BindingCollection bindings = new BindingCollection();
 
-    private readonly ExecutionVisitor visitor;
+    private readonly ExecutionVisitor executor;
 
     public ConsoleInterpreter(Action<IConsoleInterpreterBindings> builder) {
       builder(bindings);
 
-      visitor = new ExecutionVisitor(bindings);
+      executor = new ExecutionVisitor(bindings);
     }
 
     public string? Evaluate(string raw) {
       try {
-        var text   = SourceText.FromString(raw);
-        var parser = new ConsoleLanguageParser(text);
-        var result = parser.Expression().Accept(visitor);
+        var text       = SourceText.FromString(raw);
+        var parser     = new ConsoleLanguageParser(text);
+        var expression = parser.Expression();
+        var result     = expression.Accept(executor);
 
         return result?.ToString() ?? "OK";
       } catch (Exception exception) {

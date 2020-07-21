@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Isaac.Core;
+﻿using Isaac.Core;
 using Isaac.Core.Brains;
 using Isaac.Core.Dungeons;
 using Isaac.Core.Mobs;
@@ -11,13 +10,12 @@ using Surreal.Input.Keyboard;
 using Surreal.Mathematics;
 
 namespace Isaac.Screens {
-  public sealed class DungeonScreen : GameScreen<Game> {
-    public DungeonScreen(Game game, DungeonGenerator generator)
+  public sealed class MainScreen : GameScreen<Game> {
+    public MainScreen(Game game)
         : base(game) {
-      Generator = generator;
     }
 
-    public DungeonGenerator Generator { get; }
+    public DungeonGenerator Generator { get; } = DungeonGenerators.Standard(Range.Of(6, 16));
     public ActorScene       Scene     { get; } = new ActorScene();
     public CameraRig        CameraRig { get; } = new CameraRig();
 
@@ -26,21 +24,23 @@ namespace Isaac.Screens {
 
       Plugins.Add(new ScenePlugin(Scene));
 
-      Restart(Game.State.Seed);
-    }
-
-    private void Restart(Seed seed = default) {
-      Scene.Actors.Clear();
-
       Scene.Actors.Add(CameraRig);
-      Scene.Actors.Add(Generator(seed));
+      Scene.Actors.Add(Generator(Game.State.Seed));
       Scene.Actors.Add(new Player());
-      Scene.Actors.Add(new Monster(new ShooterBrain()) {Position = Vector2.UnitX * 1});
-      Scene.Actors.Add(new Monster(new ChargerBrain()) {Position = Vector2.UnitY * 2});
+      Scene.Actors.Add(new Monster(new ShooterBrain()));
+      Scene.Actors.Add(new Monster(new ChargerBrain()));
     }
 
-    public override void Input(GameTime time) {
+    public override async void Input(GameTime time) {
       if (Keyboard.IsKeyPressed(Key.Escape)) Game.Exit();
+
+      if (Keyboard.IsKeyPressed(Key.F5)) {
+        await Game.State.SaveAsync("./quicksave.sav");
+      }
+
+      if (Keyboard.IsKeyPressed(Key.F7)) {
+        Game.State = await GameState.LoadAsync("./quicksave.sav");
+      }
 
       base.Input(time);
     }

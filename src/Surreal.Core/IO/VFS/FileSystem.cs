@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Surreal.Collections;
 
-namespace Surreal.IO {
+namespace Surreal.IO.VFS {
   public interface IFileSystem {
     string       Name    { get; }
     ISet<string> Schemes { get; }

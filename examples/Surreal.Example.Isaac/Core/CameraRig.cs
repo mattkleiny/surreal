@@ -9,7 +9,7 @@ namespace Isaac.Core {
     public override void Update(DeltaTime deltaTime) {
       base.Update(deltaTime);
 
-      Camera.Position = new Vector3(Position.X, Position.Y, 0);
+      Camera.Position = new Vector3(Position.Value.X, Position.Value.Y, 0);
       Camera.Update();
     }
   }

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using Surreal.IO;
+using Surreal.IO.VFS;
 using Xunit;
 
 namespace Surreal.Core.IO {

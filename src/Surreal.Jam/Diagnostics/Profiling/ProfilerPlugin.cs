@@ -12,8 +12,6 @@ namespace Surreal.Diagnostics.Profiling {
         : base(game) {
     }
 
-    public IKeyboardDevice Keyboard => Game.Keyboard;
-
     public override void Initialize() {
       ProfilerFactory.Current = new SamplingProfilerFactory(sampler);
 

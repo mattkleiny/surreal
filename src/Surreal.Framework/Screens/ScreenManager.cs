@@ -33,6 +33,11 @@ namespace Surreal.Framework.Screens {
       ScreenChanged?.Invoke(ActiveScreen);
     }
 
+    public void Replace(IScreen screen) {
+      Pop();
+      Push(screen);
+    }
+
     public IScreen? Pop(bool dispose = true) {
       if (screens.Count > 0) {
         var screen = screens.Last.Value;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Surreal.IO {
+namespace Surreal.IO.VFS {
   public interface IFileSystemRegistry : IEnumerable<IFileSystem> {
     IEnumerable<IFileSystem> GetByScheme(string scheme);
 

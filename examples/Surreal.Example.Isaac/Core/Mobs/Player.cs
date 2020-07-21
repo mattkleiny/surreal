@@ -1,11 +1,15 @@
 using System.Numerics;
 using Isaac.Core.Items;
+using Surreal.Framework.Parameters;
 using Surreal.Input.Keyboard;
 using Surreal.Mathematics.Timing;
 
 namespace Isaac.Core.Mobs {
   public sealed class Player : Mob {
-    public Inventory Inventory { get; } = new Inventory();
+    public override Parameter<Vector2> Position  => Game.Current.State.Player.Position;
+    public override Parameter<int>     Health    => Game.Current.State.Player.Health;
+    public          Parameter<int>     Coins     => Game.Current.State.Player.Coins;
+    public          Inventory          Inventory => Game.Current.State.Player.Inventory;
 
     public override void Input(DeltaTime deltaTime) {
       base.Input(deltaTime);

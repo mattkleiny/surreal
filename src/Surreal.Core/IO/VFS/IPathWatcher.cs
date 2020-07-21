@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Surreal.IO {
+namespace Surreal.IO.VFS {
   public interface IPathWatcher : IDisposable {
     Path Path { get; }
 

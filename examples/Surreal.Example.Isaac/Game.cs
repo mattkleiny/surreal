@@ -1,7 +1,5 @@
-﻿using Isaac.Core.Dungeons;
-using Isaac.Screens;
+﻿using Isaac.Screens;
 using Surreal;
-using Surreal.Mathematics;
 using Surreal.Platform;
 
 namespace Isaac {
@@ -16,15 +14,13 @@ namespace Isaac {
         }
     });
 
-    public GameState State { get; } = new GameState();
+    // persistent game state, with support for serialization to/from disk
+    public GameState State { get; set; } = new GameState();
 
     protected override void Initialize() {
       base.Initialize();
 
-      Screens.Push(new DungeonScreen(
-          game: this,
-          generator: DungeonGenerators.Standard(Range.Of(6, 12))
-      ));
+      Screens.Push(new MainScreen(this));
     }
   }
 }

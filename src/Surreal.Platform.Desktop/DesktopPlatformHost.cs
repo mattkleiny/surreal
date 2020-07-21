@@ -5,6 +5,7 @@ using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.IO;
+using Surreal.IO.VFS;
 using Surreal.Mathematics.Timing;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;

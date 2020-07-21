@@ -8,6 +8,7 @@ namespace Surreal.Framework.Screens {
     IScreen? PreviousScreen { get; }
 
     void     Push(IScreen screen);
+    void     Replace(IScreen screen);
     IScreen? Pop(bool dispose = true);
   }
 }

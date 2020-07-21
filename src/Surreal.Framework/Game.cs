@@ -8,6 +8,7 @@ using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.IO;
+using Surreal.IO.VFS;
 using Surreal.Mathematics.Timing;
 using Surreal.Platform;
 using Surreal.Utilities;
