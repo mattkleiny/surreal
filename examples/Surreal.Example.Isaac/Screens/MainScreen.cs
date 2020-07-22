@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Isaac.Core;
-using Isaac.Core.Dungeons;
+using Isaac.Core.Maps.Planning;
 using Isaac.Core.Mobs;
 using Surreal.Assets;
 using Surreal.Framework;

@@ -3,16 +3,16 @@ using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
-namespace Isaac.Core.Dungeons {
-  public sealed class Floor {
-    private readonly SparseGrid<Room> rooms = new SparseGrid<Room>(room => room.Position);
+namespace Isaac.Core.Maps.Planning {
+  public sealed class FloorPlan {
+    private readonly SparseGrid<RoomPlan> rooms = new SparseGrid<RoomPlan>(room => room.Position);
 
-    public Room? this[int x, int y] {
+    public RoomPlan? this[int x, int y] {
       get => this[new Vector2I(x, y)];
       set => this[new Vector2I(x, y)] = value;
     }
 
-    public Room? this[Vector2I position] {
+    public RoomPlan? this[Vector2I position] {
       get => rooms[position];
       set {
         rooms[position] = value;
@@ -24,7 +24,7 @@ namespace Isaac.Core.Dungeons {
       }
     }
 
-    public void Add(Room room) {
+    public void Add(RoomPlan room) {
       if (rooms[room.Position] != null) {
         throw new Exception($"The cell at {room.Position} is already occupied!");
       }

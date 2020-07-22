@@ -2,7 +2,7 @@ using System;
 using Surreal.Mathematics.Linear;
 using Surreal.Utilities;
 
-namespace Isaac.Core.Dungeons {
+namespace Isaac.Core.Maps.Planning {
   public struct DoorMask : IEquatable<DoorMask> {
     public static DoorMask None => default;
     public static DoorMask All  => new DoorMask(Direction.All);

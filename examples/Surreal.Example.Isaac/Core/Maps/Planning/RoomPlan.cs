@@ -4,7 +4,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
 
-namespace Isaac.Core.Dungeons {
+namespace Isaac.Core.Maps.Planning {
   public enum RoomType {
     Standard,
     Start,
@@ -14,18 +14,18 @@ namespace Isaac.Core.Dungeons {
     Secret,
   }
 
-  public sealed class Room {
+  public sealed class RoomPlan {
     public static readonly Vector2 Size = new Vector2(15, 9);
 
-    public Floor?     Floor       = null;
-    public Room?      Parent      = null;
-    public List<Room> Children    = new List<Room>();
+    public FloorPlan?     Floor       = null;
+    public RoomPlan?      Parent      = null;
+    public List<RoomPlan> Children    = new List<RoomPlan>();
     public Vector2I   Position    = Vector2I.Zero;
     public DoorMask   NormalDoors = DoorMask.None;
     public DoorMask   SecretDoors = DoorMask.None;
     public RoomType   Type        = RoomType.Standard;
 
-    public bool TryAddRoom(out Room room, Direction direction, RoomType type = RoomType.Standard) {
+    public bool TryAddRoom(out RoomPlan room, Direction direction, RoomType type = RoomType.Standard) {
       if (Floor?[Position + direction.ToVector2I()] != null) {
         room = this;
         return false;
@@ -35,8 +35,8 @@ namespace Isaac.Core.Dungeons {
       return true;
     }
 
-    public Room AddRoom(Direction direction, RoomType type = RoomType.Standard) {
-      var room = new Room {
+    public RoomPlan AddRoom(Direction direction, RoomType type = RoomType.Standard) {
+      var room = new RoomPlan {
           Parent   = this,
           Position = Position + direction.ToVector2I(),
           Type     = type,

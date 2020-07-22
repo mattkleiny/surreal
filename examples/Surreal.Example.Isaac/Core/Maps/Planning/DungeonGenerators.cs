@@ -3,28 +3,16 @@ using System.Runtime.CompilerServices;
 using Surreal.Diagnostics.Logging;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Linear;
-using Surreal.Mathematics.Timing;
 using Surreal.Utilities;
 
-namespace Isaac.Core.Dungeons {
-  public sealed class Dungeon : Actor {
-    public Floor Floor { get; } = new Floor();
-
-    public override void Draw(DeltaTime deltaTime) {
-      base.Draw(deltaTime);
-
-      // TODO: support arbitrary transforms for wireframe geometry?
-      Floor.DrawGizmos(Game.Current.GeometryBatch);
-    }
-  }
-
+namespace Isaac.Core.Maps.Planning {
   public delegate Dungeon DungeonGenerator(Seed seed = default);
 
   public static class DungeonGenerators {
     private static readonly ILog Log = LogFactory.GetLog<DungeonGenerator>();
 
     public static DungeonGenerator Fixed() => Factory((dungeon, random) => {
-      var room = dungeon.Floor[0, 0] = new Room {
+      var room = dungeon.FloorPlan[0, 0] = new RoomPlan {
           Type = RoomType.Start
       };
 
@@ -38,7 +26,7 @@ namespace Isaac.Core.Dungeons {
     });
 
     public static DungeonGenerator Standard(IntRange rooms) => Factory((dungeon, random) => {
-      var room = dungeon.Floor[0, 0] = new Room {
+      var room = dungeon.FloorPlan[0, 0] = new RoomPlan {
           Type = RoomType.Start
       };
 

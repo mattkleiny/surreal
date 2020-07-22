@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
-using Surreal.Mathematics;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
@@ -94,11 +92,9 @@ namespace Surreal.Framework.PathFinding {
     private readonly struct UniformPathfindingGrid<T, TNeighbourhood> : IGrid<T>, IPathFindingGrid
         where TNeighbourhood : struct, INeighbourhood {
       private readonly IGrid<T> grid;
-      private readonly float    cost;
 
-      public UniformPathfindingGrid(IGrid<T> grid, float cost = 1f) {
+      public UniformPathfindingGrid(IGrid<T> grid) {
         this.grid = grid;
-        this.cost = cost;
       }
 
       public int Width  => grid.Width;
@@ -107,10 +103,6 @@ namespace Surreal.Framework.PathFinding {
       public T this[int x, int y] {
         get => grid[x, y];
         set => grid[x, y] = value;
-      }
-
-      public float GetCost(Vector2I from, Vector2I to) {
-        return cost;
       }
 
       public void GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
