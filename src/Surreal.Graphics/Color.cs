@@ -3,8 +3,6 @@ using System.Runtime.InteropServices;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics {
-  // TODO: create a floating point representation of color?
-
   [StructLayout(LayoutKind.Sequential)]
   public struct Color : IEquatable<Color> {
     public static readonly Color Black   = new Color(0, 0, 0);
@@ -37,7 +35,7 @@ namespace Surreal.Graphics {
         (byte) Maths.Lerp(a.B, b.B, t),
         (byte) Maths.Lerp(a.A, b.A, t)
     );
-    
+
     public Color(byte red, byte green, byte blue, byte alpha = 255) {
       R = red;
       G = green;
@@ -50,8 +48,10 @@ namespace Surreal.Graphics {
     public byte B;
     public byte A;
 
-    public uint PackedRGB  => Pack(R, G, B);
-    public uint PackedRGBA => Pack(R, G, B, A);
+    public uint RGB  => Pack(R, G, B);
+    public uint RGBA => Pack(R, G, B, A);
+    public uint BGR  => Pack(B, G, R);
+    public uint BGRA => Pack(B, G, R, A);
 
     public override string ToString() => $"RGBA({R}, {G}, {B}, {A})";
 

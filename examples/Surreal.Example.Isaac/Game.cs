@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Isaac.Screens;
 using Surreal;
 using Surreal.Diagnostics.Logging;
+using Surreal.Graphics;
 using Surreal.IO;
 using Surreal.Platform;
 using Path = Surreal.IO.Path;
@@ -28,6 +29,17 @@ namespace Isaac {
       base.Initialize();
 
       Screens.Push(new MainScreen(this));
+
+      using var buffer = ComputeDevice.CreateBuffer<Color>();
+
+      buffer.Write(stackalloc Color[4] {
+          Color.Red,
+          Color.Green,
+          Color.Blue,
+          Color.White
+      });
+
+      var colors = buffer.Read();
     }
 
     public async Task SaveAsync(Path path) {

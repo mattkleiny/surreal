@@ -43,7 +43,8 @@ namespace Surreal {
     public virtual int      SpriteCountHint  => 200;
     public virtual bool     EnableDebugTools => Debugger.IsAttached;
     public virtual LogLevel DefaultLogLevel  => LogLevel.Trace;
-    public virtual Color    ClearColor       => Color.Black;
+
+    public Color ClearColor { get; set; } = Color.Black;
 
     protected override void Initialize() {
       Console = new GameConsole(new ConsoleInterpreter(RegisterConsoleBindings));

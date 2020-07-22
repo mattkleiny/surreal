@@ -1,4 +1,6 @@
 using System;
+using System.Runtime.CompilerServices;
+using Surreal.Diagnostics.Logging;
 using Surreal.Mathematics;
 using Surreal.Mathematics.Linear;
 using Surreal.Mathematics.Timing;
@@ -19,6 +21,8 @@ namespace Isaac.Core.Dungeons {
   public delegate Dungeon DungeonGenerator(Seed seed = default);
 
   public static class DungeonGenerators {
+    private static readonly ILog Log = LogFactory.GetLog<DungeonGenerator>();
+
     public static DungeonGenerator Fixed() => Factory((dungeon, random) => {
       var room = dungeon.Floor[0, 0] = new Room {
           Type = RoomType.Start
@@ -48,13 +52,17 @@ namespace Isaac.Core.Dungeons {
       room.Type = RoomType.Boss;
     });
 
-    private static DungeonGenerator Factory(Action<Dungeon, Random> factory) => seed => {
-      var random  = seed.ToRandom();
-      var dungeon = new Dungeon();
+    private static DungeonGenerator Factory(
+        Action<Dungeon, Random> factory,
+        [CallerMemberName] string? name = null) {
+      return seed => Log.Profile($"Generated {name} dungeon", () => {
+        var random  = seed.ToRandom();
+        var dungeon = new Dungeon();
 
-      factory(dungeon, random);
+        factory(dungeon, random);
 
-      return dungeon;
-    };
+        return dungeon;
+      });
+    }
   }
 }
