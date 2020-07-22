@@ -6,28 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Surreal.IO {
-  public interface IBuffer<T>
-      where T : unmanaged {
-    int     Length { get; }
-    int     Stride { get; }
-    Size    Size   { get; }
-    Span<T> Span   { get; }
-
-    void Clear();
-    void Fill(T value);
-
-    IBuffer<T> Slice(int offset, int size);
-  }
-
-  public interface IResizableBuffer<T> : IBuffer<T>
-      where T : unmanaged {
-    void Resize(int newLength);
-  }
-
-  public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable
-      where T : unmanaged {
-  }
-
   public static class Buffers {
     public static IBuffer<T> Allocate<T>(int count)
         where T : unmanaged => new ManagedBuffer<T>(count);

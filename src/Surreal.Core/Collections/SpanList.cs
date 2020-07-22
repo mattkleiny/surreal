@@ -13,8 +13,9 @@ namespace Surreal.Collections {
       Length = 0;
     }
 
-    public int Length   { get; private set; }
-    public int Capacity => span.Length;
+    public int     Length   { get; private set; }
+    public int     Capacity => span.Length;
+    public Span<T> Span     => span[..Length];
 
     public T this[Index index] {
       get => span[index];
@@ -33,7 +34,6 @@ namespace Surreal.Collections {
       Length = 0;
     }
 
-    public Span<T> ToSpan()  => span[..Length];
-    public T[]     ToArray() => ToSpan().ToArray();
+    public static implicit operator Span<T>(SpanList<T> list) => list.Span;
   }
 }

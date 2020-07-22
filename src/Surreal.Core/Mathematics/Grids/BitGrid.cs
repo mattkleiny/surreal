@@ -27,13 +27,13 @@ namespace Surreal.Mathematics.Grids {
       get {
         Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
         Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
-        
+
         return elements[x + y * Width];
       }
       set {
         Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
         Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
-        
+
         elements[x + y * Width] = value;
       }
     }

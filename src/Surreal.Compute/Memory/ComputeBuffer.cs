@@ -12,6 +12,6 @@ namespace Surreal.Compute.Memory {
       where T : unmanaged {
     public          Memory<T> Read() => Read(Range.All);
     public abstract Memory<T> Read(Range range);
-    public abstract void      Write(Span<T> data);
+    public abstract void      Write(ReadOnlySpan<T> data);
   }
 }

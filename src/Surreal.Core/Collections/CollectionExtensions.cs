@@ -112,9 +112,9 @@ namespace Surreal.Collections {
       return elements[^1];
     }
 
-    public static ListSlice<T> SelectAllWithWeight<T>(this IEnumerable<T> sequence, Random random, Func<T, float> weightProvider) {
+    public static ListSpan<T> SelectAllWithWeight<T>(this IEnumerable<T> sequence, Random random, Func<T, float> weightProvider) {
       var elements = new List<T>(sequence);
-      if (elements.Count == 0) return ListSlice<T>.Empty;
+      if (elements.Count == 0) return ListSpan<T>.Empty;
 
       elements.ShuffleInPlace(random);
 

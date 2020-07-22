@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Surreal.Mathematics.Grids;
 
 namespace Surreal.Collections {
   [DebuggerDisplay("SpanGrid {Width}x{Height}")]
@@ -23,16 +24,25 @@ namespace Surreal.Collections {
       Height = span.Length / stride;
     }
 
-    public int Capacity => span.Length;
-    public int Width    { get; }
-    public int Height   { get; }
+    public int     Length => span.Length;
+    public int     Width  { get; }
+    public int     Height { get; }
+    public Span<T> Span   => span;
+
+    public T this[Index index] {
+      get => span[index];
+      set => span[index] = value;
+    }
 
     public T this[int x, int y] {
       get => span[x + y * Width];
       set => span[x + y * Width] = value;
     }
 
-    public ReadOnlySpan<T> ToSpan()  => span;
-    public T[]             ToArray() => ToSpan().ToArray();
+    public GridEnumerator EnumerateCells() {
+      return new GridEnumerator(Width, Height);
+    }
+
+    public static implicit operator ReadOnlySpan<T>(SpanGrid<T> grid) => grid.Span;
   }
 }

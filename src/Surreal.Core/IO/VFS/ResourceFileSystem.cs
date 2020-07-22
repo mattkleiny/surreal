@@ -50,10 +50,4 @@ namespace Surreal.IO.VFS {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string NormalizePath(string path) => path.Replace('/', '.');
   }
-
-  public sealed class ResourceNotFoundException : Exception {
-    public ResourceNotFoundException(string message)
-        : base(message) {
-    }
-  }
 }

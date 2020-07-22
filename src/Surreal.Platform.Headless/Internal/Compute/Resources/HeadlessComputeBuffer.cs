@@ -8,7 +8,7 @@ namespace Surreal.Platform.Internal.Compute.Resources {
       return Memory<T>.Empty;
     }
 
-    public override void Write(Span<T> data) {
+    public override void Write(ReadOnlySpan<T> data) {
       // no-op
     }
   }

@@ -31,11 +31,13 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       return buffer;
     }
 
-    public override void Write(Span<T> data) {
+    public override unsafe void Write(ReadOnlySpan<T> data) {
       var bytes = data.Length * Stride;
 
-      GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
-      GL.BufferData(BufferTarget.ArrayBuffer, bytes, ref data.GetPinnableReference(), BufferUsageHint.StaticDraw);
+      fixed (T* raw = data) {
+        GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
+        GL.BufferData(BufferTarget.ArrayBuffer, bytes, ref Unsafe.AsRef<T>(raw), BufferUsageHint.DynamicCopy);
+      }
 
       Length = data.Length;
       Size   = new Size(bytes);

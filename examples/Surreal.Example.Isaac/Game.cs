@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Isaac.Screens;
 using Surreal;
 using Surreal.Diagnostics.Logging;
-using Surreal.Graphics;
 using Surreal.IO;
 using Surreal.Platform;
 using Path = Surreal.IO.Path;
@@ -29,35 +28,24 @@ namespace Isaac {
       base.Initialize();
 
       Screens.Push(new MainScreen(this));
-
-      using var buffer = ComputeDevice.CreateBuffer<Color>();
-
-      buffer.Write(stackalloc Color[4] {
-          Color.Red,
-          Color.Green,
-          Color.Blue,
-          Color.White
-      });
-
-      var colors = buffer.Read();
     }
 
     public async Task SaveAsync(Path path) {
-      Log.Trace($"Saving game to {path}");
+      await Log.ProfileAsync($"Saving game to {path}", async () => {
+        await using var stream = await path.OpenOutputStreamAsync();
+        await using var writer = new BinaryWriter(stream, Encoding.UTF8);
 
-      await using var stream = await path.OpenOutputStreamAsync();
-      await using var writer = new BinaryWriter(stream, Encoding.UTF8);
-
-      State.Save(writer);
+        State.Save(writer);
+      });
     }
 
     public async Task LoadAsync(Path path) {
-      Log.Trace($"Loading game from {path}");
+      await Log.ProfileAsync($"Loading game from {path}", async () => {
+        await using var stream = await path.OpenInputStreamAsync();
+        using var       reader = new BinaryReader(stream, Encoding.UTF8);
 
-      await using var stream = await path.OpenInputStreamAsync();
-      using var       reader = new BinaryReader(stream, Encoding.UTF8);
-
-      State.Load(reader);
+        State.Load(reader);
+      });
     }
   }
 }

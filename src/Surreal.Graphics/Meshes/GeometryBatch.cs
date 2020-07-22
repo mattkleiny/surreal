@@ -108,7 +108,7 @@ namespace Surreal.Graphics.Meshes {
         points.Add(new Vector2(x, y));
       }
 
-      DrawLineLoop(points.ToSpan(), color);
+      DrawLineLoop(points.Span, color);
     }
 
     public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16) {
@@ -123,7 +123,7 @@ namespace Surreal.Graphics.Meshes {
         points.Add(new Vector2(x, y));
       }
 
-      DrawLineStrip(points.ToSpan(), color);
+      DrawLineStrip(points.Span, color);
     }
 
     public void DrawCurve<TCurve>(TCurve curve, Color color, int resolution)
@@ -136,7 +136,7 @@ namespace Surreal.Graphics.Meshes {
         points.Add(curve.SampleAt(x));
       }
 
-      DrawLineStrip(points.ToSpan(), color);
+      DrawLineStrip(points.Span, color);
     }
 
     public void DrawQuad(Vector2 center, Vector2 size, Color color, PrimitiveType type) {

@@ -16,7 +16,7 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
     public Instruction this[int index] => instructions[index];
     public Instruction this[Index index] => instructions[index];
 
-    public ListSlice<Instruction> this[Range range] => new ListSlice<Instruction>(instructions, range);
+    public ListSpan<Instruction> this[Range range] => new ListSpan<Instruction>(instructions, range);
 
     public void Add(Instruction instruction)    => instructions.Add(instruction);
     public void Remove(Instruction instruction) => instructions.Remove(instruction);
