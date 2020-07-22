@@ -1,4 +1,4 @@
-namespace Surreal.Languages {
+namespace Surreal.Text {
   public readonly struct TokenPosition {
     public readonly int Line;
     public readonly int Column;

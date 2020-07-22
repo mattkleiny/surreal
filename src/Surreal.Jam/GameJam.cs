@@ -22,7 +22,7 @@ using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
-using Surreal.Languages;
+using Surreal.Text;
 using Surreal.Utilities;
 
 namespace Surreal {
@@ -106,7 +106,6 @@ namespace Surreal {
       assets.RegisterLoader(new Image.Loader());
       assets.RegisterLoader(new ImageRegion.Loader());
       assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, new SpirvShaderCompiler(), hotReloading: EnableDebugTools));
-      assets.RegisterLoader(new SourceText.Loader());
       assets.RegisterLoader(new Texture.Loader(GraphicsDevice));
       assets.RegisterLoader(new TextureRegion.Loader());
       assets.RegisterLoader(new AudioBuffer.Loader());

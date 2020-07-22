@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Surreal.Languages;
 using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
   public sealed class ConsoleInterpreter : IConsoleInterpreter {
     private readonly BindingCollection bindings = new BindingCollection();
 
-    private readonly ExecutionVisitor executor;
+    private readonly ExecutionVisitor visitor;
 
     public ConsoleInterpreter(Action<IConsoleInterpreterBindings> builder) {
       builder(bindings);
 
-      executor = new ExecutionVisitor(bindings);
+      visitor = new ExecutionVisitor(bindings);
     }
 
     public string? Evaluate(string raw) {
       try {
-        var text       = SourceText.FromString(raw);
-        var parser     = new ConsoleLanguageParser(text);
-        var expression = parser.Expression();
-        var result     = expression.Accept(executor);
+        using var reader = new StringReader(raw);
+
+        var parser = ConsoleParser.ParseAsync(reader).Result;
+        var result = parser.Expression().Accept(visitor);
 
         return result?.ToString() ?? "OK";
       } catch (Exception exception) {
@@ -29,7 +29,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       }
     }
 
-    private sealed class ExecutionVisitor : Visitor<object?> {
+    private sealed class ExecutionVisitor : RecursiveVisitor<object?> {
       private readonly BindingCollection bindings;
 
       public ExecutionVisitor(BindingCollection bindings) {
@@ -37,7 +37,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       }
 
 #pragma warning disable 8620
-      public override object? Visit(Call expression) {
+      public override object? Visit(CallExpression expression) {
         var symbol     = expression.Symbol.ToString();
         var parameters = expression.Parameters.Select(_ => _.Accept(this)).ToArray();
 
@@ -49,13 +49,13 @@ namespace Surreal.Diagnostics.Console.Interpreter {
       }
 #pragma warning restore 8620
 
-      public override object? Visit(Unary expression) => expression.Operation switch {
+      public override object? Visit(UnaryExpression expression) => expression.Operation switch {
           UnaryOperation.Not    => !IsTruthy(expression.Expression),
           UnaryOperation.Negate => -ToNumber(expression.Expression),
           _                     => throw new NotSupportedException($"The operator '{expression.Operation}' is not supported"),
       };
 
-      public override object? Visit(Binary expression) => expression.Operation switch {
+      public override object? Visit(BinaryExpression expression) => expression.Operation switch {
           BinaryOperation.Plus   => ToNumber(expression.Left) + ToNumber(expression.Right),
           BinaryOperation.Minus  => ToNumber(expression.Left) - ToNumber(expression.Right),
           BinaryOperation.Times  => ToNumber(expression.Left) * ToNumber(expression.Right),
@@ -63,7 +63,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
           _                      => throw new NotSupportedException($"The operator '{expression.Operation}' is not supported"),
       };
 
-      public override object? Visit(Literal expression) => expression.Value;
+      public override object? Visit(LiteralExpression expression) => expression.Value;
 
       private bool  IsTruthy(ConsoleExpression expression) => To<bool>(expression);
       private float ToNumber(ConsoleExpression expression) => To<float>(expression);

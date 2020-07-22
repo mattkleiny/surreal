@@ -1,32 +1,37 @@
 using System;
 using System.Collections.Generic;
-using Surreal.Languages;
-using Surreal.Languages.Lexing;
-using Surreal.Languages.Parsing;
+using System.IO;
+using System.Threading.Tasks;
+using Surreal.Text.Lexing;
+using Surreal.Text.Parsing;
 using static Surreal.Graphics.Materials.Shaders.ShaderStatement;
 
 namespace Surreal.Graphics.Materials.Shaders {
   public sealed class ShaderParser : DescentParser<ShaderParser.TokenType> {
     private static readonly RegexLexer<Token> Lexer = new RegexLexer<Token>(
-        new RegexLexer<Token>.Rule(@"\s+", (lexeme, position) => new Token(TokenType.WhiteSpace, position, lexeme), disregard: true),
-        new RegexLexer<Token>.Rule(@"\+|\-|\*|\/", (lexeme, position) => new Token(TokenType.Operator, position, lexeme)),
-        new RegexLexer<Token>.Rule(@"\d+", (lexeme, position) => new Token(TokenType.Number, position, float.Parse(lexeme))),
-        new RegexLexer<Token>.Rule(@"'[A-Za-z0-9]'", (lexeme, position) => new Token(TokenType.String, position, lexeme.Trim('.')))
+        Rule(@"\s+", lexeme => (TokenType.WhiteSpace, null), disregard: true),
+        Rule(@"\+|\-|\*|\/", lexeme => (TokenType.Operator, null)),
+        Rule(@"\d+", lexeme => (TokenType.Number, float.Parse(lexeme))),
+        Rule(@"'[A-Za-z0-9]'", lexeme => (TokenType.String, null))
     );
 
-    public ShaderParser(SourceText text)
-        : base(Lexer.Tokenize(text)) {
+    public static async Task<ShaderParser> ParseAsync(TextReader reader) {
+      return new ShaderParser(await Lexer.TokenizeAsync(reader));
     }
 
-    public MetadataDeclaration MetadataDeclaration() {
+    private ShaderParser(IEnumerable<Token> tokens)
+        : base(tokens) {
+    }
+
+    public MetadataDeclarationStatement MetadataDeclaration() {
       throw new NotImplementedException();
     }
 
-    public IEnumerable<ShaderDeclaration> ShaderDeclarations() {
+    public IEnumerable<ShaderDeclarationStatement> ShaderDeclarations() {
       throw new NotImplementedException();
     }
 
-    public IEnumerable<UniformDeclaration> UniformDeclarations() {
+    public IEnumerable<UniformDeclarationStatement> UniformDeclarations() {
       throw new NotImplementedException();
     }
 
@@ -42,10 +47,10 @@ namespace Surreal.Graphics.Materials.Shaders {
     public abstract T Accept<T>(IVisitor<T> visitor);
 
     public interface IVisitor<out T> {
-      T Visit(MetadataDeclaration statement);
-      T Visit(ShaderDeclaration statement);
-      T Visit(FunctionDeclaration statement);
-      T Visit(UniformDeclaration statement);
+      T Visit(MetadataDeclarationStatement statement);
+      T Visit(ShaderDeclarationStatement statement);
+      T Visit(FunctionDeclarationStatement statement);
+      T Visit(UniformDeclarationStatement statement);
     }
 
     public enum UniformType {
@@ -57,11 +62,11 @@ namespace Surreal.Graphics.Materials.Shaders {
       Fragment
     }
 
-    public sealed class MetadataDeclaration : ShaderStatement {
+    public sealed class MetadataDeclarationStatement : ShaderStatement {
       public string            Name { get; }
       public ShaderProgramType Type { get; }
 
-      public MetadataDeclaration(string name, ShaderProgramType type) {
+      public MetadataDeclarationStatement(string name, ShaderProgramType type) {
         Name = name;
         Type = type;
       }
@@ -69,11 +74,11 @@ namespace Surreal.Graphics.Materials.Shaders {
       public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
     }
 
-    public sealed class ShaderDeclaration : ShaderStatement {
-      public ShaderType          Type     { get; }
-      public FunctionDeclaration Function { get; }
+    public sealed class ShaderDeclarationStatement : ShaderStatement {
+      public ShaderType                   Type     { get; }
+      public FunctionDeclarationStatement Function { get; }
 
-      public ShaderDeclaration(ShaderType type, FunctionDeclaration function) {
+      public ShaderDeclarationStatement(ShaderType type, FunctionDeclarationStatement function) {
         Type     = type;
         Function = function;
       }
@@ -81,12 +86,12 @@ namespace Surreal.Graphics.Materials.Shaders {
       public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
     }
 
-    public sealed class FunctionDeclaration : ShaderStatement {
+    public sealed class FunctionDeclarationStatement : ShaderStatement {
       public string                       Name       { get; }
       public FunctionType                 Type       { get; }
       public IEnumerable<ShaderStatement> Statements { get; }
 
-      public FunctionDeclaration(string name, FunctionType type, IEnumerable<ShaderStatement> statements
+      public FunctionDeclarationStatement(string name, FunctionType type, IEnumerable<ShaderStatement> statements
       ) {
         Name       = name;
         Type       = type;
@@ -96,11 +101,11 @@ namespace Surreal.Graphics.Materials.Shaders {
       public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
     }
 
-    public sealed class UniformDeclaration : ShaderStatement {
+    public sealed class UniformDeclarationStatement : ShaderStatement {
       public string      Name { get; }
       public UniformType Type { get; }
 
-      public UniformDeclaration(string name, UniformType type) {
+      public UniformDeclarationStatement(string name, UniformType type) {
         Name = name;
         Type = type;
       }

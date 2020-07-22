@@ -6,8 +6,8 @@ namespace Surreal.Graphics.Materials.Shaders {
     Shader Compile(
         ShaderProgramType programType,
         ShaderType shaderType,
-        IEnumerable<UniformDeclaration> uniforms,
-        IEnumerable<FunctionDeclaration> functions
+        IEnumerable<UniformDeclarationStatement> uniforms,
+        IEnumerable<FunctionDeclarationStatement> functions
     );
   }
 }

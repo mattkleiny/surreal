@@ -1,12 +1,14 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
-using Surreal.Languages;
 using Surreal.Mathematics.Linear;
+using Path = Surreal.IO.Path;
 
 namespace Surreal.Graphics.Materials.Shaders {
   public enum ShaderProgramType {
@@ -45,8 +47,10 @@ namespace Surreal.Graphics.Materials.Shaders {
           throw new NotSupportedException("Hot reloading is not yet implemented!");
         }
 
-        var source   = await context.GetAsync<SourceText>(path);
-        var parser   = new ShaderParser(source);
+        await using var source = await path.OpenInputStreamAsync();
+        using var       reader = new StreamReader(source, Encoding.UTF8);
+        var             parser = await ShaderParser.ParseAsync(reader);
+
         var metadata = parser.MetadataDeclaration();
         var uniforms = parser.UniformDeclarations();
         var shaders  = parser.ShaderDeclarations();

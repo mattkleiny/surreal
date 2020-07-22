@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Surreal.I18N {
+namespace Surreal.Text.I18N {
   [DebuggerDisplay("{Raw}: ({Final})")]
   public readonly struct LocalisedString : IEquatable<LocalisedString> {
     public static string T(string message) => TranslationProviders.Current(message);

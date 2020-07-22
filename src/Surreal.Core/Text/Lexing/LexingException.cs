@@ -1,6 +1,6 @@
 using System;
 
-namespace Surreal.Languages.Lexing {
+namespace Surreal.Text.Lexing {
   public sealed class LexingException : Exception {
     public LexingException(string message, in TokenPosition position)
         : base(message) {

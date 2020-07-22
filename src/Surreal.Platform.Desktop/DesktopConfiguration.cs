@@ -1,4 +1,4 @@
-﻿using Surreal.I18N;
+﻿using Surreal.Text.I18N;
 
 namespace Surreal.Platform {
   public sealed class DesktopConfiguration {

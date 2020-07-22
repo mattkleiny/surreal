@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace Surreal.Languages.Lexing {
+namespace Surreal.Text.Lexing {
   public class RegexLexer<TToken> : StringLexer<TToken>
       where TToken : struct {
     private readonly Rule[] rules;

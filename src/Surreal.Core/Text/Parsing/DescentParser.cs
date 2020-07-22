@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
+using Surreal.Text.Lexing;
 using Surreal.Utilities;
 
-namespace Surreal.Languages.Parsing {
+namespace Surreal.Text.Parsing {
   public abstract class DescentParser<TToken, TTokenType>
       where TToken : struct {
     private readonly TToken[] tokens;
@@ -17,7 +17,7 @@ namespace Surreal.Languages.Parsing {
 
     protected abstract bool          IsTokenOfType(TToken token, TTokenType type);
     protected abstract TokenPosition GetTokenPosition(TToken token);
-    protected abstract object        GetTokenLexeme(TToken token);
+    protected abstract string        GetTokenLexeme(TToken token);
 
     protected TToken Peek()     => tokens[current];
     protected TToken Previous() => tokens[current - 1];
@@ -70,26 +70,41 @@ namespace Surreal.Languages.Parsing {
 
     protected sealed override bool          IsTokenOfType(Token token, TTokenType type) => token.Type.EqualsFast(type);
     protected sealed override TokenPosition GetTokenPosition(Token token)               => token.Position;
-    protected sealed override object        GetTokenLexeme(Token token)                 => token.Lexeme;
+    protected sealed override string        GetTokenLexeme(Token token)                 => token.Lexeme;
 
     public readonly struct Token {
       public readonly TTokenType    Type;
       public readonly TokenPosition Position;
-      public readonly object        Lexeme;
+      public readonly string        Lexeme;
+      public readonly object?       Literal;
 
-      public Token(TTokenType type, TokenPosition position, object lexeme) {
-        Lexeme   = lexeme;
+      public Token(TTokenType type, TokenPosition position, string lexeme, object? literal = null) {
         Type     = type;
+        Lexeme   = lexeme;
         Position = position;
+        Literal  = literal;
       }
 
-      public void Deconstruct(out TTokenType type, out TokenPosition position, [NotNull] out object lexeme) {
+      public void Deconstruct(out TTokenType type, out TokenPosition position, out string lexeme, out object? literal) {
         type     = Type;
         position = Position;
         lexeme   = Lexeme;
+        literal  = Literal;
       }
 
       public override string ToString() => $"{Type} at {Position} ({Lexeme})";
+    }
+
+    /// <summary>A convenience for building regex rules that produce tokens for the descent parser.</summary>
+    protected static RegexLexer<Token>.Rule Rule(string pattern, Func<string, (TTokenType Type, object? Literal)> factory, bool disregard = false) {
+      return new RegexLexer<Token>.Rule(
+          pattern: pattern,
+          disregard: disregard,
+          tokenizer: (lexeme, position) => {
+            var (type, literal) = factory(lexeme);
+            return new Token(type, position, lexeme, literal);
+          }
+      );
     }
   }
 }

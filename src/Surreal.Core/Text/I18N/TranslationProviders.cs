@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Surreal.I18N {
+namespace Surreal.Text.I18N {
   public delegate string TranslationProvider(string raw);
 
   public static class TranslationProviders {

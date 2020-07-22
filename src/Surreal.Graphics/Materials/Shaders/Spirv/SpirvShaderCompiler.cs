@@ -8,8 +8,8 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
     public Shader Compile(
         ShaderProgramType programType,
         ShaderType shaderType,
-        IEnumerable<UniformDeclaration> uniforms,
-        IEnumerable<FunctionDeclaration> functions) {
+        IEnumerable<UniformDeclarationStatement> uniforms,
+        IEnumerable<FunctionDeclarationStatement> functions) {
       var module   = BuildModule(programType, shaderType, uniforms, functions);
       var bytecode = module.Compile();
 
@@ -19,8 +19,8 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
     private static SpirvModule BuildModule(
         ShaderProgramType programType,
         ShaderType shaderType,
-        IEnumerable<UniformDeclaration> uniforms,
-        IEnumerable<FunctionDeclaration> functions) {
+        IEnumerable<UniformDeclarationStatement> uniforms,
+        IEnumerable<FunctionDeclarationStatement> functions) {
       var module      = new SpirvModule();
       var transformer = new Transformer(module);
 
@@ -42,19 +42,19 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
         this.module = module;
       }
 
-      public Instruction[] Visit(MetadataDeclaration statement) {
+      public Instruction[] Visit(MetadataDeclarationStatement statement) {
         throw new NotImplementedException();
       }
 
-      public Instruction[] Visit(ShaderDeclaration statement) {
+      public Instruction[] Visit(ShaderDeclarationStatement statement) {
         throw new NotImplementedException();
       }
 
-      public Instruction[] Visit(FunctionDeclaration statement) {
+      public Instruction[] Visit(FunctionDeclarationStatement statement) {
         throw new NotImplementedException();
       }
 
-      public Instruction[] Visit(UniformDeclaration statement) {
+      public Instruction[] Visit(UniformDeclarationStatement statement) {
         throw new NotImplementedException();
       }
 

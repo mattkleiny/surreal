@@ -1,6 +1,6 @@
 using System;
 
-namespace Surreal.Languages.Parsing {
+namespace Surreal.Text.Parsing {
   public sealed class ParsingException : Exception {
     public ParsingException() {
     }
