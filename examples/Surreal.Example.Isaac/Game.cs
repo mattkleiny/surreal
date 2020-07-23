@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Isaac.Screens;
 using Surreal;
 using Surreal.Diagnostics.Logging;
+using Surreal.Graphics;
 using Surreal.IO;
 using Surreal.Platform;
 using Path = Surreal.IO.Path;
@@ -27,6 +28,10 @@ namespace Isaac {
     protected override void Initialize() {
       base.Initialize();
 
+      ClearColor = Color.White;
+      
+      GraphicsDevice.Pipeline.Rasterizer.IsBlendingEnabled = true;
+      
       Screens.Push(new MainScreen(this));
     }
 

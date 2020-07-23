@@ -6,15 +6,6 @@ using Surreal.Mathematics.Linear;
 using Surreal.Utilities;
 
 namespace Isaac.Core.Maps.Planning {
-  public enum RoomType {
-    Standard,
-    Start,
-    Boss,
-    Item,
-    Shop,
-    Secret,
-  }
-
   public sealed class RoomPlan {
     public static readonly Vector2 Size = new Vector2(15, 9);
 
@@ -61,9 +52,9 @@ namespace Isaac.Core.Maps.Planning {
     public void DrawGizmos(GeometryBatch batch) {
       var center = new Vector2(Position.X * Size.X, Position.Y * Size.Y);
 
-      batch.DrawWireQuad(center, Size, Color.White);
+      batch.DrawWireQuad(center, Size, Color.Black);
       batch.DrawWireQuad(center, new Vector2(Size.X - 2f, Size.Y - 2f), Type switch {
-          RoomType.Standard => Color.White,
+          RoomType.Standard => Color.Black,
           RoomType.Start    => Color.Green,
           RoomType.Boss     => Color.Red,
           RoomType.Item     => Color.Yellow,

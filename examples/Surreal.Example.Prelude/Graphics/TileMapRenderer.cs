@@ -18,7 +18,7 @@ namespace Prelude.Graphics {
     private readonly Atlas<ImageRegion> textures;
 
     public TileMapRenderer(Camera camera, Atlas<ImageRegion> textures)
-        : this(camera, (Width, Height), textures, Color.White) {
+        : this(camera, (Width, Height), textures, Color.Black) {
     }
 
     public TileMapRenderer(
