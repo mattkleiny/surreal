@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Surreal.Assets;
+using Surreal.Graphics.Materials.Shaders.Spirv;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
@@ -35,6 +36,10 @@ namespace Surreal.Graphics.Materials.Shaders {
       private readonly IGraphicsDevice device;
       private readonly IShaderCompiler compiler;
       private readonly bool            hotReloading;
+
+      public Loader(IGraphicsDevice device, bool hotReloading)
+          : this(device, new SpirvShaderCompiler(), hotReloading) {
+      }
 
       public Loader(IGraphicsDevice device, IShaderCompiler compiler, bool hotReloading) {
         this.device       = device;

@@ -24,7 +24,7 @@ namespace Prelude {
     protected override void RegisterAssetLoaders(AssetManager assets) {
       base.RegisterAssetLoaders(assets);
 
-      assets.RegisterLoader(new TileMap<Tile>.TmxLoader(Tile.Palette));
+      assets.RegisterLoader(new TileMap<Tile>.Loader(Tile.Palette));
     }
 
     protected override void Initialize() {

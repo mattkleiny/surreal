@@ -99,17 +99,17 @@ namespace Surreal {
     }
 
     protected virtual void RegisterAssetLoaders(AssetManager assets) {
+      assets.RegisterLoader(new AudioBuffer.Loader());
       assets.RegisterLoader(new AudioClip.Loader(AudioDevice));
       assets.RegisterLoader(new BitmapFont.Loader(CharacterSet.Standard));
-      assets.RegisterLoader(new TrueTypeFont.Loader());
       assets.RegisterLoader(new ColorPalette.Loader());
       assets.RegisterLoader(new ComputeProgram.Loader(ComputeDevice));
       assets.RegisterLoader(new Image.Loader());
       assets.RegisterLoader(new ImageRegion.Loader());
-      assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, new SpirvShaderCompiler(), hotReloading: EnableDebugTools));
+      assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, hotReloading: EnableDebugTools));
       assets.RegisterLoader(new Texture.Loader(GraphicsDevice));
       assets.RegisterLoader(new TextureRegion.Loader());
-      assets.RegisterLoader(new AudioBuffer.Loader());
+      assets.RegisterLoader(new TrueTypeFont.Loader());
     }
 
     protected virtual void RegisterConsoleBindings(IConsoleInterpreterBindings bindings) {

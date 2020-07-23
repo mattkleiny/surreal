@@ -6,16 +6,16 @@
     <ApplicationIcon>./Isaac.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a simple Isaac-inspired dungeon crawler.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Shared.props" />
-  <Import Project="..\..\Executables.props" />
+  <Import Project="..\..\Shared.props"/>
+  <Import Project="..\..\Executables.props"/>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Surreal.Jam\Surreal.Jam.csproj" />
-    <ProjectReference Include="..\..\src\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Jam\Surreal.Jam.csproj"/>
+    <ProjectReference Include="..\..\src\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(ProjectDir)\Resources\*.*" />
-    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
-    <Content Include="$(ProjectDir)\Assets\*.*" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="$(ProjectDir)\Resources\*.*"/>
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
+    <Content Include="$(ProjectDir)\Assets\*.*" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>

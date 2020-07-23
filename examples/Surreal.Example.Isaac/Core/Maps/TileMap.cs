@@ -1,3 +1,4 @@
+using System;
 using Surreal.Collections;
 using Surreal.Framework.PathFinding;
 using Surreal.Framework.Tiles;
@@ -11,13 +12,28 @@ namespace Isaac.Core.Maps {
       Midground  = new TileMap<Tile>(width, height, Tile.Palette);
       Foreground = new TileMap<Tile>(width, height, Tile.Palette);
 
-      CollisionMask = new TileMapMask<Tile>(Foreground, (x, y, tile) => !tile.IsWalkable);
+      CollisionMask = new TileMapMask<Tile>(Foreground, (x, y, tile) => tile.IsCollidable);
+      PathingMask   = new TileMapMask<Tile>(Background, (x, y, tile) => tile.IsPathable);
     }
 
-    public TileMap<Tile>     Background    { get; }
-    public TileMap<Tile>     Midground     { get; }
-    public TileMap<Tile>     Foreground    { get; }
+    public TileMap<Tile> Background { get; }
+    public TileMap<Tile> Midground  { get; }
+    public TileMap<Tile> Foreground { get; }
+
     public TileMapMask<Tile> CollisionMask { get; }
+    public TileMapMask<Tile> PathingMask   { get; }
+
+    public Tile this[int x, int y, TileLayer layer] {
+      get => this[layer][x, y];
+      set => this[layer][x, y] = value;
+    }
+
+    public TileMap<Tile> this[TileLayer layer] => layer switch {
+        TileLayer.Background => Background,
+        TileLayer.Midground  => Midground,
+        TileLayer.Foreground => Foreground,
+        _                    => throw new ArgumentOutOfRangeException(nameof(layer))
+    };
 
     void IPathFindingGrid.GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
       foreach (var neighbour in position.GetMooreNeighbourhood()) {

@@ -43,22 +43,22 @@ namespace Surreal.Framework.Tiles {
       }
     }
 
-    public sealed class TmxLoader : AssetLoader<TileMap<TTile>> {
+    public sealed class Loader : AssetLoader<TileMap<TTile>> {
       public delegate TTile TileConverter(uint gid);
 
       private readonly IPalette<TTile> palette;
       private readonly TileConverter   converter;
       private readonly TTile           defaultTile;
 
-      public TmxLoader(IPalette<TTile> palette)
+      public Loader(IPalette<TTile> palette)
           : this(palette, palette.Empty) {
       }
 
-      public TmxLoader(IPalette<TTile> palette, TTile defaultTile)
+      public Loader(IPalette<TTile> palette, TTile defaultTile)
           : this(palette, id => palette[(ushort) id], defaultTile) {
       }
 
-      public TmxLoader(IPalette<TTile> palette, TileConverter converter, TTile defaultTile) {
+      public Loader(IPalette<TTile> palette, TileConverter converter, TTile defaultTile) {
         this.palette     = palette;
         this.converter   = converter;
         this.defaultTile = defaultTile;
@@ -72,18 +72,18 @@ namespace Surreal.Framework.Tiles {
 
         for (var i = 0; i < input.Layers.Count; i++) {
           var layer = input.Layers[i];
-          if (layer.IsVisible != 1) continue;
+          if (layer.IsVisible == 1) {
+            var parsed = layer.Data!.Decode().ToArray();
 
-          var parsed = layer.Data!.Decode().ToArray();
+            for (var j = 0; j < parsed.Length; j++) {
+              var x = j % layer.Width;
+              var y = j / layer.Width;
 
-          for (var j = 0; j < parsed.Length; j++) {
-            var x = j % layer.Width;
-            var y = j / layer.Width;
+              var gid  = parsed[j] & (uint) ~FlipFlags.All;
+              var tile = converter(gid);
 
-            var gid  = parsed[j] & (uint) ~FlipFlags.All;
-            var tile = converter(gid);
-
-            output[x, y] = tile;
+              output[x, y] = tile;
+            }
           }
         }
 

@@ -6,12 +6,10 @@ namespace Isaac.Core.Maps {
 
     public static IPalette<Tile> Palette { get; } = new StaticPalette<Tile>();
 
-    public Tile(ushort id, bool isWalkable = false) {
-      Id         = id;
-      IsWalkable = isWalkable;
-    }
+    private Tile(ushort id) => Id = id;
 
-    public ushort Id         { get; }
-    public bool   IsWalkable { get; }
+    public ushort Id           { get; }
+    public bool   IsCollidable { get; set; }
+    public bool   IsPathable   { get; set; }
   }
 }

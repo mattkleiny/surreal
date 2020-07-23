@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Isaac.Screens;
 using Surreal;
+using Surreal.Diagnostics.Console.Interpreter;
 using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.IO;
@@ -33,6 +34,13 @@ namespace Isaac {
       GraphicsDevice.Pipeline.Rasterizer.IsBlendingEnabled = true;
 
       Screens.Push(new MainScreen(this));
+    }
+
+    protected override void RegisterConsoleBindings(IConsoleInterpreterBindings bindings) {
+      base.RegisterConsoleBindings(bindings);
+
+      bindings.Add("save", () => SaveAsync("./quicksave.sav").Wait());
+      bindings.Add("load", () => LoadAsync("./quicksave.sav").Wait());
     }
 
     public async Task SaveAsync(Path path) {
