@@ -4,8 +4,7 @@ using Surreal.Mathematics.Grids;
 
 namespace Surreal.Collections {
   [DebuggerDisplay("SpanGrid {Width}x{Height}")]
-  public ref struct SpanGrid<T>
-      where T : unmanaged {
+  public ref struct SpanGrid<T> {
     public static SpanGrid<T> Empty => default;
 
     private readonly Span<T> span;
@@ -29,15 +28,8 @@ namespace Surreal.Collections {
     public int     Height { get; }
     public Span<T> Span   => span;
 
-    public T this[Index index] {
-      get => span[index];
-      set => span[index] = value;
-    }
-
-    public T this[int x, int y] {
-      get => span[x + y * Width];
-      set => span[x + y * Width] = value;
-    }
+    public ref T this[Index index] => ref span[index];
+    public ref T this[int x, int y] => ref span[x + y * Width];
 
     public GridEnumerator EnumerateCells() {
       return new GridEnumerator(Width, Height);

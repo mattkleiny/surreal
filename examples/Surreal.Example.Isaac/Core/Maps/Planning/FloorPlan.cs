@@ -1,10 +1,12 @@
 using System;
+using Surreal.Collections;
+using Surreal.Framework.PathFinding;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
 namespace Isaac.Core.Maps.Planning {
-  public sealed class FloorPlan {
+  public sealed class FloorPlan : IPathFindingGrid {
     private readonly SparseGrid<RoomPlan> rooms = new SparseGrid<RoomPlan>(room => room.Position);
 
     public RoomPlan? this[int x, int y] {
@@ -35,6 +37,18 @@ namespace Isaac.Core.Maps.Planning {
     public void DrawGizmos(GeometryBatch batch) {
       foreach (var room in rooms) {
         room.DrawGizmos(batch);
+      }
+    }
+
+    void IPathFindingGrid.GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
+      var room = this[position];
+      if (room != null) {
+        foreach (var direction in room.NormalDoors) {
+          var adjacent = position + direction.ToVector2I();
+          if (this[adjacent] != null) {
+            results.Add(adjacent);
+          }
+        }
       }
     }
   }

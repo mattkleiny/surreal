@@ -46,8 +46,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
             width: newData.Width,
             height: newData.Height,
             border: 0,
-            format: pixelFormat,
-            type: pixelType,
+            format: PixelFormat.Rgba,
+            type: PixelType.UnsignedByte, 
             pixels: ref newData.Span.GetPinnableReference()
         );
       } else {
@@ -58,8 +58,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
             yoffset: 0,
             width: newData.Width,
             height: newData.Height,
-            format: pixelFormat,
-            type: pixelType,
+            format: PixelFormat.Rgba,
+            type: PixelType.UnsignedByte, 
             pixels: ref newData.Span.GetPinnableReference()
         );
       }

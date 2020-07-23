@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Surreal.Mathematics.Grids {
   public sealed class DenseGrid<T> : IEnumerable<T>, IGrid<T> {
@@ -19,13 +19,12 @@ namespace Surreal.Mathematics.Grids {
       Fill(defaultValue);
     }
 
-    public int Width  { get; }
-    public int Height { get; }
+    public int     Width  { get; }
+    public int     Height { get; }
+    public Span<T> Span   => elements;
 
     T IGrid<T>.this[int x, int y] {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => this[x, y];
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       set => this[x, y] = value;
     }
 

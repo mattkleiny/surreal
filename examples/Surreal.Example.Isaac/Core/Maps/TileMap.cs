@@ -19,7 +19,7 @@ namespace Isaac.Core.Maps {
     public TileMap<Tile>     Foreground    { get; }
     public TileMapMask<Tile> CollisionMask { get; }
 
-    public void GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
+    void IPathFindingGrid.GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
       foreach (var neighbour in position.GetMooreNeighbourhood()) {
         if (neighbour != position && !CollisionMask[neighbour.X, neighbour.Y]) {
           results.Add(neighbour);

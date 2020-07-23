@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Mathematics.Grids;
@@ -6,7 +7,8 @@ using Surreal.Mathematics.Linear;
 
 namespace Surreal.Framework.PathFinding {
   public static class PathFindingExtensions {
-    private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler(nameof(PathFindingExtensions));
+    private static readonly IProfiler               Profiler        = ProfilerFactory.GetProfiler(nameof(PathFindingExtensions));
+    private static readonly ThreadLocal<WorkingSet> LocalWorkingSet = new ThreadLocal<WorkingSet>(() => new WorkingSet());
 
     private const int MaxNeighbourCount = 16;
     private const int MaxPathSteps      = 100;
@@ -23,9 +25,13 @@ namespace Surreal.Framework.PathFinding {
         where TGrid : IPathFindingGrid {
       using var _ = Profiler.Track(nameof(FindPath));
 
-      var frontier  = new PriorityQueue<Vector2I>();
-      var cameFrom  = new Dictionary<Vector2I, Vector2I>();
-      var costSoFar = new Dictionary<Vector2I, float>();
+      var workingSet = LocalWorkingSet.Value;
+
+      workingSet.Clear();
+
+      var frontier  = workingSet.Frontier;
+      var cameFrom  = workingSet.CameFrom;
+      var costSoFar = workingSet.Cost;
 
       cameFrom[start]  = start;
       costSoFar[start] = 0f;
@@ -111,6 +117,18 @@ namespace Surreal.Framework.PathFinding {
             results.Add(neighbour);
           }
         }
+      }
+    }
+
+    private sealed class WorkingSet {
+      public PriorityQueue<Vector2I>        Frontier { get; } = new PriorityQueue<Vector2I>();
+      public Dictionary<Vector2I, Vector2I> CameFrom { get; } = new Dictionary<Vector2I, Vector2I>();
+      public Dictionary<Vector2I, float>    Cost     { get; } = new Dictionary<Vector2I, float>();
+
+      public void Clear() {
+        Frontier.Clear();
+        CameFrom.Clear();
+        Cost.Clear();
       }
     }
   }
