@@ -10,7 +10,7 @@ namespace Surreal.Fibers {
   public sealed class Fiber {
     private static readonly ILog Log = LogFactory.GetLog<Fiber>();
 
-    private static long NextFiberId;
+    private static long nextFiberId;
 
     private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -27,7 +27,7 @@ namespace Surreal.Fibers {
     }
 
     private Fiber(FiberScheduler scheduler) {
-      Id = Interlocked.Increment(ref NextFiberId);
+      Id = Interlocked.Increment(ref nextFiberId);
 
       Scheduler              = scheduler;
       SynchronizationContext = new FiberSynchronizationContext(this);

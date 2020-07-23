@@ -1,14 +1,16 @@
 using System.Numerics;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
+using Surreal.Mathematics;
 using Surreal.Mathematics.Timing;
 using Surreal.States;
 
 namespace Asteroids.Actors {
-  public sealed class Ship : Actor {
+  public sealed class Player : Actor {
     private Vector2 direction = Vector2.Zero;
+    private Vector2 facing    = Vector2.Zero;
 
-    public Ship(TextureRegion sprite)
+    public Player(TextureRegion sprite)
         : base(sprite) {
     }
 
@@ -26,12 +28,17 @@ namespace Asteroids.Actors {
       if (Game.Current.Keyboard.IsKeyDown(Key.S)) direction.Y -= 1f;
       if (Game.Current.Keyboard.IsKeyDown(Key.A)) direction.X -= 1f;
       if (Game.Current.Keyboard.IsKeyDown(Key.D)) direction.X += 1f;
+
+      if (direction != Vector2.Zero) {
+        facing = direction;
+      }
     }
 
     public override void Update(DeltaTime deltaTime) {
       base.Update(deltaTime);
 
       Position += direction * Speed * deltaTime;
+      Rotation =  Angle.Between(Vector2.UnitY, facing);
     }
 
     public enum States {

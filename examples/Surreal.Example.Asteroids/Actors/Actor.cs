@@ -7,6 +7,7 @@ using Surreal.Mathematics.Timing;
 namespace Asteroids.Actors {
   public abstract class Actor : Surreal.Framework.Scenes.Actors.Actor {
     public Vector2       Position { get; set; } = Vector2.Zero;
+    public Angle         Rotation { get; set; } = Angle.Zero;
     public TextureRegion Sprite   { get; }
 
     protected Actor(TextureRegion sprite) {
@@ -20,7 +21,7 @@ namespace Asteroids.Actors {
           region: Sprite,
           position: Position,
           pivot: Pivot.Center,
-          rotation: Angle.Zero
+          rotation: Rotation
       );
     }
 

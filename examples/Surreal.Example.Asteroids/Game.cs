@@ -2,6 +2,7 @@ using System.Numerics;
 using Asteroids.Screens;
 using Surreal;
 using Surreal.Framework;
+using Surreal.Graphics;
 using Surreal.Platform;
 
 namespace Asteroids {
@@ -20,6 +21,10 @@ namespace Asteroids {
 
     protected override void Initialize() {
       base.Initialize();
+
+      ClearColor = Color.White;
+
+      GraphicsDevice.Pipeline.Rasterizer.IsBlendingEnabled = true;
 
       Screens.Push(new MainScreen(this));
     }

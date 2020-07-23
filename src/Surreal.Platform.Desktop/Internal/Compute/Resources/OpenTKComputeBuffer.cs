@@ -7,23 +7,21 @@ using Surreal.IO;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
   [DebuggerDisplay("Compute buffer with {Length} elements ({Size})")]
-  internal sealed class OpenTKComputeBuffer<T> : ComputeBuffer<T>
+  internal sealed class OpenTKComputeBuffer<T> : ComputeBuffer<T>, IHasNativeId
       where T : unmanaged {
     private static readonly int Stride = Unsafe.SizeOf<T>();
-    private readonly        int Id     = GL.GenBuffer();
+    private readonly        int id     = GL.GenBuffer();
+
+    int IHasNativeId.Id => id;
 
     public override Memory<T> Read(Range range) {
-      GL.BindBuffer(BufferTarget.CopyWriteBuffer, Id);
+      GL.BindBuffer(BufferTarget.CopyWriteBuffer, id);
       GL.GetBufferParameter(BufferTarget.CopyWriteBuffer, BufferParameterName.BufferSize, out int sizeInBytes);
 
-      var count = sizeInBytes / Stride;
-      var (offset, length) = range.GetOffsetAndLength(count);
+      var (offset, length) = range.GetOffsetAndLength(sizeInBytes / Stride);
 
       var offsetInBytes = offset * Stride;
-
-      // allocate enough space in the local heap.
-      // TODO: perhaps offer an overload where the caller can provide their own buffer?
-      var buffer = new T[length];
+      var buffer        = new T[length];
 
       GL.GetBufferSubData(BufferTarget.CopyWriteBuffer, new IntPtr(offsetInBytes), new IntPtr(sizeInBytes), ref buffer[0]);
 
@@ -34,7 +32,7 @@ namespace Surreal.Platform.Internal.Compute.Resources {
       var bytes = data.Length * Stride;
 
       fixed (T* raw = data) {
-        GL.BindBuffer(BufferTarget.CopyWriteBuffer, Id);
+        GL.BindBuffer(BufferTarget.CopyWriteBuffer, id);
         GL.BufferData(BufferTarget.CopyWriteBuffer, bytes, ref Unsafe.AsRef<T>(raw), BufferUsageHint.DynamicCopy);
       }
 
@@ -43,7 +41,7 @@ namespace Surreal.Platform.Internal.Compute.Resources {
     }
 
     protected override void Dispose(bool managed) {
-      GL.DeleteBuffer(Id);
+      GL.DeleteBuffer(id);
 
       base.Dispose(managed);
     }

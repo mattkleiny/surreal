@@ -13,24 +13,24 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
   internal sealed class OpenTKShaderProgram : ShaderProgram, IHasNativeId {
     private readonly Dictionary<string, int> locationCache = new Dictionary<string, int>();
 
-    private readonly int Id = GL.CreateProgram();
+    private readonly int id = GL.CreateProgram();
 
-    int IHasNativeId.Id => Id;
+    int IHasNativeId.Id => id;
 
     public OpenTKShaderProgram(IReadOnlyList<Shader> shaders) {
       Link(shaders);
     }
 
     public void Bind() {
-      GL.UseProgram(Id);
+      GL.UseProgram(id);
     }
 
     public override void Bind(VertexAttributeSet attributes) {
-      GL.UseProgram(Id);
+      GL.UseProgram(id);
 
       for (var i = 0; i < attributes.Length; i++) {
         var attribute = attributes[i];
-        var location  = GL.GetAttribLocation(Id, attribute.Alias);
+        var location  = GL.GetAttribLocation(id, attribute.Alias);
 
         if (location == -1) continue; // attribute undefined in the shader? just move on
 
@@ -49,7 +49,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
     private void Link(IReadOnlyList<Shader> shaders) {
       var shaderIds = new int[shaders.Count];
 
-      GL.UseProgram(Id);
+      GL.UseProgram(id);
 
       for (var i = 0; i < shaders.Count; i++) {
         var shader = shaders[i];
@@ -68,14 +68,14 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
           throw new ShaderProgramException($"An error occurred whilst compiling a {shader.Type} shader.", errorLog);
         }
 
-        GL.AttachShader(Id, shaderId);
+        GL.AttachShader(id, shaderId);
       }
 
-      GL.LinkProgram(Id);
-      GL.GetProgram(Id, GetProgramParameterName.LinkStatus, out var linkStatus);
+      GL.LinkProgram(id);
+      GL.GetProgram(id, GetProgramParameterName.LinkStatus, out var linkStatus);
 
       if (linkStatus != 1) {
-        GL.GetProgramInfoLog(Id, out var errorLog);
+        GL.GetProgramInfoLog(id, out var errorLog);
 
         throw new ShaderProgramException("An error occurred whilst linking a shader program.", errorLog);
       }
@@ -87,7 +87,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
 
     private int GetUniformLocation(string alias) {
       if (!locationCache.TryGetValue(alias, out var id)) {
-        id = locationCache[alias] = GL.GetUniformLocation(Id, alias);
+        id = locationCache[alias] = GL.GetUniformLocation(this.id, alias);
       }
 
       return id;
@@ -153,7 +153,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
     }
 
     protected override void Dispose(bool managed) {
-      GL.DeleteProgram(Id);
+      GL.DeleteProgram(id);
 
       base.Dispose(managed);
     }

@@ -10,21 +10,18 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
   internal sealed class OpenTKGraphicsBuffer<T> : GraphicsBuffer<T>, IHasNativeId
       where T : unmanaged {
     private static readonly int Stride = Unsafe.SizeOf<T>();
-    private readonly        int Id     = GL.GenBuffer();
+    private readonly        int id     = GL.GenBuffer();
 
-    int IHasNativeId.Id => Id;
+    int IHasNativeId.Id => id;
 
     public override Memory<T> Read(Range range) {
-      GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
+      GL.BindBuffer(BufferTarget.ArrayBuffer, id);
       GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out int sizeInBytes);
 
-      var count = sizeInBytes / Stride;
-      var (offset, length) = range.GetOffsetAndLength(count);
+      var (offset, length) = range.GetOffsetAndLength(sizeInBytes / Stride);
 
       var offsetInBytes = offset * Stride;
-
-      // allocate enough space in the local heap. TODO: perhaps offer an overload where the caller can provide their own buffer?
-      var buffer = new T[length];
+      var buffer        = new T[length];
 
       GL.GetBufferSubData(BufferTarget.CopyWriteBuffer, new IntPtr(offsetInBytes), new IntPtr(sizeInBytes), ref buffer[0]);
 
@@ -35,7 +32,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       var bytes = data.Length * Stride;
 
       fixed (T* raw = data) {
-        GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
+        GL.BindBuffer(BufferTarget.ArrayBuffer, id);
         GL.BufferData(BufferTarget.ArrayBuffer, bytes, ref Unsafe.AsRef<T>(raw), BufferUsageHint.DynamicCopy);
       }
 
@@ -44,7 +41,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
     }
 
     protected override void Dispose(bool managed) {
-      GL.DeleteBuffer(Id);
+      GL.DeleteBuffer(id);
 
       base.Dispose(managed);
     }

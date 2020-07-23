@@ -13,7 +13,6 @@ namespace Isaac.Core.Maps {
 
       using var path = FloorPlan.FindPath(Vector2I.Zero, Vector2I.UnitY, Heuristics.Euclidean);
 
-      // TODO: support arbitrary transforms for wireframe geometry?
       FloorPlan.DrawGizmos(Game.Current.GeometryBatch);
     }
   }

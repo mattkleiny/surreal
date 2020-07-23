@@ -8,11 +8,11 @@ using Surreal.Mathematics.Curves;
 
 namespace HelloWorld.Screens {
   public sealed class MainScreen : GameScreen<Game> {
-    private readonly OrthographicCamera camera = new OrthographicCamera(256 / 4, 144 / 4);
-
     public MainScreen(Game game)
         : base(game) {
     }
+
+    public OrthographicCamera Camera { get; } = new OrthographicCamera(256 / 4, 144 / 4);
 
     public override void Input(GameTime time) {
       if (Keyboard.IsKeyPressed(Key.Escape)) Game.Exit();
@@ -21,7 +21,7 @@ namespace HelloWorld.Screens {
     }
 
     public override void Draw(GameTime time) {
-      GeometryBatch.Begin(in camera.ProjectionView);
+      GeometryBatch.Begin(in Camera.ProjectionView);
 
       GeometryBatch.DrawLine(
           from: -new Vector2(256, 144) / 2f,

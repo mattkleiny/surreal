@@ -1,11 +1,35 @@
 using System;
+using System.Numerics;
 using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Mathematics {
-  public readonly struct Angle : IEquatable<Angle>, IComparable<Angle>, IComparable {
-    public static Angle Zero                       => default;
+  public readonly struct Angle : IEquatable<Angle>, IComparable<Angle> {
+    public static Angle Zero => default;
+
     public static Angle FromRadians(float radians) => new Angle(radians);
     public static Angle FromDegrees(float degrees) => new Angle(DegreesToRadians(degrees));
+
+    public static Angle Between(Vector2 a, Vector2 b) {
+      var dot = Vector2.Dot(a, b);
+
+      var mag1 = a.Length();
+      var mag2 = b.Length();
+
+      var radians = MathF.Acos(dot / (mag1 * mag2));
+
+      return FromRadians(radians);
+    }
+
+    public static Angle Between(Vector3 a, Vector3 b) {
+      var dot = Vector3.Dot(a, b);
+
+      var mag1 = a.Length();
+      var mag2 = b.Length();
+
+      var radians = MathF.Acos(dot / (mag1 * mag2));
+
+      return FromRadians(radians);
+    }
 
     private Angle(float radians) {
       Radians = radians;
@@ -14,26 +38,17 @@ namespace Surreal.Mathematics {
     public float Radians { get; }
     public float Degrees => RadiansToDegrees(Radians);
 
-    public override string ToString() => $"{Radians:F} radians";
+    public override string ToString() => $"{Degrees:F}°";
 
     public          bool Equals(Angle other) => Radians.Equals(other.Radians);
     public override bool Equals(object? obj) => obj is Angle other && Equals(other);
 
-    public int CompareTo(Angle other) {
-      return Radians.CompareTo(other.Radians);
-    }
-
-    public int CompareTo(object? obj) {
-      if (ReferenceEquals(null, obj)) return 1;
-
-      return obj is Angle other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Angle)}");
-    }
+    public int CompareTo(Angle other) => Radians.CompareTo(other.Radians);
 
     public override int GetHashCode() => Radians.GetHashCode();
 
     public static bool operator ==(Angle left, Angle right) => left.Equals(right);
     public static bool operator !=(Angle left, Angle right) => !left.Equals(right);
-
     public static bool operator <(Angle left, Angle right)  => left.CompareTo(right) < 0;
     public static bool operator >(Angle left, Angle right)  => left.CompareTo(right) > 0;
     public static bool operator <=(Angle left, Angle right) => left.CompareTo(right) <= 0;

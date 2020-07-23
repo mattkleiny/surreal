@@ -10,8 +10,6 @@ using Surreal.Diagnostics.Profiling;
 using Surreal.IO;
 
 namespace Surreal.Assets {
-  // TODO: use proper centralized asset reference tracking, here
-
   public sealed class AssetManager : IDisposable, IAssetManager {
     private static readonly ILog      Log      = LogFactory.GetLog<AssetManager>();
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<AssetManager>();

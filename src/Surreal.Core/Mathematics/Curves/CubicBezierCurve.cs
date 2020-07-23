@@ -1,6 +1,5 @@
 using System;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace Surreal.Mathematics.Curves {
   public readonly struct CubicBezierCurve : IEquatable<CubicBezierCurve>, IPlanarCurve {
@@ -35,23 +34,6 @@ namespace Surreal.Mathematics.Curves {
              + ControlPoint1 * 3f * oneT2 * t
              + ControlPoint2 * 3f * oneT * t2
              + EndPoint * t3;
-    }
-
-    public Vector2 SampleDerivativeAt(Normal t) {
-      var (c0, c1, c2, c3) = GetDerivativeCoefficients(t);
-
-      return StartPoint * c0 + ControlPoint1 * c1 + ControlPoint2 * c2 + EndPoint * c3;
-    }
-
-    public static (float c0, float c1, float c2, float c3) GetDerivativeCoefficients(Normal t) {
-      var t2 = t.Value * t.Value;
-
-      return (
-          c0: -3f * t2 + 6f * t - 3f,
-          c1: 9f * t2 - 12f * t + 3f,
-          c2: -9f * t2 + 6f * t,
-          c3: 3f * t2
-      );
     }
 
     public bool Equals(CubicBezierCurve other) =>

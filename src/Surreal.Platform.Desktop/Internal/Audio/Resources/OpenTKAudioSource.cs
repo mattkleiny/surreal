@@ -7,9 +7,9 @@ using Surreal.Mathematics;
 namespace Surreal.Platform.Internal.Audio.Resources {
   [DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
   internal sealed class OpenTKAudioSource : AudioSource, IHasNativeId {
-    private readonly int Id = AL.GenSource();
+    private readonly int id = AL.GenSource();
 
-    int IHasNativeId.Id => Id;
+    int IHasNativeId.Id => id;
 
     private readonly OpenTKAudioDevice device;
     private          float             volume;
@@ -25,7 +25,7 @@ namespace Surreal.Platform.Internal.Audio.Resources {
 
     public override bool IsPlaying {
       get {
-        AL.GetSource(Id, ALGetSourcei.SourceState, out var state);
+        AL.GetSource(id, ALGetSourcei.SourceState, out var state);
 
         return state == (int) ALSourceState.Playing;
       }
@@ -34,13 +34,13 @@ namespace Surreal.Platform.Internal.Audio.Resources {
     public override void Play(AudioClip clip) {
       var innerClip = (OpenTKAudioClip) clip;
 
-      AL.Source(Id, ALSourcef.Gain, volume * device.MasterVolume);
-      AL.Source(Id, ALSourcei.Buffer, innerClip.Id);
-      AL.SourcePlay(Id);
+      AL.Source(id, ALSourcef.Gain, volume * device.MasterVolume);
+      AL.Source(id, ALSourcei.Buffer, innerClip.Id);
+      AL.SourcePlay(id);
     }
 
     protected override void Dispose(bool managed) {
-      AL.DeleteSource(Id);
+      AL.DeleteSource(id);
 
       base.Dispose(managed);
     }

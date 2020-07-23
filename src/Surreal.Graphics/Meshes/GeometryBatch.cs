@@ -11,6 +11,7 @@ using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Meshes {
   // TODO: support poly lines and normals for thick lines and animated edges
+  // TODO: support arbitrary transforms for wireframe geometry?
 
   public sealed class GeometryBatch : IDisposable {
     private const string ProjViewUniform = "u_projView";
