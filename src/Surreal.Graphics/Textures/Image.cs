@@ -5,6 +5,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using Surreal.Assets;
+using Surreal.Collections;
 using Surreal.IO;
 using Surreal.Mathematics.Grids;
 

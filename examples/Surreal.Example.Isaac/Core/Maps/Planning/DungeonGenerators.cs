@@ -32,7 +32,7 @@ namespace Isaac.Core.Maps.Planning {
 
       for (var i = 0; i < random.NextRange(rooms); i++) {
         generate:
-        if (!room.TryAddRoom(out room, room.NormalDoors.UnusedDoors.SelectRandomly(random))) {
+        if (!room.TryAddRoom(out room, room.NormalDoors.FreeDoors.SelectRandomly(random))) {
           goto generate;
         }
       }

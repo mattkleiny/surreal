@@ -3,6 +3,7 @@ using System.Numerics;
 using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
+using Surreal.Utilities;
 
 namespace Isaac.Core.Maps.Planning {
   public enum RoomType {
@@ -20,10 +21,10 @@ namespace Isaac.Core.Maps.Planning {
     public FloorPlan?     Floor       = null;
     public RoomPlan?      Parent      = null;
     public List<RoomPlan> Children    = new List<RoomPlan>();
-    public Vector2I   Position    = Vector2I.Zero;
-    public DoorMask   NormalDoors = DoorMask.None;
-    public DoorMask   SecretDoors = DoorMask.None;
-    public RoomType   Type        = RoomType.Standard;
+    public Vector2I       Position    = Vector2I.Zero;
+    public DoorMask       NormalDoors = DoorMask.None;
+    public DoorMask       SecretDoors = DoorMask.None;
+    public RoomType       Type        = RoomType.Standard;
 
     public bool TryAddRoom(out RoomPlan room, Direction direction, RoomType type = RoomType.Standard) {
       if (Floor?[Position + direction.ToVector2I()] != null) {
@@ -45,11 +46,11 @@ namespace Isaac.Core.Maps.Planning {
       Children.Add(room);
 
       if (type == RoomType.Secret) {
-        SecretDoors.AddDoor(direction);
-        room.SecretDoors.AddDoor(direction.Opposite());
+        SecretDoors.Add(direction);
+        room.SecretDoors.Add(direction.Opposite());
       } else {
-        NormalDoors.AddDoor(direction);
-        room.NormalDoors.AddDoor(direction.Opposite());
+        NormalDoors.Add(direction);
+        room.NormalDoors.Add(direction.Opposite());
       }
 
       Floor?.Add(room);
@@ -71,19 +72,15 @@ namespace Isaac.Core.Maps.Planning {
           _                 => Color.Clear
       });
 
-      DrawDoor(center, batch, NormalDoors, Direction.North, Color.Green);
-      DrawDoor(center, batch, NormalDoors, Direction.East, Color.Green);
-      DrawDoor(center, batch, NormalDoors, Direction.South, Color.Green);
-      DrawDoor(center, batch, NormalDoors, Direction.West, Color.Green);
+      foreach (var direction in NormalDoors.UsedDoors.GetMaskValues()) {
+        DrawDoor(center, batch, direction, Color.Green);
+      }
 
-      DrawDoor(center, batch, SecretDoors, Direction.North, Color.Blue);
-      DrawDoor(center, batch, SecretDoors, Direction.East, Color.Blue);
-      DrawDoor(center, batch, SecretDoors, Direction.South, Color.Blue);
-      DrawDoor(center, batch, SecretDoors, Direction.West, Color.Blue);
+      foreach (var direction in SecretDoors.UsedDoors.GetMaskValues()) {
+        DrawDoor(center, batch, direction, Color.Blue);
+      }
 
-      static void DrawDoor(Vector2 center, GeometryBatch batch, DoorMask mask, Direction direction, Color color) {
-        if (!mask.HasDoor(direction)) return;
-
+      static void DrawDoor(Vector2 center, GeometryBatch batch, Direction direction, Color color) {
         center = direction switch {
             Direction.North => new Vector2(center.X, center.Y + Size.Y / 2f),
             Direction.South => new Vector2(center.X, center.Y - Size.Y / 2f),

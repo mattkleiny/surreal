@@ -1,3 +1,5 @@
+using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Threading;
 using Surreal.Collections;
@@ -72,11 +74,10 @@ namespace Surreal.Framework.PathFinding {
       return default;
     }
 
-    private static Path RetracePath(
-        Vector2I start,
-        Vector2I end,
-        IReadOnlyDictionary<Vector2I, Vector2I> cameFrom) {
-      var points  = new List<Vector2I>(cameFrom.Count);
+    private static Path RetracePath(Vector2I start, Vector2I end, Dictionary<Vector2I, Vector2I> cameFrom) {
+      var buffer = MemoryPool<Vector2I>.Shared.Rent(cameFrom.Count);
+      var points = new SpanList<Vector2I>(buffer.Memory.Span);
+
       var current = end;
 
       while (current != start) {
@@ -90,9 +91,9 @@ namespace Surreal.Framework.PathFinding {
       }
 
       points.Add(start);
-      points.Reverse();
+      points.Span.Reverse();
 
-      return new Path(points.ToArray());
+      return new Path(points, buffer);
     }
 
     private readonly struct UniformPathfindingGrid<T, TNeighbourhood> : IGrid<T>, IPathFindingGrid

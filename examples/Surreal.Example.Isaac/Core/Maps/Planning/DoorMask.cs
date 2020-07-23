@@ -15,11 +15,13 @@ namespace Isaac.Core.Maps.Planning {
       this.doors = doors;
     }
 
-    public Direction UnusedDoors => Direction.All & ~doors;
+    public Direction UsedDoors => doors;
+    public Direction FreeDoors => Direction.All & ~doors;
 
-    public bool HasDoor(Direction direction)    => doors.HasFlagFast(direction);
-    public void AddDoor(Direction direction)    => doors |= direction;
-    public void RemoveDoor(Direction direction) => doors &= ~direction;
+    public bool IsUsed(Direction direction) => UsedDoors.HasFlagFast(direction);
+    public bool IsFree(Direction direction) => FreeDoors.HasFlagFast(direction);
+    public void Add(Direction direction)    => doors |= direction;
+    public void Remove(Direction direction) => doors &= ~direction;
 
     public override string ToString() => $"Doors {doors.ToPermutationString()}";
 
@@ -33,34 +35,8 @@ namespace Isaac.Core.Maps.Planning {
 
     public static implicit operator DoorMask(Direction direction) => new DoorMask(direction);
 
-
-    public Enumerator                             GetEnumerator() => new Enumerator(doors);
-    IEnumerator<Direction> IEnumerable<Direction>.GetEnumerator() => GetEnumerator();
-    IEnumerator IEnumerable.                      GetEnumerator() => GetEnumerator();
-
-    public struct Enumerator : IEnumerator<Direction> {
-      private readonly Direction direction;
-
-      public Enumerator(Direction direction) {
-        this.direction = direction;
-
-        Current = Direction.None;
-      }
-
-      public Direction    Current { get; }
-      object? IEnumerator.Current => Current;
-
-      public bool MoveNext() {
-        throw new NotImplementedException();
-      }
-
-      public void Reset() {
-        throw new NotImplementedException();
-      }
-
-      public void Dispose() {
-        // no-op
-      }
-    }
+    public EnumExtensions.MaskEnumerator<Direction> GetEnumerator() => doors.GetMaskValues();
+    IEnumerator<Direction> IEnumerable<Direction>.  GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.                        GetEnumerator() => GetEnumerator();
   }
 }

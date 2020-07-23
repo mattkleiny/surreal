@@ -4,17 +4,22 @@ using Surreal.Mathematics.Linear;
 
 namespace Surreal.Framework.PathFinding {
   [DebuggerDisplay("Path with {Length} steps")]
-  public readonly struct Path {
-    public Path(Vector2I[] steps) {
-      Steps = steps;
+  public readonly ref struct Path {
+    private readonly Span<Vector2I> steps;
+    private readonly IDisposable?   disposable;
+
+    public Path(Span<Vector2I> steps, IDisposable? disposable = null) {
+      this.steps      = steps;
+      this.disposable = disposable;
     }
 
-    public Vector2I[] Steps   { get; }
-    public Vector2I   Start   => Steps?[0] ?? Vector2I.Zero;
-    public Vector2I   Goal    => Steps?[^1] ?? Vector2I.Zero;
-    public int        Length  => Steps?.Length ?? 0;
-    public bool       IsValid => Length > 0;
+    public bool IsValid => !steps.IsEmpty;
+    public bool IsEmpty => steps.IsEmpty;
+    public int  Length  => steps.Length;
 
-    public Vector2I this[Index index] => Steps?[index] ?? Vector2I.Zero;
+    public Vector2I this[Index index] => steps[index];
+    public Span<Vector2I> this[Range range] => steps[range];
+
+    public void Dispose() => disposable?.Dispose();
   }
 }

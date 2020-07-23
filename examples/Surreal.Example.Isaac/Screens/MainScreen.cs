@@ -49,7 +49,7 @@ namespace Isaac.Screens {
       Scene.Actors.Add(new Monster(sprite));
     }
 
-    public override async void Input(GameTime time) {
+    public override void Input(GameTime time) {
       if (Keyboard.IsKeyPressed(Key.Escape)) {
         Game.Exit();
       }
@@ -60,11 +60,11 @@ namespace Isaac.Screens {
       }
 
       if (Keyboard.IsKeyPressed(Key.F5)) {
-        await Game.SaveAsync(QuicksavePath);
+        Game.SaveAsync(QuicksavePath).Wait();
       }
 
       if (Keyboard.IsKeyPressed(Key.F7)) {
-        await Game.LoadAsync(QuicksavePath);
+        Game.LoadAsync(QuicksavePath).Wait();
         Restart();
       }
 

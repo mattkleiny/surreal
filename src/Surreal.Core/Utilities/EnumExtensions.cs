@@ -1,12 +1,25 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Surreal.Collections;
+using Surreal.Mathematics;
 
 namespace Surreal.Utilities {
   public static class EnumExtensions {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe int AsInt<TEnum>(this TEnum value)
+        where TEnum : unmanaged, Enum {
+      return *(int*) &value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool EqualsFast<TEnum>(this TEnum value, TEnum other)
+        where TEnum : unmanaged, Enum {
+      return value.AsInt() == other.AsInt();
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasFlagFast<TEnum>(this TEnum value, TEnum comparand)
         where TEnum : unmanaged, Enum {
@@ -17,41 +30,24 @@ namespace Surreal.Utilities {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe int AsInt<TEnum>(this TEnum value)
+    public static MaskEnumerator<TEnum> GetMaskValues<TEnum>(this TEnum flags)
         where TEnum : unmanaged, Enum {
-      return *(int*) &value;
+      return new MaskEnumerator<TEnum>(flags);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe bool EqualsFast<TEnum>(this TEnum value, TEnum other) 
-        where TEnum : unmanaged, Enum {
-      return value.AsInt() == other.AsInt();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TEnum SelectRandomly<TEnum>(this TEnum value, Random random)
         where TEnum : unmanaged, Enum {
-      return GetMaskValues(value).SelectRandomly(random);
-    }
+      var result     = default(TEnum);
+      var enumerator = GetMaskValues(value);
 
-    public static List<TEnum> GetMaskValues<TEnum>(this TEnum flags)
-        where TEnum : unmanaged, Enum {
-      var flag    = 1;
-      var results = new List<TEnum>();
-
-      foreach (var value in CachedEnumLookup<TEnum>.Values) {
-        var mask = value.AsInt();
-
-        while (flag < mask) {
-          flag <<= 1;
-        }
-
-        if (flag == mask && flags.HasFlagFast(value)) {
-          results.Add(value);
+      while (enumerator.MoveNext()) {
+        result = enumerator.Current;
+        if (random.NextBool()) {
+          break;
         }
       }
 
-      return results;
+      return result;
     }
 
     public static string ToPermutationString<TEnum>(this TEnum flags)
@@ -71,10 +67,60 @@ namespace Surreal.Utilities {
       return builder.ToString();
     }
 
+    public struct MaskEnumerator<TEnum> : IEnumerator<TEnum>, IEnumerable<TEnum>
+        where TEnum : unmanaged, Enum {
+      private static readonly TEnum[] Values = CachedEnumLookup<TEnum>.Values;
+
+      private readonly TEnum flags;
+      private          int   flag;
+      private          int   index;
+
+      public MaskEnumerator(TEnum flags) {
+        this.flags = flags;
+        flag       = 1;
+        index      = -1;
+      }
+
+      public TEnum        Current => Values[index];
+      object? IEnumerator.Current => Current;
+
+      public bool MoveNext() {
+        // tail-recursive, unrolled to loop
+        while (true) {
+          if (++index >= Values.Length) {
+            return false;
+          }
+
+          var value = Values[index];
+          var mask  = value.AsInt();
+
+          while (flag < mask) {
+            flag <<= 1;
+          }
+
+          if (flag == mask && flags.HasFlagFast(value)) {
+            return true;
+          }
+        }
+      }
+
+      public void Reset() {
+        flag  = 1;
+        index = -1;
+      }
+
+      public void Dispose() {
+        // no-op
+      }
+
+      public MaskEnumerator<TEnum>          GetEnumerator() => this;
+      IEnumerator<TEnum> IEnumerable<TEnum>.GetEnumerator() => GetEnumerator();
+      IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
+    }
+
     private static class CachedEnumLookup<TEnum>
         where TEnum : unmanaged, Enum {
-      public static string[] Names  { get; } = Enum.GetNames(typeof(TEnum)).ToArray();
-      public static TEnum[]  Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToArray();
+      public static TEnum[] Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToArray();
     }
   }
 }
