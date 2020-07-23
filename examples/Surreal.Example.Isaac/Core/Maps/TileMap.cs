@@ -21,7 +21,10 @@ namespace Isaac.Core.Maps {
 
     void IPathFindingGrid.GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
       foreach (var neighbour in position.GetMooreNeighbourhood()) {
-        if (neighbour != position && !CollisionMask[neighbour.X, neighbour.Y]) {
+        if (neighbour != position &&
+            neighbour.X >= 0 && neighbour.X < CollisionMask.Width &&
+            neighbour.Y >= 0 && neighbour.Y < CollisionMask.Height &&
+            !CollisionMask[neighbour.X, neighbour.Y]) {
           results.Add(neighbour);
         }
       }

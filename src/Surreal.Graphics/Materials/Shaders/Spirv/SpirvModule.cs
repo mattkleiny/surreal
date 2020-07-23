@@ -8,11 +8,7 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
     public InstructionList Instructions    { get; }      = new InstructionList();
 
     public Memory<byte> Compile() {
-      var buffer = new BytecodeBuffer();
-
-      Instructions.Compile(buffer);
-
-      return buffer;
+      throw new NotImplementedException();
     }
 
     public static SpirvModule Decompile(Memory<byte> bytecode) {

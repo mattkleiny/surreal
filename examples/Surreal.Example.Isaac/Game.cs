@@ -18,7 +18,7 @@ namespace Isaac {
             Configuration = {
                 Title          = "The Binding of Isaac",
                 IsVsyncEnabled = true,
-                ShowFPSInTitle = true,
+                ShowFPSInTitle = true
             }
         }
     });
@@ -29,9 +29,9 @@ namespace Isaac {
       base.Initialize();
 
       ClearColor = Color.White;
-      
+
       GraphicsDevice.Pipeline.Rasterizer.IsBlendingEnabled = true;
-      
+
       Screens.Push(new MainScreen(this));
     }
 

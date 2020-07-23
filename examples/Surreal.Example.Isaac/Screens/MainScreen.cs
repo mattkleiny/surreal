@@ -44,9 +44,6 @@ namespace Isaac.Screens {
 
       Scene.Actors.Add(CameraRig);
       Scene.Actors.Add(Generator(Game.State.Seed));
-      Scene.Actors.Add(new Player(sprite));
-      Scene.Actors.Add(new Monster(sprite));
-      Scene.Actors.Add(new Monster(sprite));
     }
 
     public override void Input(GameTime time) {
@@ -71,6 +68,12 @@ namespace Isaac.Screens {
       base.Input(time);
     }
 
+    public override void Update(GameTime time) {
+      base.Update(time);
+
+      ApplyHouseKeeping(Scene.Actors);
+    }
+
     public override void Draw(GameTime time) {
       SpriteBatch.Begin(in CameraRig.Camera.ProjectionView);
       GeometryBatch.Begin(in CameraRig.Camera.ProjectionView);
@@ -79,6 +82,18 @@ namespace Isaac.Screens {
 
       SpriteBatch.End();
       GeometryBatch.End();
+    }
+
+    private static void ApplyHouseKeeping(ActorList actors) {
+      for (var i = 0; i < actors.Count; i++) {
+        var actor = actors[i];
+
+        if (actor is Mob mob && mob.State == Mob.States.Dead) {
+          actors.Remove(mob);
+        }
+
+        ApplyHouseKeeping(actor.Children);
+      }
     }
   }
 }

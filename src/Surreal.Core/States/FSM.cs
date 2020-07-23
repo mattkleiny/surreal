@@ -22,6 +22,8 @@ namespace Surreal.States {
       }
     }
 
+    public override string ToString() => $"{CurrentState}";
+
     public static implicit operator TState(FSM<TState> fsm) => fsm.CurrentState;
   }
 }

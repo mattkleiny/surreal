@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Surreal.Collections;
 
 namespace Isaac.Core.Items {
+  [DebuggerDisplay("Inventory ({stacks.Count} stacks)")]
   public sealed class Inventory : IEnumerable<ItemStack> {
     private readonly Bag<ItemStack> stacks = new Bag<ItemStack>();
 

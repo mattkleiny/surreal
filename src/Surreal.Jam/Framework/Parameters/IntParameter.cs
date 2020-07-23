@@ -27,7 +27,7 @@ namespace Surreal.Framework.Parameters {
     public IntRange Range { get; }
 
     public override int Value {
-      get => base.Value;
+      get => base.Value.Clamp(Range);
       set => base.Value = value.Clamp(Range);
     }
 

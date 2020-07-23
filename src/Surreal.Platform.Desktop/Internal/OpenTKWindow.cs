@@ -18,7 +18,7 @@ namespace Surreal.Platform.Internal {
           device: DisplayDevice.Default,
           major: 2,
           minor: 0,
-          flags: GraphicsContextFlags.Default) {
+          flags: configuration.EnableGraphicsDebugging ? GraphicsContextFlags.Debug : GraphicsContextFlags.Default) {
           VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off
       };
 

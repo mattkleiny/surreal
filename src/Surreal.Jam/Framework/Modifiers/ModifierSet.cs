@@ -15,6 +15,12 @@ namespace Surreal.Framework.Modifiers {
     private readonly Bag<Modifier<T>> modifiers = new Bag<Modifier<T>>();
     private          bool             isDirty;
 
+    protected abstract T Calculate(T baseValue, ReadOnlySpan<Modifier<T>> modifiers);
+
+    public void MarkAsDirty() {
+      isDirty = true;
+    }
+
     public T Apply(in T input) {
       if (isDirty) {
         modifiers.Sort(ModifierOrder);
@@ -24,20 +30,19 @@ namespace Surreal.Framework.Modifiers {
       return Calculate(input, modifiers.Span);
     }
 
-    protected abstract T Calculate(T baseValue, ReadOnlySpan<Modifier<T>> modifiers);
-
     public void Add(Modifier<T> modifier) {
       modifiers.Add(modifier);
-      isDirty = true;
+      MarkAsDirty();
     }
 
     public void Remove(Modifier<T> modifier) {
       modifiers.Remove(modifier);
-      isDirty = true;
+      MarkAsDirty();
     }
 
     public void Clear() {
       modifiers.Clear();
+      MarkAsDirty();
     }
 
     public Bag<Modifier<T>>.Enumerator                GetEnumerator() => modifiers.GetEnumerator();

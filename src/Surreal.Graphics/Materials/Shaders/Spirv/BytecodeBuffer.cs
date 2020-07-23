@@ -11,7 +11,6 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
 
     public byte this[int index] => bytecode[index];
     public byte this[Index index] => bytecode[index];
-    public Memory<byte> this[Range range] => bytecode.Memory[range];
 
     public void Add(byte instruction) => bytecode.Add(instruction);
     public void Clear()               => bytecode.Clear();
@@ -19,7 +18,5 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
     public Bag<byte>.Enumerator         GetEnumerator() => bytecode.GetEnumerator();
     IEnumerator<byte> IEnumerable<byte>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.            GetEnumerator() => GetEnumerator();
-
-    public static implicit operator Memory<byte>(BytecodeBuffer buffer) => buffer[..];
   }
 }

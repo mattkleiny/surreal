@@ -36,8 +36,8 @@ namespace Surreal.Mathematics.Linear {
     public static Vector2I operator -(Vector2I self) => new Vector2I(-self.X, -self.Y);
 
     // implicit conversion
-    public static implicit operator Vector2(Vector2I self)     => new Vector2(self.X, self.Y);
-    public static implicit operator Vector2I((int, int) value) => new Vector2I(value.Item1, value.Item2);
+    public static implicit operator Vector2(Vector2I self)         => new Vector2(self.X, self.Y);
+    public static implicit operator Vector2I((int X, int Y) value) => new Vector2I(value.X, value.Y);
 
     public bool Equals(Vector2I other) {
       return X == other.X && Y == other.Y;
