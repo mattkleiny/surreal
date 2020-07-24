@@ -13,7 +13,6 @@ namespace Isaac.Core.Mobs {
     public virtual Vector2Parameter      Direction { get; } = new Vector2Parameter(Vector2.Zero);
     public virtual ClampedFloatParameter Speed     { get; } = new ClampedFloatParameter(4f, Range.Of(0f, 100f));
     public virtual ClampedIntParameter   Health    { get; } = new ClampedIntParameter(10, Range.Of(0, 100));
-    public virtual AngleParameter        Rotation  { get; } = new AngleParameter(Angle.Zero);
     public virtual Vector2Parameter      Knockback { get; } = new Vector2Parameter(Vector2.Zero);
 
     public override bool IsEnabled => base.IsEnabled && State == States.Alive;

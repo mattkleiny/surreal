@@ -10,41 +10,26 @@ namespace Surreal.Framework.Tweening {
   public delegate T Interpolator<T>(T a, T b, float t);
 
   public static class TweenExtensions {
-    public static Task TweenOverTime(this FloatParameter parameter, float a, float b, TweenAnimation animation)
-      => TweenOverTime(parameter, GameJam.Current.Clock, a, b, animation);
-
     public static Task TweenOverTime(this FloatParameter parameter, IClock clock, float a, float b, TweenAnimation animation)
       => TweenOverTime(parameter, clock, Maths.Lerp, a, b, animation);
-
-    public static Task TweenOverTime(this IntParameter parameter, int a, int b, TweenAnimation animation)
-      => TweenOverTime(parameter, GameJam.Current.Clock, a, b, animation);
 
     public static Task TweenOverTime(this IntParameter parameter, IClock clock, int a, int b, TweenAnimation animation)
       => TweenOverTime(parameter, clock, Maths.Lerp, a, b, animation);
 
-    public static Task TweenOverTime(this ColorParameter parameter, Color a, Color b, TweenAnimation animation)
-      => TweenOverTime(parameter, GameJam.Current.Clock, a, b, animation);
-
     public static Task TweenOverTime(this ColorParameter parameter, IClock clock, Color a, Color b, TweenAnimation animation)
       => TweenOverTime(parameter, clock, Color.Lerp, a, b, animation);
-
-    public static Task TweenOverTime(this Vector2Parameter parameter, Vector2 a, Vector2 b, TweenAnimation animation)
-      => TweenOverTime(parameter, GameJam.Current.Clock, a, b, animation);
 
     public static Task TweenOverTime(this Vector2Parameter parameter, IClock clock, Vector2 a, Vector2 b, TweenAnimation animation)
       => TweenOverTime(parameter, clock, Vector2.Lerp, a, b, animation);
 
-    public static Task TweenOverTime(this Vector3Parameter parameter, Vector3 a, Vector3 b, TweenAnimation animation)
-      => TweenOverTime(parameter, GameJam.Current.Clock, a, b, animation);
-
     public static Task TweenOverTime(this Vector3Parameter parameter, IClock clock, Vector3 a, Vector3 b, TweenAnimation animation)
       => TweenOverTime(parameter, clock, Vector3.Lerp, a, b, animation);
 
-    public static Task TweenOverTime(this Vector4Parameter parameter, Vector4 a, Vector4 b, TweenAnimation animation)
-      => TweenOverTime(parameter, GameJam.Current.Clock, a, b, animation);
-
     public static Task TweenOverTime(this Vector4Parameter parameter, IClock clock, Vector4 a, Vector4 b, TweenAnimation animation)
       => TweenOverTime(parameter, clock, Vector4.Lerp, a, b, animation);
+
+    public static Task TweenOverTime(this AngleParameter parameter, IClock clock, Angle a, Angle b, TweenAnimation animation)
+      => TweenOverTime(parameter, clock, Angle.Lerp, a, b, animation);
 
     public static Task TweenOverTime<T>(
         this Parameter<T> parameter,

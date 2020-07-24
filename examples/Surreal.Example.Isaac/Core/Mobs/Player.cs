@@ -7,11 +7,11 @@ using Surreal.Mathematics.Timing;
 
 namespace Isaac.Core.Mobs {
   public sealed class Player : Mob {
-    public override Vector2Parameter      Position  => GameState.Player.Position;
-    public override ClampedFloatParameter Speed     => GameState.Player.Speed;
-    public override ClampedIntParameter   Health    => GameState.Player.Health;
-    public          ClampedIntParameter   Coins     => GameState.Player.Coins;
-    public          Inventory             Inventory => GameState.Player.Inventory;
+    public override Vector2Parameter      Position  => Game.Current.State.Player.Position;
+    public override ClampedFloatParameter Speed     => Game.Current.State.Player.Speed;
+    public override ClampedIntParameter   Health    => Game.Current.State.Player.Health;
+    public          ClampedIntParameter   Coins     => Game.Current.State.Player.Coins;
+    public          Inventory             Inventory => Game.Current.State.Player.Inventory;
 
     public Player(TextureRegion sprite)
         : base(sprite) {

@@ -10,12 +10,14 @@ using Xunit;
 
 namespace Surreal.Jam.Framework {
   public class TweeningTests {
+    private FixedStepClock Clock { get; } = FixedStepClock.CreateDefault();
+
     [Fact]
     public async Task it_should_tween_a_simple_parameter_over_time_using_linear_curve() {
       var parameter = new ColorParameter(Color.Black);
 
       await parameter.TweenOverTime(
-          clock: FixedStepClock.Default,
+          clock: Clock,
           a: Color.Black,
           b: Color.White,
           animation: new TweenAnimation(10.Seconds(), AnimationCurves.Linear)
@@ -29,7 +31,7 @@ namespace Surreal.Jam.Framework {
       var parameter = new ColorParameter(Color.Black);
 
       await parameter.TweenOverTime(
-          clock: FixedStepClock.Default,
+          clock: Clock,
           a: Color.Black,
           b: Color.White,
           animation: new TweenAnimation(10.Seconds(), AnimationCurves.InverseLinear)
@@ -43,7 +45,7 @@ namespace Surreal.Jam.Framework {
       var parameter = new ColorParameter(Color.Black);
 
       await parameter.TweenOverTime(
-          clock: FixedStepClock.Default,
+          clock: Clock,
           a: Color.Black,
           b: Color.White,
           animation: new TweenAnimation(

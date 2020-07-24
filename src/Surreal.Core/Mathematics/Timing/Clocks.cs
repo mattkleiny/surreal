@@ -9,7 +9,7 @@ namespace Surreal.Mathematics.Timing {
   }
 
   public sealed class FixedStepClock : IClock {
-    public static FixedStepClock Default { get; } = new FixedStepClock(16.Milliseconds());
+    public static FixedStepClock CreateDefault() => new FixedStepClock(16.Milliseconds());
 
     public FixedStepClock(DeltaTime deltaTime) {
       DeltaTime = deltaTime;
