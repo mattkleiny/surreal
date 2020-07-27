@@ -9,6 +9,7 @@ namespace Isaac.Core.Maps {
     public override void Draw(DeltaTime deltaTime) {
       base.Draw(deltaTime);
 
+      // TileMap.Draw(Game.Current.GeometryBatch, deltaTime);
       FloorPlan.DrawGizmos(Game.Current.GeometryBatch);
     }
   }

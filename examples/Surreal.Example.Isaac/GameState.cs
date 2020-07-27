@@ -42,9 +42,10 @@ namespace Isaac {
     private static readonly FloatRange SpeedRange  = Range.Of(0f, 10f);
 
     public Vector2Parameter      Position  { get; } = new Vector2Parameter(Vector2.Zero);
+    public AngleParameter        Rotation  { get; } = new AngleParameter(Angle.Zero);
+    public ClampedFloatParameter Speed     { get; } = new ClampedFloatParameter(4f, SpeedRange);
     public ClampedIntParameter   Health    { get; } = new ClampedIntParameter(4, HealthRange);
     public ClampedIntParameter   Coins     { get; } = new ClampedIntParameter(0, CoinsRange);
-    public ClampedFloatParameter Speed     { get; } = new ClampedFloatParameter(4f, SpeedRange);
     public Inventory             Inventory { get; } = new Inventory();
 
     public void Save(BinaryWriter writer) {

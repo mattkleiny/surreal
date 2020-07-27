@@ -1,12 +1,20 @@
 using System;
+using System.Numerics;
 using Surreal.Collections;
+using Surreal.Diagnostics.Profiling;
 using Surreal.Framework.PathFinding;
 using Surreal.Framework.Tiles;
+using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Sprites;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
+using Surreal.Mathematics.Timing;
 
 namespace Isaac.Core.Maps {
   public sealed class TileMap : IPathFindingGrid {
+    private static readonly IProfiler   Profiler   = ProfilerFactory.GetProfiler<TileMap>();
+    private static readonly TileLayer[] LayerOrder = {TileLayer.Background, TileLayer.Midground, TileLayer.Foreground};
+
     public TileMap(int width, int height) {
       Background = new TileMap<Tile>(width, height, Tile.Palette);
       Midground  = new TileMap<Tile>(width, height, Tile.Palette);
@@ -14,6 +22,12 @@ namespace Isaac.Core.Maps {
 
       CollisionMask = new TileMapMask<Tile>(Foreground, (x, y, tile) => tile.IsCollidable);
       PathingMask   = new TileMapMask<Tile>(Background, (x, y, tile) => tile.IsPathable);
+
+      foreach (var (x, y) in Foreground.EnumerateCells()) {
+        if (x == 0 || y == 0 || x == Foreground.Width - 1 || y == Foreground.Height - 1) {
+          Foreground[x, y] = Tile.Wall;
+        }
+      }
     }
 
     public TileMap<Tile> Background { get; }
@@ -34,6 +48,26 @@ namespace Isaac.Core.Maps {
         TileLayer.Foreground => Foreground,
         _                    => throw new ArgumentOutOfRangeException(nameof(layer))
     };
+
+    public void Draw(GeometryBatch batch, DeltaTime deltaTime) {
+      using var _ = Profiler.Track(nameof(Draw));
+
+      // draw the entire tile-map from bottom to top
+      for (var i = 0; i < LayerOrder.Length; i++) {
+        var layer = this[LayerOrder[i]];
+
+        foreach (var (x, y) in layer.EnumerateCells()) {
+          var tile = layer[x, y];
+          if (tile.IsVisible) {
+            batch.DrawSolidQuad(
+                center: new Vector2(x * 16f, y * 16f),
+                size: new Vector2(16f, 16f),
+                color: tile.Color
+            );
+          }
+        }
+      }
+    }
 
     void IPathFindingGrid.GetNeighbours(Vector2I position, ref SpanList<Vector2I> results) {
       foreach (var neighbour in position.GetMooreNeighbourhood()) {
