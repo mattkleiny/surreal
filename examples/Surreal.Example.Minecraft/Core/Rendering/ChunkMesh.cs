@@ -134,8 +134,7 @@ namespace Minecraft.Core.Rendering {
     }
 
     private sealed class Tessellator : IDisposable {
-      private static readonly RingBuffer<int>
-          VertexCountSamples = new RingBuffer<int>(30) {16_000}; // add a sane default to try and lower initial resize overhead
+      private static readonly RingBuffer<int> VertexCountSamples = new RingBuffer<int>(30) {16_000}; // add a sane default to try and lower initial resize overhead
 
       private static int AverageVertexCount => VertexCountSamples.Sum() / Math.Max(1, VertexCountSamples.Count);
       private static int AverageIndexCount  => AverageVertexCount * 3 / 2;
@@ -148,8 +147,8 @@ namespace Minecraft.Core.Rendering {
       }
 
       private Tessellator(int vertexCapacity, int indexCapacity) {
-        vertices = new BufferList<Vertex>(Buffers.Allocate<Vertex>(vertexCapacity));
-        indices  = new BufferList<ushort>(Buffers.Allocate<ushort>(indexCapacity));
+        vertices = new BufferList<Vertex>(Buffers.AllocatePinned<Vertex>(vertexCapacity));
+        indices  = new BufferList<ushort>(Buffers.AllocatePinned<ushort>(indexCapacity));
       }
 
       public Span<Vertex> Vertices => vertices.Span;

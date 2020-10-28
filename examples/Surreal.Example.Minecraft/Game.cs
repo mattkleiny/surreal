@@ -22,7 +22,7 @@ namespace Minecraft {
 
       GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
 
-      Screens.Push(new MainScreen(this).LoadAsync());
+      Screens.Push(new MainScreen(this).LoadInBackground());
     }
   }
 }

@@ -3,6 +3,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Surreal.Diagnostics.Logging;
+using Surreal.Utilities;
 
 namespace Surreal.Fibers {
   // TODO: implement no-allocation FiberTask helpers and async method builder.
@@ -79,7 +80,7 @@ namespace Surreal.Fibers {
     }
 
     private void Transition(FiberState required, FiberState desired) {
-      if (!State.Equals(required)) {
+      if (!State.EqualsFast(required)) {
         throw new InvalidOperationException($"Expected to be in the {required} state, instead was in the {State} state.");
       }
 

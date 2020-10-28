@@ -10,6 +10,9 @@ namespace Surreal.IO {
     public static IBuffer<T> Allocate<T>(int count)
         where T : unmanaged => new ManagedBuffer<T>(count);
 
+    public static IBuffer<T> AllocatePinned<T>(int count)
+        where T : unmanaged => new ManagedBuffer<T>(count);
+
     public static IDisposableBuffer<T> AllocateOffHeap<T>(int count, bool zeroFill = true)
         where T : unmanaged => new UnmanagedBuffer<T>(count, zeroFill);
 
@@ -56,6 +59,24 @@ namespace Surreal.IO {
       public ManagedBuffer(int count)
           : base(count) {
         elements = new T[count];
+      }
+
+      public override Span<T> Span => new Span<T>(elements);
+
+      public void Resize(int newLength) {
+        Array.Resize(ref elements, newLength);
+        Length = newLength;
+      }
+    }
+    
+    [DebuggerDisplay("{Size} allocated on-heap (pinned)")]
+    private sealed class PinnedBuffer<T> : Buffer<T>, IResizableBuffer<T>
+        where T : unmanaged {
+      private T[] elements;
+
+      public PinnedBuffer(int count)
+          : base(count) {
+        elements = GC.AllocateArray<T>(count, pinned: true);
       }
 
       public override Span<T> Span => new Span<T>(elements);

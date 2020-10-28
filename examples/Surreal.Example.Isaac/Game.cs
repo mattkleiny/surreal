@@ -6,6 +6,7 @@ using Surreal;
 using Surreal.Diagnostics.Console.Interpreter;
 using Surreal.Diagnostics.Logging;
 using Surreal.IO;
+using Surreal.IO.Serialization;
 using Surreal.Platform;
 using Path = Surreal.IO.Path;
 
@@ -23,7 +24,7 @@ namespace Isaac {
         }
     });
 
-    public GameState State { get; } = new GameState();
+    public GameState State { get; private set; } = new GameState();
 
     protected override void Initialize() {
       base.Initialize();
@@ -40,21 +41,21 @@ namespace Isaac {
       bindings.Add("load", () => LoadAsync("./quicksave.sav").Wait());
     }
 
-    public async Task SaveAsync(Path path) {
-      await Log.ProfileAsync($"Saving game to {path}", async () => {
+    public Task SaveAsync(Path path) {
+      return Log.ProfileAsync($"Saving game to {path}", async () => {
         await using var stream = await path.OpenOutputStreamAsync();
         await using var writer = new BinaryWriter(stream, Encoding.UTF8);
 
-        State.Save(writer);
+        writer.WriteBinaryObject(State);
       });
     }
 
-    public async Task LoadAsync(Path path) {
-      await Log.ProfileAsync($"Loading game from {path}", async () => {
+    public Task LoadAsync(Path path) {
+      return Log.ProfileAsync($"Loading game from {path}", async () => {
         await using var stream = await path.OpenInputStreamAsync();
         using var       reader = new BinaryReader(stream, Encoding.UTF8);
 
-        State.Load(reader);
+        State = reader.ReadBinaryObject<GameState>();
       });
     }
   }

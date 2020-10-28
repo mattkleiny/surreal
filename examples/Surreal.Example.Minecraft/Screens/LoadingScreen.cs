@@ -2,7 +2,7 @@
 
 namespace Minecraft.Screens {
   public static class LoadingScreens {
-    public static LoadingScreen LoadAsync<TState>(this TState screen)
+    public static LoadingScreen LoadInBackground<TState>(this TState screen)
         where TState : GameScreen<Game>, ILoadableScreen {
       return new LoadingScreen(screen.Game, screen);
     }

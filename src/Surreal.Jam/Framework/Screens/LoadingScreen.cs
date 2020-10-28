@@ -46,7 +46,9 @@ namespace Surreal.Framework.Screens {
         stopwatch.Stop();
 
         // waiting on the completed task will propagate any faults
-        if (loadingTask.IsFaulted) loadingTask.Wait();
+        if (loadingTask.IsFaulted) {
+          loadingTask.Wait();
+        }
 
         // swap to the new state at the start of the next frame
         Engine.Schedule(() => {
