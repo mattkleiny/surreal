@@ -1,7 +1,7 @@
 ﻿<!-- common configuration for all projects -->
 <Project>
   <PropertyGroup>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>CS0414</NoWarn>

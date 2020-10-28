@@ -10,7 +10,7 @@ namespace Surreal.Framework.Tiles.Importers {
       using var reader     = new XmlTextReader(stream);
       var       serializer = new XmlSerializer(typeof(TsxDocument));
 
-      return (TsxDocument) serializer.Deserialize(reader);
+      return (TsxDocument) serializer.Deserialize(reader)!;
     }
 
     [XmlAttribute("version")]    public string  Version    { get; set; } = "1.0";

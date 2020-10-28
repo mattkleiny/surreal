@@ -13,7 +13,7 @@ namespace Surreal.IO {
 
     private static readonly BinaryFormatter Formatter = new BinaryFormatter();
 
-    public static IFileSystem GetFileSystem(this Path path) => FileSystems.GetForScheme(path.Scheme);
+    public static IFileSystem GetFileSystem(this Path path) => FileSystems.GetForScheme(path.Scheme)!;
 
     public static string GetExtension(this Path path) => System.IO.Path.GetExtension(path.Target);
 
@@ -50,13 +50,13 @@ namespace Surreal.IO {
 
       var serializer = new XmlSerializer(typeof(T));
 
-      return (T) serializer.Deserialize(stream);
+      return (T) serializer.Deserialize(stream)!;
     }
 
     public static async Task SerializeBinaryAsync<T>(this Path path, T value) {
       await using var stream = await path.OpenOutputStreamAsync();
 
-      Formatter.Serialize(stream, value);
+      Formatter.Serialize(stream, value!);
     }
 
     public static async Task SerializeJsonAsync<T>(this Path path, T value) {

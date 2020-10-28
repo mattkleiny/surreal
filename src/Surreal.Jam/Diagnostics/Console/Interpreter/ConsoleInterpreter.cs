@@ -38,7 +38,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
 
 #pragma warning disable 8620
       public override object? Visit(CallExpression expression) {
-        var symbol     = expression.Symbol.ToString();
+        var symbol     = expression.Symbol.ToString()!;
         var parameters = expression.Parameters.Select(_ => _.Accept(this)).ToArray();
 
         if (bindings.Lookup(symbol, out var handler)) {

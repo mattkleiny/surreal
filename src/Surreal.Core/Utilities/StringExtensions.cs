@@ -14,7 +14,7 @@ namespace Surreal.Utilities {
     }
 
     public static string GetFullNameWithoutGenerics(this Type type) {
-      return RemoveGenerics(type.FullName);
+      return RemoveGenerics(type.FullName ?? string.Empty);
     }
 
     private static string RemoveGenerics(string value) {

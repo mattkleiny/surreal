@@ -9,7 +9,7 @@ namespace Surreal.Input {
       return Devices.OfType<TDevice>().Any();
     }
     
-    TDevice GetDevice<TDevice>()
+    TDevice? GetDevice<TDevice>()
         where TDevice : class, IInputDevice {
       return Devices.OfType<TDevice>().FirstOrDefault();
     }

@@ -14,7 +14,7 @@ namespace Surreal.Framework.Tiles.Importers {
       using var reader     = new XmlTextReader(stream);
       var       serializer = new XmlSerializer(typeof(TmxDocument));
 
-      return (TmxDocument) serializer.Deserialize(reader);
+      return (TmxDocument) serializer.Deserialize(reader)!;
     }
 
     [XmlAttribute("version")]    public string Version    { get; set; } = "1.0";
@@ -102,8 +102,8 @@ namespace Surreal.Framework.Tiles.Importers {
       public IEnumerable<uint> Decode(EncodingType encoding, CompressionType compression) {
         if (!string.IsNullOrEmpty(Data)) {
           switch (encoding) {
-            case EncodingType.Xml:    return DecodeXml();
-            case EncodingType.Csv:    return DecodeCsv();
+            case EncodingType.Xml:    throw new NotSupportedException();
+            case EncodingType.Csv:    throw new NotSupportedException();
             case EncodingType.Base64: return DecodeBase64(compression);
           }
 
@@ -113,22 +113,7 @@ namespace Surreal.Framework.Tiles.Importers {
         return Enumerable.Empty<uint>();
       }
 
-      private IEnumerable<uint> DecodeXml() {
-        foreach (var element in XElement.Parse(Data).Elements("tile")) {
-          yield return (uint) element.Attribute("gid");
-        }
-      }
-
-      private IEnumerable<uint> DecodeCsv() {
-        var reader   = new StringReader(Data);
-        var contents = reader.ReadToEnd();
-
-        foreach (var raw in contents.Split(',')) {
-          yield return Convert.ToUInt32(raw);
-        }
-      }
-
-      private IEnumerable<uint> DecodeBase64(CompressionType compression) {
+      private static IEnumerable<uint> DecodeBase64(CompressionType compression) {
         switch (compression) {
           case CompressionType.None: throw new NotImplementedException();
           case CompressionType.GZip: throw new NotImplementedException();

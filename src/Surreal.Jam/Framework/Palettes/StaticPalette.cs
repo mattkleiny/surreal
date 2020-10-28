@@ -18,8 +18,8 @@ namespace Surreal.Framework.Palettes {
           .Select(field => (T) field.GetValue(null))
           .ToList();
 
-      itemById = items.ToDictionary(item => item.Id, item => item);
-      idByItem = items.ToDictionary(item => item, item => item.Id);
+      itemById = items.ToDictionary(item => item!.Id, item => item!);
+      idByItem = items.ToDictionary(item => item!, item => item!.Id);
     }
 
     public T   Empty => itemById[default];

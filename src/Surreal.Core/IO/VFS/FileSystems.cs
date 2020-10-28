@@ -8,7 +8,7 @@ namespace Surreal.IO.VFS {
   public static class FileSystems {
     public static readonly IFileSystemRegistry Registry = new FileSystemRegistry();
 
-    public static IFileSystem GetForScheme(string scheme) => Registry.GetByScheme(scheme).FirstOrDefault();
+    public static IFileSystem? GetForScheme(string scheme) => Registry.GetByScheme(scheme).FirstOrDefault();
 
     private sealed class FileSystemRegistry : IFileSystemRegistry {
       private readonly IMultiDictionary<string, IFileSystem> fileSystemByScheme = new MultiDictionary<string, IFileSystem>(StringComparer.OrdinalIgnoreCase);

@@ -27,7 +27,7 @@ namespace Surreal.Framework.PathFinding {
         where TGrid : IPathFindingGrid {
       using var _ = Profiler.Track(nameof(FindPath));
 
-      var workingSet = LocalWorkingSet.Value;
+      var workingSet = LocalWorkingSet.Value!;
 
       workingSet.Clear();
 

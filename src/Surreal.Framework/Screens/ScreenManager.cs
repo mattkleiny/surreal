@@ -40,15 +40,17 @@ namespace Surreal.Framework.Screens {
 
     public IScreen? Pop(bool dispose = true) {
       if (screens.Count > 0) {
-        var screen = screens.Last.Value;
-        screens.RemoveFirst();
+        var screen = screens.Last?.Value;
+        if (screen != null) {
+          screens.RemoveFirst();
 
-        screen.Hide();
-        if (dispose) screen.Dispose();
+          screen.Hide();
+          if (dispose) screen.Dispose();
 
-        ScreenChanged?.Invoke(ActiveScreen);
+          ScreenChanged?.Invoke(ActiveScreen);
 
-        return screen;
+          return screen;
+        }
       }
 
       return null;

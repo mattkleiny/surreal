@@ -11,7 +11,7 @@ namespace Surreal.Mathematics {
     public const float Pi  = 3.141593f;
     public const float Tau = Pi * 2f;
 
-    public static Random Random => ThreadLocalRandom.Value;
+    public static Random Random => ThreadLocalRandom.Value!;
 
     public static Vector2I P(int x, int y)                       => new Vector2I(x, y);
     public static Vector3I P(int x, int y, int z)                => new Vector3I(x, y, z);

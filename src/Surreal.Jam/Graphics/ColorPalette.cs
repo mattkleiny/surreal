@@ -67,11 +67,11 @@ namespace Surreal.Graphics {
           throw new Exception("An unrecognized palette format was encountered!");
         }
 
-        var count  = int.Parse(await reader.ReadLineAsync());
+        var count  = int.Parse((await reader.ReadLineAsync())!);
         var colors = new Color[count];
 
         for (var i = 0; i < colors.Length; i++) {
-          var line = await reader.ReadLineAsync();
+          var line = (await reader.ReadLineAsync())!;
           var raw = line.Split(' ')
               .Select(_ => _.Trim())
               .Select(byte.Parse)

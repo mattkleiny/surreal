@@ -16,7 +16,7 @@ namespace Surreal.Mathematics.Grids {
 
       elements = new T[width * height];
 
-      Fill(defaultValue);
+      Fill(defaultValue!);
     }
 
     public int     Width  { get; }
