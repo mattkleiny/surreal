@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Surreal.Mathematics;
 
@@ -85,10 +86,12 @@ namespace Surreal.Graphics {
         (byte) (a.A - b.A)
     );
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Pack(byte first, byte second, byte third) {
       return (uint) ((first << 24) | (second << 16) | (third << 8));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Pack(byte first, byte second, byte third, byte forth) {
       return (uint) ((first << 24) | (second << 16) | (third << 8) | (forth << 0));
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Surreal.Graphics.Materials.Shaders;
@@ -80,7 +81,8 @@ namespace Surreal.Graphics.Sprites {
     public void Draw(TextureRegion region, float x, float y, Angle rotation, float width, float height)
       => DrawInternal(region.Texture, x, y, width, height, rotation, region.OffsetX, region.OffsetY, region.Width, region.Height, Color);
 
-    private void DrawInternal(
+    [SkipLocalsInit]
+    private unsafe void DrawInternal(
         Texture texture,
         float x, float y,
         float width, float height,
@@ -166,7 +168,8 @@ namespace Surreal.Graphics.Sprites {
       vertexCount = 0;
     }
 
-    private void CreateIndices(int indexCount) {
+    [SkipLocalsInit]
+    private unsafe void CreateIndices(int indexCount) {
       Span<ushort> indices = stackalloc ushort[indexCount];
 
       for (ushort i = 0, j = 0; i < indexCount; i += 6, j += 4) {

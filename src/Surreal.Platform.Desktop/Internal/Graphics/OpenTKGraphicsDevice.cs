@@ -64,7 +64,8 @@ namespace Surreal.Platform.Internal.Graphics {
 
       if (indexCount > 0) {
         DrawMeshIndexed(indexCount, type);
-      } else {
+      }
+      else {
         DrawMesh(vertexCount, type);
       }
     }

@@ -1,38 +1,15 @@
 ﻿using System.Diagnostics;
-using Surreal.Framework;
 using Surreal.Framework.Palettes;
 using Surreal.Graphics;
 
 namespace Minecraft.Core {
   [DebuggerDisplay("Block ID: {Id}, Name: {Name}")]
-  public sealed class Block : IHasId {
-    public static readonly Block Air = new Block(id: 0) {
-        Name    = "Air",
-        IsSolid = false
-    };
-
-    public static readonly Block Dirt = new Block(id: 1) {
-        Name  = "Dirt",
-        Color = Color.Brown
-    };
-
-    public static readonly Block Grass = new Block(id: 2) {
-        Name  = "Grass",
-        Color = Color.Green
-    };
-
-    public static readonly Block Stone = new Block(id: 3) {
-        Name  = "Stone",
-        Color = Color.Grey
-    };
+  public sealed record Block(ushort Id, string Name, bool IsSolid, Color Color) : IHasId {
+    public static readonly Block Air   = new Block(Id: 0, Name: "Air", IsSolid: false, Color: Color.White);
+    public static readonly Block Dirt  = new Block(Id: 1, Name: "Dirt", IsSolid: true, Color: Color.Brown);
+    public static readonly Block Grass = new Block(Id: 2, Name: "Grass", IsSolid: true, Color: Color.Green);
+    public static readonly Block Stone = new Block(Id: 3, Name: "Stone", IsSolid: true, Color: Color.Grey);
 
     public static readonly IPalette<Block> Palette = new StaticPalette<Block>();
-
-    public ushort Id      { get; }
-    public string Name    { get; private set; } = string.Empty;
-    public bool   IsSolid { get; private set; } = true;
-    public Color  Color   { get; private set; } = Color.White;
-
-    public Block(ushort id) => Id = id;
   }
 }

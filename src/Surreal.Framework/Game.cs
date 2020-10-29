@@ -296,7 +296,7 @@ namespace Surreal.Framework {
     }
 
     public sealed class Configuration {
-      public IPlatform? Platform { get; set; }
+      public IPlatform? Platform { get; init; }
     }
   }
 }

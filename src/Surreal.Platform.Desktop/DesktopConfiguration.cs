@@ -1,17 +1,14 @@
-﻿using Surreal.Text.I18N;
+﻿namespace Surreal.Platform {
+  public sealed record DesktopConfiguration {
+    public string Title                   { get; init; } = "Surreal";
+    public int?   Width                   { get; init; }
+    public int?   Height                  { get; init; }
+    public bool   IsResizable             { get; init; } = true;
+    public bool   IsVsyncEnabled          { get; init; } = false;
+    public bool   WaitForFirstFrame       { get; init; } = true;
+    public bool   ShowFPSInTitle          { get; init; } = false;
+    public bool   EnableGraphicsDebugging { get; init; } = false;
 
-namespace Surreal.Platform {
-  public sealed class DesktopConfiguration {
-    public LocalisedString Title { get; set; } = "Surreal";
-
-    public int? Width                   { get; set; }
-    public int? Height                  { get; set; }
-    public bool IsResizable             { get; set; } = true;
-    public bool IsVsyncEnabled          { get; set; } = false;
-    public bool WaitForFirstFrame       { get; set; } = true;
-    public bool ShowFPSInTitle          { get; set; } = false;
-    public bool EnableGraphicsDebugging { get; set; } = false;
-
-    public IDesktopWindow? CustomWindow { get; set; }
+    public IDesktopWindow? CustomWindow { get; init; }
   }
 }
