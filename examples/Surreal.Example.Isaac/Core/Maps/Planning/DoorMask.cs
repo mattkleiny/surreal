@@ -7,7 +7,7 @@ using Surreal.Utilities;
 namespace Isaac.Core.Maps.Planning {
   public struct DoorMask : IEquatable<DoorMask>, IEnumerable<Direction> {
     public static DoorMask None => default;
-    public static DoorMask All  => new DoorMask(Direction.All);
+    public static DoorMask All  => new(Direction.All);
 
     private Direction doors;
 
@@ -33,7 +33,7 @@ namespace Isaac.Core.Maps.Planning {
     public static bool operator ==(DoorMask left, DoorMask right) => left.Equals(right);
     public static bool operator !=(DoorMask left, DoorMask right) => !left.Equals(right);
 
-    public static implicit operator DoorMask(Direction direction) => new DoorMask(direction);
+    public static implicit operator DoorMask(Direction direction) => new(direction);
 
     public EnumExtensions.MaskEnumerator<Direction> GetEnumerator() => doors.GetMaskValues();
     IEnumerator<Direction> IEnumerable<Direction>.  GetEnumerator() => GetEnumerator();

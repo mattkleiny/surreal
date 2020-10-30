@@ -7,7 +7,7 @@ using Surreal.Collections;
 namespace Isaac.Core.Items {
   [DebuggerDisplay("Inventory ({stacks.Count} stacks)")]
   public sealed class Inventory : IEnumerable<ItemStack> {
-    private readonly Bag<ItemStack> stacks = new Bag<ItemStack>();
+    private readonly Bag<ItemStack> stacks = new();
 
     public int this[Item item] {
       get => GetStack(item).Count;
@@ -31,7 +31,7 @@ namespace Isaac.Core.Items {
         }
       }
 
-      stacks.Add(new ItemStack(item, count: 0));
+      stacks.Add(new(item, count: 0));
 
       return ref GetStack(item);
     }
@@ -60,7 +60,7 @@ namespace Isaac.Core.Items {
       }
     }
 
-    public Bag<ItemStack>.Enumerator              GetEnumerator() => stacks.GetEnumerator();
+    public Bag<ItemStack>.Enumerator                      GetEnumerator() => stacks.GetEnumerator();
     IEnumerator<ItemStack> IEnumerable<ItemStack>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.                      GetEnumerator() => GetEnumerator();
   }

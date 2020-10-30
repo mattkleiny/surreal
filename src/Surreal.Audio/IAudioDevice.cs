@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Surreal.Audio.Clips;
 using Surreal.Audio.Playback;
@@ -11,12 +12,10 @@ namespace Surreal.Audio {
     AudioClip   CreateAudioClip(IAudioData data);
     AudioSource CreateAudioSource();
 
-    AudioSourcePool CreateAudioSourcePool(int capacity) {
-      var sources = Enumerable
-          .Range(0, capacity)
-          .Select(_ => CreateAudioSource());
-
-      return new AudioSourcePool(sources);
-    }
+    AudioSourcePool CreateAudioSourcePool(int capacity) => new(
+        Enumerable
+            .Range(0, capacity)
+            .Select(_ => CreateAudioSource())
+    );
   }
 }

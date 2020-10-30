@@ -16,12 +16,12 @@ namespace Isaac.Core.Maps {
     private static readonly TileLayer[] LayerOrder = {TileLayer.Background, TileLayer.Midground, TileLayer.Foreground};
 
     public TileMap(int width, int height) {
-      Background = new TileMap<Tile>(width, height, Tile.Palette);
-      Midground  = new TileMap<Tile>(width, height, Tile.Palette);
-      Foreground = new TileMap<Tile>(width, height, Tile.Palette);
+      Background = new(width, height, Tile.Palette);
+      Midground  = new(width, height, Tile.Palette);
+      Foreground = new(width, height, Tile.Palette);
 
-      CollisionMask = new TileMapMask<Tile>(Foreground, (x, y, tile) => tile.IsCollidable);
-      PathingMask   = new TileMapMask<Tile>(Background, (x, y, tile) => tile.IsPathable);
+      CollisionMask = new(Foreground, (_, _, tile) => tile.IsCollidable);
+      PathingMask   = new(Background, (_, _, tile) => tile.IsPathable);
 
       foreach (var (x, y) in Foreground.EnumerateCells()) {
         if (x == 0 || y == 0 || x == Foreground.Width - 1 || y == Foreground.Height - 1) {

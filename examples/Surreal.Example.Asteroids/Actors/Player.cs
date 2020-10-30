@@ -14,7 +14,7 @@ namespace Asteroids.Actors {
         : base(sprite) {
     }
 
-    public FSM<States> State  { get; }      = new FSM<States>(States.Alive);
+    public FSM<States> State  { get; }      = new(States.Alive);
     public int         Health { get; set; } = 10;
     public int         Damage { get; set; } = 2;
     public float       Speed  { get; set; } = 100f;

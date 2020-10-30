@@ -19,7 +19,7 @@ namespace Asteroids.Screens {
         : base(game) {
     }
 
-    public ActorScene Scene         { get; }      = new ActorScene();
+    public ActorScene Scene         { get; }      = new();
     public float      SpawnRadius   { get; set; } = 800f;
     public IntRange   AsteroidRange { get; set; } = Range.Of(32, 128);
 

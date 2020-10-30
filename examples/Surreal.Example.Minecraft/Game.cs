@@ -4,7 +4,7 @@ using Surreal.Platform;
 
 namespace Minecraft {
   public sealed class Game : GameJam<Game> {
-    public static void Main() => Start<Game>(new Configuration {
+    public static void Main() => Start<Game>(new() {
         Platform = new DesktopPlatform {
             Configuration = {
                 Title          = "Minecraft",

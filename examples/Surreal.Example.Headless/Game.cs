@@ -1,5 +1,4 @@
-﻿using Headless.Screens;
-using Surreal;
+﻿using Surreal;
 using Surreal.Diagnostics;
 using Surreal.Diagnostics.Logging;
 using Surreal.Framework;
@@ -10,19 +9,13 @@ namespace Headless {
   public sealed class Game : GameJam<Game> {
     private static readonly ILog Log = LogFactory.GetLog<Game>();
 
-    private readonly FrameReporter frameReporter = new FrameReporter(Log, interval: 1.Seconds());
+    private readonly FrameReporter frameReporter = new(Log, interval: 1.Seconds());
 
-    public static void Main() => Start<Game>(new Configuration {
-        Platform = new HeadlessPlatform(),
+    public static void Main() => Start<Game>(new() {
+        Platform = new HeadlessPlatform()
     });
 
     public new IHeadlessPlatformHost Host => (IHeadlessPlatformHost) base.Host;
-
-    protected override void Initialize() {
-      base.Initialize();
-
-      Screens.Push(new MainScreen(this));
-    }
 
     protected override void Draw(GameTime time) {
       base.Draw(time);

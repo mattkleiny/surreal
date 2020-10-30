@@ -14,7 +14,7 @@ namespace Isaac {
   public sealed class Game : GameJam<Game> {
     private static readonly ILog Log = LogFactory.GetLog<Game>();
 
-    public static void Main() => Start<Game>(new Configuration {
+    public static void Main() => Start<Game>(new() {
         Platform = new DesktopPlatform {
             Configuration = {
                 Title          = "The Binding of Isaac",
@@ -24,7 +24,7 @@ namespace Isaac {
         }
     });
 
-    public GameState State { get; private set; } = new GameState();
+    public GameState State { get; private set; } = new();
 
     protected override void Initialize() {
       base.Initialize();

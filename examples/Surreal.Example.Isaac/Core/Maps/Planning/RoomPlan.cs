@@ -11,7 +11,7 @@ namespace Isaac.Core.Maps.Planning {
 
     public FloorPlan?     Floor       = null;
     public RoomPlan?      Parent      = null;
-    public List<RoomPlan> Children    = new List<RoomPlan>();
+    public List<RoomPlan> Children    = new();
     public Vector2I       Position    = Vector2I.Zero;
     public DoorMask       NormalDoors = DoorMask.None;
     public DoorMask       SecretDoors = DoorMask.None;
@@ -31,7 +31,7 @@ namespace Isaac.Core.Maps.Planning {
       var room = new RoomPlan {
           Parent   = this,
           Position = Position + direction.ToVector2I(),
-          Type     = type,
+          Type     = type
       };
 
       Children.Add(room);

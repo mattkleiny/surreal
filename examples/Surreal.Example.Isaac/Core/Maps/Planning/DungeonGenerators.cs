@@ -11,10 +11,8 @@ namespace Isaac.Core.Maps.Planning {
   public static class DungeonGenerators {
     private static readonly ILog Log = LogFactory.GetLog<DungeonGenerator>();
 
-    public static DungeonGenerator Fixed() => Factory((dungeon, random) => {
-      var room = dungeon.FloorPlan[0, 0] = new RoomPlan {
-          Type = RoomType.Start
-      };
+    public static DungeonGenerator Fixed() => Factory((dungeon, _) => {
+      var room = dungeon.FloorPlan[0, 0] = new() {Type = RoomType.Start};
 
       room.AddRoom(Direction.North)
           .AddRoom(Direction.East)
@@ -26,14 +24,11 @@ namespace Isaac.Core.Maps.Planning {
     });
 
     public static DungeonGenerator Standard(IntRange rooms) => Factory((dungeon, random) => {
-      var room = dungeon.FloorPlan[0, 0] = new RoomPlan {
-          Type = RoomType.Start
-      };
+      var room = dungeon.FloorPlan[0, 0] = new() {Type = RoomType.Start};
 
       for (var i = 0; i < random.NextRange(rooms); i++) {
-        generate:
-        if (!room.TryAddRoom(out room, room.NormalDoors.FreeDoors.SelectRandomly(random))) {
-          goto generate;
+        if (room.TryAddRoom(out room, room.NormalDoors.FreeDoors.SelectRandomly(random))) {
+          i--; // keep trying until we get it right?
         }
       }
 

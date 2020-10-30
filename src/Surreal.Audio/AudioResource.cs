@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ConstrainedExecution;
 using Surreal.Assets;
 using Surreal.Audio.Clips;
 using Surreal.IO;
 
 namespace Surreal.Audio {
   public abstract class AudioResource : IDisposable {
-    private static readonly List<AudioResource> Resources = new List<AudioResource>();
+    private static readonly List<AudioResource> Resources = new();
 
     public static Size AllocatedClipSize  => Resources.OfType<AudioClip>().Select(_ => _.Size).Sum();
     public static Size TotalAllocatedSize => Resources.OfType<IHasSizeEstimate>().Select(_ => _.Size).Sum();

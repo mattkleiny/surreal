@@ -7,7 +7,7 @@ using Surreal.IO;
 
 namespace Surreal.Compute {
   public abstract class ComputeResource : IDisposable {
-    private static readonly IList<ComputeResource> Resources = new List<ComputeResource>();
+    private static readonly IList<ComputeResource> Resources = new();
 
     public static Size TotalBufferSize    => Resources.OfType<ComputeBuffer>().Select(_ => _.Size).Sum();
     public static Size TotalAllocatedSize => Resources.OfType<IHasSizeEstimate>().Select(_ => _.Size).Sum();

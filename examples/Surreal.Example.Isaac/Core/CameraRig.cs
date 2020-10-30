@@ -4,7 +4,7 @@ using Surreal.Mathematics.Timing;
 
 namespace Isaac.Core {
   public sealed class CameraRig : Actor {
-    public OrthographicCamera Camera { get; } = new OrthographicCamera(256 / 2, 144 / 2);
+    public OrthographicCamera Camera { get; } = new(viewportWidth: 256 / 2, viewportHeight: 144 / 2);
 
     public override void Update(DeltaTime deltaTime) {
       base.Update(deltaTime);

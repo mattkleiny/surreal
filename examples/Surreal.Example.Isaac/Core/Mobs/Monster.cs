@@ -5,7 +5,7 @@ using Surreal.Mathematics.Timing;
 
 namespace Isaac.Core.Mobs {
   public sealed class Monster : Mob {
-    public Parameter<Brain> Brain { get; } = new Parameter<Brain>(Brains.Brain.Null);
+    public Parameter<Brain> Brain { get; } = new(Brains.Brain.Null);
 
     public Monster(TextureRegion sprite)
         : base(sprite) {

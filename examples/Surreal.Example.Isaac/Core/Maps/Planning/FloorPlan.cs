@@ -7,11 +7,11 @@ using Surreal.Mathematics.Linear;
 
 namespace Isaac.Core.Maps.Planning {
   public sealed class FloorPlan : IPathFindingGrid {
-    private readonly SparseGrid<RoomPlan> rooms = new SparseGrid<RoomPlan>(room => room.Position);
+    private readonly SparseGrid<RoomPlan> rooms = new(room => room.Position);
 
     public RoomPlan? this[int x, int y] {
-      get => this[new Vector2I(x, y)];
-      set => this[new Vector2I(x, y)] = value;
+      get => this[new(x, y)];
+      set => this[new(x, y)] = value;
     }
 
     public RoomPlan? this[Vector2I position] {

@@ -22,8 +22,8 @@ namespace Isaac.Screens {
     }
 
     public DungeonGenerator Generator { get; } = DungeonGenerators.Standard(Range.Of(6, 16));
-    public ActorScene       Scene     { get; } = new ActorScene();
-    public CameraRig        CameraRig { get; } = new CameraRig();
+    public ActorScene       Scene     { get; } = new();
+    public CameraRig        CameraRig { get; } = new();
 
     public override void Initialize() {
       base.Initialize();
