@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Surreal.Framework.Scenes.Entities.Components {
   internal sealed class ComponentMask {
-    private readonly HashSet<int> inclusions = new HashSet<int>();
-    private readonly HashSet<int> exclusions = new HashSet<int>();
+    private readonly HashSet<int> inclusions = new();
+    private readonly HashSet<int> exclusions = new();
 
     public void Include<TComponent>()
         where TComponent : IComponent {

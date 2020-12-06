@@ -14,7 +14,7 @@ namespace Surreal.Mathematics.Timing {
 
     public readonly TimeSpan TimeSpan;
 
-    public static implicit operator DeltaTime(TimeSpan span)      => new DeltaTime(span);
+    public static implicit operator DeltaTime(TimeSpan span)      => new(span);
     public static implicit operator TimeSpan(DeltaTime deltaTime) => deltaTime.TimeSpan;
     public static implicit operator float(DeltaTime deltaTime)    => (float) deltaTime.TimeSpan.TotalSeconds;
 

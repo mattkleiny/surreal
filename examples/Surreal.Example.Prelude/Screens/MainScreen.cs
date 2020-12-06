@@ -23,8 +23,8 @@ namespace Prelude.Screens {
         : base(game) {
     }
 
-    public ActorScene Scene  { get; } = new ActorScene();
-    public Camera     Camera { get; } = new Camera();
+    public ActorScene Scene  { get; } = new();
+    public Camera     Camera { get; } = new();
 
     protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);

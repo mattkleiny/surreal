@@ -4,7 +4,7 @@ using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Tweening {
   public readonly struct TweenAnimation : IEquatable<TweenAnimation> {
-    public static TweenAnimation Default => new TweenAnimation(1.Seconds(), AnimationCurves.Linear);
+    public static TweenAnimation Default => new(1.Seconds(), AnimationCurves.Linear);
 
     public readonly TimeSpan       Duration;
     public readonly AnimationCurve Curve;

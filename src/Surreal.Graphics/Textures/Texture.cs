@@ -34,7 +34,7 @@ namespace Surreal.Graphics.Textures {
     public int  Height => data?.Height ?? 0;
     public Size Size   => data?.Size ?? Size.Zero;
 
-    public TextureRegion ToRegion() => new TextureRegion(this);
+    public TextureRegion ToRegion() => new(this);
 
     public void Upload(ITextureData data) {
       Upload(this.data, data);

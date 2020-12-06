@@ -11,7 +11,7 @@ namespace Isaac.Screens {
   public static class LoadingScreens {
     public static LoadingScreen LoadAsync<TScreen>(this TScreen screen)
         where TScreen : GameScreen<Game>, ILoadableScreen {
-      return new LoadingScreen(screen.Game, screen);
+      return new(screen.Game, screen);
     }
   }
 

@@ -13,11 +13,11 @@ using Surreal.Platform.Internal.Input;
 
 namespace Surreal.Platform {
   internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider {
-    public HeadlessAudioDevice    AudioDevice    { get; } = new HeadlessAudioDevice();
-    public HeadlessComputeDevice  ComputeDevice  { get; } = new HeadlessComputeDevice();
-    public HeadlessGraphicsDevice GraphicsDevice { get; } = new HeadlessGraphicsDevice();
-    public HeadlessInputManager   InputManager   { get; } = new HeadlessInputManager();
-    public LocalFileSystem        FileSystem     { get; } = new LocalFileSystem();
+    public HeadlessAudioDevice    AudioDevice    { get; } = new();
+    public HeadlessComputeDevice  ComputeDevice  { get; } = new();
+    public HeadlessGraphicsDevice GraphicsDevice { get; } = new();
+    public HeadlessInputManager   InputManager   { get; } = new();
+    public LocalFileSystem        FileSystem     { get; } = new();
 
     public event Action<int, int> Resized = null!;
 

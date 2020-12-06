@@ -10,7 +10,7 @@ namespace Surreal.Framework.Scenes.Entities.Storage {
 
   public sealed class DenseComponentStorage<T> : IComponentStorage<T>
       where T : IComponent {
-    private readonly GrowingBitArray mask = new GrowingBitArray();
+    private readonly GrowingBitArray mask = new();
     private readonly Bag<T>          components;
 
     public DenseComponentStorage(int initialCapacity = 10) {

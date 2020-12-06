@@ -13,7 +13,7 @@ namespace Surreal.Fibers {
 
     private static long nextFiberId;
 
-    private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    private readonly CancellationTokenSource cancellationTokenSource = new();
 
     public static Fiber Start(FiberScheduler scheduler, Func<Task> method) {
       return Start(scheduler, _ => method());

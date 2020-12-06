@@ -6,7 +6,7 @@ using Surreal.Input.Keyboard;
 
 namespace Surreal.Diagnostics.Profiling {
   public sealed class ProfilerPlugin : DiagnosticPlugin<GameJam> {
-    private readonly InMemoryProfilerSampler sampler = new InMemoryProfilerSampler();
+    private readonly InMemoryProfilerSampler sampler = new();
 
     public ProfilerPlugin(GameJam game)
         : base(game) {

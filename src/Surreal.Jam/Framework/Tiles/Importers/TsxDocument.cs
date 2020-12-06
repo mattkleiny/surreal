@@ -25,10 +25,10 @@ namespace Surreal.Framework.Tiles.Importers {
     [XmlAttribute("margin")]     public int     Margin     { get; set; }
 
     [XmlElement("image", typeof(ImageElement))]
-    public List<ImageElement> Images { get; set; } = new List<ImageElement>();
+    public List<ImageElement> Images { get; set; } = new();
 
     [XmlElement("tile", typeof(TileElement))]
-    public List<TileElement> Tiles { get; set; } = new List<TileElement>();
+    public List<TileElement> Tiles { get; set; } = new();
 
     public class ImageElement {
       [XmlAttribute("source")] public string? Source { get; set; }
@@ -46,7 +46,7 @@ namespace Surreal.Framework.Tiles.Importers {
 
     public class AnimationElement {
       [XmlElement("frame", typeof(FrameElement))]
-      public List<FrameElement> Frames { get; set; } = new List<FrameElement>();
+      public List<FrameElement> Frames { get; set; } = new();
     }
 
     public class FrameElement {

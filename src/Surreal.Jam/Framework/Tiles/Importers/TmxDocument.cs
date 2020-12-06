@@ -24,20 +24,20 @@ namespace Surreal.Framework.Tiles.Importers {
     [XmlAttribute("tileheight")] public int    TileHeight { get; set; }
 
     [XmlElement("tileset", typeof(TsxDocument))]
-    public List<TsxDocument> TileSets { get; set; } = new List<TsxDocument>();
+    public List<TsxDocument> TileSets { get; set; } = new();
 
     [XmlElement("group", typeof(GroupElement))]
-    public List<GroupElement> Groups { get; set; } = new List<GroupElement>();
+    public List<GroupElement> Groups { get; set; } = new();
 
     [XmlElement("layer", typeof(LayerElement))]
-    public List<LayerElement> Layers { get; set; } = new List<LayerElement>();
+    public List<LayerElement> Layers { get; set; } = new();
 
     [XmlElement("objectgroup", typeof(ObjectGroupElement))]
-    public List<ObjectGroupElement> ObjectGroups { get; set; } = new List<ObjectGroupElement>();
+    public List<ObjectGroupElement> ObjectGroups { get; set; } = new();
 
     [XmlArray("properties")]
     [XmlArrayItem("property", typeof(PropertyElement))]
-    public List<PropertyElement> Properties { get; set; } = new List<PropertyElement>();
+    public List<PropertyElement> Properties { get; set; } = new();
 
     public PropertyElement? this[string key] => Properties.FirstOrDefault(_ => string.Equals(_.Name, key, StringComparison.OrdinalIgnoreCase));
 
@@ -57,17 +57,17 @@ namespace Surreal.Framework.Tiles.Importers {
       [XmlAttribute("name")] public string? Name { get; set; }
 
       [XmlElement("layer", typeof(LayerElement))]
-      public List<LayerElement> Layers { get; set; } = new List<LayerElement>();
+      public List<LayerElement> Layers { get; set; } = new();
 
       [XmlElement("objectgroup", typeof(ObjectGroupElement))]
-      public List<ObjectGroupElement> ObjectGroups { get; set; } = new List<ObjectGroupElement>();
+      public List<ObjectGroupElement> ObjectGroups { get; set; } = new();
     }
 
     public sealed class ObjectGroupElement {
       [XmlAttribute("name")] public string? Name { get; set; }
 
       [XmlElement("object", typeof(ObjectElement))]
-      public List<ObjectElement> Objects { get; set; } = new List<ObjectElement>();
+      public List<ObjectElement> Objects { get; set; } = new();
     }
 
     public sealed class ObjectElement {
@@ -97,7 +97,7 @@ namespace Surreal.Framework.Tiles.Importers {
       [XmlText]                public string? Data   { get; set; }
 
       [XmlElement("chunk", typeof(ChunkElement))]
-      public List<ChunkElement> Chunks { get; set; } = new List<ChunkElement>();
+      public List<ChunkElement> Chunks { get; set; } = new();
 
       public IEnumerable<uint> Decode(EncodingType encoding, CompressionType compression) {
         if (!string.IsNullOrEmpty(Data)) {

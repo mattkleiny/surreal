@@ -2,7 +2,7 @@
 
 namespace Surreal.Platform {
   public sealed class DesktopPlatform : IPlatform {
-    public DesktopConfiguration Configuration { get; } = new DesktopConfiguration();
+    public DesktopConfiguration Configuration { get; } = new();
 
     public IPlatformHost BuildHost() {
       var window = Configuration.CustomWindow ?? new OpenTKWindow(Configuration);

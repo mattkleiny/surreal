@@ -1,6 +1,6 @@
 ﻿namespace Surreal.IO {
   public readonly struct Size {
-    public static readonly Size Zero = new Size(0);
+    public static readonly Size Zero = new(0);
 
     public Size(long bytes) => Bytes = bytes;
 
@@ -11,8 +11,8 @@
     public long Gigabytes => Megabytes / 1024;
     public long Terabytes => Gigabytes / 1024;
 
-    public static Size operator +(Size a, Size b) => new Size(a.Bytes + b.Bytes);
-    public static Size operator -(Size a, Size b) => new Size(a.Bytes - b.Bytes);
+    public static Size operator +(Size a, Size b) => new(a.Bytes + b.Bytes);
+    public static Size operator -(Size a, Size b) => new(a.Bytes - b.Bytes);
 
     public static implicit operator int(Size size)  => (int) size.Bytes;
     public static implicit operator long(Size size) => size.Bytes;

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Surreal.Core.Collections {
   public class RingBufferTests {
-    private readonly RingBuffer<int> buffer = new RingBuffer<int>(capacity: 3);
+    private readonly RingBuffer<int> buffer = new(capacity: 3);
 
     [Fact]
     public void it_should_store_elements() {

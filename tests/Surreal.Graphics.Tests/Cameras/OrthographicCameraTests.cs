@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Surreal.Graphics.Cameras {
   public class OrthographicCameraTests {
-    private readonly OrthographicCamera camera = new OrthographicCamera(viewportWidth: 640, viewportHeight: 480);
+    private readonly OrthographicCamera camera = new(viewportWidth: 640, viewportHeight: 480);
 
     [Fact]
     public void it_should_project_coordinates_correctly() {

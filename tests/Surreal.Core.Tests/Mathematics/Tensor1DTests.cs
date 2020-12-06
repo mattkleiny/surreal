@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Surreal.Core.Mathematics {
   public class Tensor1DTests {
-    private readonly Tensor1D<float> tensor = new Tensor1D<float>(8);
+    private readonly Tensor1D<float> tensor = new(8);
 
     [Fact]
     public void it_should_evaluate_at_the_boundaries_correctly() {

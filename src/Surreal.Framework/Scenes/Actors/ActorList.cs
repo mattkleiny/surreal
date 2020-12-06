@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Surreal.Framework.Scenes.Actors {
   public sealed class ActorList : IReadOnlyList<Actor> {
-    private readonly List<Actor> entries = new List<Actor>();
+    private readonly List<Actor> entries = new();
     private readonly Actor?      parent;
 
     public ActorList(Actor? parent) {

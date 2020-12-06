@@ -56,7 +56,7 @@ namespace Surreal.Graphics.Meshes {
     private readonly VertexAttribute[] attributes;
 
     public static VertexAttributeSet Create<TVertex>()
-        where TVertex : unmanaged => new VertexAttributeSet(typeof(TVertex)
+        where TVertex : unmanaged => new(typeof(TVertex)
         .GetMembers(BindingFlags.Public | BindingFlags.Instance)
         .OfType<FieldInfo>()
         .Where(member => member.GetCustomAttribute<VertexAttributeAttribute>() != null)

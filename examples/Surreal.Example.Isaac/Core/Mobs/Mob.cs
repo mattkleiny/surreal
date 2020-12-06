@@ -9,11 +9,11 @@ using Surreal.States;
 namespace Isaac.Core.Mobs {
   public abstract class Mob : Actor {
     public         TextureRegion    Sprite    { get; }
-    public         FSM<States>      State     { get; } = new FSM<States>();
-    public virtual Vector2Parameter Direction { get; } = new Vector2Parameter(Vector2.Zero);
-    public virtual FloatParameter   Speed     { get; } = new FloatParameter(4f);
-    public virtual IntParameter     Health    { get; } = new IntParameter(10);
-    public virtual Vector2Parameter Knockback { get; } = new Vector2Parameter(Vector2.Zero);
+    public         FSM<States>      State     { get; } = new();
+    public virtual Vector2Parameter Direction { get; } = new(Vector2.Zero);
+    public virtual FloatParameter   Speed     { get; } = new(4f);
+    public virtual IntParameter     Health    { get; } = new(10);
+    public virtual Vector2Parameter Knockback { get; } = new(Vector2.Zero);
 
     public override bool IsEnabled => base.IsEnabled && State == States.Alive;
     public override bool IsVisible => base.IsVisible && State == States.Alive;

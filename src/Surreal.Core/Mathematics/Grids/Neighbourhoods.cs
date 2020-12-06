@@ -42,15 +42,15 @@ namespace Surreal.Mathematics.Grids {
   public static class Neighbourhoods {
     public static NeighbourhoodEnumerator<TNeighbourhood> GetNeighbourhood<TNeighbourhood>(this Vector2I center)
         where TNeighbourhood : struct, INeighbourhood {
-      return new NeighbourhoodEnumerator<TNeighbourhood>(center, default);
+      return new(center, default);
     }
 
     public static NeighbourhoodEnumerator<MooreNeighbourhood> GetMooreNeighbourhood(this Vector2I center) {
-      return new NeighbourhoodEnumerator<MooreNeighbourhood>(center, default);
+      return new(center, default);
     }
 
     public static NeighbourhoodEnumerator<VonNeumannNeighbourhood> GetVonNeumannNeighbourhood(this Vector2I center) {
-      return new NeighbourhoodEnumerator<VonNeumannNeighbourhood>(center, default);
+      return new(center, default);
     }
 
     public struct NeighbourhoodEnumerator<TNeighbourhood> : IEnumerator<Vector2I>, IEnumerable<Vector2I>

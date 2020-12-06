@@ -61,7 +61,7 @@ namespace Surreal.Graphics.Textures {
       Span.Fill(value);
     }
 
-    public ImageRegion ToRegion() => new ImageRegion(this);
+    public ImageRegion ToRegion() => new(this);
 
     public async Task SaveAsync(Path path) {
       await using var stream = await path.OpenOutputStreamAsync();

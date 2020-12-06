@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Surreal.IO {
   public static class SizeExtensions {
-    public static Size Bytes(this int value) => new Size(value);
+    public static Size Bytes(this int value) => new(value);
 
     public static Size Kilobytes(this int value) => Bytes(value     * 1024);
     public static Size Megabytes(this int value) => Kilobytes(value * 1024);

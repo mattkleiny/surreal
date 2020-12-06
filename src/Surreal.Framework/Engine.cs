@@ -10,8 +10,8 @@ using Surreal.Platform;
 
 namespace Surreal.Framework {
   public static class Engine {
-    private static readonly ActionQueue    ActionQueue    = new ActionQueue();
-    private static readonly FiberScheduler FiberScheduler = new FiberScheduler();
+    private static readonly ActionQueue    ActionQueue    = new();
+    private static readonly FiberScheduler FiberScheduler = new();
 
     public static bool IsRunning { get; private set; }
 

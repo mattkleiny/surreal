@@ -27,7 +27,7 @@ namespace Surreal.IO {
 
       public int  Length { get; protected set; }
       public int  Stride => Unsafe.SizeOf<T>();
-      public Size Size   => new Size(Length * Stride);
+      public Size Size   => new(Length * Stride);
 
       public abstract Span<T> Span { get; }
 
@@ -61,7 +61,7 @@ namespace Surreal.IO {
         elements = new T[count];
       }
 
-      public override Span<T> Span => new Span<T>(elements);
+      public override Span<T> Span => new(elements);
 
       public void Resize(int newLength) {
         Array.Resize(ref elements, newLength);
@@ -79,7 +79,7 @@ namespace Surreal.IO {
         elements = GC.AllocateArray<T>(count, pinned: true);
       }
 
-      public override Span<T> Span => new Span<T>(elements);
+      public override Span<T> Span => new(elements);
 
       public void Resize(int newLength) {
         Array.Resize(ref elements, newLength);

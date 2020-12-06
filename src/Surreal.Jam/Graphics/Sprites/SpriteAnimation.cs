@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Surreal.Graphics.Sprites {
   public sealed class SpriteAnimation : IReadOnlyList<SpriteFrame> {
-    private readonly List<SpriteFrame> frames = new List<SpriteFrame>();
+    private readonly List<SpriteFrame> frames = new();
 
     public SpriteAnimation(string name)
         : this(name, Enumerable.Empty<SpriteFrame>()) {

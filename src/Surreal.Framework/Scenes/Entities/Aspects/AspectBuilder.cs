@@ -2,7 +2,7 @@
 
 namespace Surreal.Framework.Scenes.Entities.Aspects {
   public sealed class AspectBuilder {
-    private readonly ComponentMask mask = new ComponentMask();
+    private readonly ComponentMask mask = new();
 
     public AspectBuilder Include<TComponent>()
         where TComponent : IComponent {
@@ -16,6 +16,6 @@ namespace Surreal.Framework.Scenes.Entities.Aspects {
       return this;
     }
 
-    public Aspect Build() => new Aspect(mask);
+    public Aspect Build() => new(mask);
   }
 }

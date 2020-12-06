@@ -5,7 +5,7 @@ namespace Surreal.Graphics.Fonts {
     private static readonly char[] StandardCharacters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
 
     public static CharacterSet None     => default;
-    public static CharacterSet Standard => new CharacterSet(StandardCharacters);
+    public static CharacterSet Standard => new(StandardCharacters);
 
     private readonly char[] characters;
 

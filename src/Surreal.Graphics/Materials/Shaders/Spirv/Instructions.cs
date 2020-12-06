@@ -9,14 +9,14 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
   }
 
   internal sealed class InstructionList : IReadOnlyList<Instruction> {
-    private readonly List<Instruction> instructions = new List<Instruction>();
+    private readonly List<Instruction> instructions = new();
 
     public int Count => instructions.Count;
 
     public Instruction this[int index] => instructions[index];
     public Instruction this[Index index] => instructions[index];
 
-    public ListSpan<Instruction> this[Range range] => new ListSpan<Instruction>(instructions, range);
+    public ListSpan<Instruction> this[Range range] => new(instructions, range);
 
     public void Add(Instruction instruction)    => instructions.Add(instruction);
     public void Remove(Instruction instruction) => instructions.Remove(instruction);

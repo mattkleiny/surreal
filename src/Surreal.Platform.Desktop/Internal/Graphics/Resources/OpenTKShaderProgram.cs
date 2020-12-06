@@ -11,7 +11,7 @@ using ShaderType = OpenTK.Graphics.OpenGL.ShaderType;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
   internal sealed class OpenTKShaderProgram : ShaderProgram, IHasNativeId {
-    private readonly Dictionary<string, int> locationCache = new Dictionary<string, int>();
+    private readonly Dictionary<string, int> locationCache = new();
 
     private readonly int id = GL.CreateProgram();
 

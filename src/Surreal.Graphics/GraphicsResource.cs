@@ -8,7 +8,7 @@ using Surreal.IO;
 
 namespace Surreal.Graphics {
   public abstract class GraphicsResource : IDisposable {
-    private static readonly List<GraphicsResource> Resources = new List<GraphicsResource>();
+    private static readonly List<GraphicsResource> Resources = new();
 
     public static Size AllocatedBufferSize  => Resources.OfType<GraphicsBuffer>().Select(_ => _.Size).Sum();
     public static Size AllocatedTextureSize => Resources.OfType<Texture>().Select(_ => _.Size).Sum();

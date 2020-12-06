@@ -11,7 +11,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
     }
 
     public override Image Download() {
-      return new Image(0, 0);
+      return new(0, 0);
     }
   }
 }

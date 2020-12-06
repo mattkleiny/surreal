@@ -5,7 +5,7 @@ namespace Surreal.Mathematics {
   [DebuggerDisplay("Seed {Value}")]
   public readonly struct Seed : IEquatable<Seed> {
     public static Seed Default    => default;
-    public static Seed Randomized => new Seed(Maths.Random.Next());
+    public static Seed Randomized => new(Maths.Random.Next());
 
     public readonly int Value;
 

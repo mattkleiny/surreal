@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Surreal.Graphics.Cameras {
   public class PerspectiveCameraTests {
-    private readonly PerspectiveCamera camera = new PerspectiveCamera(viewportWidth: 640, viewportHeight: 480);
+    private readonly PerspectiveCamera camera = new(viewportWidth: 640, viewportHeight: 480);
 
     [Fact]
     public void it_should_project_coordinates_correctly() {

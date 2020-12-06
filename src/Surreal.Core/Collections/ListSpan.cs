@@ -45,13 +45,13 @@ namespace Surreal.Collections {
       }
     }
 
-    public Enumerator             GetEnumerator() => new Enumerator(this);
+    public Enumerator             GetEnumerator() => new(this);
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-    public static implicit operator ListSpan<T>(T[] list)     => new ListSpan<T>(list);
-    public static implicit operator ListSpan<T>(List<T> list) => new ListSpan<T>(list);
-    public static implicit operator ListSpan<T>(Bag<T> list)  => new ListSpan<T>(list);
+    public static implicit operator ListSpan<T>(T[] list)     => new(list);
+    public static implicit operator ListSpan<T>(List<T> list) => new(list);
+    public static implicit operator ListSpan<T>(Bag<T> list)  => new(list);
 
     public struct Enumerator : IEnumerator<T> {
       private readonly ListSpan<T> span;

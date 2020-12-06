@@ -4,7 +4,7 @@ namespace Surreal.IO {
   public readonly struct Path {
     private const string SchemeSeparator = "://";
 
-    public static Path Parse(string uri) => new Path(ParseScheme(uri), ParseTarget(uri));
+    public static Path Parse(string uri) => new(ParseScheme(uri), ParseTarget(uri));
 
     public Path(string scheme, string target) {
       Scheme = scheme;

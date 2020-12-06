@@ -7,7 +7,7 @@ using Surreal.Mathematics;
 namespace Surreal.Collections {
   public sealed class WeightedTable<T> : IEnumerable<T>
       where T : class {
-    private readonly List<Entry> entries = new List<Entry>();
+    private readonly List<Entry> entries = new();
 
     public int Count => entries.Count;
 
@@ -35,7 +35,7 @@ namespace Surreal.Collections {
       entries.Clear();
     }
 
-    public Enumerator             GetEnumerator() => new Enumerator(this);
+    public Enumerator             GetEnumerator() => new(this);
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
 

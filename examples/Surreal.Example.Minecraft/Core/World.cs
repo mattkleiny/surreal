@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using Minecraft.Core.Coordinates;
 using Minecraft.Core.Generation;
-using Surreal.Framework;
 using Surreal.Framework.Palettes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
 
 namespace Minecraft.Core {
   public sealed class World : IDisposable {
-    public static readonly Volume ChunksPerRegion = new Volume(32, 1, 32);
-    public static readonly Volume VoxelsPerChunk  = new Volume(16, 128, 16);
+    public static readonly Volume ChunksPerRegion = new(32, 1, 32);
+    public static readonly Volume VoxelsPerChunk  = new(16, 128, 16);
     public static readonly Volume VoxelsPerRegion = ChunksPerRegion * VoxelsPerChunk;
 
     private readonly IRegionStrategy strategy;
     private          Neighborhood    neighborhood;
 
     public static World CreateFinite(Volume regionsPerWorld, IPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
-      return new World(new FixedRegionStrategy(regionsPerWorld, palette, chunkGenerator, biomeSelector));
+      return new(new FixedRegionStrategy(regionsPerWorld, palette, chunkGenerator, biomeSelector));
     }
 
     public static World CreateInfinite(string basePath, IPalette<Block> palette, ChunkGenerator chunkGenerator, BiomeSelector biomeSelector) {
-      return new World(new StreamingRegionStrategy(basePath, palette, chunkGenerator, biomeSelector));
+      return new(new StreamingRegionStrategy(basePath, palette, chunkGenerator, biomeSelector));
     }
 
     private World(IRegionStrategy strategy) => this.strategy = strategy;
@@ -105,7 +104,7 @@ namespace Minecraft.Core {
     }
 
     private sealed class StreamingRegionStrategy : IRegionStrategy {
-      private readonly Dictionary<RegionPos, Region> regions = new Dictionary<RegionPos, Region>();
+      private readonly Dictionary<RegionPos, Region> regions = new();
 
       private readonly string          basePath;
       private readonly IPalette<Block> palette;

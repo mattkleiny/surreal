@@ -7,7 +7,7 @@ using Surreal.Utilities;
 
 namespace Isaac.Core.Maps.Planning {
   public sealed class RoomPlan {
-    public static readonly Vector2 Size = new Vector2(15, 9);
+    public static readonly Vector2 Size = new(15, 9);
 
     public FloorPlan?     Floor       = null;
     public RoomPlan?      Parent      = null;

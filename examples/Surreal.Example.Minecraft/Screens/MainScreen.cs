@@ -28,7 +28,7 @@ namespace Minecraft.Screens {
         : base(game) {
     }
 
-    public World World { get; set; } = null!;
+    public World? World { get; set; }
 
     protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);
@@ -59,7 +59,9 @@ namespace Minecraft.Screens {
       camera.Updated += () => {
         var neighborhood = new Neighborhood(camera.Position, distance: 16);
 
-        World.Neighborhood = neighborhood;
+        if (World != null) {
+          World.Neighborhood = neighborhood;
+        }
 
         if (renderer != null) {
           renderer.Neighborhood = neighborhood;
@@ -82,12 +84,14 @@ namespace Minecraft.Screens {
     }
 
     public override void Draw(GameTime time) {
-      renderer?.Render(
-          device: GraphicsDevice,
-          world: World,
-          camera: camera,
-          wireframe: wireframe
-      );
+      if (World != null) {
+        renderer?.Render(
+            device: GraphicsDevice,
+            world: World,
+            camera: camera,
+            wireframe: wireframe
+        );
+      }
 
       base.Draw(time);
     }

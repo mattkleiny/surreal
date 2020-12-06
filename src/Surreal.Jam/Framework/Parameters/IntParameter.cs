@@ -9,7 +9,7 @@ namespace Surreal.Framework.Parameters {
         : base(value) {
     }
 
-    public IntModifierSet Modifiers { get; } = new IntModifierSet();
+    public IntModifierSet Modifiers { get; } = new();
 
     public override int Value {
       get => Modifiers.Apply(base.Value);

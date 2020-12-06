@@ -6,7 +6,7 @@ namespace Surreal.Framework.Scenes.Actors {
   public sealed class ActorScene : IScene, IDisposable {
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<ActorScene>();
 
-    public ActorList Actors { get; } = new ActorList(null);
+    public ActorList Actors { get; } = new(null);
 
     public void Input(DeltaTime deltaTime) {
       using var _ = Profiler.Track(nameof(Input));

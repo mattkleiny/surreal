@@ -12,7 +12,7 @@ namespace Surreal.Graphics.Materials.Shaders {
 
   public readonly struct Shader {
     public static async Task<Shader> LoadAsync(ShaderType type, Path path) {
-      return new Shader(type, await path.ReadAllBytesAsync());
+      return new(type, await path.ReadAllBytesAsync());
     }
 
     public ShaderType   Type     { get; }

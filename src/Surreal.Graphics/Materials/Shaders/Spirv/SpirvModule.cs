@@ -5,7 +5,7 @@ namespace Surreal.Graphics.Materials.Shaders.Spirv {
     public Capabilities    Capabilities    { get; set; } = Capabilities.None;
     public ExecutionMode   ExecutionMode   { get; set; } = ExecutionMode.None;
     public AddressingModel AddressingModel { get; set; } = AddressingModel.Logical;
-    public InstructionList Instructions    { get; }      = new InstructionList();
+    public InstructionList Instructions    { get; }      = new();
 
     public Memory<byte> Compile() {
       throw new NotImplementedException();

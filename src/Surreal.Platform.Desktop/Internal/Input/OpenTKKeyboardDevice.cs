@@ -18,12 +18,12 @@ namespace Surreal.Platform.Internal.Input {
 
     public bool IsKeyDown(Key key)     => CurrentState[Lookup[key]];
     public bool IsKeyUp(Key key)       => !CurrentState[Lookup[key]];
-    public bool IsKeyPressed(Key key)  => CurrentState[Lookup[key]]  && !PreviousState[Lookup[key]];
+    public bool IsKeyPressed(Key key)  => CurrentState[Lookup[key]] && !PreviousState[Lookup[key]];
     public bool IsKeyReleased(Key key) => PreviousState[Lookup[key]] && !CurrentState[Lookup[key]];
 
     public override void Update() {
-      if (window.IsFocused) // only capture state if the window is focused
-      {
+      // only capture state if the window is focused
+      if (window.IsFocused) {
         base.Update();
 
         // fire events, if necessary
@@ -38,7 +38,7 @@ namespace Surreal.Platform.Internal.Input {
 
     protected override KeyboardState CaptureState() => Keyboard.GetState();
 
-    private static readonly Dictionary<Key, OpenTK.Input.Key> Lookup = new Dictionary<Key, OpenTK.Input.Key> {
+    private static readonly Dictionary<Key, OpenTK.Input.Key> Lookup = new() {
         [Key.LeftShift] = OpenTK.Input.Key.ShiftLeft,
         [Key.F1]        = OpenTK.Input.Key.F1,
         [Key.F2]        = OpenTK.Input.Key.F2,

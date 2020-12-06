@@ -10,7 +10,7 @@ using Surreal.Mathematics.Linear;
 namespace Surreal.Framework.PathFinding {
   public static class PathFindingExtensions {
     private static readonly IProfiler               Profiler        = ProfilerFactory.GetProfiler(nameof(PathFindingExtensions));
-    private static readonly ThreadLocal<WorkingSet> LocalWorkingSet = new ThreadLocal<WorkingSet>(() => new WorkingSet());
+    private static readonly ThreadLocal<WorkingSet> LocalWorkingSet = new(() => new WorkingSet());
 
     private const int MaxNeighbourCount = 16;
     private const int MaxPathSteps      = 100;
@@ -122,9 +122,9 @@ namespace Surreal.Framework.PathFinding {
     }
 
     private sealed class WorkingSet {
-      public PriorityQueue<Vector2I>        Frontier { get; } = new PriorityQueue<Vector2I>();
-      public Dictionary<Vector2I, Vector2I> CameFrom { get; } = new Dictionary<Vector2I, Vector2I>();
-      public Dictionary<Vector2I, float>    Cost     { get; } = new Dictionary<Vector2I, float>();
+      public PriorityQueue<Vector2I>        Frontier { get; } = new();
+      public Dictionary<Vector2I, Vector2I> CameFrom { get; } = new();
+      public Dictionary<Vector2I, float>    Cost     { get; } = new();
 
       public void Clear() {
         Frontier.Clear();

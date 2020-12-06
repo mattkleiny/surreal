@@ -5,11 +5,11 @@ using Surreal.Mathematics;
 namespace Surreal.IO.Serialization {
   public static class BinaryExtensions {
     public static Seed ReadSeed(this BinaryReader reader) {
-      return new Seed(reader.ReadInt32());
+      return new(reader.ReadInt32());
     }
 
     public static Vector2 ReadVector2(this BinaryReader reader) {
-      return new Vector2(
+      return new(
           reader.ReadSingle(),
           reader.ReadSingle()
       );

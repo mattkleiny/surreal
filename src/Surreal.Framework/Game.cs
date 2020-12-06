@@ -39,10 +39,10 @@ namespace Surreal.Framework {
 
     public IPlatformHost Host { get; private set; } = null!;
 
-    public FixedStepClock    Clock        { get; }      = new FixedStepClock(16.Milliseconds());
-    public AssetManager      Assets       { get; }      = new AssetManager();
+    public FixedStepClock    Clock        { get; }      = new(16.Milliseconds());
+    public AssetManager      Assets       { get; }      = new();
     public IServiceContainer Services     { get; }      = new ServiceContainer();
-    public List<IGamePlugin> Plugins      { get; }      = new List<IGamePlugin>();
+    public List<IGamePlugin> Plugins      { get; }      = new();
     public ILoopStrategy     LoopStrategy { get; set; } = new AveragingLoopStrategy();
 
     protected internal void Initialize(IPlatformHost host) {

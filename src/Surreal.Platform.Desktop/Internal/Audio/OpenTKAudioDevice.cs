@@ -8,7 +8,7 @@ using Surreal.Platform.Internal.Audio.Resources;
 
 namespace Surreal.Platform.Internal.Audio {
   internal sealed class OpenTKAudioDevice : IAudioDevice, IDisposable {
-    private readonly AudioContext    context = new AudioContext();
+    private readonly AudioContext    context = new();
     private readonly AudioSourcePool sourcePool;
 
     public OpenTKAudioDevice() {

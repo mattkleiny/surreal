@@ -14,8 +14,7 @@ namespace Surreal.Assets {
     private static readonly ILog      Log      = LogFactory.GetLog<AssetManager>();
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<AssetManager>();
 
-    private readonly Dictionary<string, object> assets =
-        new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, object> assets = new(StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<Type, IAssetLoader> loaders;
     private readonly AssetManager?                  parent;

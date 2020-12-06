@@ -32,7 +32,7 @@ namespace Surreal.Collections {
     public ref T this[int x, int y] => ref span[x + y * Width];
 
     public GridEnumerator EnumerateCells() {
-      return new GridEnumerator(Width, Height);
+      return new(Width, Height);
     }
 
     public static implicit operator ReadOnlySpan<T>(SpanGrid<T> grid) => grid.Span;

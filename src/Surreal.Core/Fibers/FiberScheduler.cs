@@ -8,7 +8,7 @@ namespace Surreal.Fibers {
   public sealed class FiberScheduler {
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<FiberScheduler>();
 
-    private readonly ActionQueue queue = new ActionQueue();
+    private readonly ActionQueue queue = new();
 
     public bool   PropagateExceptions { get; set; } = true;
     public Fiber? CurrentFiber        { get; private set; }

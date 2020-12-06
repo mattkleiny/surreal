@@ -3,9 +3,9 @@ using System;
 namespace Surreal.Mathematics {
   public readonly struct Normal : IEquatable<Normal> {
     public static Normal Zero => default;
-    public static Normal One  => new Normal(1f);
+    public static Normal One  => new(1f);
 
-    public static readonly FloatRange Range = new FloatRange(0f, 1f);
+    public static readonly FloatRange Range = new(0f, 1f);
 
     public Normal(float value) {
       Value = value.Clamp(Range);
@@ -23,7 +23,7 @@ namespace Surreal.Mathematics {
     public static bool operator ==(Normal left, Normal right) => left.Equals(right);
     public static bool operator !=(Normal left, Normal right) => !left.Equals(right);
 
-    public static implicit operator Normal(float value) => new Normal(value);
+    public static implicit operator Normal(float value) => new(value);
     public static implicit operator float(Normal time)  => time.Value;
   }
 }

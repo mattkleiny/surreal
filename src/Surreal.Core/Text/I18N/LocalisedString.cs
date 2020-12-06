@@ -19,7 +19,7 @@ namespace Surreal.Text.I18N {
     public          bool Equals(LocalisedString other) => string.Equals(Raw, other.Raw);
     public override bool Equals(object obj)            => obj is LocalisedString other && Equals(other);
 
-    public static implicit operator LocalisedString(string raw)       => new LocalisedString(raw);
+    public static implicit operator LocalisedString(string raw)       => new(raw);
     public static implicit operator string(LocalisedString localised) => localised.Final;
   }
 }

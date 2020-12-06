@@ -14,7 +14,7 @@ namespace Surreal.Framework.Scenes.Entities.Components {
 
     public static class Holder<T>
         where T : IComponent {
-      public static ComponentType Instance { get; } = new ComponentType(NextComponentId++, typeof(T));
+      public static ComponentType Instance { get; } = new(NextComponentId++, typeof(T));
     }
   }
 }

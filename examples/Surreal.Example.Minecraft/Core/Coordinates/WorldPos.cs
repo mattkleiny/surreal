@@ -20,22 +20,22 @@ namespace Minecraft.Core.Coordinates {
     public readonly int Y;
     public readonly int Z;
 
-    public ChunkPos ChunkPos => new ChunkPos(
+    public ChunkPos ChunkPos => new(
         X / World.VoxelsPerChunk.Width,
         Y / World.VoxelsPerChunk.Height,
         Z / World.VoxelsPerChunk.Depth
     );
 
-    public RegionPos RegionPos => new RegionPos(
+    public RegionPos RegionPos => new(
         X / World.VoxelsPerRegion.Width,
         Y / World.VoxelsPerRegion.Height,
         Z / World.VoxelsPerRegion.Depth
     );
 
-    public static implicit operator Vector3I(WorldPos pos)   => new Vector3I(pos.X, pos.Y, pos.Z);
-    public static implicit operator Vector3(WorldPos pos)    => new Vector3(pos.X, pos.Y, pos.Z);
-    public static implicit operator WorldPos(Vector3I point) => new WorldPos(point.X, point.Y, point.Z);
-    public static implicit operator WorldPos(Vector3 vector) => new WorldPos((int) vector.X, (int) vector.Y, (int) vector.Z);
+    public static implicit operator Vector3I(WorldPos pos)   => new(pos.X, pos.Y, pos.Z);
+    public static implicit operator Vector3(WorldPos pos)    => new(pos.X, pos.Y, pos.Z);
+    public static implicit operator WorldPos(Vector3I point) => new(point.X, point.Y, point.Z);
+    public static implicit operator WorldPos(Vector3 vector) => new((int) vector.X, (int) vector.Y, (int) vector.Z);
 
     public override int GetHashCode() {
       return HashCode.Combine(X, Y, Z);

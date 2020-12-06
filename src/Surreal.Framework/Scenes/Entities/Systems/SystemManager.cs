@@ -11,7 +11,7 @@ namespace Surreal.Framework.Scenes.Entities.Systems {
       this.owner = owner;
     }
 
-    public List<IEntitySystem> Systems { get; } = new List<IEntitySystem>();
+    public List<IEntitySystem> Systems { get; } = new();
 
     public void Add(IEntitySystem system) {
       Systems.Add(system);

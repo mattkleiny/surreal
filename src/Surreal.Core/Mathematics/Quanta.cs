@@ -12,7 +12,7 @@ namespace Surreal.Mathematics {
 
     public Normal Normal {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => new Normal(CurrentTime / TotalTime);
+      get => new(CurrentTime / TotalTime);
     }
   }
 }

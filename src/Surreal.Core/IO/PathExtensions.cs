@@ -11,7 +11,7 @@ namespace Surreal.IO {
   public static class PathExtensions {
     private const int DefaultBufferSize = 4096;
 
-    private static readonly BinaryFormatter Formatter = new BinaryFormatter();
+    private static readonly BinaryFormatter Formatter = new();
 
     public static IFileSystem GetFileSystem(this Path path) => FileSystems.GetForScheme(path.Scheme)!;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Surreal.Framework.Screens {
   public sealed class ScreenManager : GamePlugin<Game>, IScreenManager {
-    private readonly LinkedList<IScreen> screens = new LinkedList<IScreen>();
+    private readonly LinkedList<IScreen> screens = new();
 
     public ScreenManager(Game game)
         : base(game) {

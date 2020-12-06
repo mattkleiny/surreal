@@ -6,18 +6,18 @@ using Surreal.Mathematics.Linear;
 
 namespace Surreal.Mathematics {
   public static class Maths {
-    private static readonly ThreadLocal<Random> ThreadLocalRandom = new ThreadLocal<Random>(() => new Random(Environment.TickCount));
+    private static readonly ThreadLocal<Random> ThreadLocalRandom = new(() => new Random(Environment.TickCount));
 
     public const float Pi  = 3.141593f;
     public const float Tau = Pi * 2f;
 
     public static Random Random => ThreadLocalRandom.Value!;
 
-    public static Vector2I P(int x, int y)                       => new Vector2I(x, y);
-    public static Vector3I P(int x, int y, int z)                => new Vector3I(x, y, z);
-    public static Vector2  V(float x, float y)                   => new Vector2(x, y);
-    public static Vector3  V(float x, float y, float z)          => new Vector3(x, y, z);
-    public static Vector4  V(float x, float y, float z, float w) => new Vector4(x, y, z, w);
+    public static Vector2I P(int x, int y)                       => new(x, y);
+    public static Vector3I P(int x, int y, int z)                => new(x, y, z);
+    public static Vector2  V(float x, float y)                   => new(x, y);
+    public static Vector3  V(float x, float y, float z)          => new(x, y, z);
+    public static Vector4  V(float x, float y, float z, float w) => new(x, y, z, w);
 
     public static float   NextFloat(this Random random)                       => (float) random.NextDouble();
     public static float   NextFloat(this Random random, float min, float max) => random.NextFloat() * (max - min) + min;
@@ -26,8 +26,8 @@ namespace Surreal.Mathematics {
     public static bool    NextChance(this Random random, float chance)        => NextBool(random, chance);
     public static int     NextRange(this Random random, IntRange range)       => random.Next(range.Min, range.Max);
     public static float   NextRange(this Random random, FloatRange range)     => random.NextFloat(range.Min, range.Max);
-    public static Seed    NextSeed(this Random random)                        => new Seed(random.Next());
-    public static Vector2 NextUnitCircle(this Random random)                  => new Vector2(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f));
+    public static Seed    NextSeed(this Random random)                        => new(random.Next());
+    public static Vector2 NextUnitCircle(this Random random)                  => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float DegreesToRadians(float degrees) => (float) (degrees * (Math.PI / 180));

@@ -3,7 +3,7 @@ using Surreal.Input;
 
 namespace Surreal.Platform.Internal.Input {
   internal sealed class HeadlessInputManager : IInputManager {
-    private readonly List<IInputDevice> devices = new List<IInputDevice>();
+    private readonly List<IInputDevice> devices = new();
 
     public HeadlessInputManager() {
       devices.Add(Keyboard);
@@ -12,8 +12,8 @@ namespace Surreal.Platform.Internal.Input {
 
     public IEnumerable<IInputDevice> Devices => devices;
 
-    public HeadlessKeyboardDevice Keyboard { get; } = new HeadlessKeyboardDevice();
-    public HeadlessMouseDevice    Mouse    { get; } = new HeadlessMouseDevice();
+    public HeadlessKeyboardDevice Keyboard { get; } = new();
+    public HeadlessMouseDevice    Mouse    { get; } = new();
 
     public void Update() {
       Keyboard.Update();

@@ -14,17 +14,17 @@ namespace Surreal.Mathematics.Linear {
 
     // scalar operators
 
-    public static Volume operator +(Volume a, int scalar) => new Volume(a.Width + scalar, a.Height + scalar, a.Depth + scalar);
-    public static Volume operator -(Volume a, int scalar) => new Volume(a.Width - scalar, a.Height - scalar, a.Depth - scalar);
-    public static Volume operator *(Volume a, int scalar) => new Volume(a.Width * scalar, a.Height * scalar, a.Depth * scalar);
-    public static Volume operator /(Volume a, int scalar) => new Volume(a.Width / scalar, a.Height / scalar, a.Depth / scalar);
+    public static Volume operator +(Volume a, int scalar) => new(a.Width + scalar, a.Height + scalar, a.Depth + scalar);
+    public static Volume operator -(Volume a, int scalar) => new(a.Width - scalar, a.Height - scalar, a.Depth - scalar);
+    public static Volume operator *(Volume a, int scalar) => new(a.Width * scalar, a.Height * scalar, a.Depth * scalar);
+    public static Volume operator /(Volume a, int scalar) => new(a.Width / scalar, a.Height / scalar, a.Depth / scalar);
 
     // pair-wise operators
 
-    public static Volume operator +(Volume a, Volume b) => new Volume(a.Width + b.Width, a.Height + b.Height, a.Depth + b.Depth);
-    public static Volume operator -(Volume a, Volume b) => new Volume(a.Width - b.Width, a.Height - b.Height, a.Depth - b.Depth);
-    public static Volume operator *(Volume a, Volume b) => new Volume(a.Width * b.Width, a.Height * b.Height, a.Depth * b.Depth);
-    public static Volume operator /(Volume a, Volume b) => new Volume(a.Width / b.Width, a.Height / b.Height, a.Depth / b.Depth);
+    public static Volume operator +(Volume a, Volume b) => new(a.Width + b.Width, a.Height + b.Height, a.Depth + b.Depth);
+    public static Volume operator -(Volume a, Volume b) => new(a.Width - b.Width, a.Height - b.Height, a.Depth - b.Depth);
+    public static Volume operator *(Volume a, Volume b) => new(a.Width * b.Width, a.Height * b.Height, a.Depth * b.Depth);
+    public static Volume operator /(Volume a, Volume b) => new(a.Width / b.Width, a.Height / b.Height, a.Depth / b.Depth);
 
     public override string ToString() => $"{Width}x{Height}x{Depth} ({Total} units)";
   }

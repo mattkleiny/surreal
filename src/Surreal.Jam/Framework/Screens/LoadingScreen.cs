@@ -9,7 +9,7 @@ namespace Surreal.Framework.Screens {
       where TScreen : class, ILoadableScreen {
     private static readonly ILog Log = LogFactory.GetLog<LoadingScreen<TGame, TScreen>>();
 
-    private readonly Stopwatch stopwatch = new Stopwatch();
+    private readonly Stopwatch stopwatch = new();
     private readonly TScreen   screen;
     private          Task?     loadingTask;
     private          bool      finalized;

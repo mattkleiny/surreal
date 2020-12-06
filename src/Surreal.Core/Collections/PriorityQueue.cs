@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Surreal.Collections {
   public sealed class PriorityQueue<T> {
-    private readonly List<(T Item, float Priority)> elements = new List<(T, float)>();
+    private readonly List<(T Item, float Priority)> elements = new();
 
     public int Count => elements.Count;
 

@@ -6,7 +6,7 @@ using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
   public sealed class ConsoleInterpreter : IConsoleInterpreter {
-    private readonly BindingCollection bindings = new BindingCollection();
+    private readonly BindingCollection bindings = new();
 
     private readonly ExecutionVisitor visitor;
 

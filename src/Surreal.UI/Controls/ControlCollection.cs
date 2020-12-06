@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Surreal.UI.Controls {
   public sealed class ControlCollection : IEnumerable<Control> {
-    private readonly List<Control> entries = new List<Control>();
+    private readonly List<Control> entries = new();
     private readonly Control?      parent;
 
     public ControlCollection(Control? parent) {

@@ -58,7 +58,7 @@ namespace Surreal.Collections {
       return builder.ToString();
     }
 
-    public Enumerator                   GetEnumerator() => new Enumerator(bits);
+    public Enumerator                   GetEnumerator() => new(bits);
     IEnumerator<bool> IEnumerable<bool>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.            GetEnumerator() => GetEnumerator();
 

@@ -43,7 +43,7 @@ namespace Surreal.Mathematics.Grids {
       }
     }
 
-    public Enumerator             GetEnumerator() => new Enumerator(this);
+    public Enumerator             GetEnumerator() => new(this);
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
 

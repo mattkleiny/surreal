@@ -16,7 +16,7 @@ namespace Surreal.Collections {
       Count = 0;
     }
 
-    public Span<T> Span  => new Span<T>(elements, 0, Count);
+    public Span<T> Span  => new(elements, 0, Count);
     public int     Count { get; private set; }
 
     public T this[int index] {
@@ -87,7 +87,7 @@ namespace Surreal.Collections {
       Array.Copy(oldElements, 0, elements, 0, oldElements.Length);
     }
 
-    public Enumerator             GetEnumerator() => new Enumerator(this);
+    public Enumerator             GetEnumerator() => new(this);
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
 

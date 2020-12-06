@@ -8,7 +8,7 @@ using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
   public sealed class ConsoleParser : DescentParser<ConsoleParser.TokenType> {
-    private static readonly RegexLexer<Token> Lexer = new RegexLexer<Token>(
+    private static readonly RegexLexer<Token> Lexer = new(
         Rule(@"\s+", lexeme => (TokenType.WhiteSpace, null), disregard: true),
         Rule(@"\+|\-|\*|\/", lexeme => (TokenType.Operator, null)),
         Rule(@"\d+", lexeme => (TokenType.Number, float.Parse(lexeme))),
@@ -20,7 +20,7 @@ namespace Surreal.Diagnostics.Console.Interpreter {
     }
 
     public static async Task<ConsoleParser> ParseAsync(TextReader reader) {
-      return new ConsoleParser(await Lexer.TokenizeAsync(reader));
+      return new(await Lexer.TokenizeAsync(reader));
     }
 
     private ConsoleParser(IEnumerable<Token> tokens)

@@ -14,7 +14,7 @@ namespace Surreal.Diagnostics {
       );
     }
 
-    public Vector2I Size      { get; set; } = new Vector2I(640, 480);
+    public Vector2I Size      { get; set; } = new(640, 480);
     public Stage    Stage     { get; set; }
     public bool     IsVisible { set; get; }
 

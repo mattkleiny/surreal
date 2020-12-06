@@ -10,7 +10,7 @@ namespace Surreal.Framework.Screens {
 
     public Game                Game    { get; }
     public IClock              Clock   { get; }
-    public List<IScreenPlugin> Plugins { get; } = new List<IScreenPlugin>();
+    public List<IScreenPlugin> Plugins { get; } = new();
 
     public bool IsInitialized { get; private set; }
     public bool IsDisposed    { get; private set; }

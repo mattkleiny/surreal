@@ -32,7 +32,7 @@ namespace Surreal.Utilities {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MaskEnumerator<TEnum> GetMaskValues<TEnum>(this TEnum flags)
         where TEnum : unmanaged, Enum {
-      return new MaskEnumerator<TEnum>(flags);
+      return new(flags);
     }
 
     public static TEnum SelectRandomly<TEnum>(this TEnum value, Random random)

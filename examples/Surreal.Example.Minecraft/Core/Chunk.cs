@@ -39,7 +39,7 @@ namespace Minecraft.Core {
     public void Regenerate() => generator(this);
 
     public ChunkSlice Slice(Vector3I offset, Volume dimensions) {
-      return new ChunkSlice(this, offset, dimensions);
+      return new(this, offset, dimensions);
     }
 
     public Block this[int x, int y, int z] {

@@ -10,7 +10,7 @@ namespace Surreal.Mathematics.Grids {
   public static class GridExtensions {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static GridEnumerator EnumerateCells<T>(this IGrid<T> grid) {
-      return new GridEnumerator(grid.Width, grid.Height);
+      return new(grid.Width, grid.Height);
     }
 
     public static void DrawRect<T>(this IGrid<T> grid, Rectangle rectangle, T value) {

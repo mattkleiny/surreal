@@ -31,7 +31,7 @@ namespace Surreal.Graphics.Textures {
 
     public TextureFormat Format => Image.Format;
     public Span<Color>   Span   => Image.Span.Slice(OffsetX * Width + OffsetY * Height, Width * Height);
-    public Size          Size   => new Size(Width * Height * Unsafe.SizeOf<Color>());
+    public Size          Size   => new(Width * Height * Unsafe.SizeOf<Color>());
 
     public Color this[int x, int y] {
       get => Image[OffsetX + x, OffsetY + y];
@@ -43,7 +43,7 @@ namespace Surreal.Graphics.Textures {
     }
 
     public ImageRegion Slice(int offsetX, int offsetY, int width, int height) {
-      return new ImageRegion(Image, OffsetX + offsetX, OffsetY + offsetY, width, height);
+      return new(Image, OffsetX + offsetX, OffsetY + offsetY, width, height);
     }
 
     public IEnumerable<ImageRegion> Subdivide(int regionWidth, int regionHeight) {

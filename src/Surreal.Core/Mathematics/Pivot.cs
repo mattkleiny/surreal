@@ -2,7 +2,7 @@ using System;
 
 namespace Surreal.Mathematics {
   public readonly struct Pivot : IEquatable<Pivot> {
-    public static readonly Pivot Center = new Pivot(0.5f, 0.5f);
+    public static readonly Pivot Center = new(0.5f, 0.5f);
 
     public Normal X { get; }
     public Normal Y { get; }

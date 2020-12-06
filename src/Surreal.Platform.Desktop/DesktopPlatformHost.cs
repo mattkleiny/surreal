@@ -16,8 +16,8 @@ namespace Surreal.Platform {
   internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider {
     private readonly DesktopConfiguration configuration;
 
-    private readonly FrameCounter  frameCounter      = new FrameCounter();
-    private readonly IntervalTimer frameDisplayTimer = new IntervalTimer(1.Seconds());
+    private readonly FrameCounter  frameCounter      = new();
+    private readonly IntervalTimer frameDisplayTimer = new(1.Seconds());
 
     public DesktopPlatformHost(IDesktopWindow window, DesktopConfiguration configuration) {
       this.configuration = configuration;

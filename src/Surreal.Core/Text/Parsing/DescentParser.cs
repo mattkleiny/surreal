@@ -97,7 +97,7 @@ namespace Surreal.Text.Parsing {
 
     /// <summary>A convenience for building regex rules that produce tokens for the descent parser.</summary>
     protected static RegexLexer<Token>.Rule Rule(string pattern, Func<string, (TTokenType Type, object? Literal)> factory, bool disregard = false) {
-      return new RegexLexer<Token>.Rule(
+      return new(
           pattern: pattern,
           disregard: disregard,
           tokenizer: (lexeme, position) => {

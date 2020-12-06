@@ -46,7 +46,7 @@ namespace Surreal.Framework.Scenes.Entities {
     }
 
     public Entity GetEntity(EntityId id) {
-      return new Entity(id, this);
+      return new(id, this);
     }
 
     public Entity CreateEntity() {

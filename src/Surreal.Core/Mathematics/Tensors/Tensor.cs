@@ -18,7 +18,7 @@ namespace Surreal.Mathematics.Tensors {
     public void Clear()       => Fill(default);
     public void Fill(T value) => Buffer.Fill(value);
 
-    public Enumerator             GetEnumerator() => new Enumerator(this);
+    public Enumerator             GetEnumerator() => new(this);
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
 

@@ -58,7 +58,7 @@ namespace Surreal.Graphics.Fonts {
       public char          Symbol  { get; }
       public TextureRegion Region  { get; }
       public Vector2       Bearing { get; }
-      public Vector2       Size    => new Vector2(Region.Width, Region.Height);
+      public Vector2       Size    => new(Region.Width, Region.Height);
     }
 
     public sealed class Loader : AssetLoader<BitmapFont> {

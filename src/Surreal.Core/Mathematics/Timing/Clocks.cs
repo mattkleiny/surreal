@@ -9,7 +9,7 @@ namespace Surreal.Mathematics.Timing {
   }
 
   public sealed class FixedStepClock : IClock {
-    public static FixedStepClock CreateDefault() => new FixedStepClock(16.Milliseconds());
+    public static FixedStepClock CreateDefault() => new(16.Milliseconds());
 
     public FixedStepClock(DeltaTime deltaTime) {
       DeltaTime = deltaTime;
@@ -48,7 +48,7 @@ namespace Surreal.Mathematics.Timing {
       }
 
       public float     TimeScale { get; set; } = 1f;
-      public DeltaTime DeltaTime => new DeltaTime(provider() * TimeScale);
+      public DeltaTime DeltaTime => new(provider() * TimeScale);
     }
   }
 }

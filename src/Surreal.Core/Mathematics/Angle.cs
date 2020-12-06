@@ -9,8 +9,8 @@ namespace Surreal.Mathematics {
   public readonly struct Angle : IEquatable<Angle>, IComparable<Angle> {
     public static Angle Zero => default;
 
-    public static Angle FromRadians(float radians) => new Angle(radians);
-    public static Angle FromDegrees(float degrees) => new Angle(DegreesToRadians(degrees));
+    public static Angle FromRadians(float radians) => new(radians);
+    public static Angle FromDegrees(float degrees) => new(DegreesToRadians(degrees));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Angle Lerp(Angle a, Angle b, float t) {

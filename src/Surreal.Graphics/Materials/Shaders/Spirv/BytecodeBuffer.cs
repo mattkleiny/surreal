@@ -5,7 +5,7 @@ using Surreal.Collections;
 
 namespace Surreal.Graphics.Materials.Shaders.Spirv {
   internal sealed class BytecodeBuffer : IReadOnlyList<byte> {
-    private readonly Bag<byte> bytecode = new Bag<byte>();
+    private readonly Bag<byte> bytecode = new();
 
     public int Count => bytecode.Count;
 

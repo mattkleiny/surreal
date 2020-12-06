@@ -5,7 +5,7 @@ using Surreal.Collections;
 
 namespace Surreal.Framework.Scenes.Entities.Aspects {
   internal sealed class AspectManager {
-    private readonly Dictionary<Aspect, AspectSubscription> subscriptions = new Dictionary<Aspect, AspectSubscription>();
+    private readonly Dictionary<Aspect, AspectSubscription> subscriptions = new();
 
     public IAspectSubscription Subscribe(Aspect aspect) {
       return subscriptions.GetOrCompute(aspect, _ => new AspectSubscription(_));
@@ -19,7 +19,7 @@ namespace Surreal.Framework.Scenes.Entities.Aspects {
 
     [DebuggerDisplay("Subscription for {Aspect}")]
     private sealed class AspectSubscription : IAspectSubscription {
-      private readonly Bag<EntityId> entities = new Bag<EntityId>();
+      private readonly Bag<EntityId> entities = new();
 
       public AspectSubscription(Aspect aspect) {
         Aspect = aspect;

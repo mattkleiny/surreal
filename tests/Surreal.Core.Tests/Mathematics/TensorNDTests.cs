@@ -5,7 +5,7 @@ using Xunit;
 namespace Surreal.Core.Mathematics {
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   public class TensorNDTests {
-    private readonly TensorND<float> tensor = new TensorND<float>(8, 8, 8, 3);
+    private readonly TensorND<float> tensor = new(8, 8, 8, 3);
 
     [Fact]
     public void it_should_evaluate_at_the_boundaries_correctly() {

@@ -26,7 +26,7 @@ namespace Surreal.Graphics.Textures {
     public int     OffsetY { get; }
 
     public TextureRegion Slice(int offsetX, int offsetY, int width, int height) {
-      return new TextureRegion(Texture, OffsetX + offsetX, OffsetY + offsetY, width, height);
+      return new(Texture, OffsetX + offsetX, OffsetY + offsetY, width, height);
     }
 
     public IEnumerable<TextureRegion> Subdivide(int regionWidth, int regionHeight) {

@@ -9,7 +9,7 @@ namespace Surreal.Framework.Parameters {
         : base(value) {
     }
 
-    public FloatModifierSet Modifiers { get; } = new FloatModifierSet();
+    public FloatModifierSet Modifiers { get; } = new();
 
     public override float Value {
       get => Modifiers.Apply(base.Value);

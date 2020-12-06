@@ -6,7 +6,7 @@ namespace Surreal.Mathematics.Linear {
   public static class Vectors {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 Orthogonal(this Vector2 vector) {
-      return new Vector2(-vector.Y, vector.X);
+      return new(-vector.Y, vector.X);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

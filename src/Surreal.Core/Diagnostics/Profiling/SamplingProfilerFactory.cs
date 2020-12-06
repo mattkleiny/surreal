@@ -20,7 +20,7 @@
       }
 
       public ProfilingScope Track(string task)                  => Track(category, task);
-      public ProfilingScope Track(string category, string task) => new ProfilingScope(category, task, sampler);
+      public ProfilingScope Track(string category, string task) => new(category, task, sampler);
     }
   }
 }

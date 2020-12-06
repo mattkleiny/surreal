@@ -27,7 +27,7 @@ namespace Surreal.Graphics.Meshes {
     private int indexCount;
 
     public static GeometryBatch Create(IGraphicsDevice device, ShaderProgram shader) {
-      return new GeometryBatch(device, shader, ownsDefaultShader: false);
+      return new(device, shader, ownsDefaultShader: false);
     }
 
     public static async Task<GeometryBatch> CreateDefaultAsync(IGraphicsDevice device) {
@@ -100,7 +100,7 @@ namespace Surreal.Graphics.Meshes {
       => DrawQuad(center, size, color, PrimitiveType.LineLoop);
 
     [SkipLocalsInit]
-    public unsafe void DrawCircle(Vector2 center, float radius, Color color, int segments = 16) {
+    public void DrawCircle(Vector2 center, float radius, Color color, int segments = 16) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var increment = 360f / segments;
 
@@ -115,7 +115,7 @@ namespace Surreal.Graphics.Meshes {
     }
 
     [SkipLocalsInit]
-    public unsafe void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16) {
+    public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var length    = endAngle - startAngle;
       var increment = length / segments;
@@ -131,7 +131,7 @@ namespace Surreal.Graphics.Meshes {
     }
 
     [SkipLocalsInit]
-    public unsafe void DrawCurve<TCurve>(TCurve curve, Color color, int resolution)
+    public void DrawCurve<TCurve>(TCurve curve, Color color, int resolution)
         where TCurve : IPlanarCurve {
       var points = new SpanList<Vector2>(stackalloc Vector2[resolution]);
 
@@ -145,7 +145,7 @@ namespace Surreal.Graphics.Meshes {
     }
 
     [SkipLocalsInit]
-    public unsafe void DrawQuad(Vector2 center, Vector2 size, Color color, PrimitiveType type) {
+    public void DrawQuad(Vector2 center, Vector2 size, Color color, PrimitiveType type) {
       var halfWidth  = size.X / 2f;
       var halfHeight = size.Y / 2f;
 
@@ -162,7 +162,7 @@ namespace Surreal.Graphics.Meshes {
     }
 
     [SkipLocalsInit]
-    public unsafe void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, PrimitiveType type) {
+    public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, PrimitiveType type) {
       var destination = new SpanList<Vertex>(vertices.Span[vertexCount..points.Length]);
 
       for (var i = 0; i < points.Length; i++) {

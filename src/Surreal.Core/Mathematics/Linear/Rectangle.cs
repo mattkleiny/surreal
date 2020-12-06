@@ -34,8 +34,8 @@ namespace Surreal.Mathematics.Linear {
     public float Width  => Right - Left;
     public float Height => Bottom - Top;
 
-    public Vector2 Center => new Vector2(Left + Width / 2f, Bottom + Height / 2f);
-    public Vector2 Size   => new Vector2(Width, Height);
+    public Vector2 Center => new(Left + Width / 2f, Bottom + Height / 2f);
+    public Vector2 Size   => new(Width, Height);
 
     public bool Contains(Vector2I point)
       => point.X >= Left &&
@@ -49,14 +49,14 @@ namespace Surreal.Mathematics.Linear {
          vector.Y >= Bottom &&
          vector.Y <= Top;
 
-    public static Rectangle operator *(Rectangle rectangle, float value) => new Rectangle(
+    public static Rectangle operator *(Rectangle rectangle, float value) => new(
         left: rectangle.Left * value,
         top: rectangle.Top * value,
         right: rectangle.Right * value,
         bottom: rectangle.Bottom * value
     );
 
-    public static Rectangle operator *(Rectangle rectangle, Vector2 value) => new Rectangle(
+    public static Rectangle operator *(Rectangle rectangle, Vector2 value) => new(
         left: rectangle.Left * value.X,
         top: rectangle.Top * value.Y,
         right: rectangle.Right * value.X,

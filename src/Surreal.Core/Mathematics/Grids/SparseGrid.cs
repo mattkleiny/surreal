@@ -7,7 +7,7 @@ using Surreal.Mathematics.Linear;
 namespace Surreal.Mathematics.Grids {
   public sealed class SparseGrid<T> : IGrid<T>, IEnumerable<T>
       where T : class {
-    private readonly Dictionary<Vector2I, T> cells = new Dictionary<Vector2I, T>();
+    private readonly Dictionary<Vector2I, T> cells = new();
     private readonly Func<T, Vector2I>       locator;
 
     public SparseGrid(Func<T, Vector2I> locator) {

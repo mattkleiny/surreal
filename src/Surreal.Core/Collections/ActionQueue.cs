@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace Surreal.Collections {
   public sealed class ActionQueue {
-    private readonly ConcurrentQueue<Action> scheduledTasks = new ConcurrentQueue<Action>();
-    private readonly Queue<Action>           executionPool  = new Queue<Action>();
+    private readonly ConcurrentQueue<Action> scheduledTasks = new();
+    private readonly Queue<Action>           executionPool  = new();
 
     public void Enqueue(Action task) {
       scheduledTasks.Enqueue(task);

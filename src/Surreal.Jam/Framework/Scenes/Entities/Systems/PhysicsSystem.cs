@@ -13,7 +13,7 @@ namespace Surreal.Framework.Scenes.Entities.Systems {
     }
 
     public float   Friction { get; set; } = 1f;
-    public Vector2 Gravity  { get; set; } = new Vector2(0f, -9.8f);
+    public Vector2 Gravity  { get; set; } = new(0f, -9.8f);
 
     public override void Initialize(EntityScene scene) {
       base.Initialize(scene);

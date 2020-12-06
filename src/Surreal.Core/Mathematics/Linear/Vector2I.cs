@@ -3,9 +3,9 @@ using System.Numerics;
 
 namespace Surreal.Mathematics.Linear {
   public struct Vector2I : IEquatable<Vector2I> {
-    public static readonly Vector2I Zero  = new Vector2I(0, 0);
-    public static readonly Vector2I UnitX = new Vector2I(1, 0);
-    public static readonly Vector2I UnitY = new Vector2I(0, 1);
+    public static readonly Vector2I Zero  = new(0, 0);
+    public static readonly Vector2I UnitX = new(1, 0);
+    public static readonly Vector2I UnitY = new(0, 1);
 
     public int X;
     public int Y;
@@ -21,23 +21,23 @@ namespace Surreal.Mathematics.Linear {
     }
 
     // scalar operations
-    public static Vector2I operator +(Vector2I a, int s) => new Vector2I(a.X + s, a.Y + s);
-    public static Vector2I operator -(Vector2I a, int s) => new Vector2I(a.X - s, a.Y - s);
-    public static Vector2I operator *(Vector2I a, int s) => new Vector2I(a.X * s, a.Y * s);
-    public static Vector2I operator /(Vector2I a, int s) => new Vector2I(a.X / s, a.Y / s);
+    public static Vector2I operator +(Vector2I a, int s) => new(a.X + s, a.Y + s);
+    public static Vector2I operator -(Vector2I a, int s) => new(a.X - s, a.Y - s);
+    public static Vector2I operator *(Vector2I a, int s) => new(a.X * s, a.Y * s);
+    public static Vector2I operator /(Vector2I a, int s) => new(a.X / s, a.Y / s);
 
     // piece-wise operations
-    public static Vector2I operator +(Vector2I a, Vector2I b) => new Vector2I(a.X + b.X, a.Y + b.Y);
-    public static Vector2I operator -(Vector2I a, Vector2I b) => new Vector2I(a.X - b.X, a.Y - b.Y);
-    public static Vector2I operator *(Vector2I a, Vector2I b) => new Vector2I(a.X * b.X, a.Y * b.Y);
-    public static Vector2I operator /(Vector2I a, Vector2I b) => new Vector2I(a.X / b.X, a.Y / b.Y);
+    public static Vector2I operator +(Vector2I a, Vector2I b) => new(a.X + b.X, a.Y + b.Y);
+    public static Vector2I operator -(Vector2I a, Vector2I b) => new(a.X - b.X, a.Y - b.Y);
+    public static Vector2I operator *(Vector2I a, Vector2I b) => new(a.X * b.X, a.Y * b.Y);
+    public static Vector2I operator /(Vector2I a, Vector2I b) => new(a.X / b.X, a.Y / b.Y);
 
     // self-mutation
-    public static Vector2I operator -(Vector2I self) => new Vector2I(-self.X, -self.Y);
+    public static Vector2I operator -(Vector2I self) => new(-self.X, -self.Y);
 
     // implicit conversion
-    public static implicit operator Vector2(Vector2I self)         => new Vector2(self.X, self.Y);
-    public static implicit operator Vector2I((int X, int Y) value) => new Vector2I(value.X, value.Y);
+    public static implicit operator Vector2(Vector2I self)         => new(self.X, self.Y);
+    public static implicit operator Vector2I((int X, int Y) value) => new(value.X, value.Y);
 
     public bool Equals(Vector2I other) {
       return X == other.X && Y == other.Y;

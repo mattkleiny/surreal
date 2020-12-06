@@ -12,7 +12,7 @@ namespace Surreal.Framework.Modifiers {
       return 0;
     };
 
-    private readonly Bag<Modifier<T>> modifiers = new Bag<Modifier<T>>();
+    private readonly Bag<Modifier<T>> modifiers = new();
     private          bool             isDirty;
 
     protected abstract T Calculate(T baseValue, ReadOnlySpan<Modifier<T>> modifiers);

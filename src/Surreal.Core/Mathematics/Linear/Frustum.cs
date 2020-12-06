@@ -9,7 +9,7 @@ namespace Surreal.Mathematics.Linear {
     public readonly Plane Near;
     public readonly Plane Far;
 
-    public static Frustum Calculate(in Matrix4x4 projectionView) => new Frustum(
+    public static Frustum Calculate(in Matrix4x4 projectionView) => new(
       left: new Plane(
         x: projectionView.M41 + projectionView.M11,
         y: projectionView.M42 + projectionView.M12,

@@ -5,7 +5,7 @@ using Surreal.IO;
 namespace Surreal.Audio.Clips {
   public readonly struct AudioSampleRate {
     public static AudioSampleRate None     => default;
-    public static AudioSampleRate Standard => new AudioSampleRate(frequency: 44_100, channels: 2, bitsPerSample: 16);
+    public static AudioSampleRate Standard => new(frequency: 44_100, channels: 2, bitsPerSample: 16);
 
     public readonly int Frequency;
     public readonly int Channels;
@@ -28,7 +28,7 @@ namespace Surreal.Audio.Clips {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Size CalculateSize(TimeSpan duration) {
-      return new Size((int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond));
+      return new((int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond));
     }
 
     public override string ToString() {

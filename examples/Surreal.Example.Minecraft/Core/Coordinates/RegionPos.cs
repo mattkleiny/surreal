@@ -20,10 +20,10 @@ namespace Minecraft.Core.Coordinates {
     public readonly int Y;
     public readonly int Z;
 
-    public static implicit operator Vector3I(RegionPos pos)   => new Vector3I(pos.X, pos.Y, pos.Z);
-    public static implicit operator Vector3(RegionPos pos)    => new Vector3(pos.X, pos.Y, pos.Z);
-    public static implicit operator RegionPos(Vector3I point) => new RegionPos(point.X, point.Y, point.Z);
-    public static implicit operator RegionPos(Vector3 vector) => new RegionPos((int) vector.X, (int) vector.Y, (int) vector.Z);
+    public static implicit operator Vector3I(RegionPos pos)   => new(pos.X, pos.Y, pos.Z);
+    public static implicit operator Vector3(RegionPos pos)    => new(pos.X, pos.Y, pos.Z);
+    public static implicit operator RegionPos(Vector3I point) => new(point.X, point.Y, point.Z);
+    public static implicit operator RegionPos(Vector3 vector) => new((int) vector.X, (int) vector.Y, (int) vector.Z);
 
     public override int GetHashCode() {
       return HashCode.Combine(X, Y, Z);

@@ -1,8 +1,8 @@
 namespace Surreal.Framework.Modifiers {
   public static class Modifier {
-    public static Modifier<T> Additive<T>(T amount)   => new Modifier<T>(ModifierType.Additive, amount);
-    public static Modifier<T> Cumulative<T>(T amount) => new Modifier<T>(ModifierType.Cumulative, amount);
-    public static Modifier<T> Multiplier<T>(T amount) => new Modifier<T>(ModifierType.Multiplicative, amount);
+    public static Modifier<T> Additive<T>(T amount)   => new(ModifierType.Additive, amount);
+    public static Modifier<T> Cumulative<T>(T amount) => new(ModifierType.Cumulative, amount);
+    public static Modifier<T> Multiplier<T>(T amount) => new(ModifierType.Multiplicative, amount);
   }
 
   public readonly struct Modifier<T> {

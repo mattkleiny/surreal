@@ -3,7 +3,7 @@ using Surreal.Input;
 
 namespace Surreal.Platform.Internal.Input {
   internal sealed class OpenTKInputManager : IInputManager {
-    private readonly List<IInputDevice> devices = new List<IInputDevice>();
+    private readonly List<IInputDevice> devices = new();
 
     public OpenTKInputManager(IDesktopWindow window) {
       Keyboard = new OpenTKKeyboardDevice(window);

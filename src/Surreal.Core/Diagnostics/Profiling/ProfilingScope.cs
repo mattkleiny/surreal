@@ -2,7 +2,7 @@
 
 namespace Surreal.Diagnostics.Profiling {
   public readonly struct ProfilingScope : IDisposable {
-    public static readonly ProfilingScope Null = new ProfilingScope();
+    public static readonly ProfilingScope Null = new();
 
     private readonly string          category;
     private readonly string          task;

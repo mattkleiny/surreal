@@ -73,7 +73,7 @@ namespace Surreal.Diagnostics.Profiling {
     }
 
     public sealed class SamplerCollection : IEnumerable<Sampler> {
-      private readonly ConcurrentDictionary<string, Sampler> samplers = new ConcurrentDictionary<string, Sampler>(StringComparer.OrdinalIgnoreCase);
+      private readonly ConcurrentDictionary<string, Sampler> samplers = new(StringComparer.OrdinalIgnoreCase);
 
       private readonly int sampleCount;
 
