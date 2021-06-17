@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Surreal.Assets;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Audio.Clips {
   public abstract class AudioClip : AudioResource, IHasSizeEstimate {

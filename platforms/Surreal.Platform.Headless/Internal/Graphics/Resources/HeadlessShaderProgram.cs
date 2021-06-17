@@ -1,5 +1,5 @@
 using System.Numerics;
-using Surreal.Graphics.Materials.Shaders;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
 
@@ -17,11 +17,11 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       // no-op
     }
 
-    public override void SetUniform(string alias, Vector2I point) {
+    public override void SetUniform(string alias, Point2 point) {
       // no-op
     }
 
-    public override void SetUniform(string alias, Vector3I point) {
+    public override void SetUniform(string alias, Point3 point) {
       // no-op
     }
 

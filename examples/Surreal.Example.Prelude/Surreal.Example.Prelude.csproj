@@ -6,14 +6,14 @@
     <ApplicationIcon>./Prelude.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a software-rendered dungeon crawler based on a game by Notch.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Shared.props" />
-  <Import Project="..\..\Executables.props" />
+  <Import Project="..\..\Shared.props"/>
+  <Import Project="..\..\Executables.props"/>
   <ItemGroup>
-    <ProjectReference Include="..\..\modules\Surreal.Modules.Jam\Surreal.Modules.Jam.csproj" />
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+    <ProjectReference Include="..\..\framework\Surreal.Framework.Jam\Surreal.Framework.Jam.csproj"/>
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 ﻿using System;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Graphics.Textures {
   public interface ITextureData {

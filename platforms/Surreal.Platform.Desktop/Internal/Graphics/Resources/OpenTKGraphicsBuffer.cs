@@ -2,8 +2,8 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
+using Surreal.Data;
 using Surreal.Graphics.Meshes;
-using Surreal.IO;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {
   [DebuggerDisplay("Graphics buffer with {Length} elements ({Size})")]

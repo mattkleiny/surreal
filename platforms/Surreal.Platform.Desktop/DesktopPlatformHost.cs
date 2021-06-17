@@ -1,10 +1,10 @@
 using System;
 using Surreal.Audio;
 using Surreal.Compute;
+using Surreal.Data.VFS;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Input;
-using Surreal.IO.VFS;
 using Surreal.Mathematics.Timing;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;
@@ -16,7 +16,7 @@ namespace Surreal.Platform {
     private readonly DesktopConfiguration configuration;
 
     private readonly FrameCounter  frameCounter      = new();
-    private readonly IntervalTimer frameDisplayTimer = new(1.Seconds());
+    private          IntervalTimer frameDisplayTimer = new(1.Seconds());
 
     public DesktopPlatformHost(IDesktopWindow window, DesktopConfiguration configuration) {
       this.configuration = configuration;

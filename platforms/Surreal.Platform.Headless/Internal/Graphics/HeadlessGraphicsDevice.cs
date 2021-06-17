@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Surreal.Graphics;
-using Surreal.Graphics.Materials.Shaders;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;

@@ -15,8 +15,6 @@ namespace Headless {
       Platform = new HeadlessPlatform(),
     });
 
-    public new IHeadlessPlatformHost Host => (IHeadlessPlatformHost) base.Host;
-
     protected override void Draw(GameTime time) {
       base.Draw(time);
 

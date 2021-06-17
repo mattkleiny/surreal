@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Graphics.Materials.Shaders;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
 using ShaderType = OpenTK.Graphics.OpenGL.ShaderType;
@@ -101,11 +101,11 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       GL.Uniform1(GetUniformLocation(alias), scalar);
     }
 
-    public override void SetUniform(string alias, Vector2I point) {
+    public override void SetUniform(string alias, Point2 point) {
       GL.Uniform2(GetUniformLocation(alias), point.X, point.Y);
     }
 
-    public override void SetUniform(string alias, Vector3I point) {
+    public override void SetUniform(string alias, Point3 point) {
       GL.Uniform3(GetUniformLocation(alias), point.X, point.Y, point.Z);
     }
 
@@ -158,12 +158,12 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       base.Dispose(managed);
     }
 
-    private static ShaderType ConvertShaderType(Surreal.Graphics.Materials.Shaders.ShaderType shaderType) {
+    private static ShaderType ConvertShaderType(Surreal.Graphics.Materials.ShaderType shaderType) {
       switch (shaderType) {
-        case Surreal.Graphics.Materials.Shaders.ShaderType.Compute:  return ShaderType.ComputeShader;
-        case Surreal.Graphics.Materials.Shaders.ShaderType.Vertex:   return ShaderType.VertexShader;
-        case Surreal.Graphics.Materials.Shaders.ShaderType.Fragment: return ShaderType.FragmentShader;
-        case Surreal.Graphics.Materials.Shaders.ShaderType.Geometry: return ShaderType.GeometryShader;
+        case Surreal.Graphics.Materials.ShaderType.Compute:  return ShaderType.ComputeShader;
+        case Surreal.Graphics.Materials.ShaderType.Vertex:   return ShaderType.VertexShader;
+        case Surreal.Graphics.Materials.ShaderType.Fragment: return ShaderType.FragmentShader;
+        case Surreal.Graphics.Materials.ShaderType.Geometry: return ShaderType.GeometryShader;
 
         default:
           throw new ArgumentOutOfRangeException(nameof(shaderType), shaderType, null);

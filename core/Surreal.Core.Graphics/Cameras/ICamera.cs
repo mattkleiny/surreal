@@ -8,7 +8,7 @@ namespace Surreal.Graphics.Cameras {
 
     void Update();
 
-    Vector2I Project(Vector3 worldPosition);
-    Vector3  Unproject(Vector2I screenPosition);
+    Point2 Project(Vector3 worldPosition);
+    Vector3  Unproject(Point2 screenPosition);
   }
 }

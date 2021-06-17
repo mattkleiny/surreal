@@ -1,5 +1,5 @@
 using System;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Audio.Clips {
   public interface IAudioData {

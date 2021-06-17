@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Surreal.Assets;
-using Surreal.IO;
-using Surreal.Mathematics;
+using Surreal.Data;
 
 namespace Surreal.Graphics.Textures {
-  public sealed class TextureRegion : IDisposable, ICanSubdivide<TextureRegion> {
+  public sealed class TextureRegion : IDisposable {
     public TextureRegion(Texture texture)
         : this(texture, 0, 0, texture.Width, texture.Height) {
     }

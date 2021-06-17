@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Surreal</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\*.*" />
+  </ItemGroup>
+</Project>

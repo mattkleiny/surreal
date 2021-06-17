@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Surreal.Assets;
 using Surreal.Audio.Clips;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Audio {
   public abstract class AudioResource : IDisposable {

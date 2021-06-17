@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Audio.Clips {
   public readonly struct AudioSampleRate {

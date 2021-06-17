@@ -4,10 +4,10 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Surreal.Graphics.Materials.Shaders;
+using Surreal.Data;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
-using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Sprites {

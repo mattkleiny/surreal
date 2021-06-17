@@ -1,4 +1,3 @@
-using HelloWorld.Screens;
 using Surreal;
 using Surreal.Platform;
 
@@ -13,11 +12,5 @@ namespace HelloWorld {
         },
       },
     });
-
-    protected override void Initialize() {
-      base.Initialize();
-
-      Screens.Push(new MainScreen(this));
-    }
   }
 }

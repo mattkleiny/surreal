@@ -12,7 +12,7 @@ namespace Surreal.Graphics.Cameras {
     private Matrix4x4 projection            = Matrix4x4.Identity;
     private Matrix4x4 projectionView        = Matrix4x4.Identity;
     private Matrix4x4 inverseProjectionView = Matrix4x4.Identity;
-    private Frustum   frustum;
+    private Frustum   frustum               = default;
 
     protected Camera(int viewportWidth, int viewportHeight) {
       Debug.Assert(viewportWidth > 0, "viewportWidth > 0");
@@ -70,22 +70,21 @@ namespace Surreal.Graphics.Cameras {
       projectionView = view * projection;
 
       Matrix4x4.Invert(projectionView, out inverseProjectionView);
-      frustum = Frustum.Calculate(in inverseProjectionView);
 
       Updated?.Invoke();
     }
 
-    public Vector2I Project(Vector3 worldPosition) {
+    public Point2 Project(Vector3 worldPosition) {
       var result = Vector3.Transform(worldPosition, projectionView);
 
       result.X = Viewport.Width * (result.X + 1) / 2 + Viewport.X;
       result.Y = Viewport.Height * (result.Y + 1) / 2 + Viewport.Y;
       result.Z = (result.Z + 1) / 2f;
 
-      return new Vector2I((int)result.X, (int)result.Y);
+      return new Point2((int) result.X, (int) result.Y);
     }
 
-    public Vector3 Unproject(Vector2I screenPosition) {
+    public Vector3 Unproject(Point2 screenPosition) {
       var result = new Vector3(
           x: 2 * (screenPosition.X - Viewport.X) / Viewport.Width - 1,
           y: 2 * (Viewport.Height - screenPosition.Y - 1 - Viewport.Y) / Viewport.Height - 1,

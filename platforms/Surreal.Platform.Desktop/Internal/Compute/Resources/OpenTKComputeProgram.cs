@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Compute.Execution;
-using Surreal.Graphics.Materials.Shaders;
+using Surreal.Graphics.Materials;
 using Surreal.Platform.Internal.Graphics.Resources;
-using ShaderType = Surreal.Graphics.Materials.Shaders.ShaderType;
+using ShaderType = Surreal.Graphics.Materials.ShaderType;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
   internal sealed class OpenTKComputeProgram : ComputeProgram {

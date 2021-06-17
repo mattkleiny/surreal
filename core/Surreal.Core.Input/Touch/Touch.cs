@@ -3,10 +3,10 @@
 namespace Surreal.Input.Touch {
   public readonly struct Touch {
     public readonly uint     Id;
-    public readonly Vector2I Position;
+    public readonly Point2 Position;
     public readonly float    Pressure;
 
-    public Touch(uint id, Vector2I position, float pressure) {
+    public Touch(uint id, Point2 position, float pressure) {
       Id       = id;
       Position = position;
       Pressure = pressure;

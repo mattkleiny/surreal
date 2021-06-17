@@ -1,5 +1,4 @@
-﻿using Minecraft.Screens;
-using Surreal;
+﻿using Surreal;
 using Surreal.Platform;
 
 namespace Minecraft {
@@ -21,8 +20,6 @@ namespace Minecraft {
       Mouse.IsLockedToWindow = true;
 
       GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
-
-      Screens.Push(new MainScreen(this).LoadInBackground());
     }
   }
 }

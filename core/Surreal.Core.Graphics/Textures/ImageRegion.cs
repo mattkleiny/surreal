@@ -4,13 +4,12 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Surreal.Assets;
-using Surreal.IO;
-using Surreal.Mathematics;
+using Surreal.Data;
 using Surreal.Mathematics.Grids;
 
 namespace Surreal.Graphics.Textures {
   [DebuggerDisplay("Image Region {Width}x{Height} at ({OffsetX}, {OffsetY})")]
-  public sealed class ImageRegion : IDisposable, IGrid<Color>, ICanSubdivide<ImageRegion>, ITextureData {
+  public sealed class ImageRegion : IDisposable, IGrid<Color>, ITextureData {
     public ImageRegion(Image image)
         : this(image, 0, 0, image.Width, image.Height) {
     }

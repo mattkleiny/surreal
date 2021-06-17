@@ -9,7 +9,7 @@ namespace Surreal.Platform.Internal.Input {
 
     public event Action<MouseButton> ButtonPressed  = null!;
     public event Action<MouseButton> ButtonReleased = null!;
-    public event Action<Vector2I>    Moved          = null!;
+    public event Action<Point2>    Moved          = null!;
 
     public bool this[MouseButton button] {
       get => pressedButtons.Contains(button);
@@ -23,8 +23,8 @@ namespace Surreal.Platform.Internal.Input {
       }
     }
 
-    public Vector2I Position      { get; set; } = new(0, 0);
-    public Vector2I DeltaPosition => new(0, 0);
+    public Point2 Position      { get; set; } = new(0, 0);
+    public Point2 DeltaPosition => new(0, 0);
 
     public bool IsLockedToWindow { get; set; } = false;
     public bool IsCursorVisible  { get; set; } = true;

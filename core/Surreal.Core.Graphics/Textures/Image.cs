@@ -5,8 +5,8 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using Surreal.Assets;
-using Surreal.Collections;
-using Surreal.IO;
+using Surreal.Collections.Spans;
+using Surreal.Data;
 using Surreal.Mathematics.Grids;
 
 namespace Surreal.Graphics.Textures {
@@ -61,7 +61,9 @@ namespace Surreal.Graphics.Textures {
       Span.Fill(value);
     }
 
-    public ImageRegion ToRegion() => new(this);
+    public ImageRegion ToRegion() {
+      return new(this);
+    }
 
     public async Task SaveAsync(Path path) {
       await using var stream = await path.OpenOutputStreamAsync();
@@ -72,7 +74,9 @@ namespace Surreal.Graphics.Textures {
       image.SaveAsPng(stream);
     }
 
-    public void Dispose() => buffer.Dispose();
+    public void Dispose() {
+      buffer.Dispose();
+    }
 
     public sealed class Loader : AssetLoader<Image> {
       public override async Task<Image> LoadAsync(Path path, IAssetLoaderContext context) {

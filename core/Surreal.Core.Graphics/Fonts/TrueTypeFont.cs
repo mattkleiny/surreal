@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using SixLabors.Fonts;
 using SixLabors.Primitives;
 using Surreal.Assets;
+using Surreal.Data;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
-using Surreal.IO;
-using Surreal.Mathematics.Curves;
 using Surreal.Mathematics.Grids;
+using Surreal.Mathematics.Linear;
 
 namespace Surreal.Graphics.Fonts {
   public sealed class TrueTypeFont {

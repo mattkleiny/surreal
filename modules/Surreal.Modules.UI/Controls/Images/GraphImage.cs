@@ -1,5 +1,5 @@
 using System.Numerics;
-using Surreal.Collections;
+using Surreal.Collections.Spans;
 using Surreal.Graphics;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics.Grids;
@@ -18,7 +18,7 @@ namespace Surreal.UI.Controls.Images {
 
       EvaluateCurve(ref heights);
 
-      var width = image.Width / heights.Length;
+      var width = image.Width / heights.Capacity;
 
       for (var x = 1; x < width; x++) {
         var from = new Vector2(x - 1, heights[x - 1]);

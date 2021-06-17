@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Surreal.Assets;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Compute.Execution {
   public abstract class ComputeProgram : ComputeResource {

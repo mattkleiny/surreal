@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Surreal.Graphics.Materials.Shaders;
+using Surreal.Graphics.Materials;
 
 namespace Surreal.Graphics.Meshes {
   // TODO: create a mesh builder/mesh templates for common shapes

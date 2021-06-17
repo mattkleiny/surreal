@@ -4,7 +4,8 @@
     <Description>Platform abstractions for Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Core\Surreal.Core.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Core.Assets\Surreal.Core.Assets.csproj" />
   </ItemGroup>
   <Import Project="..\..\Shared.props" />
 </Project>

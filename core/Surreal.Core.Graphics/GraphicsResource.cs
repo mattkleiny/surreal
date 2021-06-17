@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Surreal.Assets;
+using Surreal.Data;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
-using Surreal.IO;
 
 namespace Surreal.Graphics {
   public abstract class GraphicsResource : IDisposable {

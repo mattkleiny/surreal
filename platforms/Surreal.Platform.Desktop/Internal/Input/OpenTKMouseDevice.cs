@@ -15,10 +15,10 @@ namespace Surreal.Platform.Internal.Input {
 
     public event Action<MouseButton>? ButtonPressed;
     public event Action<MouseButton>? ButtonReleased;
-    public event Action<Vector2I>?    Moved;
+    public event Action<Point2>?    Moved;
 
-    public Vector2I Position      => new(CurrentState.X, CurrentState.Y);
-    public Vector2I DeltaPosition => new(CurrentState.X - PreviousState.X, CurrentState.Y - PreviousState.Y);
+    public Point2 Position      => new(CurrentState.X, CurrentState.Y);
+    public Point2 DeltaPosition => new(CurrentState.X - PreviousState.X, CurrentState.Y - PreviousState.Y);
 
     public bool IsLockedToWindow { get; set; } = false;
 

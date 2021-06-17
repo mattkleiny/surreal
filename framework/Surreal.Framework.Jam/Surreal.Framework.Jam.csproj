@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Description>Template components and systems for game jams based on Surreal.</Description>
+    <RootNamespace>Surreal</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Core.Audio\Surreal.Core.Audio.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Core.Compute\Surreal.Core.Compute.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Core.Graphics\Surreal.Core.Graphics.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Core.Input\Surreal.Core.Input.csproj" />
+    <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\*.*" />
+    <EmbeddedResource Include="Resources\**" />
+  </ItemGroup>
+</Project>

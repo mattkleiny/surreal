@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using NAudio.Wave;
 using Surreal.Assets;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Audio.Clips {
   public sealed class AudioBuffer : IAudioData, IDisposable, IHasSizeEstimate {

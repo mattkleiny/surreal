@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Compute.Memory;
-using Surreal.IO;
+using Surreal.Data;
 
 namespace Surreal.Platform.Internal.Compute.Resources {
   [DebuggerDisplay("Compute buffer with {Length} elements ({Size})")]

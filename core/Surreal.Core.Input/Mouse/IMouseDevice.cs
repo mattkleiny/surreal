@@ -6,10 +6,10 @@ namespace Surreal.Input.Mouse {
     event Action<MouseButton> ButtonPressed;
     event Action<MouseButton> ButtonReleased;
 
-    event Action<Vector2I> Moved;
+    event Action<Point2> Moved;
 
-    Vector2I Position      { get; }
-    Vector2I DeltaPosition { get; }
+    Point2 Position      { get; }
+    Point2 DeltaPosition { get; }
 
     bool IsLockedToWindow { get; set; }
     bool IsCursorVisible  { get; set; }

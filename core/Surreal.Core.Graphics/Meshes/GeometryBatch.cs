@@ -3,10 +3,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Surreal.Collections;
-using Surreal.Graphics.Materials.Shaders;
-using Surreal.IO;
-using Surreal.Mathematics.Curves;
+using Surreal.Collections.Spans;
+using Surreal.Data;
+using Surreal.Graphics.Materials;
 using Surreal.Mathematics.Linear;
 using static Surreal.Mathematics.Maths;
 
@@ -71,15 +70,15 @@ namespace Surreal.Graphics.Meshes {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawPoint(Vector2 position, Color color)
-      => DrawPrimitive(stackalloc[] { position }, color, PrimitiveType.Points);
+      => DrawPrimitive(stackalloc[] {position}, color, PrimitiveType.Points);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(Vector2 from, Vector2 to, Color color)
-      => DrawPrimitive(stackalloc[] { from, to }, color, PrimitiveType.Lines);
+      => DrawPrimitive(stackalloc[] {from, to}, color, PrimitiveType.Lines);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(Line segment, Color color)
-      => DrawPrimitive(stackalloc[] { segment.From, segment.To }, color, PrimitiveType.Lines);
+      => DrawPrimitive(stackalloc[] {segment.From, segment.To}, color, PrimitiveType.Lines);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
@@ -95,11 +94,11 @@ namespace Surreal.Graphics.Meshes {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-      => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.Triangles);
+      => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.Triangles);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-      => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.LineLoop);
+      => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.LineLoop);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
@@ -121,7 +120,7 @@ namespace Surreal.Graphics.Meshes {
         points.Add(new Vector2(x, y));
       }
 
-      DrawLineLoop(points.Span, color);
+      DrawLineLoop(points.ToSpan(), color);
     }
 
     [SkipLocalsInit]
@@ -137,7 +136,7 @@ namespace Surreal.Graphics.Meshes {
         points.Add(new Vector2(x, y));
       }
 
-      DrawLineStrip(points.Span, color);
+      DrawLineStrip(points.ToSpan(), color);
     }
 
     [SkipLocalsInit]
@@ -146,12 +145,12 @@ namespace Surreal.Graphics.Meshes {
       var points = new SpanList<Vector2>(stackalloc Vector2[resolution]);
 
       for (var i = 0; i < resolution; i++) {
-        var x = (float)i / resolution;
+        var x = (float) i / resolution;
 
         points.Add(curve.SampleAt(x));
       }
 
-      DrawLineStrip(points.Span, color);
+      DrawLineStrip(points.ToSpan(), color);
     }
 
     [SkipLocalsInit]

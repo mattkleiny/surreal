@@ -5,8 +5,8 @@
     <RootNamespace>Surreal.UI</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Core\Surreal.Core.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Core.Graphics\Surreal.Core.Graphics.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj"/>
+    <ProjectReference Include="..\..\core\Surreal.Core.Graphics\Surreal.Core.Graphics.csproj"/>
   </ItemGroup>
-  <Import Project="..\..\Shared.props" />
+  <Import Project="..\..\Shared.props"/>
 </Project>
