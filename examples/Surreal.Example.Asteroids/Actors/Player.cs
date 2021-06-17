@@ -43,7 +43,7 @@ namespace Asteroids.Actors {
 
     public enum States {
       Alive,
-      Dead
+      Dead,
     }
   }
 }

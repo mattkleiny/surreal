@@ -12,13 +12,13 @@ namespace Prelude {
     private static readonly Matrix4x4 ProjectionView = Matrix4x4.CreateOrthographic(1920f, 1080f, 0.1f, 300f);
 
     public static void Main() => Start<Game>(new Configuration {
-        Platform = new DesktopPlatform {
-            Configuration = {
-                Title          = "Prelude of the Chambered",
-                IsVsyncEnabled = true,
-                ShowFPSInTitle = true
-            }
+      Platform = new DesktopPlatform {
+        Configuration = {
+          Title          = "Prelude of the Chambered",
+          IsVsyncEnabled = true,
+          ShowFPSInTitle = true,
         },
+      },
     });
 
     protected override void RegisterAssetLoaders(AssetManager assets) {

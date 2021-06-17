@@ -60,7 +60,7 @@ namespace Isaac.Core.Items {
       }
     }
 
-    public Bag<ItemStack>.Enumerator                      GetEnumerator() => stacks.GetEnumerator();
+    public Bag<ItemStack>.Enumerator              GetEnumerator() => stacks.GetEnumerator();
     IEnumerator<ItemStack> IEnumerable<ItemStack>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.                      GetEnumerator() => GetEnumerator();
   }

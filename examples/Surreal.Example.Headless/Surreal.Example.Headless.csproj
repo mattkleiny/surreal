@@ -8,13 +8,11 @@
   <Import Project="..\..\Shared.props" />
   <Import Project="..\..\Executables.props" />
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Surreal.Jam\Surreal.Jam.csproj" />
-    <ProjectReference Include="..\..\src\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj" />
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Jam\Surreal.Modules.Jam.csproj" />
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(ProjectDir)\Resources\*.*" />
     <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
-    <Content Include="$(ProjectDir)\Assets\*.*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

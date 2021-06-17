@@ -51,9 +51,9 @@ namespace Prelude.Core.Actors {
     }
 
     private bool IsIntersecting(IGrid<Tile> map) {
-      for (var y = (int) Bounds.Bottom; y <= (int) Bounds.Top; y++)
-      for (var x = (int) Bounds.Left; x <= (int) Bounds.Right; x++) {
-        if (map[x, y].IsSolid) {
+      for (var y = (int)Bounds.Bottom; y <= (int)Bounds.Top; y++)
+      for (var x = (int)Bounds.Left; x <= (int)Bounds.Right; x++) {
+        if (map[x, y]?.IsSolid == true) {
           return true;
         }
       }

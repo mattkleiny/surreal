@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Surreal.Audio</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Tests.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Core.Audio\Surreal.Core.Audio.csproj" />
+  </ItemGroup>
+</Project>

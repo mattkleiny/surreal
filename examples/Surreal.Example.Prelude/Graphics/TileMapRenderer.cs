@@ -91,7 +91,8 @@ namespace Prelude.Graphics {
         if (Math.Abs(MathF.Floor(end.X) - end.X) < float.Epsilon) {
           dampen = Color.Clear;
           wallX  = end.Y - MathF.Floor(end.Y);
-        } else {
+        }
+        else {
           dampen = new Color(50, 50, 50, 0);
           wallX  = end.X - MathF.Floor(end.X);
         }
@@ -102,7 +103,8 @@ namespace Prelude.Graphics {
           var textureX = (int) (wallX * texture.Width);
 
           FrameBuffer.Colors.DrawTexturedColumn(textureX, texture, wallStart, height, dampen);
-        } else {
+        }
+        else {
           FrameBuffer.Colors.DrawColoredColumn(x, wallStart, height, tile.Color - dampen);
         }
 

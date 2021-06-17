@@ -12,7 +12,7 @@ namespace Headless {
     private readonly FrameReporter frameReporter = new(Log, interval: 1.Seconds());
 
     public static void Main() => Start<Game>(new() {
-        Platform = new HeadlessPlatform()
+      Platform = new HeadlessPlatform(),
     });
 
     public new IHeadlessPlatformHost Host => (IHeadlessPlatformHost) base.Host;

@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="3">
- <tileset firstgid="1" source="../../../Surreal.Example.Oubliette/Assets/tilesets/biome_desert.tsx"/>
- <layer id="1" name="Tile Layer 1" width="8" height="8">
-  <data encoding="csv">
-2,2,2,2,2,2,2,2,
-2,0,0,2,0,0,0,2,
-2,0,0,2,0,0,0,2,
-2,0,0,0,0,0,0,2,
-2,0,0,2,2,2,0,2,
-2,0,0,2,0,0,0,2,
-2,0,0,2,0,0,0,2,
-2,2,2,2,2,2,2,2
-</data>
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="3">
+ <tileset firstgid="1" source="test-tileset.tsx"/>
+ <layer id="3" name="Floors" width="8" height="8">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAAAAAAAAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAAAAAAAAAAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAAAAAAAAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAAAAAAAAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAAAAAAAAAAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+  </data>
  </layer>
- <objectgroup id="2" name="Object Layer 1">
-  <object id="2" name="Player" x="86.0004" y="35.7065"/>
+ <layer id="1" name="Walls" width="8" height="8">
+  <data encoding="base64">
+   AQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA==
+  </data>
+ </layer>
+ <objectgroup id="2" name="Objects">
+  <object id="2" name="Player" x="88.4348" y="37.9786"/>
  </objectgroup>
 </map>

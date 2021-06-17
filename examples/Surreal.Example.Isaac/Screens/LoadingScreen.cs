@@ -36,9 +36,9 @@ namespace Isaac.Screens {
 
       SpriteBatch.DrawText(
           text: message,
-          font: font!,
+          font: font,
           position: new Vector2(
-              x: Game.Host.Width  / 2f - width  / 2f,
+              x: Game.Host.Width / 2f - width / 2f,
               y: Game.Host.Height / 2f - height / 2f
           ),
           color: Color.White

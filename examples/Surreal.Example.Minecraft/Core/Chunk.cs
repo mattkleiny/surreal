@@ -27,7 +27,7 @@ namespace Minecraft.Core {
       );
     }
 
-    public event BlockChangeHandler BlockChanged = null!;
+    public event BlockChangeHandler? BlockChanged;
 
     public int Width  => voxels.Width;
     public int Height => voxels.Height;

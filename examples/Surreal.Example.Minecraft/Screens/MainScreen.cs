@@ -14,9 +14,9 @@ using static Surreal.Mathematics.Maths;
 namespace Minecraft.Screens {
   public sealed class MainScreen : GameScreen<Game>, ILoadableScreen {
     private readonly PerspectiveCamera camera = new(viewportWidth: 1920, viewportHeight: 1080) {
-        Position  = V(-10f, 45f, -10f),
-        Direction = V(0f, 15f, 0f),
-        Far       = 10_000f
+      Position  = V(-10f, 45f, -10f),
+      Direction = V(0f, 15f, 0f),
+      Far       = 10_000f,
     };
 
     private WorldRenderer?               renderer;
@@ -69,7 +69,7 @@ namespace Minecraft.Screens {
       };
 
       controller = new FirstPersonCameraController(camera, Keyboard, Mouse) {
-          Speed = 100f
+        Speed = 100f,
       };
     }
 

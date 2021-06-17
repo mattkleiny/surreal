@@ -9,7 +9,7 @@ using Surreal.States;
 namespace Isaac.Core.Mobs {
   public abstract class Mob : Actor {
     public         TextureRegion    Sprite    { get; }
-    public         FSM<States>      State     { get; } = new();
+    public         FSM<States>      State     { get; } = new(States.Alive);
     public virtual Vector2Parameter Direction { get; } = new(Vector2.Zero);
     public virtual FloatParameter   Speed     { get; } = new(4f);
     public virtual IntParameter     Health    { get; } = new(10);
@@ -36,7 +36,8 @@ namespace Isaac.Core.Mobs {
         velocity += Knockback.Value;
 
         Knockback.Value = Vector2.Lerp(Knockback, Vector2.Zero, deltaTime);
-      } else {
+      }
+      else {
         Knockback.Value = Vector2.Zero;
       }
 
@@ -63,7 +64,7 @@ namespace Isaac.Core.Mobs {
 
     public enum States {
       Alive,
-      Dead
+      Dead,
     }
   }
 }

@@ -5,6 +5,6 @@
     Top,
     Bottom,
     Front,
-    Back
+    Back,
   }
 }

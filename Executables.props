@@ -1,4 +1,5 @@
-﻿<Project>
+﻿<!-- common configuration for executable projects -->
+<Project>
   <PropertyGroup>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>

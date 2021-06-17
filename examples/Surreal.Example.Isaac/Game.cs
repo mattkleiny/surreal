@@ -15,13 +15,13 @@ namespace Isaac {
     private static readonly ILog Log = LogFactory.GetLog<Game>();
 
     public static void Main() => Start<Game>(new() {
-        Platform = new DesktopPlatform {
-            Configuration = {
-                Title          = "The Binding of Isaac",
-                IsVsyncEnabled = true,
-                ShowFPSInTitle = true
-            }
-        }
+      Platform = new DesktopPlatform {
+        Configuration = {
+          Title          = "The Binding of Isaac",
+          IsVsyncEnabled = true,
+          ShowFPSInTitle = true,
+        },
+      },
     });
 
     public GameState State { get; private set; } = new();
@@ -34,7 +34,7 @@ namespace Isaac {
       Screens.Push(new MainScreen(this));
     }
 
-    protected override void RegisterConsoleBindings(IConsoleInterpreterBindings bindings) {
+    protected override void RegisterConsoleBindings(IConsoleBindings bindings) {
       base.RegisterConsoleBindings(bindings);
 
       bindings.Add("save", () => SaveAsync("./quicksave.sav").Wait());

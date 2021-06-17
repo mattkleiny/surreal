@@ -8,10 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Solution Items)", "(Soluti
 		.gitignore = .gitignore
 		LICENSE.md = LICENSE.md
 		README.md = README.md
-		Shared.props = Shared.props
-		Tests.props = Tests.props
-		nuget.config = nuget.config
-		Executables.props = Executables.props
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
@@ -22,31 +18,29 @@ EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5B995C24-B8BE-46E8-8B0B-1254641F31A0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Audio", "core\Surreal.Core.Audio\Surreal.Core.Audio.csproj", "{694758B0-A660-4923-AA98-25ADD1CFCD81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Audio", "src\Surreal.Audio\Surreal.Audio.csproj", "{694758B0-A660-4923-AA98-25ADD1CFCD81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Compute", "core\Surreal.Core.Compute\Surreal.Core.Compute.csproj", "{024ED746-9A00-4EE3-AF8E-D7FF33EFBC88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Compute", "src\Surreal.Compute\Surreal.Compute.csproj", "{024ED746-9A00-4EE3-AF8E-D7FF33EFBC88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core", "core\Surreal.Core\Surreal.Core.csproj", "{5BC83CEC-5139-46D5-9F2A-DA71D544381F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core", "src\Surreal.Core\Surreal.Core.csproj", "{5BC83CEC-5139-46D5-9F2A-DA71D544381F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Framework", "modules\Surreal.Modules.Framework\Surreal.Modules.Framework.csproj", "{A6308351-A6D6-4B2A-AE6D-208CDB1A5396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Framework", "src\Surreal.Framework\Surreal.Framework.csproj", "{A6308351-A6D6-4B2A-AE6D-208CDB1A5396}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Graphics", "core\Surreal.Core.Graphics\Surreal.Core.Graphics.csproj", "{69468943-2F5D-4131-8004-C4FD568AC7EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Graphics", "src\Surreal.Graphics\Surreal.Graphics.csproj", "{69468943-2F5D-4131-8004-C4FD568AC7EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Input", "core\Surreal.Core.Input\Surreal.Core.Input.csproj", "{C8CC706C-D304-4362-A891-3D7AD365D510}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Input", "src\Surreal.Input\Surreal.Input.csproj", "{C8CC706C-D304-4362-A891-3D7AD365D510}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Jam", "modules\Surreal.Modules.Jam\Surreal.Modules.Jam.csproj", "{C211C44B-90D3-4E5A-8F75-5A4D57C632B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Jam", "src\Surreal.Jam\Surreal.Jam.csproj", "{C211C44B-90D3-4E5A-8F75-5A4D57C632B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform", "platforms\Surreal.Platform\Surreal.Platform.csproj", "{2FC96024-1DD6-453D-A7C2-DD3DCA15FB43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform", "src\Surreal.Platform\Surreal.Platform.csproj", "{2FC96024-1DD6-453D-A7C2-DD3DCA15FB43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop", "platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj", "{3A71DF35-AF25-40BF-9335-6DF5A2956499}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop", "src\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj", "{3A71DF35-AF25-40BF-9335-6DF5A2956499}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Tests", "core\Surreal.Core.Tests\Surreal.Core.Tests.csproj", "{EB43C360-C4F7-43F2-9C86-B0378AAF8AA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Tests", "tests\Surreal.Core.Tests\Surreal.Core.Tests.csproj", "{EB43C360-C4F7-43F2-9C86-B0378AAF8AA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Graphics.Tests", "core\Surreal.Core.Graphics.Tests\Surreal.Core.Graphics.Tests.csproj", "{875D232E-1084-43E7-B2D1-DF4AD32D6561}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Graphics.Tests", "tests\Surreal.Graphics.Tests\Surreal.Graphics.Tests.csproj", "{875D232E-1084-43E7-B2D1-DF4AD32D6561}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Jam.Tests", "tests\Surreal.Jam.Tests\Surreal.Jam.Tests.csproj", "{9ACC2F35-F14A-4FEC-81C8-1ED1126251E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Jam.Tests", "modules\Surreal.Modules.Jam.Tests\Surreal.Modules.Jam.Tests.csproj", "{9ACC2F35-F14A-4FEC-81C8-1ED1126251E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Minecraft", "examples\Surreal.Example.Minecraft\Surreal.Example.Minecraft.csproj", "{08AE8BC7-81FE-43A6-96A7-BC7910AF09EE}"
 EndProject
@@ -56,23 +50,36 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Prelude", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.HelloWorld", "examples\Surreal.Example.HelloWorld\Surreal.Example.HelloWorld.csproj", "{7570FF55-0C5D-4E52-BE67-ED3307EAD128}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Headless", "src\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj", "{FDBF46E8-8977-4248-8FF0-46B225CE006F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Headless", "platforms\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj", "{FDBF46E8-8977-4248-8FF0-46B225CE006F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Headless", "examples\Surreal.Example.Headless\Surreal.Example.Headless.csproj", "{1A9C80BC-C2FF-418E-B6AE-15B6FEA59EEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modding", "src\Surreal.Modding\Surreal.Modding.csproj", "{73652FA7-9E6A-4E45-BD32-B5A433F33FD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Mods", "modules\Surreal.Modules.Mods\Surreal.Modules.Mods.csproj", "{73652FA7-9E6A-4E45-BD32-B5A433F33FD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.UI", "src\Surreal.UI\Surreal.UI.csproj", "{A001313A-8153-499C-8860-A283651B1B66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.UI", "modules\Surreal.Modules.UI\Surreal.Modules.UI.csproj", "{A001313A-8153-499C-8860-A283651B1B66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Asteroids", "examples\Surreal.Example.Asteroids\Surreal.Example.Asteroids.csproj", "{F668126A-6AA9-4081-8AB1-1B6626DDFF7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.UI.Tests", "tests\Surreal.UI.Tests\Surreal.UI.Tests.csproj", "{0F8066B6-429C-4A6A-A6C6-75AA3DD91BCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.UI.Tests", "modules\Surreal.Modules.UI.Tests\Surreal.Modules.UI.Tests.csproj", "{0F8066B6-429C-4A6A-A6C6-75AA3DD91BCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor", "src\Surreal.Editor\Surreal.Editor.csproj", "{F124117E-F62F-451F-B829-4ED62372B43A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Editor", "core\Surreal.Core.Editor\Surreal.Core.Editor.csproj", "{F124117E-F62F-451F-B829-4ED62372B43A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Audio.Tests", "tests\Surreal.Audio.Tests\Surreal.Audio.Tests.csproj", "{D96536B9-0B92-4C2C-9CC4-F631B859E10D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Core.Audio.Tests", "core\Surreal.Core.Audio.Tests\Surreal.Core.Audio.Tests.csproj", "{D96536B9-0B92-4C2C-9CC4-F631B859E10D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Tools", "src\Surreal.Tools\Surreal.Tools.csproj", "{E0C0FDE3-470A-4AE0-BF10-C607FFA78D5C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{725E3C8A-9A5D-4932-8CEB-FFE3C891F0D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{4AB507D1-131E-4DC9-B258-68CEB846F6C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Common", "core\Surreal.Common\Surreal.Common.csproj", "{86CCB54D-4113-485E-8487-30453FF62247}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{7C017374-C239-48A5-A252-2E6B72C57080}"
+ProjectSection(SolutionItems) = preProject
+	Tests.props = Tests.props
+	Shared.props = Shared.props
+	Executables.props = Executables.props
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -176,10 +183,10 @@ Global
 		{D96536B9-0B92-4C2C-9CC4-F631B859E10D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D96536B9-0B92-4C2C-9CC4-F631B859E10D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D96536B9-0B92-4C2C-9CC4-F631B859E10D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0C0FDE3-470A-4AE0-BF10-C607FFA78D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0C0FDE3-470A-4AE0-BF10-C607FFA78D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0C0FDE3-470A-4AE0-BF10-C607FFA78D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0C0FDE3-470A-4AE0-BF10-C607FFA78D5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86CCB54D-4113-485E-8487-30453FF62247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86CCB54D-4113-485E-8487-30453FF62247}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86CCB54D-4113-485E-8487-30453FF62247}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86CCB54D-4113-485E-8487-30453FF62247}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,16 +196,31 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C7D8E4F6-4F56-4BFB-B2CF-7DEC63ED215C} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
-		{EB43C360-C4F7-43F2-9C86-B0378AAF8AA9} = {9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}
-		{875D232E-1084-43E7-B2D1-DF4AD32D6561} = {9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}
-		{9ACC2F35-F14A-4FEC-81C8-1ED1126251E9} = {9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}
 		{08AE8BC7-81FE-43A6-96A7-BC7910AF09EE} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{2EC4AA7A-3566-465F-888E-75F1986C9167} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{6CE7EF92-F455-4410-8D45-508C5E57982B} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{7570FF55-0C5D-4E52-BE67-ED3307EAD128} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{1A9C80BC-C2FF-418E-B6AE-15B6FEA59EEE} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{F668126A-6AA9-4081-8AB1-1B6626DDFF7D} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
-		{0F8066B6-429C-4A6A-A6C6-75AA3DD91BCE} = {9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}
-		{D96536B9-0B92-4C2C-9CC4-F631B859E10D} = {9C0E7706-D6C4-4F5B-A1AD-35136CEBC023}
+		{694758B0-A660-4923-AA98-25ADD1CFCD81} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{024ED746-9A00-4EE3-AF8E-D7FF33EFBC88} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{69468943-2F5D-4131-8004-C4FD568AC7EA} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{C8CC706C-D304-4362-A891-3D7AD365D510} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{5BC83CEC-5139-46D5-9F2A-DA71D544381F} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{F124117E-F62F-451F-B829-4ED62372B43A} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{C211C44B-90D3-4E5A-8F75-5A4D57C632B0} = {725E3C8A-9A5D-4932-8CEB-FFE3C891F0D5}
+		{A001313A-8153-499C-8860-A283651B1B66} = {725E3C8A-9A5D-4932-8CEB-FFE3C891F0D5}
+		{2FC96024-1DD6-453D-A7C2-DD3DCA15FB43} = {4AB507D1-131E-4DC9-B258-68CEB846F6C4}
+		{3A71DF35-AF25-40BF-9335-6DF5A2956499} = {4AB507D1-131E-4DC9-B258-68CEB846F6C4}
+		{FDBF46E8-8977-4248-8FF0-46B225CE006F} = {4AB507D1-131E-4DC9-B258-68CEB846F6C4}
+		{875D232E-1084-43E7-B2D1-DF4AD32D6561} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{D96536B9-0B92-4C2C-9CC4-F631B859E10D} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{EB43C360-C4F7-43F2-9C86-B0378AAF8AA9} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{9ACC2F35-F14A-4FEC-81C8-1ED1126251E9} = {725E3C8A-9A5D-4932-8CEB-FFE3C891F0D5}
+		{0F8066B6-429C-4A6A-A6C6-75AA3DD91BCE} = {725E3C8A-9A5D-4932-8CEB-FFE3C891F0D5}
+		{A6308351-A6D6-4B2A-AE6D-208CDB1A5396} = {725E3C8A-9A5D-4932-8CEB-FFE3C891F0D5}
+		{73652FA7-9E6A-4E45-BD32-B5A433F33FD5} = {725E3C8A-9A5D-4932-8CEB-FFE3C891F0D5}
+		{86CCB54D-4113-485E-8487-30453FF62247} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
+		{7C017374-C239-48A5-A252-2E6B72C57080} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
 	EndGlobalSection
 EndGlobal

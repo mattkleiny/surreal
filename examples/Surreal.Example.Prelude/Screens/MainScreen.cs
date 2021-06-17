@@ -29,7 +29,7 @@ namespace Prelude.Screens {
     protected override async Task LoadContentAsync(IAssetResolver assets) {
       await base.LoadContentAsync(assets);
 
-      var image = await assets.GetAsync<Image>("Assets/textures.png");
+      var image = await assets.GetAsync<Image>("Assets/textures/test-tileset.png");
 
       atlas = Atlas<ImageRegion>.Create(
           source: image.ToRegion(),
@@ -40,7 +40,7 @@ namespace Prelude.Screens {
 
       map = await assets.GetAsync<TileMap<Tile>>("Assets/maps/map1.tmx");
 
-      renderer = new TileMapRenderer(Camera, atlas!);
+      renderer = new TileMapRenderer(Camera, atlas);
     }
 
     public override void Initialize() {
@@ -49,8 +49,8 @@ namespace Prelude.Screens {
       Plugins.Add(new ScenePlugin(Scene));
 
       Scene.Actors.Add(new Player(map!, Camera) {
-          Position  = new Vector2(2, 2),
-          Direction = new Vector2(0, 1)
+        Position  = new Vector2(2, 2),
+        Direction = new Vector2(0, 1),
       });
     }
 

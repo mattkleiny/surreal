@@ -16,7 +16,7 @@
     <Version>1.0.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\src\JetBrainsAnnotations.cs">
+    <Compile Include="..\..\JetBrainsAnnotations.cs">
       <Link>Shared\JetBrainsAnnotations.cs</Link>
     </Compile>
   </ItemGroup>

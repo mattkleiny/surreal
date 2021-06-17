@@ -81,8 +81,6 @@ namespace HelloWorld.Screens {
           color: Color.White,
           resolution: 32
       );
-
-      GeometryBatch.End();
     }
   }
 }

@@ -5,7 +5,6 @@ using Surreal.Diagnostics.Profiling;
 using Surreal.Framework.PathFinding;
 using Surreal.Framework.Tiles;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Sprites;
 using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 using Surreal.Mathematics.Timing;
@@ -43,10 +42,10 @@ namespace Isaac.Core.Maps {
     }
 
     public TileMap<Tile> this[TileLayer layer] => layer switch {
-        TileLayer.Background => Background,
-        TileLayer.Midground  => Midground,
-        TileLayer.Foreground => Foreground,
-        _                    => throw new ArgumentOutOfRangeException(nameof(layer))
+      TileLayer.Background => Background,
+      TileLayer.Midground  => Midground,
+      TileLayer.Foreground => Foreground,
+      _                    => throw new ArgumentOutOfRangeException(nameof(layer)),
     };
 
     public void Draw(GeometryBatch batch, DeltaTime deltaTime) {

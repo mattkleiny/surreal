@@ -13,7 +13,7 @@ using Surreal.Mathematics;
 
 namespace Isaac.Screens {
   public sealed class MainScreen : GameScreen<Game> {
-    private const string QuicksavePath = "./quicksave.sav";
+    private const string QuickSavePath = "./quicksave.sav";
 
     private TextureRegion sprite = null!;
 
@@ -57,11 +57,11 @@ namespace Isaac.Screens {
       }
 
       if (Keyboard.IsKeyPressed(Key.F5)) {
-        Game.SaveAsync(QuicksavePath).Wait();
+        Game.SaveAsync(QuickSavePath).Wait();
       }
 
       if (Keyboard.IsKeyPressed(Key.F7)) {
-        Game.LoadAsync(QuicksavePath).Wait();
+        Game.LoadAsync(QuickSavePath).Wait();
         Restart();
       }
 
@@ -81,7 +81,6 @@ namespace Isaac.Screens {
       base.Draw(time);
 
       SpriteBatch.End();
-      GeometryBatch.End();
     }
 
     private static void ApplyHouseKeeping(ActorList actors) {

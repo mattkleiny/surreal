@@ -4,7 +4,6 @@ using Prelude.Core;
 using Surreal.Framework.Tiles;
 using Surreal.Graphics;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics.Grids;
 using Surreal.Mathematics.Linear;
 
 namespace Prelude.Graphics {
@@ -19,13 +18,15 @@ namespace Prelude.Graphics {
 
         if (direction.X > 0f) {
           edgeDistanceX = MathF.Floor(position.X) + 1 - position.X;
-        } else {
+        }
+        else {
           edgeDistanceX = MathF.Ceiling(position.X) - 1 - position.X;
         }
 
         if (direction.Y > 0f) {
           edgeDistanceY = MathF.Floor(position.Y) + 1 - position.Y;
-        } else {
+        }
+        else {
           edgeDistanceY = MathF.Ceiling(position.Y) - 1 - position.Y;
         }
 
@@ -34,10 +35,12 @@ namespace Prelude.Graphics {
 
         if (step1.LengthSquared() < step2.LengthSquared()) {
           position += step1;
-        } else {
+        }
+        else {
           position += step2;
         }
-      } while (!map.GetNearestTile(new Ray(position, direction)).IsSolid);
+      }
+      while (!map.GetNearestTile(new Ray(position, direction)).IsSolid);
 
       return position;
     }

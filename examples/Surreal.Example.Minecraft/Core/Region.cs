@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Minecraft.Core.Coordinates;
 using Minecraft.Core.Generation;
-using Surreal.Framework;
 using Surreal.Framework.Palettes;
 using Surreal.IO;
 
