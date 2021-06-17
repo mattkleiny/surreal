@@ -68,43 +68,33 @@ namespace Surreal.Graphics.Meshes {
       ActiveShader = shader;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawPoint(Vector2 position, Color color)
       => DrawPrimitive(stackalloc[] {position}, color, PrimitiveType.Points);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(Vector2 from, Vector2 to, Color color)
       => DrawPrimitive(stackalloc[] {from, to}, color, PrimitiveType.Lines);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLine(Line segment, Color color)
       => DrawPrimitive(stackalloc[] {segment.From, segment.To}, color, PrimitiveType.Lines);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
       => DrawPrimitive(points, color, PrimitiveType.Lines);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLineLoop(ReadOnlySpan<Vector2> points, Color color)
       => DrawPrimitive(points, color, PrimitiveType.LineLoop);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawLineStrip(ReadOnlySpan<Vector2> points, Color color)
       => DrawPrimitive(points, color, PrimitiveType.LineStrip);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
       => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.Triangles);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
       => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.LineLoop);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
       => DrawQuad(center, size, color, PrimitiveType.Quads);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
       => DrawQuad(center, size, color, PrimitiveType.LineLoop);
 

@@ -14,7 +14,7 @@ namespace Surreal.Diagnostics.Logging {
           builder.Clear();
 
           if (includeTime) {
-            builder.AppendFormat("{0:h:mm:ss tt} - ", DateTime.Now);
+            builder.AppendFormat("{0} - ", DateTime.Now.ToString("h:mm:ss tt"));
           }
 
           if (includeThreadId) {

@@ -30,13 +30,11 @@ namespace Surreal.Mathematics.Tensors {
     public int[] Shape => new[] {Width, Height};
 
     public T this[int x, int y] {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
         CheckBounds(x, y);
 
         return Buffer.Span[x + y * Width];
       }
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       set {
         CheckBounds(x, y);
 
@@ -64,13 +62,12 @@ namespace Surreal.Mathematics.Tensors {
     }
 
     [Conditional("DEBUG")]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     private void CheckBounds(int x, int y) {
       if (x < 0 || x >= Width) throw new IndexOutOfRangeException($"{x} is not in the range [0, {Width})");
       if (y < 0 || y >= Height) throw new IndexOutOfRangeException($"{y} is not in the range [0, {Height})");
     }
 
-    private string ToDebuggerString() => $"⊗{GetSubscript(Rank)} (Width={Width}, Height={Height}, Size={Size})";
+    private string ToDebuggerString() => $"⊗{GetSubscript(Rank).ToString()} (Width={Width.ToString()}, Height={Height.ToString()}, Size={Size.ToString()})";
   }
 }

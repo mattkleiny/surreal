@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Surreal.Mathematics.Grids {
   public sealed class BitGrid : IGrid<bool> {
@@ -38,7 +37,6 @@ namespace Surreal.Mathematics.Grids {
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Fill(bool value) {
       elements.SetAll(value);
     }

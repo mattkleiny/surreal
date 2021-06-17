@@ -23,7 +23,7 @@ namespace Surreal.Diagnostics {
       if (!log.IsLevelEnabled(LogLevel.Trace)) return;
 
       if (timer.Tick()) {
-        log.Trace($"Frames per second: {counter.FramesPerSecond:F}");
+        log.Trace($"Frames per second: {counter.FramesPerSecond.ToString("F")}");
       }
 
       counter.Tick(deltaTime);

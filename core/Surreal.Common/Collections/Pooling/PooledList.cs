@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Surreal.Collections.Pooling {
   public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware {
-    private static ObjectPool<PooledList<T>> Pool => ObjectPool<PooledList<T>>.Shared;
+    private static Pool<PooledList<T>> Pool => Pool<PooledList<T>>.Shared;
 
     private readonly List<T> list = new();
 

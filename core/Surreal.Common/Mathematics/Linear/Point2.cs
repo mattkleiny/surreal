@@ -53,6 +53,6 @@ namespace Surreal.Mathematics.Linear {
     public static bool operator ==(Point2 left, Point2 right) => left.Equals(right);
     public static bool operator !=(Point2 left, Point2 right) => !left.Equals(right);
 
-    public override string ToString() => $"<{X} {Y}>";
+    public override string ToString() => $"<{X.ToString()} {Y.ToString()}>";
   }
 }

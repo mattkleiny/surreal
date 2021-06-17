@@ -28,9 +28,7 @@ namespace Surreal.Collections {
     public int Length { get; }
 
     public T this[int index] {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => list[Offset + index];
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       set => list[Offset + index] = value;
     }
 
@@ -44,9 +42,8 @@ namespace Surreal.Collections {
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-    public static implicit operator Slice<T>(T[] array)      => new(array);
-    public static implicit operator Slice<T>(Array<T> array) => new(array);
-    public static implicit operator Slice<T>(List<T> list)   => new(list);
+    public static implicit operator Slice<T>(T[] array)    => new(array);
+    public static implicit operator Slice<T>(List<T> list) => new(list);
 
     public static implicit operator ReadOnlySlice<T>(Slice<T> slice) => new((IReadOnlyList<T>) slice.list, slice.Offset, slice.Length);
 
@@ -93,12 +90,8 @@ namespace Surreal.Collections {
     public int Offset { get; }
     public int Length { get; }
 
-    public T this[int index] {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => list[Offset + index];
-    }
+    public T this[int index] => list[Offset + index];
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySlice<T> Slice(int offset, int length) {
       return new(list, Offset + offset, length);
     }
@@ -109,9 +102,8 @@ namespace Surreal.Collections {
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-    public static implicit operator ReadOnlySlice<T>(T[] array)      => new(array);
-    public static implicit operator ReadOnlySlice<T>(Array<T> array) => new(array);
-    public static implicit operator ReadOnlySlice<T>(List<T> list)   => new(list);
+    public static implicit operator ReadOnlySlice<T>(T[] array)    => new(array);
+    public static implicit operator ReadOnlySlice<T>(List<T> list) => new(list);
 
     public struct Enumerator : IEnumerator<T> {
       private readonly ReadOnlySlice<T> slice;
@@ -135,31 +127,16 @@ namespace Surreal.Collections {
   }
 
   public static class SliceExtensions {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Slice<T> ToSlice<T>(this T[] array) => ToSlice(array, 0, array.Length);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Slice<T> ToSlice<T>(this T[] array, int offset, int length) => new(array, offset, length);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Slice<T> ToSlice<T>(this IList<T> list) => ToSlice(list, 0, list.Count);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Slice<T> ToSlice<T>(this T[] array)                             => ToSlice(array, 0, array.Length);
+    public static Slice<T> ToSlice<T>(this T[] array, int offset, int length)     => new(array, offset, length);
+    public static Slice<T> ToSlice<T>(this IList<T> list)                         => ToSlice(list, 0, list.Count);
     public static Slice<T> ToSlice<T>(this IList<T> list, int offset, int length) => new(list, offset, length);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array) => ToReadOnlySlice(array, 0, array.Length);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array, int offset, int length) => new(array, offset, length);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list) => ToReadOnlySlice(list, 0, list.Count);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array)                                     => ToReadOnlySlice(array, 0, array.Length);
+    public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array, int offset, int length)             => new(array, offset, length);
+    public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list)                         => ToReadOnlySlice(list, 0, list.Count);
     public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list, int offset, int length) => new(list, offset, length);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Swap<T>(this Slice<T> slice, int fromIndex, int toIndex) {
       var temp = slice[fromIndex];
 

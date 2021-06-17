@@ -2,9 +2,9 @@
 
 namespace Surreal.Input.Touch {
   public readonly struct Touch {
-    public readonly uint     Id;
+    public readonly uint   Id;
     public readonly Point2 Position;
-    public readonly float    Pressure;
+    public readonly float  Pressure;
 
     public Touch(uint id, Point2 position, float pressure) {
       Id       = id;
@@ -12,6 +12,6 @@ namespace Surreal.Input.Touch {
       Pressure = pressure;
     }
 
-    public override string ToString() => $"Touch at {Position} with {Pressure:P}";
+    public override string ToString() => $"Touch at {Position.ToString()} with {Pressure.ToString("P")}";
   }
 }

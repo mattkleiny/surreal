@@ -14,7 +14,7 @@ namespace Surreal.Fibers.Promises {
 
   internal sealed class FiberTaskPromise<T, TStateMachine> : Promise<T>, IFiberTaskPromise<T>
       where TStateMachine : IAsyncStateMachine {
-    private static readonly ObjectPool<FiberTaskPromise<T, TStateMachine>> Pool = ObjectPool<FiberTaskPromise<T, TStateMachine>>.Shared;
+    private static readonly Pool<FiberTaskPromise<T, TStateMachine>> Pool = Pool<FiberTaskPromise<T, TStateMachine>>.Shared;
 
     public static void Allocate(ref TStateMachine stateMachine, out IFiberTaskPromise<T> promise) {
       var result = Pool.CreateOrRent();

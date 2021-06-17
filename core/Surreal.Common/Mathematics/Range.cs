@@ -44,7 +44,7 @@ namespace Surreal.Mathematics {
 
     public int Delta => Max - Min;
 
-    public override string ToString() => $"{Min} to {Max}";
+    public override string ToString() => $"{Min.ToString()} to {Max.ToString()}";
 
     public          bool Equals(IntRange other) => Min == other.Min && Max == other.Max;
     public override bool Equals(object? obj)    => obj is IntRange other && Equals(other);
@@ -71,7 +71,7 @@ namespace Surreal.Mathematics {
 
     public float Delta => Max - Min;
 
-    public override string ToString() => $"{Min:F} to {Max:F}";
+    public override string ToString() => $"{Min.ToString("F")} to {Max.ToString("F")}";
 
     public bool Equals(FloatRange other) =>
         Math.Abs(Min - other.Min) < float.Epsilon &&

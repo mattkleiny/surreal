@@ -92,7 +92,7 @@ namespace Surreal.Text.Parsing {
         literal  = Literal;
       }
 
-      public override string ToString() => $"{Type} at {Position} ({Lexeme})";
+      public override string ToString() => $"{Type} at {Position.ToString()} ({Lexeme})";
     }
 
     protected static RegexLexer<Token>.Rule Rule(string pattern, Func<string, (TTokenType Type, object? Literal)> factory, bool disregard = false) {

@@ -44,7 +44,7 @@ namespace Surreal.Diagnostics.Logging {
       }
       finally {
         stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed:g}");
+        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
       }
     }
 
@@ -55,7 +55,7 @@ namespace Surreal.Diagnostics.Logging {
       }
       finally {
         stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed:g}");
+        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
       }
     }
 
@@ -66,7 +66,7 @@ namespace Surreal.Diagnostics.Logging {
       }
       finally {
         stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed:g}");
+        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
       }
     }
 
@@ -77,7 +77,7 @@ namespace Surreal.Diagnostics.Logging {
       }
       finally {
         stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed:g}");
+        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
       }
     }
   }

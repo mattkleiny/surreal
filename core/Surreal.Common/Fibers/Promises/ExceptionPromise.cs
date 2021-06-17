@@ -2,7 +2,6 @@
 using System.Runtime.ExceptionServices;
 
 namespace Surreal.Fibers.Promises {
-  /// <summary>A <see cref="Promise{T}"/> that propagates an exception.</summary>
   internal sealed class ExceptionPromise<T> : IPromise<T> {
     private readonly ExceptionDispatchInfo exceptionInfo;
 

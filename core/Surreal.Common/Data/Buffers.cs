@@ -147,7 +147,6 @@ namespace Surreal.Data {
       }
 
       [Conditional("DEBUG")]
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       private void CheckNotDisposed() {
         if (disposed) {
           throw new ObjectDisposedException(nameof(UnmanagedBuffer<T>));
@@ -201,7 +200,6 @@ namespace Surreal.Data {
       }
 
       [Conditional("DEBUG")]
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       private void CheckNotDisposed() {
         if (disposed) {
           throw new ObjectDisposedException(nameof(UnmanagedBuffer<T>));

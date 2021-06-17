@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using Surreal.Data;
 
 namespace Surreal.Audio.Clips {
@@ -26,13 +25,12 @@ namespace Surreal.Audio.Clips {
       bitsPerSample = BitsPerSample;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Size CalculateSize(TimeSpan duration) {
       return new((int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond));
     }
 
     public override string ToString() {
-      return $"{Frequency:N0} hz * {Channels} channels * {BitsPerSample} bits per sample = {BitsPerSecond}bps";
+      return $"{Frequency.ToString("N0")} hz * {Channels.ToString()} channels * {BitsPerSample.ToString()} bits per sample = {BitsPerSecond.ToString()}bps";
     }
 
     public bool Equals(AudioSampleRate other) {

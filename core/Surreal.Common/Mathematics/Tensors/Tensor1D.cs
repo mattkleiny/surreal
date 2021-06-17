@@ -25,13 +25,11 @@ namespace Surreal.Mathematics.Tensors {
     public     int[] Shape  => new[] {Length};
 
     public T this[int index] {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
         CheckBounds(index);
 
         return Buffer.Span[index];
       }
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       set {
         CheckBounds(index);
 
@@ -57,12 +55,11 @@ namespace Surreal.Mathematics.Tensors {
     }
 
     [Conditional("DEBUG")]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     private void CheckBounds(int index) {
       if (index < 0 || index >= Length) throw new IndexOutOfRangeException($"{index} is not in the range [0, {Length})");
     }
 
-    private string ToDebuggerString() => $"⊗{GetSubscript(Rank)} (Length={Length}, Size={Size})";
+    private string ToDebuggerString() => $"⊗{GetSubscript(Rank).ToString()} (Length={Length.ToString()}, Size={Size.ToString()})";
   }
 }

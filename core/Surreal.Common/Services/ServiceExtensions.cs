@@ -2,7 +2,6 @@
 using System.ComponentModel.Design;
 
 namespace Surreal.Services {
-  /// <summary>Utility extensions for dealing with the service provider/DI system.</summary>
   public static class ServiceExtensions {
     public static T? GetService<T>(this IServiceProvider provider) {
       return (T?) provider.GetService(typeof(T));

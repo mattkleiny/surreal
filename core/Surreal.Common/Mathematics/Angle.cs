@@ -12,7 +12,6 @@ namespace Surreal.Mathematics {
     public static Angle FromRadians(float radians) => new(radians);
     public static Angle FromDegrees(float degrees) => new(DegreesToRadians(degrees));
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Angle Lerp(Angle a, Angle b, float t) {
       return FromRadians(Maths.Lerp(a.Radians, b.Radians, t));
     }
@@ -46,7 +45,7 @@ namespace Surreal.Mathematics {
     public float Radians { get; }
     public float Degrees => RadiansToDegrees(Radians);
 
-    public override string ToString() => $"{Degrees:F}°";
+    public override string ToString() => $"{Degrees.ToString("F")}°";
 
     public          bool Equals(Angle other) => Radians.Equals(other.Radians);
     public override bool Equals(object? obj) => obj is Angle other && Equals(other);

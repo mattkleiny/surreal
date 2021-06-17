@@ -54,7 +54,7 @@ namespace Surreal.Graphics {
     public uint BGR  => Pack(B, G, R);
     public uint BGRA => Pack(B, G, R, A);
 
-    public override string ToString() => $"RGBA({R}, {G}, {B}, {A})";
+    public override string ToString() => $"RGBA({R.ToString()}, {G.ToString()}, {B.ToString()}, {A.ToString()})";
 
     public bool Equals(Color other) {
       return R == other.R &&
@@ -86,12 +86,10 @@ namespace Surreal.Graphics {
         (byte) (a.A - b.A)
     );
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Pack(byte first, byte second, byte third) {
       return (uint) ((first << 24) | (second << 16) | (third << 8));
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Pack(byte first, byte second, byte third, byte forth) {
       return (uint) ((first << 24) | (second << 16) | (third << 8) | (forth << 0));
     }

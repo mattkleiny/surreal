@@ -31,12 +31,16 @@ namespace Surreal.Diagnostics.Profiling {
       await using var stream = await path.OpenOutputStreamAsync();
       await using var writer = new StreamWriter(stream, Encoding.UTF8);
 
-      Log.Trace($"Exporting profiler report to {path}");
+      Log.Trace($"Exporting profiler report to {path.ToString()}");
 
       await writer.WriteLineAsync("Category,Task,Maximum(ms),Minimum(ms),Average(ms)");
 
       foreach (var sampler in Samplers) {
-        await writer.WriteLineAsync($"{sampler.Category},{sampler.Task},{sampler.Maximum.TotalMilliseconds:F},{sampler.Minimum.TotalMilliseconds:F},{sampler.Average.TotalMilliseconds:F}");
+        var maximum = sampler.Maximum.TotalMilliseconds;
+        var minimum = sampler.Minimum.TotalMilliseconds;
+        var average = sampler.Average.TotalMilliseconds;
+
+        await writer.WriteLineAsync($"{sampler.Category},{sampler.Task},{maximum.ToString("F")},{minimum.ToString("F")},{average.ToString("F")}");
       }
     }
 

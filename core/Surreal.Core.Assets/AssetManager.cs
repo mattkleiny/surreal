@@ -50,7 +50,7 @@ namespace Surreal.Assets {
     public async Task<object> GetOrLoadAsync(Type type, Path path) {
       using var _ = Profiler.Track($"Loading:{type.Name}");
 
-      Log.Trace($"Loading {type.Name} from {path}");
+      Log.Trace($"Loading {type.Name} from {path.ToString()}");
 
       return await GetOrLoadInnerAsync(type, path, new AssetLoaderContext(this));
     }
@@ -77,9 +77,8 @@ namespace Surreal.Assets {
       return result;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string GetCacheKey(Type type, Path path) {
-      return $"{type.Name}:{path}";
+      return $"{type.Name}:{path.ToString()}";
     }
 
     public void Dispose() {

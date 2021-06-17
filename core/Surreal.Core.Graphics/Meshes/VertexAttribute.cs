@@ -74,7 +74,9 @@ namespace Surreal.Graphics.Meshes {
 
     public VertexAttribute this[int index] => attributes[index];
 
-    public override string ToString() => string.Join(", ", attributes.Select(it => it.ToString()).ToArray());
+    public override string ToString() {
+      return string.Join(", ", attributes.Select(it => it.ToString()).ToArray());
+    }
 
     private IEnumerable<VertexAttribute> CreateAttributes(IEnumerable<VertexAttributeAttribute> attributes) {
       var accumulator = 0;

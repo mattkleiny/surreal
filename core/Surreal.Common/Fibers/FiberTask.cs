@@ -4,6 +4,13 @@ using Surreal.Fibers.Internal;
 using Surreal.Fibers.Promises;
 
 namespace Surreal.Fibers {
+  public enum FiberTaskStatus {
+    Pending,
+    Succeeded,
+    Canceled,
+    Faulted,
+  }
+
   [AsyncMethodBuilder(typeof(FiberTaskBuilder))]
   public readonly struct FiberTask : IDisposable {
     public static FiberTask CompletedTask => default;
@@ -83,8 +90,6 @@ namespace Surreal.Fibers {
     }
   }
 
-  /// <summary>A strongly-typed result-carrying variant of <see cref="FiberTask"/>.</summary>
-  /// <remarks>This tasks is scheduled entirely on a single thread for use in the Unity game engine.</remarks>
   [AsyncMethodBuilder(typeof(FiberTaskBuilder<>))]
   public readonly struct FiberTask<T> : IDisposable {
     internal readonly IPromise<T>? Promise;

@@ -3,7 +3,7 @@ using Surreal.Collections.Pooling;
 
 namespace Surreal.Fibers.Promises {
   internal sealed class WhenAllPromise : Promise<Unit> {
-    private static readonly ObjectPool<WhenAllPromise> Pool = ObjectPool<WhenAllPromise>.Shared;
+    private static readonly Pool<WhenAllPromise> Pool = Pool<WhenAllPromise>.Shared;
 
     private readonly Action returnCallback;
 

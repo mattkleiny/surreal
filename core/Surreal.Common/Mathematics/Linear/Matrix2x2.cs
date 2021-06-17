@@ -15,7 +15,6 @@ namespace Surreal.Mathematics.Linear {
     public float M3;
     public float M4;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix2x2 CreateFromAngles(float sine, float cosine) {
       return new(cosine, -sine, sine, cosine);
     }

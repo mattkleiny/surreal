@@ -29,13 +29,11 @@ namespace Surreal.Mathematics.Tensors {
     public int[] Shape { get; }
 
     public T this[params int[] ranks] {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
         CheckBounds(ranks);
 
         return Buffer.Span[CalculateOffset(ranks)];
       }
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       set {
         CheckBounds(ranks);
 
@@ -73,7 +71,6 @@ namespace Surreal.Mathematics.Tensors {
     }
 
     [Conditional("DEBUG")]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     private void CheckBounds(int[] ranks) {
       if (ranks.Length != Shape.Length) {
@@ -87,6 +84,6 @@ namespace Surreal.Mathematics.Tensors {
       }
     }
 
-    private string ToDebuggerString() => $"⊗{GetSubscript(Rank)} Ranks=<{string.Join(" ", Shape)}>, Size={Size})";
+    private string ToDebuggerString() => $"⊗{GetSubscript(Rank).ToString()} Ranks=<{string.Join(" ", Shape)}>, Size={Size.ToString()})";
   }
 }

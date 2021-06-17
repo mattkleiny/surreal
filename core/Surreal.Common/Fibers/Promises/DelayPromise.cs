@@ -3,9 +3,8 @@ using Surreal.Collections.Pooling;
 using Surreal.Mathematics.Timing;
 
 namespace Surreal.Fibers.Promises {
-  /// <summary>A <see cref="Promise{T}"/> with deferred evaluation.</summary>
   internal sealed class DelayPromise : Promise<Unit> {
-    private static readonly ObjectPool<DelayPromise> Pool = ObjectPool<DelayPromise>.Shared;
+    private static readonly Pool<DelayPromise> Pool = Pool<DelayPromise>.Shared;
 
     private readonly Action advanceCallback;
     private readonly Action returnCallback;

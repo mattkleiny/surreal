@@ -6,8 +6,7 @@ using JetBrains.Annotations;
 using Surreal.Fibers.Promises;
 
 namespace Surreal.Fibers.Internal {
-  /// <summary>Compiler-service builder for async <see cref="FiberTask"/> methods.</summary>
-  public struct FiberTaskBuilder {
+  internal struct FiberTaskBuilder {
     private FiberTaskBuilder<Unit> builder;
 
     [UsedImplicitly, DebuggerHidden]

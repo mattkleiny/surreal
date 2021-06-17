@@ -12,7 +12,7 @@ namespace Surreal.Mathematics {
       Y = y;
     }
 
-    public override string ToString() => $"Pivot around <{X} {Y}>";
+    public override string ToString() => $"Pivot around <{X.ToString()} {Y.ToString()}>";
 
     public          bool Equals(Pivot other) => X.Equals(other.X) && Y.Equals(other.Y);
     public override bool Equals(object? obj) => obj is Pivot other && Equals(other);

@@ -47,7 +47,8 @@ namespace Surreal.Data.VFS {
 
     public override Task<Stream> OpenOutputStreamAsync(string path) => throw new NotSupportedException();
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static string NormalizePath(string path) => path.Replace('/', '.');
+    private static string NormalizePath(string path) {
+      return path.Replace('/', '.');
+    }
   }
 }

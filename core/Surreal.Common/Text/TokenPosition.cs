@@ -13,6 +13,6 @@ namespace Surreal.Text {
       column = Column;
     }
 
-    public override string ToString() => $"{Line}:{Column}";
+    public override string ToString() => $"{Line.ToString()}:{Column.ToString()}";
   }
 }

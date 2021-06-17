@@ -13,7 +13,7 @@ namespace Surreal.Mathematics {
 
     public float Value { get; }
 
-    public override string ToString() => $"<{Value}>";
+    public override string ToString() => $"<{Value.ToString()}>";
 
     public          bool Equals(Normal other) => Value.Equals(other.Value);
     public override bool Equals(object? obj)  => obj is Normal other && Equals(other);

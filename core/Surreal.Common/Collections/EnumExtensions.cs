@@ -9,19 +9,16 @@ using Surreal.Text;
 
 namespace Surreal.Collections {
   public static class EnumExtensions {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe int AsInt<TEnum>(this TEnum value)
         where TEnum : unmanaged, Enum {
       return *(int*) &value;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe TEnum AsEnum<TEnum>(this int value)
         where TEnum : unmanaged, Enum {
       return *(TEnum*) &value;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool EqualsFast<TEnum>(this TEnum first, TEnum second)
         where TEnum : unmanaged, Enum {
       var firstInt  = first.AsInt();
@@ -30,7 +27,6 @@ namespace Surreal.Collections {
       return firstInt == secondInt;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasFlagFast<TEnum>(this TEnum first, TEnum second)
         where TEnum : unmanaged, Enum {
       var flag = first.AsInt();
@@ -39,19 +35,16 @@ namespace Surreal.Collections {
       return (flag & mask) == mask;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySlice<string> GetEnumNames<TEnum>()
         where TEnum : unmanaged, Enum {
       return CachedEnumLookup<TEnum>.Names;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySlice<TEnum> GetEnumValues<TEnum>()
         where TEnum : unmanaged, Enum {
       return CachedEnumLookup<TEnum>.Values;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MaskEnumerator<TEnum> GetMaskValues<TEnum>(this TEnum flags)
         where TEnum : unmanaged, Enum {
       return new(flags);
@@ -73,7 +66,6 @@ namespace Surreal.Collections {
       return result;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ToStringFast<TEnum>(this TEnum value)
         where TEnum : unmanaged, Enum {
       return CachedEnumLookup<TEnum>.Names[value.AsInt()];
