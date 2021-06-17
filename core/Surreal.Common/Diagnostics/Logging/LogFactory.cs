@@ -2,6 +2,10 @@
 using Surreal.Text;
 
 namespace Surreal.Diagnostics.Logging {
+  public interface ILogFactory {
+    ILog GetLog(string category);
+  }
+
   public static class LogFactory {
     public static ILogFactory Current { get; set; } = NullLogFactory.Instance;
 

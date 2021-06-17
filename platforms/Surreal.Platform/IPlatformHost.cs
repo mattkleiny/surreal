@@ -1,5 +1,5 @@
 ﻿using System;
-using Surreal.Mathematics.Timing;
+using Surreal.Timing;
 
 namespace Surreal.Platform {
   public interface IPlatformHost : IDisposable {

@@ -32,12 +32,12 @@ namespace Surreal.Mathematics.Tensors {
       get {
         CheckBounds(ranks);
 
-        return Buffer.Span[CalculateOffset(ranks)];
+        return Buffer.Data[CalculateOffset(ranks)];
       }
       set {
         CheckBounds(ranks);
 
-        Buffer.Span[CalculateOffset(ranks)] = value;
+        Buffer.Data[CalculateOffset(ranks)] = value;
       }
     }
 

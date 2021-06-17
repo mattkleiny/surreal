@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using Surreal.Fibers.Internal;
 using Surreal.Fibers.Promises;
+using Surreal.Timing;
 
 namespace Surreal.Fibers {
   public enum FiberTaskStatus {
@@ -37,8 +39,8 @@ namespace Surreal.Fibers {
     public static FiberTask WhenAll(FiberTask a, FiberTask b, FiberTask c, FiberTask d)
       => WhenAll().AddTask(a).AddTask(b).AddTask(c).AddTask(d).Begin();
 
-    public static FiberTask Delay(TimeSpan duration, bool useUnscaledTime = true)
-      => FromPromise(DelayPromise.Create(duration, useUnscaledTime));
+    public static FiberTask Delay(IClock clock, TimeSpan duration)
+      => FromPromise(DelayPromise.Create(clock, duration));
 
     internal readonly IPromise<Unit>? Promise;
     internal readonly short           Version;
@@ -58,12 +60,9 @@ namespace Surreal.Fibers {
       }
     }
 
+    [UsedImplicitly]
     public FiberTaskAwaiter GetAwaiter() {
       return new(this);
-    }
-
-    public void Forget() {
-      // no-op
     }
 
     public void Cancel()  => Promise?.Cancel(Version);
@@ -118,6 +117,7 @@ namespace Surreal.Fibers {
       }
     }
 
+    [UsedImplicitly]
     public FiberTaskAwaiter<T> GetAwaiter() {
       return new(this);
     }

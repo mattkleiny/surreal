@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using Surreal.Mathematics.Timing;
+using Surreal.Timing;
 
 namespace Surreal.Framework {
   [DebuggerDisplay("{DeltaTime} since last frame")]
-  public readonly struct GameTime {
+  public readonly ref struct GameTime {
     public readonly DeltaTime DeltaTime;
     public readonly TimeSpan  TotalTime;
     public readonly bool      IsRunningSlowly;

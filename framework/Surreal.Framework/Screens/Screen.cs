@@ -1,15 +1,12 @@
 ﻿using System.Collections.Generic;
-using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Screens {
   public abstract class Screen : IScreen {
     protected Screen(Game game) {
-      Game  = game;
-      Clock = Clocks.Relative(game.Clock);
+      Game = game;
     }
 
     public Game                Game    { get; }
-    public IClock              Clock   { get; }
     public List<IScreenPlugin> Plugins { get; } = new();
 
     public bool IsInitialized { get; private set; }

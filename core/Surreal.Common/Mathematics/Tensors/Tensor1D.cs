@@ -28,12 +28,12 @@ namespace Surreal.Mathematics.Tensors {
       get {
         CheckBounds(index);
 
-        return Buffer.Span[index];
+        return Buffer.Data[index];
       }
       set {
         CheckBounds(index);
 
-        Buffer.Span[index] = value;
+        Buffer.Data[index] = value;
       }
     }
 

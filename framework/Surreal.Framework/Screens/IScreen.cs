@@ -1,12 +1,9 @@
 ﻿using System;
-using Surreal.Mathematics.Timing;
 
 namespace Surreal.Framework.Screens {
   public interface IScreen : IDisposable {
     bool IsInitialized { get; }
     bool IsDisposed    { get; }
-
-    IClock Clock { get; }
 
     void Initialize();
 

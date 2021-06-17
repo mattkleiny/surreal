@@ -1,9 +1,6 @@
 ﻿using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Audio;
-using Surreal.Audio.Clips;
 using Surreal.Compute;
 using Surreal.Compute.Execution;
 using Surreal.Diagnostics.Console;
@@ -12,10 +9,7 @@ using Surreal.Diagnostics.Logging;
 using Surreal.Framework;
 using Surreal.Framework.Screens;
 using Surreal.Graphics;
-using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
-using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
@@ -34,11 +28,8 @@ namespace Surreal {
     public IMouseDevice    Mouse          { get; private set; } = null!;
     public IScreenManager  Screens        { get; private set; } = null!;
     public IGameConsole    Console        { get; private set; } = null!;
-    public SpriteBatch     SpriteBatch    { get; private set; } = null!;
-    public GeometryBatch   GeometryBatch  { get; private set; } = null!;
 
-    public virtual bool     EnableDebugTools => Debugger.IsAttached;
-    public virtual LogLevel DefaultLogLevel  => LogLevel.Trace;
+    public virtual LogLevel DefaultLogLevel => LogLevel.Trace;
 
     public Color ClearColor { get; set; } = Color.Black;
 
@@ -55,22 +46,13 @@ namespace Surreal {
       ComputeDevice  = Host.Services.GetRequiredService<IComputeDevice>();
       GraphicsDevice = Host.Services.GetRequiredService<IGraphicsDevice>();
 
-      Screens = new ScreenManager(this);
-
-      Plugins.Add(Screens);
+      Plugins.Add(Screens = new ScreenManager(this));
 
       RegisterAssetLoaders(Assets);
 
       base.Initialize();
 
       OnResized(Host.Width, Host.Height); // initial resize
-    }
-
-    protected override async Task LoadContentAsync(IAssetResolver assets) {
-      await base.LoadContentAsync(assets);
-
-      SpriteBatch   = await SpriteBatch.CreateDefaultAsync(GraphicsDevice);
-      GeometryBatch = await GeometryBatch.CreateDefaultAsync(GraphicsDevice);
     }
 
     protected override void RegisterServices(IServiceContainer services) {
@@ -90,16 +72,6 @@ namespace Surreal {
     }
 
     protected virtual void RegisterAssetLoaders(AssetManager assets) {
-      assets.RegisterLoader(new AudioBuffer.Loader());
-      assets.RegisterLoader(new AudioClip.Loader(AudioDevice));
-      assets.RegisterLoader(new BitmapFont.Loader(CharacterSet.Standard));
-      assets.RegisterLoader(new ComputeProgram.Loader(ComputeDevice));
-      assets.RegisterLoader(new Image.Loader());
-      assets.RegisterLoader(new ImageRegion.Loader());
-      assets.RegisterLoader(new ShaderProgram.Loader(GraphicsDevice, hotReloading: EnableDebugTools));
-      assets.RegisterLoader(new Texture.Loader(GraphicsDevice));
-      assets.RegisterLoader(new TextureRegion.Loader());
-      assets.RegisterLoader(new TrueTypeFont.Loader());
     }
 
     protected virtual void RegisterConsoleBindings(IConsoleBindings bindings) {
@@ -128,13 +100,6 @@ namespace Surreal {
 
       GraphicsDevice.EndFrame();
       GraphicsDevice.Present();
-    }
-
-    public override void Dispose() {
-      GeometryBatch.Dispose();
-      SpriteBatch.Dispose();
-
-      base.Dispose();
     }
   }
 

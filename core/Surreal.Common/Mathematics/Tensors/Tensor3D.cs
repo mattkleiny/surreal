@@ -35,12 +35,12 @@ namespace Surreal.Mathematics.Tensors {
       get {
         CheckBounds(x, y, z);
 
-        return Buffer.Span[x + y * Width + z * Width * Height];
+        return Buffer.Data[x + y * Width + z * Width * Height];
       }
       set {
         CheckBounds(x, y, z);
 
-        Buffer.Span[x + y * Width + z * Width * Height] = value;
+        Buffer.Data[x + y * Width + z * Width * Height] = value;
       }
     }
 

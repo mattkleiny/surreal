@@ -3,9 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Surreal.Collections;
-using Surreal.Text.Lexing;
 
 namespace Surreal.Text.Parsing {
+  public sealed class ParsingException : Exception {
+    public ParsingException() {
+    }
+
+    public ParsingException(string message)
+        : base(message) {
+    }
+
+    public ParsingException(string message, Exception innerException)
+        : base(message, innerException) {
+    }
+  }
+
   public abstract class DescentParser<TToken, TTokenType>
       where TToken : struct {
     private readonly TToken[] tokens;

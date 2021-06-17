@@ -8,9 +8,9 @@ using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Data.VFS;
 using Surreal.Diagnostics.Profiling;
-using Surreal.Mathematics.Timing;
 using Surreal.Platform;
 using Surreal.Services;
+using Surreal.Timing;
 
 namespace Surreal.Framework {
   public abstract class Game : IDisposable, IFrameListener {
@@ -38,7 +38,6 @@ namespace Surreal.Framework {
 
     public IPlatformHost Host { get; private set; } = null!;
 
-    public FixedStepClock    Clock        { get; }      = new(16.Milliseconds());
     public AssetManager      Assets       { get; }      = new();
     public IServiceContainer Services     { get; }      = new ServiceContainer();
     public List<IGamePlugin> Plugins      { get; }      = new();
@@ -75,8 +74,7 @@ namespace Surreal.Framework {
     }
 
     protected virtual void RegisterFileSystems(IFileSystemRegistry registry) {
-      var platformFileSystem = Host.Services.GetService<IFileSystem>();
-      if (platformFileSystem != null) {
+      if (Host.Services.TryGetService(out IFileSystem platformFileSystem)) {
         registry.Add(platformFileSystem);
       }
 
@@ -86,8 +84,7 @@ namespace Surreal.Framework {
     void IFrameListener.Tick(DeltaTime deltaTime) {
       var totalTime = DateTime.Now - startTime;
 
-      Clock.Tick(deltaTime);
-      LoopStrategy.Tick(loopTarget, Clock.DeltaTime, totalTime);
+      LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
     }
 
     protected virtual void Begin(GameTime time) {

@@ -50,10 +50,18 @@ namespace Surreal.Data.VFS {
       return Task.FromResult<Stream>(File.Open(path, FileMode.OpenOrCreate));
     }
 
-    public override IPathWatcher WatchPath(Path path) => new PathWatcher(path);
+    public override IPathWatcher WatchPath(Path path) {
+      return new PathWatcher(path);
+    }
 
     private sealed class PathWatcher : IPathWatcher {
       private readonly FileSystemWatcher watcher;
+
+      public Path Path { get; }
+
+      public event Action<Path>? Created;
+      public event Action<Path>? Modified;
+      public event Action<Path>? Deleted;
 
       public PathWatcher(Path path) {
         watcher = new FileSystemWatcher(path.Target);
@@ -66,12 +74,6 @@ namespace Surreal.Data.VFS {
 
         Path = path;
       }
-
-      public Path Path { get; }
-
-      public event Action<Path>? Created;
-      public event Action<Path>? Modified;
-      public event Action<Path>? Deleted;
 
       public void Dispose() {
         watcher.Dispose();

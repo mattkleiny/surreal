@@ -11,7 +11,7 @@ namespace Surreal.Data {
     int     Length { get; }
     int     Stride { get; }
     Size    Size   { get; }
-    Span<T> Span   { get; }
+    Span<T> Data   { get; }
 
     void Clear();
     void Fill(T value);
@@ -35,10 +35,10 @@ namespace Surreal.Data {
     public static IBuffer<T> AllocatePinned<T>(int count)
         where T : unmanaged => new PinnedBuffer<T>(count);
 
-    public static IDisposableBuffer<T> AllocateOffHeap<T>(int count, bool zeroFill = true)
+    public static IDisposableBuffer<T> AllocateNative<T>(int count, bool zeroFill = false)
         where T : unmanaged => new UnmanagedBuffer<T>(count, zeroFill);
 
-    public static IDisposableBuffer<T> MapFromFile<T>(string path, int offset, int length)
+    public static IDisposableBuffer<T> AllocateMapped<T>(string path, int offset, int length)
         where T : unmanaged => new MemoryMappedBuffer<T>(path, offset, length);
 
     private abstract class Buffer<T> : IBuffer<T>
@@ -51,10 +51,10 @@ namespace Surreal.Data {
       public int  Stride => Unsafe.SizeOf<T>();
       public Size Size   => new(Length * Stride);
 
-      public abstract Span<T> Span { get; }
+      public abstract Span<T> Data { get; }
 
       public void Clear()       => Fill(default);
-      public void Fill(T value) => Span.Fill(value);
+      public void Fill(T value) => Data.Fill(value);
 
       public virtual IBuffer<T> Slice(int offset, int size) => new BufferSlice(this, offset, size);
 
@@ -69,7 +69,7 @@ namespace Surreal.Data {
           this.offset = offset;
         }
 
-        public override Span<T> Span => source.Span.Slice(offset, Length);
+        public override Span<T> Data => source.Data.Slice(offset, Length);
       }
     }
 
@@ -83,7 +83,7 @@ namespace Surreal.Data {
         elements = new T[count];
       }
 
-      public override Span<T> Span => new(elements);
+      public override Span<T> Data => new(elements);
 
       public void Resize(int newLength) {
         Array.Resize(ref elements, newLength);
@@ -101,7 +101,7 @@ namespace Surreal.Data {
         elements = GC.AllocateArray<T>(count, pinned: true);
       }
 
-      public override Span<T> Span => new(elements);
+      public override Span<T> Data => new(elements);
 
       public void Resize(int newLength) {
         Array.Resize(ref elements, newLength);
@@ -124,7 +124,7 @@ namespace Surreal.Data {
         }
       }
 
-      public override unsafe Span<T> Span {
+      public override unsafe Span<T> Data {
         get {
           CheckNotDisposed();
 
@@ -180,7 +180,7 @@ namespace Surreal.Data {
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
       }
 
-      public override Span<T> Span {
+      public override Span<T> Data {
         get {
           CheckNotDisposed();
 

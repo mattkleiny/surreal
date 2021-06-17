@@ -4,6 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Surreal Editor" Width="800" Height="600">
-  <Grid x:Name="Grid" />
+        Title="Surreal Editor" Width="1680" Height="1050">
+  <Grid />
 </Window>

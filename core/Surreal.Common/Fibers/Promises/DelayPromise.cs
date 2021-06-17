@@ -1,6 +1,6 @@
 ﻿using System;
 using Surreal.Collections.Pooling;
-using Surreal.Mathematics.Timing;
+using Surreal.Timing;
 
 namespace Surreal.Fibers.Promises {
   internal sealed class DelayPromise : Promise<Unit> {
@@ -9,15 +9,14 @@ namespace Surreal.Fibers.Promises {
     private readonly Action advanceCallback;
     private readonly Action returnCallback;
 
-    private Timer   timer;
     private IClock? clock;
+    private Timer   timer;
 
-    public static DelayPromise Create(TimeSpan duration, bool useUnscaledTime) {
+    public static DelayPromise Create(IClock clock, TimeSpan duration) {
       var promise = Pool.CreateOrRent();
 
-      // TODO: get top-level clock somehow?
-      // promise.timer = new Timer(duration);
-      // promise.clock = useUnscaledTime ? Clocks.Unscaled : Clocks.Standard;
+      promise.clock = clock;
+      promise.timer = new Timer(duration);
 
       promise.Advance();
 

@@ -4,11 +4,11 @@ using Surreal.Compute;
 using Surreal.Data.VFS;
 using Surreal.Graphics;
 using Surreal.Input;
-using Surreal.Mathematics.Timing;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;
 using Surreal.Platform.Internal.Graphics;
 using Surreal.Platform.Internal.Input;
+using Surreal.Timing;
 
 namespace Surreal.Platform {
   internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider {

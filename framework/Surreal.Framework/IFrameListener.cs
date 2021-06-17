@@ -1,4 +1,4 @@
-using Surreal.Mathematics.Timing;
+using Surreal.Timing;
 
 namespace Surreal.Framework {
   public interface IFrameListener {

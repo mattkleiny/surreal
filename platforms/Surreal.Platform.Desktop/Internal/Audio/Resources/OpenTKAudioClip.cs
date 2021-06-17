@@ -16,7 +16,7 @@ namespace Surreal.Platform.Internal.Audio.Resources {
     protected override unsafe void Upload(IAudioData? existingData, IAudioData newData) {
       var (frequency, channels, bitsPerSample) = newData.Rate;
 
-      var raw     = newData.Span;
+      var raw     = newData.Data;
       var pointer = Unsafe.AsPointer(ref raw.GetPinnableReference());
       var format  = GetSoundFormat(channels, bitsPerSample);
 

@@ -7,6 +7,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using Surreal.Assets;
 using Surreal.Collections.Spans;
 using Surreal.Data;
+using Surreal.Data.VFS;
 using Surreal.Mathematics.Grids;
 
 namespace Surreal.Graphics.Textures {
@@ -20,7 +21,7 @@ namespace Surreal.Graphics.Textures {
 
       var result = new Image(image.Width, image.Height);
 
-      image.GetPixelSpan().Cast<Rgba32, Color>().CopyTo(result.Span);
+      image.GetPixelSpan().Cast<Rgba32, Color>().CopyTo(result.Pixels);
 
       return result;
     }
@@ -32,12 +33,12 @@ namespace Surreal.Graphics.Textures {
       Width  = width;
       Height = height;
 
-      buffer = Buffers.AllocateOffHeap<Color>(width * height);
+      buffer = Buffers.AllocateNative<Color>(width * height);
     }
 
     public Size          Size   => buffer.Size;
     public TextureFormat Format => TextureFormat.RGBA8888;
-    public Span<Color>   Span   => buffer.Span;
+    public Span<Color>   Pixels => buffer.Data;
 
     public int Width  { get; }
     public int Height { get; }
@@ -47,29 +48,25 @@ namespace Surreal.Graphics.Textures {
         Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
         Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
-        return Span[x + y * Width];
+        return Pixels[x + y * Width];
       }
       set {
         Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
         Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
-        Span[x + y * Width] = value;
+        Pixels[x + y * Width] = value;
       }
     }
 
     public void Fill(Color value) {
-      Span.Fill(value);
-    }
-
-    public ImageRegion ToRegion() {
-      return new(this);
+      Pixels.Fill(value);
     }
 
     public async Task SaveAsync(Path path) {
       await using var stream = await path.OpenOutputStreamAsync();
       using var       image  = new Image<Rgba32>(Width, Height);
 
-      Span.Cast<Color, Rgba32>().CopyTo(image.GetPixelSpan());
+      Pixels.Cast<Color, Rgba32>().CopyTo(image.GetPixelSpan());
 
       image.SaveAsPng(stream);
     }
@@ -77,6 +74,8 @@ namespace Surreal.Graphics.Textures {
     public void Dispose() {
       buffer.Dispose();
     }
+
+    ReadOnlySpan<Color> ITextureData.Pixels => Pixels;
 
     public sealed class Loader : AssetLoader<Image> {
       public override async Task<Image> LoadAsync(Path path, IAssetLoaderContext context) {

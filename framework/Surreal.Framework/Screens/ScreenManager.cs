@@ -58,7 +58,7 @@ namespace Surreal.Framework.Screens {
 
     public override void Input(GameTime time) {
       ActiveScreen?.Input(new GameTime(
-          deltaTime: ActiveScreen.Clock.DeltaTime,
+          deltaTime: time.DeltaTime,
           totalTime: time.TotalTime,
           isRunningSlowly: time.IsRunningSlowly
       ));
@@ -66,7 +66,7 @@ namespace Surreal.Framework.Screens {
 
     public override void Update(GameTime time) {
       ActiveScreen?.Update(new GameTime(
-          deltaTime: ActiveScreen.Clock.DeltaTime,
+          deltaTime: time.DeltaTime,
           totalTime: time.TotalTime,
           isRunningSlowly: time.IsRunningSlowly
       ));
@@ -74,7 +74,7 @@ namespace Surreal.Framework.Screens {
 
     public override void Draw(GameTime time) {
       ActiveScreen?.Draw(new GameTime(
-          deltaTime: ActiveScreen.Clock.DeltaTime,
+          deltaTime: time.DeltaTime,
           totalTime: time.TotalTime,
           isRunningSlowly: time.IsRunningSlowly
       ));

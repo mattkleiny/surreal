@@ -2,8 +2,16 @@ using System;
 using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Data;
+using Surreal.Data.VFS;
 
 namespace Surreal.Audio.Clips {
+  public interface IAudioData {
+    TimeSpan        Duration { get; }
+    AudioSampleRate Rate     { get; }
+    Size            Size     { get; }
+    Span<byte>      Data     { get; }
+  }
+
   public abstract class AudioClip : AudioResource, IHasSizeEstimate {
     private IAudioData? data;
 

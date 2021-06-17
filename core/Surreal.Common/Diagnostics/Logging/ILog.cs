@@ -3,6 +3,14 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Surreal.Diagnostics.Logging {
+  public enum LogLevel : byte {
+    Trace = 0,
+    Debug = 1,
+    Warn  = 2,
+    Error = 3,
+    Fatal = 4,
+  }
+
   public interface ILog {
     bool IsLevelEnabled(LogLevel level);
     void WriteMessage(LogLevel level, string message);

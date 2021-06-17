@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Surreal.Text.Lexing;
 using Surreal.Text.Parsing;
 using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
-  public sealed class ConsoleParser : DescentParser<ConsoleParser.TokenType> {
+  internal sealed class ConsoleParser : DescentParser<ConsoleParser.TokenType> {
     private static readonly RegexLexer<Token> Lexer = new(
         Rule(@"\s+", _ => (TokenType.WhiteSpace, null), disregard: true),
         Rule(@"\+|\-|\*|\/", _ => (TokenType.Operator, null)),

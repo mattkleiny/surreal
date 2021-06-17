@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Data;
+using Surreal.Data.VFS;
 
 namespace Surreal.Graphics.Textures {
   public enum TextureFilterMode {
@@ -15,6 +17,16 @@ namespace Surreal.Graphics.Textures {
   public enum TextureWrapMode {
     Clamp,
     Repeat,
+  }
+
+  public interface ITextureData {
+    TextureFormat Format { get; }
+
+    int  Width  { get; }
+    int  Height { get; }
+    Size Size   { get; }
+
+    ReadOnlySpan<Color> Pixels { get; }
   }
 
   public abstract class Texture : GraphicsResource, IHasSizeEstimate {
@@ -33,8 +45,6 @@ namespace Surreal.Graphics.Textures {
     public int  Width  => data?.Width ?? 0;
     public int  Height => data?.Height ?? 0;
     public Size Size   => data?.Size ?? Size.Zero;
-
-    public TextureRegion ToRegion() => new(this);
 
     public void Upload(ITextureData data) {
       Upload(this.data, data);

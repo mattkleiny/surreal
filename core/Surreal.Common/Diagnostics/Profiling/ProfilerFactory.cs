@@ -2,6 +2,10 @@
 using Surreal.Text;
 
 namespace Surreal.Diagnostics.Profiling {
+  public interface IProfilerFactory {
+    IProfiler GetProfiler(string category);
+  }
+
   public static class ProfilerFactory {
     public static IProfilerFactory Current { get; set; } = NullProfilerFactory.Instance;
 

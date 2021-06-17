@@ -1,5 +1,6 @@
 using System;
 using Surreal.Data;
+using Surreal.Data.VFS;
 
 namespace Surreal.Assets {
   // TODO: abstract over assets with light-weight handles?

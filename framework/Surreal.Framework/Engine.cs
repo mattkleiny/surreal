@@ -1,26 +1,27 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime;
-using Surreal.Mathematics.Timing;
+using System.Runtime.CompilerServices;
+using Surreal.Fibers;
 using Surreal.Platform;
+using Surreal.Timing;
 
 namespace Surreal.Framework {
   public static class Engine {
-    public static bool IsRunning { get; private set; }
+    [ModuleInitializer]
+    internal static void Initialize() {
+      GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+    }
 
-    public static void Schedule(Action task) => throw new NotImplementedException();
+    public static bool IsRunning { get; private set; }
 
     public static void Run(IPlatformHost host, params IFrameListener[] listeners) {
       if (IsRunning) {
         throw new InvalidOperationException("The engine is already running, and cannot start again!");
       }
 
-      IsRunning = true;
-
-      // switch to a low-latency mode to help ease frame rate issues from GC operation
-      GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
-
       var clock = new Clock();
+
+      IsRunning = true;
 
       while (IsRunning && !host.IsClosing) {
         var deltaTime = clock.Tick();
@@ -30,7 +31,11 @@ namespace Surreal.Framework {
         for (var i = 0; i < listeners.Length; i++) {
           listeners[i].Tick(deltaTime);
         }
+
+        FiberScheduler.Tick();
       }
+
+      IsRunning = false;
     }
 
     public static void Stop() {
@@ -38,19 +43,20 @@ namespace Surreal.Framework {
     }
 
     private sealed class Clock {
-      private readonly Stopwatch stopwatch = Stopwatch.StartNew();
+      private TimeStamp lastTime = TimeStamp.Now;
 
       public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
       public TimeSpan MaxDeltaTime    { get; } = (16 * 10).Milliseconds();
 
       public DeltaTime Tick() {
-        var delta = stopwatch.Elapsed;
-
-        stopwatch.Restart();
+        var now   = TimeStamp.Now;
+        var delta = now - lastTime;
 
         if (delta > MaxDeltaTime) {
           delta = TargetDeltaTime;
         }
+
+        lastTime = now;
 
         return new DeltaTime(delta);
       }

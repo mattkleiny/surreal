@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Surreal.Collections.Pooling;
@@ -68,7 +69,7 @@ namespace Surreal.Fibers.Promises {
           continuation.Invoke();
         }
         catch (Exception exception) {
-          // TODO: work out why exceptions aren't bubbling to here
+          Debug.Print("An error occurred whilst running continuations: {0}", exception);
         }
       }
     }

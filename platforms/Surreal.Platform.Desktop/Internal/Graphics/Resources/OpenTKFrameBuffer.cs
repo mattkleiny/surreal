@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {

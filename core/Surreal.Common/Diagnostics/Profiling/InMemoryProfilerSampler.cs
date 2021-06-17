@@ -8,8 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Surreal.Collections;
 using Surreal.Data;
+using Surreal.Data.VFS;
 using Surreal.Diagnostics.Logging;
-using Path = Surreal.Data.Path;
+using Path = Surreal.Data.VFS.Path;
 
 namespace Surreal.Diagnostics.Profiling {
   public sealed class InMemoryProfilerSampler : IProfileSampler {

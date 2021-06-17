@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
+using Surreal.Graphics;
 using Surreal.Graphics.Textures;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
@@ -24,45 +26,47 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
 
       var (minFilter, magFilter) = ConvertFilterMode(filterMode);
 
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) minFilter);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) magFilter);
 
       var wrapping = ConvertWrapMode(wrapMode);
 
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapping);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapping);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) wrapping);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) wrapping);
     }
 
-    protected override void Upload(ITextureData? existingData, ITextureData newData) {
+    protected override unsafe void Upload(ITextureData? existingData, ITextureData newData) {
       GL.BindTexture(TextureTarget.Texture2D, Id);
 
       var (pixelFormat, pixelType) = ConvertTextureFormat(newData.Format);
 
-      if (existingData == null || existingData.Format != newData.Format) {
-        GL.TexImage2D(
-            target: TextureTarget.Texture2D,
-            level: 0,
-            internalformat: PixelInternalFormat.Rgba,
-            width: newData.Width,
-            height: newData.Height,
-            border: 0,
-            format: pixelFormat,
-            type: pixelType,
-            pixels: ref newData.Span.GetPinnableReference()
-        );
-      }
-      else {
-        GL.TexSubImage2D(
-            target: TextureTarget.Texture2D,
-            level: 0,
-            xoffset: 0,
-            yoffset: 0,
-            width: newData.Width,
-            height: newData.Height,
-            format: pixelFormat,
-            type: pixelType,
-            pixels: ref newData.Span.GetPinnableReference()
-        );
+      fixed (Color* pixels = newData.Pixels) {
+        if (existingData == null || existingData.Format != newData.Format) {
+          GL.TexImage2D(
+              target: TextureTarget.Texture2D,
+              level: 0,
+              internalformat: PixelInternalFormat.Rgba,
+              width: newData.Width,
+              height: newData.Height,
+              border: 0,
+              format: pixelFormat,
+              type: pixelType,
+              pixels: ref Unsafe.AsRef<Color>(pixels)
+          );
+        }
+        else {
+          GL.TexSubImage2D(
+              target: TextureTarget.Texture2D,
+              level: 0,
+              xoffset: 0,
+              yoffset: 0,
+              width: newData.Width,
+              height: newData.Height,
+              format: pixelFormat,
+              type: pixelType,
+              pixels: ref Unsafe.AsRef<Color>(pixels)
+          );
+        }
       }
     }
 
@@ -73,7 +77,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
 
       var image = new Image(width, height);
 
-      GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref image.Span.GetPinnableReference());
+      GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref image.Pixels.GetPinnableReference());
 
       return image;
     }

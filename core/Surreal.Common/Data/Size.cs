@@ -25,7 +25,7 @@ namespace Surreal.Data {
       if (Megabytes > 0) return $"{Megabytes.ToString("F")} megabytes";
       if (Kilobytes > 0) return $"{Kilobytes.ToString("F")} kilobytes";
 
-      return $"{Bytes} bytes";
+      return $"{Bytes.ToString()} bytes";
     }
   }
 

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 
@@ -28,7 +27,7 @@ namespace Surreal.Platform.Internal.Graphics {
 
     public void DrawMesh<TVertex>(
         Mesh<TVertex> mesh,
-        ShaderProgram shader,
+        Material.Pass pass,
         int vertexCount,
         int indexCount,
         PrimitiveType type = PrimitiveType.Triangles)

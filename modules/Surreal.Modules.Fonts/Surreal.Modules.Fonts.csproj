@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Description>Font support for Surreal.</Description>
+  </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Core.Graphics\Surreal.Core.Graphics.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta0009" />
+  </ItemGroup>
+</Project>

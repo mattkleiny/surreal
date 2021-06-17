@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Surreal.Mathematics;
 
@@ -17,55 +16,35 @@ namespace Surreal.Graphics {
     public static readonly Color White   = new(255, 255, 255);
     public static readonly Color Clear   = new(0, 0, 0, 0);
 
-    public static Color FromPackedRGB(uint packed) => new(
-        red: (byte) (packed >> 16 & 0xFF),
-        green: (byte) (packed >> 8 & 0xFF),
-        blue: (byte) (packed >> 0 & 0xFF)
-    );
-
-    public static Color FromPackedRGBA(uint packed) => new(
-        red: (byte) (packed >> 24 & 0xFF),
-        green: (byte) (packed >> 16 & 0xFF),
-        blue: (byte) (packed >> 8 & 0xFF),
-        alpha: (byte) (packed >> 0 & 0xFF)
-    );
-
     public static Color Lerp(Color a, Color b, float t) => new(
-        (byte) Maths.Lerp(a.R, b.R, t),
-        (byte) Maths.Lerp(a.G, b.G, t),
-        (byte) Maths.Lerp(a.B, b.B, t),
-        (byte) Maths.Lerp(a.A, b.A, t)
+        Maths.Lerp(a.R, b.R, t),
+        Maths.Lerp(a.G, b.G, t),
+        Maths.Lerp(a.B, b.B, t),
+        Maths.Lerp(a.A, b.A, t)
     );
 
-    public Color(byte red, byte green, byte blue, byte alpha = 255) {
+    public Color(float red, float green, float blue, float alpha = 1f) {
       R = red;
       G = green;
       B = blue;
       A = alpha;
     }
 
-    public byte R;
-    public byte G;
-    public byte B;
-    public byte A;
-
-    public uint RGB  => Pack(R, G, B);
-    public uint RGBA => Pack(R, G, B, A);
-    public uint BGR  => Pack(B, G, R);
-    public uint BGRA => Pack(B, G, R, A);
+    public float R;
+    public float G;
+    public float B;
+    public float A;
 
     public override string ToString() => $"RGBA({R.ToString()}, {G.ToString()}, {B.ToString()}, {A.ToString()})";
 
     public bool Equals(Color other) {
-      return R == other.R &&
-             G == other.G &&
-             B == other.B &&
-             A == other.A;
+      return Math.Abs(R - other.R) < float.Epsilon &&
+             Math.Abs(G - other.G) < float.Epsilon &&
+             Math.Abs(B - other.B) < float.Epsilon &&
+             Math.Abs(A - other.A) < float.Epsilon;
     }
 
-    public override bool Equals(object? obj) {
-      return obj is Color other && Equals(other);
-    }
+    public override bool Equals(object? obj) => obj is Color other && Equals(other);
 
     public override int GetHashCode() => HashCode.Combine(R, G, B, A);
 
@@ -85,22 +64,9 @@ namespace Surreal.Graphics {
         (byte) (a.B - b.B),
         (byte) (a.A - b.A)
     );
-
-    private static uint Pack(byte first, byte second, byte third) {
-      return (uint) ((first << 24) | (second << 16) | (third << 8));
-    }
-
-    private static uint Pack(byte first, byte second, byte third, byte forth) {
-      return (uint) ((first << 24) | (second << 16) | (third << 8) | (forth << 0));
-    }
   }
 
   public static class ColorExtensions {
-    public static Color NextColor(this Random random) => new(
-        (byte) random.Next(0, 255),
-        (byte) random.Next(0, 255),
-        (byte) random.Next(0, 255),
-        (byte) random.Next(0, 255)
-    );
+    public static Color NextColor(this Random random) => new(random.NextFloat(), random.NextFloat(), random.NextFloat(), random.NextFloat());
   }
 }

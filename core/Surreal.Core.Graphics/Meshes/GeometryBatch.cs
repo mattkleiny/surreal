@@ -1,8 +1,6 @@
 using System;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Surreal.Collections.Spans;
 using Surreal.Data;
 using Surreal.Graphics.Materials;
@@ -10,62 +8,30 @@ using Surreal.Mathematics.Linear;
 using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Meshes {
-  // TODO: support poly lines and normals for thick lines and animated edges
-  // TODO: support arbitrary transforms for wireframe geometry?
-
   public sealed class GeometryBatch : IDisposable {
-    private const string ProjViewUniform = "u_projView";
+    private const int DefaultVertexCount = 16_000;
+
+    private static readonly MaterialProperty<Matrix4x4> ProjectionView = new("_ProjectionView");
 
     private readonly IDisposableBuffer<Vertex> vertices;
     private readonly IDisposableBuffer<ushort> indices;
     private readonly Mesh<Vertex>              mesh;
-    private readonly ShaderProgram             defaultShader;
-    private readonly bool                      ownsDefaultShader;
 
-    private int vertexCount;
-    private int indexCount;
+    private Material.Pass? materialPass;
+    private int            vertexCount;
+    private int            indexCount;
 
-    public static GeometryBatch Create(IGraphicsDevice device, ShaderProgram shader) {
-      return new(device, shader, ownsDefaultShader: false);
-    }
-
-    public static async Task<GeometryBatch> CreateDefaultAsync(IGraphicsDevice device) {
-      var shader = device.CreateShaderProgram(
-          await Shader.LoadAsync(ShaderType.Vertex, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.vert.glsl"),
-          await Shader.LoadAsync(ShaderType.Fragment, "resx://Surreal.Graphics/Resources/Shaders/GeometryBatch.frag.glsl")
-      );
-
-      return new GeometryBatch(device, shader, ownsDefaultShader: true);
-    }
-
-    private GeometryBatch(
-        IGraphicsDevice device,
-        ShaderProgram defaultShader,
-        bool ownsDefaultShader,
-        int maximumVertexCount = 16_000,
-        int maximumIndexCount = 16_000 * 6) {
-      Device = device;
-
-      this.defaultShader     = defaultShader;
-      this.ownsDefaultShader = ownsDefaultShader;
-
-      vertices = Buffers.AllocateOffHeap<Vertex>(maximumVertexCount);
-      indices  = Buffers.AllocateOffHeap<ushort>(maximumIndexCount);
+    public GeometryBatch(IGraphicsDevice device, int maximumVertexCount = DefaultVertexCount, int maximumIndexCount = DefaultVertexCount * 6) {
+      vertices = Buffers.AllocateNative<Vertex>(maximumVertexCount);
+      indices  = Buffers.AllocateNative<ushort>(maximumIndexCount);
 
       mesh = new Mesh<Vertex>(device);
     }
 
-    public IGraphicsDevice Device       { get; }
-    public ShaderProgram?  ActiveShader { get; private set; }
+    public void Begin(Material.Pass materialPass, in Matrix4x4 projectionView) {
+      this.materialPass = materialPass;
 
-    public void Begin(in Matrix4x4 projectionView) {
-      Begin(defaultShader, in projectionView);
-    }
-
-    public void Begin(ShaderProgram shader, in Matrix4x4 projectionView) {
-      shader.SetUniform(ProjViewUniform, in projectionView);
-
-      ActiveShader = shader;
+      materialPass.SetProperty(ProjectionView, in projectionView);
     }
 
     public void DrawPoint(Vector2 position, Color color)
@@ -98,7 +64,6 @@ namespace Surreal.Graphics.Meshes {
     public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
       => DrawQuad(center, size, color, PrimitiveType.LineLoop);
 
-    [SkipLocalsInit]
     public void DrawCircle(Vector2 center, float radius, Color color, int segments = 16) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var increment = 360f / segments;
@@ -113,7 +78,6 @@ namespace Surreal.Graphics.Meshes {
       DrawLineLoop(points.ToSpan(), color);
     }
 
-    [SkipLocalsInit]
     public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16) {
       var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
       var length    = endAngle - startAngle;
@@ -129,7 +93,6 @@ namespace Surreal.Graphics.Meshes {
       DrawLineStrip(points.ToSpan(), color);
     }
 
-    [SkipLocalsInit]
     public void DrawCurve<TCurve>(TCurve curve, Color color, int resolution)
         where TCurve : IPlanarCurve {
       var points = new SpanList<Vector2>(stackalloc Vector2[resolution]);
@@ -143,7 +106,6 @@ namespace Surreal.Graphics.Meshes {
       DrawLineStrip(points.ToSpan(), color);
     }
 
-    [SkipLocalsInit]
     public void DrawQuad(Vector2 center, Vector2 size, Color color, PrimitiveType type) {
       var halfWidth  = size.X / 2f;
       var halfHeight = size.Y / 2f;
@@ -160,9 +122,8 @@ namespace Surreal.Graphics.Meshes {
       );
     }
 
-    [SkipLocalsInit]
     public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, PrimitiveType type) {
-      var destination = new SpanList<Vertex>(vertices.Span[vertexCount..points.Length]);
+      var destination = new SpanList<Vertex>(vertices.Data[vertexCount..points.Length]);
 
       for (var i = 0; i < points.Length; i++) {
         destination.Add(new Vertex(points[i], color));
@@ -175,21 +136,18 @@ namespace Surreal.Graphics.Meshes {
 
     private void Flush(PrimitiveType type) {
       if (vertexCount == 0) return;
+      if (materialPass == null) return;
 
-      mesh.Vertices.Write(vertices.Span[..vertexCount]);
-      mesh.Indices.Write(indices.Span[..indexCount]);
+      mesh.Vertices.Write(vertices.Data[..vertexCount]);
+      mesh.Indices.Write(indices.Data[..indexCount]);
 
-      mesh.DrawImmediate(ActiveShader!, vertexCount, indexCount, type);
+      mesh.DrawImmediate(materialPass, vertexCount, indexCount, type);
 
       vertexCount = 0;
       indexCount  = 0;
     }
 
     public void Dispose() {
-      if (ownsDefaultShader) {
-        defaultShader.Dispose();
-      }
-
       mesh.Dispose();
 
       vertices.Dispose();
@@ -198,14 +156,14 @@ namespace Surreal.Graphics.Meshes {
 
     [StructLayout(LayoutKind.Sequential)]
     private struct Vertex {
-      [VertexAttribute(
+      [VertexDescriptor(
           Alias = "a_position",
           Count = 2,
           Type  = VertexType.Float
       )]
       public Vector2 Position;
 
-      [VertexAttribute(
+      [VertexDescriptor(
           Alias      = "a_color",
           Count      = 4,
           Type       = VertexType.UnsignedByte,

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics {
@@ -17,8 +16,13 @@ namespace Surreal.Graphics {
     void ClearColor(Color color);
     void ClearDepth();
 
-    void DrawMesh<TVertex>(Mesh<TVertex> mesh, ShaderProgram shader, int vertexCount, int indexCount, PrimitiveType type = PrimitiveType.Triangles)
-        where TVertex : unmanaged;
+    void DrawMesh<TVertex>(
+        Mesh<TVertex> mesh,
+        Material.Pass pass,
+        int vertexCount,
+        int indexCount,
+        PrimitiveType type = PrimitiveType.Triangles
+    ) where TVertex : unmanaged;
 
     void BeginFrame();
     void EndFrame();
@@ -41,5 +45,26 @@ namespace Surreal.Graphics {
     );
 
     FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor);
+  }
+
+  public interface IPipelineState {
+    FrameBuffer      PrimaryFrameBuffer { get; }
+    FrameBuffer?     ActiveFrameBuffer  { get; set; }
+    ShaderProgram?   ActiveShader       { get; set; }
+    GraphicsBuffer?  ActiveVertexBuffer { get; set; }
+    GraphicsBuffer?  ActiveIndexBuffer  { get; set; }
+    ITextureUnits    TextureUnits       { get; }
+    IRasterizerState Rasterizer         { get; }
+  }
+
+  public interface IRasterizerState {
+    Viewport Viewport { get; set; }
+
+    bool IsDepthTestingEnabled { get; set; }
+    bool IsBlendingEnabled     { get; set; }
+  }
+
+  public interface ITextureUnits {
+    Texture? this[int unit] { get; set; }
   }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
-using Surreal.Mathematics.Timing;
+using Surreal.Timing;
 
 namespace Surreal.Graphics.Cameras {
   public sealed class FirstPersonCameraController : ICameraController {

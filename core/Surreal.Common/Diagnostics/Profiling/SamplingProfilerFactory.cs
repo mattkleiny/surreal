@@ -1,4 +1,10 @@
-﻿namespace Surreal.Diagnostics.Profiling {
+﻿using System;
+
+namespace Surreal.Diagnostics.Profiling {
+  public interface IProfileSampler {
+    void Sample(string category, string task, TimeSpan duration);
+  }
+
   public sealed class SamplingProfilerFactory : IProfilerFactory {
     private readonly IProfileSampler sampler;
 

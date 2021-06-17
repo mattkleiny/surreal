@@ -5,18 +5,18 @@ using Surreal.Data.VFS;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Input;
-using Surreal.Mathematics.Timing;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;
 using Surreal.Platform.Internal.Graphics;
 using Surreal.Platform.Internal.Input;
+using Surreal.Timing;
 
 namespace Surreal.Platform {
   internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider {
     private readonly DesktopConfiguration configuration;
 
-    private readonly FrameCounter  frameCounter      = new();
-    private          IntervalTimer frameDisplayTimer = new(1.Seconds());
+    private readonly FpsCounter fpsCounter      = new();
+    private          Timer        frameDisplayTimer = new(1.Seconds());
 
     public DesktopPlatformHost(IDesktopWindow window, DesktopConfiguration configuration) {
       this.configuration = configuration;
@@ -62,10 +62,10 @@ namespace Surreal.Platform {
 
         // show the game's FPS in the window title
         if (configuration.ShowFPSInTitle) {
-          frameCounter.Tick(deltaTime);
+          fpsCounter.Tick(deltaTime);
 
-          if (frameDisplayTimer.Tick()) {
-            Window.Title = $"{configuration.Title} - {frameCounter.FramesPerSecond.ToString("F")} FPS";
+          if (frameDisplayTimer.Tick(deltaTime)) {
+            Window.Title = $"{configuration.Title} - {fpsCounter.FramesPerSecond.ToString("F")} FPS";
           }
         }
       }

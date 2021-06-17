@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Surreal.Data.VFS {
@@ -49,6 +48,12 @@ namespace Surreal.Data.VFS {
 
     private static string NormalizePath(string path) {
       return path.Replace('/', '.');
+    }
+  }
+
+  public sealed class ResourceNotFoundException : Exception {
+    public ResourceNotFoundException(string message)
+        : base(message) {
     }
   }
 }

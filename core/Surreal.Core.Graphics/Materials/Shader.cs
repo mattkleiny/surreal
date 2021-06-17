@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Surreal.Data;
+using Surreal.Data.VFS;
 
 namespace Surreal.Graphics.Materials {
   public enum ShaderType : byte {
@@ -10,17 +11,9 @@ namespace Surreal.Graphics.Materials {
     Compute  = 3,
   }
 
-  public readonly struct Shader {
+  public sealed record Shader(ShaderType Type, Memory<byte> Bytecode) {
     public static async Task<Shader> LoadAsync(ShaderType type, Path path) {
       return new(type, await path.ReadAllBytesAsync());
-    }
-
-    public ShaderType   Type     { get; }
-    public Memory<byte> Bytecode { get; }
-
-    public Shader(ShaderType type, Memory<byte> bytecode) {
-      Type     = type;
-      Bytecode = bytecode;
     }
   }
 }

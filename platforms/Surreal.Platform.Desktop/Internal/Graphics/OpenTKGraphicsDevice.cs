@@ -6,7 +6,6 @@ using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 using Color = Surreal.Graphics.Color;
@@ -49,18 +48,20 @@ namespace Surreal.Platform.Internal.Graphics {
 
     public void DrawMesh<TVertex>(
         Mesh<TVertex> mesh,
-        ShaderProgram shader,
+        Material.Pass pass,
         int vertexCount,
         int indexCount,
         PrimitiveType type = PrimitiveType.Triangles)
         where TVertex : unmanaged {
       if (vertexCount == 0) return; // empty mesh? don't render
 
-      Pipeline.ActiveShader       = shader;
+      // TODO: apply material
+
+      // Pipeline.ActiveShader       = shader;
       Pipeline.ActiveVertexBuffer = mesh.Vertices;
       Pipeline.ActiveIndexBuffer  = mesh.Indices;
 
-      shader.Bind(mesh.Attributes);
+      // shader.Bind(mesh.Descriptors);
 
       if (indexCount > 0) {
         DrawMeshIndexed(indexCount, type);

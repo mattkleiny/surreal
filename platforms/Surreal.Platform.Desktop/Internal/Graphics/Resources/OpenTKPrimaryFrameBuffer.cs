@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Platform.Internal.Graphics.Resources {

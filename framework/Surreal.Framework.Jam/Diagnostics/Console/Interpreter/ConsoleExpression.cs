@@ -1,7 +1,7 @@
 using System.Diagnostics;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
-  public abstract record ConsoleExpression {
+  internal abstract record ConsoleExpression {
     public abstract T? Accept<T>(IVisitor<T> visitor);
 
     public enum UnaryOperation {

@@ -5,6 +5,23 @@ using System.Linq;
 using static Surreal.Diagnostics.Console.Interpreter.ConsoleExpression;
 
 namespace Surreal.Diagnostics.Console.Interpreter {
+  public delegate object? ConsoleBinding(params object[] arguments);
+
+  public interface IConsoleInterpreter {
+    string Evaluate(string expression);
+  }
+
+  public interface IConsoleBindings {
+    void Add(string name, ConsoleBinding binding);
+
+    void Add(string name, Action action) {
+      Add(name, _ => {
+        action.Invoke();
+        return string.Empty;
+      });
+    }
+  }
+
   public sealed class ConsoleInterpreter : IConsoleInterpreter {
     private readonly BindingCollection bindings = new();
     private readonly ExecutionVisitor  visitor;
@@ -77,13 +94,13 @@ namespace Surreal.Diagnostics.Console.Interpreter {
     }
 
     private sealed class BindingCollection : IConsoleBindings {
-      private readonly Dictionary<string, Binding> actionsByName = new(StringComparer.OrdinalIgnoreCase);
+      private readonly Dictionary<string, ConsoleBinding> actionsByName = new(StringComparer.OrdinalIgnoreCase);
 
-      public bool Lookup(string name, out Binding action) {
+      public bool Lookup(string name, out ConsoleBinding action) {
         return actionsByName.TryGetValue(name, out action!);
       }
 
-      public void Add(string name, Binding binding) {
+      public void Add(string name, ConsoleBinding binding) {
         actionsByName.Add(name, parameters => {
           var result = binding(parameters);
 

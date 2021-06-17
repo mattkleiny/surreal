@@ -9,7 +9,4 @@
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
     <ProjectReference Include="..\Surreal.Core.Assets\Surreal.Core.Assets.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="NAudio" Version="1.9.0" />
-  </ItemGroup>
 </Project>

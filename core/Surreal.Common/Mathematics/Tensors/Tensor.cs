@@ -43,7 +43,7 @@ namespace Surreal.Mathematics.Tensors {
         Reset();
       }
 
-      public T           Current    => tensor.Buffer.Span[index];
+      public T           Current    => tensor.Buffer.Data[index];
       object IEnumerator.Current    => Current;
       public bool        MoveNext() => ++index < tensor.Length;
       public void        Reset()    => index = -1;

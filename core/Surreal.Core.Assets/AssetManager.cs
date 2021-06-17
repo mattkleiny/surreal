@@ -2,13 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Surreal.Data;
+using Surreal.Data.VFS;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 
 namespace Surreal.Assets {
+  public interface IAssetManager : IAssetResolver, IEnumerable<object> {
+    int Count { get; }
+
+    bool Contains<TAsset>(Path path);
+  }
+
   public sealed class AssetManager : IDisposable, IAssetManager {
     private static readonly ILog      Log      = LogFactory.GetLog<AssetManager>();
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<AssetManager>();
@@ -98,8 +104,8 @@ namespace Surreal.Assets {
     }
 
     public Dictionary<string, object>.ValueCollection.Enumerator GetEnumerator() => assets.Values.GetEnumerator();
-    IEnumerator<object> IEnumerable<object>.                     GetEnumerator() => GetEnumerator();
-    IEnumerator IEnumerable.                                     GetEnumerator() => GetEnumerator();
+    IEnumerator<object> IEnumerable<object>.           GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.                           GetEnumerator() => GetEnumerator();
 
     private sealed class AssetLoaderContext : IAssetLoaderContext {
       private readonly AssetManager manager;

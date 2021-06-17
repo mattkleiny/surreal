@@ -4,6 +4,14 @@ using Surreal.Collections;
 using Surreal.Diagnostics.Console.Interpreter;
 
 namespace Surreal.Diagnostics.Console {
+  public interface IGameConsole {
+    IEnumerable<string> History { get; }
+
+    void WriteLine(string element);
+    void Evaluate(string expression);
+    void Clear();
+  }
+
   public sealed class GameConsole : IGameConsole {
     private readonly IConsoleInterpreter interpreter;
     private readonly RingBuffer<string>  history;

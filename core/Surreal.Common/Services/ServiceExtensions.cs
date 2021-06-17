@@ -3,14 +3,8 @@ using System.ComponentModel.Design;
 
 namespace Surreal.Services {
   public static class ServiceExtensions {
-    public static T? GetService<T>(this IServiceProvider provider) {
-      return (T?) provider.GetService(typeof(T));
-    }
-
     public static T GetRequiredService<T>(this IServiceProvider provider) {
-      var service = provider.GetService<T>();
-
-      if (service == null) {
+      if (!provider.TryGetService(out T service)) {
         throw new Exception($"Unable to locate service {typeof(T).Name}");
       }
 

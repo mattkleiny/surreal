@@ -10,11 +10,9 @@
     <ProjectReference Include="..\Surreal.Core.Assets\Surreal.Core.Assets.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta0009" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\*.*" />
     <EmbeddedResource Include="Resources\**" />
   </ItemGroup>
 </Project>
