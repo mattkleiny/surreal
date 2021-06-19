@@ -6,7 +6,7 @@ using Surreal.Framework.Components;
 
 namespace Surreal.Framework
 {
-  public sealed class ActorScene : IActorContext
+  public sealed class ActorScene : IActorContext, IComponentContext, IDisposable
   {
     private readonly Dictionary<ActorId, Entry>          entriesById      = new();
     private readonly Dictionary<Type, IComponentStorage> componentsByType = new();
@@ -14,6 +14,8 @@ namespace Surreal.Framework
     private readonly Queue<ActorId>                      destructionQueue = new();
 
     private uint nextActorId;
+
+    public List<IComponentSystem> Systems { get; } = new();
 
     public void Spawn(Actor actor)
     {
@@ -23,7 +25,7 @@ namespace Surreal.Framework
       {
         entriesById[id] = new Entry(actor);
         activationQueue.Enqueue(id);
-        
+
         actor.OnAwake();
       }
     }
@@ -64,6 +66,27 @@ namespace Surreal.Framework
       }
     }
 
+    public void Clear()
+    {
+      foreach (var entry in entriesById.Values)
+      {
+        if (entry.Actor is IDisposable disposable)
+        {
+          disposable.Dispose();
+        }
+      }
+
+      entriesById.Clear();
+      componentsByType.Clear();
+      activationQueue.Clear();
+      destructionQueue.Clear();
+    }
+
+    public void Dispose()
+    {
+      Clear();
+    }
+
     private void EnableActors()
     {
       while (activationQueue.TryDequeue(out var id))
@@ -89,6 +112,18 @@ namespace Surreal.Framework
           }
         }
       }
+    }
+
+    private IComponentStorage<T> GetOrCreateStorage<T>()
+    {
+      var key = typeof(T);
+
+      if (!componentsByType.TryGetValue(key, out var storage))
+      {
+        componentsByType[key] = storage = new SparseComponentStorage<T>();
+      }
+
+      return (IComponentStorage<T>) storage;
     }
 
     ActorId IActorContext.AllocateId()
@@ -129,21 +164,17 @@ namespace Surreal.Framework
 
     IComponentStorage<T> IActorContext.GetStorage<T>()
     {
-      var key = typeof(T);
-
-      if (!componentsByType.TryGetValue(key, out var storage))
-      {
-        componentsByType[key] = storage = new SparseComponentStorage<T>();
-      }
-
-      return (IComponentStorage<T>) storage;
+      return GetOrCreateStorage<T>();
     }
 
-    // TODO: implement other storage types?
-
-    private interface IComponentStorage
+    public IComponentStorage<T> GetStorage<T>()
     {
-      void Prune(ActorId id);
+      return GetOrCreateStorage<T>();
+    }
+
+    AspectEnumerator IComponentContext.GetEnumerator(Aspect aspect)
+    {
+      throw new NotImplementedException();
     }
 
     private sealed record Entry(Actor Actor)
@@ -168,6 +199,13 @@ namespace Surreal.Framework
             break;
         }
       }
+    }
+
+    #region Component Storage
+
+    private interface IComponentStorage
+    {
+      void Prune(ActorId id);
     }
 
     private sealed class SparseComponentStorage<T> : IComponentStorage<T>, IComponentStorage
@@ -203,6 +241,8 @@ namespace Surreal.Framework
       {
         slots.Remove(id);
       }
+
+      #endregion
     }
   }
 }

@@ -14,14 +14,19 @@ namespace Surreal.Assets
     public AssetId       Id      { get; }
     public IAssetManager Manager { get; }
 
-    public bool IsUnloaded => Manager.GetStatus(Id) == AssetStatus.Unloaded;
-    public bool IsLoading  => Manager.GetStatus(Id) == AssetStatus.Loading;
-    public bool IsReady    => Manager.GetStatus(Id) == AssetStatus.Ready;
+    public bool        IsValid    => Id.IsValid;
+    public AssetStatus Status     => Manager.GetStatus(Id);
+    public bool        IsUnloaded => Status == AssetStatus.Unloaded;
+    public bool        IsLoading  => Status == AssetStatus.Loading;
+    public bool        IsReady    => Status == AssetStatus.Ready;
 
     public T Data => (T) Manager.GetData(Id)!;
 
     public AssetAwaiter<T> GetAwaiter() => new(this);
 
-    public void Dispose() => Manager.Unload(Id);
+    public void Dispose()
+    {
+      Manager.Unload(Id);
+    }
   }
 }

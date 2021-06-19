@@ -1,4 +1,6 @@
 ﻿using System;
+using Surreal.Assets;
+using Surreal.Fibers;
 
 namespace Surreal.Framework.Screens
 {
@@ -32,6 +34,13 @@ namespace Surreal.Framework.Screens
     public virtual void Initialize()
     {
       IsInitialized = true;
+
+      LoadContentAsync(Game.Assets).Forget();
+    }
+
+    protected virtual FiberTask LoadContentAsync(IAssetResolver assets)
+    {
+      return FiberTask.CompletedTask;
     }
 
     public virtual void Show()
@@ -58,5 +67,16 @@ namespace Surreal.Framework.Screens
     {
       IsDisposed = true;
     }
+  }
+
+  public abstract class Screen<TGame> : Screen
+      where TGame : Game
+  {
+    protected Screen(TGame game)
+        : base(game)
+    {
+    }
+
+    public new TGame Game => (TGame) base.Game;
   }
 }

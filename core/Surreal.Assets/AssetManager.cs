@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Surreal.IO;
 
 namespace Surreal.Assets
 {
   public enum AssetStatus
   {
+    Unknown,
     Unloaded,
     Loading,
     Ready,
@@ -23,7 +25,7 @@ namespace Surreal.Assets
   public sealed class AssetManager : IDisposable, IAssetManager
   {
     private readonly Dictionary<Type, IAssetLoader> loadersByType = new();
-    private readonly Dictionary<AssetId, AssetSlot> assetsById    = new();
+    private readonly Dictionary<AssetId, Entry>     assetsById    = new();
 
     public void AddLoader(IAssetLoader loader)
     {
@@ -32,9 +34,9 @@ namespace Surreal.Assets
 
     public void AddCallback(AssetId id, Action callback)
     {
-      if (assetsById.TryGetValue(id, out var slot))
+      if (assetsById.TryGetValue(id, out var entry))
       {
-        slot.Callbacks.Enqueue(callback);
+        entry.Callbacks.Enqueue(callback);
       }
     }
 
@@ -48,15 +50,17 @@ namespace Surreal.Assets
 
       var assetId = new AssetId(typeof(T), path);
 
-      if (!assetsById.TryGetValue(assetId, out _))
+      if (!assetsById.TryGetValue(assetId, out var entry))
       {
-        assetsById[assetId] = new AssetSlot(assetId);
+        assetsById[assetId] = entry = new Entry(assetId);
 
-        loader.LoadAsync(path, this).ContinueWith(_ =>
+        entry.OnLoad();
+
+        loader.LoadAsync(path, this).ContinueWith(task =>
         {
-          if (assetsById.TryGetValue(assetId, out var slot))
+          if (assetsById.TryGetValue(assetId, out entry))
           {
-            slot.AssignData(_.Result);
+            entry.OnReady(task.Result);
           }
         });
       }
@@ -66,9 +70,9 @@ namespace Surreal.Assets
 
     public AssetStatus GetStatus(AssetId id)
     {
-      if (assetsById.TryGetValue(id, out var slot))
+      if (assetsById.TryGetValue(id, out var entry))
       {
-        return slot.Status;
+        return entry.Status;
       }
 
       return AssetStatus.Unloaded;
@@ -76,9 +80,9 @@ namespace Surreal.Assets
 
     public object? GetData(AssetId id)
     {
-      if (assetsById.TryGetValue(id, out var slot))
+      if (assetsById.TryGetValue(id, out var entry))
       {
-        return slot.Data;
+        return entry.Data;
       }
 
       return default;
@@ -86,12 +90,9 @@ namespace Surreal.Assets
 
     public void Unload(AssetId id)
     {
-      if (assetsById.TryGetValue(id, out var slot))
+      if (assetsById.TryGetValue(id, out var entry))
       {
-        if (slot.Data is IDisposable disposable)
-        {
-          disposable.Dispose();
-        }
+        entry.OnUnload();
 
         assetsById.Remove(id);
       }
@@ -99,12 +100,9 @@ namespace Surreal.Assets
 
     public void Dispose()
     {
-      foreach (var slot in assetsById.Values)
+      foreach (var entry in assetsById.Values)
       {
-        if (slot.Data is IDisposable disposable)
-        {
-          disposable.Dispose();
-        }
+        entry.OnUnload();
       }
 
       foreach (var loader in loadersByType.Values)
@@ -118,19 +116,37 @@ namespace Surreal.Assets
       assetsById.Clear();
     }
 
-    private sealed record AssetSlot(AssetId Id, AssetStatus Status = AssetStatus.Unloaded)
+    private sealed record Entry(AssetId Id)
     {
+      public Queue<Action> Callbacks { get; }              = new(0);
+      public AssetStatus   Status    { get; private set; } = AssetStatus.Unknown;
       public object?       Data      { get; set; }
-      public Queue<Action> Callbacks { get; } = new(0);
 
-      public void AssignData(object result)
+      public void OnLoad()
       {
-        Data = result;
+        Status = AssetStatus.Loading;
+      }
+
+      public void OnReady(object result)
+      {
+        Data   = result;
+        Status = AssetStatus.Ready;
 
         while (Callbacks.TryDequeue(out var callback))
         {
-          callback.Invoke();
+          SynchronizationContext.Current?.Send(_ => callback(), null);
         }
+      }
+
+      public void OnUnload()
+      {
+        if (Data is IDisposable disposable)
+        {
+          disposable.Dispose();
+        }
+
+        Data   = default;
+        Status = AssetStatus.Unloaded;
       }
     }
   }

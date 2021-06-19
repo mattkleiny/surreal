@@ -2,8 +2,8 @@
 
 namespace Asteroids.Components
 {
-  public struct SpriteComponent
+  public struct HealthComponent
   {
-    public Sprite? Sprite;
+    public int Health;
   }
 }

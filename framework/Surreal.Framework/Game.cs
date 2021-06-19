@@ -152,11 +152,6 @@ namespace Surreal.Framework
       {
         services.Dispose();
       }
-
-      if (Assets is IDisposable assets)
-      {
-        assets.Dispose();
-      }
     }
 
     public interface ILoopStrategy
