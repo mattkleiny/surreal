@@ -1,40 +1,51 @@
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 
-namespace Surreal.Platform.Internal.Graphics {
-  internal sealed class OpenTKRasterizerState : IRasterizerState {
+namespace Surreal.Platform.Internal.Graphics
+{
+  internal sealed class OpenTKRasterizerState : IRasterizerState
+  {
     private Viewport viewport;
     private bool     isDepthTestingEnabled;
     private bool     isBlendingEnabled;
 
-    public Viewport Viewport {
+    public Viewport Viewport
+    {
       get => viewport;
-      set {
+      set
+      {
         viewport = value;
         GL.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
       }
     }
 
-    public bool IsDepthTestingEnabled {
+    public bool IsDepthTestingEnabled
+    {
       get => isDepthTestingEnabled;
-      set {
+      set
+      {
         isDepthTestingEnabled = value;
 
-        if (isDepthTestingEnabled) {
+        if (isDepthTestingEnabled)
+        {
           GL.Enable(EnableCap.DepthTest);
         }
-        else {
+        else
+        {
           GL.Disable(EnableCap.DepthTest);
         }
       }
     }
 
-    public bool IsBlendingEnabled {
+    public bool IsBlendingEnabled
+    {
       get => isBlendingEnabled;
-      set {
+      set
+      {
         isBlendingEnabled = value;
 
-        if (isBlendingEnabled) {
+        if (isBlendingEnabled)
+        {
           GL.Enable(EnableCap.Blend);
           GL.BlendFuncSeparate(
               sfactorRGB: BlendingFactorSrc.SrcAlpha,
@@ -43,7 +54,8 @@ namespace Surreal.Platform.Internal.Graphics {
               dfactorAlpha: BlendingFactorDest.OneMinusSrcAlpha
           );
         }
-        else {
+        else
+        {
           GL.Enable(EnableCap.Blend);
           GL.BlendFuncSeparate(
               sfactorRGB: BlendingFactorSrc.SrcColor,

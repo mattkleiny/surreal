@@ -1,8 +1,10 @@
 ﻿using System;
 using Surreal.Timing;
 
-namespace Surreal.Platform {
-  public interface IPlatformHost : IDisposable {
+namespace Surreal.Platform
+{
+  public interface IPlatformHost : IDisposable
+  {
     event Action<int, int> Resized;
 
     int  Width     { get; }

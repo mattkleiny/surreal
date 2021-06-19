@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using Surreal.Input.Mouse;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Platform.Internal.Input {
-  internal sealed class HeadlessMouseDevice : IHeadlessMouseDevice {
+namespace Surreal.Platform.Internal.Input
+{
+  internal sealed class HeadlessMouseDevice : IHeadlessMouseDevice
+  {
     private readonly HashSet<MouseButton> pressedButtons = new();
 
     public event Action<MouseButton> ButtonPressed  = null!;
     public event Action<MouseButton> ButtonReleased = null!;
-    public event Action<Point2>    Moved          = null!;
+    public event Action<Point2>      Moved          = null!;
 
-    public bool this[MouseButton button] {
+    public bool this[MouseButton button]
+    {
       get => pressedButtons.Contains(button);
-      set {
-        if (value) {
+      set
+      {
+        if (value)
+        {
           pressedButtons.Add(button);
         }
-        else {
+        else
+        {
           pressedButtons.Remove(button);
         }
       }
@@ -34,7 +40,8 @@ namespace Surreal.Platform.Internal.Input {
     public bool IsButtonPressed(MouseButton button)  => false;
     public bool IsButtonReleased(MouseButton button) => false;
 
-    public void Update() {
+    public void Update()
+    {
     }
   }
 }

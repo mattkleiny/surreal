@@ -1,13 +1,16 @@
 using System;
 
-namespace Surreal.Mathematics {
-  public readonly struct Normal : IEquatable<Normal> {
+namespace Surreal.Mathematics
+{
+  public readonly struct Normal : IEquatable<Normal>
+  {
     public static Normal Zero => default;
     public static Normal One  => new(1f);
 
     public static readonly FloatRange Range = new(0f, 1f);
 
-    public Normal(float value) {
+    public Normal(float value)
+    {
       Value = value.Clamp(Range);
     }
 

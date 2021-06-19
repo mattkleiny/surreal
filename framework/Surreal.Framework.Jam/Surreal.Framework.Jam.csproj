@@ -6,14 +6,11 @@
   </PropertyGroup>
   <Import Project="..\..\Shared.props" />
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Core.Audio\Surreal.Core.Audio.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Core.Compute\Surreal.Core.Compute.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Core.Graphics\Surreal.Core.Graphics.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Core.Input\Surreal.Core.Input.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Compute\Surreal.Compute.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Input\Surreal.Input.csproj" />
+    <ProjectReference Include="..\Surreal.Framework.Actors\Surreal.Framework.Actors.csproj" />
     <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\*.*" />
-    <EmbeddedResource Include="Resources\**" />
   </ItemGroup>
 </Project>

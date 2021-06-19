@@ -1,4 +1,6 @@
-﻿namespace Surreal.Editor {
-  public partial class App {
+﻿namespace Surreal.Editor
+{
+  public partial class App
+  {
   }
 }

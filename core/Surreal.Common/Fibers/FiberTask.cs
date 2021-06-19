@@ -5,8 +5,10 @@ using Surreal.Fibers.Internal;
 using Surreal.Fibers.Promises;
 using Surreal.Timing;
 
-namespace Surreal.Fibers {
-  public enum FiberTaskStatus {
+namespace Surreal.Fibers
+{
+  public enum FiberTaskStatus
+  {
     Pending,
     Succeeded,
     Canceled,
@@ -14,7 +16,8 @@ namespace Surreal.Fibers {
   }
 
   [AsyncMethodBuilder(typeof(FiberTaskBuilder))]
-  public readonly struct FiberTask : IDisposable {
+  public readonly struct FiberTask : IDisposable
+  {
     public static FiberTask CompletedTask => default;
 
     public static FiberTask    Create(Func<FiberTask> factory)       => factory();
@@ -45,14 +48,18 @@ namespace Surreal.Fibers {
     internal readonly IPromise<Unit>? Promise;
     internal readonly short           Version;
 
-    internal FiberTask(IPromise<Unit> promise, short version) {
+    internal FiberTask(IPromise<Unit> promise, short version)
+    {
       Promise = promise;
       Version = version;
     }
 
-    public FiberTaskStatus Status {
-      get {
-        if (Promise != null) {
+    public FiberTaskStatus Status
+    {
+      get
+      {
+        if (Promise != null)
+        {
           return Promise.GetStatus(Version);
         }
 
@@ -61,27 +68,37 @@ namespace Surreal.Fibers {
     }
 
     [UsedImplicitly]
-    public FiberTaskAwaiter GetAwaiter() {
+    public FiberTaskAwaiter GetAwaiter()
+    {
       return new(this);
     }
 
     public void Cancel()  => Promise?.Cancel(Version);
     public void Dispose() => Cancel();
 
-    public readonly struct WhenAllBuilder {
+    public void Forget()
+    {
+      // no-op
+    }
+
+    public readonly struct WhenAllBuilder
+    {
       private readonly WhenAllPromise promise;
 
-      internal WhenAllBuilder(WhenAllPromise promise) {
+      internal WhenAllBuilder(WhenAllPromise promise)
+      {
         this.promise = promise;
       }
 
-      public WhenAllBuilder AddTask(FiberTask task) {
+      public WhenAllBuilder AddTask(FiberTask task)
+      {
         promise.AddTask(task);
 
         return this;
       }
 
-      public FiberTask Begin() {
+      public FiberTask Begin()
+      {
         promise.Advance();
 
         return FromPromise(promise);
@@ -90,26 +107,32 @@ namespace Surreal.Fibers {
   }
 
   [AsyncMethodBuilder(typeof(FiberTaskBuilder<>))]
-  public readonly struct FiberTask<T> : IDisposable {
+  public readonly struct FiberTask<T> : IDisposable
+  {
     internal readonly IPromise<T>? Promise;
     internal readonly short        Version;
     internal readonly T?           Result;
 
-    internal FiberTask(T result) {
+    internal FiberTask(T result)
+    {
       Promise = default;
       Version = default;
       Result  = result;
     }
 
-    internal FiberTask(IPromise<T> promise, short version) {
+    internal FiberTask(IPromise<T> promise, short version)
+    {
       Promise = promise;
       Version = version;
       Result  = default;
     }
 
-    public FiberTaskStatus Status {
-      get {
-        if (Promise != null) {
+    public FiberTaskStatus Status
+    {
+      get
+      {
+        if (Promise != null)
+        {
           return Promise.GetStatus(Version);
         }
 
@@ -118,7 +141,8 @@ namespace Surreal.Fibers {
     }
 
     [UsedImplicitly]
-    public FiberTaskAwaiter<T> GetAwaiter() {
+    public FiberTaskAwaiter<T> GetAwaiter()
+    {
       return new(this);
     }
 

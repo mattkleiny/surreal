@@ -1,52 +1,66 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Fibers {
-  public readonly struct FiberTaskAwaiter : INotifyCompletion {
+namespace Surreal.Fibers
+{
+  public readonly struct FiberTaskAwaiter : INotifyCompletion
+  {
     private readonly FiberTask task;
 
-    public FiberTaskAwaiter(FiberTask task) {
+    public FiberTaskAwaiter(FiberTask task)
+    {
       this.task = task;
     }
 
     public bool IsCompleted => task.Status != FiberTaskStatus.Pending;
 
-    public void GetResult() {
+    public void GetResult()
+    {
       task.Promise?.GetResult(task.Version);
     }
 
-    public void OnCompleted(Action continuation) {
-      if (task.Promise != null) {
+    public void OnCompleted(Action continuation)
+    {
+      if (task.Promise != null)
+      {
         task.Promise.OnCompleted(continuation, task.Version);
       }
-      else {
+      else
+      {
         continuation();
       }
     }
   }
 
-  public readonly struct FiberTaskAwaiter<T> : INotifyCompletion {
+  public readonly struct FiberTaskAwaiter<T> : INotifyCompletion
+  {
     private readonly FiberTask<T> task;
 
-    public FiberTaskAwaiter(FiberTask<T> task) {
+    public FiberTaskAwaiter(FiberTask<T> task)
+    {
       this.task = task;
     }
 
     public bool IsCompleted => task.Status != FiberTaskStatus.Pending;
 
-    public T? GetResult() {
-      if (task.Promise != null) {
+    public T? GetResult()
+    {
+      if (task.Promise != null)
+      {
         return task.Promise.GetResult(task.Version);
       }
 
       return task.Result;
     }
 
-    public void OnCompleted(Action continuation) {
-      if (task.Promise != null) {
+    public void OnCompleted(Action continuation)
+    {
+      if (task.Promise != null)
+      {
         task.Promise.OnCompleted(continuation, task.Version);
       }
-      else {
+      else
+      {
         continuation();
       }
     }

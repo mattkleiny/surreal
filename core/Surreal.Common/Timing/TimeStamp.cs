@@ -1,13 +1,17 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Surreal.Timing {
-  public readonly struct TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>, IComparable {
+namespace Surreal.Timing
+{
+  public readonly struct TimeStamp : IEquatable<TimeStamp>, IComparable<TimeStamp>, IComparable
+  {
     public static TimeStamp Min => new(ulong.MinValue);
     public static TimeStamp Max => new(ulong.MaxValue);
 
-    public static TimeStamp Now {
-      get {
+    public static TimeStamp Now
+    {
+      get
+      {
         QueryPerformanceCounter(out var ticks);
 
         return new TimeStamp((ulong) ticks);
@@ -16,7 +20,8 @@ namespace Surreal.Timing {
 
     private readonly ulong ticks;
 
-    public TimeStamp(ulong ticks) {
+    public TimeStamp(ulong ticks)
+    {
       this.ticks = ticks;
     }
 
@@ -31,7 +36,8 @@ namespace Surreal.Timing {
 
     public int CompareTo(TimeStamp other) => ticks.CompareTo(other.ticks);
 
-    public int CompareTo(object? obj) {
+    public int CompareTo(object? obj)
+    {
       if (ReferenceEquals(null, obj)) return 1;
       return obj is TimeStamp other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(TimeStamp)}");
     }

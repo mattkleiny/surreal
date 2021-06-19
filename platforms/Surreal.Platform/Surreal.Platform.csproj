@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Core.Assets\Surreal.Core.Assets.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Assets\Surreal.Assets.csproj" />
   </ItemGroup>
   <Import Project="..\..\Shared.props" />
 </Project>

@@ -1,9 +1,12 @@
 ﻿using Xunit;
 
-namespace Surreal.Fibers {
-  public class FiberTests {
+namespace Surreal.Fibers
+{
+  public class FiberTests
+  {
     [Fact]
-    public void it_should_execute_and_yield() {
+    public void it_should_execute_and_yield()
+    {
       // TODO: fix this 
       // var scheduler  = new FiberScheduler();
       // var executions = 0;

@@ -1,7 +1,9 @@
 using System;
 
-namespace Surreal.Platform {
-  public interface IDesktopWindow : IDisposable {
+namespace Surreal.Platform
+{
+  public interface IDesktopWindow : IDisposable
+  {
     event Action<int, int> Resized;
 
     string Title  { get; set; }

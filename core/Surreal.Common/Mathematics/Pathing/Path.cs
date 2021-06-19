@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using Surreal.Collections;
 
-namespace Surreal.Mathematics.Pathing {
-  public readonly struct Path<T> : IEnumerable<T> {
+namespace Surreal.Mathematics.Pathing
+{
+  public readonly struct Path<T> : IEnumerable<T>
+  {
     public static Path<T> Empty => default;
 
     private readonly ReadOnlySlice<T> steps;
 
-    public Path(ReadOnlySlice<T> steps) {
+    public Path(ReadOnlySlice<T> steps)
+    {
       this.steps = steps;
     }
 
@@ -28,12 +31,14 @@ namespace Surreal.Mathematics.Pathing {
 
     public static implicit operator ReadOnlySlice<T>(Path<T> path) => path.steps;
 
-    public struct Enumerator : IEnumerator<T> {
+    public struct Enumerator : IEnumerator<T>
+    {
       private readonly Path<T> path;
       private          int     index;
 
       public Enumerator(Path<T> path)
-          : this() {
+          : this()
+      {
         this.path = path;
         index     = -1;
       }
@@ -44,16 +49,19 @@ namespace Surreal.Mathematics.Pathing {
       public T           Current => path[index];
       object IEnumerator.Current => Current!;
 
-      public bool MoveNext() {
+      public bool MoveNext()
+      {
         index++;
         return IsValid;
       }
 
-      public void Reset() {
+      public void Reset()
+      {
         index = -1;
       }
 
-      public void Dispose() {
+      public void Dispose()
+      {
         // no-op
       }
     }

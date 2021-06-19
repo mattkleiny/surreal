@@ -5,4 +5,10 @@
     <RootNamespace>Surreal.Editor</RootNamespace>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Workloads\Assets" />
+    <Folder Include="Workloads\Graphs" />
+    <Folder Include="Workloads\Materials" />
+    <Folder Include="Workloads\Scenes" />
+  </ItemGroup>
 </Project>

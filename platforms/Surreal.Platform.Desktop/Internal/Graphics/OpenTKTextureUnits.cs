@@ -5,24 +5,30 @@ using Surreal.Graphics;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 
-namespace Surreal.Platform.Internal.Graphics {
-  internal sealed class OpenTKTextureUnits : ITextureUnits {
+namespace Surreal.Platform.Internal.Graphics
+{
+  internal sealed class OpenTKTextureUnits : ITextureUnits
+  {
     private readonly Texture[] textures;
 
-    public OpenTKTextureUnits(int capacity) {
+    public OpenTKTextureUnits(int capacity)
+    {
       Debug.Assert(capacity > 0, "capacity > 0");
 
       textures = new Texture[capacity + 1];
     }
 
-    public Texture? this[int unit] {
-      get {
+    public Texture? this[int unit]
+    {
+      get
+      {
         Debug.Assert(unit >= 0, "unit >= 0");
         Debug.Assert(unit < textures.Length, "unit < textures.Length");
 
         return textures[unit];
       }
-      set {
+      set
+      {
         Debug.Assert(unit >= 0, "unit >= 0");
         Debug.Assert(unit < textures.Length, "unit < textures.Length");
 
@@ -35,8 +41,10 @@ namespace Surreal.Platform.Internal.Graphics {
       }
     }
 
-    private static TextureUnit SelectUnit(int unit) {
-      switch (unit) {
+    private static TextureUnit SelectUnit(int unit)
+    {
+      switch (unit)
+      {
         case 0:  return TextureUnit.Texture0;
         case 1:  return TextureUnit.Texture1;
         case 2:  return TextureUnit.Texture2;

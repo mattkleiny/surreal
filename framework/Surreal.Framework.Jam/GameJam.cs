@@ -1,23 +1,29 @@
 ﻿using System.ComponentModel.Design;
+using System.Diagnostics;
 using Surreal.Assets;
 using Surreal.Audio;
+using Surreal.Audio.Clips;
 using Surreal.Compute;
 using Surreal.Compute.Execution;
 using Surreal.Diagnostics.Console;
-using Surreal.Diagnostics.Console.Interpreter;
 using Surreal.Diagnostics.Logging;
 using Surreal.Framework;
 using Surreal.Framework.Screens;
 using Surreal.Graphics;
+using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
+using Surreal.Mathematics;
 using Surreal.Services;
 
-namespace Surreal {
-  public abstract class GameJam : Game {
+namespace Surreal
+{
+  public abstract class GameJam : Game
+  {
     public new static GameJam Current => (GameJam) Game.Current;
 
     public IAudioDevice    AudioDevice    { get; private set; } = null!;
@@ -33,8 +39,9 @@ namespace Surreal {
 
     public Color ClearColor { get; set; } = Color.Black;
 
-    protected override void Initialize() {
-      Console = new GameConsole(new ConsoleInterpreter(RegisterConsoleBindings));
+    protected override void Initialize()
+    {
+      Console = new GameConsole(new GameConsoleInterpreter(RegisterConsoleBindings));
 
       LogFactory.Current = new CompositeLogFactory(
           new ConsoleLogFactory(DefaultLogLevel),
@@ -55,7 +62,8 @@ namespace Surreal {
       OnResized(Host.Width, Host.Height); // initial resize
     }
 
-    protected override void RegisterServices(IServiceContainer services) {
+    protected override void RegisterServices(IServiceContainer services)
+    {
       base.RegisterServices(services);
 
       InputManager = Host.Services.GetRequiredService<IInputManager>();
@@ -71,31 +79,47 @@ namespace Surreal {
       services.AddService(Screens);
     }
 
-    protected virtual void RegisterAssetLoaders(AssetManager assets) {
+    protected virtual void RegisterAssetLoaders(IAssetManager assets)
+    {
+      assets.AddLoader(new AudioBufferLoader());
+      assets.AddLoader(new AudioClipLoader(AudioDevice));
+      assets.AddLoader(new BitmapFontLoader());
+      assets.AddLoader(new ComputeProgramLoader(ComputeDevice));
+      assets.AddLoader(new ImageLoader());
+      assets.AddLoader(new MaterialLoader());
+      assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, hotReloading: Debugger.IsAttached));
+      assets.AddLoader(new SpriteLoader());
+      assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
+      assets.AddLoader(new TrueTypeFontLoader());
     }
 
-    protected virtual void RegisterConsoleBindings(IConsoleBindings bindings) {
+    protected virtual void RegisterConsoleBindings(IGameConsoleBindings bindings)
+    {
       bindings.Add("exit", Exit);
       bindings.Add("clear", () => Console.Clear());
     }
 
-    protected override void OnResized(int width, int height) {
+    protected override void OnResized(int width, int height)
+    {
       base.OnResized(width, height);
 
       GraphicsDevice.Viewport = new Viewport(width, height);
     }
 
-    protected override void Begin(GameTime time) {
+    protected override void Begin(GameTime time)
+    {
       GraphicsDevice.BeginFrame();
 
-      if (ClearColor != Color.Clear) {
+      if (ClearColor != Color.Clear)
+      {
         GraphicsDevice.Clear(ClearColor);
       }
 
       base.Begin(time);
     }
 
-    protected override void End(GameTime time) {
+    protected override void End(GameTime time)
+    {
       base.End(time);
 
       GraphicsDevice.EndFrame();
@@ -104,7 +128,8 @@ namespace Surreal {
   }
 
   public abstract class GameJam<TSelf> : GameJam
-      where TSelf : GameJam<TSelf> {
+      where TSelf : GameJam<TSelf>
+  {
     public new static TSelf Current => (TSelf) GameJam.Current;
   }
 }

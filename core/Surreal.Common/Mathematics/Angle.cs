@@ -3,20 +3,22 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using static Surreal.Mathematics.Maths;
 
-namespace Surreal.Mathematics {
-  // TODO: implement signed angles
-
-  public readonly struct Angle : IEquatable<Angle>, IComparable<Angle> {
+namespace Surreal.Mathematics
+{
+  public readonly struct Angle : IEquatable<Angle>, IComparable<Angle>
+  {
     public static Angle Zero => default;
 
     public static Angle FromRadians(float radians) => new(radians);
     public static Angle FromDegrees(float degrees) => new(DegreesToRadians(degrees));
 
-    public static Angle Lerp(Angle a, Angle b, float t) {
+    public static Angle Lerp(Angle a, Angle b, float t)
+    {
       return FromRadians(Maths.Lerp(a.Radians, b.Radians, t));
     }
 
-    public static Angle Between(Vector2 a, Vector2 b) {
+    public static Angle Between(Vector2 a, Vector2 b)
+    {
       var dot = Vector2.Dot(a, b);
 
       var mag1 = a.Length();
@@ -27,7 +29,8 @@ namespace Surreal.Mathematics {
       return FromRadians(radians);
     }
 
-    public static Angle Between(Vector3 a, Vector3 b) {
+    public static Angle Between(Vector3 a, Vector3 b)
+    {
       var dot = Vector3.Dot(a, b);
 
       var mag1 = a.Length();
@@ -38,7 +41,8 @@ namespace Surreal.Mathematics {
       return FromRadians(radians);
     }
 
-    private Angle(float radians) {
+    private Angle(float radians)
+    {
       Radians = radians;
     }
 

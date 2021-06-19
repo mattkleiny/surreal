@@ -2,18 +2,22 @@
 using Surreal.Collections;
 using Surreal.Timing;
 
-namespace Surreal.Diagnostics {
-  public sealed class FpsCounter {
+namespace Surreal.Diagnostics
+{
+  public sealed class FpsCounter
+  {
     private readonly RingBuffer<TimeSpan> samples;
 
-    public FpsCounter(int sampleCount = 100) {
+    public FpsCounter(int sampleCount = 100)
+    {
       samples = new RingBuffer<TimeSpan>(sampleCount);
     }
 
     public double TotalFrameTime  => samples.FastSum().TotalSeconds;
     public double FramesPerSecond => samples.Count / TotalFrameTime;
 
-    public void Tick(DeltaTime deltaTime) {
+    public void Tick(DeltaTime deltaTime)
+    {
       samples.Add(deltaTime);
     }
   }

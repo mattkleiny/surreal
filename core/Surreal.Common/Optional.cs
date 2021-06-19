@@ -1,9 +1,12 @@
-﻿namespace Surreal {
-  public readonly struct Optional<T> {
+﻿namespace Surreal
+{
+  public readonly struct Optional<T>
+  {
     private readonly T?   value;
     private readonly bool hasValue;
 
-    public Optional(T? value, bool hasValue) {
+    public Optional(T? value, bool hasValue)
+    {
       this.value    = value;
       this.hasValue = hasValue;
     }
@@ -12,8 +15,10 @@
     public bool IsSome => hasValue;
     public bool IsNone => !hasValue;
 
-    public bool TryGet(out T? result) {
-      if (IsSome) {
+    public bool TryGet(out T? result)
+    {
+      if (IsSome)
+      {
         result = value;
         return true;
       }
@@ -22,8 +27,10 @@
       return false;
     }
 
-    public T? GetOrDefault(T? defaultValue = default) {
-      if (IsSome) {
+    public T? GetOrDefault(T? defaultValue = default)
+    {
+      if (IsSome)
+      {
         return value;
       }
 
@@ -33,12 +40,15 @@
     public static implicit operator Optional<T>(T value) => new(value, true);
   }
 
-  public static class Optional {
+  public static class Optional
+  {
     public static Optional<T> Some<T>(T value) => new(value, hasValue: true);
     public static Optional<T> None<T>()        => new(default, hasValue: false);
 
-    public static Optional<T> ToOptional<T>(this T? nullable) where T : struct {
-      if (nullable.HasValue) {
+    public static Optional<T> ToOptional<T>(this T? nullable) where T : struct
+    {
+      if (nullable.HasValue)
+      {
         return Some(nullable.Value);
       }
 

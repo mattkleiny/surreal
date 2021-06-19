@@ -1,6 +1,11 @@
-namespace Surreal.Mathematics.Linear {
-  public readonly struct Volume {
-    public Volume(int width, int height, int depth) {
+using System;
+
+namespace Surreal.Mathematics.Linear
+{
+  public readonly struct Volume : IEquatable<Volume>
+  {
+    public Volume(int width, int height, int depth)
+    {
       Width  = width;
       Height = height;
       Depth  = depth;
@@ -13,6 +18,14 @@ namespace Surreal.Mathematics.Linear {
     public int Total => Width * Height * Depth;
 
     public override string ToString() => $"{Width.ToString()}x{Height.ToString()}x{Depth.ToString()} ({Total.ToString()} units)";
+
+    public          bool Equals(Volume other) => Width == other.Width && Height == other.Height && Depth == other.Depth;
+    public override bool Equals(object? obj)  => obj is Volume other && Equals(other);
+
+    public override int GetHashCode() => HashCode.Combine(Width, Height, Depth);
+
+    public static bool operator ==(Volume left, Volume right) => left.Equals(right);
+    public static bool operator !=(Volume left, Volume right) => !left.Equals(right);
 
     public static Volume operator +(Volume a, int scalar) => new(a.Width + scalar, a.Height + scalar, a.Depth + scalar);
     public static Volume operator -(Volume a, int scalar) => new(a.Width - scalar, a.Height - scalar, a.Depth - scalar);

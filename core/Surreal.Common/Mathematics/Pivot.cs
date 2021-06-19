@@ -1,13 +1,18 @@
 using System;
 
-namespace Surreal.Mathematics {
-  public readonly struct Pivot : IEquatable<Pivot> {
+namespace Surreal.Mathematics
+{
+  public readonly struct Pivot : IEquatable<Pivot>
+  {
+    public static readonly Pivot Min    = new(0f, 0f);
+    public static readonly Pivot Max    = new(1f, 1f);
     public static readonly Pivot Center = new(0.5f, 0.5f);
 
     public Normal X { get; }
     public Normal Y { get; }
 
-    public Pivot(Normal x, Normal y) {
+    public Pivot(Normal x, Normal y)
+    {
       X = x;
       Y = y;
     }

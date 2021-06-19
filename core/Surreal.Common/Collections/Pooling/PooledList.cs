@@ -2,13 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Surreal.Collections.Pooling {
-  public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware {
+namespace Surreal.Collections.Pooling
+{
+  public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware
+  {
     private static Pool<PooledList<T>> Pool => Pool<PooledList<T>>.Shared;
 
     private readonly List<T> list = new();
 
-    public static PooledList<T> CreateOrRent() {
+    public static PooledList<T> CreateOrRent()
+    {
       return Pool.CreateOrRent();
     }
 
@@ -21,18 +24,22 @@ namespace Surreal.Collections.Pooling {
     IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-    void IPoolAware.OnRent() {
+    void IPoolAware.OnRent()
+    {
     }
 
-    void IPoolAware.OnReturn() {
+    void IPoolAware.OnReturn()
+    {
       list.Clear();
     }
 
-    public struct Enumerator : IEnumerator<T> {
+    public struct Enumerator : IEnumerator<T>
+    {
       private readonly PooledList<T> pooledList;
       private          int           index;
 
-      public Enumerator(PooledList<T> pooledList) {
+      public Enumerator(PooledList<T> pooledList)
+      {
         this.pooledList = pooledList;
         index           = -1;
       }
@@ -43,7 +50,8 @@ namespace Surreal.Collections.Pooling {
       public bool MoveNext() => ++index < pooledList.list.Count;
       public void Reset()    => index = -1;
 
-      public void Dispose() {
+      public void Dispose()
+      {
         // no-op
       }
     }

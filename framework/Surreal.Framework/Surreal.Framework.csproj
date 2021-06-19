@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="..\..\Shared.props" />
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Core.Assets\Surreal.Core.Assets.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Core.Graphics\Surreal.Core.Graphics.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Assets\Surreal.Assets.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
     <ProjectReference Include="..\..\platforms\Surreal.Platform\Surreal.Platform.csproj" />
   </ItemGroup>
 </Project>

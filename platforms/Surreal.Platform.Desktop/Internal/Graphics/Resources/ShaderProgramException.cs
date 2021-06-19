@@ -1,9 +1,12 @@
 using OpenTK;
 
-namespace Surreal.Platform.Internal.Graphics.Resources {
-  internal sealed class ShaderProgramException : PlatformException {
+namespace Surreal.Platform.Internal.Graphics.Resources
+{
+  internal sealed class ShaderProgramException : PlatformException
+  {
     public ShaderProgramException(string message, string infoLog)
-        : base(message) {
+        : base(message)
+    {
       InfoLog = infoLog;
     }
 

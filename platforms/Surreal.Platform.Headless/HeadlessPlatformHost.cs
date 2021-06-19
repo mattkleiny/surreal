@@ -1,17 +1,19 @@
 using System;
 using Surreal.Audio;
 using Surreal.Compute;
-using Surreal.Data.VFS;
 using Surreal.Graphics;
 using Surreal.Input;
+using Surreal.IO;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;
 using Surreal.Platform.Internal.Graphics;
 using Surreal.Platform.Internal.Input;
 using Surreal.Timing;
 
-namespace Surreal.Platform {
-  internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider {
+namespace Surreal.Platform
+{
+  internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider
+  {
     public HeadlessAudioDevice    AudioDevice    { get; } = new();
     public HeadlessComputeDevice  ComputeDevice  { get; } = new();
     public HeadlessGraphicsDevice GraphicsDevice { get; } = new();
@@ -31,7 +33,8 @@ namespace Surreal.Platform {
     public IHeadlessKeyboardDevice Keyboard => InputManager.Keyboard;
     public IHeadlessMouseDevice    Mouse    => InputManager.Mouse;
 
-    object? IServiceProvider.GetService(Type serviceType) {
+    object? IServiceProvider.GetService(Type serviceType)
+    {
       if (serviceType == typeof(IAudioDevice)) return AudioDevice;
       if (serviceType == typeof(IComputeDevice)) return ComputeDevice;
       if (serviceType == typeof(IGraphicsDevice)) return GraphicsDevice;
@@ -41,11 +44,13 @@ namespace Surreal.Platform {
       return null;
     }
 
-    public void Tick(DeltaTime deltaTime) {
+    public void Tick(DeltaTime deltaTime)
+    {
       InputManager.Update();
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
       // no-op
     }
   }

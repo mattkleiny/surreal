@@ -5,11 +5,14 @@ using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Key = Surreal.Input.Keyboard.Key;
 
-namespace Surreal.Platform.Internal.Input {
-  internal sealed class OpenTKKeyboardDevice : BufferedInputDevice<KeyboardState>, IKeyboardDevice {
+namespace Surreal.Platform.Internal.Input
+{
+  internal sealed class OpenTKKeyboardDevice : BufferedInputDevice<KeyboardState>, IKeyboardDevice
+  {
     private readonly IDesktopWindow window;
 
-    public OpenTKKeyboardDevice(IDesktopWindow window) {
+    public OpenTKKeyboardDevice(IDesktopWindow window)
+    {
       this.window = window;
     }
 
@@ -21,14 +24,18 @@ namespace Surreal.Platform.Internal.Input {
     public bool IsKeyPressed(Key key)  => CurrentState[Lookup[key]] && !PreviousState[Lookup[key]];
     public bool IsKeyReleased(Key key) => PreviousState[Lookup[key]] && !CurrentState[Lookup[key]];
 
-    public override void Update() {
+    public override void Update()
+    {
       // only capture state if the window is focused
-      if (window.IsFocused) {
+      if (window.IsFocused)
+      {
         base.Update();
 
         // fire events, if necessary
-        if (CurrentState != PreviousState) {
-          foreach (var (key, _) in Lookup) {
+        if (CurrentState != PreviousState)
+        {
+          foreach (var (key, _) in Lookup)
+          {
             if (IsKeyPressed(key)) KeyPressed?.Invoke(key);
             if (IsKeyReleased(key)) KeyReleased?.Invoke(key);
           }
@@ -38,7 +45,8 @@ namespace Surreal.Platform.Internal.Input {
 
     protected override KeyboardState CaptureState() => Keyboard.GetState();
 
-    private static readonly Dictionary<Key, OpenTK.Input.Key> Lookup = new() {
+    private static readonly Dictionary<Key, OpenTK.Input.Key> Lookup = new()
+    {
       [Key.LeftShift] = OpenTK.Input.Key.ShiftLeft,
       [Key.F1]        = OpenTK.Input.Key.F1,
       [Key.F2]        = OpenTK.Input.Key.F2,

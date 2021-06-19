@@ -4,8 +4,10 @@ using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
 
-namespace Surreal.Platform.Internal.Graphics {
-  internal sealed class HeadlessPipelineState : IPipelineState {
+namespace Surreal.Platform.Internal.Graphics
+{
+  internal sealed class HeadlessPipelineState : IPipelineState
+  {
     public FrameBuffer     PrimaryFrameBuffer { get; } = new HeadlessFrameBuffer();
     public FrameBuffer?    ActiveFrameBuffer  { get; set; }
     public ShaderProgram?  ActiveShader       { get; set; }

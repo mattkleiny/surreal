@@ -5,21 +5,26 @@ using Surreal.Framework;
 using Surreal.Platform;
 using Surreal.Timing;
 
-namespace Headless {
-  public sealed class Game : GameJam<Game> {
+namespace Headless
+{
+  public sealed class Game : GameJam<Game>
+  {
     private static readonly ILog Log = LogFactory.GetLog<Game>();
 
     private readonly FpsCounter fpsCounter = new();
     private          Timer      fpsTimer   = new(1.Seconds());
 
-    public static void Main() => Start<Game>(new() {
+    public static void Main() => Start<Game>(new()
+    {
       Platform = new HeadlessPlatform(),
     });
 
-    protected override void Draw(GameTime time) {
+    protected override void Draw(GameTime time)
+    {
       base.Draw(time);
 
-      if (fpsTimer.Tick(time.DeltaTime)) {
+      if (fpsTimer.Tick(time.DeltaTime))
+      {
         Log.Trace($"Frames per second: {fpsCounter.FramesPerSecond.ToString("F")}");
       }
 

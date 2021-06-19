@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace Surreal {
-  public readonly struct Unit : IEquatable<Unit> {
+namespace Surreal
+{
+  public readonly struct Unit : IEquatable<Unit>
+  {
     public static Unit Default => default;
 
     public override int  GetHashCode()      => 0;

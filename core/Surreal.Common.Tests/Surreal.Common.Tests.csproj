@@ -7,7 +7,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\*.*" />
-  </ItemGroup>
 </Project>

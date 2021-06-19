@@ -1,5 +1,7 @@
-﻿namespace Surreal.Platform {
-  public sealed record DesktopConfiguration {
+﻿namespace Surreal.Platform
+{
+  public sealed record DesktopConfiguration
+  {
     public string Title                   { get; set; } = "Surreal";
     public int?   Width                   { get; set; }
     public int?   Height                  { get; set; }

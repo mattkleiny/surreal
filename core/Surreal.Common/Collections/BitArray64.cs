@@ -5,23 +5,28 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
-using Surreal.Data;
+using Surreal.IO;
 
-namespace Surreal.Collections {
-  public struct BitArray64 : IEquatable<BitArray64>, IEnumerable<bool>, IBinarySerializable {
+namespace Surreal.Collections
+{
+  public struct BitArray64 : IEquatable<BitArray64>, IEnumerable<bool>, IBinarySerializable
+  {
     public static BitArray64 Empty => default;
 
     private ulong bits;
 
-    public BitArray64(ulong bits) {
+    public BitArray64(ulong bits)
+    {
       this.bits = bits;
     }
 
     public ulong Bits   => bits;
     public int   Length => 64;
 
-    public bool this[int index] {
-      get {
+    public bool this[int index]
+    {
+      get
+      {
         Debug.Assert(index >= 0, "index >= 0");
         Debug.Assert(index < Length, "index < Length");
 
@@ -29,7 +34,8 @@ namespace Surreal.Collections {
 
         return (bits & mask) == mask;
       }
-      set {
+      set
+      {
         Debug.Assert(index >= 0, "index >= 0");
         Debug.Assert(index < Length, "index < Length");
 
@@ -48,10 +54,12 @@ namespace Surreal.Collections {
     [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
     public override int GetHashCode() => bits.GetHashCode();
 
-    public override string ToString() {
+    public override string ToString()
+    {
       var builder = new StringBuilder();
 
-      for (var i = 0; i < Length; i++) {
+      for (var i = 0; i < Length; i++)
+      {
         builder.Append(this[i] ? "1" : "0");
       }
 
@@ -62,19 +70,23 @@ namespace Surreal.Collections {
     IEnumerator<bool> IEnumerable<bool>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.            GetEnumerator() => GetEnumerator();
 
-    void IBinarySerializable.Save(BinaryWriter writer) {
+    void IBinarySerializable.Save(BinaryWriter writer)
+    {
       writer.Write(bits);
     }
 
-    void IBinarySerializable.Load(BinaryReader reader) {
+    void IBinarySerializable.Load(BinaryReader reader)
+    {
       bits = reader.ReadUInt64();
     }
 
-    public struct Enumerator : IEnumerator<bool> {
+    public struct Enumerator : IEnumerator<bool>
+    {
       private readonly ulong bits;
       private          int   currentIndex;
 
-      public Enumerator(ulong bits) {
+      public Enumerator(ulong bits)
+      {
         this.bits = bits;
 
         currentIndex = -1;
@@ -82,25 +94,30 @@ namespace Surreal.Collections {
 
       object IEnumerator.Current => Current;
 
-      public bool Current {
-        get {
+      public bool Current
+      {
+        get
+        {
           var mask = 1ul << currentIndex;
 
           return (bits & mask) == mask;
         }
       }
 
-      public bool MoveNext() {
+      public bool MoveNext()
+      {
         currentIndex++;
 
         return currentIndex < 64;
       }
 
-      public void Reset() {
+      public void Reset()
+      {
         currentIndex = -1;
       }
 
-      public void Dispose() {
+      public void Dispose()
+      {
       }
     }
   }

@@ -1,13 +1,15 @@
 ﻿using System;
 
-namespace Surreal.Diagnostics.Profiling {
-  public interface IProfiler {
+namespace Surreal.Diagnostics.Profiling
+{
+  public interface IProfiler
+  {
     ProfilingScope Track(string task);
     ProfilingScope Track(string category, string task);
   }
 
-
-  public readonly struct ProfilingScope : IDisposable {
+  public readonly struct ProfilingScope : IDisposable
+  {
     public static readonly ProfilingScope Null = new();
 
     private readonly string           category;
@@ -15,7 +17,8 @@ namespace Surreal.Diagnostics.Profiling {
     private readonly IProfileSampler? sampler;
     private readonly DateTime         startTime;
 
-    public ProfilingScope(string category, string task, IProfileSampler? sampler) {
+    public ProfilingScope(string category, string task, IProfileSampler? sampler)
+    {
       this.category = category;
       this.task     = task;
       this.sampler  = sampler;
@@ -23,7 +26,8 @@ namespace Surreal.Diagnostics.Profiling {
       startTime = DateTime.Now;
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
       var endTime = DateTime.Now;
 
       sampler?.Sample(category, task, endTime - startTime);

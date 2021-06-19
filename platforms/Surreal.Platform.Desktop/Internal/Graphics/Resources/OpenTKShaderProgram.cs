@@ -9,26 +9,32 @@ using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
 using ShaderType = OpenTK.Graphics.OpenGL.ShaderType;
 
-namespace Surreal.Platform.Internal.Graphics.Resources {
-  internal sealed class OpenTKShaderProgram : ShaderProgram, IHasNativeId {
+namespace Surreal.Platform.Internal.Graphics.Resources
+{
+  internal sealed class OpenTKShaderProgram : ShaderProgram, IHasNativeId
+  {
     private readonly Dictionary<string, int> locationCache = new();
 
     private readonly int id = GL.CreateProgram();
 
     int IHasNativeId.Id => id;
 
-    public OpenTKShaderProgram(IReadOnlyList<Shader> shaders) {
+    public OpenTKShaderProgram(IReadOnlyList<Shader> shaders)
+    {
       Link(shaders);
     }
 
-    public void Bind() {
+    public void Bind()
+    {
       GL.UseProgram(id);
     }
 
-    public override void Bind(VertexDescriptorSet descriptors) {
+    public override void Bind(VertexDescriptorSet descriptors)
+    {
       GL.UseProgram(id);
 
-      for (var i = 0; i < descriptors.Length; i++) {
+      for (var i = 0; i < descriptors.Length; i++)
+      {
         var attribute = descriptors[i];
         var location  = GL.GetAttribLocation(id, attribute.Alias);
 
@@ -46,12 +52,14 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    private void Link(IReadOnlyList<Shader> shaders) {
+    private void Link(IReadOnlyList<Shader> shaders)
+    {
       var shaderIds = new int[shaders.Count];
 
       GL.UseProgram(id);
 
-      for (var i = 0; i < shaders.Count; i++) {
+      for (var i = 0; i < shaders.Count; i++)
+      {
         var shader = shaders[i];
         var code   = Encoding.UTF8.GetString(shader.Bytecode.ToArray());
 
@@ -62,7 +70,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
 
         GL.GetShader(shaderId, ShaderParameter.CompileStatus, out var status);
 
-        if (status != 1) {
+        if (status != 1)
+        {
           GL.GetShaderInfoLog(shaderId, out var errorLog);
 
           throw new ShaderProgramException($"An error occurred whilst compiling a {shader.Type} shader.", errorLog);
@@ -74,50 +83,61 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       GL.LinkProgram(id);
       GL.GetProgram(id, GetProgramParameterName.LinkStatus, out var linkStatus);
 
-      if (linkStatus != 1) {
+      if (linkStatus != 1)
+      {
         GL.GetProgramInfoLog(id, out var errorLog);
 
         throw new ShaderProgramException("An error occurred whilst linking a shader program.", errorLog);
       }
 
-      foreach (var shaderId in shaderIds) {
+      foreach (var shaderId in shaderIds)
+      {
         GL.DeleteShader(shaderId);
       }
     }
 
-    public override void SetUniform(string name, int scalar) {
+    public override void SetUniform(string name, int scalar)
+    {
       GL.Uniform1(GetUniformLocation(name), scalar);
     }
 
-    public override void SetUniform(string name, float scalar) {
+    public override void SetUniform(string name, float scalar)
+    {
       GL.Uniform1(GetUniformLocation(name), scalar);
     }
 
-    public override void SetUniform(string name, Point2 point) {
+    public override void SetUniform(string name, Point2 point)
+    {
       GL.Uniform2(GetUniformLocation(name), point.X, point.Y);
     }
 
-    public override void SetUniform(string name, Point3 point) {
+    public override void SetUniform(string name, Point3 point)
+    {
       GL.Uniform3(GetUniformLocation(name), point.X, point.Y, point.Z);
     }
 
-    public override void SetUniform(string name, Vector2 vector) {
+    public override void SetUniform(string name, Vector2 vector)
+    {
       GL.Uniform2(GetUniformLocation(name), vector.X, vector.Y);
     }
 
-    public override void SetUniform(string name, Vector3 vector) {
+    public override void SetUniform(string name, Vector3 vector)
+    {
       GL.Uniform3(GetUniformLocation(name), vector.X, vector.Y, vector.Z);
     }
 
-    public override void SetUniform(string name, Vector4 vector) {
+    public override void SetUniform(string name, Vector4 vector)
+    {
       GL.Uniform4(GetUniformLocation(name), vector.W, vector.X, vector.Y, vector.Z);
     }
 
-    public override void SetUniform(string name, Quaternion quaternion) {
+    public override void SetUniform(string name, Quaternion quaternion)
+    {
       GL.Uniform4(GetUniformLocation(name), quaternion.W, quaternion.X, quaternion.Y, quaternion.Z);
     }
 
-    public override unsafe void SetUniform(string name, in Matrix2x2 matrix) {
+    public override unsafe void SetUniform(string name, in Matrix3x2 matrix)
+    {
       var location = GetUniformLocation(name);
 
       ref var source   = ref Unsafe.AsRef(in matrix);
@@ -126,7 +146,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       GL.UniformMatrix4(location, 1, false, elements);
     }
 
-    public override unsafe void SetUniform(string name, in Matrix3x2 matrix) {
+    public override unsafe void SetUniform(string name, in Matrix4x4 matrix)
+    {
       var location = GetUniformLocation(name);
 
       ref var source   = ref Unsafe.AsRef(in matrix);
@@ -135,31 +156,27 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       GL.UniformMatrix4(location, 1, false, elements);
     }
 
-    public override unsafe void SetUniform(string name, in Matrix4x4 matrix) {
-      var location = GetUniformLocation(name);
-
-      ref var source   = ref Unsafe.AsRef(in matrix);
-      var     elements = (float*) Unsafe.AsPointer(ref source);
-
-      GL.UniformMatrix4(location, 1, false, elements);
-    }
-
-    protected override void Dispose(bool managed) {
+    protected override void Dispose(bool managed)
+    {
       GL.DeleteProgram(id);
 
       base.Dispose(managed);
     }
 
-    private int GetUniformLocation(string name) {
-      if (!locationCache.TryGetValue(name, out var id)) {
+    private int GetUniformLocation(string name)
+    {
+      if (!locationCache.TryGetValue(name, out var id))
+      {
         id = locationCache[name] = GL.GetUniformLocation(this.id, name);
       }
 
       return id;
     }
 
-    private static ShaderType ConvertShaderType(Surreal.Graphics.Materials.ShaderType shaderType) {
-      switch (shaderType) {
+    private static ShaderType ConvertShaderType(Surreal.Graphics.Materials.ShaderType shaderType)
+    {
+      switch (shaderType)
+      {
         case Surreal.Graphics.Materials.ShaderType.Compute:  return ShaderType.ComputeShader;
         case Surreal.Graphics.Materials.ShaderType.Vertex:   return ShaderType.VertexShader;
         case Surreal.Graphics.Materials.ShaderType.Fragment: return ShaderType.FragmentShader;
@@ -170,8 +187,10 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    private static VertexAttribPointerType ConvertVertexType(VertexType type) {
-      switch (type) {
+    private static VertexAttribPointerType ConvertVertexType(VertexType type)
+    {
+      switch (type)
+      {
         case VertexType.UnsignedByte:  return VertexAttribPointerType.UnsignedByte;
         case VertexType.Byte:          return VertexAttribPointerType.Byte;
         case VertexType.Short:         return VertexAttribPointerType.Short;

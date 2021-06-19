@@ -4,8 +4,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using Surreal.Collections.Pooling;
 
-namespace Surreal.Fibers.Promises {
-  internal interface IFiberTaskPromise<T> : IPromise<T> {
+namespace Surreal.Fibers.Promises
+{
+  internal interface IFiberTaskPromise<T> : IPromise<T>
+  {
     Action AdvanceCallback { get; }
 
     void SetException(Exception exception);
@@ -13,10 +15,12 @@ namespace Surreal.Fibers.Promises {
   }
 
   internal sealed class FiberTaskPromise<T, TStateMachine> : Promise<T>, IFiberTaskPromise<T>
-      where TStateMachine : IAsyncStateMachine {
+      where TStateMachine : IAsyncStateMachine
+  {
     private static readonly Pool<FiberTaskPromise<T, TStateMachine>> Pool = Pool<FiberTaskPromise<T, TStateMachine>>.Shared;
 
-    public static void Allocate(ref TStateMachine stateMachine, out IFiberTaskPromise<T> promise) {
+    public static void Allocate(ref TStateMachine stateMachine, out IFiberTaskPromise<T> promise)
+    {
       var result = Pool.CreateOrRent();
 
       promise             = result;
@@ -34,23 +38,28 @@ namespace Surreal.Fibers.Promises {
     [DebuggerHidden] private void Advance() => stateMachine?.MoveNext();
     [DebuggerHidden] private void Return()  => Pool.Return(this);
 
-    public FiberTaskPromise() {
+    public FiberTaskPromise()
+    {
       AdvanceCallback = Advance;
       ReturnCallback  = Return;
     }
 
     [DebuggerHidden]
-    public override T? GetResult(short version) {
+    public override T? GetResult(short version)
+    {
       ValidateVersion(version);
 
       isObserved = true;
 
-      if (error != null) {
-        if (error is Exception exception) {
+      if (error != null)
+      {
+        if (error is Exception exception)
+        {
           throw exception;
         }
 
-        if (error is ExceptionDispatchInfo dispatchInfo) {
+        if (error is ExceptionDispatchInfo dispatchInfo)
+        {
           dispatchInfo.Throw();
         }
 
@@ -61,7 +70,8 @@ namespace Surreal.Fibers.Promises {
     }
 
     [DebuggerHidden]
-    public void SetResult(T result) {
+    public void SetResult(T result)
+    {
       this.result = result;
 
       SetStatus(FiberTaskStatus.Succeeded);
@@ -69,11 +79,14 @@ namespace Surreal.Fibers.Promises {
     }
 
     [DebuggerHidden]
-    public void SetException(Exception exception) {
-      if (exception is OperationCanceledException) {
+    public void SetException(Exception exception)
+    {
+      if (exception is OperationCanceledException)
+      {
         error = exception;
       }
-      else {
+      else
+      {
         error = ExceptionDispatchInfo.Capture(exception);
       }
 
@@ -82,10 +95,12 @@ namespace Surreal.Fibers.Promises {
     }
 
     [DebuggerHidden]
-    public override void OnReturn() {
+    public override void OnReturn()
+    {
       base.OnReturn();
 
-      if (!isObserved && error is Exception exception) {
+      if (!isObserved && error is Exception exception)
+      {
         // TODO: log exception
       }
 

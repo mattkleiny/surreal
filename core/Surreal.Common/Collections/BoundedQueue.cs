@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Surreal.Collections {
-  public sealed class BoundedQueue<T> : IEnumerable<T> {
+namespace Surreal.Collections
+{
+  public sealed class BoundedQueue<T> : IEnumerable<T>
+  {
     private readonly Queue<T> queue;
     private readonly int      maxCapacity;
 
-    public BoundedQueue(int capacity = 0, int maxCapacity = 32) {
+    public BoundedQueue(int capacity = 0, int maxCapacity = 32)
+    {
       Debug.Assert(capacity >= 0, "capacity >= 0");
       Debug.Assert(maxCapacity >= capacity, "maxCapacity >= capacity");
 
@@ -19,8 +22,10 @@ namespace Surreal.Collections {
     public int Count    => queue.Count;
     public int Capacity => maxCapacity;
 
-    public bool TryEnqueue(T value) {
-      if (queue.Count < maxCapacity) {
+    public bool TryEnqueue(T value)
+    {
+      if (queue.Count < maxCapacity)
+      {
         queue.Enqueue(value);
         return true;
       }
@@ -28,8 +33,10 @@ namespace Surreal.Collections {
       return false;
     }
 
-    public bool TryDequeue(out T result) {
-      if (queue.Count > 0) {
+    public bool TryDequeue(out T result)
+    {
+      if (queue.Count > 0)
+      {
         result = queue.Dequeue();
         return true;
       }
@@ -38,7 +45,8 @@ namespace Surreal.Collections {
       return false;
     }
 
-    public void Clear() {
+    public void Clear()
+    {
       queue.Clear();
     }
 

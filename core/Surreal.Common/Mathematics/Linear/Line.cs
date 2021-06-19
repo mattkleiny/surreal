@@ -1,17 +1,21 @@
 using System;
 using System.Numerics;
 
-namespace Surreal.Mathematics.Linear {
-  public readonly struct Line : IEquatable<Line> {
+namespace Surreal.Mathematics.Linear
+{
+  public readonly struct Line : IEquatable<Line>
+  {
     public readonly Vector2 From;
     public readonly Vector2 To;
 
-    public Line(Vector2 from, Vector2 to) {
+    public Line(Vector2 from, Vector2 to)
+    {
       From = from;
       To   = to;
     }
 
-    public void Deconstruct(out Vector2 @from, out Vector2 to) {
+    public void Deconstruct(out Vector2 @from, out Vector2 to)
+    {
       from = From;
       to   = To;
     }

@@ -2,19 +2,22 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Data;
 using Surreal.Graphics.Meshes;
+using Surreal.Memory;
 
-namespace Surreal.Platform.Internal.Graphics.Resources {
+namespace Surreal.Platform.Internal.Graphics.Resources
+{
   [DebuggerDisplay("Graphics buffer with {Length} elements ({Size})")]
   internal sealed class OpenTKGraphicsBuffer<T> : GraphicsBuffer<T>, IHasNativeId
-      where T : unmanaged {
+      where T : unmanaged
+  {
     private static readonly int Stride = Unsafe.SizeOf<T>();
     private readonly        int id     = GL.GenBuffer();
 
     int IHasNativeId.Id => id;
 
-    public override Memory<T> Read(Range range) {
+    public override Memory<T> Read(Range range)
+    {
       GL.BindBuffer(BufferTarget.ArrayBuffer, id);
       GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out int sizeInBytes);
 
@@ -28,10 +31,12 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       return buffer;
     }
 
-    public override unsafe void Write(ReadOnlySpan<T> data) {
+    public override unsafe void Write(ReadOnlySpan<T> data)
+    {
       var bytes = data.Length * Stride;
 
-      fixed (T* raw = data) {
+      fixed (T* raw = data)
+      {
         GL.BindBuffer(BufferTarget.ArrayBuffer, id);
         GL.BufferData(BufferTarget.ArrayBuffer, bytes, ref Unsafe.AsRef<T>(raw), BufferUsageHint.DynamicCopy);
       }
@@ -40,7 +45,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       Size   = new Size(bytes);
     }
 
-    protected override void Dispose(bool managed) {
+    protected override void Dispose(bool managed)
+    {
       GL.DeleteBuffer(id);
 
       base.Dispose(managed);

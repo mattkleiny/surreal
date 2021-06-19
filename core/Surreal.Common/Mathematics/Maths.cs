@@ -3,8 +3,10 @@ using System.Numerics;
 using System.Threading;
 using Surreal.Mathematics.Linear;
 
-namespace Surreal.Mathematics {
-  public static class Maths {
+namespace Surreal.Mathematics
+{
+  public static class Maths
+  {
     private static readonly ThreadLocal<Random> ThreadLocalRandom = new(() => new Random(Environment.TickCount));
 
     public const float E   = MathF.E;
@@ -13,11 +15,11 @@ namespace Surreal.Mathematics {
 
     public static Random Random => ThreadLocalRandom.Value!;
 
-    public static Point2 P(int x, int y)                       => new(x, y);
-    public static Point3 P(int x, int y, int z)                => new(x, y, z);
-    public static Vector2  V(float x, float y)                   => new(x, y);
-    public static Vector3  V(float x, float y, float z)          => new(x, y, z);
-    public static Vector4  V(float x, float y, float z, float w) => new(x, y, z, w);
+    public static Point2  P(int x, int y)                       => new(x, y);
+    public static Point3  P(int x, int y, int z)                => new(x, y, z);
+    public static Vector2 V(float x, float y)                   => new(x, y);
+    public static Vector3 V(float x, float y, float z)          => new(x, y, z);
+    public static Vector4 V(float x, float y, float z, float w) => new(x, y, z, w);
 
     public static float   NextFloat(this Random random)                       => (float) random.NextDouble();
     public static float   NextFloat(this Random random, float min, float max) => random.NextFloat() * (max - min) + min;
@@ -41,22 +43,26 @@ namespace Surreal.Mathematics {
     public static int   Lerp(int a, int b, float t)     => (int) (a + t * (b - a));
     public static float Lerp(float a, float b, float t) => a + t * (b - a);
 
-    public static int Clamp(int value, int lower, int upper) {
+    public static int Clamp(int value, int lower, int upper)
+    {
       if (value < lower) return lower;
       if (value > upper) return upper;
 
       return value;
     }
 
-    public static float Clamp(float value, float lower, float upper) {
+    public static float Clamp(float value, float lower, float upper)
+    {
       if (value < lower) return lower;
       if (value > upper) return upper;
 
       return value;
     }
 
-    public static int Wrap(int value, int lower, int upper) {
-      if (value < lower) {
+    public static int Wrap(int value, int lower, int upper)
+    {
+      if (value < lower)
+      {
         return upper - (lower - value) % (upper - lower);
       }
 

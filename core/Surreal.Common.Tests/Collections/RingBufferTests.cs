@@ -1,12 +1,15 @@
 ﻿using System.Linq;
 using Xunit;
 
-namespace Surreal.Collections {
-  public class RingBufferTests {
+namespace Surreal.Collections
+{
+  public class RingBufferTests
+  {
     private readonly RingBuffer<int> buffer = new(capacity: 3);
 
     [Fact]
-    public void it_should_store_elements() {
+    public void it_should_store_elements()
+    {
       Assert.Equal(0, buffer.Count);
       buffer.Add(1);
       Assert.Equal(1, buffer.Count);
@@ -19,13 +22,15 @@ namespace Surreal.Collections {
     }
 
     [Fact]
-    public void it_should_reuse_existing_element_spots() {
+    public void it_should_reuse_existing_element_spots()
+    {
       for (var i = 0; i < 1000; i++) buffer.Add(i);
       Assert.Equal(3, buffer.Count);
     }
 
     [Fact]
-    public void it_should_clear() {
+    public void it_should_clear()
+    {
       for (var i = 0; i < 1000; i++) buffer.Add(i);
       Assert.Equal(3, buffer.Count);
       buffer.Clear();
@@ -33,7 +38,8 @@ namespace Surreal.Collections {
     }
 
     [Fact]
-    public void it_should_enumerate_in_reverse_insertion_order() {
+    public void it_should_enumerate_in_reverse_insertion_order()
+    {
       for (var i = 0; i < 1000; i++) buffer.Add(i);
 
       var results = buffer.ToArray();

@@ -8,30 +8,36 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Platform.Internal.Graphics.Resources;
-using Color = Surreal.Graphics.Color;
+using Color = Surreal.Mathematics.Color;
 using Image = Surreal.Graphics.Textures.Image;
 using PrimitiveType = Surreal.Graphics.Meshes.PrimitiveType;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
-namespace Surreal.Platform.Internal.Graphics {
-  internal sealed class OpenTKGraphicsDevice : IGraphicsDevice, IDisposable {
+namespace Surreal.Platform.Internal.Graphics
+{
+  internal sealed class OpenTKGraphicsDevice : IGraphicsDevice, IDisposable
+  {
     private readonly IDesktopWindow window;
 
-    public OpenTKGraphicsDevice(IDesktopWindow window) {
+    public OpenTKGraphicsDevice(IDesktopWindow window)
+    {
       this.window = window;
     }
 
     public IPipelineState Pipeline { get; } = new OpenTKPipelineState();
 
-    public void BeginFrame() {
+    public void BeginFrame()
+    {
     }
 
-    public void Clear(Color color) {
+    public void Clear(Color color)
+    {
       ClearDepth();
       ClearColor(color);
     }
 
-    public void ClearColor(Color color) {
+    public void ClearColor(Color color)
+    {
       GL.ClearColor(
           color.R / 255.0f,
           color.G / 255.0f,
@@ -42,17 +48,19 @@ namespace Surreal.Platform.Internal.Graphics {
       GL.Clear(ClearBufferMask.ColorBufferBit);
     }
 
-    public void ClearDepth() {
+    public void ClearDepth()
+    {
       GL.Clear(ClearBufferMask.DepthBufferBit);
     }
 
     public void DrawMesh<TVertex>(
         Mesh<TVertex> mesh,
-        Material.Pass pass,
+        MaterialPass pass,
         int vertexCount,
         int indexCount,
         PrimitiveType type = PrimitiveType.Triangles)
-        where TVertex : unmanaged {
+        where TVertex : unmanaged
+    {
       if (vertexCount == 0) return; // empty mesh? don't render
 
       // TODO: apply material
@@ -63,39 +71,48 @@ namespace Surreal.Platform.Internal.Graphics {
 
       // shader.Bind(mesh.Descriptors);
 
-      if (indexCount > 0) {
+      if (indexCount > 0)
+      {
         DrawMeshIndexed(indexCount, type);
       }
-      else {
+      else
+      {
         DrawMesh(vertexCount, type);
       }
     }
 
-    public void Present() {
+    public void Present()
+    {
       window.Present();
     }
 
-    public void EndFrame() {
+    public void EndFrame()
+    {
       GL.Flush();
     }
 
-    public GraphicsBuffer<T> CreateBuffer<T>() where T : unmanaged {
+    public GraphicsBuffer<T> CreateBuffer<T>() where T : unmanaged
+    {
       return new OpenTKGraphicsBuffer<T>();
     }
 
-    public ShaderProgram CreateShaderProgram(IReadOnlyList<Shader> shaders) {
+    public ShaderProgram CreateShaderProgram(IReadOnlyList<Shader> shaders)
+    {
       return new OpenTKShaderProgram(shaders);
     }
 
-    public Texture CreateTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) {
+    public Texture CreateTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+    {
       return new OpenTKTexture(format, filterMode, wrapMode);
     }
 
-    public Texture CreateTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode) {
+    public Texture CreateTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+    {
       return new OpenTKTexture(data, filterMode, wrapMode);
     }
 
-    public FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor) {
+    public FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor)
+    {
       var texture = (OpenTKTexture) CreateTexture(descriptor.Format, descriptor.FilterMode, TextureWrapMode.Clamp);
       var image   = new Image(descriptor.Width, descriptor.Height);
 
@@ -104,22 +121,26 @@ namespace Surreal.Platform.Internal.Graphics {
       return new OpenTKFrameBuffer(texture, image);
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
     }
 
-    private static void DrawMesh(int count, PrimitiveType type) {
+    private static void DrawMesh(int count, PrimitiveType type)
+    {
       Debug.Assert(count >= 0, "count >= 0");
 
       GL.DrawArrays(ConvertPrimitiveType(type), 0, count);
     }
 
-    private static void DrawMeshIndexed(int count, PrimitiveType type) {
+    private static void DrawMeshIndexed(int count, PrimitiveType type)
+    {
       Debug.Assert(count >= 0, "count >= 0");
 
       GL.DrawElements(ConvertPrimitiveType(type), count, DrawElementsType.UnsignedShort, IntPtr.Zero);
     }
 
-    private static OpenTK.Graphics.OpenGL.PrimitiveType ConvertPrimitiveType(PrimitiveType type) => type switch {
+    private static OpenTK.Graphics.OpenGL.PrimitiveType ConvertPrimitiveType(PrimitiveType type) => type switch
+    {
       PrimitiveType.Points    => OpenTK.Graphics.OpenGL.PrimitiveType.Points,
       PrimitiveType.Lines     => OpenTK.Graphics.OpenGL.PrimitiveType.Lines,
       PrimitiveType.LineStrip => OpenTK.Graphics.OpenGL.PrimitiveType.LineStrip,
@@ -131,10 +152,13 @@ namespace Surreal.Platform.Internal.Graphics {
     };
 
     [Conditional("DEBUG")]
-    public static void CheckForErrors() {
+    public static void CheckForErrors()
+    {
       var errorCode = GL.GetError();
-      if (errorCode != ErrorCode.NoError) {
-        throw new PlatformException(errorCode switch {
+      if (errorCode != ErrorCode.NoError)
+      {
+        throw new PlatformException(errorCode switch
+        {
           ErrorCode.InvalidEnum                 => "An invalid OpenGL enum was passed.",
           ErrorCode.InvalidValue                => "An invalid OpenGL value was passed.",
           ErrorCode.InvalidOperation            => "An invalid OpenGL operation was attempted.",

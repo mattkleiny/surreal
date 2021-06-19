@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Description>Graphics drivers for Surreal.</Description>
+    <RootNamespace>Surreal.Graphics</RootNamespace>
+  </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
+    <ProjectReference Include="..\Surreal.Assets\Surreal.Assets.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
+  </ItemGroup>
+</Project>

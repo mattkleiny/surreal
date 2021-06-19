@@ -20,4 +20,9 @@
       <Link>Shared\JetBrainsAnnotations.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <!--  automatically embed resources and assets-->
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

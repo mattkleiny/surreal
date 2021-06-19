@@ -1,9 +1,11 @@
 ﻿using System;
 using Surreal.Collections;
 
-namespace Surreal.Mathematics.Linear {
+namespace Surreal.Mathematics.Linear
+{
   [Flags]
-  public enum Direction : byte {
+  public enum Direction : byte
+  {
     None  = 0,
     North = 1 << 1,
     East  = 1 << 2,
@@ -12,9 +14,12 @@ namespace Surreal.Mathematics.Linear {
     All   = North | East | South | West,
   }
 
-  public static class DirectionExtensions {
-    public static Direction NextDirection(this Random random) {
-      return random.Next(4) switch {
+  public static class DirectionExtensions
+  {
+    public static Direction NextDirection(this Random random)
+    {
+      return random.Next(4) switch
+      {
         0 => Direction.North,
         1 => Direction.South,
         2 => Direction.East,
@@ -23,7 +28,8 @@ namespace Surreal.Mathematics.Linear {
       };
     }
 
-    public static Direction Opposite(this Direction direction) {
+    public static Direction Opposite(this Direction direction)
+    {
       var opposite = Direction.None;
 
       if (direction.HasFlagFast(Direction.North)) opposite |= Direction.South;
@@ -34,15 +40,16 @@ namespace Surreal.Mathematics.Linear {
       return opposite;
     }
 
-    public static Point2 ToVector2I(this Direction direction) {
-      var vector = Point2.Zero;
+    public static Point2 ToPoint(this Direction direction)
+    {
+      var point = Point2.Zero;
 
-      if (direction.HasFlagFast(Direction.North)) vector.Y += 1;
-      if (direction.HasFlagFast(Direction.South)) vector.Y -= 1;
-      if (direction.HasFlagFast(Direction.East)) vector.X  += 1;
-      if (direction.HasFlagFast(Direction.West)) vector.X  -= 1;
+      if (direction.HasFlagFast(Direction.North)) point.Y += 1;
+      if (direction.HasFlagFast(Direction.South)) point.Y -= 1;
+      if (direction.HasFlagFast(Direction.East)) point.X  += 1;
+      if (direction.HasFlagFast(Direction.West)) point.X  -= 1;
 
-      return vector;
+      return point;
     }
   }
 }

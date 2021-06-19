@@ -2,8 +2,10 @@
 using Surreal.Collections.Pooling;
 using Surreal.Timing;
 
-namespace Surreal.Fibers.Promises {
-  internal sealed class DelayPromise : Promise<Unit> {
+namespace Surreal.Fibers.Promises
+{
+  internal sealed class DelayPromise : Promise<Unit>
+  {
     private static readonly Pool<DelayPromise> Pool = Pool<DelayPromise>.Shared;
 
     private readonly Action advanceCallback;
@@ -12,7 +14,8 @@ namespace Surreal.Fibers.Promises {
     private IClock? clock;
     private Timer   timer;
 
-    public static DelayPromise Create(IClock clock, TimeSpan duration) {
+    public static DelayPromise Create(IClock clock, TimeSpan duration)
+    {
       var promise = Pool.CreateOrRent();
 
       promise.clock = clock;
@@ -23,23 +26,28 @@ namespace Surreal.Fibers.Promises {
       return promise;
     }
 
-    public DelayPromise() {
+    public DelayPromise()
+    {
       advanceCallback = Advance;
       returnCallback  = () => Pool.Return(this);
     }
 
-    private void Advance() {
-      if (timer.Tick(clock!.DeltaTime)) {
+    private void Advance()
+    {
+      if (timer.Tick(clock!.DeltaTime))
+      {
         SetStatus(FiberTaskStatus.Succeeded);
         FiberScheduler.Schedule(returnCallback);
       }
 
-      if (Status == FiberTaskStatus.Pending) {
+      if (Status == FiberTaskStatus.Pending)
+      {
         FiberScheduler.Schedule(advanceCallback);
       }
     }
 
-    public override void OnReturn() {
+    public override void OnReturn()
+    {
       base.OnReturn();
 
       clock = default;

@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using Surreal.Input;
 
-namespace Surreal.Platform.Internal.Input {
-  internal sealed class HeadlessInputManager : IInputManager {
+namespace Surreal.Platform.Internal.Input
+{
+  internal sealed class HeadlessInputManager : IInputManager
+  {
     private readonly List<IInputDevice> devices = new();
 
-    public HeadlessInputManager() {
+    public HeadlessInputManager()
+    {
       devices.Add(Keyboard);
       devices.Add(Mouse);
     }
@@ -15,7 +18,8 @@ namespace Surreal.Platform.Internal.Input {
     public HeadlessKeyboardDevice Keyboard { get; } = new();
     public HeadlessMouseDevice    Mouse    { get; } = new();
 
-    public void Update() {
+    public void Update()
+    {
       Keyboard.Update();
       Mouse.Update();
     }

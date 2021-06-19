@@ -4,22 +4,27 @@ using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 using Surreal.Graphics.Textures;
+using Surreal.Mathematics;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
-namespace Surreal.Platform.Internal.Graphics.Resources {
+namespace Surreal.Platform.Internal.Graphics.Resources
+{
   [DebuggerDisplay("Texture {Width}x{Height} @ {Format} ~{Size}")]
-  internal sealed class OpenTKTexture : Texture, IHasNativeId {
+  internal sealed class OpenTKTexture : Texture, IHasNativeId
+  {
     public readonly int Id = GL.GenTexture();
 
     int IHasNativeId.Id => Id;
 
     public OpenTKTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
-        : this(data.Format, filterMode, wrapMode) {
+        : this(data.Format, filterMode, wrapMode)
+    {
       Upload(data);
     }
 
     public OpenTKTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
-        : base(format, filterMode, wrapMode) {
+        : base(format, filterMode, wrapMode)
+    {
       GL.BindTexture(TextureTarget.Texture2D, Id);
 
       GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
@@ -35,13 +40,16 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) wrapping);
     }
 
-    protected override unsafe void Upload(ITextureData? existingData, ITextureData newData) {
+    protected override unsafe void Upload(ITextureData? existingData, ITextureData newData)
+    {
       GL.BindTexture(TextureTarget.Texture2D, Id);
 
       var (pixelFormat, pixelType) = ConvertTextureFormat(newData.Format);
 
-      fixed (Color* pixels = newData.Pixels) {
-        if (existingData == null || existingData.Format != newData.Format) {
+      fixed (Color* pixels = newData.Pixels)
+      {
+        if (existingData == null || existingData.Format != newData.Format)
+        {
           GL.TexImage2D(
               target: TextureTarget.Texture2D,
               level: 0,
@@ -54,7 +62,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
               pixels: ref Unsafe.AsRef<Color>(pixels)
           );
         }
-        else {
+        else
+        {
           GL.TexSubImage2D(
               target: TextureTarget.Texture2D,
               level: 0,
@@ -70,7 +79,8 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    public override Image Download() {
+    public override Image Download()
+    {
       GL.BindTexture(TextureTarget.Texture2D, Id);
       GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
       GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
@@ -82,14 +92,17 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       return image;
     }
 
-    protected override void Dispose(bool managed) {
+    protected override void Dispose(bool managed)
+    {
       GL.DeleteTexture(Id);
 
       base.Dispose(managed);
     }
 
-    private static (TextureMinFilter, TextureMagFilter) ConvertFilterMode(TextureFilterMode mode) {
-      switch (mode) {
+    private static (TextureMinFilter, TextureMagFilter) ConvertFilterMode(TextureFilterMode mode)
+    {
+      switch (mode)
+      {
         case TextureFilterMode.Linear: return (TextureMinFilter.Linear, TextureMagFilter.Linear);
         case TextureFilterMode.Point:  return (TextureMinFilter.Nearest, TextureMagFilter.Nearest);
 
@@ -98,8 +111,10 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    private static OpenTK.Graphics.OpenGL.TextureWrapMode ConvertWrapMode(TextureWrapMode mode) {
-      switch (mode) {
+    private static OpenTK.Graphics.OpenGL.TextureWrapMode ConvertWrapMode(TextureWrapMode mode)
+    {
+      switch (mode)
+      {
         case TextureWrapMode.Clamp:  return OpenTK.Graphics.OpenGL.TextureWrapMode.Clamp;
         case TextureWrapMode.Repeat: return OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat;
 
@@ -108,8 +123,10 @@ namespace Surreal.Platform.Internal.Graphics.Resources {
       }
     }
 
-    private static (PixelFormat, PixelType) ConvertTextureFormat(TextureFormat format) {
-      switch (format) {
+    private static (PixelFormat, PixelType) ConvertTextureFormat(TextureFormat format)
+    {
+      switch (format)
+      {
         case TextureFormat.RGBA8888: return (PixelFormat.Rgba, PixelType.UnsignedByte);
 
         default:

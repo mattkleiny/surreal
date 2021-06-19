@@ -3,13 +3,16 @@ using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Timing;
 
-namespace Surreal.Graphics.Cameras {
-  public sealed class FirstPersonCameraController : ICameraController {
+namespace Surreal.Graphics.Cameras
+{
+  public sealed class FirstPersonCameraController : ICameraController
+  {
     private readonly PerspectiveCamera camera;
     private readonly IKeyboardDevice   keyboard;
     private readonly IMouseDevice      mouse;
 
-    public FirstPersonCameraController(PerspectiveCamera camera, IKeyboardDevice keyboard, IMouseDevice mouse) {
+    public FirstPersonCameraController(PerspectiveCamera camera, IKeyboardDevice keyboard, IMouseDevice mouse)
+    {
       this.camera   = camera;
       this.keyboard = keyboard;
       this.mouse    = mouse;
@@ -18,7 +21,8 @@ namespace Surreal.Graphics.Cameras {
     public float Speed           { get; set; } = 5f;
     public float DegreesPerPixel { get; set; } = 0.5f;
 
-    public void Input(DeltaTime deltaTime) {
+    public void Input(DeltaTime deltaTime)
+    {
       var velocity = Speed * deltaTime;
 
       if (keyboard.IsKeyDown(Key.LeftShift)) velocity *= 2f;
@@ -33,7 +37,8 @@ namespace Surreal.Graphics.Cameras {
 
       // rotate camera direction relative to mouse delta
       var mouseDelta = mouse.DeltaPosition;
-      if (mouseDelta.X != 0 || mouseDelta.Y != 0) {
+      if (mouseDelta.X != 0 || mouseDelta.Y != 0)
+      {
         var deltaX = -mouseDelta.X * DegreesPerPixel * deltaTime; // left/right or yaw
         var deltaY = -mouseDelta.Y * DegreesPerPixel * deltaTime; // up/down or pitch
 
