@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>Surreal.Editor</RootNamespace>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+  <Import Project="..\..\Shared.props" />
+  <Import Project="..\..\Executables.props" />
   <ItemGroup>
-    <Folder Include="Workloads\Assets" />
-    <Folder Include="Workloads\Graphs" />
-    <Folder Include="Workloads\Materials" />
-    <Folder Include="Workloads\Scenes" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.6" />
   </ItemGroup>
 </Project>

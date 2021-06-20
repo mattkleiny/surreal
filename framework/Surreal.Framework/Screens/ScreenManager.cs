@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Surreal.Collections;
 
 namespace Surreal.Framework.Screens
 {
@@ -17,7 +18,7 @@ namespace Surreal.Framework.Screens
 
   public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
   {
-    private readonly LinkedList<IScreen> screens = new();
+    private readonly LinkedNodeList<IScreen> screens = new();
 
     public ScreenManager(Game game)
         : base(game)
@@ -26,8 +27,8 @@ namespace Surreal.Framework.Screens
 
     public event Action<IScreen?>? ScreenChanged;
 
-    public IScreen? ActiveScreen   => screens.Last?.Value;
-    public IScreen? PreviousScreen => screens.Last?.Previous?.Value;
+    public IScreen? ActiveScreen   => screens.Head;
+    public IScreen? PreviousScreen => screens.Head?.Previous;
 
     public override void Initialize()
     {
@@ -44,7 +45,7 @@ namespace Surreal.Framework.Screens
       }
 
       screen.Show();
-      screens.AddLast(screen);
+      screens.Add(screen);
 
       ScreenChanged?.Invoke(ActiveScreen);
     }
@@ -57,25 +58,21 @@ namespace Surreal.Framework.Screens
 
     public IScreen? Pop(bool dispose = true)
     {
-      if (screens.Count > 0)
+      if (screens.IsEmpty) return null;
+
+      var screen = screens.Head!;
+
+      screen.Hide();
+      screens.Remove(screen);
+
+      if (dispose)
       {
-        var node   = screens.Last!;
-        var screen = node.Value;
-
-        screens.Remove(node);
-        node.Value.Hide();
-
-        if (dispose)
-        {
-          screen.Dispose();
-        }
-
-        ScreenChanged?.Invoke(ActiveScreen);
-
-        return screen;
+        screen.Dispose();
       }
 
-      return null;
+      ScreenChanged?.Invoke(ActiveScreen);
+
+      return screen;
     }
 
     public override void Input(GameTime time)
@@ -107,7 +104,7 @@ namespace Surreal.Framework.Screens
 
     public override void Dispose()
     {
-      while (screens.Count > 0)
+      while (!screens.IsEmpty)
       {
         Pop();
       }

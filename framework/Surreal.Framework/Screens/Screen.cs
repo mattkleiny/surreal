@@ -1,10 +1,11 @@
 ﻿using System;
 using Surreal.Assets;
+using Surreal.Collections;
 using Surreal.Fibers;
 
 namespace Surreal.Framework.Screens
 {
-  public interface IScreen : IDisposable
+  public interface IScreen : ILinkedElement<IScreen>, IDisposable
   {
     bool IsInitialized { get; }
     bool IsDisposed    { get; }
@@ -67,6 +68,9 @@ namespace Surreal.Framework.Screens
     {
       IsDisposed = true;
     }
+
+    IScreen? ILinkedElement<IScreen>.Previous { get; set; }
+    IScreen? ILinkedElement<IScreen>.Next     { get; set; }
   }
 
   public abstract class Screen<TGame> : Screen

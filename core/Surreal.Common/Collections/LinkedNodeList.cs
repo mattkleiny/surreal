@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Surreal.Collections
 {
-  public interface ILinkedNodeListElement<TSelf>
-      where TSelf : class, ILinkedNodeListElement<TSelf>
+  public interface ILinkedElement<TSelf>
+      where TSelf : class, ILinkedElement<TSelf>
   {
     TSelf? Previous { get; set; }
     TSelf? Next     { get; set; }
   }
 
   public sealed class LinkedNodeList<TNode> : IEnumerable<TNode>
-      where TNode : class, ILinkedNodeListElement<TNode>
+      where TNode : class, ILinkedElement<TNode>
   {
     public TNode? Head    { get; private set; }
     public bool   IsEmpty => Head == null;

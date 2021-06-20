@@ -22,7 +22,7 @@ namespace Surreal.Framework
       Id = context.AllocateId();
     }
 
-    public ActorId     Id     { get; private set; }
+    public ActorId     Id     { get; private set; } = ActorId.None;
     public ActorStatus Status => context.GetStatus(Id);
 
     public bool IsDestroyed => Status == ActorStatus.Destroyed;
