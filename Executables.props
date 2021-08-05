@@ -1,6 +1,7 @@
 ﻿<!-- common configuration for executable projects -->
 <Project>
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
     <PublishSingleFile>true</PublishSingleFile>

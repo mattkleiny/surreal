@@ -9,5 +9,6 @@
   <Import Project="..\..\Executables.props" />
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.4.6" />
+    <PackageReference Include="Nodify" Version="1.7.0" />
   </ItemGroup>
 </Project>
