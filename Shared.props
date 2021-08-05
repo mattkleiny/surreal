@@ -6,6 +6,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>CS0414</NoWarn>
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
+    <RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup>
     <Product>Surreal</Product>

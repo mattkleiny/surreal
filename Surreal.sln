@@ -77,6 +77,11 @@ EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Framework.Actors", "framework\Surreal.Framework.Actors\Surreal.Framework.Actors.csproj", "{E39C70AF-4462-4FFE-B3BF-0EEFCF3BB3BD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{DDEB73C7-6BB8-4F6F-822B-FDD77637B89D}"
+ProjectSection(SolutionItems) = preProject
+	.github\workflows\build-and-package.yml = .github\workflows\build-and-package.yml
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -203,5 +208,6 @@ Global
 		{8BA5FE3A-161E-4E89-BC65-BB915734E3A1} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
 		{522DAC71-DF69-4FC8-A8B3-0178385D88D9} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
 		{E39C70AF-4462-4FFE-B3BF-0EEFCF3BB3BD} = {6B1596BD-3981-489A-849B-C142A9D38264}
+		{DDEB73C7-6BB8-4F6F-822B-FDD77637B89D} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
 	EndGlobalSection
 EndGlobal
