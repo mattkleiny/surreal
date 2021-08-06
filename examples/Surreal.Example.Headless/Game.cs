@@ -7,7 +7,7 @@ using Surreal.Timing;
 
 namespace Headless
 {
-  public sealed class Game : GameJam<Game>
+  public sealed class Game : GameJam
   {
     private static readonly ILog Log = LogFactory.GetLog<Game>();
 

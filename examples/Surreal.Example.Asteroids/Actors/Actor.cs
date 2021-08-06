@@ -6,8 +6,6 @@ namespace Asteroids.Actors
 {
   public class Actor : Surreal.Framework.Actor
   {
-    protected static Game Game => Game.Current;
-
     public ref TransformComponent Transform => ref GetComponent<TransformComponent>();
     public ref SpriteComponent    Sprite    => ref GetComponent<SpriteComponent>();
     public ref HealthComponent    Health    => ref GetComponent<HealthComponent>();

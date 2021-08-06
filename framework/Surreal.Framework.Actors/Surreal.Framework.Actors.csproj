@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Description>Actor support for Surreal.</Description>
     <RootNamespace>Surreal.Framework</RootNamespace>
   </PropertyGroup>
-  <Import Project="..\..\Shared.props" />
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
     <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />

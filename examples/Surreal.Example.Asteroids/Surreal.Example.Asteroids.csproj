@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <AssemblyName>Asteroids</AssemblyName>
     <RootNamespace>Asteroids</RootNamespace>
     <Description>A simple 'Asteroids' clone using Surreal.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Shared.props" />
   <Import Project="..\..\Executables.props" />
   <ItemGroup>
     <ProjectReference Include="..\..\framework\Surreal.Framework.Jam\Surreal.Framework.Jam.csproj" />

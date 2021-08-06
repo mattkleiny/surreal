@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Surreal</RootNamespace>
     <Description>Common tools, collections, etc for Surreal.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Shared.props" />
 </Project>

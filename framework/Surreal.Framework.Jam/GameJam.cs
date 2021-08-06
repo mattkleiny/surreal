@@ -24,8 +24,6 @@ namespace Surreal
 {
   public abstract class GameJam : Game
   {
-    public new static GameJam Current => (GameJam) Game.Current;
-
     public IAudioDevice    AudioDevice    { get; private set; } = null!;
     public IComputeDevice  ComputeDevice  { get; private set; } = null!;
     public IGraphicsDevice GraphicsDevice { get; private set; } = null!;
@@ -125,11 +123,5 @@ namespace Surreal
       GraphicsDevice.EndFrame();
       GraphicsDevice.Present();
     }
-  }
-
-  public abstract class GameJam<TSelf> : GameJam
-      where TSelf : GameJam<TSelf>
-  {
-    public new static TSelf Current => (TSelf) GameJam.Current;
   }
 }

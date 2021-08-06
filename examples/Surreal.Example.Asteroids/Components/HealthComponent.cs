@@ -1,6 +1,4 @@
-﻿using Surreal.Graphics.Sprites;
-
-namespace Asteroids.Components
+﻿namespace Asteroids.Components
 {
   public struct HealthComponent
   {

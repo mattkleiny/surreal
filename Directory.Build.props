@@ -1,12 +1,5 @@
-﻿<!-- common configuration for all projects -->
+<!-- common configuration for all projects -->
 <Project>
-  <PropertyGroup>
-    <LangVersion>9</LangVersion>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>CS0414</NoWarn>
-    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
-  </PropertyGroup>
   <PropertyGroup>
     <Product>Surreal</Product>
     <Authors>Matthew Kleinschafer</Authors>
@@ -16,14 +9,24 @@
     <Version>1.0.0.0</Version>
     <RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>CS0414</NoWarn>
+    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--  automatically embed resources and assets-->
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\..\JetBrainsAnnotations.cs">
       <Link>Shared\JetBrainsAnnotations.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <!--  automatically embed resources and assets-->
-    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Description>Platform abstractions for Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Assets\Surreal.Assets.csproj" />
   </ItemGroup>
-  <Import Project="..\..\Shared.props" />
 </Project>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
@@ -17,8 +16,6 @@ namespace Surreal.Framework
 {
   public abstract class Game : IDisposable, IFrameListener
   {
-    public static Game Current { get; private set; } = null!;
-
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
 
     private readonly DateTime    startTime = DateTime.Now;
@@ -37,7 +34,6 @@ namespace Surreal.Framework
 
     protected Game()
     {
-      Current    = this;
       loopTarget = new ProfiledLoopTarget(this);
     }
 

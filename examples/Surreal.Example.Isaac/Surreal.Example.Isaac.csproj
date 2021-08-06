@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <AssemblyName>Isaac</AssemblyName>
     <RootNamespace>Isaac</RootNamespace>
     <ApplicationIcon>./Isaac.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a simple Isaac-inspired dungeon crawler.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Shared.props"/>
   <Import Project="..\..\Executables.props"/>
   <ItemGroup>
     <ProjectReference Include="..\..\framework\Surreal.Framework.Jam\Surreal.Framework.Jam.csproj"/>

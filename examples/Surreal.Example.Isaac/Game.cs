@@ -3,7 +3,7 @@ using Surreal.Platform;
 
 namespace Isaac
 {
-  public sealed class Game : GameJam<Game>
+  public sealed class Game : GameJam
   {
     public static void Main() => Start<Game>(new()
     {

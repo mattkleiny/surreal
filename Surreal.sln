@@ -62,8 +62,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{8BA5FE3A-161E-4E89-BC65-BB915734E3A1}"
 ProjectSection(SolutionItems) = preProject
 	Tests.props = Tests.props
-	Shared.props = Shared.props
-	Executables.props = Executables.props
+	Directory.Build.props = Directory.Build.props
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Code", "Shared Code", "{522DAC71-DF69-4FC8-A8B3-0178385D88D9}"

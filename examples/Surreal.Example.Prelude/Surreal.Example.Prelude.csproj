@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <AssemblyName>Prelude</AssemblyName>
     <RootNamespace>Prelude</RootNamespace>
     <ApplicationIcon>./Prelude.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a software-rendered dungeon crawler based on a game by Notch.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Shared.props"/>
   <Import Project="..\..\Executables.props"/>
   <ItemGroup>
     <ProjectReference Include="..\..\framework\Surreal.Framework.Jam\Surreal.Framework.Jam.csproj"/>
