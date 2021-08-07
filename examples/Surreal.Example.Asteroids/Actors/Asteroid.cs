@@ -1,4 +1,4 @@
-﻿using Surreal.Framework;
+﻿using Surreal.Framework.Actors;
 
 namespace Asteroids.Actors
 {

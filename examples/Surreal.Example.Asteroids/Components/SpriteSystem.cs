@@ -1,5 +1,6 @@
 ﻿using Surreal.Framework;
-using Surreal.Framework.Components;
+using Surreal.Framework.Actors;
+using Surreal.Framework.Actors.Components;
 using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Sprites;

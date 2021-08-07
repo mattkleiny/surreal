@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Description>Template components and systems for game jams based on Surreal.</Description>
+    <RootNamespace>Surreal</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Audio\Surreal.Audio.csproj" />
+    <ProjectReference Include="..\Surreal.Compute\Surreal.Compute.csproj" />
+    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj" />
+    <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />
+  </ItemGroup>
+</Project>

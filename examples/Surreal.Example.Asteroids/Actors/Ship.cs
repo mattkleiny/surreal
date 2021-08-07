@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Surreal.Framework;
+using Surreal.Framework.Actors;
 using Surreal.Input.Keyboard;
 
 namespace Asteroids.Actors

@@ -5,13 +5,8 @@
     <RootNamespace>Headless</RootNamespace>
     <Description>A super basic example of headless execution with Surreal.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Executables.props"/>
   <ItemGroup>
-    <ProjectReference Include="..\..\framework\Surreal.Framework.Jam\Surreal.Framework.Jam.csproj"/>
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj"/>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
+    <ProjectReference Include="..\..\src\Surreal.Prototyping\Surreal.Prototyping.csproj"/>
+    <ProjectReference Include="..\..\src\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj"/>
   </ItemGroup>
 </Project>

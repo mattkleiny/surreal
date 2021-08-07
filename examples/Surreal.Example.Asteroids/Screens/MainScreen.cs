@@ -2,6 +2,7 @@
 using Surreal.Assets;
 using Surreal.Fibers;
 using Surreal.Framework;
+using Surreal.Framework.Actors;
 using Surreal.Framework.Screens;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;

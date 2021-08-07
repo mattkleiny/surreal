@@ -6,13 +6,8 @@
     <ApplicationIcon>./Isaac.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a simple Isaac-inspired dungeon crawler.</Description>
   </PropertyGroup>
-  <Import Project="..\..\Executables.props"/>
   <ItemGroup>
-    <ProjectReference Include="..\..\framework\Surreal.Framework.Jam\Surreal.Framework.Jam.csproj"/>
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj"/>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
+    <ProjectReference Include="..\..\src\Surreal.Prototyping\Surreal.Prototyping.csproj"/>
+    <ProjectReference Include="..\..\src\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj"/>
   </ItemGroup>
 </Project>

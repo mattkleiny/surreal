@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Description>Game framework and bootstrapping for Surreal.</Description>
+    <RootNamespace>Surreal.Framework</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
+  </ItemGroup>
+</Project>

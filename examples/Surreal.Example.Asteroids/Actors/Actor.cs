@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
 using Asteroids.Components;
-using Surreal.Framework;
+using Surreal.Framework.Actors;
 
 namespace Asteroids.Actors
 {
-  public class Actor : Surreal.Framework.Actor
+  public class Actor : Surreal.Framework.Actors.Actor
   {
     public ref TransformComponent Transform => ref GetComponent<TransformComponent>();
     public ref SpriteComponent    Sprite    => ref GetComponent<SpriteComponent>();
