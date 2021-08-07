@@ -6,6 +6,7 @@ using Surreal.Memory;
 
 namespace Surreal.IO
 {
+  /// <summary>A <see cref="FileSystem"/> for the host operating system.</summary>
   public sealed class LocalFileSystem : FileSystem
   {
     private static readonly string PathSeparator = System.IO.Path.PathSeparator.ToString();
@@ -79,7 +80,7 @@ namespace Surreal.IO
 
       public PathWatcher(Path path)
       {
-        watcher = new FileSystemWatcher(path.Target);
+        watcher = new FileSystemWatcher(path.Target.ToString()!);
 
         // adapt the event interface
         watcher.Created += (_, _) => Created?.Invoke(path);

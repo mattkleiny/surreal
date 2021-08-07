@@ -8,6 +8,7 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics
 {
+  /// <summary>Base class for any graphical resource.</summary>
   public abstract class GraphicsResource : IDisposable
   {
     private static readonly List<GraphicsResource> Resources = new();

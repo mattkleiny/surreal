@@ -46,13 +46,13 @@ namespace Asteroids.Screens
         assets.LoadAsset<Texture>("Assets/sprites/small_asteroid_3.png"),
       };
 
-      return FiberTask.CompletedTask;
+      return assets.WaitOnAssets();
     }
 
     private void Restart(Seed seed = default)
     {
       Scene.Clear();
-      Scene.Spawn(new Ship());
+      Scene.Spawn(new Ship(Game.Keyboard));
     }
 
     public override void Input(GameTime time)

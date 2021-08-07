@@ -10,6 +10,7 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Sprites
 {
+  /// <summary>An efficient batch of <see cref="Sprite"/>s for rendering to the GPU.</summary>
   public sealed class SpriteBatch : IDisposable
   {
     private const int MaximumSpriteCount = 8000;
@@ -21,8 +22,8 @@ namespace Surreal.Graphics.Sprites
     private readonly Mesh<Vertex>              mesh;
 
     private MaterialPass? materialPass;
-    private Texture?       lastTexture;
-    private int            vertexCount;
+    private Texture?      lastTexture;
+    private int           vertexCount;
 
     public SpriteBatch(IGraphicsDevice device, int spriteCount)
     {
@@ -50,7 +51,9 @@ namespace Surreal.Graphics.Sprites
     }
 
     public void Draw(Texture texture, float x, float y, Angle rotation, float width, float height)
-      => DrawInternal(texture, x, y, width, height, rotation, 0, 0, texture.Width, texture.Height, Color);
+    {
+      DrawInternal(texture, x, y, width, height, rotation, 0, 0, texture.Width, texture.Height, Color);
+    }
 
     private void DrawInternal(
         Texture texture,
@@ -151,10 +154,10 @@ namespace Surreal.Graphics.Sprites
       for (ushort i = 0, j = 0; i < indexCount; i += 6, j += 4)
       {
         indices[i + 0] = j;
-        indices[i + 1] = (ushort) (j + 1);
-        indices[i + 2] = (ushort) (j + 2);
-        indices[i + 3] = (ushort) (j + 2);
-        indices[i + 4] = (ushort) (j + 3);
+        indices[i + 1] = (ushort)(j + 1);
+        indices[i + 2] = (ushort)(j + 2);
+        indices[i + 3] = (ushort)(j + 2);
+        indices[i + 4] = (ushort)(j + 3);
         indices[i + 5] = j;
       }
 
@@ -173,14 +176,14 @@ namespace Surreal.Graphics.Sprites
       [VertexDescriptor(
           Alias = "a_position",
           Count = 2,
-          Type  = VertexType.Float
+          Type = VertexType.Float
       )]
       public Vector2 Position;
 
       [VertexDescriptor(
-          Alias      = "a_color",
-          Count      = 4,
-          Type       = VertexType.UnsignedByte,
+          Alias = "a_color",
+          Count = 4,
+          Type = VertexType.UnsignedByte,
           Normalized = true
       )]
       public Color Color;
@@ -188,7 +191,7 @@ namespace Surreal.Graphics.Sprites
       [VertexDescriptor(
           Alias = "a_texCoords",
           Count = 2,
-          Type  = VertexType.Float
+          Type = VertexType.Float
       )]
       public Vector2 UV;
 

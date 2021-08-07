@@ -1,4 +1,5 @@
-﻿using Surreal.IO;
+﻿using Surreal.Fibers;
+using Surreal.IO;
 
 namespace Surreal.Assets
 {
@@ -6,5 +7,7 @@ namespace Surreal.Assets
   {
     Asset<T> LoadAsset<T>(Path path)
         where T : class;
+
+    FiberTask WaitOnAssets();
   }
 }

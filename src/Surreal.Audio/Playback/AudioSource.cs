@@ -2,6 +2,7 @@ using Surreal.Audio.Clips;
 
 namespace Surreal.Audio.Playback
 {
+  /// <summary>Represents a source capable of playing <see cref="AudioClip"/>s.</summary>
   public abstract class AudioSource : AudioResource
   {
     public abstract float Volume    { get; set; }

@@ -7,6 +7,7 @@ using Surreal.Memory;
 
 namespace Surreal.Audio
 {
+  /// <summary>Base class for any audio resource.</summary>
   public abstract class AudioResource : IDisposable
   {
     private static readonly List<AudioResource> Resources = new();

@@ -4,6 +4,7 @@ using Surreal.Audio.Playback;
 
 namespace Surreal.Audio
 {
+  /// <summary>Represents the audio subsystem.</summary>
   public interface IAudioDevice
   {
     float MasterVolume { get; set; }

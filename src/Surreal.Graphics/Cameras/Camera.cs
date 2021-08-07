@@ -32,10 +32,7 @@ namespace Surreal.Graphics.Cameras
       Debug.Assert(viewportWidth > 0, "viewportWidth > 0");
       Debug.Assert(viewportHeight > 0, "viewportHeight > 0");
 
-      Viewport = new Viewport(
-          width: viewportWidth,
-          height: viewportHeight
-      );
+      Viewport = new Viewport(0, 0, viewportWidth, viewportHeight);
 
       Update();
     }
@@ -100,7 +97,7 @@ namespace Surreal.Graphics.Cameras
       result.Y = Viewport.Height * (result.Y + 1) / 2 + Viewport.Y;
       result.Z = (result.Z + 1) / 2f;
 
-      return new Point2((int) result.X, (int) result.Y);
+      return new Point2((int)result.X, (int)result.Y);
     }
 
     public Vector3 Unproject(Point2 screenPosition)

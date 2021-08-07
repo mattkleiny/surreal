@@ -4,10 +4,8 @@ using Surreal.Platform;
 
 namespace Asteroids
 {
-  public sealed class Game : GameJam
+  public sealed class Game : PrototypeGame
   {
-    public static Game Current { get; private set; } = null!;
-
     public static void Main() => Start<Game>(new()
     {
       Platform = new DesktopPlatform
@@ -23,8 +21,6 @@ namespace Asteroids
 
     protected override void Initialize()
     {
-      Current = this;
-
       base.Initialize();
 
       Screens.Push(new MainScreen(this));

@@ -1,24 +1,14 @@
 namespace Surreal.Graphics.Textures
 {
-  public readonly struct FrameBufferDescriptor
-  {
-    public int Width  { get; }
-    public int Height { get; }
-    public int Depth  { get; }
+  /// <summary>Describes a <see cref="FrameBuffer"/>'s underlying texture.</summary>
+  public readonly record struct FrameBufferDescriptor(
+      int Width,
+      int Height,
+      TextureFormat Format,
+      TextureFilterMode FilterMode
+  );
 
-    public TextureFormat     Format     { get; }
-    public TextureFilterMode FilterMode { get; }
-
-    public FrameBufferDescriptor(int width, int height, int depth, TextureFormat format, TextureFilterMode filterMode)
-    {
-      Width      = width;
-      Height     = height;
-      Depth      = depth;
-      Format     = format;
-      FilterMode = filterMode;
-    }
-  }
-
+  /// <summary>A frame-buffer that can be used for off-screen rendering.</summary>
   public abstract class FrameBuffer : GraphicsResource
   {
     public abstract Texture Texture { get; }

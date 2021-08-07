@@ -62,6 +62,8 @@ namespace Surreal.Platform.Internal.Input
           {
             Moved?.Invoke(DeltaPosition);
           }
+
+          // TODO: handle IsLockedToWindow
         }
       }
     }

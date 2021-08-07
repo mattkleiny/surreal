@@ -12,6 +12,9 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures
 {
+  // TODO: store raw bytes in memory, support particular texture modes for direct read/write
+
+  /// <summary>An image of manipulable pixels that can also be used for a texture.</summary>
   [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
   public sealed class Image : ITextureData, IGrid<Color>, IDisposable
   {
@@ -88,6 +91,7 @@ namespace Surreal.Graphics.Textures
     ReadOnlySpan<Color> ITextureData.Pixels => Pixels;
   }
 
+  /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>
   public sealed class ImageLoader : AssetLoader<Image>
   {
     public override async Task<Image> LoadAsync(Path path, IAssetResolver context)

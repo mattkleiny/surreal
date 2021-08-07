@@ -7,13 +7,17 @@ using Surreal.Memory;
 
 namespace Surreal.IO
 {
+  /// <summary>A <see cref="FileSystem"/> that uses embed assembly resources.</summary>
   public sealed class ResourceFileSystem : FileSystem
   {
-    private static Assembly[] GetDefaultAssemblies() => AppDomain.CurrentDomain
-        .GetAssemblies()
-        // dynamic assemblies do not support resources
-        .Where(assembly => !assembly.IsDynamic)
-        .ToArray();
+    private static Assembly[] GetDefaultAssemblies()
+    {
+      return AppDomain.CurrentDomain
+          .GetAssemblies()
+          // dynamic assemblies do not support resources
+          .Where(assembly => !assembly.IsDynamic)
+          .ToArray();
+    }
 
     private readonly Assembly[] assemblies;
 

@@ -6,9 +6,15 @@ namespace Asteroids.Actors
 {
   public class Ship : Actor
   {
+    private readonly IKeyboardDevice keyboard;
+
+    public Ship(IKeyboardDevice keyboard)
+    {
+      this.keyboard = keyboard;
+    }
+
     protected override void OnInput(GameTime time)
     {
-      var     keyboard  = Game.Current.Keyboard;
       ref var transform = ref Transform;
 
       if (keyboard.IsKeyDown(Key.W)) transform.Position += new Vector2(0f, 1f);

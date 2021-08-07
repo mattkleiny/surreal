@@ -22,7 +22,7 @@ using Surreal.Services;
 
 namespace Surreal
 {
-  public abstract class GameJam : Game
+  public abstract class PrototypeGame : Game
   {
     public IAudioDevice    AudioDevice    { get; private set; } = null!;
     public IComputeDevice  ComputeDevice  { get; private set; } = null!;
@@ -101,7 +101,7 @@ namespace Surreal
     {
       base.OnResized(width, height);
 
-      GraphicsDevice.Viewport = new Viewport(width, height);
+      GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
     }
 
     protected override void Begin(GameTime time)

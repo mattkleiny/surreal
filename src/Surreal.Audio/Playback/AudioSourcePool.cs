@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Surreal.Audio.Playback
 {
+/// <summary>Represents a pool of <see cref="AudioSource"/>s.</summary>
   public sealed class AudioSourcePool : IDisposable
   {
     private readonly AudioSource[] sources;

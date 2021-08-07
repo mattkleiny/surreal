@@ -54,7 +54,7 @@ namespace Surreal.Framework
     {
       Host.Resized += OnResized;
 
-      RegisterFileSystems(FileSystems.Registry);
+      RegisterFileSystems(FileSystem.Registry);
       RegisterServices(Services);
 
       for (var i = 0; i < Plugins.Count; i++)
@@ -62,7 +62,7 @@ namespace Surreal.Framework
         Plugins[i].Initialize();
       }
 
-      LoadContentAsync(Assets).Forget();
+      LoadContentAsync(Assets.CreateResolver()).Forget();
     }
 
     protected virtual async FiberTask LoadContentAsync(IAssetResolver assets)

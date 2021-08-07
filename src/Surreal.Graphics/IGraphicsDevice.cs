@@ -6,6 +6,10 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics
 {
+  /// <summary>A viewport for scissoring operations on a viewport.</summary>
+  public readonly record struct Viewport(int X, int Y, int Width, int Height);
+
+  /// <summary>Represents the underlying graphics device.</summary>
   public interface IGraphicsDevice
   {
     IPipelineState Pipeline { get; }
@@ -51,6 +55,7 @@ namespace Surreal.Graphics
     FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor);
   }
 
+  /// <summary>Represents the underlying state of the graphics fixed-function pipeline.</summary>
   public interface IPipelineState
   {
     FrameBuffer      PrimaryFrameBuffer { get; }
@@ -62,6 +67,7 @@ namespace Surreal.Graphics
     IRasterizerState Rasterizer         { get; }
   }
 
+  /// <summary>Represents the underlying state of the graphics device rasterizer.</summary>
   public interface IRasterizerState
   {
     Viewport Viewport { get; set; }
@@ -70,6 +76,7 @@ namespace Surreal.Graphics
     bool IsBlendingEnabled     { get; set; }
   }
 
+  /// <summary>Permits interaction with individual texture units on a <see cref="IPipelineState"/>.</summary>
   public interface ITextureUnits
   {
     Texture? this[int unit] { get; set; }

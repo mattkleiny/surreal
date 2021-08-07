@@ -7,6 +7,7 @@ using Surreal.Memory;
 
 namespace Surreal.Audio.Clips
 {
+  /// <summary>A buffer of audio data for use in audio playback.</summary>
   public sealed class AudioBuffer : AudioResource, IAudioData, IHasSizeEstimate
   {
     private readonly IDisposableBuffer<byte> buffer;
@@ -35,12 +36,13 @@ namespace Surreal.Audio.Clips
     }
   }
 
+  /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioBuffer"/>s.</summary>
   public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
   {
     public override async Task<AudioBuffer> LoadAsync(Path path, IAssetResolver context)
     {
       await using var stream = await path.OpenInputStreamAsync();
-      await using WaveStream reader = path.GetExtension() switch
+      await using WaveStream reader = path.Extension switch
       {
         ".wav"  => new WaveFileReader(stream),
         ".mp3"  => new Mp3FileReader(stream),

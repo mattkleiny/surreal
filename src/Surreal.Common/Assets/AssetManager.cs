@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Surreal.Fibers;
 using Surreal.IO;
 
 namespace Surreal.Assets
@@ -13,8 +14,10 @@ namespace Surreal.Assets
     Ready,
   }
 
-  public interface IAssetManager : IAssetResolver
+  public interface IAssetManager
   {
+    IAssetResolver CreateResolver();
+
     void        AddLoader(IAssetLoader loader);
     void        AddCallback(AssetId id, Action callback);
     AssetStatus GetStatus(AssetId id);
@@ -22,10 +25,15 @@ namespace Surreal.Assets
     void        Unload(AssetId id);
   }
 
-  public sealed class AssetManager : IDisposable, IAssetManager
+  public sealed class AssetManager : IAssetManager, IDisposable
   {
     private readonly Dictionary<Type, IAssetLoader> loadersByType = new();
     private readonly Dictionary<AssetId, Entry>     assetsById    = new();
+
+    public IAssetResolver CreateResolver()
+    {
+      return new AssetResolver(this);
+    }
 
     public void AddLoader(IAssetLoader loader)
     {
@@ -48,7 +56,8 @@ namespace Surreal.Assets
         throw new UnsupportedAssetException($"An unsupported asset type was requested: {typeof(T).Name}");
       }
 
-      var assetId = new AssetId(typeof(T), path);
+      var assetId  = new AssetId(typeof(T), path);
+      var resolver = CreateResolver();
 
       if (!assetsById.TryGetValue(assetId, out var entry))
       {
@@ -56,7 +65,7 @@ namespace Surreal.Assets
 
         entry.OnLoad();
 
-        loader.LoadAsync(path, this).ContinueWith(task =>
+        loader.LoadAsync(path, resolver).ContinueWith(task =>
         {
           if (assetsById.TryGetValue(assetId, out entry))
           {
@@ -116,6 +125,27 @@ namespace Surreal.Assets
       assetsById.Clear();
     }
 
+    private sealed class AssetResolver : IAssetResolver
+    {
+      private readonly AssetManager manager;
+
+      public AssetResolver(AssetManager manager)
+      {
+        this.manager = manager;
+      }
+
+      public Asset<T> LoadAsset<T>(Path path)
+          where T : class
+      {
+        throw new NotImplementedException();
+      }
+
+      public FiberTask WaitOnAssets()
+      {
+        throw new NotImplementedException();
+      }
+    }
+
     private sealed record Entry(AssetId Id)
     {
       public Queue<Action> Callbacks { get; }              = new(0);
@@ -151,7 +181,7 @@ namespace Surreal.Assets
     }
   }
 
-  public class UnsupportedAssetException : Exception
+  public sealed class UnsupportedAssetException : Exception
   {
     public UnsupportedAssetException(string message)
         : base(message)

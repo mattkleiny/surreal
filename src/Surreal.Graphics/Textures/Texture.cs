@@ -7,23 +7,27 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures
 {
+  /// <summary>Filter modes for a <see cref="Texture"/>.</summary>
   public enum TextureFilterMode
   {
     Point,
     Linear,
   }
 
+  /// <summary>Formats for a <see cref="Texture"/>.</summary>
   public enum TextureFormat
   {
     RGBA8888,
   }
 
+  /// <summary>Wrapping modes for a <see cref="Texture"/>.</summary>
   public enum TextureWrapMode
   {
     Clamp,
     Repeat,
   }
 
+  /// <summary>A type that supports the data format required for <see cref="Texture"/>s.</summary>
   public interface ITextureData
   {
     TextureFormat Format { get; }
@@ -35,6 +39,7 @@ namespace Surreal.Graphics.Textures
     ReadOnlySpan<Color> Pixels { get; }
   }
 
+  /// <summary>A texture that can be uploaded to the GPU.</summary>
   public abstract class Texture : GraphicsResource, IHasSizeEstimate
   {
     private ITextureData? data;
@@ -66,6 +71,7 @@ namespace Surreal.Graphics.Textures
     protected abstract void Upload(ITextureData? existingData, ITextureData newData);
   }
 
+  /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Texture"/>s.</summary>
   public sealed class TextureLoader : AssetLoader<Texture>
   {
     private readonly IGraphicsDevice   device;

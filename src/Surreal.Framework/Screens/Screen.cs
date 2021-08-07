@@ -36,7 +36,7 @@ namespace Surreal.Framework.Screens
     {
       IsInitialized = true;
 
-      LoadContentAsync(Game.Assets).Forget();
+      LoadContentAsync(Game.Assets.CreateResolver()).Forget();
     }
 
     protected virtual FiberTask LoadContentAsync(IAssetResolver assets)
@@ -81,6 +81,6 @@ namespace Surreal.Framework.Screens
     {
     }
 
-    public new TGame Game => (TGame) base.Game;
+    public new TGame Game => (TGame)base.Game;
   }
 }

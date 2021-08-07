@@ -3,7 +3,7 @@ using Surreal.Platform;
 
 namespace Prelude
 {
-  public sealed class Game : GameJam
+  public sealed class Game : PrototypeGame
   {
     public static void Main() => Start<Game>(new Configuration
     {
