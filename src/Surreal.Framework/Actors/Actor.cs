@@ -15,7 +15,7 @@ namespace Surreal.Framework.Actors
   {
     private IActorContext context = null!;
 
-    public ActorId     Id     { get; private set; } = ActorId.None;
+    public ActorId     Id     { get; internal set; } = ActorId.None;
     public ActorStatus Status => context.GetStatus(Id);
 
     public bool IsDestroyed => Status == ActorStatus.Destroyed;
@@ -28,7 +28,6 @@ namespace Surreal.Framework.Actors
     internal void Awake(IActorContext context)
     {
       this.context = context;
-      Id           = context.AllocateId();
 
       OnAwake();
     }

@@ -19,7 +19,9 @@ namespace Surreal.Framework.Actors
 
     public void Spawn(Actor actor)
     {
-      var id = actor.Id;
+      var id = new ActorId(Interlocked.Increment(ref nextActorId));
+
+      actor.Id = id;
 
       if (!entriesById.TryGetValue(id, out _))
       {
@@ -132,11 +134,6 @@ namespace Surreal.Framework.Actors
       }
 
       return (IComponentStorage<T>)storage;
-    }
-
-    ActorId IActorContext.AllocateId()
-    {
-      return new(Interlocked.Increment(ref nextActorId));
     }
 
     ActorStatus IActorContext.GetStatus(ActorId id)
