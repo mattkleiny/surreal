@@ -7,7 +7,7 @@ namespace Surreal.Platform.Internal.Input
   {
     private readonly List<IInputDevice> devices = new();
 
-    public OpenTKInputManager(IDesktopWindow window)
+    public OpenTKInputManager(OpenTKWindow window)
     {
       Keyboard = new OpenTKKeyboardDevice(window);
       Mouse    = new OpenTKMouseDevice(window);

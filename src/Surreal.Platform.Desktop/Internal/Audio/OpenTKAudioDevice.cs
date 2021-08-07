@@ -1,5 +1,4 @@
 using System;
-using OpenTK.Audio;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Audio.Playback;
@@ -10,7 +9,6 @@ namespace Surreal.Platform.Internal.Audio
 {
   internal sealed class OpenTKAudioDevice : IAudioDevice, IDisposable
   {
-    private readonly AudioContext    context = new();
     private readonly AudioSourcePool sourcePool;
 
     public OpenTKAudioDevice()
@@ -48,7 +46,6 @@ namespace Surreal.Platform.Internal.Audio
 
     public void Dispose()
     {
-      context.Dispose();
     }
   }
 }

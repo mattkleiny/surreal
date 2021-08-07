@@ -1,5 +1,5 @@
 ﻿using System;
-using Surreal.Mathematics.Linear;
+using System.Numerics;
 
 namespace Surreal.Input.Mouse
 {
@@ -8,10 +8,10 @@ namespace Surreal.Input.Mouse
     event Action<MouseButton> ButtonPressed;
     event Action<MouseButton> ButtonReleased;
 
-    event Action<Point2> Moved;
+    event Action<Vector2> Moved;
 
-    Point2 Position      { get; }
-    Point2 DeltaPosition { get; }
+    Vector2 Position      { get; }
+    Vector2 DeltaPosition { get; }
 
     bool IsLockedToWindow { get; set; }
     bool IsCursorVisible  { get; set; }

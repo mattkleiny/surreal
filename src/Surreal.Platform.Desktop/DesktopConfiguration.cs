@@ -9,8 +9,5 @@
     public bool   IsVsyncEnabled          { get; set; } = false;
     public bool   WaitForFirstFrame       { get; set; } = true;
     public bool   ShowFPSInTitle          { get; set; } = false;
-    public bool   EnableGraphicsDebugging { get; set; } = false;
-
-    public IDesktopWindow? CustomWindow { get; set; }
   }
 }

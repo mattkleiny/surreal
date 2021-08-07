@@ -5,6 +5,7 @@ using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.IO;
+using Surreal.Platform.Internal;
 using Surreal.Platform.Internal.Audio;
 using Surreal.Platform.Internal.Compute;
 using Surreal.Platform.Internal.Graphics;
@@ -20,24 +21,26 @@ namespace Surreal.Platform
     private readonly FpsCounter fpsCounter        = new();
     private          Timer      frameDisplayTimer = new(1.Seconds());
 
-    public DesktopPlatformHost(IDesktopWindow window, DesktopConfiguration configuration)
+    public DesktopPlatformHost(DesktopConfiguration configuration)
     {
       this.configuration = configuration;
 
-      Window         = window;
+      Window         = new OpenTKWindow(configuration);
       AudioDevice    = new OpenTKAudioDevice();
       ComputeDevice  = new OpenTKComputeDevice();
-      GraphicsDevice = new OpenTKGraphicsDevice(window);
-      InputManager   = new OpenTKInputManager(window);
+      GraphicsDevice = new OpenTKGraphicsDevice(Window);
+      InputManager   = new OpenTKInputManager(Window);
       FileSystem     = new LocalFileSystem();
     }
 
-    public IDesktopWindow       Window         { get; }
+    public OpenTKWindow         Window         { get; }
     public OpenTKAudioDevice    AudioDevice    { get; }
     public OpenTKComputeDevice  ComputeDevice  { get; }
     public OpenTKGraphicsDevice GraphicsDevice { get; }
     public OpenTKInputManager   InputManager   { get; }
     public LocalFileSystem      FileSystem     { get; }
+
+    IDesktopWindow IDesktopPlatformHost.Window => Window;
 
     public event Action<int, int> Resized
     {

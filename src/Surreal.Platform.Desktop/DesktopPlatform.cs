@@ -1,6 +1,4 @@
-﻿using Surreal.Platform.Internal;
-
-namespace Surreal.Platform
+﻿namespace Surreal.Platform
 {
   public sealed class DesktopPlatform : IPlatform
   {
@@ -8,9 +6,7 @@ namespace Surreal.Platform
 
     public IPlatformHost BuildHost()
     {
-      var window = Configuration.CustomWindow ?? new OpenTKWindow(Configuration);
-
-      return new DesktopPlatformHost(window, Configuration);
+      return new DesktopPlatformHost(Configuration);
     }
   }
 }

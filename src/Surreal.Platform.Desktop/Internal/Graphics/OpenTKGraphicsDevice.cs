@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using OpenTK;
+using OpenTK.Core.Platform;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
+using Surreal.Mathematics;
 using Surreal.Platform.Internal.Graphics.Resources;
-using Color = Surreal.Mathematics.Color;
-using Image = Surreal.Graphics.Textures.Image;
 using PrimitiveType = Surreal.Graphics.Meshes.PrimitiveType;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
@@ -113,7 +112,7 @@ namespace Surreal.Platform.Internal.Graphics
 
     public FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor)
     {
-      var texture = (OpenTKTexture) CreateTexture(descriptor.Format, descriptor.FilterMode, TextureWrapMode.Clamp);
+      var texture = (OpenTKTexture)CreateTexture(descriptor.Format, descriptor.FilterMode, TextureWrapMode.Clamp);
       var image   = new Image(descriptor.Width, descriptor.Height);
 
       texture.Upload(image);

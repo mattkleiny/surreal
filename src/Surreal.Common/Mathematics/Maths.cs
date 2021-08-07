@@ -1,7 +1,6 @@
 using System;
 using System.Numerics;
 using System.Threading;
-using Surreal.Mathematics.Linear;
 
 namespace Surreal.Mathematics
 {
@@ -14,12 +13,6 @@ namespace Surreal.Mathematics
     public const float Tau = MathF.Tau;
 
     public static Random Random => ThreadLocalRandom.Value!;
-
-    public static Point2  P(int x, int y)                       => new(x, y);
-    public static Point3  P(int x, int y, int z)                => new(x, y, z);
-    public static Vector2 V(float x, float y)                   => new(x, y);
-    public static Vector3 V(float x, float y, float z)          => new(x, y, z);
-    public static Vector4 V(float x, float y, float z, float w) => new(x, y, z, w);
 
     public static float   NextFloat(this Random random)                       => (float) random.NextDouble();
     public static float   NextFloat(this Random random, float min, float max) => random.NextFloat() * (max - min) + min;

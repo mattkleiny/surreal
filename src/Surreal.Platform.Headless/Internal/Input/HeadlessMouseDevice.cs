@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Surreal.Input.Mouse;
-using Surreal.Mathematics.Linear;
 
 namespace Surreal.Platform.Internal.Input
 {
@@ -11,7 +11,7 @@ namespace Surreal.Platform.Internal.Input
 
     public event Action<MouseButton>? ButtonPressed;
     public event Action<MouseButton>? ButtonReleased;
-    public event Action<Point2>?      Moved;
+    public event Action<Vector2>?     Moved;
 
     public bool this[MouseButton button]
     {
@@ -29,8 +29,8 @@ namespace Surreal.Platform.Internal.Input
       }
     }
 
-    public Point2 Position      { get; set; } = new(0, 0);
-    public Point2 DeltaPosition => new(0, 0);
+    public Vector2 Position      { get; set; } = new(0, 0);
+    public Vector2 DeltaPosition => new(0, 0);
 
     public bool IsLockedToWindow { get; set; } = false;
     public bool IsCursorVisible  { get; set; } = true;

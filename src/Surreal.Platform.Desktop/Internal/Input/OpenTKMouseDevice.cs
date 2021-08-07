@@ -1,27 +1,29 @@
 using System;
-using OpenTK.Input;
+using System.Numerics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using Surreal.Input;
 using Surreal.Input.Mouse;
-using Surreal.Mathematics.Linear;
 using MouseButton = Surreal.Input.Mouse.MouseButton;
 
 namespace Surreal.Platform.Internal.Input
 {
   internal sealed class OpenTKMouseDevice : BufferedInputDevice<MouseState>, IMouseDevice
   {
-    private readonly IDesktopWindow window;
+    private readonly OpenTKWindow window;
 
-    public OpenTKMouseDevice(IDesktopWindow window)
+    public OpenTKMouseDevice(OpenTKWindow window)
     {
       this.window = window;
+
+      UpdateState();
     }
 
     public event Action<MouseButton>? ButtonPressed;
     public event Action<MouseButton>? ButtonReleased;
-    public event Action<Point2>?      Moved;
+    public event Action<Vector2>?     Moved;
 
-    public Point2 Position      => new(CurrentState.X, CurrentState.Y);
-    public Point2 DeltaPosition => new(CurrentState.X - PreviousState.X, CurrentState.Y - PreviousState.Y);
+    public Vector2 Position      => new(CurrentState.X, CurrentState.Y);
+    public Vector2 DeltaPosition => new(CurrentState.X - PreviousState.X, CurrentState.Y - PreviousState.Y);
 
     public bool IsLockedToWindow { get; set; } = false;
 
@@ -32,9 +34,9 @@ namespace Surreal.Platform.Internal.Input
     }
 
     public bool IsButtonDown(MouseButton button)     => CurrentState.IsButtonDown(Convert(button));
-    public bool IsButtonUp(MouseButton button)       => CurrentState.IsButtonUp(Convert(button));
-    public bool IsButtonPressed(MouseButton button)  => CurrentState.IsButtonDown(Convert(button)) && PreviousState.IsButtonUp(Convert(button));
-    public bool IsButtonReleased(MouseButton button) => PreviousState.IsButtonDown(Convert(button)) && CurrentState.IsButtonUp(Convert(button));
+    public bool IsButtonUp(MouseButton button)       => !CurrentState.IsButtonDown(Convert(button));
+    public bool IsButtonPressed(MouseButton button)  => CurrentState.IsButtonDown(Convert(button)) && !PreviousState.IsButtonDown(Convert(button));
+    public bool IsButtonReleased(MouseButton button) => PreviousState.IsButtonDown(Convert(button)) && !CurrentState.IsButtonDown(Convert(button));
 
     public override void Update()
     {
@@ -60,24 +62,22 @@ namespace Surreal.Platform.Internal.Input
           {
             Moved?.Invoke(DeltaPosition);
           }
-
-          if (IsLockedToWindow)
-          {
-            Mouse.SetPosition(window.Width / 2f, window.Height / 2f);
-          }
         }
       }
     }
 
-    protected override MouseState CaptureState() => Mouse.GetState();
+    protected override MouseState CaptureState()
+    {
+      return window.GetMouseState();
+    }
 
-    private static OpenTK.Input.MouseButton Convert(MouseButton button)
+    private static OpenTK.Windowing.GraphicsLibraryFramework.MouseButton Convert(MouseButton button)
     {
       switch (button)
       {
-        case MouseButton.Left:   return OpenTK.Input.MouseButton.Left;
-        case MouseButton.Middle: return OpenTK.Input.MouseButton.Middle;
-        case MouseButton.Right:  return OpenTK.Input.MouseButton.Right;
+        case MouseButton.Left:   return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Left;
+        case MouseButton.Middle: return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Middle;
+        case MouseButton.Right:  return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Right;
 
         default:
           throw new ArgumentOutOfRangeException(nameof(button), button, "An unrecognized mouse button was requested.");

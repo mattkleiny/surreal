@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Surreal.Platform.Internal
 {
@@ -12,16 +13,21 @@ namespace Surreal.Platform.Internal
 
     public OpenTKWindow(DesktopConfiguration configuration)
     {
-      window = new GameWindow(
-          width: configuration.Width ?? 1024,
-          height: configuration.Height ?? 768,
-          mode: GraphicsMode.Default,
-          title: configuration.Title,
-          options: configuration.IsResizable ? GameWindowFlags.Default : GameWindowFlags.FixedWindow,
-          device: DisplayDevice.Default,
-          major: 2,
-          minor: 0,
-          flags: configuration.EnableGraphicsDebugging ? GraphicsContextFlags.Debug : GraphicsContextFlags.Default)
+      var gameWindowSettings = new GameWindowSettings
+      {
+        RenderFrequency = 0,
+        UpdateFrequency = 0,
+        IsMultiThreaded = false,
+      };
+
+      var nativeWindowSettings = new NativeWindowSettings
+      {
+        Title        = configuration.Title,
+        Size         = new(configuration.Width ?? 1024, configuration.Height ?? 768),
+        WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
+      };
+
+      window = new GameWindow(gameWindowSettings, nativeWindowSettings)
       {
         VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
       };
@@ -33,7 +39,8 @@ namespace Surreal.Platform.Internal
         var assembly = Assembly.GetEntryAssembly();
         if (assembly != null)
         {
-          window.Icon = Icon.ExtractAssociatedIcon(assembly.Location);
+          // TODO: fix me
+          // window.Icon = Icon.ExtractAssociatedIcon(assembly.Location);
         }
       }
       catch
@@ -41,48 +48,43 @@ namespace Surreal.Platform.Internal
         // no-op
       }
 
-      // set default width/height based on monitor resolution
-      if (configuration.Width == null) Width   = DisplayDevice.Default.Width * 5 / 6;
-      if (configuration.Height == null) Height = DisplayDevice.Default.Height * 5 / 6;
+      // TODO: set default width/height based on monitor resolution
+      // TODO: center on-screen
 
-      // center on-screen
-      window.X = DisplayDevice.Default.Width / 2 - Width / 2;
-      window.Y = DisplayDevice.Default.Height / 2 - Height / 2;
-
-      window.Resize += (_, _) => Resized?.Invoke(Width, Height);
+      window.Resize += (_) => Resized?.Invoke(Width, Height);
 
       window.MakeCurrent();
     }
 
     public event Action<int, int>? Resized;
 
-    public bool IsFocused => window.Focused;
+    public bool IsFocused => window.IsFocused;
     public bool IsClosing => window.IsExiting;
 
     public int Width
     {
-      get => window.Width;
+      get => window.Size.X;
       set
       {
         Debug.Assert(value > 0, "value > 0");
-        window.Width = value;
+        window.Size = new(value, window.Size.Y);
       }
     }
 
     public int Height
     {
-      get => window.Height;
+      get => window.Size.Y;
       set
       {
         Debug.Assert(value > 0, "value > 0");
-        window.Height = value;
+        window.Size = new(window.Size.X, value);
       }
     }
 
     public bool IsVisible
     {
-      get => window.Visible;
-      set => window.Visible = value;
+      get => window.IsVisible;
+      set => window.IsVisible = value;
     }
 
     public bool IsCursorVisible
@@ -101,6 +103,16 @@ namespace Surreal.Platform.Internal
     {
       get => window.VSync != VSyncMode.Off;
       set => window.VSync = value ? VSyncMode.On : VSyncMode.Off;
+    }
+
+    public KeyboardState GetKeyboardState()
+    {
+      return window.KeyboardState;
+    }
+
+    public MouseState GetMouseState()
+    {
+      return window.MouseState;
     }
 
     public void Update()

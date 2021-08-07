@@ -1,4 +1,4 @@
-using OpenTK;
+using OpenTK.Core.Platform;
 
 namespace Surreal.Platform.Internal.Graphics.Resources
 {
