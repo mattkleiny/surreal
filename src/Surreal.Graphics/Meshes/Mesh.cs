@@ -8,20 +8,21 @@ namespace Surreal.Graphics.Meshes
   public sealed class Mesh<TVertex> : IDisposable
       where TVertex : unmanaged
   {
+    private static VertexDescriptorSet SharedDescriptors { get; } = VertexDescriptorSet.Create<TVertex>();
+
     private readonly IGraphicsDevice device;
 
     public Mesh(IGraphicsDevice device)
     {
       this.device = device;
 
-      Vertices    = device.CreateBuffer<TVertex>();
-      Indices     = device.CreateBuffer<ushort>();
-      Descriptors = VertexDescriptorSet.Create<TVertex>();
+      Vertices = device.CreateBuffer<TVertex>();
+      Indices  = device.CreateBuffer<ushort>();
     }
 
     public GraphicsBuffer<TVertex> Vertices    { get; }
     public GraphicsBuffer<ushort>  Indices     { get; }
-    public VertexDescriptorSet     Descriptors { get; }
+    public VertexDescriptorSet     Descriptors => SharedDescriptors;
 
     public void DrawImmediate(MaterialPass pass, PrimitiveType type = PrimitiveType.Triangles)
     {

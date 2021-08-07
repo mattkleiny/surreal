@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Surreal.Memory
 {
@@ -18,7 +20,7 @@ namespace Surreal.Memory
     public static Size operator +(Size a, Size b) => new(a.Bytes + b.Bytes);
     public static Size operator -(Size a, Size b) => new(a.Bytes - b.Bytes);
 
-    public static implicit operator int(Size size)  => (int) size.Bytes;
+    public static implicit operator int(Size size)  => (int)size.Bytes;
     public static implicit operator long(Size size) => size.Bytes;
 
     public override string ToString()
@@ -51,6 +53,12 @@ namespace Surreal.Memory
       }
 
       return new Size(totalBytes);
+    }
+
+    public static Size CalculateSize<T>(this Span<T> span)
+        where T : unmanaged
+    {
+      return Bytes(span.Length * Unsafe.SizeOf<T>());
     }
   }
 }

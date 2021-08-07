@@ -43,9 +43,9 @@ namespace Surreal.Graphics.Textures
       buffer = Buffers.AllocateNative<Color>(width * height);
     }
 
-    public Size          Size   => buffer.Size;
     public TextureFormat Format => TextureFormat.RGBA8888;
     public Span<Color>   Pixels => buffer.Data;
+    public Size          Size   => buffer.Data.CalculateSize();
 
     public int Width  { get; }
     public int Height { get; }

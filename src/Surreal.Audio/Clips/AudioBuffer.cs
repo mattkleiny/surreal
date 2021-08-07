@@ -22,8 +22,8 @@ namespace Surreal.Audio.Clips
 
     public TimeSpan        Duration { get; }
     public AudioSampleRate Rate     { get; }
-    public Size            Size     => buffer.Size;
     public Span<byte>      Data     => buffer.Data;
+    public Size            Size     => buffer.Data.CalculateSize();
 
     protected override void Dispose(bool managed)
     {

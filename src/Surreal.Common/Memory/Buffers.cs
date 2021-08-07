@@ -1,243 +1,103 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Surreal.Memory
 {
   public interface IBuffer<T>
-      where T : unmanaged
   {
-    int     Length { get; }
-    int     Stride { get; }
-    Size    Size   { get; }
-    Span<T> Data   { get; }
-
-    void Clear();
-    void Fill(T value);
-
-    IBuffer<T> Slice(int offset, int size);
+    Span<T> Data { get; }
   }
 
   public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable
-      where T : unmanaged
   {
-  }
-
-  public interface IResizableBuffer<T> : IBuffer<T>
-      where T : unmanaged
-  {
-    void Resize(int newLength);
   }
 
   public static class Buffers
   {
-    public static IBuffer<T> Allocate<T>(int count)
-        where T : unmanaged => new ManagedBuffer<T>(count);
+    public static IBuffer<T> Allocate<T>(int length)
+      => new ManagedBuffer<T>(length);
 
-    public static IBuffer<T> AllocatePinned<T>(int count)
-        where T : unmanaged => new PinnedBuffer<T>(count);
+    public static IBuffer<T> AllocatePinned<T>(int length)
+      => new PinnedBuffer<T>(length);
 
-    public static IDisposableBuffer<T> AllocateNative<T>(int count, bool zeroFill = false)
-        where T : unmanaged => new UnmanagedBuffer<T>(count, zeroFill);
+    public static IDisposableBuffer<T> AllocateNative<T>(int length, bool zeroFill = false)
+      => new NativeBuffer<T>(length, zeroFill);
 
-    public static IDisposableBuffer<T> AllocateMapped<T>(string path, int offset, int length)
-        where T : unmanaged => new MemoryMappedBuffer<T>(path, offset, length);
+    #region Buffer Implementations
 
-    private abstract class Buffer<T> : IBuffer<T>
-        where T : unmanaged
+    private sealed class ManagedBuffer<T> : IBuffer<T>
     {
-      protected Buffer(int count)
+      private readonly T[] elements;
+
+      public ManagedBuffer(int length)
       {
-        Length = count;
+        elements = new T[length];
       }
 
-      public int  Length { get; protected set; }
-      public int  Stride => Unsafe.SizeOf<T>();
-      public Size Size   => new(Length * Stride);
-
-      public abstract Span<T> Data { get; }
-
-      public void Clear()       => Fill(default);
-      public void Fill(T value) => Data.Fill(value);
-
-      public virtual IBuffer<T> Slice(int offset, int size) => new BufferSlice(this, offset, size);
-
-      [DebuggerDisplay("{Size} sliced from ({source})")]
-      private sealed class BufferSlice : Buffer<T>
-      {
-        private readonly IBuffer<T> source;
-        private readonly int        offset;
-
-        public BufferSlice(IBuffer<T> source, int offset, int count)
-            : base(count)
-        {
-          this.source = source;
-          this.offset = offset;
-        }
-
-        public override Span<T> Data => source.Data.Slice(offset, Length);
-      }
+      public Span<T> Data => elements;
     }
 
-    [DebuggerDisplay("{Size} allocated on-heap")]
-    private sealed class ManagedBuffer<T> : Buffer<T>, IResizableBuffer<T>
-        where T : unmanaged
+    private sealed class PinnedBuffer<T> : IBuffer<T>
     {
-      private T[] elements;
+      private readonly T[] elements;
 
-      public ManagedBuffer(int count)
-          : base(count)
+      public PinnedBuffer(int length)
       {
-        elements = new T[count];
+        elements = GC.AllocateArray<T>(length, pinned: true);
       }
 
-      public override Span<T> Data => new(elements);
-
-      public void Resize(int newLength)
-      {
-        Array.Resize(ref elements, newLength);
-        Length = newLength;
-      }
+      public Span<T> Data => new(elements);
     }
 
-    [DebuggerDisplay("{Size} allocated on-heap (pinned)")]
-    private sealed class PinnedBuffer<T> : Buffer<T>, IResizableBuffer<T>
-        where T : unmanaged
+    private sealed class NativeBuffer<T> : IDisposableBuffer<T>
     {
-      private T[] elements;
+      private readonly int    length;
+      private readonly IntPtr address;
 
-      public PinnedBuffer(int count)
-          : base(count)
+      private bool isDisposed;
+
+      public NativeBuffer(int length, bool zeroFill)
       {
-        elements = GC.AllocateArray<T>(count, pinned: true);
-      }
+        this.length = length;
 
-      public override Span<T> Data => new(elements);
-
-      public void Resize(int newLength)
-      {
-        Array.Resize(ref elements, newLength);
-        Length = newLength;
-      }
-    }
-
-    [DebuggerDisplay("{Size} allocated off-heap")]
-    private sealed class UnmanagedBuffer<T> : Buffer<T>, IResizableBuffer<T>, IDisposableBuffer<T>
-        where T : unmanaged
-    {
-      private IntPtr address;
-      private bool   disposed;
-
-      public UnmanagedBuffer(int count, bool zeroFill)
-          : base(count)
-      {
-        address = Marshal.AllocHGlobal(count * Stride);
+        // TODO: replace with NativeMemory.Allocate() once it's available
+        address = Marshal.AllocHGlobal(length * Unsafe.SizeOf<T>());
 
         if (zeroFill)
         {
-          Clear();
+          Data.Fill(default!);
         }
       }
 
-      public override unsafe Span<T> Data
+      public unsafe Span<T> Data
       {
         get
         {
           CheckNotDisposed();
-
-          return new Span<T>(address.ToPointer(), Length);
+          return new Span<T>(address.ToPointer(), length);
         }
       }
 
-      public void Resize(int newLength)
+      public void Dispose()
       {
         CheckNotDisposed();
 
-        address = Marshal.ReAllocHGlobal(address, new IntPtr(newLength));
-        Length  = newLength;
-      }
-
-      public void Dispose()
-      {
-        if (!disposed)
-        {
-          Marshal.FreeHGlobal(address);
-          disposed = true;
-        }
+        Marshal.FreeHGlobal(address);
+        isDisposed = true;
       }
 
       [Conditional("DEBUG")]
       private void CheckNotDisposed()
       {
-        if (disposed)
+        if (isDisposed)
         {
-          throw new ObjectDisposedException(nameof(UnmanagedBuffer<T>));
+          throw new ObjectDisposedException(nameof(NativeBuffer<T>));
         }
       }
     }
 
-    [DebuggerDisplay("{Size} mapped from {path}")]
-    private sealed unsafe class MemoryMappedBuffer<T> : Buffer<T>, IDisposableBuffer<T>
-        where T : unmanaged
-    {
-// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-      private readonly string                   path;
-      private readonly MemoryMappedFile         file;
-      private readonly MemoryMappedViewAccessor accessor;
-      private readonly byte*                    pointer;
-      private          bool                     disposed;
-
-      public MemoryMappedBuffer(string path, int offset, int length)
-          : base(length / sizeof(T))
-      {
-        this.path = path;
-
-        file = MemoryMappedFile.CreateFromFile(
-            path: path,
-            mode: FileMode.OpenOrCreate,
-            mapName: Guid.NewGuid().ToString(), // needs to be unique
-            capacity: length,
-            access: MemoryMappedFileAccess.ReadWrite
-        );
-
-        accessor = file.CreateViewAccessor(offset, length);
-        accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
-      }
-
-      public override Span<T> Data
-      {
-        get
-        {
-          CheckNotDisposed();
-
-          return new Span<T>(pointer, (int) accessor.Capacity);
-        }
-      }
-
-      public void Dispose()
-      {
-        if (disposed)
-        {
-          accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-          accessor.Dispose();
-
-          file.Dispose();
-
-          disposed = true;
-        }
-      }
-
-      [Conditional("DEBUG")]
-      private void CheckNotDisposed()
-      {
-        if (disposed)
-        {
-          throw new ObjectDisposedException(nameof(UnmanagedBuffer<T>));
-        }
-      }
-    }
+    #endregion
   }
 }

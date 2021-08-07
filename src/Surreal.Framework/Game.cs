@@ -40,8 +40,8 @@ namespace Surreal.Framework
     public IPlatformHost     Host         { get; private set; } = null!;
     public IAssetManager     Assets       { get; }              = new AssetManager();
     public IServiceContainer Services     { get; }              = new ServiceContainer();
-    public List<IGamePlugin> Plugins      { get; }              = new();
     public ILoopStrategy     LoopStrategy { get; set; }         = new AveragingLoopStrategy();
+    public List<IGamePlugin> Plugins      { get; }              = new();
 
     protected internal void Initialize(IPlatformHost host)
     {
