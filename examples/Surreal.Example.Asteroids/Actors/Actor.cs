@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using Asteroids.Components;
-using Surreal.Framework.Actors;
 
 namespace Asteroids.Actors
 {
@@ -10,9 +9,10 @@ namespace Asteroids.Actors
     public ref SpriteComponent    Sprite    => ref GetComponent<SpriteComponent>();
     public ref HealthComponent    Health    => ref GetComponent<HealthComponent>();
 
-    public Actor(IActorContext context)
-        : base(context)
+    protected override void OnAwake()
     {
+      base.OnAwake();
+
       AddComponent(new TransformComponent
       {
         Position = Vector2.Zero,

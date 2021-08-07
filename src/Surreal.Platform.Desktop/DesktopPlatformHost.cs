@@ -64,12 +64,6 @@ namespace Surreal.Platform
         Window.Update();
         InputManager.Update();
 
-        // show the window after the first frame is complete
-        if (configuration.WaitForFirstFrame && !Window.IsVisible)
-        {
-          Window.IsVisible = true;
-        }
-
         // show the game's FPS in the window title
         if (configuration.ShowFPSInTitle)
         {

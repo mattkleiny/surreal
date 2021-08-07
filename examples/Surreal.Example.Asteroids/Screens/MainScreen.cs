@@ -52,7 +52,7 @@ namespace Asteroids.Screens
     private void Restart(Seed seed = default)
     {
       Scene.Clear();
-      Scene.Spawn(new Ship(Scene));
+      Scene.Spawn(new Ship());
     }
 
     public override void Input(GameTime time)

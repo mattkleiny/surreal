@@ -70,6 +70,9 @@ namespace Surreal.Collections
     IEnumerator<bool> IEnumerable<bool>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.            GetEnumerator() => GetEnumerator();
 
+    public static bool operator ==(BitArray32 left, BitArray32 right) => left.Equals(right);
+    public static bool operator !=(BitArray32 left, BitArray32 right) => !left.Equals(right);
+
     void IBinarySerializable.Save(BinaryWriter writer)
     {
       writer.Write(bits);

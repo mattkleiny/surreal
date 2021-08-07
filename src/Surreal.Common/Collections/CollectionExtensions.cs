@@ -1,27 +1,14 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Surreal.Collections
 {
   public static class CollectionExtensions
   {
-    public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
-        where TKey : notnull
-        where TValue : new()
-    {
-      if (!dictionary.TryGetValue(key, out var value))
-      {
-        dictionary[key] = value = new TValue();
-      }
-
-      return value;
-    }
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Swap<T>(this IList<T?> array, int fromIndex, int toIndex)
     {
-      var temp = array[fromIndex];
-
-      array[fromIndex] = array[toIndex];
-      array[toIndex]   = temp;
+      (array[fromIndex], array[toIndex]) = (array[toIndex], array[fromIndex]);
     }
 
     public static bool TryPeek<T>(this Stack<T> stack, out T value)
@@ -70,6 +57,18 @@ namespace Surreal.Collections
 
       value = default!;
       return false;
+    }
+
+    public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+        where TKey : notnull
+        where TValue : new()
+    {
+      if (!dictionary.TryGetValue(key, out var value))
+      {
+        dictionary[key] = value = new TValue();
+      }
+
+      return value;
     }
   }
 }

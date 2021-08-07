@@ -23,7 +23,7 @@ namespace Surreal.Platform.Internal
       var nativeWindowSettings = new NativeWindowSettings
       {
         Title        = configuration.Title,
-        Size         = new(configuration.Width ?? 1024, configuration.Height ?? 768),
+        Size         = new(configuration.Width, configuration.Height),
         WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
       };
 
@@ -31,8 +31,6 @@ namespace Surreal.Platform.Internal
       {
         VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
       };
-
-      IsVisible = !configuration.WaitForFirstFrame;
 
       try
       {

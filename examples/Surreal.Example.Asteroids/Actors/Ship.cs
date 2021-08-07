@@ -1,17 +1,11 @@
 ﻿using System.Numerics;
 using Surreal.Framework;
-using Surreal.Framework.Actors;
 using Surreal.Input.Keyboard;
 
 namespace Asteroids.Actors
 {
   public class Ship : Actor
   {
-    public Ship(IActorContext context)
-        : base(context)
-    {
-    }
-
     protected override void OnInput(GameTime time)
     {
       var     keyboard  = Game.Current.Keyboard;

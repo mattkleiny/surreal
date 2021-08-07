@@ -13,14 +13,7 @@ namespace Surreal.Framework.Actors
 
   public class Actor
   {
-    private readonly IActorContext context;
-
-    public Actor(IActorContext context)
-    {
-      this.context = context;
-
-      Id = context.AllocateId();
-    }
+    private IActorContext context = null!;
 
     public ActorId     Id     { get; private set; } = ActorId.None;
     public ActorStatus Status => context.GetStatus(Id);
@@ -32,12 +25,29 @@ namespace Surreal.Framework.Actors
     public void Enable()  => context.Enable(Id);
     public void Disable() => context.Disable(Id);
 
+    internal void Awake(IActorContext context)
+    {
+      this.context = context;
+      Id           = context.AllocateId();
+
+      OnAwake();
+    }
+
     public void Destroy()
     {
       if (!IsDestroyed)
       {
         context.Destroy(Id);
       }
+    }
+
+    #region Components
+
+    public T AddComponent<T>(T prototype)
+    {
+      var storage = context.GetStorage<T>();
+
+      return storage.AddComponent(Id, prototype);
     }
 
     public ref T GetComponent<T>()
@@ -53,19 +63,16 @@ namespace Surreal.Framework.Actors
       return ref component;
     }
 
-    public T AddComponent<T>(T prototype)
-    {
-      var storage = context.GetStorage<T>();
-
-      return storage.AddComponent(Id, prototype);
-    }
-
     public bool RemoveComponent<T>()
     {
       var storage = context.GetStorage<T>();
 
       return storage.RemoveComponent(Id);
     }
+
+    #endregion
+
+    #region Callbacks
 
     protected internal virtual void OnAwake()
     {
@@ -94,5 +101,7 @@ namespace Surreal.Framework.Actors
     protected internal virtual void OnDestroy()
     {
     }
+
+    #endregion
   }
 }

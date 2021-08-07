@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Surreal.Mathematics;
 using Surreal.Text;
@@ -14,13 +14,13 @@ namespace Surreal.Collections
     public static unsafe int AsInt<TEnum>(this TEnum value)
         where TEnum : unmanaged, Enum
     {
-      return *(int*) &value;
+      return *(int*)&value;
     }
 
     public static unsafe TEnum AsEnum<TEnum>(this int value)
         where TEnum : unmanaged, Enum
     {
-      return *(TEnum*) &value;
+      return *(TEnum*)&value;
     }
 
     public static bool EqualsFast<TEnum>(this TEnum first, TEnum second)
@@ -41,13 +41,13 @@ namespace Surreal.Collections
       return (flag & mask) == mask;
     }
 
-    public static ReadOnlySlice<string> GetEnumNames<TEnum>()
+    public static ImmutableArray<string> GetEnumNames<TEnum>()
         where TEnum : unmanaged, Enum
     {
       return CachedEnumLookup<TEnum>.Names;
     }
 
-    public static ReadOnlySlice<TEnum> GetEnumValues<TEnum>()
+    public static ImmutableArray<TEnum> GetEnumValues<TEnum>()
         where TEnum : unmanaged, Enum
     {
       return CachedEnumLookup<TEnum>.Values;
@@ -164,8 +164,8 @@ namespace Surreal.Collections
     private static class CachedEnumLookup<TEnum>
         where TEnum : unmanaged, Enum
     {
-      public static string[] Names  { get; } = Enum.GetNames(typeof(TEnum));
-      public static TEnum[]  Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToArray();
+      public static ImmutableArray<string> Names  { get; } = Enum.GetNames(typeof(TEnum)).ToImmutableArray();
+      public static ImmutableArray<TEnum>  Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToImmutableArray();
     }
   }
 }

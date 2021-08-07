@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Threading;
 using Surreal.Framework.Actors.Components;
 
@@ -26,7 +26,7 @@ namespace Surreal.Framework.Actors
         entriesById[id] = new Entry(actor);
         activationQueue.Enqueue(id);
 
-        actor.OnAwake();
+        actor.Awake(this);
       }
     }
 
@@ -120,10 +120,18 @@ namespace Surreal.Framework.Actors
 
       if (!componentsByType.TryGetValue(key, out var storage))
       {
-        componentsByType[key] = storage = new SparseComponentStorage<T>();
+        var attribute = key.GetCustomAttribute<ComponentAttribute>();
+        if (attribute != null)
+        {
+          componentsByType[key] = storage = attribute.CreateStorage<T>();
+        }
+        else
+        {
+          componentsByType[key] = storage = new SparseComponentStorage<T>();
+        }
       }
 
-      return (IComponentStorage<T>) storage;
+      return (IComponentStorage<T>)storage;
     }
 
     ActorId IActorContext.AllocateId()
@@ -183,66 +191,24 @@ namespace Surreal.Framework.Actors
 
       public void Transition(ActorStatus status)
       {
-        if (Status == status) return;
-        Status = status;
-
-        switch (status)
+        if (Status != status)
         {
-          case ActorStatus.Active:
-            Actor.OnEnable();
-            break;
-          case ActorStatus.Inactive:
-            Actor.OnDisable();
-            break;
-          case ActorStatus.Destroyed:
-            Actor.OnDestroy();
-            break;
+          Status = status;
+
+          switch (status)
+          {
+            case ActorStatus.Active:
+              Actor.OnEnable();
+              break;
+            case ActorStatus.Inactive:
+              Actor.OnDisable();
+              break;
+            case ActorStatus.Destroyed:
+              Actor.OnDestroy();
+              break;
+          }
         }
       }
-    }
-
-    #region Component Storage
-
-    private interface IComponentStorage
-    {
-      void Prune(ActorId id);
-    }
-
-    private sealed class SparseComponentStorage<T> : IComponentStorage<T>, IComponentStorage
-    {
-      private readonly Dictionary<ActorId, Box<T>> slots = new();
-
-      public ref T GetComponent(ActorId id)
-      {
-        if (slots.TryGetValue(id, out var slot))
-        {
-          return ref slot.Value;
-        }
-
-        return ref Unsafe.NullRef<T>();
-      }
-
-      public ref T AddComponent(ActorId id, Optional<T> prototype)
-      {
-        var component = prototype.GetOrDefault()!;
-        var slot      = new Box<T>(component);
-
-        slots[id] = slot;
-
-        return ref slot.Value;
-      }
-
-      public bool RemoveComponent(ActorId id)
-      {
-        return slots.Remove(id);
-      }
-
-      public void Prune(ActorId id)
-      {
-        slots.Remove(id);
-      }
-
-      #endregion
     }
   }
 }
