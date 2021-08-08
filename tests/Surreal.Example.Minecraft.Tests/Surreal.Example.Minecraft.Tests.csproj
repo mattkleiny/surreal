@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\examples\Surreal.Example.Minecraft\Surreal.Example.Minecraft.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Testing\Surreal.Testing.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,19 +1,19 @@
 ﻿using System.Numerics;
-using Xunit;
+using NUnit.Framework;
 
 namespace Surreal.Graphics.Cameras
 {
-  public class OrthographicCameraTests
+  public sealed class OrthographicCameraTests
   {
     private readonly OrthographicCamera camera = new(viewportWidth: 640, viewportHeight: 480);
 
-    [Fact]
+    [Test]
     public void it_should_project_coordinates_correctly()
     {
       var (x, y) = camera.Project(Vector3.Zero);
 
-      Assert.Equal(320, x);
-      Assert.Equal(240, y);
+      Assert.AreEqual(320, x);
+      Assert.AreEqual(240, y);
     }
   }
 }

@@ -20,8 +20,8 @@ namespace Surreal.Graphics.Meshes
     private readonly Mesh<Vertex>              mesh;
 
     private MaterialPass? materialPass;
-    private int            vertexCount;
-    private int            indexCount;
+    private int           vertexCount;
+    private int           indexCount;
 
     public GeometryBatch(IGraphicsDevice device, int maximumVertexCount = DefaultVertexCount, int maximumIndexCount = DefaultVertexCount * 6)
     {
@@ -39,13 +39,13 @@ namespace Surreal.Graphics.Meshes
     }
 
     public void DrawPoint(Vector2 position, Color color)
-      => DrawPrimitive(stackalloc[] {position}, color, PrimitiveType.Points);
+      => DrawPrimitive(stackalloc[] { position }, color, PrimitiveType.Points);
 
     public void DrawLine(Vector2 from, Vector2 to, Color color)
-      => DrawPrimitive(stackalloc[] {from, to}, color, PrimitiveType.Lines);
+      => DrawPrimitive(stackalloc[] { from, to }, color, PrimitiveType.Lines);
 
     public void DrawLine(Line segment, Color color)
-      => DrawPrimitive(stackalloc[] {segment.From, segment.To}, color, PrimitiveType.Lines);
+      => DrawPrimitive(stackalloc[] { segment.From, segment.To }, color, PrimitiveType.Lines);
 
     public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
       => DrawPrimitive(points, color, PrimitiveType.Lines);
@@ -57,10 +57,10 @@ namespace Surreal.Graphics.Meshes
       => DrawPrimitive(points, color, PrimitiveType.LineStrip);
 
     public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-      => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.Triangles);
+      => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.Triangles);
 
     public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-      => DrawPrimitive(stackalloc[] {a, b, c}, color, PrimitiveType.LineLoop);
+      => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.LineLoop);
 
     public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
       => DrawQuad(center, size, color, PrimitiveType.Quads);
@@ -108,7 +108,7 @@ namespace Surreal.Graphics.Meshes
 
       for (var i = 0; i < resolution; i++)
       {
-        var x = (float) i / resolution;
+        var x = (float)i / resolution;
 
         points.Add(curve.SampleAt(x));
       }
@@ -176,14 +176,14 @@ namespace Surreal.Graphics.Meshes
       [VertexDescriptor(
           Alias = "a_position",
           Count = 2,
-          Type  = VertexType.Float
+          Type = VertexType.Float
       )]
       public Vector2 Position;
 
       [VertexDescriptor(
-          Alias      = "a_color",
-          Count      = 4,
-          Type       = VertexType.UnsignedByte,
+          Alias = "a_color",
+          Count = 4,
+          Type = VertexType.UnsignedByte,
           Normalized = true
       )]
       public Color Color;

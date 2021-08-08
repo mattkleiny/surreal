@@ -21,15 +21,24 @@ namespace Surreal.Framework
     private readonly DateTime    startTime = DateTime.Now;
     private readonly ILoopTarget loopTarget;
 
-    public static void Start<TGame>(Configuration configuration)
+    public static TGame Create<TGame>(Configuration configuration)
         where TGame : Game, new()
     {
       using var host = configuration.Platform!.BuildHost();
-      using var game = new TGame();
+
+      var game = new TGame();
 
       game.Initialize(host);
 
-      Engine.Run(host, game);
+      return game;
+    }
+
+    public static void Start<TGame>(Configuration configuration)
+        where TGame : Game, new()
+    {
+      using var game = Create<TGame>(configuration);
+
+      Engine.Run(game.Host, game);
     }
 
     protected Game()

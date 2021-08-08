@@ -1,13 +1,13 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace Surreal.Fibers
 {
   public class FiberTests
   {
-    [Fact]
+    [Test]
     public void it_should_execute_and_yield()
     {
-      // TODO: fix this 
+      // TODO: fix this
       // var scheduler  = new FiberScheduler();
       // var executions = 0;
       //
@@ -18,9 +18,9 @@ namespace Surreal.Fibers
       // });
       //
       // scheduler.Run();
-      // Assert.Equal(1, executions);
+      // Assert.AreEqual(1, executions);
       // scheduler.Run();
-      // Assert.Equal(2, executions);
+      // Assert.AreEqual(2, executions);
     }
   }
 }

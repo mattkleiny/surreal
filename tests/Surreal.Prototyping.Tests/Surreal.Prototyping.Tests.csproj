@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Surreal</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.Prototyping\Surreal.Prototyping.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Testing\Surreal.Testing.csproj" />
+  </ItemGroup>
+</Project>

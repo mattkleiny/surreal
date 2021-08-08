@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Surreal.Graphics;
 using Surreal.Graphics.Textures;
 using Surreal.Grids;
 using Surreal.Mathematics;

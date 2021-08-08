@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Graphics;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;

@@ -6,7 +6,7 @@ using Surreal.Timing;
 
 namespace Surreal.Framework
 {
-  public static class Engine
+  internal static class Engine
   {
     public static bool IsRunning { get; private set; }
 

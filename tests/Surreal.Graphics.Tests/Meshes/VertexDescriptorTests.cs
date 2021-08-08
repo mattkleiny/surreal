@@ -1,40 +1,40 @@
 ﻿using System.Numerics;
 using System.Runtime.InteropServices;
+using NUnit.Framework;
 using Surreal.Mathematics;
-using Xunit;
 
 namespace Surreal.Graphics.Meshes
 {
-  public class VertexDescriptorTests
+  public sealed class VertexDescriptorTests
   {
-    [Fact]
-    public void it_should_resolve_attributes_in_order_from_metadata()
+    [Test]
+    public void it_should_resolve_attributes_in_correct_order_from_metadata()
     {
       var attributes = VertexDescriptorSet.Create<Vertex>();
 
-      Assert.Equal(2, attributes.Length);
+      Assert.AreEqual(2, attributes.Length);
 
-      Assert.Equal("a_position", attributes[0].Alias);
-      Assert.Equal("a_color", attributes[1].Alias);
+      Assert.AreEqual("a_position", attributes[0].Alias);
+      Assert.AreEqual("a_color", attributes[1].Alias);
     }
 
-    [Fact]
+    [Test]
     public void it_should_calculate_stride_correctly()
     {
       var attributes = VertexDescriptorSet.Create<Vertex>();
 
-      Assert.Equal(12, attributes[0].Stride);
-      Assert.Equal(4, attributes[1].Stride);
-      Assert.Equal(16, attributes.Stride);
+      Assert.AreEqual(12, attributes[0].Stride);
+      Assert.AreEqual(4, attributes[1].Stride);
+      Assert.AreEqual(16, attributes.Stride);
     }
 
-    [Fact]
+    [Test]
     public void it_should_calculate_offset_correctly()
     {
       var attributes = VertexDescriptorSet.Create<Vertex>();
 
-      Assert.Equal(0, attributes[0].Offset);
-      Assert.Equal(12, attributes[1].Offset);
+      Assert.AreEqual(0, attributes[0].Offset);
+      Assert.AreEqual(12, attributes[1].Offset);
     }
 
     [StructLayout(LayoutKind.Sequential)]
