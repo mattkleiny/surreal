@@ -24,11 +24,12 @@ namespace Surreal.Framework
     public static TGame Create<TGame>(Configuration configuration)
         where TGame : Game, new()
     {
-      using var host = configuration.Platform!.BuildHost();
+      var game = new TGame
+      {
+        Host = configuration.Platform!.BuildHost()
+      };
 
-      var game = new TGame();
-
-      game.Initialize(host);
+      game.Initialize();
 
       return game;
     }
@@ -46,18 +47,11 @@ namespace Surreal.Framework
       loopTarget = new ProfiledLoopTarget(this);
     }
 
-    public IPlatformHost     Host         { get; private set; } = null!;
-    public IAssetManager     Assets       { get; }              = new AssetManager();
-    public IServiceContainer Services     { get; }              = new ServiceContainer();
-    public ILoopStrategy     LoopStrategy { get; set; }         = new AveragingLoopStrategy();
-    public List<IGamePlugin> Plugins      { get; }              = new();
-
-    protected internal void Initialize(IPlatformHost host)
-    {
-      Host = host;
-
-      Initialize();
-    }
+    public IPlatformHost     Host         { get; private init; } = null!;
+    public IAssetManager     Assets       { get; }               = new AssetManager();
+    public IServiceContainer Services     { get; }               = new ServiceContainer();
+    public ILoopStrategy     LoopStrategy { get; set; }          = new AveragingLoopStrategy();
+    public List<IGamePlugin> Plugins      { get; }               = new();
 
     protected virtual void Initialize()
     {
@@ -157,6 +151,8 @@ namespace Surreal.Framework
       {
         services.Dispose();
       }
+
+      Host.Dispose();
     }
 
     public interface ILoopStrategy

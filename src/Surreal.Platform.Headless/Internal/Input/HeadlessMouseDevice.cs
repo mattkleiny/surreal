@@ -32,7 +32,6 @@ namespace Surreal.Platform.Internal.Input
     public Vector2 Position      { get; set; } = new(0, 0);
     public Vector2 DeltaPosition => new(0, 0);
 
-    public bool IsLockedToWindow { get; set; } = false;
     public bool IsCursorVisible  { get; set; } = true;
 
     public bool IsButtonDown(MouseButton button)     => false;

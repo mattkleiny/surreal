@@ -23,7 +23,6 @@ namespace Minecraft
       base.Initialize();
 
       Mouse.IsCursorVisible  = false;
-      Mouse.IsLockedToWindow = true;
 
       GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
     }

@@ -13,8 +13,7 @@ namespace Surreal.Input.Mouse
     Vector2 Position      { get; }
     Vector2 DeltaPosition { get; }
 
-    bool IsLockedToWindow { get; set; }
-    bool IsCursorVisible  { get; set; }
+    bool IsCursorVisible { get; set; }
 
     bool IsButtonDown(MouseButton button);
     bool IsButtonUp(MouseButton button);

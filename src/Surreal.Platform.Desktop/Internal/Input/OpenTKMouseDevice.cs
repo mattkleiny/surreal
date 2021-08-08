@@ -25,8 +25,6 @@ namespace Surreal.Platform.Internal.Input
     public Vector2 Position      => new(CurrentState.X, CurrentState.Y);
     public Vector2 DeltaPosition => new(CurrentState.X - PreviousState.X, CurrentState.Y - PreviousState.Y);
 
-    public bool IsLockedToWindow { get; set; } = false;
-
     public bool IsCursorVisible
     {
       get => window.IsCursorVisible;
@@ -58,12 +56,11 @@ namespace Surreal.Platform.Internal.Input
           if (IsButtonReleased(MouseButton.Right)) ButtonReleased?.Invoke(MouseButton.Right);
 
           // movement events
-          if (CurrentState.X != PreviousState.X || CurrentState.Y != PreviousState.Y)
+          if (Math.Abs(CurrentState.X - PreviousState.X) > float.Epsilon ||
+              Math.Abs(CurrentState.Y - PreviousState.Y) > float.Epsilon)
           {
             Moved?.Invoke(DeltaPosition);
           }
-
-          // TODO: handle IsLockedToWindow
         }
       }
     }
