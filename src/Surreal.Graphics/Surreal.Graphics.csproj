@@ -8,6 +8,6 @@
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" PrivateAssets="compile" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

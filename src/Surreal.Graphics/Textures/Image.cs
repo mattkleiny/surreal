@@ -2,34 +2,37 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using Surreal.Assets;
 using Surreal.Grids;
 using Surreal.IO;
-using Surreal.Mathematics;
-using Surreal.Memory;
+using Color = Surreal.Mathematics.Color;
+using Size = Surreal.Memory.Size;
 
 namespace Surreal.Graphics.Textures
 {
-  // TODO: store raw bytes in memory, support particular texture modes for direct read/write
-
   /// <summary>An image of manipulable pixels that can also be used for a texture.</summary>
   [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
   public sealed class Image : ITextureData, IGrid<Color>, IDisposable
   {
-    private readonly IDisposableBuffer<Color> buffer;
+    private readonly Image<Rgba32> image;
 
     public static async Task<Image> LoadAsync(Path path)
     {
       await using var stream = await path.OpenInputStreamAsync();
-      using var       image  = SixLabors.ImageSharp.Image.Load(stream);
+      var             image  = await SixLabors.ImageSharp.Image.LoadAsync(stream);
 
-      var result = new Image(image.Width, image.Height);
+      // we're already in the right format
+      if (image is Image<Rgba32> rgba)
+      {
+        return new Image(rgba);
+      }
 
-      image.GetPixelSpan().Cast<Rgba32, Color>().CopyTo(result.Pixels);
-
-      return result;
+      // we need to convert
+      using (image)
+      {
+        return new Image(image.CloneAs<Rgba32>());
+      }
     }
 
     public Image(int width, int height)
@@ -37,18 +40,20 @@ namespace Surreal.Graphics.Textures
       Debug.Assert(width > 0, "width > 0");
       Debug.Assert(height > 0, "height > 0");
 
-      Width  = width;
-      Height = height;
+      image = new Image<Rgba32>(width, height);
+    }
 
-      buffer = Buffers.AllocateNative<Color>(width * height);
+    private Image(Image<Rgba32> image)
+    {
+      this.image = image;
     }
 
     public TextureFormat Format => TextureFormat.RGBA8888;
-    public Span<Color>   Pixels => buffer.Data;
-    public Size          Size   => buffer.Data.CalculateSize();
+    public Span<Color>   Pixels => throw new NotImplementedException();
+    public Size          Size   => throw new NotImplementedException();
 
-    public int Width  { get; }
-    public int Height { get; }
+    public int Width  => image.Width;
+    public int Height => image.Height;
 
     public Color this[int x, int y]
     {
@@ -76,16 +81,13 @@ namespace Surreal.Graphics.Textures
     public async Task SaveAsync(Path path)
     {
       await using var stream = await path.OpenOutputStreamAsync();
-      using var       image  = new Image<Rgba32>(Width, Height);
 
-      Pixels.Cast<Color, Rgba32>().CopyTo(image.GetPixelSpan());
-
-      image.SaveAsPng(stream);
+      await image.SaveAsPngAsync(stream);
     }
 
     public void Dispose()
     {
-      buffer.Dispose();
+      image.Dispose();
     }
 
     ReadOnlySpan<Color> ITextureData.Pixels => Pixels;
