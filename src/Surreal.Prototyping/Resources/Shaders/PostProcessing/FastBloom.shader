@@ -1,4 +1,4 @@
-Shader "Surreal/Jam/Post Processing/Fast Bloom" {
+Shader "Surreal/Prototyping/Post Processing/Fast Bloom" {
   SubShader {
     Pass {
       HLSLPROGRAM

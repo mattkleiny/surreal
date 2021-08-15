@@ -18,4 +18,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputType>WinExe</OutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
+  </ItemGroup>
 </Project>

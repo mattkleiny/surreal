@@ -16,9 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- automatically embed resources and assets -->
     <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 
   <ItemGroup>

@@ -5,13 +5,13 @@
     <RootNamespace>Surreal.Platform</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Surreal.Audio\Surreal.Audio.csproj"/>
-    <ProjectReference Include="..\Surreal.Compute\Surreal.Compute.csproj"/>
-    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj"/>
-    <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj"/>
-    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj"/>
+    <ProjectReference Include="..\Surreal.Audio\Surreal.Audio.csproj" />
+    <ProjectReference Include="..\Surreal.Compute\Surreal.Compute.csproj" />
+    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj" />
+    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenTK" Version="4.6.4" PrivateAssets="compile"/>
+    <PackageReference Include="OpenTK" Version="4.6.4" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

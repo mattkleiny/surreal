@@ -1,25 +1,9 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Surreal.Mathematics.Linear
 {
-  public readonly struct BoundingBox : IEquatable<BoundingBox>
+  public readonly record struct BoundingBox(Vector3 Min, Vector3 Max)
   {
-    public readonly Vector3 Min;
-    public readonly Vector3 Max;
-
-    public BoundingBox(Vector3 min, Vector3 max)
-    {
-      Min = min;
-      Max = max;
-    }
-
-    public void Deconstruct(out Vector3 min, out Vector3 max)
-    {
-      min = Min;
-      max = Max;
-    }
-
     public float X => Min.X;
     public float Y => Min.Y;
     public float Z => Min.Y;
@@ -47,17 +31,5 @@ namespace Surreal.Mathematics.Linear
              vector.Z >= Min.Z &&
              vector.Z <= Max.Z;
     }
-
-    public override bool Equals(object? obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      return obj is BoundingBox other && Equals(other);
-    }
-
-    public          bool Equals(BoundingBox other) => Min.Equals(other.Min) && Max.Equals(other.Max);
-    public override int  GetHashCode()             => HashCode.Combine(Min, Max);
-
-    public static bool operator ==(BoundingBox left, BoundingBox right) => left.Equals(right);
-    public static bool operator !=(BoundingBox left, BoundingBox right) => !left.Equals(right);
   }
 }

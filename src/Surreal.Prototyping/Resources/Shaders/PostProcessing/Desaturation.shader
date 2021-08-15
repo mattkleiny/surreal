@@ -1,4 +1,4 @@
-Shader "Surreal/Jam/Post Processing/Desaturation" {
+Shader "Surreal/Prototyping/Post Processing/Desaturation" {
   SubShader {
     Pass {
       HLSLPROGRAM

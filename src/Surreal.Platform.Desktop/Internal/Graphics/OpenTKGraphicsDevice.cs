@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using OpenTK.Core.Platform;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
@@ -149,28 +148,5 @@ namespace Surreal.Platform.Internal.Graphics
       PrimitiveType.QuadStrip => OpenTK.Graphics.OpenGL.PrimitiveType.QuadStrip,
       _                       => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested."),
     };
-
-    [Conditional("DEBUG")]
-    public static void CheckForErrors()
-    {
-      var errorCode = GL.GetError();
-      if (errorCode != ErrorCode.NoError)
-      {
-        throw new PlatformException(errorCode switch
-        {
-          ErrorCode.InvalidEnum                 => "An invalid OpenGL enum was passed.",
-          ErrorCode.InvalidValue                => "An invalid OpenGL value was passed.",
-          ErrorCode.InvalidOperation            => "An invalid OpenGL operation was attempted.",
-          ErrorCode.StackOverflow               => "The OpenGL stack has overflowed.",
-          ErrorCode.StackUnderflow              => "The OpenGL stack has underflowed.",
-          ErrorCode.OutOfMemory                 => "OpenGL is out of memory.",
-          ErrorCode.InvalidFramebufferOperation => "An invalid OpenGL frame buffer operation was attempted.",
-          ErrorCode.ContextLost                 => "The OpenGL context was lost.",
-          ErrorCode.TableTooLarge               => "The OpenGL table is too large.",
-          ErrorCode.TextureTooLargeExt          => "The OpenGL texture is too large.",
-          _                                     => "An unexpected OpenGL error occurred.",
-        });
-      }
-    }
   }
 }

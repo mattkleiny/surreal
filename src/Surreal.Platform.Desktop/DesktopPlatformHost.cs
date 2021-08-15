@@ -40,8 +40,6 @@ namespace Surreal.Platform
     public OpenTKInputManager   InputManager   { get; }
     public LocalFileSystem      FileSystem     { get; }
 
-    IDesktopWindow IDesktopPlatformHost.Window => Window;
-
     public event Action<int, int> Resized
     {
       add => Window.Resized += value;
@@ -77,6 +75,15 @@ namespace Surreal.Platform
       }
     }
 
+    public void Dispose()
+    {
+      GraphicsDevice.Dispose();
+      ComputeDevice.Dispose();
+      AudioDevice.Dispose();
+
+      Window.Dispose();
+    }
+
     object? IServiceProvider.GetService(Type serviceType)
     {
       if (serviceType == typeof(IDesktopWindow)) return Window;
@@ -89,13 +96,6 @@ namespace Surreal.Platform
       return null;
     }
 
-    public void Dispose()
-    {
-      GraphicsDevice.Dispose();
-      ComputeDevice.Dispose();
-      AudioDevice.Dispose();
-
-      Window.Dispose();
-    }
+    IDesktopWindow IDesktopPlatformHost.Window => Window;
   }
 }
