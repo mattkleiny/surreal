@@ -13,38 +13,9 @@ namespace Surreal.Graphics
   {
     private static readonly List<GraphicsResource> Resources = new();
 
-    public static Size AllocatedBufferSize
-    {
-      get
-      {
-        lock (Resources)
-        {
-          return Resources.OfType<GraphicsBuffer>().Select(_ => _.Size).Sum();
-        }
-      }
-    }
-
-    public static Size AllocatedTextureSize
-    {
-      get
-      {
-        lock (Resources)
-        {
-          return Resources.OfType<Texture>().Select(_ => _.Size).Sum();
-        }
-      }
-    }
-
-    public static Size TotalAllocatedSize
-    {
-      get
-      {
-        lock (Resources)
-        {
-          return Resources.OfType<IHasSizeEstimate>().Select(_ => _.Size).Sum();
-        }
-      }
-    }
+    public static Size AllocatedBufferSize  => SumSizeEstimates<GraphicsBuffer>();
+    public static Size AllocatedTextureSize => SumSizeEstimates<Texture>();
+    public static Size TotalAllocatedSize   => SumSizeEstimates<IHasSizeEstimate>();
 
     private static void Track(GraphicsResource resource)
     {
@@ -59,6 +30,15 @@ namespace Surreal.Graphics
       lock (Resources)
       {
         Resources.Remove(resource);
+      }
+    }
+
+    private static Size SumSizeEstimates<T>()
+        where T : IHasSizeEstimate
+    {
+      lock (Resources)
+      {
+        return Resources.OfType<T>().Select(_ => _.Size).Sum();
       }
     }
 

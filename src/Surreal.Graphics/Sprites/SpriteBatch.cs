@@ -10,7 +10,7 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Sprites
 {
-  /// <summary>An efficient batch of <see cref="Sprite"/>s for rendering to the GPU.</summary>
+  /// <summary>An efficient batch of sprites for rendering to the GPU.</summary>
   public sealed class SpriteBatch : IDisposable
   {
     private const int MaximumSpriteCount = 8000;

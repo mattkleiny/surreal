@@ -4,6 +4,9 @@
     <RootNamespace>Surreal.Graphics</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Graphics\Surreal.Graphics.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Textures"/>
   </ItemGroup>
 </Project>

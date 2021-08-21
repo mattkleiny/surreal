@@ -1,17 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Surreal.Audio.Playback
 {
-/// <summary>Represents a pool of <see cref="AudioSource"/>s.</summary>
+  /// <summary>Represents a pool of <see cref="AudioSource"/>s.</summary>
   public sealed class AudioSourcePool : IDisposable
   {
     private readonly AudioSource[] sources;
 
-    public AudioSourcePool(IEnumerable<AudioSource> sources)
+    public AudioSourcePool(IAudioDevice device, int capacity)
     {
-      this.sources = sources.ToArray();
+      sources = new AudioSource[capacity];
+
+      for (var i = 0; i < sources.Length; i++)
+      {
+        sources[i] = device.CreateAudioSource();
+      }
     }
 
     public AudioSource? GetAudioSource()

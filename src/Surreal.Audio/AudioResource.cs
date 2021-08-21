@@ -12,27 +12,8 @@ namespace Surreal.Audio
   {
     private static readonly List<AudioResource> Resources = new();
 
-    public static Size AllocatedClipSize
-    {
-      get
-      {
-        lock (Resources)
-        {
-          return Resources.OfType<AudioClip>().Select(_ => _.Size).Sum();
-        }
-      }
-    }
-
-    public static Size TotalAllocatedSize
-    {
-      get
-      {
-        lock (Resources)
-        {
-          return Resources.OfType<IHasSizeEstimate>().Select(_ => _.Size).Sum();
-        }
-      }
-    }
+    public static Size AllocatedClipSize  => SumSizeEstimates<AudioClip>();
+    public static Size TotalAllocatedSize => SumSizeEstimates<IHasSizeEstimate>();
 
     private static void Track(AudioResource resource)
     {
@@ -47,6 +28,15 @@ namespace Surreal.Audio
       lock (Resources)
       {
         Resources.Remove(resource);
+      }
+    }
+
+    private static Size SumSizeEstimates<T>()
+        where T : IHasSizeEstimate
+    {
+      lock (Resources)
+      {
+        return Resources.OfType<T>().Select(_ => _.Size).Sum();
       }
     }
 

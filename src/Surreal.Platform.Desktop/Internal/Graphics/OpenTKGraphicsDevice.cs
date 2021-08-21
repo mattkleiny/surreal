@@ -61,13 +61,11 @@ namespace Surreal.Platform.Internal.Graphics
     {
       if (vertexCount == 0) return; // empty mesh? don't render
 
-      // TODO: apply material
-
-      // Pipeline.ActiveShader       = shader;
+      Pipeline.ActiveShader       = pass.Program;
       Pipeline.ActiveVertexBuffer = mesh.Vertices;
       Pipeline.ActiveIndexBuffer  = mesh.Indices;
 
-      // shader.Bind(mesh.Descriptors);
+      pass.Program.Bind(mesh.Descriptors);
 
       if (indexCount > 0)
       {

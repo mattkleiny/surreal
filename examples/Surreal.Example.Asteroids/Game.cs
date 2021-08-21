@@ -1,4 +1,3 @@
-using Asteroids.Screens;
 using Surreal;
 using Surreal.Platform;
 
@@ -18,12 +17,5 @@ namespace Asteroids
         },
       },
     });
-
-    protected override void Initialize()
-    {
-      base.Initialize();
-
-      Screens.Push(new MainScreen(this));
-    }
   }
 }

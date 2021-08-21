@@ -12,7 +12,6 @@ using Surreal.Framework.Screens;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
-using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
@@ -86,7 +85,6 @@ namespace Surreal
       assets.AddLoader(new ImageLoader());
       assets.AddLoader(new MaterialLoader());
       assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, hotReloading: Debugger.IsAttached));
-      assets.AddLoader(new SpriteLoader());
       assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
       assets.AddLoader(new TrueTypeFontLoader());
     }

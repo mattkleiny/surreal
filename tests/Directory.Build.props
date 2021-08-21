@@ -2,6 +2,8 @@
 <Project>
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
 
   <ItemGroup>

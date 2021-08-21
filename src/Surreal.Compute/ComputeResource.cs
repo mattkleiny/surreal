@@ -11,27 +11,8 @@ namespace Surreal.Compute
   {
     private static readonly List<ComputeResource> Resources = new();
 
-    public static Size TotalBufferSize
-    {
-      get
-      {
-        lock (Resources)
-        {
-          return Resources.OfType<ComputeBuffer>().Select(_ => _.Size).Sum();
-        }
-      }
-    }
-
-    public static Size TotalAllocatedSize
-    {
-      get
-      {
-        lock (Resources)
-        {
-          return Resources.OfType<IHasSizeEstimate>().Select(_ => _.Size).Sum();
-        }
-      }
-    }
+    public static Size TotalBufferSize    => SumSizeEstimates<ComputeBuffer>();
+    public static Size TotalAllocatedSize => SumSizeEstimates<IHasSizeEstimate>();
 
     private static void Track(ComputeResource resource)
     {
@@ -46,6 +27,15 @@ namespace Surreal.Compute
       lock (Resources)
       {
         Resources.Remove(resource);
+      }
+    }
+
+    private static Size SumSizeEstimates<T>()
+        where T : IHasSizeEstimate
+    {
+      lock (Resources)
+      {
+        return Resources.OfType<T>().Select(_ => _.Size).Sum();
       }
     }
 

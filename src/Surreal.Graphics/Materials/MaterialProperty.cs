@@ -2,25 +2,13 @@
 
 namespace Surreal.Graphics.Materials
 {
-  public readonly struct MaterialProperty<T> : IEquatable<MaterialProperty<T>>
+  public readonly record struct MaterialProperty<T>(string Name)
   {
-    public string Name { get; }
-    public int    Hash { get; }
+    public int Hash { get; } = Name.GetHashCode(StringComparison.OrdinalIgnoreCase);
 
-    public MaterialProperty(string name)
-    {
-      Name = name;
-      Hash = name.GetHashCode();
-    }
+    public override string ToString()    => Name;
+    public override int    GetHashCode() => Hash;
 
-    public override string ToString() => Name;
-
-    public          bool Equals(MaterialProperty<T> other) => Hash == other.Hash;
-    public override bool Equals(object? obj)               => obj is MaterialProperty<T> other && Equals(other);
-
-    public override int GetHashCode() => Hash;
-
-    public static bool operator ==(MaterialProperty<T> left, MaterialProperty<T> right) => left.Equals(right);
-    public static bool operator !=(MaterialProperty<T> left, MaterialProperty<T> right) => !left.Equals(right);
+    public bool Equals(MaterialProperty<T> other) => Hash == other.Hash;
   }
 }
