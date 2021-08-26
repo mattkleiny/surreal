@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Surreal.Assets;
 using Surreal.Compute.Memory;
+using Surreal.Content;
 using Surreal.Memory;
 
 namespace Surreal.Compute

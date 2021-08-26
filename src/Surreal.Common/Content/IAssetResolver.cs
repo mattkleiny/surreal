@@ -1,7 +1,7 @@
 ﻿using Surreal.Fibers;
 using Surreal.IO;
 
-namespace Surreal.Assets
+namespace Surreal.Content
 {
   public interface IAssetResolver
   {

@@ -16,7 +16,7 @@
     <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime" Version="4.6.4"/>
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.4" PrivateAssets="compile"/>
     <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.5-beta001">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>

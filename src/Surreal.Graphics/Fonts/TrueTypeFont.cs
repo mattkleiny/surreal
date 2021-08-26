@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Surreal.Assets;
+using Surreal.Content;
 using Surreal.IO;
 
 namespace Surreal.Graphics.Fonts

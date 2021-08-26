@@ -1,6 +1,6 @@
 ﻿using Surreal.Memory;
 
-namespace Surreal.Assets
+namespace Surreal.Content
 {
   public interface IHasSizeEstimate
   {

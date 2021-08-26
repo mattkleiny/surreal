@@ -1,6 +1,6 @@
 ﻿using System;
-using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Content;
 using Surreal.Fibers;
 
 namespace Surreal.Framework.Screens

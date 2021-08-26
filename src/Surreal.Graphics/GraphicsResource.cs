@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Surreal.Assets;
+using Surreal.Content;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Memory;

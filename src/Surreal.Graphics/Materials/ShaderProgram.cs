@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
-using Surreal.Assets;
+using Surreal.Content;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;

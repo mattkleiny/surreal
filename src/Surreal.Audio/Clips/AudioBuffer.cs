@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NAudio.Wave;
-using Surreal.Assets;
+using Surreal.Content;
 using Surreal.IO;
 using Surreal.Memory;
 

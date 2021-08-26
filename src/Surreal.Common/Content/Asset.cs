@@ -1,6 +1,6 @@
 using System;
 
-namespace Surreal.Assets
+namespace Surreal.Content
 {
   public readonly record struct Asset<T>(AssetId Id, IAssetManager Manager) : IDisposable
       where T : class

@@ -1,7 +1,7 @@
 ﻿using System;
 using Surreal.IO;
 
-namespace Surreal.Assets
+namespace Surreal.Content
 {
   public readonly record struct AssetId(Type Type, Path Path)
   {

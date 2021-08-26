@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Numerics;
 using System.Threading.Tasks;
-using Surreal.Assets;
+using Surreal.Content;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;

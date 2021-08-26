@@ -1,5 +1,5 @@
 using System;
-using Surreal.Assets;
+using Surreal.Content;
 using Surreal.Memory;
 
 namespace Surreal.Compute.Memory

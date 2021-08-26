@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Surreal.IO;
 
-namespace Surreal.Assets
+namespace Surreal.Content
 {
   public interface IAssetLoader
   {

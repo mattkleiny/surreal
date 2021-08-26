@@ -4,7 +4,7 @@ using System.Threading;
 using Surreal.Fibers;
 using Surreal.IO;
 
-namespace Surreal.Assets
+namespace Surreal.Content
 {
   public enum AssetStatus
   {

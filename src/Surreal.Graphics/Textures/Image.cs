@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Surreal.Assets;
+using Surreal.Content;
 using Surreal.Grids;
 using Surreal.IO;
 using Color = Surreal.Mathematics.Color;
