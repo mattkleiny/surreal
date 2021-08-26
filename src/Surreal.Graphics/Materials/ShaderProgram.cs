@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using Antlr4.Runtime;
 using Surreal.Content;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
@@ -41,15 +39,7 @@ namespace Surreal.Graphics.Materials
     {
       await using var stream = await path.OpenInputStreamAsync();
 
-      var lexer  = new ShadyLexer(new AntlrInputStream(stream));
-      var parser = new ShadyParser(new BufferedTokenStream(lexer));
-
       throw new NotImplementedException();
-    }
-
-    private sealed class ShaderCompilationVisitor : ShadyBaseVisitor<Unit>
-    {
-      public List<Shader> Shaders { get; } = new();
     }
   }
 }

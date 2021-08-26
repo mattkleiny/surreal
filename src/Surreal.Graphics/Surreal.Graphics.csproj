@@ -12,19 +12,19 @@
   </ItemGroup>
 
   <!-- Antlr 4 compilation support -->
-  <PropertyGroup>
-    <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime" Version="4.6.4" PrivateAssets="compile"/>
-    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.5-beta001">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
-    <Antlr4 Include="Materials\Shady.g4">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Surreal.Graphics.Materials</CustomToolNamespace>
-      <Listener>False</Listener>
-      <Visitor>True</Visitor>
-    </Antlr4>
-  </ItemGroup>
+  <!--  <PropertyGroup>-->
+  <!--    <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>-->
+  <!--  </PropertyGroup>-->
+  <!--  <ItemGroup>-->
+  <!--    <PackageReference Include="Antlr4.Runtime" Version="4.6.4" PrivateAssets="compile"/>-->
+  <!--    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.5-beta001">-->
+  <!--      <PrivateAssets>All</PrivateAssets>-->
+  <!--    </PackageReference>-->
+  <!--    <Antlr4 Include="Materials\Shady.g4">-->
+  <!--      <Generator>MSBuild:Compile</Generator>-->
+  <!--      <CustomToolNamespace>Surreal.Graphics.Materials</CustomToolNamespace>-->
+  <!--      <Listener>False</Listener>-->
+  <!--      <Visitor>True</Visitor>-->
+  <!--    </Antlr4>-->
+  <!--  </ItemGroup>-->
 </Project>
