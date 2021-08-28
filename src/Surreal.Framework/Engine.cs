@@ -4,7 +4,7 @@ using Surreal.Fibers;
 using Surreal.Platform;
 using Surreal.Timing;
 
-namespace Surreal.Framework
+namespace Surreal
 {
   internal static class Engine
   {

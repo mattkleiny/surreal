@@ -12,7 +12,7 @@ using Surreal.Platform;
 using Surreal.Services;
 using Surreal.Timing;
 
-namespace Surreal.Framework
+namespace Surreal
 {
   public abstract class Game : IDisposable, IFrameListener
   {

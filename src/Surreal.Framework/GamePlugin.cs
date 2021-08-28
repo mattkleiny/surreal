@@ -2,7 +2,7 @@
 using Surreal.Content;
 using Surreal.Fibers;
 
-namespace Surreal.Framework
+namespace Surreal
 {
   public interface IGamePlugin : IDisposable
   {

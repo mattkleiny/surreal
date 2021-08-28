@@ -16,7 +16,7 @@ namespace Surreal.Diagnostics.Console
   public sealed class GameConsole : IGameConsole
   {
     private readonly IGameConsoleInterpreter interpreter;
-    private readonly RingBuffer<string>  history;
+    private readonly RingBuffer<string>      history;
 
     public GameConsole(IGameConsoleInterpreter interpreter, int capacity = 1000)
     {

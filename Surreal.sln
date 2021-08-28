@@ -78,6 +78,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Testing", "src\Surr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Prototyping.Tests", "tests\Surreal.Prototyping.Tests\Surreal.Prototyping.Tests.csproj", "{CFB5DFE5-63D2-4400-B7EE-26F8FC636ACF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Mechanics", "src\Surreal.Mechanics\Surreal.Mechanics.csproj", "{50BA5478-1B01-408E-937E-25BCEB13DD6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Mechanics.Tactical", "src\Surreal.Mechanics.Tactical\Surreal.Mechanics.Tactical.csproj", "{3DD9F101-9220-45A1-AEF0-3FC02670CC68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -176,6 +180,14 @@ Global
 		{CFB5DFE5-63D2-4400-B7EE-26F8FC636ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFB5DFE5-63D2-4400-B7EE-26F8FC636ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFB5DFE5-63D2-4400-B7EE-26F8FC636ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50BA5478-1B01-408E-937E-25BCEB13DD6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50BA5478-1B01-408E-937E-25BCEB13DD6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50BA5478-1B01-408E-937E-25BCEB13DD6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50BA5478-1B01-408E-937E-25BCEB13DD6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DD9F101-9220-45A1-AEF0-3FC02670CC68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DD9F101-9220-45A1-AEF0-3FC02670CC68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DD9F101-9220-45A1-AEF0-3FC02670CC68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DD9F101-9220-45A1-AEF0-3FC02670CC68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

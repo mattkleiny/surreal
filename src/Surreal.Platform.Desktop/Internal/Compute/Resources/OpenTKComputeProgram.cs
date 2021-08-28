@@ -16,7 +16,7 @@ namespace Surreal.Platform.Internal.Compute.Resources
     {
       var shader = new Shader(ShaderType.Compute, raw.ToArray());
 
-      computeShader = new OpenTKShaderProgram(new[] {shader});
+      computeShader = new OpenTKShaderProgram(new[] { shader });
     }
 
     public override void Execute(int groupsX, int groupsY, int groupsZ)

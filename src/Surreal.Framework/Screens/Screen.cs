@@ -3,7 +3,7 @@ using Surreal.Collections;
 using Surreal.Content;
 using Surreal.Fibers;
 
-namespace Surreal.Framework.Screens
+namespace Surreal.Screens
 {
   public interface IScreen : ILinkedElement<IScreen>, IDisposable
   {

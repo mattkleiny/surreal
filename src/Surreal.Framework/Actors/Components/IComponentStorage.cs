@@ -1,4 +1,4 @@
-﻿namespace Surreal.Framework.Actors.Components
+﻿namespace Surreal.Actors.Components
 {
   public interface IComponentStorage
   {

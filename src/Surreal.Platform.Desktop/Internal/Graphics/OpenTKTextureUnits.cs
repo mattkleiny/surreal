@@ -32,7 +32,7 @@ namespace Surreal.Platform.Internal.Graphics
         Debug.Assert(unit >= 0, "unit >= 0");
         Debug.Assert(unit < textures.Length, "unit < textures.Length");
 
-        var texture = (OpenTKTexture) value!;
+        var texture = (OpenTKTexture)value!;
 
         textures[unit] = texture;
 

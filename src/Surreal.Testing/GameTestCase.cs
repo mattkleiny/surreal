@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Surreal.Framework;
 using Surreal.Platform;
 
 namespace Surreal.Testing
@@ -12,7 +11,7 @@ namespace Surreal.Testing
     [OneTimeSetUp]
     protected virtual void InitializeGame()
     {
-      Game = Framework.Game.Create<TGame>(new()
+      Game = Surreal.Game.Create<TGame>(new()
       {
         Platform = new HeadlessPlatform()
       });

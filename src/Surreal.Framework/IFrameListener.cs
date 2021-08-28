@@ -1,6 +1,6 @@
 using Surreal.Timing;
 
-namespace Surreal.Framework
+namespace Surreal
 {
   public interface IFrameListener
   {

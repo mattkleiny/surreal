@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Surreal</RootNamespace>
     <Description>Common tools, collections, etc for Surreal.</Description>
+    <RootNamespace>Surreal</RootNamespace>
   </PropertyGroup>
 </Project>

@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using Surreal.Timing;
 
-namespace Surreal.Framework
+namespace Surreal
 {
   public interface IGameContext
   {

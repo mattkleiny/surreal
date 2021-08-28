@@ -18,40 +18,40 @@ namespace Surreal.Platform.Internal.Graphics
 
     public FrameBuffer? ActiveFrameBuffer
     {
-      get => (FrameBuffer?) activeFrameBuffer;
+      get => (FrameBuffer?)activeFrameBuffer;
       set
       {
-        activeFrameBuffer = (OpenTKFrameBuffer?) value;
+        activeFrameBuffer = (OpenTKFrameBuffer?)value;
         GL.BindFramebuffer(FramebufferTarget.Framebuffer, activeFrameBuffer?.Id ?? 0);
       }
     }
 
     public ShaderProgram? ActiveShader
     {
-      get => (ShaderProgram?) activeShader;
+      get => (ShaderProgram?)activeShader;
       set
       {
-        activeShader = (OpenTKShaderProgram?) value;
+        activeShader = (OpenTKShaderProgram?)value;
         GL.UseProgram(activeShader?.Id ?? 0);
       }
     }
 
     public GraphicsBuffer? ActiveVertexBuffer
     {
-      get => (GraphicsBuffer?) activeVertexBuffer;
+      get => (GraphicsBuffer?)activeVertexBuffer;
       set
       {
-        activeVertexBuffer = (IHasNativeId?) value;
+        activeVertexBuffer = (IHasNativeId?)value;
         GL.BindBuffer(BufferTarget.ArrayBuffer, activeVertexBuffer?.Id ?? 0);
       }
     }
 
     public GraphicsBuffer? ActiveIndexBuffer
     {
-      get => (GraphicsBuffer?) activeIndexBuffer;
+      get => (GraphicsBuffer?)activeIndexBuffer;
       set
       {
-        activeIndexBuffer = (IHasNativeId?) value;
+        activeIndexBuffer = (IHasNativeId?)value;
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, activeIndexBuffer?.Id ?? 0);
       }
     }

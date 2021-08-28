@@ -1,6 +1,6 @@
-﻿using Surreal.Framework.Actors.Components;
+﻿using Surreal.Actors.Components;
 
-namespace Surreal.Framework.Actors
+namespace Surreal.Actors
 {
   public interface IActorContext
   {

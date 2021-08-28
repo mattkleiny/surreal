@@ -43,7 +43,7 @@ namespace Surreal.Platform.Internal
 
     public override unsafe MemoryHandle Pin(int elementIndex = 0)
     {
-      var address = (T*) this.address.ToPointer() + elementIndex;
+      var address = (T*)this.address.ToPointer() + elementIndex;
 
       return new MemoryHandle(address);
     }

@@ -141,7 +141,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources
       var location = GetUniformLocation(name);
 
       ref var source   = ref Unsafe.AsRef(in matrix);
-      var     elements = (float*) Unsafe.AsPointer(ref source);
+      var     elements = (float*)Unsafe.AsPointer(ref source);
 
       GL.UniformMatrix4(location, 1, false, elements);
     }
@@ -151,7 +151,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources
       var location = GetUniformLocation(name);
 
       ref var source   = ref Unsafe.AsRef(in matrix);
-      var     elements = (float*) Unsafe.AsPointer(ref source);
+      var     elements = (float*)Unsafe.AsPointer(ref source);
 
       GL.UniformMatrix4(location, 1, false, elements);
     }

@@ -10,5 +10,10 @@
     }
 
     public ref T Value => ref value;
+
+    public override string ToString()
+    {
+      return $"Box ({Value})";
+    }
   }
 }

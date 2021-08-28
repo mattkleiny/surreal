@@ -4,8 +4,8 @@ namespace Surreal.Mathematics
 {
   public readonly struct Normal : IEquatable<Normal>
   {
-    public static Normal Zero => default;
-    public static Normal One  => new(1f);
+    public static Normal Min => default;
+    public static Normal Max => new(1f);
 
     public static readonly FloatRange Range = new(0f, 1f);
 

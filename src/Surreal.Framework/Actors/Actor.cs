@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Framework.Actors
+namespace Surreal.Actors
 {
   public enum ActorStatus
   {

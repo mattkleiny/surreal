@@ -1,7 +1,7 @@
 ﻿using System;
 using Surreal.Collections;
 
-namespace Surreal.Framework.Screens
+namespace Surreal.Screens
 {
   public interface IScreenManager : IGamePlugin
   {

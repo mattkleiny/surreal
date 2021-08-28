@@ -33,13 +33,13 @@ namespace Surreal.Platform.Internal.Audio.Resources
       {
         AL.GetSource(id, ALGetSourcei.SourceState, out var state);
 
-        return state == (int) ALSourceState.Playing;
+        return state == (int)ALSourceState.Playing;
       }
     }
 
     public override void Play(AudioClip clip)
     {
-      var innerClip = (OpenTKAudioClip) clip;
+      var innerClip = (OpenTKAudioClip)clip;
 
       AL.Source(id, ALSourcef.Gain, volume * device.MasterVolume);
       AL.Source(id, ALSourcei.Buffer, innerClip.Id);

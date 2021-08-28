@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Surreal.Timing;
 
-namespace Surreal.Framework
+namespace Surreal
 {
   [DebuggerDisplay("{DeltaTime} since last frame")]
   public readonly ref struct GameTime

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using Surreal.Framework.Actors.Components;
+using Surreal.Actors.Components;
 
-namespace Surreal.Framework.Actors
+namespace Surreal.Actors
 {
   public sealed class ActorScene : IActorContext, IComponentContext, IDisposable
   {

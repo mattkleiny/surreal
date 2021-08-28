@@ -1,4 +1,4 @@
-﻿namespace Surreal.Framework.Actors
+﻿namespace Surreal.Actors
 {
   public readonly record struct ActorId(uint Id)
   {

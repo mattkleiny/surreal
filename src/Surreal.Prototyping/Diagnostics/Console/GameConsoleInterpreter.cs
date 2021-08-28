@@ -56,7 +56,7 @@ namespace Surreal.Diagnostics.Console
       }
     }
 
-    private sealed class ExecutionVisitor : RecursiveVisitor<object?>
+    private sealed class ExecutionVisitor : GameConsoleExpression.RecursiveVisitor<object?>
     {
       private readonly BindingCollection bindings;
 

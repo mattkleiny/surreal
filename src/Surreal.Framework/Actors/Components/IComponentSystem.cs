@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Surreal.Framework.Actors.Components
+namespace Surreal.Actors.Components
 {
   public interface IComponentSystem
   {

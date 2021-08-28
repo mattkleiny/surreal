@@ -7,8 +7,6 @@ using Surreal.Compute.Execution;
 using Surreal.Content;
 using Surreal.Diagnostics.Console;
 using Surreal.Diagnostics.Logging;
-using Surreal.Framework;
-using Surreal.Framework.Screens;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
@@ -17,6 +15,7 @@ using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Mathematics;
+using Surreal.Screens;
 using Surreal.Services;
 
 namespace Surreal

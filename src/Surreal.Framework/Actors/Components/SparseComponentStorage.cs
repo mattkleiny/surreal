@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Framework.Actors.Components
+namespace Surreal.Actors.Components
 {
   public sealed class SparseComponentStorage<T> : IComponentStorage<T>
   {

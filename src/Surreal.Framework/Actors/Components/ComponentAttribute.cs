@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Surreal.Framework.Actors.Components
+namespace Surreal.Actors.Components
 {
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
   public sealed class ComponentAttribute : Attribute

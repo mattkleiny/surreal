@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Tactical game mechanics</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Mechanics\Surreal.Mechanics.csproj"/>
+  </ItemGroup>
+</Project>

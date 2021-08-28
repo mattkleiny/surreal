@@ -30,13 +30,13 @@ namespace Surreal.Platform.Internal.Graphics.Resources
 
       var (minFilter, magFilter) = ConvertFilterMode(filterMode);
 
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) minFilter);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) magFilter);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
 
       var wrapping = ConvertWrapMode(wrapMode);
 
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) wrapping);
-      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) wrapping);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapping);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapping);
     }
 
     protected override unsafe void Upload(ITextureData? existingData, ITextureData newData)

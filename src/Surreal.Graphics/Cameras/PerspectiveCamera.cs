@@ -26,7 +26,7 @@ namespace Surreal.Graphics.Cameras
     {
       projection = Matrix4x4.CreatePerspectiveFieldOfView(
           fieldOfView: fieldOfView,
-          aspectRatio: (float) Viewport.Width / Viewport.Height,
+          aspectRatio: (float)Viewport.Width / Viewport.Height,
           nearPlaneDistance: Near,
           farPlaneDistance: Far
       );
