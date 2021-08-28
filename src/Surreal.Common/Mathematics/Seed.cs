@@ -7,7 +7,7 @@ namespace Surreal.Mathematics
   public struct Seed : IEquatable<Seed>, IBinarySerializable
   {
     public static Seed Default    => default;
-    public static Seed Randomized => new(Maths.Random.Next());
+    public static Seed Randomized => new(Random.Shared.Next());
 
     public int Value;
 
@@ -25,7 +25,7 @@ namespace Surreal.Mathematics
     {
       if (Value == 0)
       {
-        return new Random(Maths.Random.Next());
+        return Random.Shared;
       }
 
       return new Random(Value);
