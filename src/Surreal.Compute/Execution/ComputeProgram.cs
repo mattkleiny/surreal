@@ -18,7 +18,7 @@ namespace Surreal.Compute.Execution
       this.device = device;
     }
 
-    public override async Task<ComputeProgram> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<ComputeProgram> LoadAsync(Path path, IAssetResolver resolver)
     {
       var raw = await path.ReadAllBytesAsync();
 

@@ -41,9 +41,9 @@ namespace Surreal.Audio.Clips
       this.device = device;
     }
 
-    public override async Task<AudioClip> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<AudioClip> LoadAsync(Path path, IAssetResolver resolver)
     {
-      var buffer = await context.LoadAsset<AudioBuffer>(path);
+      var buffer = await resolver.LoadAsset<AudioBuffer>(path);
 
       return device.CreateAudioClip(buffer.Data);
     }

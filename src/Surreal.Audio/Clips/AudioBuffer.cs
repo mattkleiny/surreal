@@ -39,7 +39,7 @@ namespace Surreal.Audio.Clips
   /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioBuffer"/>s.</summary>
   public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
   {
-    public override async Task<AudioBuffer> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<AudioBuffer> LoadAsync(Path path, IAssetResolver resolver)
     {
       await using var stream = await path.OpenInputStreamAsync();
 

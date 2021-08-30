@@ -10,18 +10,5 @@ namespace Surreal.Mathematics.Pathing
     public static readonly PathHeuristic<Vector2> Constant = (_, _) => 1f;
     public static          PathHeuristic<Vector2> Taxicab   => throw new NotImplementedException();
     public static          PathHeuristic<Vector2> Euclidean => throw new NotImplementedException();
-
-    public static PathHeuristic<TNode> Map<TNode>(
-        this PathHeuristic<Vector2> heuristic,
-        Func<TNode, Vector2> provider)
-    {
-      return (candidate, goal) =>
-      {
-        var start = provider(candidate);
-        var end   = provider(goal);
-
-        return heuristic(start, end);
-      };
-    }
   }
 }

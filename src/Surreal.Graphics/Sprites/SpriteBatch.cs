@@ -6,6 +6,7 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
+using Surreal.Mathematics.Linear;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Sprites
@@ -30,18 +31,16 @@ namespace Surreal.Graphics.Sprites
       Debug.Assert(spriteCount > 0, "spriteCount > 0");
       Debug.Assert(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-      Device             = device;
-      MaximumVertexCount = spriteCount * 4;
+      Device = device;
 
-      vertices = Buffers.AllocateNative<Vertex>(MaximumVertexCount);
+      vertices = Buffers.AllocateNative<Vertex>(spriteCount * 4);
       mesh     = new Mesh<Vertex>(device);
 
       CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
     }
 
-    public IGraphicsDevice Device             { get; }
-    public Color           Color              { get; set; } = Color.White;
-    public int             MaximumVertexCount { get; }
+    public IGraphicsDevice Device { get; }
+    public Color           Color  { get; set; } = Color.White;
 
     public void Begin(MaterialPass materialPass, in Matrix4x4 projectionView)
     {
@@ -50,45 +49,42 @@ namespace Surreal.Graphics.Sprites
       materialPass.SetProperty(ProjectionView, projectionView);
     }
 
-    public void Draw(Texture texture, float x, float y, Angle rotation, float width, float height)
+    public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Angle rotation = default)
     {
-      DrawInternal(texture, x, y, width, height, rotation, 0, 0, texture.Width, texture.Height, Color);
+      DrawInternal(region, position, size, rotation, region.Offset, region.Size, Color);
     }
 
     private void DrawInternal(
-        Texture texture,
-        float x, float y,
-        float width,
-        float height,
+        in TextureRegion region,
+        Vector2 position,
+        Vector2 size,
         Angle rotation,
-        float sourceX,
-        float sourceY,
-        float sourceWidth,
-        float sourceHeight,
+        Point2 regionOffset,
+        Point2 regionSize,
         Color color
     )
     {
       // if we're switching texture, we'll need to flush and start again
-      if (texture != lastTexture)
+      if (region.Texture != lastTexture)
       {
         Flush();
-        lastTexture = texture;
+        lastTexture = region.Texture;
       }
       // if we've exceeded the batch capacity, we'll need to flush and start again
-      else if (vertexCount >= MaximumVertexCount)
+      else if (vertexCount >= this.vertices.Data.Length)
       {
         Flush();
       }
 
       // calculate u/v extents
-      var u  = sourceX / texture.Width;
-      var v  = (sourceY + sourceHeight) / texture.Height;
-      var u2 = (sourceX + sourceWidth) / texture.Width;
-      var v2 = sourceY / texture.Height;
+      var u  = regionOffset.X / region.Width;
+      var v  = (regionOffset.Y + regionSize.Y) / region.Height;
+      var u2 = (regionOffset.X + regionSize.X) / region.Width;
+      var v2 = regionOffset.Y / region.Height;
 
       // calculate shape extents
-      var extentX = x + width;
-      var extentY = y + height;
+      var extentX = position.X + size.X;
+      var extentY = position.Y + size.Y;
 
       // rotate coordinates about the z axis
       if (MathF.Abs(rotation.Radians) > float.Epsilon)
@@ -104,13 +100,13 @@ namespace Surreal.Graphics.Sprites
       ref var vertex2 = ref vertices[2];
       ref var vertex3 = ref vertices[3];
 
-      vertex0.Position.X = x;
-      vertex0.Position.Y = y;
+      vertex0.Position.X = position.X;
+      vertex0.Position.Y = position.Y;
       vertex0.Color      = color;
       vertex0.UV.X       = u;
       vertex0.UV.Y       = v;
 
-      vertex1.Position.X = x;
+      vertex1.Position.X = position.X;
       vertex1.Position.Y = extentY;
       vertex1.Color      = color;
       vertex1.UV.X       = u;
@@ -123,7 +119,7 @@ namespace Surreal.Graphics.Sprites
       vertex2.UV.Y       = v2;
 
       vertex3.Position.X = extentX;
-      vertex3.Position.Y = y;
+      vertex3.Position.Y = position.Y;
       vertex3.Color      = color;
       vertex3.UV.X       = u2;
       vertex3.UV.Y       = v;

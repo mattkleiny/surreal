@@ -85,6 +85,7 @@ namespace Surreal
       assets.AddLoader(new MaterialLoader());
       assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, hotReloading: Debugger.IsAttached));
       assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
+      assets.AddLoader(new TextureRegionLoader());
       assets.AddLoader(new TrueTypeFontLoader());
     }
 

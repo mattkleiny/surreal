@@ -96,7 +96,7 @@ namespace Surreal.Graphics.Textures
   /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>
   public sealed class ImageLoader : AssetLoader<Image>
   {
-    public override async Task<Image> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<Image> LoadAsync(Path path, IAssetResolver resolver)
     {
       return await Image.LoadAsync(path);
     }

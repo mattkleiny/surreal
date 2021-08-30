@@ -12,15 +12,14 @@ namespace Surreal.Content
   }
 
   public abstract class AssetLoader<T> : IAssetLoader
-      where T : class
   {
     public virtual Type AssetType { get; } = typeof(T);
 
-    async Task<object> IAssetLoader.LoadAsync(Path path, IAssetResolver context)
-    {
-      return await LoadAsync(path, context);
-    }
+    public abstract Task<T> LoadAsync(Path path, IAssetResolver resolver);
 
-    public abstract Task<T> LoadAsync(Path path, IAssetResolver context);
+    async Task<object> IAssetLoader.LoadAsync(Path path, IAssetResolver resolver)
+    {
+      return (await LoadAsync(path, resolver))!;
+    }
   }
 }

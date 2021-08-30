@@ -48,9 +48,9 @@ namespace Surreal.Graphics.Materials
 
   public sealed class MaterialLoader : AssetLoader<Material>
   {
-    public override async Task<Material> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<Material> LoadAsync(Path path, IAssetResolver resolver)
     {
-      var program = await context.LoadAsset<ShaderProgram>(path);
+      var program = await resolver.LoadAsset<ShaderProgram>(path);
       var pass    = new MaterialPass(program.Data);
 
       return new Material(pass);

@@ -30,11 +30,10 @@ namespace Surreal.Graphics.Textures
   /// <summary>A type that supports the data format required for <see cref="Texture"/>s.</summary>
   public interface ITextureData
   {
+    int           Width  { get; }
+    int           Height { get; }
     TextureFormat Format { get; }
-
-    int  Width  { get; }
-    int  Height { get; }
-    Size Size   { get; }
+    Size          Size   { get; }
 
     ReadOnlySpan<Color> Pixels { get; }
   }
@@ -58,6 +57,8 @@ namespace Surreal.Graphics.Textures
     public int  Width  => data?.Width ?? 0;
     public int  Height => data?.Height ?? 0;
     public Size Size   => data?.Size ?? Size.Zero;
+
+    public TextureRegion ToRegion() => new(this);
 
     public void Upload(ITextureData data)
     {
@@ -85,9 +86,9 @@ namespace Surreal.Graphics.Textures
       this.defaultWrapMode   = defaultWrapMode;
     }
 
-    public override async Task<Texture> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<Texture> LoadAsync(Path path, IAssetResolver resolver)
     {
-      var image   = await context.LoadAsset<Image>(path);
+      var image   = await resolver.LoadAsset<Image>(path);
       var texture = device.CreateTexture(image.Data, defaultFilterMode, defaultWrapMode);
 
       return texture;

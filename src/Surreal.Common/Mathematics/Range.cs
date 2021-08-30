@@ -4,9 +4,6 @@ namespace Surreal.Mathematics
 {
   public static class Range
   {
-    public static IntRange   Of(int min, int max)     => new(min, max);
-    public static FloatRange Of(float min, float max) => new(min, max);
-
     public static int   Clamp(this int value, int min, int max)       => Maths.Clamp(value, min, max);
     public static float Clamp(this float value, float min, float max) => Maths.Clamp(value, min, max);
     public static int   Clamp(this int value, IntRange range)         => Maths.Clamp(value, range.Min, range.Max);

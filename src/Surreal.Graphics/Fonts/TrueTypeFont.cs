@@ -11,7 +11,7 @@ namespace Surreal.Graphics.Fonts
 
   public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
   {
-    public override async Task<TrueTypeFont> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<TrueTypeFont> LoadAsync(Path path, IAssetResolver resolver)
     {
       await using var stream = await path.OpenInputStreamAsync();
 

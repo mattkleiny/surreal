@@ -35,7 +35,7 @@ namespace Surreal.Graphics.Materials
       this.hotReloading = hotReloading;
     }
 
-    public override async Task<ShaderProgram> LoadAsync(Path path, IAssetResolver context)
+    public override async Task<ShaderProgram> LoadAsync(Path path, IAssetResolver resolver)
     {
       await using var stream = await path.OpenInputStreamAsync();
 
