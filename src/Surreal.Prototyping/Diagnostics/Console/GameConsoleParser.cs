@@ -72,14 +72,14 @@ namespace Surreal.Diagnostics.Console
       "-" => BinaryOperation.Minus,
       "*" => BinaryOperation.Times,
       "/" => BinaryOperation.Divide,
-      _   => throw Error(),
+      _   => throw Error()
     };
 
     private UnaryOperation UnaryOperator() => Consume(TokenType.Operator).Lexeme switch
     {
       "!" => UnaryOperation.Not,
       "-" => UnaryOperation.Negate,
-      _   => throw Error(),
+      _   => throw Error()
     };
 
     public enum TokenType
@@ -87,7 +87,7 @@ namespace Surreal.Diagnostics.Console
       WhiteSpace,
       Operator,
       Number,
-      String,
+      String
     }
   }
 }

@@ -19,9 +19,9 @@ namespace Surreal.Graphics.Meshes
     private readonly IDisposableBuffer<ushort> indices;
     private readonly Mesh<Vertex>              mesh;
 
-    private MaterialPass? materialPass;
-    private int           vertexCount;
-    private int           indexCount;
+    private Material? material;
+    private int       vertexCount;
+    private int       indexCount;
 
     public GeometryBatch(IGraphicsDevice device, int maximumVertexCount = DefaultVertexCount, int maximumIndexCount = DefaultVertexCount * 6)
     {
@@ -31,11 +31,11 @@ namespace Surreal.Graphics.Meshes
       mesh = new Mesh<Vertex>(device);
     }
 
-    public void Begin(MaterialPass materialPass, in Matrix4x4 projectionView)
+    public void Begin(Material material, in Matrix4x4 projectionView)
     {
-      this.materialPass = materialPass;
+      this.material = material;
 
-      materialPass.SetProperty(ProjectionView, in projectionView);
+      material.SetProperty(ProjectionView, in projectionView);
     }
 
     public void DrawPoint(Vector2 position, Color color)
@@ -108,7 +108,7 @@ namespace Surreal.Graphics.Meshes
 
       for (var i = 0; i < resolution; i++)
       {
-        var x = (float)i / resolution;
+        var x = (float) i / resolution;
 
         points.Add(curve.SampleAt(x));
       }
@@ -127,7 +127,7 @@ namespace Surreal.Graphics.Meshes
             new Vector2(center.X - halfWidth, center.Y - halfHeight),
             new Vector2(center.X - halfWidth, center.Y + halfHeight),
             new Vector2(center.X + halfWidth, center.Y + halfHeight),
-            new Vector2(center.X + halfWidth, center.Y - halfHeight),
+            new Vector2(center.X + halfWidth, center.Y - halfHeight)
           },
           color: color,
           type: type
@@ -151,12 +151,12 @@ namespace Surreal.Graphics.Meshes
     private void Flush(PrimitiveType type)
     {
       if (vertexCount == 0) return;
-      if (materialPass == null) return;
+      if (material == null) return;
 
       mesh.Vertices.Write(vertices.Data[..vertexCount]);
       mesh.Indices.Write(indices.Data[..indexCount]);
 
-      mesh.DrawImmediate(materialPass, vertexCount, indexCount, type);
+      mesh.DrawImmediate(material, vertexCount, indexCount, type);
 
       vertexCount = 0;
       indexCount  = 0;

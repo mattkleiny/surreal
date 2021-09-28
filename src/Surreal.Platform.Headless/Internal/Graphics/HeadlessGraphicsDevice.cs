@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
@@ -34,7 +33,7 @@ namespace Surreal.Platform.Internal.Graphics
 
     public void DrawMesh<TVertex>(
         Mesh<TVertex> mesh,
-        MaterialPass pass,
+        Material material,
         int vertexCount,
         int indexCount,
         PrimitiveType type = PrimitiveType.Triangles)
@@ -56,11 +55,6 @@ namespace Surreal.Platform.Internal.Graphics
     public GraphicsBuffer<T> CreateBuffer<T>() where T : unmanaged
     {
       return new HeadlessGraphicsBuffer<T>();
-    }
-
-    public ShaderProgram CreateShaderProgram(IReadOnlyList<Shader> shaders)
-    {
-      return new HeadlessShaderProgram();
     }
 
     public Texture CreateTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)

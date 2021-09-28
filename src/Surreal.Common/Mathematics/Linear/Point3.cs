@@ -3,6 +3,7 @@ using System.Numerics;
 
 namespace Surreal.Mathematics.Linear
 {
+  /// <summary>A point in 3-space.</summary>
   public struct Point3 : IEquatable<Point3>
   {
     public static readonly Point3 Zero  = new(0, 0, 0);

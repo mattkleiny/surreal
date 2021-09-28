@@ -8,7 +8,7 @@ namespace Surreal.Actors
     Unknown,
     Active,
     Inactive,
-    Destroyed,
+    Destroyed
   }
 
   public class Actor

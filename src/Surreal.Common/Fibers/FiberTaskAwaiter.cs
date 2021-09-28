@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Surreal.Fibers
 {
+  /// <summary>Allows awaiting <see cref="FiberTask"/> results.</summary>
   public readonly struct FiberTaskAwaiter : INotifyCompletion
   {
     private readonly FiberTask task;

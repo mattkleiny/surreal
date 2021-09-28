@@ -7,6 +7,7 @@ using Surreal.Fibers.Promises;
 
 namespace Surreal.Fibers.Internal
 {
+  [UsedImplicitly]
   public struct FiberTaskBuilder
   {
     private FiberTaskBuilder<Unit> builder;

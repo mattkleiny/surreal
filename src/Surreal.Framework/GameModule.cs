@@ -1,25 +1,21 @@
 ﻿using System;
-using System.ComponentModel.Design;
 using Surreal.Timing;
 
 namespace Surreal
 {
-  public interface IGameContext
+  /// <summary>Represents a module for a <see cref="Game"/>.</summary>
+  public interface IGameModule : IDisposable
   {
-    IServiceContainer Services { get; }
-  }
-
-  public interface IGameMod : IDisposable
-  {
-    void Initialize(IGameContext context);
+    void Initialize();
     void Input(DeltaTime deltaTime);
     void Update(DeltaTime deltaTime);
     void Draw(DeltaTime deltaTime);
   }
 
-  public abstract class GameMod : IGameMod
+  /// <summary>Base class for any <see cref="IGameModule"/> implementation.</summary>
+  public abstract class GameModule : IGameModule
   {
-    public virtual void Initialize(IGameContext context)
+    public virtual void Initialize()
     {
     }
 

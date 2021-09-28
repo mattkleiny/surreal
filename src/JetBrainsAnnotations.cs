@@ -440,7 +440,7 @@ namespace JetBrains.Annotations
     InstantiatedWithFixedConstructorSignature = 4,
 
     /// <summary>Indicates implicit instantiation of a type.</summary>
-    InstantiatedNoFixedConstructorSignature = 8,
+    InstantiatedNoFixedConstructorSignature = 8
   }
 
   /// <summary>
@@ -457,7 +457,7 @@ namespace JetBrains.Annotations
     Members = 2,
 
     /// <summary>Entity marked with attribute and all its members considered used.</summary>
-    WithMembers = Itself | Members,
+    WithMembers = Itself | Members
   }
 
   /// <summary>
@@ -896,7 +896,7 @@ namespace JetBrains.Annotations
     ModifyExistingContent = 2,
 
     /// <summary>Method can add new elements to the collection.</summary>
-    UpdatedContent = ModifyExistingContent | 4,
+    UpdatedContent = ModifyExistingContent | 4
   }
 
   /// <summary>
@@ -941,7 +941,7 @@ namespace JetBrains.Annotations
     IS_NULL = 2,
 
     /// <summary>Marked parameter should be evaluated to not null value.</summary>
-    IS_NOT_NULL = 3,
+    IS_NOT_NULL = 3
   }
 
   /// <summary>

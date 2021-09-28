@@ -22,9 +22,9 @@ namespace Surreal.Graphics.Sprites
     private readonly IDisposableBuffer<Vertex> vertices;
     private readonly Mesh<Vertex>              mesh;
 
-    private MaterialPass? materialPass;
-    private Texture?      lastTexture;
-    private int           vertexCount;
+    private Material? material;
+    private Texture?  lastTexture;
+    private int       vertexCount;
 
     public SpriteBatch(IGraphicsDevice device, int spriteCount)
     {
@@ -42,11 +42,11 @@ namespace Surreal.Graphics.Sprites
     public IGraphicsDevice Device { get; }
     public Color           Color  { get; set; } = Color.White;
 
-    public void Begin(MaterialPass materialPass, in Matrix4x4 projectionView)
+    public void Begin(Material material, in Matrix4x4 projectionView)
     {
-      this.materialPass = materialPass;
+      this.material = material;
 
-      materialPass.SetProperty(ProjectionView, projectionView);
+      material.SetProperty(ProjectionView, projectionView);
     }
 
     public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Angle rotation = default)
@@ -130,15 +130,15 @@ namespace Surreal.Graphics.Sprites
     public void Flush()
     {
       if (vertexCount == 0) return;
-      if (materialPass == null) return;
+      if (material == null) return;
 
       var spriteCount = vertexCount / 4;
       var indexCount  = spriteCount * 6;
 
-      materialPass.SetProperty(TextureView, lastTexture!);
+      material.SetProperty(TextureView, lastTexture!);
 
       mesh.Vertices.Write(vertices.Data[..indexCount]);
-      mesh.DrawImmediate(materialPass, vertexCount, indexCount);
+      mesh.DrawImmediate(material, vertexCount, indexCount);
 
       vertexCount = 0;
     }
@@ -150,10 +150,10 @@ namespace Surreal.Graphics.Sprites
       for (ushort i = 0, j = 0; i < indexCount; i += 6, j += 4)
       {
         indices[i + 0] = j;
-        indices[i + 1] = (ushort)(j + 1);
-        indices[i + 2] = (ushort)(j + 2);
-        indices[i + 3] = (ushort)(j + 2);
-        indices[i + 4] = (ushort)(j + 3);
+        indices[i + 1] = (ushort) (j + 1);
+        indices[i + 2] = (ushort) (j + 2);
+        indices[i + 3] = (ushort) (j + 2);
+        indices[i + 4] = (ushort) (j + 3);
         indices[i + 5] = j;
       }
 

@@ -15,7 +15,7 @@ namespace Headless
 
     public static void Main() => Start<Game>(new()
     {
-      Platform = new HeadlessPlatform(),
+      Platform = new HeadlessPlatform()
     });
 
     protected override void Draw(GameTime time)
@@ -24,7 +24,7 @@ namespace Headless
 
       if (fpsTimer.Tick(time.DeltaTime))
       {
-        Log.Trace($"Frames per second: {fpsCounter.FramesPerSecond.ToString("F")}");
+        Log.Trace($"Frames per second: {fpsCounter.FramesPerSecond:F}");
       }
 
       fpsCounter.Tick(time.DeltaTime);

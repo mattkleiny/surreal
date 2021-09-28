@@ -6,6 +6,7 @@ using Surreal.Memory;
 
 namespace Surreal.Grids
 {
+  /// <summary>Extensions for working with <see cref="IGrid{T}"/>s.</summary>
   public static class GridExtensions
   {
     public static void DrawLine<T>(this IGrid<T> grid, Vector2 from, Vector2 to, T value)

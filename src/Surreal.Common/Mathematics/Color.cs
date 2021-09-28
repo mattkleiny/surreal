@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace Surreal.Mathematics
 {
+  /// <summary>A floating-point representation of color.</summary>
   [StructLayout(LayoutKind.Sequential)]
   public struct Color : IEquatable<Color>
   {
@@ -56,8 +58,14 @@ namespace Surreal.Mathematics
     public static Color operator -(Color a, Color b)      => new(a.R - b.R, a.G - b.G, a.B - b.B, a.A - b.A);
     public static Color operator *(Color a, float scalar) => new(a.R * scalar, a.G * scalar, a.B * scalar, a.A * scalar);
     public static Color operator /(Color a, float scalar) => new(a.R / scalar, a.G / scalar, a.B / scalar, a.A / scalar);
+
+    public static explicit operator Color(Vector4 vector) => new(vector.X, vector.Y, vector.Z, vector.W);
+    public static explicit operator Color(Vector3 vector) => new(vector.X, vector.Y, vector.Z, 1.0f);
+    public static explicit operator Vector4(Color color)  => new(color.R, color.G, color.B, color.A);
+    public static explicit operator Vector3(Color color)  => new(color.R, color.G, color.B);
   }
 
+  /// <summary>Extensions for working with <see cref="Color"/>.</summary>
   public static class ColorExtensions
   {
     public static Color NextColor(this Random random) => new(

@@ -6,6 +6,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Diagnostics
 {
+  /// <summary>Extensions to aid in visualization of data.</summary>
   public static class VisualizationExtensions
   {
     public static string ToString<T>(this IGrid<T> grid, Func<int, int, T?, char> painter)

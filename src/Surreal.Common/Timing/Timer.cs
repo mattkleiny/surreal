@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 namespace Surreal.Timing
 {
+  /// <summary>A stack-allocated timer.</summary>
   public struct Timer
   {
     private readonly TimeSpan interval;

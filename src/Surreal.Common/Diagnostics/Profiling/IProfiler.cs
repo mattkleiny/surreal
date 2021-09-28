@@ -1,4 +1,5 @@
 ﻿using System;
+using Surreal.Timing;
 
 namespace Surreal.Diagnostics.Profiling
 {
@@ -15,7 +16,7 @@ namespace Surreal.Diagnostics.Profiling
     private readonly string           category;
     private readonly string           task;
     private readonly IProfileSampler? sampler;
-    private readonly DateTime         startTime;
+    private readonly TimeStamp        startTime;
 
     public ProfilingScope(string category, string task, IProfileSampler? sampler)
     {
@@ -23,12 +24,12 @@ namespace Surreal.Diagnostics.Profiling
       this.task     = task;
       this.sampler  = sampler;
 
-      startTime = DateTime.Now;
+      startTime = TimeStamp.Now;
     }
 
     public void Dispose()
     {
-      var endTime = DateTime.Now;
+      var endTime = TimeStamp.Now;
 
       sampler?.Sample(category, task, endTime - startTime);
     }

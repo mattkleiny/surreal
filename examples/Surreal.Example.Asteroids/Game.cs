@@ -13,9 +13,9 @@ namespace Asteroids
         {
           Title          = "Asteroids",
           IsVsyncEnabled = true,
-          ShowFPSInTitle = true,
-        },
-      },
+          ShowFPSInTitle = true
+        }
+      }
     });
   }
 }

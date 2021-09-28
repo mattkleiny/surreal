@@ -4,6 +4,7 @@ using Surreal.Timing;
 
 namespace Surreal.Graphics.Cameras
 {
+  /// <summary>A top-down orthographic <see cref="ICameraController"/>.</summary>
   public sealed class TopDownCameraController : ICameraController
   {
     private readonly OrthographicCamera camera;

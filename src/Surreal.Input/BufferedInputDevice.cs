@@ -1,5 +1,6 @@
 namespace Surreal.Input
 {
+/// <summary>An <see cref="IInputDevice"/> that is buffered frame-to-frame.</summary>
   public abstract class BufferedInputDevice<TState> : IInputDevice
       where TState : notnull
   {

@@ -6,19 +6,20 @@ using Surreal.Memory;
 namespace Surreal.IO
 {
   /// <summary>A protocol for the <see cref="PackedFileSystem"/>.</summary>
-  public interface IFilePackingProtocol
+  public interface IFilePackingFormat
   {
+    // TODO: implement a simple packing format
   }
 
-  /// <summary>A <see cref="FileSystem"/> that uses a <see cref="IFilePackingProtocol"/>.</summary>
+  /// <summary>A <see cref="FileSystem"/> that uses a <see cref="IFilePackingFormat"/>.</summary>
   public sealed class PackedFileSystem : FileSystem
   {
-    private readonly IFilePackingProtocol protocol;
+    private readonly IFilePackingFormat format;
 
-    public PackedFileSystem(IFilePackingProtocol protocol)
+    public PackedFileSystem(IFilePackingFormat format)
         : base("pak")
     {
-      this.protocol = protocol;
+      this.format = format;
     }
 
     public override Path Resolve(string root, params string[] paths)

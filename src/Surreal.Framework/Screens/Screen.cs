@@ -1,10 +1,11 @@
 ﻿using System;
+using Surreal.Assets;
 using Surreal.Collections;
-using Surreal.Content;
 using Surreal.Fibers;
 
 namespace Surreal.Screens
 {
+  /// <summary>A screen in the <see cref="IScreenManager"/>.</summary>
   public interface IScreen : ILinkedElement<IScreen>, IDisposable
   {
     bool IsInitialized { get; }
@@ -20,6 +21,7 @@ namespace Surreal.Screens
     void Draw(GameTime time);
   }
 
+  /// <summary>Base class for any <see cref="IScreen"/> implementation.</summary>
   public abstract class Screen : IScreen
   {
     protected Screen(Game game)
@@ -73,6 +75,7 @@ namespace Surreal.Screens
     IScreen? ILinkedElement<IScreen>.Next     { get; set; }
   }
 
+  /// <summary>Base class for any <see cref="IScreen"/> implementation.</summary>
   public abstract class Screen<TGame> : Screen
       where TGame : Game
   {

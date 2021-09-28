@@ -7,8 +7,9 @@ using JetBrains.Annotations;
 
 namespace Surreal.Fibers
 {
+  /// <summary>A scheduler for <see cref="FiberTask"/>s.</summary>
   [UsedImplicitly]
-  public sealed class FiberScheduler
+  public static class FiberScheduler
   {
     private static readonly ConcurrentQueue<Action> Callbacks = new();
 

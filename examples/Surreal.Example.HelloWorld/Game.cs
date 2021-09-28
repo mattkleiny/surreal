@@ -13,9 +13,9 @@ namespace HelloWorld
         {
           Title          = "Hello, Surreal!",
           IsVsyncEnabled = true,
-          ShowFPSInTitle = true,
-        },
-      },
+          ShowFPSInTitle = true
+        }
+      }
     });
   }
 }

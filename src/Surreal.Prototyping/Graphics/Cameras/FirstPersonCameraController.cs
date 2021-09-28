@@ -5,6 +5,7 @@ using Surreal.Timing;
 
 namespace Surreal.Graphics.Cameras
 {
+  /// <summary>A first-person <see cref="ICameraController"/>.</summary>
   public sealed class FirstPersonCameraController : ICameraController
   {
     private readonly PerspectiveCamera camera;

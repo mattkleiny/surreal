@@ -2,6 +2,7 @@ using System;
 
 namespace Surreal.Mathematics
 {
+  /// <summary>A normalised floating point value (between 0 and 1).</summary>
   public readonly struct Normal : IEquatable<Normal>
   {
     public static Normal Min => default;

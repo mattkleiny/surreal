@@ -21,21 +21,21 @@ namespace Minecraft.Worlds
     {
       Name        = "Air",
       Description = "An empty space.",
-      Color       = Color.Clear,
+      Color       = Color.Clear
     };
 
     public static Block Dirt { get; } = new(1)
     {
       Name        = "Dirt",
       Description = "A block of dirt",
-      Color       = Color.Yellow,
+      Color       = Color.Yellow
     };
 
     public static Block Grass { get; } = new(2)
     {
       Name        = "Grass",
       Description = "A block of grass",
-      Color       = Color.Green,
+      Color       = Color.Green
     };
 
     public static BlockPalette Palette { get; } = new(Air, Dirt, Grass);

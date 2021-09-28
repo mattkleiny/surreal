@@ -4,8 +4,10 @@ using JetBrains.Annotations;
 
 namespace Surreal.Mathematics.Linear
 {
-  public delegate float Curve(Normal time);
+  /// <summary>Describes a curve over a normalised parameter, T.</summary>
+  public delegate float Curve(Normal t);
 
+  /// <summary>Commonly used <see cref="Curve"/>s.</summary>
   public static class Curves
   {
     public static Curve Constant(float d) => _ => d;
@@ -17,11 +19,13 @@ namespace Surreal.Mathematics.Linear
     public static Curve PlanarY<T>(T curve) where T : IPlanarCurve => time => curve.SampleAt(time).Y;
   }
 
+  /// <summary>A planar curve that can be sampled at a point in 2-space.</summary>
   public interface IPlanarCurve
   {
     [Pure] Vector2 SampleAt(Normal t);
   }
 
+  /// <summary>A quadratic bezier <see cref="IPlanarCurve"/>.</summary>
   public readonly record struct QuadraticBezierCurve(Vector2 Start, Vector2 A, Vector2 End) : IPlanarCurve
   {
     public Vector2 SampleAt(Normal t)
@@ -33,6 +37,7 @@ namespace Surreal.Mathematics.Linear
     }
   }
 
+  /// <summary>A cubic bezier <see cref="IPlanarCurve"/>.</summary>
   public readonly record struct CubicBezierCurve(Vector2 Start, Vector2 A, Vector2 B, Vector2 End) : IPlanarCurve
   {
     public Vector2 SampleAt(Normal t)

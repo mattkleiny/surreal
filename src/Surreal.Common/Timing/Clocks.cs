@@ -2,14 +2,15 @@ using System;
 
 namespace Surreal.Timing
 {
+  /// <summary>Represents a clock that can measure time elapsed.</summary>
   public interface IClock
   {
-    float     TimeScale { get; set; }
     DeltaTime DeltaTime { get; }
   }
 
   public static class Clocks
   {
+    /// <summary>Builds a <see cref="IClock"/> that is relative to some other clock with a fixed <see cref="scale"/>.</summary>
     public static IClock Relative(IClock other, float scale = 1f)
     {
       return new AnonymousClock(() => new DeltaTime(other.DeltaTime * scale));

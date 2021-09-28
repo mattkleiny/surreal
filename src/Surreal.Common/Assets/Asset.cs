@@ -1,7 +1,17 @@
 using System;
 
-namespace Surreal.Content
+namespace Surreal.Assets
 {
+  /// <summary>Possible statuses for an <see cref="Asset{T}"/>.</summary>
+  public enum AssetStatus
+  {
+    Unknown,
+    Unloaded,
+    Loading,
+    Ready
+  }
+
+  /// <summary>Describes an asset in the asset manager with an opaque token.</summary>
   public readonly record struct Asset<T>(AssetId Id, IAssetManager Manager) : IDisposable
       where T : class
   {
@@ -14,7 +24,9 @@ namespace Surreal.Content
 
     public AssetAwaiter<T> GetAwaiter() => new(this);
 
-    public void Dispose() => Manager.Unload(Id);
+    public void Unload() => Manager.Unload(Id);
+
+    void IDisposable.Dispose() => Manager.Unload(Id);
 
     public static implicit operator T(Asset<T> asset) => asset.Data;
   }

@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics.Linear;
-using ShaderType = OpenTK.Graphics.OpenGL.ShaderType;
 
 namespace Surreal.Platform.Internal.Graphics.Resources
 {
@@ -19,7 +17,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources
 
     int IHasNativeId.Id => id;
 
-    public OpenTKShaderProgram(IReadOnlyList<Shader> shaders)
+    public OpenTKShaderProgram(IReadOnlyList<OpenTKShader> shaders)
     {
       Link(shaders);
     }
@@ -52,7 +50,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources
       }
     }
 
-    private void Link(IReadOnlyList<Shader> shaders)
+    private void Link(IReadOnlyList<OpenTKShader> shaders)
     {
       var shaderIds = new int[shaders.Count];
 
@@ -61,9 +59,9 @@ namespace Surreal.Platform.Internal.Graphics.Resources
       for (var i = 0; i < shaders.Count; i++)
       {
         var shader = shaders[i];
-        var code   = Encoding.UTF8.GetString(shader.Bytecode.ToArray());
+        var code   = shader.Code;
 
-        var shaderId = shaderIds[i] = GL.CreateShader(ConvertShaderType(shader.Type));
+        var shaderId = shaderIds[i] = GL.CreateShader(shader.Type);
 
         GL.ShaderSource(shaderId, code);
         GL.CompileShader(shaderId);
@@ -141,7 +139,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources
       var location = GetUniformLocation(name);
 
       ref var source   = ref Unsafe.AsRef(in matrix);
-      var     elements = (float*)Unsafe.AsPointer(ref source);
+      var     elements = (float*) Unsafe.AsPointer(ref source);
 
       GL.UniformMatrix4(location, 1, false, elements);
     }
@@ -151,7 +149,7 @@ namespace Surreal.Platform.Internal.Graphics.Resources
       var location = GetUniformLocation(name);
 
       ref var source   = ref Unsafe.AsRef(in matrix);
-      var     elements = (float*)Unsafe.AsPointer(ref source);
+      var     elements = (float*) Unsafe.AsPointer(ref source);
 
       GL.UniformMatrix4(location, 1, false, elements);
     }
@@ -171,20 +169,6 @@ namespace Surreal.Platform.Internal.Graphics.Resources
       }
 
       return id;
-    }
-
-    private static ShaderType ConvertShaderType(Surreal.Graphics.Materials.ShaderType shaderType)
-    {
-      switch (shaderType)
-      {
-        case Surreal.Graphics.Materials.ShaderType.Compute:  return ShaderType.ComputeShader;
-        case Surreal.Graphics.Materials.ShaderType.Vertex:   return ShaderType.VertexShader;
-        case Surreal.Graphics.Materials.ShaderType.Fragment: return ShaderType.FragmentShader;
-        case Surreal.Graphics.Materials.ShaderType.Geometry: return ShaderType.GeometryShader;
-
-        default:
-          throw new ArgumentOutOfRangeException(nameof(shaderType), shaderType, null);
-      }
     }
 
     private static VertexAttribPointerType ConvertVertexType(VertexType type)

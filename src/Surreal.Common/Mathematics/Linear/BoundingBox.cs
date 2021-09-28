@@ -2,6 +2,7 @@
 
 namespace Surreal.Mathematics.Linear
 {
+  /// <summary>A bounding box in 3-space.</summary>
   public readonly record struct BoundingBox(Vector3 Min, Vector3 Max)
   {
     public float X => Min.X;

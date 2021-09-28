@@ -6,6 +6,7 @@ using Surreal.Mathematics.Linear;
 
 namespace Surreal.Grids
 {
+  /// <summary>A sparsely packed <see cref="IGrid{T}"/> of <see cref="T"/>.</summary>
   public sealed class SparseGrid<T> : IGrid<T>, IEnumerable<T>
       where T : class
   {

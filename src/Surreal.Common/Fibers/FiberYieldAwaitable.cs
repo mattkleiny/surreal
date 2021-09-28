@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Surreal.Fibers
 {
+  /// <summary>Allows yielding <see cref="FiberTask"/>s to the next scheduler invocation.</summary>
   public readonly struct FiberYieldAwaitable
   {
     [SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Global")]

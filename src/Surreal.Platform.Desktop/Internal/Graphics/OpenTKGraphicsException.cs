@@ -24,7 +24,7 @@ namespace Surreal.Platform.Internal.Graphics
           ErrorCode.ContextLost                 => "The OpenGL context was lost.",
           ErrorCode.TableTooLarge               => "The OpenGL table is too large.",
           ErrorCode.TextureTooLargeExt          => "The OpenGL texture is too large.",
-          _                                     => "An unexpected OpenGL error occurred.",
+          _                                     => "An unexpected OpenGL error occurred."
         });
       }
     }

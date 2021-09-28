@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 
 namespace Surreal.Graphics.Meshes
 {
+  /// <summary>Primitive types supported by <see cref="VertexDescriptor"/>s.</summary>
   public enum VertexType
   {
     Byte,
@@ -16,9 +17,10 @@ namespace Surreal.Graphics.Meshes
     Int,
     UnsignedInt,
     Float,
-    Double,
+    Double
   }
 
+  /// <summary>Associates a <see cref="VertexDescriptor"/> with a vertex field.</summary>
   [MeansImplicitUse]
   [AttributeUsage(AttributeTargets.Field)]
   public sealed class VertexDescriptorAttribute : Attribute
@@ -29,6 +31,7 @@ namespace Surreal.Graphics.Meshes
     public bool       Normalized { get; set; }
   }
 
+  /// <summary>Describes a single vertex.</summary>
   [DebuggerDisplay("{Alias}: {Count}")]
   public readonly struct VertexDescriptor
   {
@@ -70,6 +73,7 @@ namespace Surreal.Graphics.Meshes
     }
   }
 
+  /// <summary>Describes a set of <see cref="VertexDescriptor"/>s.</summary>
   public sealed class VertexDescriptorSet
   {
     private readonly VertexDescriptor[] attributes;

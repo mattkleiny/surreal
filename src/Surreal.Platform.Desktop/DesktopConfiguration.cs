@@ -1,5 +1,6 @@
 ﻿namespace Surreal.Platform
 {
+  /// <summary>Configuration for the <see cref="DesktopPlatform"/>.</summary>
   public sealed record DesktopConfiguration
   {
     public string Title          { get; set; } = "Surreal";

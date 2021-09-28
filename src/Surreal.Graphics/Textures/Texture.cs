@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Surreal.Content;
+using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Memory;
@@ -11,20 +11,20 @@ namespace Surreal.Graphics.Textures
   public enum TextureFilterMode
   {
     Point,
-    Linear,
+    Linear
   }
 
   /// <summary>Formats for a <see cref="Texture"/>.</summary>
   public enum TextureFormat
   {
-    RGBA8888,
+    RGBA8888
   }
 
   /// <summary>Wrapping modes for a <see cref="Texture"/>.</summary>
   public enum TextureWrapMode
   {
     Clamp,
-    Repeat,
+    Repeat
   }
 
   /// <summary>A type that supports the data format required for <see cref="Texture"/>s.</summary>

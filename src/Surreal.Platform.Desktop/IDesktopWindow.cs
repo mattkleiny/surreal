@@ -2,6 +2,7 @@ using System;
 
 namespace Surreal.Platform
 {
+  /// <summary>Allows access to the platform's window.</summary>
   public interface IDesktopWindow : IDisposable
   {
     event Action<int, int> Resized;

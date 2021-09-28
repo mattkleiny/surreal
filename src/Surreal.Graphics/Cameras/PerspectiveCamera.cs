@@ -3,6 +3,7 @@ using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Cameras
 {
+  /// <summary>A perspective <see cref="Camera" />.</summary>
   public sealed class PerspectiveCamera : Camera
   {
     private float fieldOfView = DegreesToRadians(75f);
@@ -25,10 +26,10 @@ namespace Surreal.Graphics.Cameras
     protected override void Recalculate(out Matrix4x4 projection)
     {
       projection = Matrix4x4.CreatePerspectiveFieldOfView(
-          fieldOfView: fieldOfView,
-          aspectRatio: (float)Viewport.Width / Viewport.Height,
-          nearPlaneDistance: Near,
-          farPlaneDistance: Far
+          fieldOfView,
+          (float) Viewport.Width / Viewport.Height,
+          Near,
+          Far
       );
     }
   }

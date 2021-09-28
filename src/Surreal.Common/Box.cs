@@ -1,5 +1,6 @@
 ﻿namespace Surreal
 {
+  /// <summary>A mutable heap-allocated box for a type of <see cref="T"/>.</summary>
   public sealed class Box<T>
   {
     private T value;

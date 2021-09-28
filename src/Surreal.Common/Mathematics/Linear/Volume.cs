@@ -1,5 +1,6 @@
 namespace Surreal.Mathematics.Linear
 {
+  /// <summary>A volume in 3-space.</summary>
   public readonly record struct Volume(int Width, int Height, int Depth)
   {
     public int Total => Width * Height * Depth;

@@ -14,13 +14,13 @@ namespace Isaac.Mechanics.Effects
     }
   }
 
-  public class DamageEffectTemplate : Template<DamageEffect>
+  public class DamageEffectTemplate : ITemplate<DamageEffect>
   {
     public Damage   Damage    { get; set; } = new(1, DamageTypes.Physical);
     public TimeSpan Frequency { get; set; } = 1.Seconds();
     public TimeSpan Duration  { get; set; } = 10.Seconds();
 
-    public override DamageEffect Create()
+    public virtual DamageEffect Create()
     {
       return new DamageEffect(Damage, Frequency, Duration);
     }

@@ -5,12 +5,14 @@ using System.Runtime.CompilerServices;
 
 namespace Surreal.Utilities
 {
+  /// <summary>Permits an object to participate in type conversion.</summary>
   public interface ITypeConvertible
   {
     bool   IsConvertibleTo(Type type);
     object ConvertTo(Type type);
   }
 
+  /// <summary>Static utilities for type conversion.</summary>
   public static class Conversion
   {
     public static TOther? ConvertTo<T, TOther>(T? source)

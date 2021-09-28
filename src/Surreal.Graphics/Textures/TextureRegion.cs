@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Surreal.Content;
+using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
 
@@ -21,22 +20,6 @@ namespace Surreal.Graphics.Textures
     public TextureRegion Slice(Point2 offset, Point2 size)
     {
       return new(Texture, Offset + offset, size);
-    }
-
-    public IEnumerable<TextureRegion> Subdivide(int regionWidth, int regionHeight)
-    {
-      var regionsX = Width / regionWidth;
-      var regionsY = Height / regionHeight;
-
-      for (var y = 0; y < regionsY; y++)
-      for (var x = 0; x < regionsX; x++)
-      {
-        yield return new TextureRegion(
-            Texture: Texture,
-            Offset: new(Offset.X + x * regionWidth, Offset.Y + y * regionHeight),
-            Size: new(regionWidth, regionHeight)
-        );
-      }
     }
 
     public void Dispose()

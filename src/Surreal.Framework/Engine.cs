@@ -6,6 +6,7 @@ using Surreal.Timing;
 
 namespace Surreal
 {
+  /// <summary>Internal plumbing for the core engine loop.</summary>
   internal static class Engine
   {
     public static bool IsRunning { get; private set; }

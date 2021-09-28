@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace Surreal.Input
 {
+  /// <summary>Manages <see cref="IInputDevice"/>s.</summary>
   public interface IInputManager
   {
     IEnumerable<IInputDevice> Devices { get; }

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Surreal.Timing
 {
+  /// <summary>A precision timestamp evaluated using native APIs.</summary>
   public readonly record struct TimeStamp(ulong Ticks) : IComparable<TimeStamp>, IComparable
   {
     public static TimeStamp Min => new(ulong.MinValue);

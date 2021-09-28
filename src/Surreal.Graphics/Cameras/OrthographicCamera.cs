@@ -3,6 +3,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Cameras
 {
+  /// <summary>An orthographic <see cref="Camera"/>.</summary>
   public sealed class OrthographicCamera : Camera
   {
     private float zoom = 1f;

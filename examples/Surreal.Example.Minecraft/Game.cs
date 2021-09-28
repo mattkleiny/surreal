@@ -13,16 +13,16 @@ namespace Minecraft
         {
           Title          = "Minecraft",
           IsVsyncEnabled = true,
-          ShowFPSInTitle = true,
-        },
-      },
+          ShowFPSInTitle = true
+        }
+      }
     });
 
     protected override void Initialize()
     {
       base.Initialize();
 
-      Mouse.IsCursorVisible  = false;
+      Mouse.IsCursorVisible = false;
 
       GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
     }

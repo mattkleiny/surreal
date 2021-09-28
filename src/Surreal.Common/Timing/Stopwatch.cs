@@ -2,6 +2,7 @@
 
 namespace Surreal.Timing
 {
+  /// <summary>A stop watch using a precision <see cref="TimeStamp"/>.</summary>
   public sealed class Stopwatch
   {
     private TimeStamp lastTime = TimeStamp.Now;

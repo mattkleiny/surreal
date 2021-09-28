@@ -8,11 +8,13 @@ namespace Surreal.Diagnostics.Console
 {
   public delegate object? GameConsoleBinding(params object[] arguments);
 
+  /// <summary>An interpreter for expressions in the game console.</summary>
   public interface IGameConsoleInterpreter
   {
     string Evaluate(string expression);
   }
 
+  /// <summary>Provides bindings from method names to functions in the application.</summary>
   public interface IGameConsoleBindings
   {
     void Add(string name, GameConsoleBinding binding);
@@ -27,6 +29,7 @@ namespace Surreal.Diagnostics.Console
     }
   }
 
+  /// <summary>The default <see cref="IGameConsoleInterpreter"/>.</summary>
   public sealed class GameConsoleInterpreter : IGameConsoleInterpreter
   {
     private readonly BindingCollection bindings = new();
@@ -56,7 +59,7 @@ namespace Surreal.Diagnostics.Console
       }
     }
 
-    private sealed class ExecutionVisitor : GameConsoleExpression.RecursiveVisitor<object?>
+    private sealed class ExecutionVisitor : RecursiveVisitor<object?>
     {
       private readonly BindingCollection bindings;
 
@@ -84,7 +87,7 @@ namespace Surreal.Diagnostics.Console
       {
         UnaryOperation.Not    => !IsTruthy(expression.Expression),
         UnaryOperation.Negate => -ToNumber(expression.Expression),
-        _                     => throw new NotSupportedException($"The operator '{expression.Operator}' is not supported"),
+        _                     => throw new NotSupportedException($"The operator '{expression.Operator}' is not supported")
       };
 
       public override object? Visit(BinaryExpression expression) => expression.Operator switch
@@ -93,7 +96,7 @@ namespace Surreal.Diagnostics.Console
         BinaryOperation.Minus  => ToNumber(expression.Left) - ToNumber(expression.Right),
         BinaryOperation.Times  => ToNumber(expression.Left) * ToNumber(expression.Right),
         BinaryOperation.Divide => ToNumber(expression.Left) / ToNumber(expression.Right),
-        _                      => throw new NotSupportedException($"The operator '{expression.Operator}' is not supported"),
+        _                      => throw new NotSupportedException($"The operator '{expression.Operator}' is not supported")
       };
 
       public override object Visit(LiteralExpression expression) => expression.Value;

@@ -1,5 +1,6 @@
 ﻿namespace Surreal.Graphics.Meshes
 {
+  /// <summary>Different types of supported primitive shapes.</summary>
   public enum PrimitiveType
   {
     Points,
@@ -8,6 +9,6 @@
     LineLoop,
     Triangles,
     Quads,
-    QuadStrip,
+    QuadStrip
   }
 }

@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Surreal.Fibers;
 using Surreal.IO;
 
-namespace Surreal.Content
+namespace Surreal.Assets
 {
-  public enum AssetStatus
-  {
-    Unknown,
-    Unloaded,
-    Loading,
-    Ready,
-  }
-
+  /// <summary>Allows managing <see cref="Asset{T}"/>s.</summary>
   public interface IAssetManager
   {
     IAssetResolver CreateResolver();
@@ -25,6 +17,7 @@ namespace Surreal.Content
     void        Unload(AssetId id);
   }
 
+  /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
   public sealed class AssetManager : IAssetManager, IDisposable
   {
     private readonly Dictionary<Type, IAssetLoader> loadersByType = new();
@@ -139,13 +132,9 @@ namespace Surreal.Content
       {
         throw new NotImplementedException();
       }
-
-      public FiberTask WaitOnAssets()
-      {
-        throw new NotImplementedException();
-      }
     }
 
+    /// <summary>A single loaded asset and a set of callbacks for observation.</summary>
     private sealed record Entry(AssetId Id)
     {
       public Queue<Action> Callbacks { get; }              = new(0);
@@ -181,6 +170,7 @@ namespace Surreal.Content
     }
   }
 
+  /// <summary>Denotes the given asset type is not supported by the manager.</summary>
   public sealed class UnsupportedAssetException : Exception
   {
     public UnsupportedAssetException(string message)

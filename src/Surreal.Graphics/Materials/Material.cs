@@ -1,36 +1,23 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Numerics;
 using System.Threading.Tasks;
-using Surreal.Content;
+using Surreal.Assets;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
 
 namespace Surreal.Graphics.Materials
 {
+  /// <summary>A material manages and batches GPU shader effects.</summary>
   public sealed class Material : GraphicsResource
   {
-    private readonly MaterialPass[] passes;
-
-    public Material(params MaterialPass[] passes)
+    public Material(ShaderProgram program)
     {
-      this.passes = passes;
+      Program = program;
     }
 
-    public MaterialPass this[int index]
-    {
-      get
-      {
-        Debug.Assert(index >= 0 && index < passes.Length, "index >= 0 && index < passes.Length");
+    public ShaderProgram Program { get; }
 
-        return passes[index];
-      }
-    }
-  }
-
-  public sealed record MaterialPass(ShaderProgram Program)
-  {
     public void SetProperty(MaterialProperty<int> property, int value)                => Program.SetUniform(property.Name, value);
     public void SetProperty(MaterialProperty<float> property, float value)            => Program.SetUniform(property.Name, value);
     public void SetProperty(MaterialProperty<Vector2> property, Vector2 value)        => Program.SetUniform(property.Name, value);
@@ -46,14 +33,14 @@ namespace Surreal.Graphics.Materials
     public void SetProperty(MaterialProperty<FrameBuffer> property, FrameBuffer value) => throw new NotImplementedException();
   }
 
+  /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Material"/>s.</summary>
   public sealed class MaterialLoader : AssetLoader<Material>
   {
     public override async Task<Material> LoadAsync(Path path, IAssetResolver resolver)
     {
       var program = await resolver.LoadAsset<ShaderProgram>(path);
-      var pass    = new MaterialPass(program.Data);
 
-      return new Material(pass);
+      return new Material(program);
     }
   }
 }

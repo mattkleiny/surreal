@@ -5,7 +5,8 @@ using System.Diagnostics;
 
 namespace Surreal.Grids
 {
-  public sealed class DenseGrid<T> : IEnumerable<T>, IGrid<T>
+  /// <summary>A densely packed <see cref="IGrid{T}"/> of <see cref="T"/>.</summary>
+  public sealed class DenseGrid<T> : IEnumerable<T>, IDirectAccessGrid<T>
   {
     private readonly T?[] elements;
 

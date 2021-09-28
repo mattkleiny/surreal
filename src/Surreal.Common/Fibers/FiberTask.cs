@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Surreal.Fibers.Internal;
 using Surreal.Fibers.Promises;
@@ -7,14 +8,16 @@ using Surreal.Timing;
 
 namespace Surreal.Fibers
 {
+  /// <summary>Status of a <see cref="FiberTask"/>.</summary>
   public enum FiberTaskStatus
   {
     Pending,
     Succeeded,
     Canceled,
-    Faulted,
+    Faulted
   }
 
+  /// <summary>A low allocation <see cref="Task"/>-like type for asynchronous execution.</summary>
   [AsyncMethodBuilder(typeof(FiberTaskBuilder))]
   public readonly struct FiberTask : IDisposable
   {
@@ -106,6 +109,7 @@ namespace Surreal.Fibers
     }
   }
 
+  /// <summary>A low allocation <see cref="Task"/>-like type for asynchronous execution.</summary>
   [AsyncMethodBuilder(typeof(FiberTaskBuilder<>))]
   public readonly struct FiberTask<T> : IDisposable
   {

@@ -1,5 +1,6 @@
 namespace Surreal.Grids
 {
+  /// <summary>A grid of elements in 2-space.</summary>
   public interface IGrid<T>
   {
     public int Width  { get; }
@@ -20,5 +21,11 @@ namespace Surreal.Grids
         this[x, y] = value;
       }
     }
+  }
+
+  /// <summary>A <see cref="IGrid{T}"/> with direct field access to <see cref="T"/>.</summary>
+  public interface IDirectAccessGrid<T> : IGrid<T>
+  {
+    new ref T? this[int x, int y] { get; }
   }
 }

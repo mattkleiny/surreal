@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
@@ -53,7 +52,7 @@ namespace Surreal.Platform.Internal.Graphics
 
     public void DrawMesh<TVertex>(
         Mesh<TVertex> mesh,
-        MaterialPass pass,
+        Material material,
         int vertexCount,
         int indexCount,
         PrimitiveType type = PrimitiveType.Triangles)
@@ -61,11 +60,11 @@ namespace Surreal.Platform.Internal.Graphics
     {
       if (vertexCount == 0) return; // empty mesh? don't render
 
-      Pipeline.ActiveShader       = pass.Program;
+      Pipeline.ActiveShader       = material.Program;
       Pipeline.ActiveVertexBuffer = mesh.Vertices;
       Pipeline.ActiveIndexBuffer  = mesh.Indices;
 
-      pass.Program.Bind(mesh.Descriptors);
+      material.Program.Bind(mesh.Descriptors);
 
       if (indexCount > 0)
       {
@@ -92,11 +91,6 @@ namespace Surreal.Platform.Internal.Graphics
       return new OpenTKGraphicsBuffer<T>();
     }
 
-    public ShaderProgram CreateShaderProgram(IReadOnlyList<Shader> shaders)
-    {
-      return new OpenTKShaderProgram(shaders);
-    }
-
     public Texture CreateTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
     {
       return new OpenTKTexture(format, filterMode, wrapMode);
@@ -109,7 +103,7 @@ namespace Surreal.Platform.Internal.Graphics
 
     public FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor)
     {
-      var texture = (OpenTKTexture)CreateTexture(descriptor.Format, descriptor.FilterMode, TextureWrapMode.Clamp);
+      var texture = (OpenTKTexture) CreateTexture(descriptor.Format, descriptor.FilterMode, TextureWrapMode.Clamp);
       var image   = new Image(descriptor.Width, descriptor.Height);
 
       texture.Upload(image);
@@ -144,7 +138,7 @@ namespace Surreal.Platform.Internal.Graphics
       PrimitiveType.Triangles => OpenTK.Graphics.OpenGL.PrimitiveType.Triangles,
       PrimitiveType.Quads     => OpenTK.Graphics.OpenGL.PrimitiveType.Quads,
       PrimitiveType.QuadStrip => OpenTK.Graphics.OpenGL.PrimitiveType.QuadStrip,
-      _                       => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested."),
+      _                       => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested.")
     };
   }
 }

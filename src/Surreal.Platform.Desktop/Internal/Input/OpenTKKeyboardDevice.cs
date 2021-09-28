@@ -73,7 +73,7 @@ namespace Surreal.Platform.Internal.Input
       [Key.Escape]    = Keys.Escape,
       [Key.Space]     = Keys.Space,
       [Key.Tilde]     = Keys.GraveAccent,
-      [Key.Tab]       = Keys.Tab,
+      [Key.Tab]       = Keys.Tab
     };
   }
 }

@@ -3,6 +3,7 @@ using Surreal.Collections;
 
 namespace Surreal.Screens
 {
+  /// <summary>A manager for <see cref="IScreen"/>s.</summary>
   public interface IScreenManager : IGamePlugin
   {
     event Action<IScreen?> ScreenChanged;
@@ -15,6 +16,7 @@ namespace Surreal.Screens
     IScreen? Pop(bool dispose = true);
   }
 
+  /// <summary>The default <see cref="IScreenManager"/> implementation.</summary>
   public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
   {
     private readonly LinkedNodeList<IScreen> screens = new();

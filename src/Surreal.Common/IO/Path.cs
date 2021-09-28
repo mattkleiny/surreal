@@ -10,6 +10,7 @@ using Surreal.Text;
 
 namespace Surreal.IO
 {
+  /// <summary>Represents a path in some virtual file system.</summary>
   [SuppressMessage("ReSharper", "StringIndexOfIsCultureSpecific.1")]
   public readonly struct Path : IEquatable<Path>
   {
@@ -64,6 +65,7 @@ namespace Surreal.IO
     public static implicit operator Path(string uri) => Parse(uri);
   }
 
+  /// <summary>Static extensions for working with <see cref="Path"/>s.</summary>
   public static class PathExtensions
   {
     public static IFileSystem GetFileSystem(this Path path) => FileSystem.GetForScheme(path.Scheme.ToString()!)!;
@@ -137,7 +139,7 @@ namespace Surreal.IO
       await using var stream     = await path.OpenInputStreamAsync();
       var             serializer = new XmlSerializer(typeof(T));
 
-      return (T)serializer.Deserialize(stream)!;
+      return (T) serializer.Deserialize(stream)!;
     }
 
     public static async Task SerializeJsonAsync<T>(this Path path, T value)

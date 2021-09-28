@@ -1,6 +1,4 @@
-﻿using Surreal.Memory;
-
-namespace Surreal.Content
+﻿namespace Surreal.Memory
 {
   public interface IHasSizeEstimate
   {

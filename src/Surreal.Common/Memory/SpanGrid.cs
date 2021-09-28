@@ -3,7 +3,8 @@ using System.Diagnostics;
 
 namespace Surreal.Memory
 {
-  [DebuggerDisplay("GridSpan {Length} elements ({Width}x{Height})")]
+  /// <summary>A <see cref="Span{T}"/> that is interpreted as a grid.</summary>
+  [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
   public readonly ref struct SpanGrid<T>
       where T : unmanaged
   {

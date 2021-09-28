@@ -2,6 +2,7 @@
 
 namespace Surreal.Mathematics
 {
+  /// <summary>Utilities for working with ranges.</summary>
   public static class Range
   {
     public static int   Clamp(this int value, int min, int max)       => Maths.Clamp(value, min, max);
@@ -29,16 +30,19 @@ namespace Surreal.Mathematics
     }
   }
 
+  /// <summary>An integral size.</summary>
   public readonly record struct IntSize(int Width, int Height)
   {
     public override string ToString() => $"{Width} x {Height}";
   }
 
+  /// <summary>A floating-point size.</summary>
   public readonly record struct FloatSize(int Width, int Height)
   {
     public override string ToString() => $"{Width} x {Height}";
   }
 
+  /// <summary>An integral range.</summary>
   public readonly record struct IntRange(int Min, int Max)
   {
     public int Delta => Max - Min;
@@ -46,6 +50,7 @@ namespace Surreal.Mathematics
     public override string ToString() => $"{Min} to {Max}";
   }
 
+  /// <summary>A floating-point range.</summary>
   public readonly record struct FloatRange(float Min, float Max)
   {
     public float Delta => Max - Min;

@@ -9,7 +9,7 @@ namespace Surreal.Diagnostics.Console
     public enum UnaryOperation
     {
       Not,
-      Negate,
+      Negate
     }
 
     public enum BinaryOperation
@@ -17,7 +17,7 @@ namespace Surreal.Diagnostics.Console
       Plus,
       Minus,
       Times,
-      Divide,
+      Divide
     }
 
     public interface IVisitor<out T>

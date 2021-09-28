@@ -2,6 +2,7 @@
 
 namespace Surreal.Graphics.Materials
 {
+  /// <summary>Describes a single property of a <see cref="Material"/>.</summary>
   public readonly record struct MaterialProperty<T>(string Name)
   {
     public int Hash { get; } = Name.GetHashCode(StringComparison.OrdinalIgnoreCase);

@@ -2,6 +2,7 @@ using System;
 
 namespace Surreal.Timing
 {
+  /// <summary>Static extensions for <see cref="TimeSpan"/>s.</summary>
   public static class TimeSpanExtensions
   {
     public static TimeSpan Milliseconds(this int interval) => TimeSpan.FromMilliseconds(interval);

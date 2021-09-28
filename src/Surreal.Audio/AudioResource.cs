@@ -4,7 +4,7 @@ using Surreal.Objects;
 
 namespace Surreal.Audio
 {
-  /// <summary>Base class for any audio resource.</summary>
+  /// <summary>A resource in the audio subsystem.</summary>
   public abstract class AudioResource : TrackedNativeResource<AudioResource>
   {
     public static Size AllocatedClipSize => GetSizeEstimate<AudioClip>();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NAudio.Wave;
-using Surreal.Content;
+using Surreal.Assets;
 using Surreal.IO;
 
 namespace Surreal.Audio.Clips
@@ -19,7 +19,7 @@ namespace Surreal.Audio.Clips
         ".mp3"  => new Mp3FileReader(stream),
         ".aiff" => new AiffFileReader(stream),
 
-        _ => throw new Exception($"An unrecognized file format was requested: {path}"),
+        _ => throw new Exception($"An unrecognized file format was requested: {path}")
       };
 
       var format = reader.WaveFormat;

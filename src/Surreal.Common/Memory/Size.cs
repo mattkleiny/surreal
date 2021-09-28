@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Surreal.Memory
 {
+  /// <summary>Represents a measure of bytes, convertible to other representations.</summary>
   public readonly struct Size
   {
     public static readonly Size Zero = new(0);
@@ -20,7 +21,7 @@ namespace Surreal.Memory
     public static Size operator +(Size a, Size b) => new(a.Bytes + b.Bytes);
     public static Size operator -(Size a, Size b) => new(a.Bytes - b.Bytes);
 
-    public static implicit operator int(Size size)  => (int)size.Bytes;
+    public static implicit operator int(Size size)  => (int) size.Bytes;
     public static implicit operator long(Size size) => size.Bytes;
 
     public override string ToString()
@@ -34,6 +35,7 @@ namespace Surreal.Memory
     }
   }
 
+  /// <summary>Static extensions for <see cref="Size"/>.</summary>
   public static class SizeExtensions
   {
     public static Size Bytes(this int value) => new(value);

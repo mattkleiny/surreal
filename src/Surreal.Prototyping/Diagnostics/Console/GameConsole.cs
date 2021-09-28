@@ -4,6 +4,7 @@ using Surreal.Collections;
 
 namespace Surreal.Diagnostics.Console
 {
+  /// <summary>A console for developer input.</summary>
   public interface IGameConsole
   {
     IEnumerable<string> History { get; }
@@ -13,6 +14,7 @@ namespace Surreal.Diagnostics.Console
     void Clear();
   }
 
+  /// <summary>The default <see cref="IGameConsole"/>.</summary>
   public sealed class GameConsole : IGameConsole
   {
     private readonly IGameConsoleInterpreter interpreter;

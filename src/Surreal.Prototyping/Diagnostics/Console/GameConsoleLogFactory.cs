@@ -3,6 +3,7 @@ using Surreal.Diagnostics.Logging;
 
 namespace Surreal.Diagnostics.Console
 {
+  /// <summary>A <see cref="ILogFactory"/> that logs to the <see cref="IGameConsole"/>.</summary>
   public sealed class GameConsoleLogFactory : ILogFactory
   {
     private readonly IGameConsole console;

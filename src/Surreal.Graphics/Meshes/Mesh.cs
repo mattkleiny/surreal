@@ -4,6 +4,7 @@ using Surreal.Graphics.Materials;
 
 namespace Surreal.Graphics.Meshes
 {
+  /// <summary>A mesh with a strongly-typed vertex type, <see cref="TVertex"/>.</summary>
   [DebuggerDisplay("Mesh with {Vertices.Length} vertices and {Indices.Length} indices")]
   public sealed class Mesh<TVertex> : IDisposable
       where TVertex : unmanaged
@@ -24,14 +25,14 @@ namespace Surreal.Graphics.Meshes
     public GraphicsBuffer<ushort>  Indices     { get; }
     public VertexDescriptorSet     Descriptors => SharedDescriptors;
 
-    public void DrawImmediate(MaterialPass pass, PrimitiveType type = PrimitiveType.Triangles)
+    public void DrawImmediate(Material material, PrimitiveType type = PrimitiveType.Triangles)
     {
-      DrawImmediate(pass, Vertices.Length, Indices.Length, type);
+      DrawImmediate(material, Vertices.Length, Indices.Length, type);
     }
 
-    public void DrawImmediate(MaterialPass pass, int vertexCount, int indexCount, PrimitiveType type = PrimitiveType.Triangles)
+    public void DrawImmediate(Material material, int vertexCount, int indexCount, PrimitiveType type = PrimitiveType.Triangles)
     {
-      device.DrawMesh(this, pass, vertexCount, indexCount, type);
+      device.DrawMesh(this, material, vertexCount, indexCount, type);
     }
 
     public void Dispose()

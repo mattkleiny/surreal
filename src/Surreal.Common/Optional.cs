@@ -1,5 +1,6 @@
 ﻿namespace Surreal
 {
+  /// <summary>An optional type for <see cref="T"/>.</summary>
   public readonly struct Optional<T>
   {
     private readonly T?   value;
@@ -14,18 +15,6 @@
     public T?   Value  => value;
     public bool IsSome => hasValue;
     public bool IsNone => !hasValue;
-
-    public bool TryGet(out T? result)
-    {
-      if (IsSome)
-      {
-        result = value;
-        return true;
-      }
-
-      result = default;
-      return false;
-    }
 
     public T? GetOrDefault(T? defaultValue = default)
     {

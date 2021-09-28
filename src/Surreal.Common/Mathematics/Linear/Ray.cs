@@ -3,6 +3,7 @@ using System.Numerics;
 
 namespace Surreal.Mathematics.Linear
 {
+  /// <summary>A ray in 2-space.</summary>
   public readonly struct Ray : IEquatable<Ray>
   {
     public readonly Vector2 Origin;

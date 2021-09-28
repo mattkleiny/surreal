@@ -1,5 +1,6 @@
 ﻿namespace Surreal.Input.Keyboard
 {
+  /// <summary>A single key on a <see cref="IKeyboardDevice"/>.</summary>
   public enum Key : ushort
   {
     F1,
@@ -24,6 +25,6 @@
     Space,
     Tilde,
     LeftShift,
-    Tab,
+    Tab
   }
 }

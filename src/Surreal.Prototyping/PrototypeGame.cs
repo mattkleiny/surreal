@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.Design;
 using System.Diagnostics;
+using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Compute;
 using Surreal.Compute.Execution;
-using Surreal.Content;
 using Surreal.Diagnostics.Console;
 using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
-using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
@@ -20,6 +19,7 @@ using Surreal.Services;
 
 namespace Surreal
 {
+  /// <summary>Base class for any <see cref="Game"/> that uses rapid prototyping services.</summary>
   public abstract class PrototypeGame : Game
   {
     public IAudioDevice    AudioDevice    { get; private set; } = null!;
@@ -79,14 +79,12 @@ namespace Surreal
     {
       assets.AddLoader(new AudioBufferLoader());
       assets.AddLoader(new AudioClipLoader(AudioDevice));
-      assets.AddLoader(new BitmapFontLoader());
       assets.AddLoader(new ComputeProgramLoader(ComputeDevice));
       assets.AddLoader(new ImageLoader());
       assets.AddLoader(new MaterialLoader());
       assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, hotReloading: Debugger.IsAttached));
       assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
       assets.AddLoader(new TextureRegionLoader());
-      assets.AddLoader(new TrueTypeFontLoader());
     }
 
     protected virtual void RegisterConsoleBindings(IGameConsoleBindings bindings)

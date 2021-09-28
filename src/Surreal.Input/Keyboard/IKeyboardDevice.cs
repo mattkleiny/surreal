@@ -2,6 +2,7 @@
 
 namespace Surreal.Input.Keyboard
 {
+  /// <summary>A keyboard <see cref="IInputDevice"/>.</summary>
   public interface IKeyboardDevice : IInputDevice
   {
     event Action<Key> KeyPressed;

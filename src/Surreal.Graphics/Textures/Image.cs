@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Surreal.Content;
+using Surreal.Assets;
 using Surreal.Grids;
 using Surreal.IO;
 using Color = Surreal.Mathematics.Color;
@@ -13,7 +13,7 @@ namespace Surreal.Graphics.Textures
 {
   /// <summary>An image of manipulable pixels that can also be used for a texture.</summary>
   [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
-  public sealed class Image : ITextureData, IGrid<Color>, IDisposable
+  public sealed class Image : ITextureData, IDirectAccessGrid<Color>, IDisposable
   {
     private readonly Image<Rgba32> image;
 
@@ -55,22 +55,21 @@ namespace Surreal.Graphics.Textures
     public int Width  => image.Width;
     public int Height => image.Height;
 
-    public Color this[int x, int y]
+    public ref Color this[int x, int y]
     {
       get
       {
         Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
         Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
-        return Pixels[x + y * Width];
+        return ref Pixels[x + y * Width];
       }
-      set
-      {
-        Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
-        Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
+    }
 
-        Pixels[x + y * Width] = value;
-      }
+    Color IGrid<Color>.this[int x, int y]
+    {
+      get => this[x, y];
+      set => this[x, y] = value;
     }
 
     public void Fill(Color value)

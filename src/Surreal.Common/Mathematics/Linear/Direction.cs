@@ -3,6 +3,7 @@ using Surreal.Collections;
 
 namespace Surreal.Mathematics.Linear
 {
+  /// <summary>Possible cardinal directions.</summary>
   [Flags]
   public enum Direction : byte
   {
@@ -11,7 +12,7 @@ namespace Surreal.Mathematics.Linear
     East  = 1 << 2,
     South = 1 << 3,
     West  = 1 << 4,
-    All   = North | East | South | West,
+    All   = North | East | South | West
   }
 
   public static class DirectionExtensions
@@ -24,7 +25,7 @@ namespace Surreal.Mathematics.Linear
         1 => Direction.South,
         2 => Direction.East,
         3 => Direction.West,
-        _ => throw new Exception("Unexpected value encountered!"),
+        _ => throw new Exception("Unexpected value encountered!")
       };
     }
 

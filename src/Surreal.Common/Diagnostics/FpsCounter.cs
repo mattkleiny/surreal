@@ -4,6 +4,7 @@ using Surreal.Timing;
 
 namespace Surreal.Diagnostics
 {
+  /// <summary>Counts frames per second.</summary>
   public sealed class FpsCounter
   {
     private readonly RingBuffer<TimeSpan> samples;

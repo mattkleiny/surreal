@@ -1,13 +1,14 @@
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
-using Surreal.Content;
+using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
 using Surreal.Mathematics.Linear;
 
 namespace Surreal.Graphics.Materials
 {
+  /// <summary>A low-level shader program on the GPU.</summary>
   public abstract class ShaderProgram : GraphicsResource
   {
     public abstract void Bind(VertexDescriptorSet descriptors);
@@ -24,6 +25,7 @@ namespace Surreal.Graphics.Materials
     public abstract void SetUniform(string name, in Matrix4x4 matrix);
   }
 
+  /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ShaderProgram"/>s.</summary>
   public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
   {
     private readonly IGraphicsDevice device;

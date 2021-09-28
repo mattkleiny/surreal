@@ -13,9 +13,9 @@ namespace Prelude
         {
           Title          = "Prelude of the Chambered",
           IsVsyncEnabled = true,
-          ShowFPSInTitle = true,
-        },
-      },
+          ShowFPSInTitle = true
+        }
+      }
     });
   }
 }

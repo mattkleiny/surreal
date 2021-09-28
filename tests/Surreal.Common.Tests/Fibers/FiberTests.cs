@@ -7,20 +7,18 @@ namespace Surreal.Fibers
     [Test]
     public void it_should_execute_and_yield()
     {
-      // TODO: fix this
-      // var scheduler  = new FiberScheduler();
-      // var executions = 0;
-      //
-      // Fiber.Start(scheduler, async () => {
-      //   executions++;
-      //   await Task.Yield();
-      //   executions++;
-      // });
-      //
-      // scheduler.Run();
-      // Assert.AreEqual(1, executions);
-      // scheduler.Run();
-      // Assert.AreEqual(2, executions);
+      var executions = 0;
+
+      FiberTask.Create(async () =>
+      {
+        executions++;
+        await FiberTask.Yield();
+        executions++;
+      });
+
+      Assert.AreEqual(1, executions);
+      FiberScheduler.Tick();
+      Assert.AreEqual(2, executions);
     }
   }
 }

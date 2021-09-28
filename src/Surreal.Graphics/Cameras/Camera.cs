@@ -6,6 +6,7 @@ using Surreal.Mathematics.Linear;
 
 namespace Surreal.Graphics.Cameras
 {
+  /// <summary>Represents a camera in 3-space.</summary>
   public interface ICamera
   {
     ref readonly Matrix4x4 ProjectionView { get; }
@@ -17,6 +18,7 @@ namespace Surreal.Graphics.Cameras
     Vector3 Unproject(Point2 screenPosition);
   }
 
+  /// <summary>Base class for any <see cref="ICamera"/> implementation.</summary>
   public abstract class Camera : ICamera
   {
     private float     near                  = 1f;

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Threading;
+using Surreal.Assets;
 using Surreal.Collections;
-using Surreal.Content;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Fibers;
 using Surreal.IO;
@@ -14,6 +14,7 @@ using Surreal.Timing;
 
 namespace Surreal
 {
+  /// <summary>Base class for any game built with Surreal.</summary>
   public abstract class Game : IDisposable, IFrameListener
   {
     private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();

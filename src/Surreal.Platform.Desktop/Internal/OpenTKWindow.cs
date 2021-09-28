@@ -17,19 +17,19 @@ namespace Surreal.Platform.Internal
       {
         RenderFrequency = 0,
         UpdateFrequency = 0,
-        IsMultiThreaded = false,
+        IsMultiThreaded = false
       };
 
       var nativeWindowSettings = new NativeWindowSettings
       {
         Title        = configuration.Title,
         Size         = new(configuration.Width, configuration.Height),
-        WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
+        WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed
       };
 
       window = new GameWindow(gameWindowSettings, nativeWindowSettings)
       {
-        VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
+        VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off
       };
 
       try

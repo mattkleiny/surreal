@@ -1,9 +1,10 @@
 ﻿using System;
-using Surreal.Content;
+using Surreal.Assets;
 using Surreal.Fibers;
 
 namespace Surreal
 {
+  /// <summary>A plugin for a <see cref="Game"/>.</summary>
   public interface IGamePlugin : IDisposable
   {
     FiberTask LoadContentAsync(IAssetResolver assets);
@@ -14,6 +15,7 @@ namespace Surreal
     void Draw(GameTime time);
   }
 
+  /// <summary>Base class for any <see cref="IGamePlugin"/> implementation.</summary>
   public abstract class GamePlugin : GamePlugin<Game>
   {
     protected GamePlugin(Game game)
@@ -22,6 +24,7 @@ namespace Surreal
     }
   }
 
+  /// <summary>Base class for any <see cref="IGamePlugin"/> implementation.</summary>
   public abstract class GamePlugin<TGame> : IGamePlugin
       where TGame : Game
   {

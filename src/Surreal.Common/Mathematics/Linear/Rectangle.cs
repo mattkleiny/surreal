@@ -2,6 +2,7 @@
 
 namespace Surreal.Mathematics.Linear
 {
+  /// <summary>A rectangle in 2-space.</summary>
   public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)
   {
     public float Width  => Right - Left;
@@ -25,7 +26,5 @@ namespace Surreal.Mathematics.Linear
              vector.Y >= Bottom &&
              vector.Y <= Top;
     }
-
-    public override string ToString() => $"<{Left.ToString()}, {Top.ToString()}, {Right.ToString()}, {Bottom.ToString()}>";
   }
 }
