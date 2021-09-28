@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using SixLabors.ImageSharp;
 using Surreal.Content;
 using Surreal.IO;
 
@@ -13,9 +13,9 @@ namespace Surreal.Graphics.Fonts
   {
     public override async Task<BitmapFont> LoadAsync(Path path, IAssetResolver resolver)
     {
-      await using var stream = await path.OpenInputStreamAsync();
+      var image = await resolver.LoadAsset<Image>(path);
 
-      throw new NotImplementedException();
+      return new BitmapFont();
     }
   }
 }

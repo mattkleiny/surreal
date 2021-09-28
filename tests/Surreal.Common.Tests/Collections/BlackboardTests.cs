@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Surreal.Collections.Blackboards;
 
 namespace Surreal.Collections
 {

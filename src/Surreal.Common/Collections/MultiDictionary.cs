@@ -52,12 +52,12 @@ namespace Surreal.Collections
 
     public void Add(TKey key, TValue value)
     {
-      dictionary.GetOrCreate(key).Add(value);
+      GetOrCreateList(key).Add(value);
     }
 
     public void AddRange(TKey key, IEnumerable<TValue> values)
     {
-      dictionary.GetOrCreate(key).AddRange(values);
+      GetOrCreateList(key).AddRange(values);
     }
 
     public void Remove(TKey key, TValue value)
@@ -82,6 +82,16 @@ namespace Surreal.Collections
     public void Clear()
     {
       dictionary.Clear();
+    }
+
+    private List<TValue> GetOrCreateList(TKey key)
+    {
+      if (!dictionary.TryGetValue(key, out var list))
+      {
+        dictionary[key] = list = new List<TValue>();
+      }
+
+      return list;
     }
   }
 }

@@ -1,7 +1,7 @@
 ﻿using Isaac.Mechanics.Effects;
 using Surreal.Mathematics;
-using Surreal.Mechanics.Tactical;
 using Surreal.Mechanics.Tactical.Attributes;
+using Surreal.Mechanics.Tactical.Combat;
 using Surreal.Mechanics.Tactical.Effects;
 using Surreal.Timing;
 
@@ -70,9 +70,9 @@ namespace Isaac.Mechanics.Actors
     {
     }
 
-    void IDamageReceiver.ReceiveDamage(object source, Damage damage)
+    void IDamageReceiver.ReceiveDamage(in DamagePacket packet)
     {
-      Health -= damage.Amount;
+      Health -= packet.Damage.Amount;
     }
   }
 }

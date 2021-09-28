@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace Surreal.Collections
 {
+  /// <summary>A <see cref="Stack{T}"/> with a fixed-sized upper bound.</summary>
   public sealed class BoundedStack<T> : IEnumerable<T>
   {
     private readonly Stack<T> queue;

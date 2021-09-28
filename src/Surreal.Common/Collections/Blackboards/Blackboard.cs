@@ -1,37 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Surreal.Collections
+namespace Surreal.Collections.Blackboards
 {
-  /// <summary>Identifies a single property in a <see cref="IBlackboard"/>, with a default value.</summary>
-  public readonly record struct BlackboardProperty<T>(string Key, T? DefaultValue = default)
-  {
-    public override int GetHashCode()
-    {
-      return string.GetHashCode(Key, StringComparison.OrdinalIgnoreCase);
-    }
-
-    public bool Equals(BlackboardProperty<T> other)
-    {
-      return string.Equals(Key, other.Key, StringComparison.OrdinalIgnoreCase);
-    }
-  }
-
-  /// <summary>A source for a <see cref="IBlackboard"/>.</summary>
-  public interface IBlackboardSource
-  {
-    IBlackboard Blackboard { get; }
-  }
-
-  /// <summary>A blackboard is a dictionary of structured types.</summary>
-  public interface IBlackboard
-  {
-    T    Get<T>(BlackboardProperty<T> property, Optional<T> defaultValue = default);
-    void Set<T>(BlackboardProperty<T> property, T value);
-    void Remove<T>(BlackboardProperty<T> property);
-    void Clear();
-  }
-
   /// <summary>The default <see cref="IBlackboard"/> implementation.</summary>
   public sealed class Blackboard : IBlackboard, IBlackboardSource
   {
@@ -83,7 +54,7 @@ namespace Surreal.Collections
     {
       if (storageByKey.TryGetValue(typeof(T), out var dictionary))
       {
-        result = (Dictionary<string, T>)dictionary;
+        result = (Dictionary<string, T>) dictionary;
         return true;
       }
 

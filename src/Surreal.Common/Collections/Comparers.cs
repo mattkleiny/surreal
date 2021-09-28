@@ -2,6 +2,7 @@
 
 namespace Surreal.Collections
 {
+  /// <summary>Commonly used <see cref="Comparer{T}"/>s.</summary>
   public static class Comparers
   {
     public static Comparer<int> IntAscending { get; } = Comparer<int>.Create((a, b) =>

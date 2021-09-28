@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
-using Surreal.Mechanics.Tactical;
 using Surreal.Mechanics.Tactical.Attributes;
+using Surreal.Mechanics.Tactical.Combat;
 
 namespace Isaac.Mechanics
 {

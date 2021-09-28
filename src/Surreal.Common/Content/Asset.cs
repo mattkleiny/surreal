@@ -10,13 +10,12 @@ namespace Surreal.Content
     public bool        IsLoading  => Status == AssetStatus.Loading;
     public bool        IsReady    => Status == AssetStatus.Ready;
 
-    public T Data => (T)Manager.GetData(Id)!;
+    public T Data => (T) Manager.GetData(Id)!;
 
     public AssetAwaiter<T> GetAwaiter() => new(this);
 
-    public void Dispose()
-    {
-      Manager.Unload(Id);
-    }
+    public void Dispose() => Manager.Unload(Id);
+
+    public static implicit operator T(Asset<T> asset) => asset.Data;
   }
 }
