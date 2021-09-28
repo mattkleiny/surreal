@@ -20,9 +20,6 @@ namespace Isaac.Mechanics.Effects
     public TimeSpan Frequency { get; set; } = 1.Seconds();
     public TimeSpan Duration  { get; set; } = 10.Seconds();
 
-    public virtual DamageEffect Create()
-    {
-      return new DamageEffect(Damage, Frequency, Duration);
-    }
+    public DamageEffect Create() => new(Damage, Frequency, Duration);
   }
 }

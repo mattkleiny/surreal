@@ -1,4 +1,6 @@
-﻿using Surreal.Mechanics.Tactical.Effects;
+﻿using System;
+using Surreal.Mechanics.Tactical.Effects;
+using Surreal.Objects;
 using Surreal.Timing;
 
 namespace Isaac.Mechanics.Effects
@@ -9,7 +11,8 @@ namespace Isaac.Mechanics.Effects
     void OnUnfrozen();
   }
 
-  public record FrozenEffect() : TimedStatusEffect(Frequency: 1.Seconds(), Duration: 10.Seconds())
+  [Template(typeof(FrozenEffectTemplate))]
+  public record FrozenEffect(TimeSpan Frequency, TimeSpan Duration) : TimedStatusEffect(Frequency, Duration)
   {
     public override void OnAdded(object owner)
     {
@@ -23,12 +26,20 @@ namespace Isaac.Mechanics.Effects
 
     public override void OnRemoved(object owner)
     {
-      base.OnRemoved(owner);
-
       if (owner is IFreezable freezable)
       {
         freezable.OnUnfrozen();
       }
+
+      base.OnRemoved(owner);
     }
+  }
+
+  public class FrozenEffectTemplate : ITemplate<FrozenEffect>
+  {
+    public TimeSpan Frequency { get; set; } = 1.Seconds();
+    public TimeSpan Duration  { get; set; } = 10.Seconds();
+
+    public FrozenEffect Create() => new(Frequency, Duration);
   }
 }

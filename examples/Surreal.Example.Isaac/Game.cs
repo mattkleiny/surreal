@@ -1,4 +1,6 @@
-﻿using Surreal;
+﻿using Isaac.Mechanics.Effects;
+using Surreal;
+using Surreal.Objects;
 using Surreal.Platform;
 
 namespace Isaac
@@ -17,5 +19,12 @@ namespace Isaac
         }
       }
     });
+
+    protected override void Initialize()
+    {
+      base.Initialize();
+
+      var effect = TemplateFactory.Create<FrozenEffect>();
+    }
   }
 }

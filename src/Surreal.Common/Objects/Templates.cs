@@ -27,10 +27,10 @@ namespace Surreal.Objects
   {
     /// <summary>Creates a blank instance of <see cref="T"/> from a default <see cref="ITemplate{T}"/> of it's type.</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T CreateFromTemplate<T>() => TemplateCache<T>.Template.Create();
+    public static T Create<T>() => TemplateCache<T>.Template.Create();
 
     /// <summary>Creates a blank <see cref="ITemplate{T}"/> for the given type.</summary>
-    public static ITemplate<T> CreateBlankTemplate<T>()
+    public static ITemplate<T> CreateTemplate<T>()
     {
       var attribute = typeof(T).GetCustomAttribute<TemplateAttribute>();
       if (attribute == null || !typeof(ITemplate<T>).IsAssignableFrom(attribute.Type))
@@ -44,7 +44,7 @@ namespace Surreal.Objects
     /// <summary>A static cache for <see cref="ITemplate{T}"/>s for <see cref="T"/>.</summary>
     private static class TemplateCache<T>
     {
-      public static ITemplate<T> Template { get; } = CreateBlankTemplate<T>();
+      public static ITemplate<T> Template { get; } = CreateTemplate<T>();
     }
   }
 }
