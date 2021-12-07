@@ -1,33 +1,28 @@
-﻿using Surreal;
-using Surreal.Diagnostics;
-using Surreal.Diagnostics.Logging;
-using Surreal.Platform;
-using Surreal.Timing;
+﻿using Timer = Surreal.Timing.Timer;
 
-namespace Headless
+namespace Headless;
+
+public sealed class Game : PrototypeGame
 {
-  public sealed class Game : PrototypeGame
+  private static readonly ILog Log = LogFactory.GetLog<Game>();
+
+  private readonly FpsCounter fpsCounter = new();
+  private          Timer      fpsTimer   = new(1.Seconds());
+
+  public static void Main() => Start<Game>(new()
   {
-    private static readonly ILog Log = LogFactory.GetLog<Game>();
+    Platform = new HeadlessPlatform()
+  });
 
-    private readonly FpsCounter fpsCounter = new();
-    private          Timer      fpsTimer   = new(1.Seconds());
+  protected override void Draw(GameTime time)
+  {
+    base.Draw(time);
 
-    public static void Main() => Start<Game>(new()
+    if (fpsTimer.Tick(time.DeltaTime))
     {
-      Platform = new HeadlessPlatform()
-    });
-
-    protected override void Draw(GameTime time)
-    {
-      base.Draw(time);
-
-      if (fpsTimer.Tick(time.DeltaTime))
-      {
-        Log.Trace($"Frames per second: {fpsCounter.FramesPerSecond:F}");
-      }
-
-      fpsCounter.Tick(time.DeltaTime);
+      Log.Trace($"Frames per second: {fpsCounter.FramesPerSecond:F}");
     }
+
+    fpsCounter.Tick(time.DeltaTime);
   }
 }

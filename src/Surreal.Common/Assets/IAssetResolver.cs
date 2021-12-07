@@ -1,10 +1,9 @@
-﻿using Surreal.IO;
+﻿using Path = Surreal.IO.Path;
 
-namespace Surreal.Assets
+namespace Surreal.Assets;
+
+public interface IAssetResolver
 {
-  public interface IAssetResolver
-  {
-    Asset<T> LoadAsset<T>(Path path)
-        where T : class;
-  }
+  Asset<T> LoadAsset<T>(Path path)
+    where T : class;
 }

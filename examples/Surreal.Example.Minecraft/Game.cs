@@ -1,30 +1,26 @@
-﻿using Surreal;
-using Surreal.Platform;
+﻿namespace Minecraft;
 
-namespace Minecraft
+public sealed class Game : PrototypeGame
 {
-  public sealed class Game : PrototypeGame
+  public static void Main() => Start<Game>(new()
   {
-    public static void Main() => Start<Game>(new()
+    Platform = new DesktopPlatform
     {
-      Platform = new DesktopPlatform
+      Configuration =
       {
-        Configuration =
-        {
-          Title          = "Minecraft",
-          IsVsyncEnabled = true,
-          ShowFPSInTitle = true
-        }
+        Title          = "Minecraft",
+        IsVsyncEnabled = true,
+        ShowFPSInTitle = true
       }
-    });
-
-    protected override void Initialize()
-    {
-      base.Initialize();
-
-      Mouse.IsCursorVisible = false;
-
-      GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
     }
+  });
+
+  protected override void Initialize()
+  {
+    base.Initialize();
+
+    Mouse.IsCursorVisible = false;
+
+    GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
   }
 }

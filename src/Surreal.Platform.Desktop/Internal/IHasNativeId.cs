@@ -1,7 +1,6 @@
-namespace Surreal.Platform.Internal
+namespace Surreal.Platform.Internal;
+
+internal interface IHasNativeId
 {
-  internal interface IHasNativeId
-  {
-    int Id { get; }
-  }
+  int Id { get; }
 }

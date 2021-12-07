@@ -1,87 +1,84 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using JetBrains.Annotations;
 
-namespace Surreal.Fibers
+namespace Surreal.Fibers;
+
+/// <summary>A scheduler for <see cref="FiberTask"/>s.</summary>
+[UsedImplicitly]
+public static class FiberScheduler
 {
-  /// <summary>A scheduler for <see cref="FiberTask"/>s.</summary>
-  [UsedImplicitly]
-  public static class FiberScheduler
+  private static readonly ConcurrentQueue<Action> Callbacks = new();
+
+  [ModuleInitializer]
+  internal static void Configure()
   {
-    private static readonly ConcurrentQueue<Action> Callbacks = new();
+    SynchronizationContext.SetSynchronizationContext(FiberSynchronizationContext.Instance);
+  }
 
-    [ModuleInitializer]
-    internal static void Configure()
+  internal static void Schedule(Action callback)
+  {
+    Callbacks.Enqueue(callback);
+  }
+
+  public static void Tick()
+  {
+    while (Callbacks.TryDequeue(out var continuation))
     {
-      SynchronizationContext.SetSynchronizationContext(FiberSynchronizationContext.Instance);
+      try
+      {
+        continuation.Invoke();
+      }
+      catch (Exception exception)
+      {
+        Debug.Print("An error occurred whilst running callbacks: {0}", exception);
+      }
     }
 
-    internal static void Schedule(Action callback)
+    FiberSynchronizationContext.Instance.Execute();
+  }
+
+  private sealed class FiberSynchronizationContext : SynchronizationContext
+  {
+    public static FiberSynchronizationContext Instance { get; } = new();
+
+    private readonly ConcurrentQueue<Continuation> continuations = new();
+
+    public override void Post(SendOrPostCallback callback, object? state)
     {
-      Callbacks.Enqueue(callback);
+      continuations.Enqueue(new Continuation(callback, state));
     }
 
-    public static void Tick()
+    public override void Send(SendOrPostCallback callback, object? state)
     {
-      while (Callbacks.TryDequeue(out var continuation))
+      continuations.Enqueue(new Continuation(callback, state));
+    }
+
+    public void Execute()
+    {
+      while (continuations.TryDequeue(out var continuation))
       {
         try
         {
-          continuation.Invoke();
+          continuation.Callback.Invoke(continuation.State);
         }
         catch (Exception exception)
         {
-          Debug.Print("An error occurred whilst running callbacks: {0}", exception);
+          Debug.Print("An error occurred whilst running continuations: {0}", exception);
         }
       }
-
-      FiberSynchronizationContext.Instance.Execute();
     }
 
-    private sealed class FiberSynchronizationContext : SynchronizationContext
+    private readonly struct Continuation
     {
-      public static FiberSynchronizationContext Instance { get; } = new();
+      public readonly SendOrPostCallback Callback;
+      public readonly object?            State;
 
-      private readonly ConcurrentQueue<Continuation> continuations = new();
-
-      public override void Post(SendOrPostCallback callback, object? state)
+      public Continuation(SendOrPostCallback callback, object? state)
       {
-        continuations.Enqueue(new Continuation(callback, state));
-      }
-
-      public override void Send(SendOrPostCallback callback, object? state)
-      {
-        continuations.Enqueue(new Continuation(callback, state));
-      }
-
-      public void Execute()
-      {
-        while (continuations.TryDequeue(out var continuation))
-        {
-          try
-          {
-            continuation.Callback.Invoke(continuation.State);
-          }
-          catch (Exception exception)
-          {
-            Debug.Print("An error occurred whilst running continuations: {0}", exception);
-          }
-        }
-      }
-
-      private readonly struct Continuation
-      {
-        public readonly SendOrPostCallback Callback;
-        public readonly object?            State;
-
-        public Continuation(SendOrPostCallback callback, object? state)
-        {
-          Callback = callback;
-          State    = state;
-        }
+        Callback = callback;
+        State    = state;
       }
     }
   }

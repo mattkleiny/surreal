@@ -1,53 +1,49 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿namespace Surreal.Diagnostics.Logging;
 
-namespace Surreal.Diagnostics.Logging
+public sealed class CompositeLogFactory : ILogFactory
 {
-  public sealed class CompositeLogFactory : ILogFactory
+  private readonly ILogFactory[] factories;
+
+  public CompositeLogFactory(params ILogFactory[] factories)
   {
-    private readonly ILogFactory[] factories;
+    this.factories = factories;
+  }
 
-    public CompositeLogFactory(params ILogFactory[] factories)
+  public ILog GetLog(string category)
+  {
+    return new CompositeLog(factories.Select(factory => factory.GetLog(category)));
+  }
+
+  private sealed class CompositeLog : ILog
+  {
+    private readonly ILog[] logs;
+
+    public CompositeLog(IEnumerable<ILog> logs)
     {
-      this.factories = factories;
+      this.logs = logs.ToArray();
     }
 
-    public ILog GetLog(string category)
+    public bool IsLevelEnabled(LogLevel level)
     {
-      return new CompositeLog(factories.Select(factory => factory.GetLog(category)));
+      for (var i = 0; i < logs.Length; i++)
+      {
+        var log = logs[i];
+
+        if (log.IsLevelEnabled(level)) return true;
+      }
+
+      return false;
     }
 
-    private sealed class CompositeLog : ILog
+    public void WriteMessage(LogLevel level, string message)
     {
-      private readonly ILog[] logs;
-
-      public CompositeLog(IEnumerable<ILog> logs)
+      for (var i = 0; i < logs.Length; i++)
       {
-        this.logs = logs.ToArray();
-      }
+        var log = logs[i];
 
-      public bool IsLevelEnabled(LogLevel level)
-      {
-        for (var i = 0; i < logs.Length; i++)
+        if (log.IsLevelEnabled(level))
         {
-          var log = logs[i];
-
-          if (log.IsLevelEnabled(level)) return true;
-        }
-
-        return false;
-      }
-
-      public void WriteMessage(LogLevel level, string message)
-      {
-        for (var i = 0; i < logs.Length; i++)
-        {
-          var log = logs[i];
-
-          if (log.IsLevelEnabled(level))
-          {
-            log.WriteMessage(level, message);
-          }
+          log.WriteMessage(level, message);
         }
       }
     }

@@ -1,12 +1,11 @@
 using Surreal.Compute.Execution;
 
-namespace Surreal.Platform.Internal.Compute.Resources
+namespace Surreal.Platform.Internal.Compute.Resources;
+
+internal sealed class HeadlessComputeProgram : ComputeProgram
 {
-  internal sealed class HeadlessComputeProgram : ComputeProgram
+  public override void Execute(int groupsX, int groupsY, int groupsZ)
   {
-    public override void Execute(int groupsX, int groupsY, int groupsZ)
-    {
-      // no-op
-    }
+    // no-op
   }
 }

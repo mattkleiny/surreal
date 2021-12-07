@@ -1,28 +1,25 @@
-﻿using System;
+﻿namespace Surreal.Timing;
 
-namespace Surreal.Timing
+/// <summary>A stop watch using a precision <see cref="TimeStamp"/>.</summary>
+public sealed class Stopwatch
 {
-  /// <summary>A stop watch using a precision <see cref="TimeStamp"/>.</summary>
-  public sealed class Stopwatch
+  private TimeStamp lastTime = TimeStamp.Now;
+
+  public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
+  public TimeSpan MaxDeltaTime    { get; } = (16 * 10).Milliseconds();
+
+  public DeltaTime Tick()
   {
-    private TimeStamp lastTime = TimeStamp.Now;
+    var now   = TimeStamp.Now;
+    var delta = now - lastTime;
 
-    public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
-    public TimeSpan MaxDeltaTime    { get; } = (16 * 10).Milliseconds();
-
-    public DeltaTime Tick()
+    if (delta > MaxDeltaTime)
     {
-      var now   = TimeStamp.Now;
-      var delta = now - lastTime;
-
-      if (delta > MaxDeltaTime)
-      {
-        delta = TargetDeltaTime;
-      }
-
-      lastTime = now;
-
-      return new DeltaTime(delta);
+      delta = TargetDeltaTime;
     }
+
+    lastTime = now;
+
+    return new DeltaTime(delta);
   }
 }

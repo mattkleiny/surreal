@@ -1,24 +1,22 @@
-﻿using System.Threading.Tasks;
-using Surreal.Assets;
-using Surreal.IO;
+﻿using Surreal.Assets;
+using Path = Surreal.IO.Path;
 
-namespace Surreal.Audio.Clips
+namespace Surreal.Audio.Clips;
+
+/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioClip"/>s.</summary>
+public sealed class AudioClipLoader : AssetLoader<AudioClip>
 {
-  /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioClip"/>s.</summary>
-  public sealed class AudioClipLoader : AssetLoader<AudioClip>
+  private readonly IAudioDevice device;
+
+  public AudioClipLoader(IAudioDevice device)
   {
-    private readonly IAudioDevice device;
+    this.device = device;
+  }
 
-    public AudioClipLoader(IAudioDevice device)
-    {
-      this.device = device;
-    }
+  public override async Task<AudioClip> LoadAsync(Path path, IAssetResolver resolver)
+  {
+    var buffer = await resolver.LoadAsset<AudioBuffer>(path);
 
-    public override async Task<AudioClip> LoadAsync(Path path, IAssetResolver resolver)
-    {
-      var buffer = await resolver.LoadAsset<AudioBuffer>(path);
-
-      return device.CreateAudioClip(buffer.Data);
-    }
+    return device.CreateAudioClip(buffer.Data);
   }
 }

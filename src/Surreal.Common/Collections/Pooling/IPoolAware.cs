@@ -1,8 +1,7 @@
-namespace Surreal.Collections.Pooling
+namespace Surreal.Collections.Pooling;
+
+public interface IPoolAware
 {
-  public interface IPoolAware
-  {
-    void OnRent();
-    void OnReturn();
-  }
+  void OnRent();
+  void OnReturn();
 }

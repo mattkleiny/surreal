@@ -1,117 +1,114 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
-namespace Surreal.Diagnostics.Logging
+namespace Surreal.Diagnostics.Logging;
+
+public enum LogLevel : byte
 {
-  public enum LogLevel : byte
+  Trace = 0,
+  Debug = 1,
+  Warn  = 2,
+  Error = 3,
+  Fatal = 4
+}
+
+public interface ILog
+{
+  bool IsLevelEnabled(LogLevel level);
+  void WriteMessage(LogLevel level, string message);
+
+  void Trace(string message)
   {
-    Trace = 0,
-    Debug = 1,
-    Warn  = 2,
-    Error = 3,
-    Fatal = 4
+    if (IsLevelEnabled(LogLevel.Trace))
+    {
+      WriteMessage(LogLevel.Trace, message);
+    }
   }
 
-  public interface ILog
+  void Debug(string message)
   {
-    bool IsLevelEnabled(LogLevel level);
-    void WriteMessage(LogLevel level, string message);
-
-    void Trace(string message)
+    if (IsLevelEnabled(LogLevel.Debug))
     {
-      if (IsLevelEnabled(LogLevel.Trace))
-      {
-        WriteMessage(LogLevel.Trace, message);
-      }
+      WriteMessage(LogLevel.Debug, message);
     }
+  }
 
-    void Debug(string message)
+  void Warn(string message)
+  {
+    if (IsLevelEnabled(LogLevel.Warn))
     {
-      if (IsLevelEnabled(LogLevel.Debug))
-      {
-        WriteMessage(LogLevel.Debug, message);
-      }
+      WriteMessage(LogLevel.Warn, message);
     }
+  }
 
-    void Warn(string message)
+  void Error(string message)
+  {
+    if (IsLevelEnabled(LogLevel.Error))
     {
-      if (IsLevelEnabled(LogLevel.Warn))
-      {
-        WriteMessage(LogLevel.Warn, message);
-      }
+      WriteMessage(LogLevel.Error, message);
     }
+  }
 
-    void Error(string message)
+  void Fatal(string message)
+  {
+    if (IsLevelEnabled(LogLevel.Fatal))
     {
-      if (IsLevelEnabled(LogLevel.Error))
-      {
-        WriteMessage(LogLevel.Error, message);
-      }
+      WriteMessage(LogLevel.Fatal, message);
     }
+  }
 
-    void Fatal(string message)
+  void Profile(string message, Action body)
+  {
+    var stopwatch = Stopwatch.StartNew();
+    try
     {
-      if (IsLevelEnabled(LogLevel.Fatal))
-      {
-        WriteMessage(LogLevel.Fatal, message);
-      }
+      body();
     }
-
-    void Profile(string message, Action body)
+    finally
     {
-      var stopwatch = Stopwatch.StartNew();
-      try
-      {
-        body();
-      }
-      finally
-      {
-        stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
-      }
+      stopwatch.Stop();
+      Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
     }
+  }
 
-    TResult Profile<TResult>(string message, Func<TResult> body)
+  TResult Profile<TResult>(string message, Func<TResult> body)
+  {
+    var stopwatch = Stopwatch.StartNew();
+    try
     {
-      var stopwatch = Stopwatch.StartNew();
-      try
-      {
-        return body();
-      }
-      finally
-      {
-        stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
-      }
+      return body();
     }
-
-    async Task ProfileAsync(string message, Func<Task> body)
+    finally
     {
-      var stopwatch = Stopwatch.StartNew();
-      try
-      {
-        await body();
-      }
-      finally
-      {
-        stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
-      }
+      stopwatch.Stop();
+      Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
     }
+  }
 
-    async Task<TResult> ProfileAsync<TResult>(string message, Func<Task<TResult>> body)
+  async Task ProfileAsync(string message, Func<Task> body)
+  {
+    var stopwatch = Stopwatch.StartNew();
+    try
     {
-      var stopwatch = Stopwatch.StartNew();
-      try
-      {
-        return await body();
-      }
-      finally
-      {
-        stopwatch.Stop();
-        Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
-      }
+      await body();
+    }
+    finally
+    {
+      stopwatch.Stop();
+      Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
+    }
+  }
+
+  async Task<TResult> ProfileAsync<TResult>(string message, Func<Task<TResult>> body)
+  {
+    var stopwatch = Stopwatch.StartNew();
+    try
+    {
+      return await body();
+    }
+    finally
+    {
+      stopwatch.Stop();
+      Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
     }
   }
 }

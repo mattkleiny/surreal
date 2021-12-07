@@ -1,66 +1,64 @@
-﻿using System;
-using Surreal.Collections.Pooling;
+﻿using Surreal.Collections.Pooling;
 
-namespace Surreal.Fibers.Promises
+namespace Surreal.Fibers.Promises;
+
+internal sealed class WhenAllPromise : Promise<Unit>
 {
-  internal sealed class WhenAllPromise : Promise<Unit>
+  private static readonly Pool<WhenAllPromise> Pool = Pool<WhenAllPromise>.Shared;
+
+  private readonly Action returnCallback;
+
+  private bool isStarted;
+  private int  totalCount;
+  private int  completedCount;
+
+  public static WhenAllPromise Create()
   {
-    private static readonly Pool<WhenAllPromise> Pool = Pool<WhenAllPromise>.Shared;
+    return Pool.CreateOrRent();
+  }
 
-    private readonly Action returnCallback;
+  public WhenAllPromise()
+  {
+    returnCallback = () => Pool.Return(this);
+  }
 
-    private bool isStarted;
-    private int  totalCount;
-    private int  completedCount;
+  public void AddTask(FiberTask task)
+  {
+    totalCount += 1;
 
-    public static WhenAllPromise Create()
+    task.GetAwaiter().OnCompleted(() =>
     {
-      return Pool.CreateOrRent();
-    }
+      completedCount += 1;
 
-    public WhenAllPromise()
-    {
-      returnCallback = () => Pool.Return(this);
-    }
-
-    public void AddTask(FiberTask task)
-    {
-      totalCount += 1;
-
-      task.GetAwaiter().OnCompleted(() =>
+      if (isStarted)
       {
-        completedCount += 1;
-
-        if (isStarted)
-        {
-          CheckForCompletion();
-        }
-      });
-    }
-
-    private void CheckForCompletion()
-    {
-      if (completedCount >= totalCount)
-      {
-        SetStatus(FiberTaskStatus.Succeeded);
-        FiberScheduler.Schedule(returnCallback);
+        CheckForCompletion();
       }
-    }
+    });
+  }
 
-    public void Advance()
+  private void CheckForCompletion()
+  {
+    if (completedCount >= totalCount)
     {
-      isStarted = true;
-
-      CheckForCompletion();
+      SetStatus(FiberTaskStatus.Succeeded);
+      FiberScheduler.Schedule(returnCallback);
     }
+  }
 
-    public override void OnReturn()
-    {
-      base.OnReturn();
+  public void Advance()
+  {
+    isStarted = true;
 
-      isStarted      = false;
-      totalCount     = 0;
-      completedCount = 0;
-    }
+    CheckForCompletion();
+  }
+
+  public override void OnReturn()
+  {
+    base.OnReturn();
+
+    isStarted      = false;
+    totalCount     = 0;
+    completedCount = 0;
   }
 }

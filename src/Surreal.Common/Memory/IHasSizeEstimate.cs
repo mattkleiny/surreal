@@ -1,7 +1,6 @@
-﻿namespace Surreal.Memory
+﻿namespace Surreal.Memory;
+
+public interface IHasSizeEstimate
 {
-  public interface IHasSizeEstimate
-  {
-    Size Size { get; }
-  }
+  Size Size { get; }
 }

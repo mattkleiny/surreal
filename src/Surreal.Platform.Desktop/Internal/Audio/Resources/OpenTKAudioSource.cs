@@ -4,53 +4,52 @@ using Surreal.Audio.Clips;
 using Surreal.Audio.Playback;
 using Surreal.Mathematics;
 
-namespace Surreal.Platform.Internal.Audio.Resources
+namespace Surreal.Platform.Internal.Audio.Resources;
+
+[DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
+internal sealed class OpenTKAudioSource : AudioSource, IHasNativeId
 {
-  [DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
-  internal sealed class OpenTKAudioSource : AudioSource, IHasNativeId
+  private readonly int id = AL.GenSource();
+
+  int IHasNativeId.Id => id;
+
+  private readonly OpenTKAudioDevice device;
+  private          float             volume;
+
+  public OpenTKAudioSource(OpenTKAudioDevice device)
   {
-    private readonly int id = AL.GenSource();
+    this.device = device;
+  }
 
-    int IHasNativeId.Id => id;
+  public override float Volume
+  {
+    get => volume;
+    set => volume = Maths.Clamp(value, 0f, 1f);
+  }
 
-    private readonly OpenTKAudioDevice device;
-    private          float             volume;
-
-    public OpenTKAudioSource(OpenTKAudioDevice device)
+  public override bool IsPlaying
+  {
+    get
     {
-      this.device = device;
+      AL.GetSource(id, ALGetSourcei.SourceState, out var state);
+
+      return state == (int)ALSourceState.Playing;
     }
+  }
 
-    public override float Volume
-    {
-      get => volume;
-      set => volume = Maths.Clamp(value, 0f, 1f);
-    }
+  public override void Play(AudioClip clip)
+  {
+    var innerClip = (OpenTKAudioClip)clip;
 
-    public override bool IsPlaying
-    {
-      get
-      {
-        AL.GetSource(id, ALGetSourcei.SourceState, out var state);
+    AL.Source(id, ALSourcef.Gain, volume * device.MasterVolume);
+    AL.Source(id, ALSourcei.Buffer, innerClip.Id);
+    AL.SourcePlay(id);
+  }
 
-        return state == (int)ALSourceState.Playing;
-      }
-    }
+  protected override void Dispose(bool managed)
+  {
+    AL.DeleteSource(id);
 
-    public override void Play(AudioClip clip)
-    {
-      var innerClip = (OpenTKAudioClip)clip;
-
-      AL.Source(id, ALSourcef.Gain, volume * device.MasterVolume);
-      AL.Source(id, ALSourcei.Buffer, innerClip.Id);
-      AL.SourcePlay(id);
-    }
-
-    protected override void Dispose(bool managed)
-    {
-      AL.DeleteSource(id);
-
-      base.Dispose(managed);
-    }
+    base.Dispose(managed);
   }
 }

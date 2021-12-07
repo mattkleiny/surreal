@@ -1,69 +1,67 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace Surreal.Fibers
+namespace Surreal.Fibers;
+
+/// <summary>Allows awaiting <see cref="FiberTask"/> results.</summary>
+public readonly struct FiberTaskAwaiter : INotifyCompletion
 {
-  /// <summary>Allows awaiting <see cref="FiberTask"/> results.</summary>
-  public readonly struct FiberTaskAwaiter : INotifyCompletion
+  private readonly FiberTask task;
+
+  public FiberTaskAwaiter(FiberTask task)
   {
-    private readonly FiberTask task;
-
-    public FiberTaskAwaiter(FiberTask task)
-    {
-      this.task = task;
-    }
-
-    public bool IsCompleted => task.Status != FiberTaskStatus.Pending;
-
-    public void GetResult()
-    {
-      task.Promise?.GetResult(task.Version);
-    }
-
-    public void OnCompleted(Action continuation)
-    {
-      if (task.Promise != null)
-      {
-        task.Promise.OnCompleted(continuation, task.Version);
-      }
-      else
-      {
-        continuation();
-      }
-    }
+    this.task = task;
   }
 
-  public readonly struct FiberTaskAwaiter<T> : INotifyCompletion
+  public bool IsCompleted => task.Status != FiberTaskStatus.Pending;
+
+  public void GetResult()
   {
-    private readonly FiberTask<T> task;
+    task.Promise?.GetResult(task.Version);
+  }
 
-    public FiberTaskAwaiter(FiberTask<T> task)
+  public void OnCompleted(Action continuation)
+  {
+    if (task.Promise != null)
     {
-      this.task = task;
+      task.Promise.OnCompleted(continuation, task.Version);
+    }
+    else
+    {
+      continuation();
+    }
+  }
+}
+
+public readonly struct FiberTaskAwaiter<T> : INotifyCompletion
+{
+  private readonly FiberTask<T> task;
+
+  public FiberTaskAwaiter(FiberTask<T> task)
+  {
+    this.task = task;
+  }
+
+  public bool IsCompleted => task.Status != FiberTaskStatus.Pending;
+
+  public T? GetResult()
+  {
+    if (task.Promise != null)
+    {
+      return task.Promise.GetResult(task.Version);
     }
 
-    public bool IsCompleted => task.Status != FiberTaskStatus.Pending;
+    return task.Result;
+  }
 
-    public T? GetResult()
+  public void OnCompleted(Action continuation)
+  {
+    if (task.Promise != null)
     {
-      if (task.Promise != null)
-      {
-        return task.Promise.GetResult(task.Version);
-      }
-
-      return task.Result;
+      task.Promise.OnCompleted(continuation, task.Version);
     }
-
-    public void OnCompleted(Action continuation)
+    else
     {
-      if (task.Promise != null)
-      {
-        task.Promise.OnCompleted(continuation, task.Version);
-      }
-      else
-      {
-        continuation();
-      }
+      continuation();
     }
   }
 }

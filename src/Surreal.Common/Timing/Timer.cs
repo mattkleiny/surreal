@@ -1,38 +1,36 @@
-using System;
 using System.Diagnostics;
 
-namespace Surreal.Timing
+namespace Surreal.Timing;
+
+/// <summary>A stack-allocated timer.</summary>
+public struct Timer
 {
-  /// <summary>A stack-allocated timer.</summary>
-  public struct Timer
+  private readonly TimeSpan interval;
+  private          float    accumulator;
+
+  public Timer(TimeSpan interval)
   {
-    private readonly TimeSpan interval;
-    private          float    accumulator;
+    Debug.Assert(interval.Ticks > 0, "frequency.Ticks > 0");
 
-    public Timer(TimeSpan interval)
-    {
-      Debug.Assert(interval.Ticks > 0, "frequency.Ticks > 0");
+    this.interval = interval;
+    accumulator   = 0f;
+  }
 
-      this.interval = interval;
-      accumulator   = 0f;
-    }
+  public bool Tick(DeltaTime deltaTime)
+  {
+    accumulator += deltaTime;
 
-    public bool Tick(DeltaTime deltaTime)
-    {
-      accumulator += deltaTime;
-
-      if (accumulator >= interval.TotalSeconds)
-      {
-        accumulator = 0f;
-        return true;
-      }
-
-      return false;
-    }
-
-    public void Reset()
+    if (accumulator >= interval.TotalSeconds)
     {
       accumulator = 0f;
+      return true;
     }
+
+    return false;
+  }
+
+  public void Reset()
+  {
+    accumulator = 0f;
   }
 }

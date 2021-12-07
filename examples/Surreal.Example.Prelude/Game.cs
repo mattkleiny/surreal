@@ -1,21 +1,17 @@
-﻿using Surreal;
-using Surreal.Platform;
+﻿namespace Prelude;
 
-namespace Prelude
+public sealed class Game : PrototypeGame
 {
-  public sealed class Game : PrototypeGame
+  public static void Main() => Start<Game>(new Configuration
   {
-    public static void Main() => Start<Game>(new Configuration
+    Platform = new DesktopPlatform
     {
-      Platform = new DesktopPlatform
+      Configuration =
       {
-        Configuration =
-        {
-          Title          = "Prelude of the Chambered",
-          IsVsyncEnabled = true,
-          ShowFPSInTitle = true
-        }
+        Title          = "Prelude of the Chambered",
+        IsVsyncEnabled = true,
+        ShowFPSInTitle = true
       }
-    });
-  }
+    }
+  });
 }

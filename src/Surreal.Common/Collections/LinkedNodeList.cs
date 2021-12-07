@@ -1,108 +1,106 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 
-namespace Surreal.Collections
+namespace Surreal.Collections;
+
+public interface ILinkedElement<TSelf>
+  where TSelf : class, ILinkedElement<TSelf>
 {
-  public interface ILinkedElement<TSelf>
-      where TSelf : class, ILinkedElement<TSelf>
+  TSelf? Previous { get; set; }
+  TSelf? Next     { get; set; }
+}
+
+public sealed class LinkedNodeList<TNode> : IEnumerable<TNode>
+  where TNode : class, ILinkedElement<TNode>
+{
+  public TNode? Head    { get; private set; }
+  public bool   IsEmpty => Head == null;
+
+  public void Add(TNode newHead)
   {
-    TSelf? Previous { get; set; }
-    TSelf? Next     { get; set; }
+    if (Head == null)
+    {
+      Head = newHead;
+    }
+    else
+    {
+      var oldHead = Head;
+
+      oldHead.Previous = newHead;
+      newHead.Next     = oldHead;
+
+      Head = newHead;
+    }
   }
 
-  public sealed class LinkedNodeList<TNode> : IEnumerable<TNode>
-      where TNode : class, ILinkedElement<TNode>
+  public void Remove(TNode node)
   {
-    public TNode? Head    { get; private set; }
-    public bool   IsEmpty => Head == null;
-
-    public void Add(TNode newHead)
+    if (node == Head)
     {
-      if (Head == null)
-      {
-        Head = newHead;
-      }
-      else
-      {
-        var oldHead = Head;
+      Head = node.Next;
 
-        oldHead.Previous = newHead;
-        newHead.Next     = oldHead;
-
-        Head = newHead;
+      if (Head != null)
+      {
+        Head.Previous = null;
       }
     }
-
-    public void Remove(TNode node)
+    else
     {
-      if (node == Head)
+      var prior = node.Previous;
+      if (prior != null)
       {
-        Head = node.Next;
-
-        if (Head != null)
-        {
-          Head.Previous = null;
-        }
+        prior.Next = node.Next;
       }
-      else
-      {
-        var prior = node.Previous;
-        if (prior != null)
-        {
-          prior.Next = node.Next;
-        }
 
-        var next = node.Next;
-        if (next != null)
-        {
-          next.Previous = node.Previous;
-        }
+      var next = node.Next;
+      if (next != null)
+      {
+        next.Previous = node.Previous;
       }
     }
+  }
 
-    public void Clear()
+  public void Clear()
+  {
+    Head = null;
+  }
+
+  public Enumerator                     GetEnumerator() => new(this);
+  IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
+
+  public struct Enumerator : IEnumerator<TNode>
+  {
+    private readonly LinkedNodeList<TNode> list;
+    private          TNode?                current;
+
+    public Enumerator(LinkedNodeList<TNode> list)
     {
-      Head = null;
+      this.list = list;
+      current   = default;
     }
 
-    public Enumerator                     GetEnumerator() => new(this);
-    IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator() => GetEnumerator();
-    IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
+    public TNode       Current => current!;
+    object IEnumerator.Current => Current;
 
-    public struct Enumerator : IEnumerator<TNode>
+    public bool MoveNext()
     {
-      private readonly LinkedNodeList<TNode> list;
-      private          TNode?                current;
-
-      public Enumerator(LinkedNodeList<TNode> list)
+      if (current == null)
       {
-        this.list = list;
-        current   = default;
-      }
-
-      public TNode       Current => current!;
-      object IEnumerator.Current => Current;
-
-      public bool MoveNext()
-      {
-        if (current == null)
-        {
-          current = list.Head;
-          return current != null;
-        }
-
-        current = current.Next;
+        current = list.Head;
         return current != null;
       }
 
-      public void Reset()
-      {
-        current = null;
-      }
+      current = current.Next;
+      return current != null;
+    }
 
-      public void Dispose()
-      {
-      }
+    public void Reset()
+    {
+      current = null;
+    }
+
+    public void Dispose()
+    {
     }
   }
 }

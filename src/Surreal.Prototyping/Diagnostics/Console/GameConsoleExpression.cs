@@ -1,100 +1,99 @@
 using System.Diagnostics;
 
-namespace Surreal.Diagnostics.Console
+namespace Surreal.Diagnostics.Console;
+
+internal abstract record GameConsoleExpression
 {
-  internal abstract record GameConsoleExpression
+  public abstract T? Accept<T>(IVisitor<T> visitor);
+
+  public enum UnaryOperation
   {
-    public abstract T? Accept<T>(IVisitor<T> visitor);
+    Not,
+    Negate
+  }
 
-    public enum UnaryOperation
+  public enum BinaryOperation
+  {
+    Plus,
+    Minus,
+    Times,
+    Divide
+  }
+
+  public interface IVisitor<out T>
+  {
+    T? Visit(LiteralExpression expression);
+    T? Visit(UnaryExpression expression);
+    T? Visit(BinaryExpression expression);
+    T? Visit(CallExpression expression);
+    T? Visit(VariableExpression expression);
+  }
+
+  [DebuggerDisplay("{Value}")]
+  public sealed record LiteralExpression(object Value) : GameConsoleExpression
+  {
+    public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
+  }
+
+  [DebuggerDisplay("{Operator} {Expression}")]
+  public sealed record UnaryExpression(UnaryOperation Operator, GameConsoleExpression Expression) : GameConsoleExpression
+  {
+    public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
+  }
+
+  [DebuggerDisplay("{Left} {Operator} {Right}")]
+  public sealed record BinaryExpression(BinaryOperation Operator, GameConsoleExpression Left, GameConsoleExpression Right) : GameConsoleExpression
+  {
+    public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
+  }
+
+  [DebuggerDisplay("Call {Symbol}")]
+  public sealed record CallExpression(object Symbol, params GameConsoleExpression[] Parameters) : GameConsoleExpression
+  {
+    public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
+  }
+
+  [DebuggerDisplay("Variable {Name}")]
+  public sealed record VariableExpression(string Name) : GameConsoleExpression
+  {
+    public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
+  }
+
+  public abstract class RecursiveVisitor<T> : IVisitor<T>
+  {
+    public virtual T? Visit(UnaryExpression expression)
     {
-      Not,
-      Negate
+      expression.Expression.Accept(this);
+
+      return default;
     }
 
-    public enum BinaryOperation
+    public virtual T? Visit(BinaryExpression expression)
     {
-      Plus,
-      Minus,
-      Times,
-      Divide
+      expression.Left.Accept(this);
+      expression.Right.Accept(this);
+
+      return default;
     }
 
-    public interface IVisitor<out T>
+    public virtual T? Visit(VariableExpression expression)
     {
-      T? Visit(LiteralExpression expression);
-      T? Visit(UnaryExpression expression);
-      T? Visit(BinaryExpression expression);
-      T? Visit(CallExpression expression);
-      T? Visit(VariableExpression expression);
+      return default;
     }
 
-    [DebuggerDisplay("{Value}")]
-    public sealed record LiteralExpression(object Value) : GameConsoleExpression
+    public virtual T? Visit(LiteralExpression expression)
     {
-      public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
+      return default;
     }
 
-    [DebuggerDisplay("{Operator} {Expression}")]
-    public sealed record UnaryExpression(UnaryOperation Operator, GameConsoleExpression Expression) : GameConsoleExpression
+    public virtual T? Visit(CallExpression expression)
     {
-      public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
-    }
-
-    [DebuggerDisplay("{Left} {Operator} {Right}")]
-    public sealed record BinaryExpression(BinaryOperation Operator, GameConsoleExpression Left, GameConsoleExpression Right) : GameConsoleExpression
-    {
-      public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
-    }
-
-    [DebuggerDisplay("Call {Symbol}")]
-    public sealed record CallExpression(object Symbol, params GameConsoleExpression[] Parameters) : GameConsoleExpression
-    {
-      public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
-    }
-
-    [DebuggerDisplay("Variable {Name}")]
-    public sealed record VariableExpression(string Name) : GameConsoleExpression
-    {
-      public override T? Accept<T>(IVisitor<T> visitor) where T : default => visitor.Visit(this);
-    }
-
-    public abstract class RecursiveVisitor<T> : IVisitor<T>
-    {
-      public virtual T? Visit(UnaryExpression expression)
+      foreach (var parameter in expression.Parameters)
       {
-        expression.Expression.Accept(this);
-
-        return default;
+        parameter.Accept(this);
       }
 
-      public virtual T? Visit(BinaryExpression expression)
-      {
-        expression.Left.Accept(this);
-        expression.Right.Accept(this);
-
-        return default;
-      }
-
-      public virtual T? Visit(VariableExpression expression)
-      {
-        return default;
-      }
-
-      public virtual T? Visit(LiteralExpression expression)
-      {
-        return default;
-      }
-
-      public virtual T? Visit(CallExpression expression)
-      {
-        foreach (var parameter in expression.Parameters)
-        {
-          parameter.Accept(this);
-        }
-
-        return default;
-      }
+      return default;
     }
   }
 }

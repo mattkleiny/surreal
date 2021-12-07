@@ -1,28 +1,26 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Fibers
+namespace Surreal.Fibers;
+
+/// <summary>Allows yielding <see cref="FiberTask"/>s to the next scheduler invocation.</summary>
+public readonly struct FiberYieldAwaitable
 {
-  /// <summary>Allows yielding <see cref="FiberTask"/>s to the next scheduler invocation.</summary>
-  public readonly struct FiberYieldAwaitable
+  [SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Global")]
+  public Awaiter GetAwaiter() => new();
+
+  public readonly struct Awaiter : INotifyCompletion
   {
-    [SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Global")]
-    public Awaiter GetAwaiter() => new();
+    public bool IsCompleted => false;
 
-    public readonly struct Awaiter : INotifyCompletion
+    public void GetResult()
     {
-      public bool IsCompleted => false;
+      // no-op
+    }
 
-      public void GetResult()
-      {
-        // no-op
-      }
-
-      public void OnCompleted(Action continuation)
-      {
-        FiberScheduler.Schedule(continuation);
-      }
+    public void OnCompleted(Action continuation)
+    {
+      FiberScheduler.Schedule(continuation);
     }
   }
 }

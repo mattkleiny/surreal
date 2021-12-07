@@ -1,16 +1,13 @@
-﻿using Surreal.Actors.Components;
+﻿namespace Surreal.Actors;
 
-namespace Surreal.Actors
+public interface IActorContext
 {
-  public interface IActorContext
-  {
-    ActorStatus GetStatus(ActorId id);
+  ActorStatus GetStatus(ActorId id);
 
-    void Spawn(Actor actor);
-    void Enable(ActorId id);
-    void Disable(ActorId id);
-    void Destroy(ActorId id);
+  void Spawn(Actor actor);
+  void Enable(ActorId id);
+  void Disable(ActorId id);
+  void Destroy(ActorId id);
 
-    IComponentStorage<T> GetStorage<T>();
-  }
+  IComponentStorage<T> GetStorage<T>();
 }

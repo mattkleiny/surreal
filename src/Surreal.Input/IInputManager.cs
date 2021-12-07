@@ -1,41 +1,37 @@
-using System.Collections.Generic;
-using System.Linq;
+namespace Surreal.Input;
 
-namespace Surreal.Input
+/// <summary>Manages <see cref="IInputDevice"/>s.</summary>
+public interface IInputManager
 {
-  /// <summary>Manages <see cref="IInputDevice"/>s.</summary>
-  public interface IInputManager
+  IEnumerable<IInputDevice> Devices { get; }
+
+  bool HasDevice<TDevice>()
   {
-    IEnumerable<IInputDevice> Devices { get; }
+    return Devices.OfType<TDevice>().Any();
+  }
 
-    bool HasDevice<TDevice>()
+  TDevice? GetDevice<TDevice>()
+    where TDevice : class, IInputDevice
+  {
+    return Devices.OfType<TDevice>().FirstOrDefault();
+  }
+
+  TDevice GetRequiredDevice<TDevice>()
+    where TDevice : class, IInputDevice
+  {
+    var device = GetDevice<TDevice>();
+
+    if (device == null)
     {
-      return Devices.OfType<TDevice>().Any();
+      throw new DeviceNotFoundException($"Unable to locate input device {typeof(TDevice)}");
     }
 
-    TDevice? GetDevice<TDevice>()
-        where TDevice : class, IInputDevice
-    {
-      return Devices.OfType<TDevice>().FirstOrDefault();
-    }
+    return device;
+  }
 
-    TDevice GetRequiredDevice<TDevice>()
-        where TDevice : class, IInputDevice
-    {
-      var device = GetDevice<TDevice>();
-
-      if (device == null)
-      {
-        throw new DeviceNotFoundException($"Unable to locate input device {typeof(TDevice)}");
-      }
-
-      return device;
-    }
-
-    IEnumerable<TDevice> GetDevices<TDevice>()
-        where TDevice : class, IInputDevice
-    {
-      return Devices.OfType<TDevice>();
-    }
+  IEnumerable<TDevice> GetDevices<TDevice>()
+    where TDevice : class, IInputDevice
+  {
+    return Devices.OfType<TDevice>();
   }
 }

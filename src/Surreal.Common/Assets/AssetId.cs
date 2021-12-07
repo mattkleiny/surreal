@@ -1,11 +1,9 @@
-﻿using System;
-using Surreal.IO;
+﻿using Path = Surreal.IO.Path;
 
-namespace Surreal.Assets
+namespace Surreal.Assets;
+
+/// <summary>Represents uniquely some asset type at a given path.</summary>
+public readonly record struct AssetId(Type Type, Path Path)
 {
-  /// <summary>Represents uniquely some asset type at a given path.</summary>
-  public readonly record struct AssetId(Type Type, Path Path)
-  {
-    public override string ToString() => Path.ToString();
-  }
+  public override string ToString() => Path.ToString();
 }

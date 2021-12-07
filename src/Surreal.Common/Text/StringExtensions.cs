@@ -1,33 +1,31 @@
-using System;
 using System.Text;
 
-namespace Surreal.Text
+namespace Surreal.Text;
+
+/// <summary>General purpose string extensions.</summary>
+public static class StringExtensions
 {
-  /// <summary>General purpose string extensions.</summary>
-  public static class StringExtensions
+  public static StringBuilder AppendWithSeparator(this StringBuilder builder, string value, string seperator)
   {
-    public static StringBuilder AppendWithSeparator(this StringBuilder builder, string value, string seperator)
+    if (builder.Length > 0)
     {
-      if (builder.Length > 0)
-      {
-        builder.Append(seperator);
-      }
-
-      builder.Append(value);
-
-      return builder;
+      builder.Append(seperator);
     }
 
-    public static string GetFullNameWithoutGenerics(this Type type)
-    {
-      return RemoveGenerics(type.FullName ?? string.Empty);
-    }
+    builder.Append(value);
 
-    private static string RemoveGenerics(string value)
-    {
-      var index = value.IndexOf('`');
+    return builder;
+  }
 
-      return index == -1 ? value : value[..index];
-    }
+  public static string GetFullNameWithoutGenerics(this Type type)
+  {
+    return RemoveGenerics(type.FullName ?? string.Empty);
+  }
+
+  private static string RemoveGenerics(string value)
+  {
+    var index = value.IndexOf('`');
+
+    return index == -1 ? value : value[..index];
   }
 }

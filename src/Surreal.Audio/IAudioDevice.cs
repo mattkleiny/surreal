@@ -1,17 +1,13 @@
 using Surreal.Audio.Clips;
 using Surreal.Audio.Playback;
 
-namespace Surreal.Audio
+namespace Surreal.Audio;
+
+/// <summary>Represents the audio subsystem.</summary>
+public interface IAudioDevice
 {
-  /// <summary>Represents the audio subsystem.</summary>
-  public interface IAudioDevice
-  {
-    float MasterVolume { get; set; }
+  float MasterVolume { get; set; }
 
-    void Play(AudioClip clip, float volume = 1f);
-
-    AudioClip       CreateAudioClip(IAudioData data);
-    AudioSource     CreateAudioSource();
-    AudioSourcePool CreateAudioSourcePool(int capacity) => new(this, capacity);
-  }
+  AudioClip   CreateAudioClip(IAudioData data);
+  AudioSource CreateAudioSource();
 }

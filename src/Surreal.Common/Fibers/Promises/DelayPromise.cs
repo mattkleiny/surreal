@@ -1,57 +1,56 @@
-﻿using System;
-using Surreal.Collections.Pooling;
+﻿using Surreal.Collections.Pooling;
 using Surreal.Timing;
+using Timer = Surreal.Timing.Timer;
 
-namespace Surreal.Fibers.Promises
+namespace Surreal.Fibers.Promises;
+
+internal sealed class DelayPromise : Promise<Unit>
 {
-  internal sealed class DelayPromise : Promise<Unit>
+  private static readonly Pool<DelayPromise> Pool = Pool<DelayPromise>.Shared;
+
+  private readonly Action advanceCallback;
+  private readonly Action returnCallback;
+
+  private IClock? clock;
+  private Timer   timer;
+
+  public static DelayPromise Create(IClock clock, TimeSpan duration)
   {
-    private static readonly Pool<DelayPromise> Pool = Pool<DelayPromise>.Shared;
+    var promise = Pool.CreateOrRent();
 
-    private readonly Action advanceCallback;
-    private readonly Action returnCallback;
+    promise.clock = clock;
+    promise.timer = new Timer(duration);
 
-    private IClock? clock;
-    private Timer   timer;
+    promise.Advance();
 
-    public static DelayPromise Create(IClock clock, TimeSpan duration)
+    return promise;
+  }
+
+  public DelayPromise()
+  {
+    advanceCallback = Advance;
+    returnCallback  = () => Pool.Return(this);
+  }
+
+  private void Advance()
+  {
+    if (timer.Tick(clock!.DeltaTime))
     {
-      var promise = Pool.CreateOrRent();
-
-      promise.clock = clock;
-      promise.timer = new Timer(duration);
-
-      promise.Advance();
-
-      return promise;
+      SetStatus(FiberTaskStatus.Succeeded);
+      FiberScheduler.Schedule(returnCallback);
     }
 
-    public DelayPromise()
+    if (Status == FiberTaskStatus.Pending)
     {
-      advanceCallback = Advance;
-      returnCallback  = () => Pool.Return(this);
+      FiberScheduler.Schedule(advanceCallback);
     }
+  }
 
-    private void Advance()
-    {
-      if (timer.Tick(clock!.DeltaTime))
-      {
-        SetStatus(FiberTaskStatus.Succeeded);
-        FiberScheduler.Schedule(returnCallback);
-      }
+  public override void OnReturn()
+  {
+    base.OnReturn();
 
-      if (Status == FiberTaskStatus.Pending)
-      {
-        FiberScheduler.Schedule(advanceCallback);
-      }
-    }
-
-    public override void OnReturn()
-    {
-      base.OnReturn();
-
-      clock = default;
-      timer = default;
-    }
+    clock = default;
+    timer = default;
   }
 }

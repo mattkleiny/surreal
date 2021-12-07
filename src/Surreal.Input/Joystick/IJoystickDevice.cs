@@ -1,7 +1,6 @@
-namespace Surreal.Input.Joystick
+namespace Surreal.Input.Joystick;
+
+/// <summary>A joystick <see cref="IInputDevice"/>.</summary>
+public interface IJoystickDevice : IInputDevice
 {
-  /// <summary>A joystick <see cref="IInputDevice"/>.</summary>
-  public interface IJoystickDevice : IInputDevice
-  {
-  }
 }

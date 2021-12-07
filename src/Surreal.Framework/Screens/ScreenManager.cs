@@ -1,116 +1,114 @@
-﻿using System;
-using Surreal.Collections;
+﻿using Surreal.Collections;
 
-namespace Surreal.Screens
+namespace Surreal.Screens;
+
+/// <summary>A manager for <see cref="IScreen"/>s.</summary>
+public interface IScreenManager : IGamePlugin
 {
-  /// <summary>A manager for <see cref="IScreen"/>s.</summary>
-  public interface IScreenManager : IGamePlugin
+  event Action<IScreen?> ScreenChanged;
+
+  IScreen? ActiveScreen   { get; }
+  IScreen? PreviousScreen { get; }
+
+  void     Push(IScreen screen);
+  void     Replace(IScreen screen);
+  IScreen? Pop(bool dispose = true);
+}
+
+/// <summary>The default <see cref="IScreenManager"/> implementation.</summary>
+public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
+{
+  private readonly LinkedNodeList<IScreen> screens = new();
+
+  public ScreenManager(Game game)
+    : base(game)
   {
-    event Action<IScreen?> ScreenChanged;
-
-    IScreen? ActiveScreen   { get; }
-    IScreen? PreviousScreen { get; }
-
-    void     Push(IScreen screen);
-    void     Replace(IScreen screen);
-    IScreen? Pop(bool dispose = true);
   }
 
-  /// <summary>The default <see cref="IScreenManager"/> implementation.</summary>
-  public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
+  public event Action<IScreen?>? ScreenChanged;
+
+  public IScreen? ActiveScreen   => screens.Head;
+  public IScreen? PreviousScreen => screens.Head?.Previous;
+
+  public override void Initialize()
   {
-    private readonly LinkedNodeList<IScreen> screens = new();
+    ActiveScreen?.Initialize();
+  }
 
-    public ScreenManager(Game game)
-        : base(game)
+  public void Push(IScreen screen)
+  {
+    ActiveScreen?.Hide();
+
+    if (!screen.IsInitialized)
     {
+      screen.Initialize();
     }
 
-    public event Action<IScreen?>? ScreenChanged;
+    screen.Show();
+    screens.Add(screen);
 
-    public IScreen? ActiveScreen   => screens.Head;
-    public IScreen? PreviousScreen => screens.Head?.Previous;
+    ScreenChanged?.Invoke(ActiveScreen);
+  }
 
-    public override void Initialize()
+  public void Replace(IScreen screen)
+  {
+    Pop();
+    Push(screen);
+  }
+
+  public IScreen? Pop(bool dispose = true)
+  {
+    if (screens.IsEmpty) return null;
+
+    var screen = screens.Head!;
+
+    screen.Hide();
+    screens.Remove(screen);
+
+    if (dispose)
     {
-      ActiveScreen?.Initialize();
+      screen.Dispose();
     }
 
-    public void Push(IScreen screen)
-    {
-      ActiveScreen?.Hide();
+    ScreenChanged?.Invoke(ActiveScreen);
 
-      if (!screen.IsInitialized)
-      {
-        screen.Initialize();
-      }
+    return screen;
+  }
 
-      screen.Show();
-      screens.Add(screen);
+  public override void Input(GameTime time)
+  {
+    ActiveScreen?.Input(new GameTime(
+      deltaTime: time.DeltaTime,
+      totalTime: time.TotalTime,
+      isRunningSlowly: time.IsRunningSlowly
+    ));
+  }
 
-      ScreenChanged?.Invoke(ActiveScreen);
-    }
+  public override void Update(GameTime time)
+  {
+    ActiveScreen?.Update(new GameTime(
+      deltaTime: time.DeltaTime,
+      totalTime: time.TotalTime,
+      isRunningSlowly: time.IsRunningSlowly
+    ));
+  }
 
-    public void Replace(IScreen screen)
+  public override void Draw(GameTime time)
+  {
+    ActiveScreen?.Draw(new GameTime(
+      deltaTime: time.DeltaTime,
+      totalTime: time.TotalTime,
+      isRunningSlowly: time.IsRunningSlowly
+    ));
+  }
+
+  public override void Dispose()
+  {
+    while (!screens.IsEmpty)
     {
       Pop();
-      Push(screen);
     }
 
-    public IScreen? Pop(bool dispose = true)
-    {
-      if (screens.IsEmpty) return null;
-
-      var screen = screens.Head!;
-
-      screen.Hide();
-      screens.Remove(screen);
-
-      if (dispose)
-      {
-        screen.Dispose();
-      }
-
-      ScreenChanged?.Invoke(ActiveScreen);
-
-      return screen;
-    }
-
-    public override void Input(GameTime time)
-    {
-      ActiveScreen?.Input(new GameTime(
-          deltaTime: time.DeltaTime,
-          totalTime: time.TotalTime,
-          isRunningSlowly: time.IsRunningSlowly
-      ));
-    }
-
-    public override void Update(GameTime time)
-    {
-      ActiveScreen?.Update(new GameTime(
-          deltaTime: time.DeltaTime,
-          totalTime: time.TotalTime,
-          isRunningSlowly: time.IsRunningSlowly
-      ));
-    }
-
-    public override void Draw(GameTime time)
-    {
-      ActiveScreen?.Draw(new GameTime(
-          deltaTime: time.DeltaTime,
-          totalTime: time.TotalTime,
-          isRunningSlowly: time.IsRunningSlowly
-      ));
-    }
-
-    public override void Dispose()
-    {
-      while (!screens.IsEmpty)
-      {
-        Pop();
-      }
-
-      base.Dispose();
-    }
+    base.Dispose();
   }
 }

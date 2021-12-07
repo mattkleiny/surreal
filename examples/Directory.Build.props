@@ -1,16 +1,6 @@
 ﻿<!-- common configuration for example projects -->
 <Project>
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-    <Nullable>enable</Nullable>
-    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <PublishTrimmed>true</PublishTrimmed>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <PublishSingleFile>true</PublishSingleFile>
-  </PropertyGroup>
+  <Import Project="../Directory.Build.props"/>
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -19,8 +9,24 @@
     <OutputType>WinExe</OutputType>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest"/>
     <EmbeddedResource Include="$(ProjectDir)\Resources\**"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\examples\GlobalUsings.cs">
+      <Link>Shared\GlobalUsings.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

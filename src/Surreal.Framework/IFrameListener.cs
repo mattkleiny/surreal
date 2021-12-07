@@ -1,10 +1,9 @@
 using Surreal.Timing;
 
-namespace Surreal
+namespace Surreal;
+
+/// <summary>Allows a component to listen to engine tick events.</summary>
+public interface IFrameListener
 {
-  /// <summary>Allows a component to listen to engine tick events.</summary>
-  public interface IFrameListener
-  {
-    void Tick(DeltaTime deltaTime);
-  }
+  void Tick(DeltaTime deltaTime);
 }

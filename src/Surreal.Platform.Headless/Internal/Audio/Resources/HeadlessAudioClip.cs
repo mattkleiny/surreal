@@ -1,12 +1,11 @@
 using Surreal.Audio.Clips;
 
-namespace Surreal.Platform.Internal.Audio.Resources
+namespace Surreal.Platform.Internal.Audio.Resources;
+
+internal sealed class HeadlessAudioClip : AudioClip
 {
-  internal sealed class HeadlessAudioClip : AudioClip
+  protected override void Upload(IAudioData? existingData, IAudioData newData)
   {
-    protected override void Upload(IAudioData? existingData, IAudioData newData)
-    {
-      // no-op
-    }
+    // no-op
   }
 }

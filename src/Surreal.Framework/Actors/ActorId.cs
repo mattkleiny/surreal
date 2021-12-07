@@ -1,12 +1,14 @@
-﻿namespace Surreal.Actors
-{
-  public readonly record struct ActorId(uint Id)
-  {
-    public static ActorId None => default;
+﻿namespace Surreal.Actors;
 
-    public override string ToString()
-    {
-      return Id.ToString();
-    }
+public readonly record struct ActorId(uint Id)
+{
+  private static uint nextActorId = 0;
+
+  public static ActorId None       => default;
+  public static ActorId Allocate() => new(Interlocked.Increment(ref nextActorId));
+
+  public override string ToString()
+  {
+    return Id.ToString();
   }
 }

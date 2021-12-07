@@ -1,9 +1,9 @@
 ﻿<!-- common configuration for test projects -->
 <Project>
+  <Import Project="../Directory.Build.props"/>
+
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <Nullable>enable</Nullable>
-    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
 
   <ItemGroup>

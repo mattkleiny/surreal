@@ -1,64 +1,62 @@
-using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
 
-namespace Surreal.Platform.Internal
+namespace Surreal.Platform.Internal;
+
+internal sealed class OpenTKMemoryManager<T> : MemoryManager<T>
+  where T : unmanaged
 {
-  internal sealed class OpenTKMemoryManager<T> : MemoryManager<T>
-      where T : unmanaged
+  private readonly int          id;
+  private readonly BufferTarget target;
+  private readonly int          size;
+  private          IntPtr       address;
+
+  public OpenTKMemoryManager(int id, BufferTarget target)
   {
-    private readonly int          id;
-    private readonly BufferTarget target;
-    private readonly int          size;
-    private          IntPtr       address;
+    this.id     = id;
+    this.target = target;
 
-    public OpenTKMemoryManager(int id, BufferTarget target)
+    GL.BindBuffer(target, id);
+    GL.GetBufferParameter(target, BufferParameterName.BufferSize, out int size);
+
+    address = GL.MapBuffer(target, BufferAccess.ReadWrite);
+
+    if (address == IntPtr.Zero)
     {
-      this.id     = id;
-      this.target = target;
-
-      GL.BindBuffer(target, id);
-      GL.GetBufferParameter(target, BufferParameterName.BufferSize, out int size);
-
-      address = GL.MapBuffer(target, BufferAccess.ReadWrite);
-
-      if (address == IntPtr.Zero)
-      {
-        throw new Exception("Failed to map OpenGL buffer address space!");
-      }
-
-      this.size = size / Unsafe.SizeOf<T>();
+      throw new Exception("Failed to map OpenGL buffer address space!");
     }
 
-    public override unsafe Span<T> GetSpan()
-    {
-      if (address == IntPtr.Zero)
-      {
-        throw new Exception("Attempted to access unmapped OpenGL buffer!");
-      }
+    this.size = size / Unsafe.SizeOf<T>();
+  }
 
-      return new Span<T>(address.ToPointer(), size);
+  public override unsafe Span<T> GetSpan()
+  {
+    if (address == IntPtr.Zero)
+    {
+      throw new Exception("Attempted to access unmapped OpenGL buffer!");
     }
 
-    public override unsafe MemoryHandle Pin(int elementIndex = 0)
-    {
-      var address = (T*)this.address.ToPointer() + elementIndex;
+    return new Span<T>(address.ToPointer(), size);
+  }
 
-      return new MemoryHandle(address);
-    }
+  public override unsafe MemoryHandle Pin(int elementIndex = 0)
+  {
+    var address = (T*)this.address.ToPointer() + elementIndex;
 
-    public override void Unpin()
-    {
-      // no-op
-    }
+    return new MemoryHandle(address);
+  }
 
-    protected override void Dispose(bool disposing)
-    {
-      GL.BindBuffer(target, id);
-      GL.UnmapBuffer(target);
+  public override void Unpin()
+  {
+    // no-op
+  }
 
-      address = IntPtr.Zero;
-    }
+  protected override void Dispose(bool disposing)
+  {
+    GL.BindBuffer(target, id);
+    GL.UnmapBuffer(target);
+
+    address = IntPtr.Zero;
   }
 }
