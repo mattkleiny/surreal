@@ -8,6 +8,7 @@ using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Meshes;
 
+/// <summary>An efficient batch of geometric primitives for rendering to the GPU.</summary>
 public sealed class GeometryBatch : IDisposable
 {
   private const int DefaultVertexCount = 16_000;

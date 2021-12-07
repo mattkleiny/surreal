@@ -4,5 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
+    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj" />
   </ItemGroup>
 </Project>
