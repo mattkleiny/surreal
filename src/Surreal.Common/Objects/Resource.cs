@@ -42,32 +42,32 @@ public abstract class NativeResource : Resource
 public abstract class TrackedNativeResource<TSelf> : NativeResource, ILinkedElement<TSelf>
   where TSelf : TrackedNativeResource<TSelf>
 {
-  private static readonly LinkedNodeList<TSelf> Resources = new();
+  private static readonly LinkedNodeList<TSelf> All = new();
 
   public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
 
   public static Size GetSizeEstimate<T>()
     where T : IHasSizeEstimate
   {
-    lock (Resources)
+    lock (All)
     {
-      return Resources.OfType<T>().Select(_ => _.Size).Sum();
+      return All.OfType<T>().Select(_ => _.Size).Sum();
     }
   }
 
   private static void Track(TSelf resource)
   {
-    lock (Resources)
+    lock (All)
     {
-      Resources.Add(resource);
+      All.Add(resource);
     }
   }
 
   private static void Forget(TSelf resource)
   {
-    lock (Resources)
+    lock (All)
     {
-      Resources.Remove(resource);
+      All.Remove(resource);
     }
   }
 

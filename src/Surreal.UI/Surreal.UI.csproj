@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>UI frameworks for Surreal.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
+  </ItemGroup>
+</Project>
