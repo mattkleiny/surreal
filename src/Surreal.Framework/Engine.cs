@@ -1,6 +1,5 @@
 ﻿using System.Runtime;
 using Surreal.Fibers;
-using Surreal.Platform;
 using Surreal.Timing;
 
 namespace Surreal;

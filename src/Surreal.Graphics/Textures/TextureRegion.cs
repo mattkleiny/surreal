@@ -1,11 +1,11 @@
 ﻿using Surreal.Assets;
-using Surreal.Mathematics.Linear;
-using Path = Surreal.IO.Path;
+using Surreal.IO;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Textures;
 
 /// <summary>Encapsulates a region of a parent <see cref="Texture"/>.</summary>
-public readonly record struct TextureRegion(Texture Texture, Point2 Offset, Point2 Size) : IDisposable
+public readonly record struct TextureRegion(Texture Texture, Vector2I Offset, Vector2I Size) : IDisposable
 {
   public int Width  => Size.X;
   public int Height => Size.Y;
@@ -15,7 +15,7 @@ public readonly record struct TextureRegion(Texture Texture, Point2 Offset, Poin
   {
   }
 
-  public TextureRegion Slice(Point2 offset, Point2 size)
+  public TextureRegion Slice(Vector2I offset, Vector2I size)
   {
     return new(Texture, Offset + offset, size);
   }
@@ -29,10 +29,10 @@ public readonly record struct TextureRegion(Texture Texture, Point2 Offset, Poin
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="TextureRegion"/>s.</summary>
 public sealed class TextureRegionLoader : AssetLoader<TextureRegion>
 {
-  public override async Task<TextureRegion> LoadAsync(Path path, IAssetResolver resolver)
+  public override async Task<TextureRegion> LoadAsync(VirtualPath path, IAssetContext context)
   {
-    var texture = await resolver.LoadAsset<Texture>(path);
+    var texture = await context.LoadAsset<Texture>(path);
 
-    return texture.Data.ToRegion();
+    return texture.ToRegion();
   }
 }

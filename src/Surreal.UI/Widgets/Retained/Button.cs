@@ -8,7 +8,7 @@ public class Button : Widget
   public Content         Label   { get; set; }
   public Action<Button>? Clicked { get; set; }
 
-  protected internal override Layout OnComputeLayout(IRetainedModeContext context)
+  protected internal override void OnComputeLayout(IRetainedModeContext context)
   {
     throw new NotImplementedException();
   }
@@ -20,7 +20,7 @@ public class Button : Widget
 
   protected internal override void OnEvent<TEvent>(TEvent e)
   {
-    if (e is MouseClickedEvent { Button: MouseButton.Left })
+    if (e is MouseClickEvent { Button: MouseButton.Left })
     {
       Clicked?.Invoke(this);
     }

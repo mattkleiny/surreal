@@ -5,7 +5,7 @@ public class Label : Widget
 {
   public Content Content { get; set; }
 
-  protected internal override Layout OnComputeLayout(IRetainedModeContext context)
+  protected internal override void OnComputeLayout(IRetainedModeContext context)
   {
     throw new NotImplementedException();
   }

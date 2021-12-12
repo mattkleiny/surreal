@@ -5,7 +5,6 @@ using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Fibers;
 using Surreal.IO;
-using Surreal.Platform;
 using Surreal.Services;
 using Surreal.Timing;
 
@@ -63,10 +62,10 @@ public abstract class Game : IDisposable, IFrameListener
       Plugins[i].Initialize();
     }
 
-    LoadContentAsync(Assets.CreateResolver()).Forget();
+    LoadContentAsync(Assets).Forget();
   }
 
-  protected virtual async FiberTask LoadContentAsync(IAssetResolver assets)
+  protected virtual async FiberTask LoadContentAsync(IAssetContext assets)
   {
     for (var i = 0; i < Plugins.Count; i++)
     {

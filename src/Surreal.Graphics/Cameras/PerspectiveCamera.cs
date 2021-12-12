@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Surreal.Mathematics;
 using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Cameras;
@@ -19,7 +20,7 @@ public sealed class PerspectiveCamera : Camera
     set
     {
       var radians = DegreesToRadians(value);
-      fieldOfView = Clamp(radians, 0f, Tau);
+      fieldOfView = radians.Clamp(0f, MathF.Tau);
     }
   }
 

@@ -41,12 +41,12 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
     return FromRadians(radians);
   }
 
-  public override string ToString() => $"{Degrees.ToString("F")}°";
+  public override string ToString() => $"{Degrees:F}°";
 
   public int CompareTo(Angle other) => Radians.CompareTo(other.Radians);
 
-  public static bool operator <(Angle left, Angle right)  => left.CompareTo(right) < 0;
-  public static bool operator >(Angle left, Angle right)  => left.CompareTo(right) > 0;
-  public static bool operator <=(Angle left, Angle right) => left.CompareTo(right) <= 0;
-  public static bool operator >=(Angle left, Angle right) => left.CompareTo(right) >= 0;
+  public static bool operator <(Angle left, Angle right)  => left.Radians < right.Radians;
+  public static bool operator >(Angle left, Angle right)  => left.Radians > right.Radians;
+  public static bool operator <=(Angle left, Angle right) => left.Radians <= right.Radians;
+  public static bool operator >=(Angle left, Angle right) => left.Radians >= right.Radians;
 }

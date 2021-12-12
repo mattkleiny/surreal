@@ -2,29 +2,23 @@
 
 namespace Surreal.IO;
 
-/// <summary>A protocol for the <see cref="PackedFileSystem"/>.</summary>
-public interface IFilePackingFormat
-{
-  // TODO: implement a simple packing format
-}
-
-/// <summary>A <see cref="FileSystem"/> that uses a <see cref="IFilePackingFormat"/>.</summary>
+/// <summary>A <see cref="FileSystem"/> that uses a <see cref="IFilePackingScheme"/>.</summary>
 public sealed class PackedFileSystem : FileSystem
 {
-  private readonly IFilePackingFormat format;
+  private readonly IFilePackingScheme scheme;
 
-  public PackedFileSystem(IFilePackingFormat format)
+  public PackedFileSystem(IFilePackingScheme scheme)
     : base("pak")
   {
-    this.format = format;
+    this.scheme = scheme;
   }
 
-  public override Path Resolve(string root, params string[] paths)
+  public override VirtualPath Resolve(string root, params string[] paths)
   {
     throw new NotImplementedException();
   }
 
-  public override ValueTask<Path[]> EnumerateAsync(string path, string wildcard)
+  public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard)
   {
     throw new NotImplementedException();
   }

@@ -1,7 +1,7 @@
 ﻿using Minecraft.Worlds;
 using NUnit.Framework;
 
-namespace Surreal.Example.Minecraft.Tests;
+namespace Surreal;
 
 public sealed class ChunkTests
 {

@@ -1,4 +1,8 @@
-﻿using Timer = Surreal.Timing.Timer;
+﻿using Surreal;
+using Surreal.Diagnostics;
+using Surreal.Diagnostics.Logging;
+using Surreal.Timing;
+using Timer = Surreal.Timing.Timer;
 
 namespace Headless;
 

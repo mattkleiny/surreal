@@ -2,6 +2,7 @@
 
 namespace Surreal.Collections.Pooling;
 
+/// <summary>A generically pooled <see cref="List{T}"/>.</summary>
 public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware
 {
   private static Pool<PooledList<T>> Pool => Pool<PooledList<T>>.Shared;

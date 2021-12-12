@@ -2,23 +2,26 @@
 
 namespace Surreal.Collections.Pooling;
 
+/// <summary>A pool of objects of type, <see cref="T"/>.</summary>
 public sealed class Pool<T>
-  where T : class, new()
 {
-  public static Pool<T> Shared { get; } = new();
+  /// <summary>A shared pool for instances of type, <see cref="T"/>.</summary>
+  public static Pool<T> Shared { get; } = new(Activator.CreateInstance<T>);
 
-  private readonly BoundedQueue<T> queue;
+  private readonly Func<T>         factory;
+  private readonly BoundedQueue<T> instances;
 
-  public Pool(int capacity = 0, int maxCapacity = 32)
+  public Pool(Func<T> factory, int capacity = 0, int maxCapacity = 32)
   {
-    queue = new BoundedQueue<T>(capacity, maxCapacity);
+    this.factory = factory;
+    instances    = new BoundedQueue<T>(capacity, maxCapacity);
   }
 
   public T CreateOrRent()
   {
-    if (!queue.TryDequeue(out var result))
+    if (!instances.TryDequeue(out var result))
     {
-      result = new T();
+      result = factory();
     }
 
     if (result is IPoolAware aware)
@@ -40,11 +43,11 @@ public sealed class Pool<T>
       list.Clear();
     }
 
-    queue.TryEnqueue(value);
+    instances.TryEnqueue(value);
   }
 
   public void Clear()
   {
-    queue.Clear();
+    instances.Clear();
   }
 }

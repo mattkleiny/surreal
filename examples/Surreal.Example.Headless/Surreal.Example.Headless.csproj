@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
     <AssemblyName>Headless</AssemblyName>
     <RootNamespace>Headless</RootNamespace>
     <Description>A super basic example of headless execution with Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Surreal.Prototyping\Surreal.Prototyping.csproj"/>
-    <ProjectReference Include="..\..\src\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj"/>
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A Surreal platform implementation for desktop environments.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Audio\Surreal.Audio.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Compute\Surreal.Compute.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Input\Surreal.Input.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTK" Version="4.6.4" PrivateAssets="compile" />
+  </ItemGroup>
+</Project>

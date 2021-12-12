@@ -1,10 +1,15 @@
 namespace Surreal;
 
-/// <summary>Represents a serializable and efficiently packed unique identifier.</summary>
-public readonly record struct Identifier(Guid Id)
+/// <summary>Represents an integer identifier; efficiently packed for storage.</summary>
+public readonly record struct Identifier(ulong Id)
 {
-  public static Identifier None       => default;
-  public static Identifier Randomized => Guid.NewGuid();
+  private static ulong nextId;
 
-  public static implicit operator Identifier(Guid guid) => new(guid);
+  public static Identifier None       => default;
+  public static Identifier Allocate() => new(Interlocked.Increment(ref nextId));
+
+  public override string ToString()
+  {
+    return Id.ToString();
+  }
 }

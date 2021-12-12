@@ -2,7 +2,6 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using Surreal.Graphics.Materials;
 using Surreal.Mathematics;
-using Surreal.Mathematics.Linear;
 using Surreal.Memory;
 using static Surreal.Mathematics.Maths;
 

@@ -2,8 +2,7 @@ using System.Numerics;
 using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;
-using Surreal.Mathematics.Linear;
-using Path = Surreal.IO.Path;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Materials;
 
@@ -14,8 +13,8 @@ public abstract class ShaderProgram : GraphicsResource
 
   public abstract void SetUniform(string name, int scalar);
   public abstract void SetUniform(string name, float scalar);
-  public abstract void SetUniform(string name, Point2 point);
-  public abstract void SetUniform(string name, Point3 point);
+  public abstract void SetUniform(string name, Vector2I point);
+  public abstract void SetUniform(string name, Vector3I point);
   public abstract void SetUniform(string name, Vector2 vector);
   public abstract void SetUniform(string name, Vector3 vector);
   public abstract void SetUniform(string name, Vector4 vector);
@@ -36,7 +35,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     this.hotReloading = hotReloading;
   }
 
-  public override async Task<ShaderProgram> LoadAsync(Path path, IAssetResolver resolver)
+  public override async Task<ShaderProgram> LoadAsync(VirtualPath path, IAssetContext context)
   {
     await using var stream = await path.OpenInputStreamAsync();
 

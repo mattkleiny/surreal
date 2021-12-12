@@ -1,12 +1,10 @@
-﻿using Path = Surreal.IO.Path;
+﻿using Surreal.IO;
 
 namespace Surreal.Assets;
 
 /// <summary>Allows managing <see cref="Asset{T}"/>s.</summary>
-public interface IAssetManager
+public interface IAssetManager : IAssetContext
 {
-  IAssetResolver CreateResolver();
-
   void        AddLoader(IAssetLoader loader);
   void        AddCallback(AssetId id, Action callback);
   AssetStatus GetStatus(AssetId id);
@@ -19,11 +17,6 @@ public sealed class AssetManager : IAssetManager, IDisposable
 {
   private readonly Dictionary<Type, IAssetLoader> loadersByType = new();
   private readonly Dictionary<AssetId, Entry>     assetsById    = new();
-
-  public IAssetResolver CreateResolver()
-  {
-    return new AssetResolver(this);
-  }
 
   public void AddLoader(IAssetLoader loader)
   {
@@ -38,7 +31,7 @@ public sealed class AssetManager : IAssetManager, IDisposable
     }
   }
 
-  public Asset<T> LoadAsset<T>(Path path)
+  public Asset<T> LoadAsset<T>(VirtualPath path)
     where T : class
   {
     if (!loadersByType.TryGetValue(typeof(T), out var loader))
@@ -46,16 +39,15 @@ public sealed class AssetManager : IAssetManager, IDisposable
       throw new UnsupportedAssetException($"An unsupported asset type was requested: {typeof(T).Name}");
     }
 
-    var assetId  = new AssetId(typeof(T), path);
-    var resolver = CreateResolver();
+    var assetId = new AssetId(typeof(T), path);
 
     if (!assetsById.TryGetValue(assetId, out var entry))
     {
-      assetsById[assetId] = entry = new Entry(assetId);
+      assetsById[assetId] = entry = new Entry();
 
       entry.OnLoad();
 
-      loader.LoadAsync(path, resolver).ContinueWith(task =>
+      loader.LoadAsync(path, this).ContinueWith(task =>
       {
         if (assetsById.TryGetValue(assetId, out entry))
         {
@@ -115,24 +107,8 @@ public sealed class AssetManager : IAssetManager, IDisposable
     assetsById.Clear();
   }
 
-  private sealed class AssetResolver : IAssetResolver
-  {
-    private readonly AssetManager manager;
-
-    public AssetResolver(AssetManager manager)
-    {
-      this.manager = manager;
-    }
-
-    public Asset<T> LoadAsset<T>(Path path)
-      where T : class
-    {
-      throw new NotImplementedException();
-    }
-  }
-
   /// <summary>A single loaded asset and a set of callbacks for observation.</summary>
-  private sealed record Entry(AssetId Id)
+  private sealed class Entry
   {
     public Queue<Action> Callbacks { get; }              = new(0);
     public AssetStatus   Status    { get; private set; } = AssetStatus.Unknown;

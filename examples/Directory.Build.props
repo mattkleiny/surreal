@@ -3,17 +3,15 @@
   <Import Project="../Directory.Build.props"/>
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <OutputType>WinExe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <OutputType>WinExe</OutputType>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
     <PublishSingleFile>true</PublishSingleFile>
@@ -25,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\examples\GlobalUsings.cs">
-      <Link>Shared\GlobalUsings.cs</Link>
-    </Compile>
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Prototyping\Surreal.Modules.Prototyping.csproj" />
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
 </Project>

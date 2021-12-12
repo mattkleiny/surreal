@@ -37,10 +37,10 @@ public abstract class Screen : IScreen
   {
     IsInitialized = true;
 
-    LoadContentAsync(Game.Assets.CreateResolver()).Forget();
+    LoadContentAsync(Game.Assets).Forget();
   }
 
-  protected virtual FiberTask LoadContentAsync(IAssetResolver assets)
+  protected virtual FiberTask LoadContentAsync(IAssetContext assets)
   {
     return FiberTask.CompletedTask;
   }
@@ -83,5 +83,5 @@ public abstract class Screen<TGame> : Screen
   {
   }
 
-  public new TGame Game => (TGame)base.Game;
+  public new TGame Game => (TGame) base.Game;
 }

@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Platform abstractions for Surreal.</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
-  </ItemGroup>
-</Project>

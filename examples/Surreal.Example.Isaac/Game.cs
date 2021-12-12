@@ -1,4 +1,6 @@
-﻿namespace Isaac;
+﻿using Surreal;
+
+namespace Isaac;
 
 public sealed class Game : PrototypeGame
 {
@@ -10,7 +12,7 @@ public sealed class Game : PrototypeGame
       {
         Title          = "The Binding of Isaac",
         IsVsyncEnabled = true,
-        ShowFPSInTitle = true
+        ShowFpsInTitle = true
       }
     }
   });

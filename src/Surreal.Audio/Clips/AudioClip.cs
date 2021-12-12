@@ -1,3 +1,5 @@
+using Surreal.Assets;
+using Surreal.IO;
 using Surreal.Memory;
 
 namespace Surreal.Audio.Clips;
@@ -26,4 +28,22 @@ public abstract class AudioClip : AudioResource, IHasSizeEstimate
   }
 
   protected abstract void Upload(IAudioData? existingData, IAudioData newData);
+}
+
+/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioClip"/>s.</summary>
+public sealed class AudioClipLoader : AssetLoader<AudioClip>
+{
+  private readonly IAudioDevice device;
+
+  public AudioClipLoader(IAudioDevice device)
+  {
+    this.device = device;
+  }
+
+  public override async Task<AudioClip> LoadAsync(VirtualPath path, IAssetContext context)
+  {
+    var buffer = await context.LoadAsset<AudioBuffer>(path);
+
+    return device.CreateAudioClip(buffer);
+  }
 }

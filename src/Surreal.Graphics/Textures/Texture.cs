@@ -1,7 +1,8 @@
 ﻿using Surreal.Assets;
+using Surreal.Graphics.Images;
+using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Memory;
-using Path = Surreal.IO.Path;
 
 namespace Surreal.Graphics.Textures;
 
@@ -84,10 +85,10 @@ public sealed class TextureLoader : AssetLoader<Texture>
     this.defaultWrapMode   = defaultWrapMode;
   }
 
-  public override async Task<Texture> LoadAsync(Path path, IAssetResolver resolver)
+  public override async Task<Texture> LoadAsync(VirtualPath path, IAssetContext context)
   {
-    var image   = await resolver.LoadAsset<Image>(path);
-    var texture = device.CreateTexture(image.Data, defaultFilterMode, defaultWrapMode);
+    var image   = await context.LoadAsset<Image>(path);
+    var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 
     return texture;
   }

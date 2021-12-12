@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Template components and systems for prototyping based on Surreal.</Description>
+    <RootNamespace>Surreal</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.Audio\Surreal.Audio.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Compute\Surreal.Compute.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Input\Surreal.Input.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.Framework\Surreal.Framework.csproj" />
+    <ProjectReference Include="..\..\src\Surreal.UI\Surreal.UI.csproj" />
+  </ItemGroup>
+</Project>

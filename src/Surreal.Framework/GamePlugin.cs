@@ -6,7 +6,7 @@ namespace Surreal;
 /// <summary>A plugin for a <see cref="Game"/>.</summary>
 public interface IGamePlugin : IDisposable
 {
-  FiberTask LoadContentAsync(IAssetResolver assets);
+  FiberTask LoadContentAsync(IAssetContext assets);
   void      Initialize();
 
   void Input(GameTime time);
@@ -34,7 +34,7 @@ public abstract class GamePlugin<TGame> : IGamePlugin
 
   public TGame Game { get; }
 
-  public virtual FiberTask LoadContentAsync(IAssetResolver assets)
+  public virtual FiberTask LoadContentAsync(IAssetContext assets)
   {
     return FiberTask.CompletedTask;
   }

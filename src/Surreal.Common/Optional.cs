@@ -16,11 +16,11 @@ public readonly struct Optional<T>
   public bool IsSome => hasValue;
   public bool IsNone => !hasValue;
 
-  public T? GetOrDefault(T? defaultValue = default)
+  public T GetOrDefault(T defaultValue)
   {
     if (IsSome)
     {
-      return value;
+      return value!;
     }
 
     return defaultValue;

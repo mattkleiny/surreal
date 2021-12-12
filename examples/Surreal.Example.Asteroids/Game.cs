@@ -1,3 +1,5 @@
+using Surreal;
+
 namespace Asteroids;
 
 public sealed class Game : PrototypeGame
@@ -10,7 +12,7 @@ public sealed class Game : PrototypeGame
       {
         Title          = "Asteroids",
         IsVsyncEnabled = true,
-        ShowFPSInTitle = true
+        ShowFpsInTitle = true
       }
     }
   });

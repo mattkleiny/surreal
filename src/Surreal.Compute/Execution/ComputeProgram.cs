@@ -1,6 +1,5 @@
 using Surreal.Assets;
 using Surreal.IO;
-using Path = Surreal.IO.Path;
 
 namespace Surreal.Compute.Execution;
 
@@ -20,7 +19,7 @@ public sealed class ComputeProgramLoader : AssetLoader<ComputeProgram>
     this.device = device;
   }
 
-  public override async Task<ComputeProgram> LoadAsync(Path path, IAssetResolver resolver)
+  public override async Task<ComputeProgram> LoadAsync(VirtualPath path, IAssetContext context)
   {
     var raw = await path.ReadAllBytesAsync();
 

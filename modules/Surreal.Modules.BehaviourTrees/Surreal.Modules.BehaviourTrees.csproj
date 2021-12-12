@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Behaviour Tree support</Description>
+  </PropertyGroup>
+</Project>

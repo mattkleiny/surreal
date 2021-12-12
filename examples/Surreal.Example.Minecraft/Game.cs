@@ -1,4 +1,6 @@
-﻿namespace Minecraft;
+﻿using Surreal;
+
+namespace Minecraft;
 
 public sealed class Game : PrototypeGame
 {
@@ -10,7 +12,7 @@ public sealed class Game : PrototypeGame
       {
         Title          = "Minecraft",
         IsVsyncEnabled = true,
-        ShowFPSInTitle = true
+        ShowFpsInTitle = true
       }
     }
   });

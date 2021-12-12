@@ -1,12 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
     <AssemblyName>HelloWorld</AssemblyName>
     <RootNamespace>HelloWorld</RootNamespace>
     <Description>A super basic example of bootstrapping with Surreal.</Description>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Surreal.Prototyping\Surreal.Prototyping.csproj"/>
-    <ProjectReference Include="..\..\src\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj"/>
-  </ItemGroup>
 </Project>

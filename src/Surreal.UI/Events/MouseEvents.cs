@@ -15,4 +15,4 @@ public record MouseDownEvent(MouseButton Button) : IEvent;
 public record MouseUpEvent(MouseButton Button) : IEvent;
 
 /// <summary>A mouse button was clicked and then released.</summary>
-public record MouseClickedEvent(MouseButton Button) : IEvent;
+public record MouseClickEvent(MouseButton Button) : IEvent;

@@ -75,6 +75,8 @@ public ref struct SpanStack<T>
 
   public Span<T> ToSpan()
   {
-    return storage.Slice(0, Count);
+    return storage[..Count];
   }
+
+  public static implicit operator Span<T>(SpanStack<T> stack) => stack.ToSpan();
 }

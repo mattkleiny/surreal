@@ -44,4 +44,6 @@ public ref struct SpanList<T>
   {
     return storage[..Count];
   }
+
+  public static implicit operator Span<T>(SpanList<T> list) => list.ToSpan();
 }

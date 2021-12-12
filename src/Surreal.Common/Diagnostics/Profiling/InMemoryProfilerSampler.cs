@@ -5,7 +5,6 @@ using System.Text;
 using Surreal.Collections;
 using Surreal.Diagnostics.Logging;
 using Surreal.IO;
-using Path = Surreal.IO.Path;
 
 namespace Surreal.Diagnostics.Profiling;
 
@@ -27,7 +26,7 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     Samplers.GetSampler(category, task).Record(duration);
   }
 
-  public async Task ExportToCSVAsync(Path path)
+  public async Task ExportToCSVAsync(VirtualPath path)
   {
     await using var stream = await path.OpenOutputStreamAsync();
     await using var writer = new StreamWriter(stream, Encoding.UTF8);

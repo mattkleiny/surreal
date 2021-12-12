@@ -2,10 +2,7 @@
 
 namespace Surreal.Timing;
 
-/// <summary>
-/// Wraps delta-time for passing through the callstack.
-/// Supports implicit conversions to common measures.
-/// </summary>
+/// <summary>Wraps delta-time for passing through the callstack.</summary>
 [DebuggerDisplay("{TimeSpan.TotalMilliseconds}ms")]
 public readonly ref struct DeltaTime
 {

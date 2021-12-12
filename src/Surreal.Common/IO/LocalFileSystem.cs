@@ -5,25 +5,25 @@ namespace Surreal.IO;
 /// <summary>A <see cref="FileSystem"/> for the host operating system.</summary>
 public sealed class LocalFileSystem : FileSystem
 {
-  private static readonly string PathSeparator = System.IO.Path.PathSeparator.ToString();
+  private static readonly string PathSeparator = Path.PathSeparator.ToString();
 
   public LocalFileSystem()
     : base("local")
   {
   }
 
-  public override Path Resolve(string root, params string[] paths)
+  public override VirtualPath Resolve(string root, params string[] paths)
   {
     return string.Join(root, PathSeparator, string.Join(PathSeparator, paths));
   }
 
   public override bool SupportsWatcher => true;
 
-  public override ValueTask<Path[]> EnumerateAsync(string path, string wildcard)
+  public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard)
   {
     var files = Directory
       .GetFiles(path, wildcard, SearchOption.AllDirectories)
-      .Select(_ => new Path("local", _))
+      .Select(_ => new VirtualPath("local", _))
       .ToArray();
 
     return ValueTask.FromResult(files);
@@ -59,7 +59,7 @@ public sealed class LocalFileSystem : FileSystem
     return ValueTask.FromResult<Stream>(File.Open(path, FileMode.OpenOrCreate));
   }
 
-  public override IPathWatcher WatchPath(Path path)
+  public override IPathWatcher WatchPath(VirtualPath path)
   {
     return new PathWatcher(path);
   }
@@ -68,13 +68,13 @@ public sealed class LocalFileSystem : FileSystem
   {
     private readonly FileSystemWatcher watcher;
 
-    public Path Path { get; }
+    public VirtualPath Path { get; }
 
-    public event Action<Path>? Created;
-    public event Action<Path>? Modified;
-    public event Action<Path>? Deleted;
+    public event Action<VirtualPath>? Created;
+    public event Action<VirtualPath>? Modified;
+    public event Action<VirtualPath>? Deleted;
 
-    public PathWatcher(Path path)
+    public PathWatcher(VirtualPath path)
     {
       watcher = new FileSystemWatcher(path.Target.ToString()!);
 

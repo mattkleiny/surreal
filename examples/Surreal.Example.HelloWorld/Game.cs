@@ -1,3 +1,5 @@
+using Surreal;
+
 namespace HelloWorld;
 
 public sealed class Game : PrototypeGame
@@ -10,7 +12,7 @@ public sealed class Game : PrototypeGame
       {
         Title          = "Hello, Surreal!",
         IsVsyncEnabled = true,
-        ShowFPSInTitle = true
+        ShowFpsInTitle = true
       }
     }
   });

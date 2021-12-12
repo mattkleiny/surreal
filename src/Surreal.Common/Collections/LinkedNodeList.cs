@@ -2,6 +2,7 @@
 
 namespace Surreal.Collections;
 
+/// <summary>Represents an element in a <see cref="LinkedNodeList{TNode}"/>.</summary>
 public interface ILinkedElement<TSelf>
   where TSelf : class, ILinkedElement<TSelf>
 {
@@ -9,6 +10,7 @@ public interface ILinkedElement<TSelf>
   TSelf? Next     { get; set; }
 }
 
+/// <summary>A linked list where each node contains pointers to/from each other, in-structure.</summary>
 public sealed class LinkedNodeList<TNode> : IEnumerable<TNode>
   where TNode : class, ILinkedElement<TNode>
 {
@@ -68,6 +70,7 @@ public sealed class LinkedNodeList<TNode> : IEnumerable<TNode>
   IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator() => GetEnumerator();
   IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
 
+  /// <summary>Enumerates the <see cref="LinkedNodeList{TNode}"/> from head to tail.</summary>
   public struct Enumerator : IEnumerator<TNode>
   {
     private readonly LinkedNodeList<TNode> list;

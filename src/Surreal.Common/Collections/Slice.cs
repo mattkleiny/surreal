@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Surreal.Collections;
 
-public readonly struct Slice<T> : IReadOnlyList<T>
+/// <summary>A slice of a <see cref="List{T}"/>.</summary>
+public readonly struct Slice<T> : IEnumerable<T>
 {
   public static Slice<T> Empty => default;
 
-  private readonly IList<T> list;
+  private readonly List<T> list;
 
-  public Slice(IList<T> list)
+  public Slice(List<T> list)
     : this(list, 0, list.Count)
   {
   }
 
-  public Slice(IList<T> list, int offset, int length)
+  public Slice(List<T> list, int offset, int length)
   {
     Debug.Assert(offset >= 0, "offset >= 0");
     Debug.Assert(length >= 0, "length >= 0");
@@ -28,27 +30,29 @@ public readonly struct Slice<T> : IReadOnlyList<T>
   public int Offset { get; }
   public int Length { get; }
 
-  public T this[int index]
+  public T this[Index index]
   {
-    get => list[Offset + index];
-    set => list[Offset + index] = value;
+    get => list[Offset + index.GetOffset(Length)];
+    set => list[Offset + index.GetOffset(Length)] = value;
   }
 
-  public Slice<T> Take(int offset, int length)
+  public Slice<T> this[Range range]
   {
-    return new(list, Offset + offset, length);
-  }
+    get
+    {
+      var (offset, length) = range.GetOffsetAndLength(Length);
 
-  int IReadOnlyCollection<T>.Count => Length;
+      return new Slice<T>(list, offset, length);
+    }
+  }
 
   public Enumerator             GetEnumerator() => new(this);
   IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-  public static implicit operator Slice<T>(T[] array)    => new(array);
   public static implicit operator Slice<T>(List<T> list) => new(list);
 
-  public static implicit operator ReadOnlySlice<T>(Slice<T> slice) => new((IReadOnlyList<T>) slice.list, slice.Offset, slice.Length);
+  public static implicit operator ReadOnlySlice<T>(Slice<T> slice) => new(slice.list, slice.Offset, slice.Length);
 
   public struct Enumerator : IEnumerator<T>
   {
@@ -74,7 +78,8 @@ public readonly struct Slice<T> : IReadOnlyList<T>
   }
 }
 
-public readonly struct ReadOnlySlice<T> : IReadOnlyList<T>
+/// <summary>A read-only <see cref="Slice{T}"/> variant.</summary>
+public readonly struct ReadOnlySlice<T> : IEnumerable<T>
 {
   public static ReadOnlySlice<T> Empty => default;
 
@@ -99,14 +104,17 @@ public readonly struct ReadOnlySlice<T> : IReadOnlyList<T>
   public int Offset { get; }
   public int Length { get; }
 
-  public T this[int index] => list[Offset + index];
+  public T this[Index index] => list[Offset + index.GetOffset(Length)];
 
-  public ReadOnlySlice<T> Slice(int offset, int length)
+  public ReadOnlySlice<T> this[Range range]
   {
-    return new(list, Offset + offset, length);
-  }
+    get
+    {
+      var (offset, length) = range.GetOffsetAndLength(Length);
 
-  int IReadOnlyCollection<T>.Count => Length;
+      return new ReadOnlySlice<T>(list, offset, length);
+    }
+  }
 
   public Enumerator             GetEnumerator() => new(this);
   IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
@@ -139,60 +147,19 @@ public readonly struct ReadOnlySlice<T> : IReadOnlyList<T>
   }
 }
 
+/// <summary>Commonly used extensions for <see cref="Slice{T}"/> and <see cref="ReadOnlySlice{T}"/>.</summary>
 public static class SliceExtensions
 {
-  public static Slice<T> ToSlice<T>(this T[] array)                             => ToSlice(array, 0, array.Length);
-  public static Slice<T> ToSlice<T>(this T[] array, int offset, int length)     => new(array, offset, length);
-  public static Slice<T> ToSlice<T>(this IList<T> list)                         => ToSlice(list, 0, list.Count);
-  public static Slice<T> ToSlice<T>(this IList<T> list, int offset, int length) => new(list, offset, length);
-
+  public static Slice<T>         ToSlice<T>(this List<T> list)                                          => ToSlice(list, 0, list.Count);
+  public static Slice<T>         ToSlice<T>(this List<T> list, int offset, int length)                  => new(list, offset, length);
   public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array)                                     => ToReadOnlySlice(array, 0, array.Length);
   public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array, int offset, int length)             => new(array, offset, length);
   public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list)                         => ToReadOnlySlice(list, 0, list.Count);
   public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list, int offset, int length) => new(list, offset, length);
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Swap<T>(this Slice<T> slice, int fromIndex, int toIndex)
   {
-    var temp = slice[fromIndex];
-
-    slice[fromIndex] = slice[toIndex];
-    slice[toIndex]   = temp;
-  }
-
-  public static T? SelectRandomly<T>(this ReadOnlySlice<T?> elements, Random random)
-  {
-    if (elements.Length > 0)
-    {
-      return elements[random.Next(0, elements.Length)];
-    }
-
-    return default;
-  }
-
-  public static void ShuffleInPlace<T>(this Slice<T?> elements, Random random)
-  {
-    for (var i = 0; i < elements.Length; i++)
-    {
-      // don't select from the entire array on subsequent loops
-      var j = random.Next(i, elements.Length);
-
-      elements.Swap(i, j);
-    }
-  }
-
-  public static Slice<T?> Reverse<T>(this Slice<T?> slice)
-  {
-    var start = 0;
-    var end   = slice.Length - 1;
-
-    while (start < end)
-    {
-      slice.Swap(start, end);
-
-      start++;
-      end--;
-    }
-
-    return slice;
+    (slice[fromIndex], slice[toIndex]) = (slice[toIndex], slice[fromIndex]);
   }
 }

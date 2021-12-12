@@ -16,6 +16,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Surreal</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -19,7 +19,7 @@ public sealed class OrthographicCamera : Camera
   public float Zoom
   {
     get => zoom;
-    set => zoom = Maths.Clamp(value, 0.1f, 10f);
+    set => zoom = value.Clamp(0.1f, 10f);
   }
 
   protected override void Recalculate(out Matrix4x4 projection)

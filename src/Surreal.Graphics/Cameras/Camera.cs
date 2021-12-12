@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 using Surreal.Mathematics;
-using Surreal.Mathematics.Linear;
 
 namespace Surreal.Graphics.Cameras;
 
@@ -9,12 +8,11 @@ namespace Surreal.Graphics.Cameras;
 public interface ICamera
 {
   ref readonly Matrix4x4 ProjectionView { get; }
-  ref readonly Frustum   Frustum        { get; }
 
   void Update();
 
-  Point2  Project(Vector3 worldPosition);
-  Vector3 Unproject(Point2 screenPosition);
+  Vector2I Project(Vector3 worldPosition);
+  Vector3  Unproject(Vector2I screenPosition);
 }
 
 /// <summary>Base class for any <see cref="ICamera"/> implementation.</summary>
@@ -26,7 +24,6 @@ public abstract class Camera : ICamera
   private Matrix4x4 projection            = Matrix4x4.Identity;
   private Matrix4x4 projectionView        = Matrix4x4.Identity;
   private Matrix4x4 inverseProjectionView = Matrix4x4.Identity;
-  private Frustum   frustum               = default;
 
   protected Camera(int viewportWidth, int viewportHeight)
   {
@@ -43,13 +40,13 @@ public abstract class Camera : ICamera
   public float Near
   {
     get => near;
-    set => near = Maths.Clamp(value, 0f, float.MaxValue);
+    set => near = value.Clamp(0f, float.MaxValue);
   }
 
   public float Far
   {
     get => far;
-    set => far = Maths.Clamp(value, 0f, float.MaxValue);
+    set => far = value.Clamp(0f, float.MaxValue);
   }
 
   public Vector3 Position  { get; set; } = Vector3.Zero;
@@ -65,7 +62,6 @@ public abstract class Camera : ICamera
   public ref readonly Matrix4x4 Projection            => ref projection;
   public ref readonly Matrix4x4 ProjectionView        => ref projectionView;
   public ref readonly Matrix4x4 InverseProjectionView => ref inverseProjectionView;
-  public ref readonly Frustum   Frustum               => ref frustum;
 
   public void Translate(Vector3 amount)
   {
@@ -90,7 +86,7 @@ public abstract class Camera : ICamera
     Updated?.Invoke();
   }
 
-  public Point2 Project(Vector3 worldPosition)
+  public Vector2I Project(Vector3 worldPosition)
   {
     var result = Vector3.Transform(worldPosition, projectionView);
 
@@ -98,10 +94,10 @@ public abstract class Camera : ICamera
     result.Y = Viewport.Height * (result.Y + 1) / 2 + Viewport.Y;
     result.Z = (result.Z + 1) / 2f;
 
-    return new Point2((int)result.X, (int)result.Y);
+    return new Vector2I((int) result.X, (int) result.Y);
   }
 
-  public Vector3 Unproject(Point2 screenPosition)
+  public Vector3 Unproject(Vector2I screenPosition)
   {
     var result = new Vector3(
       x: 2 * (screenPosition.X - Viewport.X) / Viewport.Width - 1,

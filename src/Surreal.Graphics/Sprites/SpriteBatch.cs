@@ -5,7 +5,6 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
-using Surreal.Mathematics.Linear;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Sprites;
@@ -58,8 +57,8 @@ public sealed class SpriteBatch : IDisposable
     Vector2 position,
     Vector2 size,
     Angle rotation,
-    Point2 regionOffset,
-    Point2 regionSize,
+    Vector2I regionOffset,
+    Vector2I regionSize,
     Color color
   )
   {

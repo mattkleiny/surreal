@@ -49,14 +49,14 @@ public interface IGraphicsDevice
     TextureWrapMode wrapMode = TextureWrapMode.Repeat
   );
 
-  FrameBuffer CreateFrameBuffer(in FrameBufferDescriptor descriptor);
+  RenderTexture CreateFrameBuffer(in RenderTextureDescriptor descriptor);
 }
 
 /// <summary>Represents the underlying state of the graphics fixed-function pipeline.</summary>
 public interface IPipelineState
 {
-  FrameBuffer      PrimaryFrameBuffer { get; }
-  FrameBuffer?     ActiveFrameBuffer  { get; set; }
+  RenderTexture      PrimaryRenderTexture { get; }
+  RenderTexture?     ActiveFrameBuffer  { get; set; }
   ShaderProgram?   ActiveShader       { get; set; }
   GraphicsBuffer?  ActiveVertexBuffer { get; set; }
   GraphicsBuffer?  ActiveIndexBuffer  { get; set; }
