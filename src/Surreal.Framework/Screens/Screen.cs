@@ -1,6 +1,5 @@
 ﻿using Surreal.Assets;
 using Surreal.Collections;
-using Surreal.Fibers;
 
 namespace Surreal.Screens;
 
@@ -10,7 +9,7 @@ public interface IScreen : ILinkedElement<IScreen>, IDisposable
   bool IsInitialized { get; }
   bool IsDisposed    { get; }
 
-  void Initialize();
+  Task InitializeAsync();
 
   void Show();
   void Hide();
@@ -33,16 +32,16 @@ public abstract class Screen : IScreen
   public bool IsInitialized { get; private set; }
   public bool IsDisposed    { get; private set; }
 
-  public virtual void Initialize()
+  public virtual async Task InitializeAsync()
   {
     IsInitialized = true;
 
-    LoadContentAsync(Game.Assets).Forget();
+    await LoadContentAsync(Game.Assets);
   }
 
-  protected virtual FiberTask LoadContentAsync(IAssetContext assets)
+  protected virtual Task LoadContentAsync(IAssetContext assets)
   {
-    return FiberTask.CompletedTask;
+    return Task.CompletedTask;
   }
 
   public virtual void Show()

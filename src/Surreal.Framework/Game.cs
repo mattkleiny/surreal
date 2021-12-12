@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.Runtime;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
@@ -7,11 +8,12 @@ using Surreal.Fibers;
 using Surreal.IO;
 using Surreal.Services;
 using Surreal.Timing;
+using Stopwatch = Surreal.Timing.Stopwatch;
 
 namespace Surreal;
 
 /// <summary>Base class for any game built with Surreal.</summary>
-public abstract class Game : IDisposable, IFrameListener
+public abstract class Game : IDisposable
 {
   private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
 
@@ -21,22 +23,19 @@ public abstract class Game : IDisposable, IFrameListener
   public static TGame Create<TGame>(Configuration configuration)
     where TGame : Game, new()
   {
-    var game = new TGame
+    return new TGame
     {
       Host = configuration.Platform!.BuildHost()
     };
-
-    game.Initialize();
-
-    return game;
   }
 
-  public static void Start<TGame>(Configuration configuration)
+  public static async Task StartAsync<TGame>(Configuration configuration)
     where TGame : Game, new()
   {
     using var game = Create<TGame>(configuration);
 
-    Engine.Run(game.Host, game);
+    await game.InitializeAsync();
+    await game.RunAsync();
   }
 
   protected Game()
@@ -44,11 +43,58 @@ public abstract class Game : IDisposable, IFrameListener
     loopTarget = new ProfiledLoopTarget(this);
   }
 
+  public bool              IsRunning    { get; private set; }  = false;
   public IPlatformHost     Host         { get; private init; } = null!;
   public IAssetManager     Assets       { get; }               = new AssetManager();
   public IServiceContainer Services     { get; }               = new ServiceContainer();
   public ILoopStrategy     LoopStrategy { get; set; }          = new AveragingLoopStrategy();
   public List<IGamePlugin> Plugins      { get; }               = new();
+
+  private async Task RunAsync()
+  {
+    // TODO: make this properly async
+
+    if (IsRunning)
+    {
+      throw new InvalidOperationException("The engine is already running, and cannot start again!");
+    }
+
+    try
+    {
+      GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+
+      IsRunning = true;
+
+      var stopwatch = new Stopwatch();
+
+      while (IsRunning && !Host.IsClosing)
+      {
+        var deltaTime = stopwatch.Tick();
+        var totalTime = DateTime.Now - startTime;
+
+        Host.Tick(deltaTime);
+        LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
+
+        FiberScheduler.Tick();
+      }
+    }
+    finally
+    {
+      IsRunning = false;
+    }
+  }
+
+  private async Task InitializeAsync()
+  {
+    Initialize();
+
+    for (var i = 0; i < Plugins.Count; i++)
+    {
+      await Plugins[i].InitializeAsync();
+    }
+
+    await LoadContentAsync(Assets);
+  }
 
   protected virtual void Initialize()
   {
@@ -56,16 +102,9 @@ public abstract class Game : IDisposable, IFrameListener
 
     RegisterFileSystems(FileSystem.Registry);
     RegisterServices(Services);
-
-    for (var i = 0; i < Plugins.Count; i++)
-    {
-      Plugins[i].Initialize();
-    }
-
-    LoadContentAsync(Assets).Forget();
   }
 
-  protected virtual async FiberTask LoadContentAsync(IAssetContext assets)
+  protected virtual async Task LoadContentAsync(IAssetContext assets)
   {
     for (var i = 0; i < Plugins.Count; i++)
     {
@@ -87,13 +126,6 @@ public abstract class Game : IDisposable, IFrameListener
     }
 
     registry.Add(new ResourceFileSystem());
-  }
-
-  void IFrameListener.Tick(DeltaTime deltaTime)
-  {
-    var totalTime = DateTime.Now - startTime;
-
-    LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
   }
 
   protected virtual void Begin(GameTime time)
@@ -134,7 +166,7 @@ public abstract class Game : IDisposable, IFrameListener
 
   public void Exit()
   {
-    Engine.Stop();
+    IsRunning = false;
   }
 
   public virtual void Dispose()

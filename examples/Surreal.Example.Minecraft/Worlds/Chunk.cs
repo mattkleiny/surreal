@@ -1,8 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
+using Surreal.Mathematics;
 using Surreal.Memory;
 
 namespace Minecraft.Worlds;
 
+/// <summary>A chunk of the game world.</summary>
 public sealed class Chunk
 {
   public static Volume Size { get; } = new(16, 128, 16);

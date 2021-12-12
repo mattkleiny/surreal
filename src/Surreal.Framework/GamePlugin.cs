@@ -1,13 +1,12 @@
 ﻿using Surreal.Assets;
-using Surreal.Fibers;
 
 namespace Surreal;
 
 /// <summary>A plugin for a <see cref="Game"/>.</summary>
 public interface IGamePlugin : IDisposable
 {
-  FiberTask LoadContentAsync(IAssetContext assets);
-  void      Initialize();
+  Task LoadContentAsync(IAssetContext assets);
+  Task InitializeAsync();
 
   void Input(GameTime time);
   void Update(GameTime time);
@@ -34,13 +33,14 @@ public abstract class GamePlugin<TGame> : IGamePlugin
 
   public TGame Game { get; }
 
-  public virtual FiberTask LoadContentAsync(IAssetContext assets)
+  public virtual Task LoadContentAsync(IAssetContext assets)
   {
-    return FiberTask.CompletedTask;
+    return Task.CompletedTask;
   }
 
-  public virtual void Initialize()
+  public virtual Task InitializeAsync()
   {
+    return Task.CompletedTask;
   }
 
   public virtual void Input(GameTime time)

@@ -4,7 +4,7 @@ namespace Surreal.Timing;
 
 /// <summary>Wraps delta-time for passing through the callstack.</summary>
 [DebuggerDisplay("{TimeSpan.TotalMilliseconds}ms")]
-public readonly ref struct DeltaTime
+public readonly struct DeltaTime
 {
   public DeltaTime(TimeSpan timeSpan)
     : this((float) timeSpan.TotalSeconds)

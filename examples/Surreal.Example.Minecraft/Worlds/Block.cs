@@ -2,6 +2,7 @@
 
 namespace Minecraft.Worlds;
 
+/// <summary>A single block with metadata.</summary>
 public sealed record Block(ushort Id)
 {
   private static uint   nextId = 0;
@@ -35,6 +36,7 @@ public sealed record Block(ushort Id)
   public static BlockPalette Palette { get; } = new(Air, Dirt, Grass);
 }
 
+/// <summary>A palette of <see cref="Block"/>s for fast lookup.</summary>
 public sealed class BlockPalette
 {
   private readonly Dictionary<ushort, Block> blocksById;

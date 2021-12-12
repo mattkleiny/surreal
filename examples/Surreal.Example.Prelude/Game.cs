@@ -4,7 +4,7 @@ namespace Prelude;
 
 public sealed class Game : PrototypeGame
 {
-  public static void Main() => Start<Game>(new Configuration
+  public static Task Main() => StartAsync<Game>(new Configuration
   {
     Platform = new DesktopPlatform
     {
