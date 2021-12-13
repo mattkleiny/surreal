@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.Design;
 
-namespace Surreal.Services;
+namespace Surreal;
 
 /// <summary>Static extension methods for <see cref="IServiceProvider"/> and related.</summary>
-public static class ServiceExtensions
+public static class Services
 {
   public static T GetRequiredService<T>(this IServiceProvider provider)
   {

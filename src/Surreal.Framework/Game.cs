@@ -6,7 +6,6 @@ using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Fibers;
 using Surreal.IO;
-using Surreal.Services;
 using Surreal.Timing;
 using Stopwatch = Surreal.Timing.Stopwatch;
 

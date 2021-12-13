@@ -3,6 +3,7 @@ using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Mathematics;
 
+/// <summary>An angle, stored as radians with conversions to degrees.</summary>
 public readonly record struct Angle(float Radians) : IComparable<Angle>
 {
   public float Degrees => RadiansToDegrees(Radians);

@@ -16,7 +16,6 @@ using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Mathematics;
 using Surreal.Screens;
-using Surreal.Services;
 
 namespace Surreal;
 

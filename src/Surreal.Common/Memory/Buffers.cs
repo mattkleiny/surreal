@@ -36,8 +36,6 @@ public static class Buffers
     return new NativeBuffer<T>(length, zeroFill);
   }
 
-  #region Buffer Implementations
-
   private sealed class ManagedBuffer<T> : IBuffer<T>
   {
     private readonly T[] elements;
@@ -108,6 +106,4 @@ public static class Buffers
       }
     }
   }
-
-  #endregion
 }
