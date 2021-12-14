@@ -5,5 +5,15 @@ public readonly record struct Area(float Width, float Height)
 {
   public float Total => Width * Height;
 
-  public override string ToString() => $"{Width.ToString()}x{Height.ToString()} ({Total.ToString()} units)";
+  public override string ToString() => $"{Width}x{Height} ({Total} units)";
+
+  public static Area operator +(Area a, float scalar) => new(a.Width + scalar, a.Height + scalar);
+  public static Area operator -(Area a, float scalar) => new(a.Width - scalar, a.Height - scalar);
+  public static Area operator *(Area a, float scalar) => new(a.Width * scalar, a.Height * scalar);
+  public static Area operator /(Area a, float scalar) => new(a.Width / scalar, a.Height / scalar);
+
+  public static Area operator +(Area a, Area b) => new(a.Width + b.Width, a.Height + b.Height);
+  public static Area operator -(Area a, Area b) => new(a.Width - b.Width, a.Height - b.Height);
+  public static Area operator *(Area a, Area b) => new(a.Width * b.Width, a.Height * b.Height);
+  public static Area operator /(Area a, Area b) => new(a.Width / b.Width, a.Height / b.Height);
 }

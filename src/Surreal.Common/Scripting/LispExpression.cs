@@ -43,6 +43,7 @@ public abstract record LispExpression
           case "-": return new ListFunction(ListOperator.Subtract, root.Contents.Select(Parse).ToArray());
           case "*": return new ListFunction(ListOperator.Multiply, root.Contents.Select(Parse).ToArray());
           case "/": return new ListFunction(ListOperator.Divide, root.Contents.Select(Parse).ToArray());
+          case "=": return new ListFunction(ListOperator.Equate, root.Contents.Select(Parse).ToArray());
 
           case "lambda":
             Debug.Assert(root.Contents.Peek() is SExpression.List, "\"lambda\" statements should be followed by list of parameters");
@@ -102,7 +103,8 @@ public abstract record LispExpression
     Add,
     Subtract,
     Multiply,
-    Divide
+    Divide,
+    Equate
   }
 
   public interface IVisitor<out T>

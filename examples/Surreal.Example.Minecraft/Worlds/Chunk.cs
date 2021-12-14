@@ -7,7 +7,7 @@ namespace Minecraft.Worlds;
 /// <summary>A chunk of the game world.</summary>
 public sealed class Chunk
 {
-  public static Volume Size { get; } = new(16, 128, 16);
+  public static VolumeI Size { get; } = new(16, 128, 16);
 
   private readonly IBuffer<ushort> voxels = Buffers.AllocatePinned<ushort>(Size.Total);
   private readonly BlockPalette    palette;

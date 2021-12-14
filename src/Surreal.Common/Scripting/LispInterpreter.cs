@@ -83,10 +83,7 @@ public sealed class LispInterpreter
 
     public Value Visit(ListFunction expression)
     {
-      IEnumerable<T> As<T>(LispExpression[] Arguments)
-      {
-        return expression.Arguments.Select(_ => _.Accept(this).Cast<T>());
-      }
+      IEnumerable<T> As<T>() => expression.Arguments.Select(_ => _.Accept(this).Cast<T>());
 
       switch (expression.Operator)
       {
@@ -94,7 +91,7 @@ public sealed class LispInterpreter
         {
           var result = 0d;
 
-          foreach (var value in As<double>(expression.Arguments))
+          foreach (var value in As<double>())
           {
             result += value;
           }
@@ -105,7 +102,7 @@ public sealed class LispInterpreter
         {
           var result = 0d;
 
-          foreach (var value in As<double>(expression.Arguments))
+          foreach (var value in As<double>())
           {
             result -= value;
           }
@@ -116,7 +113,7 @@ public sealed class LispInterpreter
         {
           var result = 0d;
 
-          foreach (var value in As<double>(expression.Arguments))
+          foreach (var value in As<double>())
           {
             result *= value;
           }
@@ -127,12 +124,16 @@ public sealed class LispInterpreter
         {
           var result = 0d;
 
-          foreach (var value in As<double>(expression.Arguments))
+          foreach (var value in As<double>())
           {
             result /= value;
           }
 
           return new Number(result);
+        }
+        case ListOperator.Equate:
+        {
+          throw new NotImplementedException();
         }
 
         default:
