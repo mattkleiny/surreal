@@ -8,7 +8,8 @@ public readonly record struct ActorId(uint Id)
   public static ActorId Invalid    => default;
   public static ActorId Allocate() => new(Interlocked.Increment(ref nextId));
 
-  public bool IsValid => Id != 0;
+  public bool IsInvalid => Id == 0;
+  public bool IsValid   => Id != 0;
 
   public override string ToString()
   {

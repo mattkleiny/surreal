@@ -7,19 +7,12 @@ public struct AspectEnumerator : IEnumerator<ActorId>, IEnumerable<ActorId>
 {
   // TODO: implement me
 
-  private readonly IEnumerator<ActorId> enumerator;
-
-  public AspectEnumerator(IEnumerator<ActorId> enumerator)
-  {
-    this.enumerator = enumerator;
-  }
-
-  public ActorId     Current => enumerator.Current;
+  public ActorId     Current => throw new NotImplementedException();
   object IEnumerator.Current => Current;
 
-  public bool MoveNext() => enumerator.MoveNext();
-  public void Reset()    => enumerator.Reset();
-  public void Dispose()  => enumerator.Dispose();
+  public bool MoveNext() => throw new NotImplementedException();
+  public void Reset()    => throw new NotImplementedException();
+  public void Dispose()  => throw new NotImplementedException();
 
   public AspectEnumerator                   GetEnumerator() => this;
   IEnumerator<ActorId> IEnumerable<ActorId>.GetEnumerator() => GetEnumerator();

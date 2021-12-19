@@ -31,9 +31,4 @@ public sealed class SparseComponentStorage<T> : IComponentStorage<T>
   {
     return slots.Remove(id);
   }
-
-  public void Prune(ActorId id)
-  {
-    slots.Remove(id);
-  }
 }

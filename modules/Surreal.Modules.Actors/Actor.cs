@@ -4,7 +4,10 @@ using Surreal.Timing;
 namespace Surreal;
 
 /// <summary>An actor in the game world.</summary>
-/// <remarks>This is a hybrid Game Object/ECS model that permits fast internal iteration of ECS-bound components and high-level composition of game logic.</remarks>
+/// <remarks>
+/// This is a hybrid Game Object/ECS model that permits fast internal iteration of ECS-bound
+/// components as well as high-level composition of game logic via classes and inheritance.
+/// </remarks>
 public class Actor
 {
   private IActorContext context = null!;
@@ -32,6 +35,13 @@ public class Actor
     {
       context.Destroy(Id);
     }
+  }
+
+  public ref T GetOrCreateComponent<T>(T prototype)
+  {
+    var storage = context.GetStorage<T>();
+
+    return ref storage.GetOrCreateComponent(Id, prototype);
   }
 
   public T AddComponent<T>(T prototype)
