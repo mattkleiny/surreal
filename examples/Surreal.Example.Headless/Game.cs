@@ -8,25 +8,25 @@ namespace Headless;
 
 public sealed class Game : PrototypeGame
 {
-  private static readonly ILog Log = LogFactory.GetLog<Game>();
+	private static readonly ILog Log = LogFactory.GetLog<Game>();
 
-  private readonly FpsCounter fpsCounter = new();
-  private          Timer      fpsTimer   = new(1.Seconds());
+	private readonly FpsCounter fpsCounter = new();
+	private Timer fpsTimer = new(1.Seconds());
 
-  public static Task Main() => StartAsync<Game>(new()
-  {
-    Platform = new HeadlessPlatform()
-  });
+	public static Task Main() => StartAsync<Game>(new()
+	{
+		Platform = new HeadlessPlatform()
+	});
 
-  protected override void Draw(GameTime time)
-  {
-    base.Draw(time);
+	protected override void Draw(GameTime time)
+	{
+		base.Draw(time);
 
-    if (fpsTimer.Tick(time.DeltaTime))
-    {
-      Log.Trace($"Frames per second: {fpsCounter.FramesPerSecond:F}");
-    }
+		if (fpsTimer.Tick(time.DeltaTime))
+		{
+			Log.Trace($"Frames per second: {fpsCounter.FramesPerSecond:F}");
+		}
 
-    fpsCounter.Tick(time.DeltaTime);
-  }
+		fpsCounter.Tick(time.DeltaTime);
+	}
 }

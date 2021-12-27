@@ -1,0 +1,3 @@
+[*.cs]
+dotnet_diagnostic.CA1707.severity = None # Method should not contain underscores
+dotnet_diagnostic.SA1300.severity = None # Method should start with uppercase

@@ -9,53 +9,53 @@ namespace Surreal.Internal.Graphics;
 
 internal sealed class OpenTKPipelineState : IPipelineState
 {
-  private IHasNativeId? activeFrameBuffer;
-  private IHasNativeId? activeShader;
-  private IHasNativeId? activeVertexBuffer;
-  private IHasNativeId? activeIndexBuffer;
+	private IHasNativeId? activeFrameBuffer;
+	private IHasNativeId? activeShader;
+	private IHasNativeId? activeVertexBuffer;
+	private IHasNativeId? activeIndexBuffer;
 
-  public RenderTexture PrimaryRenderTexture { get; } = new OpenTKPrimaryRenderTexture();
+	public RenderTexture PrimaryRenderTexture { get; } = new OpenTKPrimaryRenderTexture();
 
-  public RenderTexture? ActiveFrameBuffer
-  {
-    get => (RenderTexture?)activeFrameBuffer;
-    set
-    {
-      activeFrameBuffer = (OpenTKRenderTexture?)value;
-      GL.BindFramebuffer(FramebufferTarget.Framebuffer, activeFrameBuffer?.Id ?? 0);
-    }
-  }
+	public RenderTexture? ActiveFrameBuffer
+	{
+		get => (RenderTexture?) activeFrameBuffer;
+		set
+		{
+			activeFrameBuffer = (OpenTKRenderTexture?) value;
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, activeFrameBuffer?.Id ?? 0);
+		}
+	}
 
-  public ShaderProgram? ActiveShader
-  {
-    get => (ShaderProgram?)activeShader;
-    set
-    {
-      activeShader = (OpenTKShaderProgram?)value;
-      GL.UseProgram(activeShader?.Id ?? 0);
-    }
-  }
+	public ShaderProgram? ActiveShader
+	{
+		get => (ShaderProgram?) activeShader;
+		set
+		{
+			activeShader = (OpenTKShaderProgram?) value;
+			GL.UseProgram(activeShader?.Id ?? 0);
+		}
+	}
 
-  public GraphicsBuffer? ActiveVertexBuffer
-  {
-    get => (GraphicsBuffer?)activeVertexBuffer;
-    set
-    {
-      activeVertexBuffer = (IHasNativeId?)value;
-      GL.BindBuffer(BufferTarget.ArrayBuffer, activeVertexBuffer?.Id ?? 0);
-    }
-  }
+	public GraphicsBuffer? ActiveVertexBuffer
+	{
+		get => (GraphicsBuffer?) activeVertexBuffer;
+		set
+		{
+			activeVertexBuffer = (IHasNativeId?) value;
+			GL.BindBuffer(BufferTarget.ArrayBuffer, activeVertexBuffer?.Id ?? 0);
+		}
+	}
 
-  public GraphicsBuffer? ActiveIndexBuffer
-  {
-    get => (GraphicsBuffer?)activeIndexBuffer;
-    set
-    {
-      activeIndexBuffer = (IHasNativeId?)value;
-      GL.BindBuffer(BufferTarget.ElementArrayBuffer, activeIndexBuffer?.Id ?? 0);
-    }
-  }
+	public GraphicsBuffer? ActiveIndexBuffer
+	{
+		get => (GraphicsBuffer?) activeIndexBuffer;
+		set
+		{
+			activeIndexBuffer = (IHasNativeId?) value;
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, activeIndexBuffer?.Id ?? 0);
+		}
+	}
 
-  public ITextureUnits    TextureUnits { get; } = new OpenTKTextureUnits(capacity: 10);
-  public IRasterizerState Rasterizer   { get; } = new OpenTKRasterizerState();
+	public ITextureUnits TextureUnits { get; } = new OpenTKTextureUnits(capacity: 10);
+	public IRasterizerState Rasterizer { get; } = new OpenTKRasterizerState();
 }

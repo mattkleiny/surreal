@@ -11,125 +11,125 @@ namespace Surreal.Internal.Graphics.Resources;
 [DebuggerDisplay("Texture {Width}x{Height} @ {Format} ~{Size}")]
 internal sealed class OpenTKTexture : Texture, IHasNativeId
 {
-  public readonly int Id = GL.GenTexture();
+	public readonly int Id = GL.GenTexture();
 
-  int IHasNativeId.Id => Id;
+	int IHasNativeId.Id => Id;
 
-  public OpenTKTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
-    : this(data.Format, filterMode, wrapMode)
-  {
-    Upload(data);
-  }
+	public OpenTKTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+		: this(data.Format, filterMode, wrapMode)
+	{
+		Upload(data);
+	}
 
-  public OpenTKTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
-    : base(format, filterMode, wrapMode)
-  {
-    GL.BindTexture(TextureTarget.Texture2D, Id);
+	public OpenTKTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+		: base(format, filterMode, wrapMode)
+	{
+		GL.BindTexture(TextureTarget.Texture2D, Id);
 
-    GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
+		GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
 
-    var (minFilter, magFilter) = ConvertFilterMode(filterMode);
+		var (minFilter, magFilter) = ConvertFilterMode(filterMode);
 
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
+		GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) minFilter);
+		GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) magFilter);
 
-    var wrapping = ConvertWrapMode(wrapMode);
+		var wrapping = ConvertWrapMode(wrapMode);
 
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapping);
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapping);
-  }
+		GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) wrapping);
+		GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) wrapping);
+	}
 
-  protected override unsafe void Upload(ITextureData? existingData, ITextureData newData)
-  {
-    GL.BindTexture(TextureTarget.Texture2D, Id);
+	protected override unsafe void Upload(ITextureData? existingData, ITextureData newData)
+	{
+		GL.BindTexture(TextureTarget.Texture2D, Id);
 
-    var (pixelFormat, pixelType) = ConvertTextureFormat(newData.Format);
+		var (pixelFormat, pixelType) = ConvertTextureFormat(newData.Format);
 
-    fixed (Color* pixels = newData.Pixels)
-    {
-      if (existingData == null || existingData.Format != newData.Format)
-      {
-        GL.TexImage2D(
-          target: TextureTarget.Texture2D,
-          level: 0,
-          internalformat: PixelInternalFormat.Rgba,
-          width: newData.Width,
-          height: newData.Height,
-          border: 0,
-          format: pixelFormat,
-          type: pixelType,
-          pixels: ref Unsafe.AsRef<Color>(pixels)
-        );
-      }
-      else
-      {
-        GL.TexSubImage2D(
-          target: TextureTarget.Texture2D,
-          level: 0,
-          xoffset: 0,
-          yoffset: 0,
-          width: newData.Width,
-          height: newData.Height,
-          format: pixelFormat,
-          type: pixelType,
-          pixels: ref Unsafe.AsRef<Color>(pixels)
-        );
-      }
-    }
-  }
+		fixed (Color* pixels = newData.Pixels)
+		{
+			if (existingData == null || existingData.Format != newData.Format)
+			{
+				GL.TexImage2D(
+					target: TextureTarget.Texture2D,
+					level: 0,
+					internalformat: PixelInternalFormat.Rgba,
+					width: newData.Width,
+					height: newData.Height,
+					border: 0,
+					format: pixelFormat,
+					type: pixelType,
+					pixels: ref Unsafe.AsRef<Color>(pixels)
+				);
+			}
+			else
+			{
+				GL.TexSubImage2D(
+					target: TextureTarget.Texture2D,
+					level: 0,
+					xoffset: 0,
+					yoffset: 0,
+					width: newData.Width,
+					height: newData.Height,
+					format: pixelFormat,
+					type: pixelType,
+					pixels: ref Unsafe.AsRef<Color>(pixels)
+				);
+			}
+		}
+	}
 
-  public override Image Download()
-  {
-    GL.BindTexture(TextureTarget.Texture2D, Id);
-    GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
-    GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
+	public override Image Download()
+	{
+		GL.BindTexture(TextureTarget.Texture2D, Id);
+		GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
+		GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
 
-    var image = new Image(width, height);
+		var image = new Image(width, height);
 
-    GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref image.Pixels.GetPinnableReference());
+		GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref image.Pixels.GetPinnableReference());
 
-    return image;
-  }
+		return image;
+	}
 
-  protected override void Dispose(bool managed)
-  {
-    GL.DeleteTexture(Id);
+	protected override void Dispose(bool managed)
+	{
+		GL.DeleteTexture(Id);
 
-    base.Dispose(managed);
-  }
+		base.Dispose(managed);
+	}
 
-  private static (TextureMinFilter, TextureMagFilter) ConvertFilterMode(TextureFilterMode mode)
-  {
-    switch (mode)
-    {
-      case TextureFilterMode.Linear: return (TextureMinFilter.Linear, TextureMagFilter.Linear);
-      case TextureFilterMode.Point:  return (TextureMinFilter.Nearest, TextureMagFilter.Nearest);
+	private static (TextureMinFilter, TextureMagFilter) ConvertFilterMode(TextureFilterMode mode)
+	{
+		switch (mode)
+		{
+			case TextureFilterMode.Linear: return (TextureMinFilter.Linear, TextureMagFilter.Linear);
+			case TextureFilterMode.Point: return (TextureMinFilter.Nearest, TextureMagFilter.Nearest);
 
-      default:
-        throw new ArgumentException($"An unrecognized filter mode was provided: {mode}", nameof(mode));
-    }
-  }
+			default:
+				throw new ArgumentException($"An unrecognized filter mode was provided: {mode}", nameof(mode));
+		}
+	}
 
-  private static OpenTK.Graphics.OpenGL.TextureWrapMode ConvertWrapMode(TextureWrapMode mode)
-  {
-    switch (mode)
-    {
-      case TextureWrapMode.Clamp:  return OpenTK.Graphics.OpenGL.TextureWrapMode.Clamp;
-      case TextureWrapMode.Repeat: return OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat;
+	private static OpenTK.Graphics.OpenGL.TextureWrapMode ConvertWrapMode(TextureWrapMode mode)
+	{
+		switch (mode)
+		{
+			case TextureWrapMode.Clamp: return OpenTK.Graphics.OpenGL.TextureWrapMode.Clamp;
+			case TextureWrapMode.Repeat: return OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat;
 
-      default:
-        throw new ArgumentException($"An unrecognized wrap mode was provided: {mode}", nameof(mode));
-    }
-  }
+			default:
+				throw new ArgumentException($"An unrecognized wrap mode was provided: {mode}", nameof(mode));
+		}
+	}
 
-  private static (PixelFormat, PixelType) ConvertTextureFormat(TextureFormat format)
-  {
-    switch (format)
-    {
-      case TextureFormat.RGBA8888: return (PixelFormat.Rgba, PixelType.UnsignedByte);
+	private static (PixelFormat, PixelType) ConvertTextureFormat(TextureFormat format)
+	{
+		switch (format)
+		{
+			case TextureFormat.RGBA8888: return (PixelFormat.Rgba, PixelType.UnsignedByte);
 
-      default:
-        throw new ArgumentException($"An unrecognized texture format was provided: {format}", nameof(format));
-    }
-  }
+			default:
+				throw new ArgumentException($"An unrecognized texture format was provided: {format}", nameof(format));
+		}
+	}
 }

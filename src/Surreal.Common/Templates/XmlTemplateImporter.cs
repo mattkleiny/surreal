@@ -5,9 +5,9 @@ namespace Surreal.Templates;
 /// <summary>Imports <see cref="ITemplate{T}"/>s from XML.</summary>
 public static class XmlTemplateImporter
 {
-  public static TTemplate ImportTemplate<TTemplate>(Stream stream)
-    where TTemplate : ITemplate
-  {
-    throw new NotImplementedException();
-  }
+	public static TTemplate ImportTemplate<TTemplate>(Stream stream)
+		where TTemplate : ITemplate
+	{
+		throw new NotImplementedException();
+	}
 }

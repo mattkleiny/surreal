@@ -7,105 +7,105 @@ namespace Surreal.Fibers.Promises;
 
 internal interface IFiberTaskPromise<T> : IPromise<T>
 {
-  Action AdvanceCallback { get; }
+	Action AdvanceCallback { get; }
 
-  void SetException(Exception exception);
-  void SetResult(T result);
+	void SetException(Exception exception);
+	void SetResult(T result);
 }
 
 internal sealed class FiberTaskPromise<T, TStateMachine> : Promise<T>, IFiberTaskPromise<T>
-  where TStateMachine : IAsyncStateMachine
+	where TStateMachine : IAsyncStateMachine
 {
-  private static readonly Pool<FiberTaskPromise<T, TStateMachine>> Pool = Pool<FiberTaskPromise<T, TStateMachine>>.Shared;
+	private static readonly Pool<FiberTaskPromise<T, TStateMachine>> Pool = Pool<FiberTaskPromise<T, TStateMachine>>.Shared;
 
-  public static void Allocate(ref TStateMachine stateMachine, out IFiberTaskPromise<T> promise)
-  {
-    var result = Pool.CreateOrRent();
+	public static void Allocate(ref TStateMachine stateMachine, out IFiberTaskPromise<T> promise)
+	{
+		var result = Pool.CreateOrRent();
 
-    promise             = result;
-    result.stateMachine = stateMachine;
-  }
+		promise = result;
+		result.stateMachine = stateMachine;
+	}
 
-  private T?             result;
-  private object?        error;
-  private TStateMachine? stateMachine;
-  private bool           isObserved;
+	private T? result;
+	private object? error;
+	private TStateMachine? stateMachine;
+	private bool isObserved;
 
-  public Action AdvanceCallback { get; }
-  public Action ReturnCallback  { get; }
+	public Action AdvanceCallback { get; }
+	public Action ReturnCallback { get; }
 
-  [DebuggerHidden] private void Advance() => stateMachine?.MoveNext();
-  [DebuggerHidden] private void Return()  => Pool.Return(this);
+	[DebuggerHidden] private void Advance() => stateMachine?.MoveNext();
+	[DebuggerHidden] private void Return() => Pool.Return(this);
 
-  public FiberTaskPromise()
-  {
-    AdvanceCallback = Advance;
-    ReturnCallback  = Return;
-  }
+	public FiberTaskPromise()
+	{
+		AdvanceCallback = Advance;
+		ReturnCallback = Return;
+	}
 
-  [DebuggerHidden]
-  public override T? GetResult(short version)
-  {
-    ValidateVersion(version);
+	[DebuggerHidden]
+	public override T? GetResult(short version)
+	{
+		ValidateVersion(version);
 
-    isObserved = true;
+		isObserved = true;
 
-    if (error != null)
-    {
-      if (error is Exception exception)
-      {
-        throw exception;
-      }
+		if (error != null)
+		{
+			if (error is Exception exception)
+			{
+				throw exception;
+			}
 
-      if (error is ExceptionDispatchInfo dispatchInfo)
-      {
-        dispatchInfo.Throw();
-      }
+			if (error is ExceptionDispatchInfo dispatchInfo)
+			{
+				dispatchInfo.Throw();
+			}
 
-      throw new InvalidOperationException("An unrecognized exception type was held!");
-    }
+			throw new InvalidOperationException("An unrecognized exception type was held!");
+		}
 
-    return result;
-  }
+		return result;
+	}
 
-  [DebuggerHidden]
-  public void SetResult(T result)
-  {
-    this.result = result;
+	[DebuggerHidden]
+	public void SetResult(T result)
+	{
+		this.result = result;
 
-    SetStatus(FiberTaskStatus.Succeeded);
-    FiberScheduler.Schedule(ReturnCallback);
-  }
+		SetStatus(FiberTaskStatus.Succeeded);
+		FiberScheduler.Schedule(ReturnCallback);
+	}
 
-  [DebuggerHidden]
-  public void SetException(Exception exception)
-  {
-    if (exception is OperationCanceledException)
-    {
-      error = exception;
-    }
-    else
-    {
-      error = ExceptionDispatchInfo.Capture(exception);
-    }
+	[DebuggerHidden]
+	public void SetException(Exception exception)
+	{
+		if (exception is OperationCanceledException)
+		{
+			error = exception;
+		}
+		else
+		{
+			error = ExceptionDispatchInfo.Capture(exception);
+		}
 
-    SetStatus(FiberTaskStatus.Faulted);
-    FiberScheduler.Schedule(ReturnCallback);
-  }
+		SetStatus(FiberTaskStatus.Faulted);
+		FiberScheduler.Schedule(ReturnCallback);
+	}
 
-  [DebuggerHidden]
-  public override void OnReturn()
-  {
-    base.OnReturn();
+	[DebuggerHidden]
+	public override void OnReturn()
+	{
+		base.OnReturn();
 
-    if (!isObserved && error is Exception exception)
-    {
-      // TODO: log exception
-    }
+		if (!isObserved && error is Exception exception)
+		{
+			// TODO: log exception
+		}
 
-    result       = default;
-    error        = default;
-    stateMachine = default;
-    isObserved   = default;
-  }
+		result = default;
+		error = default;
+		stateMachine = default;
+		isObserved = default;
+	}
 }

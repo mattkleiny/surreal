@@ -2,5 +2,5 @@ namespace Surreal.Internal;
 
 internal interface IHasNativeId
 {
-  int Id { get; }
+	int Id { get; }
 }

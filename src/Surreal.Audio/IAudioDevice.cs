@@ -6,8 +6,8 @@ namespace Surreal.Audio;
 /// <summary>Represents the audio subsystem.</summary>
 public interface IAudioDevice
 {
-  float MasterVolume { get; set; }
+	float MasterVolume { get; set; }
 
-  AudioClip   CreateAudioClip(IAudioData data);
-  AudioSource CreateAudioSource();
+	AudioClip CreateAudioClip(IAudioData data);
+	AudioSource CreateAudioSource();
 }

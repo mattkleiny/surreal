@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Solution Items)", "(Soluti
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5B995C24-B8BE-46E8-8B0B-1254641F31A0}"
@@ -31,12 +32,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}"
 ProjectSection(SolutionItems) = preProject
 	tests\Directory.Build.props = tests\Directory.Build.props
-EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Code", "Shared Code", "{522DAC71-DF69-4FC8-A8B3-0178385D88D9}"
-ProjectSection(SolutionItems) = preProject
-	Directory.Build.props = Directory.Build.props
-	src\JetBrainsAnnotations.cs = src\JetBrainsAnnotations.cs
+	tests\.editorconfig = tests\.editorconfig
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{DDEB73C7-6BB8-4F6F-822B-FDD77637B89D}"
@@ -215,7 +211,6 @@ Global
 		{7570FF55-0C5D-4E52-BE67-ED3307EAD128} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{1A9C80BC-C2FF-418E-B6AE-15B6FEA59EEE} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{F668126A-6AA9-4081-8AB1-1B6626DDFF7D} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
-		{522DAC71-DF69-4FC8-A8B3-0178385D88D9} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
 		{DDEB73C7-6BB8-4F6F-822B-FDD77637B89D} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
 		{177637BE-4D8B-4715-AFDF-2F76A904DD0D} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}
 		{28BB8F21-2B36-40B9-9122-8FCD80B0AE85} = {A85DE2FC-C8C9-4799-8740-893BE9BA6CD7}

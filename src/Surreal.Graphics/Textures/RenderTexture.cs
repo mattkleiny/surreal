@@ -6,5 +6,5 @@ public readonly record struct RenderTextureDescriptor(int Width, int Height, Tex
 /// <summary>A frame-buffer that can be used for off-screen rendering.</summary>
 public abstract class RenderTexture : GraphicsResource
 {
-  public abstract Texture Texture { get; }
+	public abstract Texture Texture { get; }
 }

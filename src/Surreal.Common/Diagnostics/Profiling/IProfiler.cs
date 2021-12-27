@@ -4,32 +4,32 @@ namespace Surreal.Diagnostics.Profiling;
 
 public interface IProfiler
 {
-  ProfilingScope Track(string task);
-  ProfilingScope Track(string category, string task);
+	ProfilingScope Track(string task);
+	ProfilingScope Track(string category, string task);
 }
 
 public readonly struct ProfilingScope : IDisposable
 {
-  public static readonly ProfilingScope Null = new();
+	public static readonly ProfilingScope Null = new();
 
-  private readonly string           category;
-  private readonly string           task;
-  private readonly IProfileSampler? sampler;
-  private readonly TimeStamp        startTime;
+	private readonly string category;
+	private readonly string task;
+	private readonly IProfileSampler? sampler;
+	private readonly TimeStamp startTime;
 
-  public ProfilingScope(string category, string task, IProfileSampler? sampler)
-  {
-    this.category = category;
-    this.task     = task;
-    this.sampler  = sampler;
+	public ProfilingScope(string category, string task, IProfileSampler? sampler)
+	{
+		this.category = category;
+		this.task = task;
+		this.sampler = sampler;
 
-    startTime = TimeStamp.Now;
-  }
+		startTime = TimeStamp.Now;
+	}
 
-  public void Dispose()
-  {
-    var endTime = TimeStamp.Now;
+	public void Dispose()
+	{
+		var endTime = TimeStamp.Now;
 
-    sampler?.Sample(category, task, endTime - startTime);
-  }
+		sampler?.Sample(category, task, endTime - startTime);
+	}
 }

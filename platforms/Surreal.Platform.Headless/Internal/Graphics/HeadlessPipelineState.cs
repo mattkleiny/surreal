@@ -8,12 +8,12 @@ namespace Surreal.Internal.Graphics;
 
 internal sealed class HeadlessPipelineState : IPipelineState
 {
-  public RenderTexture     PrimaryRenderTexture { get; } = new HeadlessRenderTexture();
-  public RenderTexture?    ActiveFrameBuffer  { get; set; }
-  public ShaderProgram?  ActiveShader       { get; set; }
-  public GraphicsBuffer? ActiveVertexBuffer { get; set; }
-  public GraphicsBuffer? ActiveIndexBuffer  { get; set; }
+	public RenderTexture PrimaryRenderTexture { get; } = new HeadlessRenderTexture();
+	public RenderTexture? ActiveFrameBuffer { get; set; }
+	public ShaderProgram? ActiveShader { get; set; }
+	public GraphicsBuffer? ActiveVertexBuffer { get; set; }
+	public GraphicsBuffer? ActiveIndexBuffer { get; set; }
 
-  public ITextureUnits    TextureUnits { get; } = new HeadlessTextureUnits();
-  public IRasterizerState Rasterizer   { get; } = new HeadlessRasterizerState();
+	public ITextureUnits TextureUnits { get; } = new HeadlessTextureUnits();
+	public IRasterizerState Rasterizer { get; } = new HeadlessRasterizerState();
 }

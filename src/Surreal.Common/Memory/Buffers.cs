@@ -7,7 +7,7 @@ namespace Surreal.Memory;
 /// <summary>Represents a buffer of data of <see cref="T"/>.</summary>
 public interface IBuffer<T>
 {
-  Span<T> Data { get; }
+	Span<T> Span { get; }
 }
 
 /// <summary>A <see cref="IBuffer{T}"/> that can be deterministically disposed.</summary>
@@ -18,92 +18,92 @@ public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable
 /// <summary>Static factories for <see cref="IBuffer{T}"/>s.</summary>
 public static class Buffers
 {
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static IBuffer<T> Allocate<T>(int length)
-  {
-    return new ManagedBuffer<T>(length);
-  }
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static IBuffer<T> Allocate<T>(int length)
+	{
+		return new ManagedBuffer<T>(length);
+	}
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static IBuffer<T> AllocatePinned<T>(int length)
-  {
-    return new PinnedBuffer<T>(length);
-  }
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static IBuffer<T> AllocatePinned<T>(int length)
+	{
+		return new PinnedBuffer<T>(length);
+	}
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static IDisposableBuffer<T> AllocateNative<T>(int length, bool zeroFill = false)
-  {
-    return new NativeBuffer<T>(length, zeroFill);
-  }
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static IDisposableBuffer<T> AllocateNative<T>(int length, bool zeroFill = false)
+	{
+		return new NativeBuffer<T>(length, zeroFill);
+	}
 
-  private sealed class ManagedBuffer<T> : IBuffer<T>
-  {
-    private readonly T[] elements;
+	private sealed class ManagedBuffer<T> : IBuffer<T>
+	{
+		private readonly T[] elements;
 
-    public ManagedBuffer(int length)
-    {
-      elements = new T[length];
-    }
+		public ManagedBuffer(int length)
+		{
+			elements = new T[length];
+		}
 
-    public Span<T> Data => elements;
-  }
+		public Span<T> Span => elements;
+	}
 
-  private sealed class PinnedBuffer<T> : IBuffer<T>
-  {
-    private readonly T[] elements;
+	private sealed class PinnedBuffer<T> : IBuffer<T>
+	{
+		private readonly T[] elements;
 
-    public PinnedBuffer(int length)
-    {
-      elements = GC.AllocateArray<T>(length, pinned: true);
-    }
+		public PinnedBuffer(int length)
+		{
+			elements = GC.AllocateArray<T>(length, pinned: true);
+		}
 
-    public Span<T> Data => new(elements);
-  }
+		public Span<T> Span => new(elements);
+	}
 
-  private sealed unsafe class NativeBuffer<T> : IDisposableBuffer<T>
-  {
-    private readonly int   length;
-    private readonly void* address;
+	private sealed unsafe class NativeBuffer<T> : IDisposableBuffer<T>
+	{
+		private readonly int length;
+		private readonly void* address;
 
-    private bool isDisposed;
+		private bool isDisposed;
 
-    public NativeBuffer(int length, bool zeroFill)
-    {
-      this.length = length;
+		public NativeBuffer(int length, bool zeroFill)
+		{
+			this.length = length;
 
-      address = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
+			address = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
 
-      if (zeroFill)
-      {
-        Data.Fill(default!);
-      }
-    }
+			if (zeroFill)
+			{
+				Span.Fill(default!);
+			}
+		}
 
-    public Span<T> Data
-    {
-      get
-      {
-        CheckNotDisposed();
+		public Span<T> Span
+		{
+			get
+			{
+				CheckNotDisposed();
 
-        return new Span<T>(address, length);
-      }
-    }
+				return new Span<T>(address, length);
+			}
+		}
 
-    public void Dispose()
-    {
-      CheckNotDisposed();
+		public void Dispose()
+		{
+			CheckNotDisposed();
 
-      NativeMemory.Free(address);
-      isDisposed = true;
-    }
+			NativeMemory.Free(address);
+			isDisposed = true;
+		}
 
-    [Conditional("DEBUG")]
-    private void CheckNotDisposed()
-    {
-      if (isDisposed)
-      {
-        throw new ObjectDisposedException(nameof(NativeBuffer<T>));
-      }
-    }
-  }
+		[Conditional("DEBUG")]
+		private void CheckNotDisposed()
+		{
+			if (isDisposed)
+			{
+				throw new ObjectDisposedException(nameof(NativeBuffer<T>));
+			}
+		}
+	}
 }

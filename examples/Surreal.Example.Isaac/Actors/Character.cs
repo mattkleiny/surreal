@@ -5,16 +5,16 @@ namespace Isaac.Actors;
 /// <summary>An anonymous character <see cref="Actor"/> that can move about the game world.</summary>
 public class Character : Actor
 {
-  protected override void OnAwake()
-  {
-    base.OnAwake();
+	protected override void OnAwake()
+	{
+		base.OnAwake();
 
-    AddComponent(new Transform());
-    AddComponent(new Sprite());
-    AddComponent(new Statistics());
-  }
+		AddComponent(new Transform());
+		AddComponent(new Sprite());
+		AddComponent(new Statistics());
+	}
 
-  public ref Transform  Transform  => ref GetComponent<Transform>();
-  public ref Sprite     Sprite     => ref GetComponent<Sprite>();
-  public ref Statistics Statistics => ref GetComponent<Statistics>();
+	public ref Transform Transform => ref GetComponent<Transform>();
+	public ref Sprite Sprite => ref GetComponent<Sprite>();
+	public ref Statistics Statistics => ref GetComponent<Statistics>();
 }

@@ -8,13 +8,13 @@ namespace Surreal.Internal.Compute;
 
 internal sealed class HeadlessComputeDevice : IComputeDevice
 {
-  public ComputeBuffer<T> CreateBuffer<T>() where T : unmanaged
-  {
-    return new HeadlessComputeBuffer<T>();
-  }
+	public ComputeBuffer<T> CreateBuffer<T>() where T : unmanaged
+	{
+		return new HeadlessComputeBuffer<T>();
+	}
 
-  public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw)
-  {
-    return new HeadlessComputeProgram();
-  }
+	public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw)
+	{
+		return new HeadlessComputeProgram();
+	}
 }
