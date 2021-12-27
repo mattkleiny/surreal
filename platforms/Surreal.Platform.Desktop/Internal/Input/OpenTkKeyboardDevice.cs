@@ -4,11 +4,11 @@ using Surreal.Input.Keyboard;
 
 namespace Surreal.Internal.Input;
 
-internal sealed class OpenTKKeyboardDevice : BufferedInputDevice<KeyboardState>, IKeyboardDevice
+internal sealed class OpenTkKeyboardDevice : BufferedInputDevice<KeyboardState>, IKeyboardDevice
 {
-	private readonly OpenTKWindow window;
+	private readonly OpenTkWindow window;
 
-	public OpenTKKeyboardDevice(OpenTKWindow window)
+	public OpenTkKeyboardDevice(OpenTkWindow window)
 	{
 		this.window = window;
 

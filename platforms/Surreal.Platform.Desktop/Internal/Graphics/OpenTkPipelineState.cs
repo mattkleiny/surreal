@@ -7,7 +7,7 @@ using Surreal.Internal.Graphics.Resources;
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class OpenTKPipelineState : IPipelineState
+internal sealed class OpenTkPipelineState : IPipelineState
 {
 	private IHasNativeId? activeFrameBuffer;
 	private IHasNativeId? activeShader;
@@ -56,6 +56,6 @@ internal sealed class OpenTKPipelineState : IPipelineState
 		}
 	}
 
-	public ITextureUnits TextureUnits { get; } = new OpenTKTextureUnits(capacity: 10);
-	public IRasterizerState Rasterizer { get; } = new OpenTKRasterizerState();
+	public ITextureUnits TextureUnits { get; } = new OpenTkTextureUnits(capacity: 10);
+	public IRasterizerState Rasterizer { get; } = new OpenTkRasterizerState();
 }

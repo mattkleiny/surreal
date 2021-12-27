@@ -6,7 +6,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Internal.Audio;
 
-internal sealed class OpenTKAudioDevice : IAudioDevice, IDisposable
+internal sealed class OpenTkAudioDevice : IAudioDevice
 {
 	private float masterVolume;
 
@@ -18,15 +18,11 @@ internal sealed class OpenTKAudioDevice : IAudioDevice, IDisposable
 
 	public AudioClip CreateAudioClip(IAudioData data)
 	{
-		return new OpenTKAudioClip(data);
+		return new OpenTkAudioClip(data);
 	}
 
 	public AudioSource CreateAudioSource()
 	{
-		return new OpenTKAudioSource(this);
-	}
-
-	public void Dispose()
-	{
+		return new OpenTkAudioSource(this);
 	}
 }

@@ -17,6 +17,6 @@ internal sealed class HeadlessTexture : Texture
 
 	public override Image Download()
 	{
-		return new(0, 0);
+		return new Image(0, 0);
 	}
 }

@@ -92,11 +92,6 @@ public sealed class RingBuffer<T> : IEnumerable<T>
 
 public static class RingBufferExtensions
 {
-	public static float FastAverage(this RingBuffer<float> samples)
-	{
-		return samples.FastSum() / samples.Count;
-	}
-
 	public static float FastSum(this RingBuffer<float> samples)
 	{
 		float total = 0;
@@ -107,13 +102,6 @@ public static class RingBufferExtensions
 		}
 
 		return total;
-	}
-
-	public static TimeSpan FastAverage(this RingBuffer<TimeSpan> samples)
-	{
-		var averageTicks = FastSum(samples).Ticks / samples.Count;
-
-		return TimeSpan.FromTicks(averageTicks);
 	}
 
 	public static TimeSpan FastSum(this RingBuffer<TimeSpan> samples)
@@ -128,19 +116,16 @@ public static class RingBufferExtensions
 		return total;
 	}
 
-	public static TimeSpan FastMax(this RingBuffer<TimeSpan> samples)
+	public static float FastAverage(this RingBuffer<float> samples)
 	{
-		var result = TimeSpan.MinValue;
+		return samples.FastSum() / samples.Count;
+	}
 
-		foreach (var sample in samples)
-		{
-			if (sample > result)
-			{
-				result = sample;
-			}
-		}
+	public static TimeSpan FastAverage(this RingBuffer<TimeSpan> samples)
+	{
+		var averageTicks = FastSum(samples).Ticks / samples.Count;
 
-		return result;
+		return TimeSpan.FromTicks(averageTicks);
 	}
 
 	public static TimeSpan FastMin(this RingBuffer<TimeSpan> samples)
@@ -150,6 +135,21 @@ public static class RingBufferExtensions
 		foreach (var sample in samples)
 		{
 			if (sample < result)
+			{
+				result = sample;
+			}
+		}
+
+		return result;
+	}
+
+	public static TimeSpan FastMax(this RingBuffer<TimeSpan> samples)
+	{
+		var result = TimeSpan.MinValue;
+
+		foreach (var sample in samples)
+		{
+			if (sample > result)
 			{
 				result = sample;
 			}

@@ -29,12 +29,12 @@ public struct Color : IEquatable<Color>
 		A = alpha;
 	}
 
-	public float R;
-	public float G;
-	public float B;
-	public float A;
+	public float R { get; set; }
+	public float G { get; set; }
+	public float B { get; set; }
+	public float A { get; set; }
 
-	public override string ToString() => $"<{R.ToString()}, {G.ToString()}, {B.ToString()}, {A.ToString()}>";
+	public override string ToString() => $"<{R}, {G}, {B}, {A}>";
 
 	public bool Equals(Color other)
 	{

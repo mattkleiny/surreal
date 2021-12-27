@@ -1,10 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Surreal.Text;
+﻿using Surreal.Text;
 
 namespace Surreal.IO;
 
 /// <summary>Represents a path in the virtual file system.</summary>
-[SuppressMessage("ReSharper", "StringIndexOfIsCultureSpecific.1")]
 public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 {
 	private const string SchemeSeparator = "://";
@@ -14,7 +12,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 		StringSpan scheme;
 		StringSpan target;
 
-		var index = uri.IndexOf(SchemeSeparator);
+		var index = uri.IndexOf(SchemeSeparator, StringComparison.Ordinal);
 		if (index > -1)
 		{
 			scheme = uri.AsStringSpan(0, index);
@@ -31,7 +29,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 
 	public string Extension => Path.GetExtension(Target.Source)!;
 
-	public override string ToString() => $"<{Scheme.ToString()}://{Target.ToString()}>";
+	public override string ToString() => $"<{Scheme}://{Target}>";
 
 	public static implicit operator VirtualPath(string uri) => Parse(uri);
 }

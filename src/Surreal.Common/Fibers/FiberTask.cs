@@ -28,11 +28,13 @@ public readonly struct FiberTask : IDisposable
 	public static FiberTask FromException(Exception exception) => FromPromise(new ExceptionPromise<Unit>(exception));
 	public static FiberTask<T> FromException<T>(Exception exception) => FromPromise(new ExceptionPromise<T>(exception));
 
-	public static FiberYieldAwaitable Yield() => new();
-	public static WhenAllBuilder WhenAll() => new(WhenAllPromise.Create());
+	public static FiberYieldAwaitable Yield() => default;
 
 	internal static FiberTask FromPromise(IPromise<Unit> promise) => new(promise, promise.Version);
 	internal static FiberTask<T> FromPromise<T>(IPromise<T> promise) => new(promise, promise.Version);
+
+	public static WhenAllBuilder WhenAll()
+		=> new(WhenAllPromise.Create());
 
 	public static FiberTask WhenAll(FiberTask a, FiberTask b)
 		=> WhenAll().AddTask(a).AddTask(b).Begin();
@@ -71,7 +73,7 @@ public readonly struct FiberTask : IDisposable
 	[UsedImplicitly]
 	public FiberTaskAwaiter GetAwaiter()
 	{
-		return new(this);
+		return new FiberTaskAwaiter(this);
 	}
 
 	public void Cancel() => Promise?.Cancel(Version);
@@ -145,7 +147,7 @@ public readonly struct FiberTask<T> : IDisposable
 	[UsedImplicitly]
 	public FiberTaskAwaiter<T> GetAwaiter()
 	{
-		return new(this);
+		return new FiberTaskAwaiter<T>(this);
 	}
 
 	public void Cancel() => Promise?.Cancel(Version);

@@ -12,11 +12,11 @@ public readonly record struct AudioSampleRate(int Frequency, int Channels, int B
 
 	public Size CalculateSize(TimeSpan duration)
 	{
-		return new((int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond));
+		return new Size((int)Math.Ceiling(duration.TotalSeconds * BytesPerSecond));
 	}
 
 	public override string ToString()
 	{
-		return $"{Frequency:N0} hz * {Channels.ToString()} channels * {BitsPerSample.ToString()} bits per sample = {BitsPerSecond.ToString()}bps";
+		return $"{Frequency:N0} hz * {Channels} channels * {BitsPerSample} bits per sample = {BitsPerSecond}bps";
 	}
 }

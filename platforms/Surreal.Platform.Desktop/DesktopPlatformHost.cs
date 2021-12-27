@@ -25,19 +25,19 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
 	{
 		this.configuration = configuration;
 
-		Window = new OpenTKWindow(configuration);
-		AudioDevice = new OpenTKAudioDevice();
-		ComputeDevice = new OpenTKComputeDevice();
-		GraphicsDevice = new OpenTKGraphicsDevice(Window);
-		InputManager = new OpenTKInputManager(Window);
+		Window = new OpenTkWindow(configuration);
+		AudioDevice = new OpenTkAudioDevice();
+		ComputeDevice = new OpenTkComputeDevice();
+		GraphicsDevice = new OpenTkGraphicsDevice(Window);
+		InputManager = new OpenTkInputManager(Window);
 		FileSystem = new LocalFileSystem();
 	}
 
-	public OpenTKWindow Window { get; }
-	public OpenTKAudioDevice AudioDevice { get; }
-	public OpenTKComputeDevice ComputeDevice { get; }
-	public OpenTKGraphicsDevice GraphicsDevice { get; }
-	public OpenTKInputManager InputManager { get; }
+	public OpenTkWindow Window { get; }
+	public OpenTkAudioDevice AudioDevice { get; }
+	public OpenTkComputeDevice ComputeDevice { get; }
+	public OpenTkGraphicsDevice GraphicsDevice { get; }
+	public OpenTkInputManager InputManager { get; }
 	public LocalFileSystem FileSystem { get; }
 
 	public event Action<int, int> Resized
@@ -69,7 +69,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
 
 				if (frameDisplayTimer.Tick(deltaTime))
 				{
-					Window.Title = $"{configuration.Title} - {fpsCounter.FramesPerSecond.ToString("F")} FPS";
+					Window.Title = $"{configuration.Title} - {fpsCounter.FramesPerSecond:F} FPS";
 				}
 			}
 		}
@@ -77,10 +77,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
 
 	public void Dispose()
 	{
-		GraphicsDevice.Dispose();
-		ComputeDevice.Dispose();
-		AudioDevice.Dispose();
-
 		Window.Dispose();
 	}
 

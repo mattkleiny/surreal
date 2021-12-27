@@ -6,15 +6,12 @@ public sealed class NullProfilerFactory : IProfilerFactory
 
 	public IProfiler GetProfiler(string category)
 	{
-		return NullProfiler.Instance;
+		return new NullProfiler();
 	}
 
 	private sealed class NullProfiler : IProfiler
 	{
-// ReSharper disable once MemberHidesStaticFromOuterClass
-		public static readonly NullProfiler Instance = new();
-
-		public ProfilingScope Track(string task) => ProfilingScope.Null;
-		public ProfilingScope Track(string category, string task) => ProfilingScope.Null;
+		public ProfilingScope Track(string task) => default;
+		public ProfilingScope Track(string category, string task) => default;
 	}
 }

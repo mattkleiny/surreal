@@ -13,7 +13,7 @@ public sealed class Game : PrototypeGame
 	private readonly FpsCounter fpsCounter = new();
 	private Timer fpsTimer = new(1.Seconds());
 
-	public static Task Main() => StartAsync<Game>(new()
+	public static Task Main() => StartAsync<Game>(new Configuration
 	{
 		Platform = new HeadlessPlatform()
 	});

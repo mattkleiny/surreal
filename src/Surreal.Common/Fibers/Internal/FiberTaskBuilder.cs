@@ -6,18 +6,22 @@ using Surreal.Fibers.Promises;
 
 namespace Surreal.Fibers.Internal;
 
+#pragma warning disable CA1000
+
 [UsedImplicitly]
 public struct FiberTaskBuilder
 {
 	private FiberTaskBuilder<Unit> builder;
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public static FiberTaskBuilder Create()
 	{
-		return new();
+		return default;
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public FiberTask Task
 	{
 		get
@@ -36,32 +40,37 @@ public struct FiberTaskBuilder
 		}
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void Start<TStateMachine>(ref TStateMachine stateMachine)
 		where TStateMachine : IAsyncStateMachine
 	{
 		builder.Start(ref stateMachine);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void SetStateMachine(IAsyncStateMachine stateMachine)
 	{
 		builder.SetStateMachine(stateMachine);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void SetException(Exception exception)
 	{
 		builder.SetException(exception);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void SetResult()
 	{
 		builder.SetResult(Unit.Default);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
 		where TAwaiter : INotifyCompletion
 		where TStateMachine : IAsyncStateMachine
@@ -69,7 +78,8 @@ public struct FiberTaskBuilder
 		builder.AwaitOnCompleted(ref awaiter, ref stateMachine);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
 		where TAwaiter : ICriticalNotifyCompletion
 		where TStateMachine : IAsyncStateMachine
@@ -77,7 +87,8 @@ public struct FiberTaskBuilder
 		builder.AwaitUnsafeOnCompleted(ref awaiter, ref stateMachine);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	private object? ObjectIdForDebugger => builder.Promise;
 }
 
@@ -91,13 +102,15 @@ public struct FiberTaskBuilder<T>
 	internal IFiberTaskPromise<T>? Promise => promise;
 	internal Exception? Exception => exception;
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public static FiberTaskBuilder<T> Create()
 	{
-		return new();
+		return default;
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public FiberTask<T?> Task
 	{
 		get
@@ -116,19 +129,22 @@ public struct FiberTaskBuilder<T>
 		}
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void Start<TStateMachine>(ref TStateMachine stateMachine)
 		where TStateMachine : IAsyncStateMachine
 	{
 		stateMachine.MoveNext();
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void SetStateMachine(IAsyncStateMachine stateMachine)
 	{
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void SetException(Exception exception)
 	{
 		if (promise != null)
@@ -144,7 +160,8 @@ public struct FiberTaskBuilder<T>
 		}
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void SetResult(T result)
 	{
 		if (promise != null)
@@ -157,7 +174,8 @@ public struct FiberTaskBuilder<T>
 		}
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
 		where TAwaiter : INotifyCompletion
 		where TStateMachine : IAsyncStateMachine
@@ -170,7 +188,8 @@ public struct FiberTaskBuilder<T>
 		awaiter.OnCompleted(promise.AdvanceCallback);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
 		where TAwaiter : ICriticalNotifyCompletion
 		where TStateMachine : IAsyncStateMachine
@@ -183,6 +202,7 @@ public struct FiberTaskBuilder<T>
 		awaiter.UnsafeOnCompleted(promise.AdvanceCallback);
 	}
 
-	[UsedImplicitly, DebuggerHidden]
+	[UsedImplicitly]
+	[DebuggerHidden]
 	private object? ObjectIdForDebugger => promise;
 }

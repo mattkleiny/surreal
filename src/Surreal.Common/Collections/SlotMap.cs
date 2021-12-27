@@ -102,8 +102,8 @@ public sealed class SlotMap<T>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void SplitKey(ulong key, out int index, out int version)
 	{
-		index = (int) (key & 0xFFFFFFFF);
-		version = (int) (key >> 32);
+		index = (int)(key & 0xFFFFFFFF);
+		version = (int)(key >> 32);
 	}
 
 	private struct Item

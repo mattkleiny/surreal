@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class OpenTKGraphicsException : PlatformException
+internal sealed class OpenTkGraphicsException : PlatformException
 {
 	[Conditional("DEBUG")]
 	public static void CheckAndThrow()
@@ -12,7 +12,7 @@ internal sealed class OpenTKGraphicsException : PlatformException
 		var errorCode = GL.GetError();
 		if (errorCode != ErrorCode.NoError)
 		{
-			throw new OpenTKGraphicsException(errorCode switch
+			throw new OpenTkGraphicsException(errorCode switch
 			{
 				ErrorCode.InvalidEnum => "An invalid OpenGL enum was passed.",
 				ErrorCode.InvalidValue => "An invalid OpenGL value was passed.",
@@ -29,7 +29,7 @@ internal sealed class OpenTKGraphicsException : PlatformException
 		}
 	}
 
-	public OpenTKGraphicsException(string message)
+	public OpenTkGraphicsException(string message)
 		: base(message)
 	{
 	}

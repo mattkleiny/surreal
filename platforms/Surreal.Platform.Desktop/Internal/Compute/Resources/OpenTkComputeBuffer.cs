@@ -7,7 +7,7 @@ using Surreal.Memory;
 namespace Surreal.Internal.Compute.Resources;
 
 [DebuggerDisplay("Compute buffer with {Length} elements ({Size})")]
-internal sealed class OpenTKComputeBuffer<T> : ComputeBuffer<T>, IHasNativeId
+internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>, IHasNativeId
 	where T : unmanaged
 {
 	private static readonly int Stride = Unsafe.SizeOf<T>();

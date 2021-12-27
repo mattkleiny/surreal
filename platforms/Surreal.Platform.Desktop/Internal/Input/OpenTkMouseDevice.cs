@@ -6,11 +6,11 @@ using MouseButton = Surreal.Input.Mouse.MouseButton;
 
 namespace Surreal.Internal.Input;
 
-internal sealed class OpenTKMouseDevice : BufferedInputDevice<MouseState>, IMouseDevice
+internal sealed class OpenTkMouseDevice : BufferedInputDevice<MouseState>, IMouseDevice
 {
-	private readonly OpenTKWindow window;
+	private readonly OpenTkWindow window;
 
-	public OpenTKMouseDevice(OpenTKWindow window)
+	public OpenTkMouseDevice(OpenTkWindow window)
 	{
 		this.window = window;
 
@@ -32,8 +32,12 @@ internal sealed class OpenTKMouseDevice : BufferedInputDevice<MouseState>, IMous
 
 	public bool IsButtonDown(MouseButton button) => CurrentState.IsButtonDown(Convert(button));
 	public bool IsButtonUp(MouseButton button) => !CurrentState.IsButtonDown(Convert(button));
-	public bool IsButtonPressed(MouseButton button) => CurrentState.IsButtonDown(Convert(button)) && !PreviousState.IsButtonDown(Convert(button));
-	public bool IsButtonReleased(MouseButton button) => PreviousState.IsButtonDown(Convert(button)) && !CurrentState.IsButtonDown(Convert(button));
+
+	public bool IsButtonPressed(MouseButton button) =>
+		CurrentState.IsButtonDown(Convert(button)) && !PreviousState.IsButtonDown(Convert(button));
+
+	public bool IsButtonReleased(MouseButton button) =>
+		PreviousState.IsButtonDown(Convert(button)) && !CurrentState.IsButtonDown(Convert(button));
 
 	public override void Update()
 	{
@@ -56,7 +60,7 @@ internal sealed class OpenTKMouseDevice : BufferedInputDevice<MouseState>, IMous
 
 				// movement events
 				if (Math.Abs(CurrentState.X - PreviousState.X) > float.Epsilon ||
-				    Math.Abs(CurrentState.Y - PreviousState.Y) > float.Epsilon)
+					Math.Abs(CurrentState.Y - PreviousState.Y) > float.Epsilon)
 				{
 					Moved?.Invoke(DeltaPosition);
 				}

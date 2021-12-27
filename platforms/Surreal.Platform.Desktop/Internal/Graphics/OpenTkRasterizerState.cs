@@ -3,7 +3,7 @@ using Surreal.Graphics;
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class OpenTKRasterizerState : IRasterizerState
+internal sealed class OpenTkRasterizerState : IRasterizerState
 {
 	private Viewport viewport;
 	private bool isDepthTestingEnabled;

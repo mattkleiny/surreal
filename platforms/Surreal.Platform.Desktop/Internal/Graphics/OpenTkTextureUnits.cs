@@ -6,11 +6,11 @@ using Surreal.Internal.Graphics.Resources;
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class OpenTKTextureUnits : ITextureUnits
+internal sealed class OpenTkTextureUnits : ITextureUnits
 {
 	private readonly Texture[] textures;
 
-	public OpenTKTextureUnits(int capacity)
+	public OpenTkTextureUnits(int capacity)
 	{
 		Debug.Assert(capacity > 0, "capacity > 0");
 

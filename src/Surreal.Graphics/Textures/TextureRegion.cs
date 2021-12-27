@@ -11,13 +11,13 @@ public readonly record struct TextureRegion(Texture Texture, Vector2I Offset, Ve
 	public int Height => Size.Y;
 
 	public TextureRegion(Texture texture)
-		: this(texture, new(0, 0), new(texture.Width, texture.Height))
+		: this(texture, new Vector2I(0, 0), new Vector2I(texture.Width, texture.Height))
 	{
 	}
 
 	public TextureRegion Slice(Vector2I offset, Vector2I size)
 	{
-		return new(Texture, Offset + offset, size);
+		return new TextureRegion(Texture, Offset + offset, size);
 	}
 
 	public void Dispose()

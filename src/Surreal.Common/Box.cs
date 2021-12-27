@@ -1,5 +1,7 @@
 ﻿namespace Surreal;
 
+#pragma warning disable S2933
+
 /// <summary>A mutable heap-allocated box for a type of <see cref="T"/>.</summary>
 public sealed class Box<T>
 {

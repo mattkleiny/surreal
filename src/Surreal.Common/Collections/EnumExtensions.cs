@@ -54,7 +54,7 @@ public static class EnumExtensions
 	public static MaskEnumerator<TEnum> GetMaskValues<TEnum>(this TEnum flags)
 		where TEnum : unmanaged, Enum
 	{
-		return new(flags);
+		return new MaskEnumerator<TEnum>(flags);
 	}
 
 	public static TEnum SelectMaskRandomly<TEnum>(this TEnum value, Random random)

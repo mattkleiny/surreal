@@ -11,9 +11,7 @@ namespace Surreal.Internal.Graphics.Resources;
 [DebuggerDisplay("Texture {Width}x{Height} @ {Format} ~{Size}")]
 internal sealed class OpenTKTexture : Texture, IHasNativeId
 {
-	public readonly int Id = GL.GenTexture();
-
-	int IHasNativeId.Id => Id;
+	public int Id { get; } = GL.GenTexture();
 
 	public OpenTKTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
 		: this(data.Format, filterMode, wrapMode)
@@ -86,7 +84,13 @@ internal sealed class OpenTKTexture : Texture, IHasNativeId
 
 		var image = new Image(width, height);
 
-		GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref image.Pixels.GetPinnableReference());
+		GL.GetTexImage(
+			target: TextureTarget.Texture2D,
+			level: 0,
+			format: PixelFormat.Rgba,
+			type: PixelType.UnsignedByte,
+			pixels: ref image.Pixels.GetPinnableReference()
+		);
 
 		return image;
 	}
@@ -98,7 +102,7 @@ internal sealed class OpenTKTexture : Texture, IHasNativeId
 		base.Dispose(managed);
 	}
 
-	private static (TextureMinFilter, TextureMagFilter) ConvertFilterMode(TextureFilterMode mode)
+	private static (TextureMinFilter MinFilter, TextureMagFilter MagFilter) ConvertFilterMode(TextureFilterMode mode)
 	{
 		switch (mode)
 		{
@@ -122,7 +126,7 @@ internal sealed class OpenTKTexture : Texture, IHasNativeId
 		}
 	}
 
-	private static (PixelFormat, PixelType) ConvertTextureFormat(TextureFormat format)
+	private static (PixelFormat Format, PixelType Type) ConvertTextureFormat(TextureFormat format)
 	{
 		switch (format)
 		{

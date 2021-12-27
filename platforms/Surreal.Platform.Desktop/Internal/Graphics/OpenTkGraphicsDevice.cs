@@ -12,19 +12,20 @@ using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class OpenTKGraphicsDevice : IGraphicsDevice, IDisposable
+internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
 {
 	private readonly IDesktopWindow window;
 
-	public OpenTKGraphicsDevice(IDesktopWindow window)
+	public OpenTkGraphicsDevice(IDesktopWindow window)
 	{
 		this.window = window;
 	}
 
-	public IPipelineState Pipeline { get; } = new OpenTKPipelineState();
+	public IPipelineState Pipeline { get; } = new OpenTkPipelineState();
 
 	public void BeginFrame()
 	{
+		// no-op
 	}
 
 	public void Clear(Color color)
@@ -86,17 +87,26 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice, IDisposable
 		GL.Flush();
 	}
 
-	public GraphicsBuffer<T> CreateBuffer<T>() where T : unmanaged
+	public GraphicsBuffer<T> CreateBuffer<T>()
+		where T : unmanaged
 	{
 		return new OpenTKGraphicsBuffer<T>();
 	}
 
-	public Texture CreateTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+	public Texture CreateTexture(
+		TextureFormat format = TextureFormat.RGBA8888,
+		TextureFilterMode filterMode = TextureFilterMode.Linear,
+		TextureWrapMode wrapMode = TextureWrapMode.Repeat
+	)
 	{
 		return new OpenTKTexture(format, filterMode, wrapMode);
 	}
 
-	public Texture CreateTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+	public Texture CreateTexture(
+		ITextureData data,
+		TextureFilterMode filterMode = TextureFilterMode.Linear,
+		TextureWrapMode wrapMode = TextureWrapMode.Repeat
+	)
 	{
 		return new OpenTKTexture(data, filterMode, wrapMode);
 	}
@@ -109,10 +119,6 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice, IDisposable
 		texture.Upload(image);
 
 		return new OpenTKRenderTexture(texture, image);
-	}
-
-	public void Dispose()
-	{
 	}
 
 	private static void DrawMesh(int count, PrimitiveType type)

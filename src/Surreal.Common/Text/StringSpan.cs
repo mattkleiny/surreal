@@ -29,11 +29,11 @@ public static class StringSpanExtensions
 {
 	public static StringSpan AsStringSpan(this string source, int offset)
 	{
-		return new(source, offset, source.Length - offset);
+		return new StringSpan(source, offset, source.Length - offset);
 	}
 
 	public static StringSpan AsStringSpan(this string source, int offset, int length)
 	{
-		return new(source, offset, length);
+		return new StringSpan(source, offset, length);
 	}
 }

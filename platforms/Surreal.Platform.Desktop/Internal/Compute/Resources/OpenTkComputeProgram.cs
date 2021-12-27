@@ -5,11 +5,11 @@ using Surreal.Internal.Graphics.Resources;
 
 namespace Surreal.Internal.Compute.Resources;
 
-internal sealed class OpenTKComputeProgram : ComputeProgram
+internal sealed class OpenTkComputeProgram : ComputeProgram
 {
 	private readonly OpenTKShaderProgram computeShader;
 
-	public OpenTKComputeProgram(ReadOnlySpan<byte> raw)
+	public OpenTkComputeProgram(ReadOnlySpan<byte> raw)
 	{
 		throw new NotImplementedException();
 	}

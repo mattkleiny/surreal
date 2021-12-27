@@ -10,8 +10,6 @@ public interface IProfiler
 
 public readonly struct ProfilingScope : IDisposable
 {
-	public static readonly ProfilingScope Null = new();
-
 	private readonly string category;
 	private readonly string task;
 	private readonly IProfileSampler? sampler;

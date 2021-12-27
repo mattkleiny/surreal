@@ -8,25 +8,25 @@ public readonly struct Aspect : IEquatable<Aspect>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Aspect Of<T1>()
 	{
-		return new(HashCode.Combine(typeof(T1)));
+		return new Aspect(HashCode.Combine(typeof(T1)));
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Aspect Of<T1, T2>()
 	{
-		return new(HashCode.Combine(typeof(T1), typeof(T2)));
+		return new Aspect(HashCode.Combine(typeof(T1), typeof(T2)));
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Aspect Of<T1, T2, T3>()
 	{
-		return new(HashCode.Combine(typeof(T1), typeof(T2), typeof(T3)));
+		return new Aspect(HashCode.Combine(typeof(T1), typeof(T2), typeof(T3)));
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Aspect Of<T1, T2, T3, T4>()
 	{
-		return new(HashCode.Combine(typeof(T1), typeof(T2), typeof(T3), typeof(T4)));
+		return new Aspect(HashCode.Combine(typeof(T1), typeof(T2), typeof(T3), typeof(T4)));
 	}
 
 	private readonly int hash;

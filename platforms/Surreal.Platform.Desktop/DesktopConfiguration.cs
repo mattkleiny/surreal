@@ -1,5 +1,4 @@
 ﻿using Surreal.Graphics.Images;
-using Surreal.Graphics.Textures;
 
 namespace Surreal;
 
@@ -10,7 +9,7 @@ public sealed record DesktopConfiguration
 	public int Width { get; set; } = 1920;
 	public int Height { get; set; } = 1080;
 	public bool IsResizable { get; set; } = true;
-	public bool IsVsyncEnabled { get; set; } = false;
-	public bool ShowFpsInTitle { get; set; } = false;
-	public Image? Icon { get; set; } = default;
+	public bool IsVsyncEnabled { get; set; }
+	public bool ShowFpsInTitle { get; set; }
+	public Image? Icon { get; set; }
 }

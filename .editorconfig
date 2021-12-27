@@ -40,6 +40,8 @@ dotnet_diagnostic.SA1502.severity = None # Element should not be on a single lin
 dotnet_diagnostic.SA1009.severity = None # Closing parenthesis should not be preceded by a space
 dotnet_diagnostic.SA1111.severity = None # Closing parenthesis should be on line of last parameter
 dotnet_diagnostic.SA1503.severity = None # Braces should not be omitted
+dotnet_diagnostic.SA1618.severity = None # Documentation for generic type parameters
+dotnet_diagnostic.SA1003.severity = None # Whitespace after cast operations
 
 ## Sonar Analyzers
 dotnet_diagnostic.S4144.severity = None # Update this method so that its implementation is not identical to 'blah'

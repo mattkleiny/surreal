@@ -2,6 +2,8 @@
 
 namespace Surreal.Memory;
 
+#pragma warning disable CA1711
+
 /// <summary>A <see cref="Span{T}"/> that is operated like a <see cref="Stack{T}"/>.</summary>
 [DebuggerDisplay("SpanStack {Count}/{Capacity}")]
 public ref struct SpanStack<T>

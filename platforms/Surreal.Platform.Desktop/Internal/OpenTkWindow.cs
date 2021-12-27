@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.Desktop;
@@ -10,11 +11,11 @@ using Image = OpenTK.Windowing.Common.Input.Image;
 
 namespace Surreal.Internal;
 
-internal sealed class OpenTKWindow : IDesktopWindow
+internal sealed class OpenTkWindow : IDesktopWindow
 {
 	private readonly GameWindow window;
 
-	public OpenTKWindow(DesktopConfiguration configuration)
+	public OpenTkWindow(DesktopConfiguration configuration)
 	{
 		var gameWindowSettings = new GameWindowSettings
 		{
@@ -26,7 +27,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
 		var nativeWindowSettings = new NativeWindowSettings
 		{
 			Title = configuration.Title,
-			Size = new(configuration.Width, configuration.Height),
+			Size = new Vector2i(configuration.Width, configuration.Height),
 			WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed
 		};
 
@@ -42,9 +43,6 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
 			window.Icon = new WindowIcon(new Image(icon.Width, icon.Height, pixels.ToArray()));
 		}
-
-		// TODO: set default width/height based on monitor resolution
-		// TODO: center on-screen
 
 		window.Resize += _ => Resized?.Invoke(Width, Height);
 
@@ -62,7 +60,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
 		set
 		{
 			Debug.Assert(value > 0, "value > 0");
-			window.Size = new(value, window.Size.Y);
+			window.Size = new Vector2i(value, window.Size.Y);
 		}
 	}
 
@@ -72,7 +70,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
 		set
 		{
 			Debug.Assert(value > 0, "value > 0");
-			window.Size = new(window.Size.X, value);
+			window.Size = new Vector2i(window.Size.X, value);
 		}
 	}
 
