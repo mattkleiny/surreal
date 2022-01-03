@@ -28,6 +28,7 @@ public static class XmlTemplateImporter
     return template;
   }
 
+  /// <summary>A <see cref="ITemplateImportContext"/> for XML parsing.</summary>
   private sealed class XmlImportContext : ITemplateImportContext
   {
     private readonly XElement element;

@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
+    <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Combat\Surreal.Toolkits.Combat.csproj" />
   </ItemGroup>
 </Project>

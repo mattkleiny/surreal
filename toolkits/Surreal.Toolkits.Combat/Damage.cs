@@ -7,9 +7,9 @@ public record struct Damage(int Amount, DamageType Type, object? UserData)
   public static DamageCalculation? Calculation { get; set; }
 
   /// <summary>Calculates damage to be applied to an object via the <see cref="Calculation"/> callbacks.</summary>
-  public static Damage Calculate(int damage, DamageType type, object? userData = null)
+  public static Damage Calculate(int damage, DamageType? type = null, object? userData = null)
   {
-    var baseDamage  = new Damage(damage, type, userData);
+    var baseDamage  = new Damage(damage, type ?? DamageType.Standard, userData);
     var finalDamage = baseDamage;
 
     if (Calculation == null)
@@ -20,5 +20,11 @@ public record struct Damage(int Amount, DamageType Type, object? UserData)
     Calculation.Invoke(baseDamage, ref finalDamage);
 
     return finalDamage;
+  }
+
+  /// <summary>Applies damage to the given receiver.</summary>
+  public void ApplyTo(IDamageReceiver receiver)
+  {
+    receiver.OnDamageReceived(this);
   }
 }

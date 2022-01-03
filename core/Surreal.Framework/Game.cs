@@ -28,7 +28,7 @@ public abstract class Game : IDisposable
   private readonly ILoopTarget loopTarget;
 
   /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
-  public static void Start(IPlatform platform, GameSetupDelegate setup)
+  public static void Start(IPlatform platform, GameSetupDelegate gameSetup)
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
@@ -36,7 +36,7 @@ public abstract class Game : IDisposable
 
     var stopwatch = new Stopwatch();
     var startTime = TimeStamp.Now;
-    var gameLoop  = setup(host);
+    var gameLoop  = gameSetup(host);
 
     while (!host.IsClosing)
     {
@@ -154,9 +154,9 @@ public abstract class Game : IDisposable
 
   protected virtual async Task LoadContentAsync(IAssetContext assets)
   {
-    for (var i = 0; i < Plugins.Count; i++)
+    foreach (var plugin in Plugins)
     {
-      await Plugins[i].LoadContentAsync(assets);
+      await plugin.LoadContentAsync(assets);
     }
   }
 
@@ -182,17 +182,17 @@ public abstract class Game : IDisposable
 
   protected virtual void Input(GameTime time)
   {
-    for (var i = 0; i < Plugins.Count; i++)
+    foreach (var plugin in Plugins)
     {
-      Plugins[i].Input(time);
+      plugin.Input(time);
     }
   }
 
   protected virtual void Update(GameTime time)
   {
-    for (var i = 0; i < Plugins.Count; i++)
+    foreach (var plugin in Plugins)
     {
-      Plugins[i].Update(time);
+      plugin.Update(time);
     }
 
     while (Actions.TryDequeue(out var action))
@@ -203,9 +203,9 @@ public abstract class Game : IDisposable
 
   protected virtual void Draw(GameTime time)
   {
-    for (var i = 0; i < Plugins.Count; i++)
+    foreach (var plugin in Plugins)
     {
-      Plugins[i].Draw(time);
+      plugin.Draw(time);
     }
   }
 

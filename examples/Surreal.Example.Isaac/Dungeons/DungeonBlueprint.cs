@@ -35,7 +35,7 @@ public sealed class DungeonBlueprint : BlueprintNode
     public void OnImportTemplate(ITemplateImportContext context)
     {
       Width  = context.Parse(nameof(Width), 15);
-      Height = context.Parse(nameof(Height), 15);
+      Height = context.Parse(nameof(Height), 9);
     }
   }
 }

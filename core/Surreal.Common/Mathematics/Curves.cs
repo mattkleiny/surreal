@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 namespace Surreal.Mathematics;
 
-/// <summary>Describes a curve over a normalised parameter, T.</summary>
+/// <summary>Describes a 1d curve over a normalised parameter, T.</summary>
 public delegate float Curve(float t);
 
 /// <summary>A planar curve that can be sampled at a point in 2-space.</summary>

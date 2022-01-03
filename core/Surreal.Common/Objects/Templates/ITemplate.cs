@@ -1,12 +1,12 @@
 namespace Surreal.Objects.Templates;
 
-/// <summary>A template for objects of type <see cref="T"/>.</summary>
+/// <summary>A template for creating objects.</summary>
 public interface ITemplate
 {
   object Create();
 }
 
-/// <summary>A strongly-typed <see cref="ITemplate"/></summary>
+/// <summary>A strongly-typed <see cref="ITemplate"/> for creating <see cref="T"/>s.</summary>
 public interface ITemplate<out T> : ITemplate
 {
   new T Create();

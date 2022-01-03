@@ -54,9 +54,9 @@ public sealed class ModPlugin : GamePlugin
     {
       using var _ = Profiler.Track(nameof(Input));
 
-      for (var i = 0; i < mods.Length; i++)
+      foreach (var mod in mods)
       {
-        mods[i].Instance.Input(time.DeltaTime);
+        mod.Instance.Input(time.DeltaTime);
       }
     }
   }
@@ -67,9 +67,9 @@ public sealed class ModPlugin : GamePlugin
     {
       using var _ = Profiler.Track(nameof(Update));
 
-      for (var i = 0; i < mods.Length; i++)
+      foreach (var mod in mods)
       {
-        mods[i].Instance.Update(time.DeltaTime);
+        mod.Instance.Update(time.DeltaTime);
       }
     }
   }
@@ -80,9 +80,9 @@ public sealed class ModPlugin : GamePlugin
     {
       using var _ = Profiler.Track(nameof(Draw));
 
-      for (var i = 0; i < mods.Length; i++)
+      foreach (var mod in mods)
       {
-        mods[i].Instance.Draw(time.DeltaTime);
+        mod.Instance.Draw(time.DeltaTime);
       }
     }
   }
@@ -91,9 +91,9 @@ public sealed class ModPlugin : GamePlugin
   {
     if (mods != null)
     {
-      for (var i = 0; i < mods.Length; i++)
+      foreach (var mod in mods)
       {
-        mods[i].Instance.Dispose();
+        mod.Instance.Dispose();
       }
     }
 
