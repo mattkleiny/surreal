@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+	  <ProjectReference Include="..\Surreal.Modules.Modding\Surreal.Modules.Modding.csproj" />
+	</ItemGroup>
+</Project>

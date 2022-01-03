@@ -1,4 +1,5 @@
 ﻿using Surreal.Aspects;
+using Surreal.Graphics.Sprites;
 using Surreal.Systems;
 
 namespace Isaac.Actors.Systems;
@@ -8,8 +9,11 @@ public sealed class SpriteSystem : IteratingSystem
 {
   private static readonly Aspect TargetAspect = Aspect.Of<Transform, Sprite>();
 
-  public SpriteSystem(IComponentSystemContext context, Game game)
+  private readonly SpriteBatch batch;
+
+  public SpriteSystem(IComponentSystemContext context, SpriteBatch batch)
     : base(context, TargetAspect)
   {
+    this.batch = batch;
   }
 }

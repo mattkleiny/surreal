@@ -9,7 +9,7 @@ public sealed class DungeonBlueprint : BlueprintNode
   public int Width  { get; init; } = 15;
   public int Height { get; init; } = 9;
 
-  public DungeonPlan CreatePlan(Seed seed)
+  public DungeonPlan CreatePlan(Seed seed = default)
   {
     var plan = new DungeonPlan(seed, Width, Height);
 

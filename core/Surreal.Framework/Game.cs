@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Design;
+﻿using System.Collections.Concurrent;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Runtime;
 using Surreal.Assets;
@@ -20,7 +21,8 @@ public readonly record struct GameContext(IPlatformHost Host, GameTime GameTime)
 /// <summary>Base class for any game built with Surreal.</summary>
 public abstract class Game : IDisposable
 {
-  private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
+  private static readonly IProfiler               Profiler = ProfilerFactory.GetProfiler<Game>();
+  private static readonly ConcurrentQueue<Action> Actions  = new();
 
   private readonly TimeStamp   startTime = TimeStamp.Now;
   private readonly ILoopTarget loopTarget;
@@ -77,6 +79,11 @@ public abstract class Game : IDisposable
 
     await game.InitializeAsync();
     await game.RunAsync();
+  }
+
+  public static void Schedule(Action callback)
+  {
+    Actions.Enqueue(callback);
   }
 
   protected Game()
@@ -186,6 +193,11 @@ public abstract class Game : IDisposable
     for (var i = 0; i < Plugins.Count; i++)
     {
       Plugins[i].Update(time);
+    }
+
+    while (Actions.TryDequeue(out var action))
+    {
+      action.Invoke();
     }
   }
 

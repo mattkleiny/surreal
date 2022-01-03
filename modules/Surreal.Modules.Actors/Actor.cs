@@ -10,17 +10,17 @@ namespace Surreal;
 /// </remarks>
 public class Actor
 {
-  private IActorContext context = null!;
+  private IActorContext? context;
 
-  public ActorId     Id     { get; } = ActorId.Invalid;
-  public ActorStatus Status => context.GetStatus(Id);
+  public   ActorId     Id     { get; } = ActorId.Allocate();
+  internal ActorStatus Status => context?.GetStatus(Id) ?? ActorStatus.Unknown;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
   public bool IsActive    => Status == ActorStatus.Active;
   public bool IsInactive  => Status == ActorStatus.Inactive;
 
-  public void Enable()  => context.Enable(Id);
-  public void Disable() => context.Disable(Id);
+  public void Enable()  => context?.Enable(Id);
+  public void Disable() => context?.Disable(Id);
 
   internal void Awake(IActorContext context)
   {
@@ -33,12 +33,17 @@ public class Actor
   {
     if (!IsDestroyed)
     {
-      context.Destroy(Id);
+      context?.Destroy(Id);
     }
   }
 
   public ref T GetOrCreateComponent<T>(T prototype)
   {
+    if (context == null)
+    {
+      throw new InvalidOperationException("This actor is not yet added to a scene, unable to access components");
+    }
+
     var storage = context.GetStorage<T>();
 
     return ref storage.GetOrCreateComponent(Id, prototype);
@@ -46,6 +51,11 @@ public class Actor
 
   public T AddComponent<T>(T prototype)
   {
+    if (context == null)
+    {
+      throw new InvalidOperationException("This actor is not yet added to a scene, unable to access components");
+    }
+
     var storage = context.GetStorage<T>();
 
     return storage.AddComponent(Id, prototype);
@@ -53,12 +63,17 @@ public class Actor
 
   public ref T GetComponent<T>()
   {
+    if (context == null)
+    {
+      throw new InvalidOperationException("This actor is not yet added to a scene, unable to access components");
+    }
+
     var     storage   = context.GetStorage<T>();
     ref var component = ref storage.GetComponent(Id);
 
     if (Unsafe.IsNullRef(ref component))
     {
-      throw new Exception($"The given component is not available on the actor {typeof(T).Name}");
+      throw new InvalidOperationException($"The given component is not available on the actor {typeof(T).Name}");
     }
 
     return ref component!;
@@ -66,6 +81,11 @@ public class Actor
 
   public bool RemoveComponent<T>()
   {
+    if (context == null)
+    {
+      throw new InvalidOperationException("This actor is not yet added to a scene, unable to access components");
+    }
+
     var storage = context.GetStorage<T>();
 
     return storage.RemoveComponent(Id);

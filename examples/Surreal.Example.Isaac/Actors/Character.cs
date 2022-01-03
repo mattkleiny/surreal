@@ -3,10 +3,8 @@
 /// <summary>An anonymous character <see cref="Actor"/> that can move about the game world.</summary>
 public class Character : Actor
 {
-  protected override void OnAwake()
+  public Character()
   {
-    base.OnAwake();
-
     AddComponent(new Transform());
     AddComponent(new Sprite());
     AddComponent(new Statistics());

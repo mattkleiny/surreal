@@ -4,4 +4,7 @@
     <RootNamespace>Asteroids</RootNamespace>
     <Description>A simple 'Asteroids' clone using Surreal.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
+  </ItemGroup>
 </Project>

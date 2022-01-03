@@ -17,8 +17,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
 {
   private readonly DesktopConfiguration configuration;
 
-  private readonly FpsCounter fpsCounter        = new();
-  private          IntervalTimer      frameDisplayTimer = new(1.Seconds());
+  private readonly FpsCounter    fpsCounter        = new();
+  private          IntervalTimer frameDisplayTimer = new(1.Seconds());
 
   public DesktopPlatformHost(DesktopConfiguration configuration)
   {

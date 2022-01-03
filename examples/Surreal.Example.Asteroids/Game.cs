@@ -1,3 +1,5 @@
+using Asteroids.Screens;
+
 namespace Asteroids;
 
 public sealed class Game : PrototypeGame
@@ -14,4 +16,11 @@ public sealed class Game : PrototypeGame
       },
     },
   });
+
+  protected override void Initialize()
+  {
+    base.Initialize();
+
+    Screens.Push(new MainScreen(this));
+  }
 }

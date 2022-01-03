@@ -5,4 +5,7 @@
     <ApplicationIcon>./Minecraft.ico</ApplicationIcon>
     <Description>An example game based on Surreal; a simple Minecraft clone.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
+  </ItemGroup>
 </Project>

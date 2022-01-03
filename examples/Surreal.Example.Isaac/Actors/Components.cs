@@ -4,7 +4,7 @@ using Surreal.Mathematics;
 namespace Isaac.Actors;
 
 /// <summary>A transformed position in 2-space.</summary>
-public struct Transform
+public record struct Transform
 {
   private float rotation;
 
@@ -19,13 +19,13 @@ public struct Transform
 }
 
 /// <summary>A sprite to be rendered in 2-space.</summary>
-public struct Sprite
+public record struct Sprite
 {
   public TextureRegion Texture { get; set; }
 }
 
 /// <summary>Character statistics.</summary>
-public struct Statistics
+public record struct Statistics
 {
   private int health;
   private int bombs;

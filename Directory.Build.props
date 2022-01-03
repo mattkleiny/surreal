@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.29.0.36737" PrivateAssets="all" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +33,7 @@
     <!-- automatically embed resources -->
     <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\..\core\JetBrainsAnnotations.cs">
       <Link>Shared\JetBrainsAnnotations.cs</Link>
@@ -50,5 +51,11 @@
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Include="coverlet.collector" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!$(ProjectName.EndsWith('Tests'))">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(ProjectName).Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 </Project>

@@ -90,7 +90,7 @@ public sealed class TextureLoader : AssetLoader<Texture>
 
   public override async Task<Texture> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
-    var image   = await context.LoadAsset<Image>(path);
+    var image   = await context.LoadAsset<Image>(path, cancellationToken);
     var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 
     return texture;

@@ -6,7 +6,7 @@ namespace Isaac;
 
 public sealed class Game : PrototypeGame
 {
-  private DungeonBlueprint.Template blueprint;
+  private DungeonBlueprint.Template? blueprint;
 
   public static Task Main() => StartAsync<Game>(new Configuration
   {
