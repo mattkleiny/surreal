@@ -1,4 +1,3 @@
-using System.Numerics;
 using JetBrains.Annotations;
 
 namespace Surreal.Mathematics;

@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Surreal.Input.Mouse;
+﻿namespace Surreal.Input.Mouse;
 
 /// <summary>A mouse <see cref="IInputDevice"/>.</summary>
 public interface IMouseDevice : IInputDevice

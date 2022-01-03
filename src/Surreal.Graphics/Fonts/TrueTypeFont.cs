@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Numerics;
 using SixLabors.Fonts;
 using Surreal.Assets;
 using Surreal.IO;

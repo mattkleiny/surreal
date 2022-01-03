@@ -1,4 +1,3 @@
-using System.Numerics;
 using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.IO;

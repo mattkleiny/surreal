@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Surreal.Mathematics;
 
 /// <summary>Common used mathematical utilities.</summary>

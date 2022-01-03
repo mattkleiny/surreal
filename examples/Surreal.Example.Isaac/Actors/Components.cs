@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Surreal.Graphics.Textures;
+﻿using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
 namespace Isaac.Actors;

@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Surreal.Mathematics;
 
 /// <summary>A line in 2-space.</summary>

@@ -1,4 +1,3 @@
-using System.Numerics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Mathematics;

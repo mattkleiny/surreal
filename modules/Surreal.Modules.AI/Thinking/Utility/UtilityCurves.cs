@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Surreal.Thinking.Utility;
+﻿namespace Surreal.Thinking.Utility;
 
 /// <summary>A curve for utility considerations.</summary>
 public delegate float UtilityCurve(float t);

@@ -1,4 +1,3 @@
-using System.Numerics;
 using Surreal.Input.Mouse;
 
 namespace Surreal;

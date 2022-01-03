@@ -22,9 +22,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- beta version of StyleCop has better support for latest C# language features -->
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354" PrivateAssets="all" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="8.29.0.36737" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Numerics" />
   </ItemGroup>
 
   <ItemGroup>

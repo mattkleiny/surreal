@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Numerics;
 using Surreal.Mathematics;
 using Surreal.Memory;
 

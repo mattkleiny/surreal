@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Surreal.Input.Keyboard;
+﻿using Surreal.Input.Keyboard;
 using Surreal.Timing;
 
 namespace Surreal.Graphics.Cameras;

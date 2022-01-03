@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Surreal.Mathematics;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>A rectangle in 2-space.</summary>
 public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)

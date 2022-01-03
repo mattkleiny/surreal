@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Surreal.Mathematics;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>An integral point in 3-space.</summary>
 public struct Vector3I : IEquatable<Vector3I>

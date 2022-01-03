@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Numerics;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Cameras;

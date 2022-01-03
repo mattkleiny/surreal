@@ -1,4 +1,3 @@
-using System.Numerics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Surreal.Input;
 using Surreal.Input.Mouse;

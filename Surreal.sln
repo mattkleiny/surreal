@@ -81,6 +81,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Mobile", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Web", "platforms\Surreal.Platform.Web\Surreal.Platform.Web.csproj", "{4F139A65-3007-4C51-9BD3-5FD7BCD1ABF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Strategy", "modules\Surreal.Modules.Strategy\Surreal.Modules.Strategy.csproj", "{C1FD4528-A188-4352-B9B2-9EB9A7F774BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,10 @@ Global
 		{4F139A65-3007-4C51-9BD3-5FD7BCD1ABF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F139A65-3007-4C51-9BD3-5FD7BCD1ABF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F139A65-3007-4C51-9BD3-5FD7BCD1ABF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1FD4528-A188-4352-B9B2-9EB9A7F774BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1FD4528-A188-4352-B9B2-9EB9A7F774BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1FD4528-A188-4352-B9B2-9EB9A7F774BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1FD4528-A188-4352-B9B2-9EB9A7F774BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,5 +210,6 @@ Global
 		{73DFE59A-87BD-439D-BEBE-DD16A89984FA} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{AB71D8A3-E842-4D65-9591-44A65CD01766} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
 		{4F139A65-3007-4C51-9BD3-5FD7BCD1ABF3} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
+		{C1FD4528-A188-4352-B9B2-9EB9A7F774BE} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 	EndGlobalSection
 EndGlobal

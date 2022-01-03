@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+    <Description>A toolkit for real-time and turn-based strategy games.</Description>
+	</PropertyGroup>
+</Project>

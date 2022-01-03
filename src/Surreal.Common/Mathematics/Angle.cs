@@ -1,4 +1,3 @@
-using System.Numerics;
 using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Mathematics;

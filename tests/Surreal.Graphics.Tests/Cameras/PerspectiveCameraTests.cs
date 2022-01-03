@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Surreal.Graphics.Cameras;
 

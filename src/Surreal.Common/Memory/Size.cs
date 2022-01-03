@@ -24,12 +24,12 @@ public readonly struct Size
 
   public override string ToString()
   {
-    if (Terabytes > 0) return $"{Terabytes.ToString("F")} terabytes";
-    if (Gigabytes > 0) return $"{Gigabytes.ToString("F")} gigabytes";
-    if (Megabytes > 0) return $"{Megabytes.ToString("F")} megabytes";
-    if (Kilobytes > 0) return $"{Kilobytes.ToString("F")} kilobytes";
+    if (Terabytes > 0) return $"{Terabytes:F)} terabytes";
+    if (Gigabytes > 0) return $"{Gigabytes:F)} gigabytes";
+    if (Megabytes > 0) return $"{Megabytes:F)} megabytes";
+    if (Kilobytes > 0) return $"{Kilobytes:F)} kilobytes";
 
-    return $"{Bytes.ToString()} bytes";
+    return $"{Bytes} bytes";
   }
 }
 

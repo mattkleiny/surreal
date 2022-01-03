@@ -1,4 +1,3 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Materials;

@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Surreal.Mathematics;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>A bounding box in 3-space.</summary>
 public readonly record struct BoundingBox(Vector3 Min, Vector3 Max)

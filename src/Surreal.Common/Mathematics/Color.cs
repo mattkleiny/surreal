@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Surreal.Mathematics;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>A floating-point representation of color.</summary>
 public struct Color : IEquatable<Color>

@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Surreal.Mathematics;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>An integral point in 2-space.</summary>
 public struct Vector2I : IEquatable<Vector2I>
