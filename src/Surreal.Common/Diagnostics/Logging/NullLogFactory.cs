@@ -2,17 +2,17 @@
 
 public sealed class NullLogFactory : ILogFactory
 {
-	public static readonly NullLogFactory Instance = new();
+  public static readonly NullLogFactory Instance = new();
 
-	public ILog GetLog(string category) => new NullLog();
+  public ILog GetLog(string category) => new NullLog();
 
-	private sealed class NullLog : ILog
-	{
-		public bool IsLevelEnabled(LogLevel level) => false;
+  private sealed class NullLog : ILog
+  {
+    public bool IsLevelEnabled(LogLevel level) => false;
 
-		public void WriteMessage(LogLevel level, string message)
-		{
-			// no-op
-		}
-	}
+    public void WriteMessage(LogLevel level, string message)
+    {
+      // no-op
+    }
+  }
 }

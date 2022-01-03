@@ -1,29 +1,27 @@
 ﻿<!-- common configuration for example projects -->
 <Project>
-	<Import Project="../Directory.Build.props" />
+  <Import Project="../Directory.Build.props" />
 
-	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
-		<IsPackable>false</IsPackable>
-	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<OutputType>WinExe</OutputType>
-		<PublishTrimmed>true</PublishTrimmed>
-		<PublishReadyToRun>true</PublishReadyToRun>
-		<PublishSingleFile>true</PublishSingleFile>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <OutputType>WinExe</OutputType>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
-		<EmbeddedResource Include="$(ProjectDir)\Resources\**" />
-	</ItemGroup>
+  <ItemGroup>
+    <!-- automatically copy assets to output path -->
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\modules\Surreal.Modules.Prototyping\Surreal.Modules.Prototyping.csproj" />
-		<ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Prototyping\Surreal.Modules.Prototyping.csproj" />
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+  </ItemGroup>
 </Project>

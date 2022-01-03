@@ -8,6 +8,6 @@ namespace Surreal.Graphics;
 /// <summary>Base class for any graphical resource.</summary>
 public abstract class GraphicsResource : TrackedNativeResource<GraphicsResource>
 {
-	public static Size AllocatedBufferSize => GetSizeEstimate<GraphicsBuffer>();
-	public static Size AllocatedTextureSize => GetSizeEstimate<Texture>();
+  public static Size AllocatedBufferSize  => GetSizeEstimate<GraphicsBuffer>();
+  public static Size AllocatedTextureSize => GetSizeEstimate<Texture>();
 }

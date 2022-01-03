@@ -4,25 +4,25 @@ namespace Minecraft;
 
 public sealed class Game : PrototypeGame
 {
-	public static Task Main() => StartAsync<Game>(new Configuration
-	{
-		Platform = new DesktopPlatform
-		{
-			Configuration =
-			{
-				Title = "Minecraft",
-				IsVsyncEnabled = true,
-				ShowFpsInTitle = true
-			}
-		}
-	});
+  public static Task Main() => StartAsync<Game>(new Configuration
+  {
+    Platform = new DesktopPlatform
+    {
+      Configuration =
+      {
+        Title          = "Minecraft",
+        IsVsyncEnabled = true,
+        ShowFpsInTitle = true,
+      },
+    },
+  });
 
-	protected override void Initialize()
-	{
-		base.Initialize();
+  protected override void Initialize()
+  {
+    base.Initialize();
 
-		Mouse.IsCursorVisible = false;
+    Mouse.IsCursorVisible = false;
 
-		GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
-	}
+    GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
+  }
 }

@@ -7,32 +7,32 @@ namespace Surreal.Internal.Compute.Resources;
 
 internal sealed class OpenTkComputeProgram : ComputeProgram
 {
-	private readonly OpenTKShaderProgram computeShader;
+  private readonly OpenTkShaderProgram computeShader;
 
-	public OpenTkComputeProgram(ReadOnlySpan<byte> raw)
-	{
-		throw new NotImplementedException();
-	}
+  public OpenTkComputeProgram(ReadOnlySpan<byte> raw)
+  {
+    throw new NotImplementedException();
+  }
 
-	public override void Execute(int groupsX, int groupsY, int groupsZ)
-	{
-		Debug.Assert(groupsX >= 0, "groupsX >= 0");
-		Debug.Assert(groupsY >= 0, "groupsY >= 0");
-		Debug.Assert(groupsZ >= 0, "groupsZ >= 0");
+  public override void Execute(int groupsX, int groupsY, int groupsZ)
+  {
+    Debug.Assert(groupsX >= 0, "groupsX >= 0");
+    Debug.Assert(groupsY >= 0, "groupsY >= 0");
+    Debug.Assert(groupsZ >= 0, "groupsZ >= 0");
 
-		computeShader.Bind();
+    computeShader.Bind();
 
-		GL.DispatchCompute(groupsX, groupsY, groupsZ);
-		GL.MemoryBarrier(MemoryBarrierFlags.ShaderImageAccessBarrierBit);
-	}
+    GL.DispatchCompute(groupsX, groupsY, groupsZ);
+    GL.MemoryBarrier(MemoryBarrierFlags.ShaderImageAccessBarrierBit);
+  }
 
-	protected override void Dispose(bool managed)
-	{
-		if (managed)
-		{
-			computeShader.Dispose();
-		}
+  protected override void Dispose(bool managed)
+  {
+    if (managed)
+    {
+      computeShader.Dispose();
+    }
 
-		base.Dispose(managed);
-	}
+    base.Dispose(managed);
+  }
 }

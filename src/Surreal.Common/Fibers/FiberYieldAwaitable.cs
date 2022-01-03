@@ -6,21 +6,25 @@ namespace Surreal.Fibers;
 /// <summary>Allows yielding <see cref="FiberTask"/>s to the next scheduler invocation.</summary>
 public readonly struct FiberYieldAwaitable
 {
-	[SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Global")]
-	public Awaiter GetAwaiter() => new();
+  [SuppressMessage(
+    "ReSharper",
+    "MemberCanBeMadeStatic.Global",
+    Justification = "Required for the await pattern"
+  )]
+  public Awaiter GetAwaiter() => new();
 
-	public readonly struct Awaiter : INotifyCompletion
-	{
-		public bool IsCompleted => false;
+  public readonly struct Awaiter : INotifyCompletion
+  {
+    public bool IsCompleted => false;
 
-		public void GetResult()
-		{
-			// no-op
-		}
+    public void GetResult()
+    {
+      // no-op
+    }
 
-		public void OnCompleted(Action continuation)
-		{
-			FiberScheduler.Schedule(continuation);
-		}
-	}
+    public void OnCompleted(Action continuation)
+    {
+      FiberScheduler.Schedule(continuation);
+    }
+  }
 }

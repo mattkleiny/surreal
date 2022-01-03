@@ -6,51 +6,51 @@ namespace Surreal.Fibers.Promises;
 
 internal sealed class DelayPromise : Promise<Unit>
 {
-	private static readonly Pool<DelayPromise> Pool = Pool<DelayPromise>.Shared;
+  private static readonly Pool<DelayPromise> Pool = Pool<DelayPromise>.Shared;
 
-	private readonly Action advanceCallback;
-	private readonly Action returnCallback;
+  private readonly Action advanceCallback;
+  private readonly Action returnCallback;
 
-	private IClock? clock;
-	private Timer timer;
+  private IClock? clock;
+  private Timer   timer;
 
-	public static DelayPromise Create(IClock clock, TimeSpan duration)
-	{
-		var promise = Pool.CreateOrRent();
+  public static DelayPromise Create(IClock clock, TimeSpan duration)
+  {
+    var promise = Pool.CreateOrRent();
 
-		promise.clock = clock;
-		promise.timer = new Timer(duration);
+    promise.clock = clock;
+    promise.timer = new Timer(duration);
 
-		promise.Advance();
+    promise.Advance();
 
-		return promise;
-	}
+    return promise;
+  }
 
-	public DelayPromise()
-	{
-		advanceCallback = Advance;
-		returnCallback = () => Pool.Return(this);
-	}
+  public DelayPromise()
+  {
+    advanceCallback = Advance;
+    returnCallback  = () => Pool.Return(this);
+  }
 
-	private void Advance()
-	{
-		if (timer.Tick(clock!.DeltaTime))
-		{
-			SetStatus(FiberTaskStatus.Succeeded);
-			FiberScheduler.Schedule(returnCallback);
-		}
+  private void Advance()
+  {
+    if (timer.Tick(clock!.DeltaTime))
+    {
+      SetStatus(FiberTaskStatus.Succeeded);
+      FiberScheduler.Schedule(returnCallback);
+    }
 
-		if (Status == FiberTaskStatus.Pending)
-		{
-			FiberScheduler.Schedule(advanceCallback);
-		}
-	}
+    if (Status == FiberTaskStatus.Pending)
+    {
+      FiberScheduler.Schedule(advanceCallback);
+    }
+  }
 
-	public override void OnReturn()
-	{
-		base.OnReturn();
+  public override void OnReturn()
+  {
+    base.OnReturn();
 
-		clock = default;
-		timer = default;
-	}
+    clock = default;
+    timer = default;
+  }
 }

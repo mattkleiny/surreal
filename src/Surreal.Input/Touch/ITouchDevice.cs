@@ -3,7 +3,7 @@
 /// <summary>A touch <see cref="IInputDevice"/>.</summary>
 public interface ITouchDevice : IInputDevice
 {
-	event Action<Touch> Touched;
+  event Action<Touch> Touched;
 
-	ReadOnlySpan<Touch> ActiveTouchPoints { get; }
+  ReadOnlySpan<Touch> ActiveTouchPoints { get; }
 }

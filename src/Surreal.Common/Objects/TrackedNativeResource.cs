@@ -3,54 +3,57 @@ using Surreal.Memory;
 
 namespace Surreal.Objects;
 
+#pragma warning disable S2743
+#pragma warning disable CA1000
+
 /// <summary>A <see cref="NativeResource"/> with global tracking in a static <see cref="LinkedNodeList{TNode}"/>.</summary>
 public abstract class TrackedNativeResource<TSelf> : NativeResource, ILinkedElement<TSelf>
-	where TSelf : TrackedNativeResource<TSelf>
+  where TSelf : TrackedNativeResource<TSelf>
 {
-	private static readonly LinkedNodeList<TSelf> All = new();
+  private static readonly LinkedNodeList<TSelf> All = new();
 
-	public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
+  protected TrackedNativeResource()
+  {
+    Track((TSelf) this);
+  }
 
-	public static Size GetSizeEstimate<T>()
-		where T : IHasSizeEstimate
-	{
-		lock (All)
-		{
-			return All.OfType<T>().Select(_ => _.Size).Sum();
-		}
-	}
+  public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
 
-	private static void Track(TSelf resource)
-	{
-		lock (All)
-		{
-			All.Add(resource);
-		}
-	}
+  TSelf? ILinkedElement<TSelf>.Previous { get; set; }
+  TSelf? ILinkedElement<TSelf>.Next     { get; set; }
 
-	private static void Forget(TSelf resource)
-	{
-		lock (All)
-		{
-			All.Remove(resource);
-		}
-	}
+  public static Size GetSizeEstimate<T>()
+    where T : IHasSizeEstimate
+  {
+    lock (All)
+    {
+      return All.OfType<T>().Select(_ => _.Size).Sum();
+    }
+  }
 
-	protected TrackedNativeResource()
-	{
-		Track((TSelf) this);
-	}
+  private static void Track(TSelf resource)
+  {
+    lock (All)
+    {
+      All.Add(resource);
+    }
+  }
 
-	protected override void Dispose(bool managed)
-	{
-		if (managed)
-		{
-			Forget((TSelf) this);
-		}
+  private static void Forget(TSelf resource)
+  {
+    lock (All)
+    {
+      All.Remove(resource);
+    }
+  }
 
-		base.Dispose(managed);
-	}
+  protected override void Dispose(bool managed)
+  {
+    if (managed)
+    {
+      Forget((TSelf) this);
+    }
 
-	TSelf? ILinkedElement<TSelf>.Previous { get; set; }
-	TSelf? ILinkedElement<TSelf>.Next { get; set; }
+    base.Dispose(managed);
+  }
 }

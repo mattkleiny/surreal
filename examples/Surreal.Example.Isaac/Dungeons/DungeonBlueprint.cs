@@ -6,37 +6,37 @@ namespace Isaac.Dungeons;
 
 public sealed class DungeonBlueprint : BlueprintNode
 {
-	public int Width { get; init; } = 15;
-	public int Height { get; init; } = 9;
+  public int Width  { get; init; } = 15;
+  public int Height { get; init; } = 9;
 
-	public DungeonPlan CreatePlan(Seed seed)
-	{
-		var plan = new DungeonPlan(seed, Width, Height);
+  public DungeonPlan CreatePlan(Seed seed)
+  {
+    var plan = new DungeonPlan(seed, Width, Height);
 
-		PlanDungeon(plan);
+    PlanDungeon(plan);
 
-		return plan;
-	}
+    return plan;
+  }
 
-	[Template(typeof(DungeonBlueprint))]
-	private sealed class Template : IImportableTemplate<DungeonBlueprint>
-	{
-		public int Width { get; set; }
-		public int Height { get; set; }
+  [Template(typeof(DungeonBlueprint))]
+  private sealed class Template : IImportableTemplate<DungeonBlueprint>
+  {
+    public int Width  { get; set; }
+    public int Height { get; set; }
 
-		public DungeonBlueprint Create()
-		{
-			return new DungeonBlueprint
-			{
-				Width = Width,
-				Height = Height
-			};
-		}
+    public DungeonBlueprint Create()
+    {
+      return new DungeonBlueprint
+      {
+        Width  = Width,
+        Height = Height,
+      };
+    }
 
-		public void OnImportTemplate(ITemplateImportContext context)
-		{
-			Width = context.Parse(nameof(Width), 15);
-			Height = context.Parse(nameof(Height), 15);
-		}
-	}
+    public void OnImportTemplate(ITemplateImportContext context)
+    {
+      Width  = context.Parse(nameof(Width), 15);
+      Height = context.Parse(nameof(Height), 15);
+    }
+  }
 }

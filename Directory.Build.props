@@ -1,39 +1,40 @@
 <!-- common configuration for all projects -->
 <Project>
-	<PropertyGroup>
-		<Product>Surreal</Product>
-		<Authors>Matthew Kleinschafer</Authors>
-		<Company>MK Productions</Company>
-		<Copyright>Copyright© 2018, All Rights Reserved.</Copyright>
-		<PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-		<RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
-	</PropertyGroup>
+  <PropertyGroup>
+    <Product>Surreal</Product>
+    <Authors>Matthew Kleinschafer</Authors>
+    <Company>MK Productions</Company>
+    <Copyright>Copyright© 2018, All Rights Reserved.</Copyright>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<LangVersion>10</LangVersion>
-		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<RootNamespace>Surreal</RootNamespace>
-		<AnalysisLevel>latest-recommended</AnalysisLevel>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Surreal</RootNamespace>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<!-- beta version of StyleCop has better support for latest C# language features -->
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354" PrivateAssets="all" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.29.0.36737" PrivateAssets="all" />
-	</ItemGroup>
+  <ItemGroup>
+    <!-- beta version of StyleCop has better support for latest C# language features -->
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354" PrivateAssets="all" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.29.0.36737" PrivateAssets="all" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="$(ProjectDir)\Resources\**" />
-	</ItemGroup>
+  <ItemGroup>
+    <!-- automatically embed resources -->
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Compile Include="..\..\src\JetBrainsAnnotations.cs">
-			<Link>Shared\JetBrainsAnnotations.cs</Link>
-		</Compile>
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\JetBrainsAnnotations.cs">
+      <Link>Shared\JetBrainsAnnotations.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

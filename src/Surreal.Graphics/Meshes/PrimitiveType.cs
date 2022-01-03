@@ -3,11 +3,11 @@
 /// <summary>Different types of supported primitive shapes.</summary>
 public enum PrimitiveType
 {
-	Points,
-	Lines,
-	LineStrip,
-	LineLoop,
-	Triangles,
-	Quads,
-	QuadStrip
+  Points,
+  Lines,
+  LineStrip,
+  LineLoop,
+  Triangles,
+  Quads,
+  QuadStrip,
 }

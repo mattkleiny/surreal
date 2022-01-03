@@ -6,10 +6,10 @@ namespace Isaac.Actors.Systems;
 /// <summary>Permits rendering <see cref="Sprite"/>s in the world.</summary>
 public sealed class SpriteSystem : IteratingSystem
 {
-	private static Aspect TargetAspect { get; } = Aspect.Of<Transform, Sprite>();
+  private static readonly Aspect TargetAspect = Aspect.Of<Transform, Sprite>();
 
-	public SpriteSystem(IComponentSystemContext context, Game game)
-		: base(context, TargetAspect)
-	{
-	}
+  public SpriteSystem(IComponentSystemContext context, Game game)
+    : base(context, TargetAspect)
+  {
+  }
 }

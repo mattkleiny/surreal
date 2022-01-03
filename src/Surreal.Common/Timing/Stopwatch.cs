@@ -3,23 +3,23 @@
 /// <summary>A stop watch using a precision <see cref="TimeStamp"/>.</summary>
 public sealed class Stopwatch
 {
-	private TimeStamp lastTime = TimeStamp.Now;
+  private TimeStamp lastTime = TimeStamp.Now;
 
-	public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
-	public TimeSpan MaxDeltaTime { get; } = (16 * 10).Milliseconds();
+  public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
+  public TimeSpan MaxDeltaTime    { get; } = (16 * 10).Milliseconds();
 
-	public DeltaTime Tick()
-	{
-		var now = TimeStamp.Now;
-		var delta = now - lastTime;
+  public DeltaTime Tick()
+  {
+    var now   = TimeStamp.Now;
+    var delta = now - lastTime;
 
-		if (delta > MaxDeltaTime)
-		{
-			delta = TargetDeltaTime;
-		}
+    if (delta > MaxDeltaTime)
+    {
+      delta = TargetDeltaTime;
+    }
 
-		lastTime = now;
+    lastTime = now;
 
-		return new DeltaTime(delta);
-	}
+    return new DeltaTime(delta);
+  }
 }

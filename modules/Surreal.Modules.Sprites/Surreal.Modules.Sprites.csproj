@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Adds support for sprite loading and rendering</Description>
-  </PropertyGroup>
-</Project>

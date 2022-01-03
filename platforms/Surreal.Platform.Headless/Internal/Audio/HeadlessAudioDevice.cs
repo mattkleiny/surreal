@@ -8,21 +8,21 @@ namespace Surreal.Internal.Audio;
 
 internal sealed class HeadlessAudioDevice : IAudioDevice
 {
-	private float masterVolume;
+  private float masterVolume;
 
-	public float MasterVolume
-	{
-		get => masterVolume;
-		set => masterVolume = value.Clamp(0f, 1f);
-	}
+  public float MasterVolume
+  {
+    get => masterVolume;
+    set => masterVolume = value.Clamp(0f, 1f);
+  }
 
-	public AudioClip CreateAudioClip(IAudioData data)
-	{
-		return new HeadlessAudioClip();
-	}
+  public AudioClip CreateAudioClip(IAudioData data)
+  {
+    return new HeadlessAudioClip();
+  }
 
-	public AudioSource CreateAudioSource()
-	{
-		return new HeadlessAudioSource();
-	}
+  public AudioSource CreateAudioSource()
+  {
+    return new HeadlessAudioSource();
+  }
 }

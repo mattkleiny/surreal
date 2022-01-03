@@ -5,27 +5,27 @@ namespace Surreal.Text;
 /// <summary>General purpose string extensions.</summary>
 public static class StringExtensions
 {
-	public static StringBuilder AppendWithSeparator(this StringBuilder builder, string value, string seperator)
-	{
-		if (builder.Length > 0)
-		{
-			builder.Append(seperator);
-		}
+  public static StringBuilder AppendWithSeparator(this StringBuilder builder, string value, string seperator)
+  {
+    if (builder.Length > 0)
+    {
+      builder.Append(seperator);
+    }
 
-		builder.Append(value);
+    builder.Append(value);
 
-		return builder;
-	}
+    return builder;
+  }
 
-	public static string GetFullNameWithoutGenerics(this Type type)
-	{
-		return RemoveGenerics(type.FullName ?? string.Empty);
-	}
+  public static string GetFullNameWithoutGenerics(this Type type)
+  {
+    return RemoveGenerics(type.FullName ?? string.Empty);
+  }
 
-	private static string RemoveGenerics(string value)
-	{
-		var index = value.IndexOf('`');
+  private static string RemoveGenerics(string value)
+  {
+    var index = value.IndexOf('`');
 
-		return index == -1 ? value : value[..index];
-	}
+    return index == -1 ? value : value[..index];
+  }
 }

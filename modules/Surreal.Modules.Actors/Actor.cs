@@ -10,92 +10,92 @@ namespace Surreal;
 /// </remarks>
 public class Actor
 {
-	private IActorContext context = null!;
+  private IActorContext context = null!;
 
-	public ActorId Id { get; } = ActorId.Invalid;
-	public ActorStatus Status => context.GetStatus(Id);
+  public ActorId     Id     { get; } = ActorId.Invalid;
+  public ActorStatus Status => context.GetStatus(Id);
 
-	public bool IsDestroyed => Status == ActorStatus.Destroyed;
-	public bool IsActive => Status == ActorStatus.Active;
-	public bool IsInactive => Status == ActorStatus.Inactive;
+  public bool IsDestroyed => Status == ActorStatus.Destroyed;
+  public bool IsActive    => Status == ActorStatus.Active;
+  public bool IsInactive  => Status == ActorStatus.Inactive;
 
-	public void Enable() => context.Enable(Id);
-	public void Disable() => context.Disable(Id);
+  public void Enable()  => context.Enable(Id);
+  public void Disable() => context.Disable(Id);
 
-	internal void Awake(IActorContext context)
-	{
-		this.context = context;
+  internal void Awake(IActorContext context)
+  {
+    this.context = context;
 
-		OnAwake();
-	}
+    OnAwake();
+  }
 
-	public void Destroy()
-	{
-		if (!IsDestroyed)
-		{
-			context.Destroy(Id);
-		}
-	}
+  public void Destroy()
+  {
+    if (!IsDestroyed)
+    {
+      context.Destroy(Id);
+    }
+  }
 
-	public ref T GetOrCreateComponent<T>(T prototype)
-	{
-		var storage = context.GetStorage<T>();
+  public ref T GetOrCreateComponent<T>(T prototype)
+  {
+    var storage = context.GetStorage<T>();
 
-		return ref storage.GetOrCreateComponent(Id, prototype);
-	}
+    return ref storage.GetOrCreateComponent(Id, prototype);
+  }
 
-	public T AddComponent<T>(T prototype)
-	{
-		var storage = context.GetStorage<T>();
+  public T AddComponent<T>(T prototype)
+  {
+    var storage = context.GetStorage<T>();
 
-		return storage.AddComponent(Id, prototype);
-	}
+    return storage.AddComponent(Id, prototype);
+  }
 
-	public ref T GetComponent<T>()
-	{
-		var storage = context.GetStorage<T>();
-		ref var component = ref storage.GetComponent(Id);
+  public ref T GetComponent<T>()
+  {
+    var     storage   = context.GetStorage<T>();
+    ref var component = ref storage.GetComponent(Id);
 
-		if (Unsafe.IsNullRef(ref component))
-		{
-			throw new Exception($"The given component is not available on the actor {typeof(T).Name}");
-		}
+    if (Unsafe.IsNullRef(ref component))
+    {
+      throw new Exception($"The given component is not available on the actor {typeof(T).Name}");
+    }
 
-		return ref component!;
-	}
+    return ref component!;
+  }
 
-	public bool RemoveComponent<T>()
-	{
-		var storage = context.GetStorage<T>();
+  public bool RemoveComponent<T>()
+  {
+    var storage = context.GetStorage<T>();
 
-		return storage.RemoveComponent(Id);
-	}
+    return storage.RemoveComponent(Id);
+  }
 
-	protected internal virtual void OnAwake()
-	{
-	}
+  protected internal virtual void OnAwake()
+  {
+  }
 
-	protected internal virtual void OnEnable()
-	{
-	}
+  protected internal virtual void OnEnable()
+  {
+  }
 
-	protected internal virtual void OnInput(DeltaTime time)
-	{
-	}
+  protected internal virtual void OnInput(DeltaTime time)
+  {
+  }
 
-	protected internal virtual void OnUpdate(DeltaTime time)
-	{
-	}
+  protected internal virtual void OnUpdate(DeltaTime time)
+  {
+  }
 
-	protected internal virtual void OnDraw(DeltaTime time)
-	{
-	}
+  protected internal virtual void OnDraw(DeltaTime time)
+  {
+  }
 
-	protected internal virtual void OnDisable()
-	{
-	}
+  protected internal virtual void OnDisable()
+  {
+  }
 
-	protected internal virtual void OnDestroy()
-	{
-	}
+  protected internal virtual void OnDestroy()
+  {
+  }
 }

@@ -6,81 +6,81 @@ namespace Surreal.Screens;
 /// <summary>A screen in the <see cref="IScreenManager"/>.</summary>
 public interface IScreen : ILinkedElement<IScreen>, IDisposable
 {
-	bool IsInitialized { get; }
-	bool IsDisposed { get; }
+  bool IsInitialized { get; }
+  bool IsDisposed    { get; }
 
-	Task InitializeAsync();
+  Task InitializeAsync();
 
-	void Show();
-	void Hide();
+  void Show();
+  void Hide();
 
-	void Input(GameTime time);
-	void Update(GameTime time);
-	void Draw(GameTime time);
+  void Input(GameTime time);
+  void Update(GameTime time);
+  void Draw(GameTime time);
 }
 
 /// <summary>Base class for any <see cref="IScreen"/> implementation.</summary>
 public abstract class Screen : IScreen
 {
-	protected Screen(Game game)
-	{
-		Game = game;
-	}
+  protected Screen(Game game)
+  {
+    Game = game;
+  }
 
-	public Game Game { get; }
+  public Game Game { get; }
 
-	public bool IsInitialized { get; private set; }
-	public bool IsDisposed { get; private set; }
+  public bool IsInitialized { get; private set; }
+  public bool IsDisposed    { get; private set; }
 
-	public virtual async Task InitializeAsync()
-	{
-		IsInitialized = true;
+  public virtual async Task InitializeAsync()
+  {
+    IsInitialized = true;
 
-		await LoadContentAsync(Game.Assets);
-	}
+    await LoadContentAsync(Game.Assets);
+  }
 
-	protected virtual Task LoadContentAsync(IAssetContext assets)
-	{
-		return Task.CompletedTask;
-	}
+  protected virtual Task LoadContentAsync(IAssetContext assets)
+  {
+    return Task.CompletedTask;
+  }
 
-	public virtual void Show()
-	{
-	}
+  public virtual void Show()
+  {
+  }
 
-	public virtual void Hide()
-	{
-	}
+  public virtual void Hide()
+  {
+  }
 
-	public virtual void Input(GameTime time)
-	{
-	}
+  public virtual void Input(GameTime time)
+  {
+  }
 
-	public virtual void Update(GameTime time)
-	{
-	}
+  public virtual void Update(GameTime time)
+  {
+  }
 
-	public virtual void Draw(GameTime time)
-	{
-	}
+  public virtual void Draw(GameTime time)
+  {
+  }
 
-	public virtual void Dispose()
-	{
-		IsDisposed = true;
-	}
+  public virtual void Dispose()
+  {
+    IsDisposed = true;
+  }
 
-	IScreen? ILinkedElement<IScreen>.Previous { get; set; }
-	IScreen? ILinkedElement<IScreen>.Next { get; set; }
+  IScreen? ILinkedElement<IScreen>.Previous { get; set; }
+  IScreen? ILinkedElement<IScreen>.Next     { get; set; }
 }
 
 /// <summary>Base class for any <see cref="IScreen"/> implementation.</summary>
 public abstract class Screen<TGame> : Screen
-	where TGame : Game
+  where TGame : Game
 {
-	protected Screen(TGame game)
-		: base(game)
-	{
-	}
+  protected Screen(TGame game)
+    : base(game)
+  {
+  }
 
-	public new TGame Game => (TGame) base.Game;
+  public new TGame Game => (TGame) base.Game;
 }

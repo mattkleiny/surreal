@@ -5,49 +5,49 @@ namespace Surreal.Memory;
 /// <summary>A <see cref="Span{T}"/> that is interpreted as a grid.</summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
 public ref struct SpanGrid<T>
-	where T : unmanaged
+  where T : unmanaged
 {
-	public static SpanGrid<T> Empty => default;
+  public static SpanGrid<T> Empty => default;
 
-	private readonly Span<T> storage;
-	private readonly int stride;
+  private readonly Span<T> storage;
+  private readonly int     stride;
 
-	public SpanGrid(Span<T> storage, int stride)
-	{
-		this.storage = storage;
-		this.stride = stride;
-	}
+  public SpanGrid(Span<T> storage, int stride)
+  {
+    this.storage = storage;
+    this.stride  = stride;
+  }
 
-	public int Width => stride;
-	public int Height => storage.Length / stride;
-	public int Length => storage.Length;
+  public int Width  => stride;
+  public int Height => storage.Length / stride;
+  public int Length => storage.Length;
 
-	public ref T this[int index]
-	{
-		get
-		{
-			Debug.Assert(index >= 0, "index >= 0");
-			Debug.Assert(index < storage.Length, "index < length");
+  public ref T this[int index]
+  {
+    get
+    {
+      Debug.Assert(index >= 0, "index >= 0");
+      Debug.Assert(index < storage.Length, "index < length");
 
-			return ref storage[index];
-		}
-	}
+      return ref storage[index];
+    }
+  }
 
-	public ref T this[int x, int y]
-	{
-		get
-		{
-			Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
-			Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
+  public ref T this[int x, int y]
+  {
+    get
+    {
+      Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
+      Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
-			return ref storage[x + y * stride];
-		}
-	}
+      return ref storage[x + y * stride];
+    }
+  }
 
-	public Span<T> ToSpan()
-	{
-		return storage;
-	}
+  public Span<T> ToSpan()
+  {
+    return storage;
+  }
 
-	public static implicit operator Span<T>(SpanGrid<T> grid) => grid.ToSpan();
+  public static implicit operator Span<T>(SpanGrid<T> grid) => grid.ToSpan();
 }

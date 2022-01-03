@@ -3,9 +3,9 @@
 /// <summary>Possible buttons for mouse events.</summary>
 public enum MouseButton
 {
-	Left,
-	Middle,
-	Right
+  Left,
+  Middle,
+  Right,
 }
 
 /// <summary>A mouse button was pressed.</summary>

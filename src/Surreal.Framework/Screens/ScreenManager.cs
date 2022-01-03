@@ -5,113 +5,113 @@ namespace Surreal.Screens;
 /// <summary>A manager for <see cref="IScreen"/>s.</summary>
 public interface IScreenManager : IGamePlugin
 {
-	event Action<IScreen?> ScreenChanged;
+  event Action<IScreen?> ScreenChanged;
 
-	IScreen? ActiveScreen { get; }
-	IScreen? PreviousScreen { get; }
+  IScreen? ActiveScreen   { get; }
+  IScreen? PreviousScreen { get; }
 
-	void Push(IScreen screen);
-	void Replace(IScreen screen);
-	IScreen? Pop(bool dispose = true);
+  void     Push(IScreen screen);
+  void     Replace(IScreen screen);
+  IScreen? Pop(bool dispose = true);
 }
 
 /// <summary>The default <see cref="IScreenManager"/> implementation.</summary>
 public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
 {
-	private readonly LinkedNodeList<IScreen> screens = new();
+  private readonly LinkedNodeList<IScreen> screens = new();
 
-	public ScreenManager(Game game)
-		: base(game)
-	{
-	}
+  public ScreenManager(Game game)
+    : base(game)
+  {
+  }
 
-	public event Action<IScreen?>? ScreenChanged;
+  public event Action<IScreen?>? ScreenChanged;
 
-	public IScreen? ActiveScreen => screens.Head;
-	public IScreen? PreviousScreen => screens.Head?.Previous;
+  public IScreen? ActiveScreen   => screens.Head;
+  public IScreen? PreviousScreen => screens.Head?.Previous;
 
-	public override async Task InitializeAsync()
-	{
-		if (ActiveScreen != null)
-		{
-			await ActiveScreen.InitializeAsync();
-		}
-	}
+  public override async Task InitializeAsync()
+  {
+    if (ActiveScreen != null)
+    {
+      await ActiveScreen.InitializeAsync();
+    }
+  }
 
-	public void Push(IScreen screen)
-	{
-		ActiveScreen?.Hide();
+  public void Push(IScreen screen)
+  {
+    ActiveScreen?.Hide();
 
-		if (!screen.IsInitialized)
-		{
-			screen.InitializeAsync();
-		}
+    if (!screen.IsInitialized)
+    {
+      screen.InitializeAsync();
+    }
 
-		screen.Show();
-		screens.Add(screen);
+    screen.Show();
+    screens.Add(screen);
 
-		ScreenChanged?.Invoke(ActiveScreen);
-	}
+    ScreenChanged?.Invoke(ActiveScreen);
+  }
 
-	public void Replace(IScreen screen)
-	{
-		Pop();
-		Push(screen);
-	}
+  public void Replace(IScreen screen)
+  {
+    Pop();
+    Push(screen);
+  }
 
-	public IScreen? Pop(bool dispose = true)
-	{
-		if (screens.IsEmpty) return null;
+  public IScreen? Pop(bool dispose = true)
+  {
+    if (screens.IsEmpty) return null;
 
-		var screen = screens.Head!;
+    var screen = screens.Head!;
 
-		screen.Hide();
-		screens.Remove(screen);
+    screen.Hide();
+    screens.Remove(screen);
 
-		if (dispose)
-		{
-			screen.Dispose();
-		}
+    if (dispose)
+    {
+      screen.Dispose();
+    }
 
-		ScreenChanged?.Invoke(ActiveScreen);
+    ScreenChanged?.Invoke(ActiveScreen);
 
-		return screen;
-	}
+    return screen;
+  }
 
-	public override void Input(GameTime time)
-	{
-		ActiveScreen?.Input(new GameTime(
-			deltaTime: time.DeltaTime,
-			totalTime: time.TotalTime,
-			isRunningSlowly: time.IsRunningSlowly
-		));
-	}
+  public override void Input(GameTime time)
+  {
+    ActiveScreen?.Input(new GameTime(
+      deltaTime: time.DeltaTime,
+      totalTime: time.TotalTime,
+      isRunningSlowly: time.IsRunningSlowly
+    ));
+  }
 
-	public override void Update(GameTime time)
-	{
-		ActiveScreen?.Update(new GameTime(
-			deltaTime: time.DeltaTime,
-			totalTime: time.TotalTime,
-			isRunningSlowly: time.IsRunningSlowly
-		));
-	}
+  public override void Update(GameTime time)
+  {
+    ActiveScreen?.Update(new GameTime(
+      deltaTime: time.DeltaTime,
+      totalTime: time.TotalTime,
+      isRunningSlowly: time.IsRunningSlowly
+    ));
+  }
 
-	public override void Draw(GameTime time)
-	{
-		ActiveScreen?.Draw(new GameTime(
-			deltaTime: time.DeltaTime,
-			totalTime: time.TotalTime,
-			isRunningSlowly: time.IsRunningSlowly
-		));
-	}
+  public override void Draw(GameTime time)
+  {
+    ActiveScreen?.Draw(new GameTime(
+      deltaTime: time.DeltaTime,
+      totalTime: time.TotalTime,
+      isRunningSlowly: time.IsRunningSlowly
+    ));
+  }
 
-	public override void Dispose()
-	{
-		while (!screens.IsEmpty)
-		{
-			Pop();
-		}
+  public override void Dispose()
+  {
+    while (!screens.IsEmpty)
+    {
+      Pop();
+    }
 
-		base.Dispose();
-	}
+    base.Dispose();
+  }
 }

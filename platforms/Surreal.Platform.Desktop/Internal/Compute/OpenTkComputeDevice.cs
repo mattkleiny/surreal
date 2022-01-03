@@ -7,14 +7,14 @@ namespace Surreal.Internal.Compute;
 
 internal sealed class OpenTkComputeDevice : IComputeDevice
 {
-	public ComputeBuffer<T> CreateBuffer<T>()
-		where T : unmanaged
-	{
-		return new OpenTkComputeBuffer<T>();
-	}
+  public ComputeBuffer<T> CreateBuffer<T>()
+    where T : unmanaged
+  {
+    return new OpenTkComputeBuffer<T>();
+  }
 
-	public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw)
-	{
-		return new OpenTkComputeProgram(raw);
-	}
+  public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw)
+  {
+    return new OpenTkComputeProgram(raw);
+  }
 }

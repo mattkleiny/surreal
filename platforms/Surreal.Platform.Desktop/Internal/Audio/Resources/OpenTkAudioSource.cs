@@ -9,45 +9,45 @@ namespace Surreal.Internal.Audio.Resources;
 [DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
 internal sealed class OpenTkAudioSource : AudioSource, IHasNativeId
 {
-	private readonly OpenTkAudioDevice device;
-	private float volume;
+  private readonly OpenTkAudioDevice device;
+  private          float             volume;
 
-	public OpenTkAudioSource(OpenTkAudioDevice device)
-	{
-		this.device = device;
-	}
+  public OpenTkAudioSource(OpenTkAudioDevice device)
+  {
+    this.device = device;
+  }
 
-	public int Id { get; } = AL.GenSource();
+  public int Id { get; } = AL.GenSource();
 
-	public override float Volume
-	{
-		get => volume;
-		set => volume = value.Clamp(0f, 1f);
-	}
+  public override float Volume
+  {
+    get => volume;
+    set => volume = value.Clamp(0f, 1f);
+  }
 
-	public override bool IsPlaying
-	{
-		get
-		{
-			AL.GetSource(Id, ALGetSourcei.SourceState, out var state);
+  public override bool IsPlaying
+  {
+    get
+    {
+      AL.GetSource(Id, ALGetSourcei.SourceState, out var state);
 
-			return state == (int) ALSourceState.Playing;
-		}
-	}
+      return state == (int) ALSourceState.Playing;
+    }
+  }
 
-	public override void Play(AudioClip clip)
-	{
-		var innerClip = (OpenTkAudioClip) clip;
+  public override void Play(AudioClip clip)
+  {
+    var innerClip = (OpenTkAudioClip) clip;
 
-		AL.Source(Id, ALSourcef.Gain, volume * device.MasterVolume);
-		AL.Source(Id, ALSourcei.Buffer, innerClip.Id);
-		AL.SourcePlay(Id);
-	}
+    AL.Source(Id, ALSourcef.Gain, volume * device.MasterVolume);
+    AL.Source(Id, ALSourcei.Buffer, innerClip.Id);
+    AL.SourcePlay(Id);
+  }
 
-	protected override void Dispose(bool managed)
-	{
-		AL.DeleteSource(Id);
+  protected override void Dispose(bool managed)
+  {
+    AL.DeleteSource(Id);
 
-		base.Dispose(managed);
-	}
+    base.Dispose(managed);
+  }
 }

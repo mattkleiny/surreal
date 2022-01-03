@@ -1,8 +1,8 @@
 ﻿<!-- common configuration for module projects -->
 <Project>
-	<Import Project="../Directory.Build.props" />
+  <Import Project="../Directory.Build.props" />
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Surreal.Common\Surreal.Common.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Surreal.Common\Surreal.Common.csproj" />
+  </ItemGroup>
 </Project>

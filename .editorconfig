@@ -3,7 +3,8 @@ charset = utf-8
 end_of_line = crlf
 trim_trailing_whitespace = true
 insert_final_newline = true
-indent_style = tab
+indent_style = space
+indent_size = 2
 
 [*.cs]
 csharp_style_var_for_built_in_types = true:silent
@@ -12,21 +13,19 @@ csharp_style_var_elsewhere = true:silent
 
 # Core Analyzers
 dotnet_diagnostic.CA1716.severity = None # Don't use reserved keywords for types
+dotnet_diagnostic.CA1805.severity = None # Don't initialize to default value
+dotnet_diagnostic.CA1051.severity = None # Do not declare public instance fields
 
 # StyleCop Analyzers
-dotnet_diagnostic.SA1200.severity = None # Using directive should appear within a namespace declaration
 dotnet_diagnostic.SA0001.severity = None # XML comment analysis is disabled due to project configuration
+dotnet_diagnostic.SA1200.severity = None # Using directive should appear within a namespace declaration
 dotnet_diagnostic.SA1633.severity = None # The file header is missing or not located at the top of the file
 dotnet_diagnostic.SA1122.severity = None # Use string.Empty for empty strings
-dotnet_diagnostic.SA1312.severity = None # Variable '_' should begin with lower-case letter
-dotnet_diagnostic.SA1313.severity = None # Parameter '_' should begin with lower-case letter
 dotnet_diagnostic.SA1600.severity = None # Elements should be documented
 dotnet_diagnostic.SA1101.severity = None # Prefix local calls with this
 dotnet_diagnostic.SA1202.severity = None # 'public' members should come before 'private' members
 dotnet_diagnostic.SA1120.severity = None # Comments should contain text
 dotnet_diagnostic.SA1203.severity = None # Constant fields should appear before non-constant fields
-dotnet_diagnostic.SA1413.severity = None # Use trailing comma in multi-line initializers
-dotnet_diagnostic.SA1201.severity = None # A method should not follow a class
 dotnet_diagnostic.SA1516.severity = None # Elements should be separated by blank line
 dotnet_diagnostic.SA1118.severity = None # The parameter spans multiple lines
 dotnet_diagnostic.SA1204.severity = None # Static members should appear before non-static members
@@ -42,6 +41,13 @@ dotnet_diagnostic.SA1111.severity = None # Closing parenthesis should be on line
 dotnet_diagnostic.SA1503.severity = None # Braces should not be omitted
 dotnet_diagnostic.SA1618.severity = None # Documentation for generic type parameters
 dotnet_diagnostic.SA1003.severity = None # Whitespace after cast operations
+dotnet_diagnostic.SA1025.severity = None # Multiple whitespace in the row
+dotnet_diagnostic.SA1129.severity = None # Do not use default value type constructor
+dotnet_diagnostic.SA1008.severity = None # Cast followed by space
+dotnet_diagnostic.SA1313.severity = None # Word should begin with lowercase letter
+dotnet_diagnostic.SA1519.severity = None # Multi-line loops
+dotnet_diagnostic.SA1615.severity = None # Documentation for delegates
+dotnet_diagnostic.SA1611.severity = None # Documentation for delegates
 
 ## Sonar Analyzers
 dotnet_diagnostic.S4144.severity = None # Update this method so that its implementation is not identical to 'blah'
@@ -50,3 +56,6 @@ dotnet_diagnostic.S1199.severity = None # Extract this nested code block into a 
 dotnet_diagnostic.S3459.severity = None # Remove unassigned auto-property 'Blah', or set its value
 dotnet_diagnostic.S1144.severity = None # Remove the unused private set accessor in property 'Version'
 dotnet_diagnostic.S3903.severity = None # Move type into named namespace
+dotnet_diagnostic.S3903.severity = None # Move type into named namespace
+dotnet_diagnostic.S3973.severity = None # Multi-line loops
+

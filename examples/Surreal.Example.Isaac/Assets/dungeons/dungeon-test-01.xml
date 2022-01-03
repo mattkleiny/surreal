@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Dungeon Description="A simple testing dungeon for debugging purposes">
-	<PlaceSpawnRoom />
-	<For From="10" To="20">
-		<PlaceStandardRoom />
-	</For>
-	<For From="1" To="2">
-		<PlaceShopRoom />
-	</For>
-	<For From="1" To="2">
-		<PlaceSecretRoom />
-	</For>
-	<PlaceBossRoom />
+  <PlaceSpawnRoom />
+  <For From="10" To="20">
+    <PlaceStandardRoom />
+  </For>
+  <For From="1" To="2">
+    <PlaceShopRoom />
+  </For>
+  <For From="1" To="2">
+    <PlaceSecretRoom />
+  </For>
+  <PlaceBossRoom />
 </Dungeon>
