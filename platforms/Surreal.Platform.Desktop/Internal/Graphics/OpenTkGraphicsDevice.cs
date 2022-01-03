@@ -36,13 +36,7 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
 
   public void ClearColor(Color color)
   {
-    GL.ClearColor(
-      color.R / 255.0f,
-      color.G / 255.0f,
-      color.B / 255.0f,
-      color.A / 255.0f
-    );
-
+    GL.ClearColor(color.R, color.G, color.B, color.A);
     GL.Clear(ClearBufferMask.ColorBufferBit);
   }
 

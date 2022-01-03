@@ -9,7 +9,7 @@ public static class Services
   {
     if (!provider.TryGetService(out T service))
     {
-      throw new Exception($"Unable to locate service {typeof(T).Name}");
+      throw new ServiceNotFoundException($"Unable to locate service {typeof(T).Name}");
     }
 
     return service;
@@ -33,5 +33,14 @@ public static class Services
     where T : class
   {
     services.AddService(typeof(T), service, promote);
+  }
+}
+
+/// <summary>Indicates a service is not available.</summary>
+public class ServiceNotFoundException : Exception
+{
+  public ServiceNotFoundException(string message)
+    : base(message)
+  {
   }
 }

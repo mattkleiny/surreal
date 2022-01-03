@@ -20,6 +20,18 @@ public static class Maths
   public static int   Lerp(int a, int b, float t)     => (int) (a + t * (b - a));
   public static float Lerp(float a, float b, float t) => a + t * (b - a);
 
+  public static float Repeat(float t, float length)
+  {
+    return (t - MathF.Floor(t / length) * length).Clamp(0.0f, length);
+  }
+
+  public static float PingPong(float t, float length)
+  {
+    t = Repeat(t, length * 2f);
+
+    return length - MathF.Abs(t - length);
+  }
+
   public static int Wrap(int value, int lower, int upper)
   {
     if (value < lower)

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Minimal</AssemblyName>
+    <RootNamespace>Minimal</RootNamespace>
+    <Description>An example of the minimal framework API for rapid game prototyping.</Description>
+  </PropertyGroup>
+</Project>

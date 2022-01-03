@@ -80,29 +80,17 @@ public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
 
   public override void Input(GameTime time)
   {
-    ActiveScreen?.Input(new GameTime(
-      deltaTime: time.DeltaTime,
-      totalTime: time.TotalTime,
-      isRunningSlowly: time.IsRunningSlowly
-    ));
+    ActiveScreen?.Input(time);
   }
 
   public override void Update(GameTime time)
   {
-    ActiveScreen?.Update(new GameTime(
-      deltaTime: time.DeltaTime,
-      totalTime: time.TotalTime,
-      isRunningSlowly: time.IsRunningSlowly
-    ));
+    ActiveScreen?.Update(time);
   }
 
   public override void Draw(GameTime time)
   {
-    ActiveScreen?.Draw(new GameTime(
-      deltaTime: time.DeltaTime,
-      totalTime: time.TotalTime,
-      isRunningSlowly: time.IsRunningSlowly
-    ));
+    ActiveScreen?.Draw(time);
   }
 
   public override void Dispose()

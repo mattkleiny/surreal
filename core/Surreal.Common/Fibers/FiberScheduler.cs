@@ -5,6 +5,8 @@ using JetBrains.Annotations;
 
 namespace Surreal.Fibers;
 
+#pragma warning disable CA2255
+
 /// <summary>A scheduler for <see cref="FiberTask"/>s.</summary>
 [UsedImplicitly]
 public static class FiberScheduler
@@ -70,16 +72,6 @@ public static class FiberScheduler
       }
     }
 
-    private readonly struct Continuation
-    {
-      public readonly SendOrPostCallback Callback;
-      public readonly object?            State;
-
-      public Continuation(SendOrPostCallback callback, object? state)
-      {
-        Callback = callback;
-        State    = state;
-      }
-    }
+    private readonly record struct Continuation(SendOrPostCallback Callback, object? State);
   }
 }

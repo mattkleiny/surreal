@@ -11,20 +11,62 @@ using Stopwatch = Surreal.Timing.Stopwatch;
 
 namespace Surreal;
 
+public delegate GameLoopDelegate GameSetupDelegate(IPlatformHost host);
+public delegate FiberTask        GameLoopDelegate(GameContext context);
+
+/// <summary>Context for per-frame game loop updates.</summary>
+public readonly record struct GameContext(IPlatformHost Host, GameTime GameTime);
+
 /// <summary>Base class for any game built with Surreal.</summary>
 public abstract class Game : IDisposable
 {
   private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
 
-  private readonly DateTime    startTime = DateTime.Now;
+  private readonly TimeStamp   startTime = TimeStamp.Now;
   private readonly ILoopTarget loopTarget;
+
+  /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
+  public static void Start(IPlatform platform, GameSetupDelegate setup)
+  {
+    GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+
+    using var host = platform.BuildHost();
+
+    var stopwatch = new Stopwatch();
+    var startTime = TimeStamp.Now;
+    var gameLoop  = setup(host);
+
+    while (!host.IsClosing)
+    {
+      var deltaTime = stopwatch.Tick();
+      var totalTime = TimeStamp.Now - startTime;
+
+      host.Tick(deltaTime);
+      FiberScheduler.Tick();
+
+      var gameTime = new GameTime(
+        DeltaTime: deltaTime,
+        TotalTime: totalTime,
+        IsRunningSlowly: deltaTime > 32.Milliseconds()
+      );
+
+      gameLoop(new GameContext(host, gameTime));
+
+      Thread.Yield();
+    }
+  }
 
   public static TGame Create<TGame>(Configuration configuration)
     where TGame : Game, new()
   {
+    if (configuration.Platform == null)
+    {
+      throw new InvalidOperationException("A valid platform was expected to be set in configuration.");
+    }
+
     return new TGame
     {
-      Host = configuration.Platform!.BuildHost(),
+      Host = configuration.Platform.BuildHost(),
     };
   }
 
@@ -69,7 +111,7 @@ public abstract class Game : IDisposable
       while (IsRunning && !Host.IsClosing)
       {
         var deltaTime = stopwatch.Tick();
-        var totalTime = DateTime.Now - startTime;
+        var totalTime = TimeStamp.Now - startTime;
 
         Host.Tick(deltaTime);
         LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
@@ -238,9 +280,9 @@ public abstract class Game : IDisposable
       var averagedDeltaTime = samples.FastAverage();
 
       var time = new GameTime(
-        deltaTime: averagedDeltaTime,
-        totalTime: totalTime,
-        isRunningSlowly: averagedDeltaTime > TargetDeltaTime
+        DeltaTime: averagedDeltaTime,
+        TotalTime: totalTime,
+        IsRunningSlowly: averagedDeltaTime > TargetDeltaTime
       );
 
       target.Begin(time);
@@ -255,16 +297,14 @@ public abstract class Game : IDisposable
 
   public sealed class VariableStepLoopStrategy : ILoopStrategy
   {
-    private readonly DateTime startTime = DateTime.Now;
-
     public TimeSpan TargetDeltaTime { get; set; } = 16.Milliseconds();
 
     public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
     {
       var time = new GameTime(
-        deltaTime: deltaTime,
-        totalTime: DateTime.Now - startTime,
-        isRunningSlowly: deltaTime > TargetDeltaTime
+        DeltaTime: deltaTime,
+        TotalTime: totalTime,
+        IsRunningSlowly: deltaTime > TargetDeltaTime
       );
 
       target.Begin(time);
@@ -287,9 +327,9 @@ public abstract class Game : IDisposable
     public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
     {
       var time = new GameTime(
-        deltaTime: deltaTime,
-        totalTime: totalTime,
-        isRunningSlowly: deltaTime > TargetDeltaTime
+        DeltaTime: deltaTime,
+        TotalTime: totalTime,
+        IsRunningSlowly: deltaTime > TargetDeltaTime
       );
 
       accumulator += deltaTime.TimeSpan.TotalSeconds;
@@ -300,9 +340,9 @@ public abstract class Game : IDisposable
       while (accumulator >= Step.TotalSeconds)
       {
         var stepTime = new GameTime(
-          deltaTime: Step,
-          totalTime: time.TotalTime,
-          isRunningSlowly: time.IsRunningSlowly
+          DeltaTime: Step,
+          TotalTime: time.TotalTime,
+          IsRunningSlowly: time.IsRunningSlowly
         );
 
         target.Update(stepTime);
