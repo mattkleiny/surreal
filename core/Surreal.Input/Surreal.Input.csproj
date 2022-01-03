@@ -4,6 +4,6 @@
     <RootNamespace>Surreal.Input</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj"/>
+    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
   </ItemGroup>
 </Project>

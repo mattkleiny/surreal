@@ -1,6 +1,5 @@
 ﻿using Surreal.Collections.Pooling;
 using Surreal.Timing;
-using Timer = Surreal.Timing.Timer;
 
 namespace Surreal.Fibers.Promises;
 
@@ -12,14 +11,14 @@ internal sealed class DelayPromise : Promise<Unit>
   private readonly Action returnCallback;
 
   private IClock? clock;
-  private Timer   timer;
+  private IntervalTimer   timer;
 
   public static DelayPromise Create(IClock clock, TimeSpan duration)
   {
     var promise = Pool.CreateOrRent();
 
     promise.clock = clock;
-    promise.timer = new Timer(duration);
+    promise.timer = new IntervalTimer(duration);
 
     promise.Advance();
 

@@ -1,6 +1,4 @@
-﻿using Surreal;
-
-namespace Isaac;
+﻿namespace Isaac;
 
 public sealed class Game : PrototypeGame
 {

@@ -8,20 +8,30 @@ namespace Surreal.Audio.Clips;
 /// <summary>A buffer of audio data for use in audio playback.</summary>
 public sealed class AudioBuffer : AudioResource, IAudioData, IHasSizeEstimate
 {
-  private readonly IBuffer<byte> buffer;
+  private readonly IDisposableBuffer<byte> buffer;
 
   public AudioBuffer(TimeSpan duration, AudioSampleRate rate)
   {
     Duration = duration;
     Rate     = rate;
 
-    buffer = Buffers.AllocatePinned<byte>(rate.CalculateSize(duration));
+    buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
   }
 
   public TimeSpan        Duration { get; }
   public AudioSampleRate Rate     { get; }
   public Span<byte>      Buffer   => buffer.Span;
   public Size            Size     => buffer.Span.CalculateSize();
+
+  protected override void Dispose(bool managed)
+  {
+    if (managed)
+    {
+      buffer.Dispose();
+    }
+
+    base.Dispose(managed);
+  }
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioBuffer"/>s.</summary>

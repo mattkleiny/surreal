@@ -1,17 +1,11 @@
-﻿using Surreal;
-using Surreal.Diagnostics;
-using Surreal.Diagnostics.Logging;
-using Surreal.Timing;
-using Timer = Surreal.Timing.Timer;
-
-namespace Headless;
+﻿namespace Headless;
 
 public sealed class Game : PrototypeGame
 {
   private static readonly ILog Log = LogFactory.GetLog<Game>();
 
-  private readonly FpsCounter fpsCounter = new();
-  private          Timer      fpsTimer   = new(1.Seconds());
+  private readonly FpsCounter    fpsCounter = new();
+  private          IntervalTimer fpsTimer   = new(1.Seconds());
 
   public static Task Main() => StartAsync<Game>(new Configuration
   {

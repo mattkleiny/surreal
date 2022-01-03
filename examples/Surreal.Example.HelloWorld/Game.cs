@@ -1,4 +1,3 @@
-using Surreal;
 using Surreal.Assets;
 using Surreal.Graphics.Textures;
 

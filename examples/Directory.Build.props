@@ -3,9 +3,9 @@
   <Import Project="../Directory.Build.props" />
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -14,6 +14,13 @@
     <PublishReadyToRun>true</PublishReadyToRun>
     <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Surreal" />
+    <Using Include="Surreal.Diagnostics" />
+    <Using Include="Surreal.Diagnostics.Logging" />
+    <Using Include="Surreal.Timing" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- automatically copy assets to output path -->

@@ -22,9 +22,7 @@ public interface IInputManager
     var device = GetDevice<TDevice>();
 
     if (device == null)
-    {
       throw new DeviceNotFoundException($"Unable to locate input device {typeof(TDevice)}");
-    }
 
     return device;
   }
@@ -33,5 +31,14 @@ public interface IInputManager
     where TDevice : class, IInputDevice
   {
     return Devices.OfType<TDevice>();
+  }
+}
+
+/// <summary>Indicates an <see cref="IInputDevice"/> is not available.</summary>
+public class DeviceNotFoundException : Exception
+{
+  public DeviceNotFoundException(string message)
+    : base(message)
+  {
   }
 }

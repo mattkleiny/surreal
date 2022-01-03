@@ -6,13 +6,13 @@ namespace Surreal.Objects;
 #pragma warning disable S2743
 #pragma warning disable CA1000
 
-/// <summary>A <see cref="NativeResource"/> with global tracking in a static <see cref="LinkedNodeList{TNode}"/>.</summary>
-public abstract class TrackedNativeResource<TSelf> : NativeResource, ILinkedElement<TSelf>
-  where TSelf : TrackedNativeResource<TSelf>
+/// <summary>A <see cref="Resource"/> with global tracking in a static <see cref="LinkedNodeList{TNode}"/>.</summary>
+public abstract class TrackedResource<TSelf> : Resource, ILinkedElement<TSelf>
+  where TSelf : TrackedResource<TSelf>
 {
   private static readonly LinkedNodeList<TSelf> All = new();
 
-  protected TrackedNativeResource()
+  protected TrackedResource()
   {
     Track((TSelf) this);
   }

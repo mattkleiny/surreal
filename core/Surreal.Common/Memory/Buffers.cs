@@ -82,6 +82,11 @@ public static class Buffers
       }
     }
 
+    ~NativeBuffer()
+    {
+      Dispose();
+    }
+
     public Span<T> Span
     {
       get
@@ -94,10 +99,13 @@ public static class Buffers
 
     public void Dispose()
     {
-      CheckNotDisposed();
+      if (!isDisposed)
+      {
+        NativeMemory.Free(address);
+        GC.SuppressFinalize(this);
 
-      NativeMemory.Free(address);
-      isDisposed = true;
+        isDisposed = true;
+      }
     }
 
     [Conditional("DEBUG")]

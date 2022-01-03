@@ -1,5 +1,3 @@
-using Surreal;
-
 namespace Asteroids;
 
 public sealed class Game : PrototypeGame

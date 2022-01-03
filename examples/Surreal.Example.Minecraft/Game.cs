@@ -1,6 +1,4 @@
-﻿using Surreal;
-
-namespace Minecraft;
+﻿namespace Minecraft;
 
 public sealed class Game : PrototypeGame
 {

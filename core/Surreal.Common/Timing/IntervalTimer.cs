@@ -2,13 +2,13 @@ using System.Diagnostics;
 
 namespace Surreal.Timing;
 
-/// <summary>A stack-allocated timer.</summary>
-public struct Timer
+/// <summary>A stack-allocated interval timer.</summary>
+public struct IntervalTimer
 {
   private readonly TimeSpan interval;
   private          float    accumulator;
 
-  public Timer(TimeSpan interval)
+  public IntervalTimer(TimeSpan interval)
   {
     Debug.Assert(interval.Ticks > 0, "frequency.Ticks > 0");
 

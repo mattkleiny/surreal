@@ -10,7 +10,6 @@ using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
 using Surreal.IO;
 using Surreal.Timing;
-using Timer = Surreal.Timing.Timer;
 
 namespace Surreal;
 
@@ -19,7 +18,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
   private readonly DesktopConfiguration configuration;
 
   private readonly FpsCounter fpsCounter        = new();
-  private          Timer      frameDisplayTimer = new(1.Seconds());
+  private          IntervalTimer      frameDisplayTimer = new(1.Seconds());
 
   public DesktopPlatformHost(DesktopConfiguration configuration)
   {

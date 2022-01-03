@@ -1,6 +1,4 @@
-﻿using Surreal;
-
-namespace Prelude;
+﻿namespace Prelude;
 
 public sealed class Game : PrototypeGame
 {
