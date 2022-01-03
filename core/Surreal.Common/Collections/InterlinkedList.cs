@@ -2,17 +2,17 @@
 
 namespace Surreal.Collections;
 
-/// <summary>Represents an element in a <see cref="LinkedNodeList{TNode}"/>.</summary>
-public interface ILinkedElement<TSelf>
-  where TSelf : class, ILinkedElement<TSelf>
+/// <summary>Represents an element in a <see cref="InterlinkedList{TNode}"/>.</summary>
+public interface IInterlinkedElement<TSelf>
+  where TSelf : class, IInterlinkedElement<TSelf>
 {
   TSelf? Previous { get; set; }
   TSelf? Next     { get; set; }
 }
 
 /// <summary>A linked list where each node contains pointers to/from each other, in-structure.</summary>
-public sealed class LinkedNodeList<TNode> : IEnumerable<TNode>
-  where TNode : class, ILinkedElement<TNode>
+public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
+  where TNode : class, IInterlinkedElement<TNode>
 {
   public TNode? Head    { get; private set; }
   public bool   IsEmpty => Head == null;
@@ -70,13 +70,13 @@ public sealed class LinkedNodeList<TNode> : IEnumerable<TNode>
   IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator() => GetEnumerator();
   IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
 
-  /// <summary>Enumerates the <see cref="LinkedNodeList{TNode}"/> from head to tail.</summary>
+  /// <summary>Enumerates the <see cref="InterlinkedList{TNode}"/> from head to tail.</summary>
   public struct Enumerator : IEnumerator<TNode>
   {
-    private readonly LinkedNodeList<TNode> list;
-    private          TNode?                current;
+    private readonly InterlinkedList<TNode> list;
+    private          TNode?                 current;
 
-    public Enumerator(LinkedNodeList<TNode> list)
+    public Enumerator(InterlinkedList<TNode> list)
     {
       this.list = list;
       current   = default;

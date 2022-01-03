@@ -7,7 +7,7 @@ namespace Surreal.Dungeons;
 public class DungeonBlueprintTests
 {
   [Test]
-  public void it_should_plan_a_non_null_dungeon_plan()
+  public void it_should_plan_a_valid_dungeon_plan()
   {
     var blueprint = new DungeonBlueprint
     {

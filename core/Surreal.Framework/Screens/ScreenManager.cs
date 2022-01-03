@@ -18,7 +18,7 @@ public interface IScreenManager : IGamePlugin
 /// <summary>The default <see cref="IScreenManager"/> implementation.</summary>
 public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
 {
-  private readonly LinkedNodeList<IScreen> screens = new();
+  private readonly InterlinkedList<IScreen> screens = new();
 
   public ScreenManager(Game game)
     : base(game)

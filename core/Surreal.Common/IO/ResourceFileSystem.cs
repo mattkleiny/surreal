@@ -28,11 +28,9 @@ public sealed class ResourceFileSystem : FileSystem
     this.assemblies = assemblies;
   }
 
-  public override VirtualPath Resolve(string root, params string[] paths) =>
-    string.Join(root, ".", string.Join(".", paths));
+  public override VirtualPath Resolve(string root, params string[] paths) => string.Join(root, ".", string.Join(".", paths));
 
-  public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard) =>
-    throw new NotSupportedException();
+  public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard) => throw new NotSupportedException();
 
   public override ValueTask<Size> GetSizeAsync(string path)     => throw new NotSupportedException();
   public override ValueTask<bool> IsFileAsync(string path)      => throw new NotSupportedException();

@@ -4,7 +4,7 @@ using Surreal.Collections;
 namespace Surreal.Screens;
 
 /// <summary>A screen in the <see cref="IScreenManager"/>.</summary>
-public interface IScreen : ILinkedElement<IScreen>, IDisposable
+public interface IScreen : IInterlinkedElement<IScreen>, IDisposable
 {
   bool IsInitialized { get; }
   bool IsDisposed    { get; }
@@ -69,8 +69,8 @@ public abstract class Screen : IScreen
     IsDisposed = true;
   }
 
-  IScreen? ILinkedElement<IScreen>.Previous { get; set; }
-  IScreen? ILinkedElement<IScreen>.Next     { get; set; }
+  IScreen? IInterlinkedElement<IScreen>.Previous { get; set; }
+  IScreen? IInterlinkedElement<IScreen>.Next     { get; set; }
 }
 
 /// <summary>Base class for any <see cref="IScreen"/> implementation.</summary>

@@ -162,9 +162,7 @@ public static class EnumExtensions
   private static class CachedEnumLookup<TEnum>
     where TEnum : unmanaged, Enum
   {
-    public static ImmutableArray<string> Names { get; } = Enum.GetNames(typeof(TEnum)).ToImmutableArray();
-
-    public static ImmutableArray<TEnum> Values { get; } =
-      Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToImmutableArray();
+    public static ImmutableArray<string> Names  { get; } = Enum.GetNames(typeof(TEnum)).ToImmutableArray();
+    public static ImmutableArray<TEnum>  Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToImmutableArray();
   }
 }

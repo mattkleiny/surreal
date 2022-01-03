@@ -154,13 +154,9 @@ public static class SliceExtensions
   public static Slice<T>         ToSlice<T>(this List<T> list, int offset, int length) => new(list, offset, length);
   public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array)                    => ToReadOnlySlice(array, 0, array.Length);
 
-  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array, int offset, int length) =>
-    new(array, offset, length);
-
-  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list) => ToReadOnlySlice(list, 0, list.Count);
-
-  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list, int offset, int length) =>
-    new(list, offset, length);
+  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this T[] array, int offset, int length)             => new(array, offset, length);
+  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list)                         => ToReadOnlySlice(list, 0, list.Count);
+  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IReadOnlyList<T> list, int offset, int length) => new(list, offset, length);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Swap<T>(this Slice<T> slice, int fromIndex, int toIndex)

@@ -6,11 +6,11 @@ namespace Surreal.Objects;
 #pragma warning disable S2743
 #pragma warning disable CA1000
 
-/// <summary>A <see cref="Resource"/> with global tracking in a static <see cref="LinkedNodeList{TNode}"/>.</summary>
-public abstract class TrackedResource<TSelf> : Resource, ILinkedElement<TSelf>
+/// <summary>A <see cref="Resource"/> with global tracking in a static <see cref="InterlinkedList{TNode}"/>.</summary>
+public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSelf>
   where TSelf : TrackedResource<TSelf>
 {
-  private static readonly LinkedNodeList<TSelf> All = new();
+  private static readonly InterlinkedList<TSelf> All = new();
 
   protected TrackedResource()
   {
@@ -19,8 +19,8 @@ public abstract class TrackedResource<TSelf> : Resource, ILinkedElement<TSelf>
 
   public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
 
-  TSelf? ILinkedElement<TSelf>.Previous { get; set; }
-  TSelf? ILinkedElement<TSelf>.Next     { get; set; }
+  TSelf? IInterlinkedElement<TSelf>.Previous { get; set; }
+  TSelf? IInterlinkedElement<TSelf>.Next     { get; set; }
 
   public static Size GetSizeEstimate<T>()
     where T : IHasSizeEstimate
