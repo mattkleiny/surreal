@@ -32,6 +32,7 @@ public readonly struct FiberTaskAwaiter : INotifyCompletion
   }
 }
 
+/// <summary>Allows awaiting <see cref="FiberTask{T}"/> results.</summary>
 public readonly struct FiberTaskAwaiter<T> : INotifyCompletion
 {
   private readonly FiberTask<T> task;

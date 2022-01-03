@@ -34,7 +34,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     this.hotReloading = hotReloading;
   }
 
-  public override async Task<ShaderProgram> LoadAsync(VirtualPath path, IAssetContext context)
+  public override async Task<ShaderProgram> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 

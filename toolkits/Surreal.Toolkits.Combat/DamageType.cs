@@ -1,0 +1,7 @@
+﻿namespace Surreal;
+
+/// <summary>Indicates a type of damage to be applied from object to another.</summary>
+public readonly record struct DamageType(string Name)
+{
+  public static DamageType Standard { get; } = new(nameof(Standard));
+}

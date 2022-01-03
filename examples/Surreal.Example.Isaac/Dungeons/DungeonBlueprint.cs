@@ -1,6 +1,6 @@
 ﻿using Isaac.Dungeons.Nodes;
 using Surreal.Mathematics;
-using Surreal.Templates;
+using Surreal.Objects.Templates;
 
 namespace Isaac.Dungeons;
 
@@ -18,8 +18,7 @@ public sealed class DungeonBlueprint : BlueprintNode
     return plan;
   }
 
-  [Template(typeof(DungeonBlueprint))]
-  private sealed class Template : IImportableTemplate<DungeonBlueprint>
+  public sealed class Template : IImportableTemplate<DungeonBlueprint>
   {
     public int Width  { get; set; }
     public int Height { get; set; }

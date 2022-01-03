@@ -49,7 +49,7 @@ public abstract class FileSystem : IFileSystem
     throw new NotSupportedException("This file system does not support path watching.");
   }
 
-  public sealed class FileSystemRegistry : IFileSystemRegistry
+  private sealed class FileSystemRegistry : IFileSystemRegistry
   {
     private readonly MultiDictionary<string, IFileSystem> fileSystemByScheme = new(StringComparer.OrdinalIgnoreCase);
 

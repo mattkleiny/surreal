@@ -51,7 +51,7 @@ public sealed class Material : GraphicsResource
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Material"/>s.</summary>
 public sealed class MaterialLoader : AssetLoader<Material>
 {
-  public override async Task<Material> LoadAsync(VirtualPath path, IAssetContext context)
+  public override async Task<Material> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     var program = await context.LoadAsset<ShaderProgram>(path);
 

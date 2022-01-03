@@ -31,7 +31,7 @@ public sealed class AssetManager : IAssetManager, IDisposable
     }
   }
 
-  public Asset<T> LoadAsset<T>(VirtualPath path)
+  public Asset<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
     where T : class
   {
     if (!loadersByType.TryGetValue(typeof(T), out var loader))
@@ -47,13 +47,13 @@ public sealed class AssetManager : IAssetManager, IDisposable
 
       entry.OnLoad();
 
-      loader.LoadAsync(path, this).ContinueWith(task =>
+      loader.LoadAsync(path, this, cancellationToken).ContinueWith(task =>
       {
         if (assetsById.TryGetValue(assetId, out entry))
         {
           entry.OnReady(task.Result);
         }
-      });
+      }, cancellationToken);
     }
 
     return new Asset<T>(assetId, this);

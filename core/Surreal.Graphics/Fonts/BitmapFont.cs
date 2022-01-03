@@ -9,7 +9,7 @@ public sealed class BitmapFont
 
 public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
 {
-  public override Task<BitmapFont> LoadAsync(VirtualPath path, IAssetContext context)
+  public override Task<BitmapFont> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }

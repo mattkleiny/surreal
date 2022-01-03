@@ -81,7 +81,7 @@ public sealed class TrueTypeFont
 
 public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
 {
-  public override async Task<TrueTypeFont> LoadAsync(VirtualPath path, IAssetContext context)
+  public override async Task<TrueTypeFont> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 

@@ -105,6 +105,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.UI.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Minimal", "examples\Surreal.Example.Minimal\Surreal.Example.Minimal.csproj", "{FD76508C-8ECC-4F46-B504-2CBE88C67804}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Combat", "toolkits\Surreal.Toolkits.Combat\Surreal.Toolkits.Combat.csproj", "{624038E4-478F-42B5-97E7-11BE09F4D72F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Combat.Tests", "toolkits\Surreal.Toolkits.Combat.Tests\Surreal.Toolkits.Combat.Tests.csproj", "{30037EC5-82FA-4E2B-98DD-078313D25093}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -247,6 +251,14 @@ Global
 		{FD76508C-8ECC-4F46-B504-2CBE88C67804}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD76508C-8ECC-4F46-B504-2CBE88C67804}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD76508C-8ECC-4F46-B504-2CBE88C67804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{624038E4-478F-42B5-97E7-11BE09F4D72F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{624038E4-478F-42B5-97E7-11BE09F4D72F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{624038E4-478F-42B5-97E7-11BE09F4D72F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{624038E4-478F-42B5-97E7-11BE09F4D72F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30037EC5-82FA-4E2B-98DD-078313D25093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30037EC5-82FA-4E2B-98DD-078313D25093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30037EC5-82FA-4E2B-98DD-078313D25093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30037EC5-82FA-4E2B-98DD-078313D25093}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -278,5 +290,7 @@ Global
 		{BB0F055E-7F7C-482B-8AF6-0B6E05D57FFC} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
 		{0B72E412-C412-4D47-975E-25884FF8222F} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{FD76508C-8ECC-4F46-B504-2CBE88C67804} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{624038E4-478F-42B5-97E7-11BE09F4D72F} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
+		{30037EC5-82FA-4E2B-98DD-078313D25093} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
 	EndGlobalSection
 EndGlobal

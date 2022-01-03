@@ -12,12 +12,14 @@ public readonly record struct TextureRegion(Texture Texture)
 
   public int Width  => Size.X;
   public int Height => Size.Y;
+
+  public static implicit operator TextureRegion(Texture texture) => texture.ToRegion();
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="TextureRegion"/>s.</summary>
 public sealed class TextureRegionLoader : AssetLoader<TextureRegion>
 {
-  public override async Task<TextureRegion> LoadAsync(VirtualPath path, IAssetContext context)
+  public override async Task<TextureRegion> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     var texture = await context.LoadAsset<Texture>(path);
 

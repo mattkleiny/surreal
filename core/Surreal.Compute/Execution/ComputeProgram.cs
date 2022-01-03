@@ -19,7 +19,7 @@ public sealed class ComputeProgramLoader : AssetLoader<ComputeProgram>
     this.device = device;
   }
 
-  public override async Task<ComputeProgram> LoadAsync(VirtualPath path, IAssetContext context)
+  public override async Task<ComputeProgram> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     var raw = await path.ReadAllBytesAsync();
 

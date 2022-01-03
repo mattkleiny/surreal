@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace Surreal;
 
-/// <summary>Represents an integer identifier; efficiently packed for storage.</summary>
+/// <summary>Represents an integer identifier; efficiently allocated and unique across the application domain.</summary>
 public readonly record struct Identifier(ulong Id)
 {
   private static ulong nextId;

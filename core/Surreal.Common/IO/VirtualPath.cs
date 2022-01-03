@@ -21,7 +21,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
     else
     {
       scheme = "local";
-      target = default;
+      target = uri;
     }
 
     return new VirtualPath(scheme, target);

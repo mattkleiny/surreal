@@ -40,7 +40,7 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
     this.device = device;
   }
 
-  public override async Task<AudioClip> LoadAsync(VirtualPath path, IAssetContext context)
+  public override async Task<AudioClip> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     var buffer = await context.LoadAsset<AudioBuffer>(path);
 
