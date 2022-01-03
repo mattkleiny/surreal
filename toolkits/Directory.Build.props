@@ -1,4 +1,4 @@
-﻿<!-- common configuration for module projects -->
+﻿<!-- common configuration for toolkit projects -->
 <Project>
   <Import Project="../Directory.Build.props" />
 

@@ -15,6 +15,7 @@ csharp_style_var_elsewhere = true:silent
 dotnet_diagnostic.CA1716.severity = None # Don't use reserved keywords for types
 dotnet_diagnostic.CA1805.severity = None # Don't initialize to default value
 dotnet_diagnostic.CA1051.severity = None # Do not declare public instance fields
+dotnet_diagnostic.CA1707.severity = None # Do not use underscores in method names
 
 ## Sonar Analyzers
 dotnet_diagnostic.S4144.severity = None # Update this method so that its implementation is not identical to 'blah'
@@ -25,4 +26,7 @@ dotnet_diagnostic.S1144.severity = None # Remove the unused private set accessor
 dotnet_diagnostic.S3903.severity = None # Move type into named namespace
 dotnet_diagnostic.S3903.severity = None # Move type into named namespace
 dotnet_diagnostic.S3973.severity = None # Multi-line loops
+
+# IDE Analyzers
+dotnet_diagnostic.IDE1006.severity = None # Do not use underscores in method names
 

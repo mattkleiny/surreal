@@ -3,6 +3,6 @@
     <Description>A framework for actors in game logic.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Surreal.Framework\Surreal.Framework.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" PrivateAssets="all" />
   </ItemGroup>
 </Project>

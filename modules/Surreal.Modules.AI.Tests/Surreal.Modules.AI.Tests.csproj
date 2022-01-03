@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\modules\Surreal.Modules.AI\Surreal.Modules.AI.csproj" />
+  </ItemGroup>
+</Project>

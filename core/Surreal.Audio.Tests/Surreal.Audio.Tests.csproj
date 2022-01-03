@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
+  </ItemGroup>
+</Project>

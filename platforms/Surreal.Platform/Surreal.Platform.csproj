@@ -2,7 +2,4 @@
   <PropertyGroup>
     <Description>Platform abstractions for Surreal.</Description>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Surreal.Common\Surreal.Common.csproj" />
-  </ItemGroup>
 </Project>

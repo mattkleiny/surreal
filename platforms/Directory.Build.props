@@ -1,13 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Template components and systems for prototyping based on Surreal.</Description>
-    <RootNamespace>Surreal</RootNamespace>
-  </PropertyGroup>
+﻿<!-- common configuration for platform projects -->
+<Project>
+  <Import Project="../Directory.Build.props" />
+
   <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!$(ProjectName.EndsWith('Platform'))">
+    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Compute\Surreal.Compute.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Input\Surreal.Input.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" />
   </ItemGroup>
 </Project>
