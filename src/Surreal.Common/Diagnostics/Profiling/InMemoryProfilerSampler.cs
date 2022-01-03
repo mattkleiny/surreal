@@ -26,12 +26,12 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     Samplers.GetSampler(category, task).Record(duration);
   }
 
-  public async Task ExportToCSVAsync(VirtualPath path)
+  public async Task ExportToCsvAsync(VirtualPath path)
   {
     await using var stream = await path.OpenOutputStreamAsync();
     await using var writer = new StreamWriter(stream, Encoding.UTF8);
 
-    Log.Trace($"Exporting profiler report to {path.ToString()}");
+    Log.Trace($"Exporting profiler report to {path}");
 
     await writer.WriteLineAsync("Category,Task,Maximum(ms),Minimum(ms),Average(ms)");
 
@@ -41,8 +41,7 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
       var minimum = sampler.Minimum.TotalMilliseconds;
       var average = sampler.Average.TotalMilliseconds;
 
-      await writer.WriteLineAsync(
-        $"{sampler.Category},{sampler.Task},{maximum.ToString("F")},{minimum.ToString("F")},{average.ToString("F")}");
+      await writer.WriteLineAsync($"{sampler.Category},{sampler.Task},{maximum:F},{minimum:F},{average:F}");
     }
   }
 

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Surreal.Text;
 
 namespace Surreal.Diagnostics.Logging;
 
@@ -40,7 +41,12 @@ public sealed class DebugLogFactory : ILogFactory
 
     public void WriteMessage(LogLevel level, string message)
     {
-      Debug.WriteLine(formatter(category, Environment.CurrentManagedThreadId, level, message));
+      Debug.WriteLine(formatter(category, level, message));
+    }
+
+    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    {
+      Debug.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
     }
   }
 }

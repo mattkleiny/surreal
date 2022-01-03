@@ -33,5 +33,10 @@ public static class LogFactory
     {
       log.Value.WriteMessage(level, message);
     }
+
+    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    {
+      log.Value.WriteMessage(level, ref handler);
+    }
   }
 }

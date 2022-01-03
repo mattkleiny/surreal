@@ -2,17 +2,21 @@
 
 namespace Surreal.Diagnostics.Logging;
 
-public delegate string LogFormatter(string category, int threadId, LogLevel level, string message);
+public delegate string LogFormatter(string category, LogLevel level, string message);
 
 public static class LogFormatters
 {
-  public static LogFormatter Default(bool includeTime = true, bool includeThreadId = true, bool includeCategory = true,
-    bool includeLevel = true)
+  public static LogFormatter Default(
+    bool includeTime = true,
+    bool includeThreadId = true,
+    bool includeCategory = true,
+    bool includeLevel = true
+  )
   {
     // re-use the string builder over each invocation; saves some bytes.
     var builder = new StringBuilder();
 
-    return (category, threadId, level, message) =>
+    return (category, level, message) =>
     {
       lock (builder)
       {
@@ -20,12 +24,12 @@ public static class LogFormatters
 
         if (includeTime)
         {
-          builder.AppendFormat("{0} - ", DateTime.Now.ToString("h:mm:ss tt"));
+          builder.Append($"{DateTime.Now.ToString("h:mm:ss tt")} - ");
         }
 
         if (includeThreadId)
         {
-          builder.Append("<thread ").Append(threadId).Append("> ");
+          builder.Append("<thread ").Append(Environment.CurrentManagedThreadId).Append("> ");
         }
 
         if (includeCategory)
@@ -43,8 +47,7 @@ public static class LogFormatters
             LogLevel.Error => " [ERROR]: ",
             LogLevel.Fatal => " [FATAL]: ",
 
-            _ => throw new ArgumentOutOfRangeException(nameof(level), level,
-              $"An unrecognized log level was supplied: {level}"),
+            _ => throw new ArgumentOutOfRangeException(nameof(level), level, $"An unrecognized log level was supplied: {level}"),
           });
         }
 

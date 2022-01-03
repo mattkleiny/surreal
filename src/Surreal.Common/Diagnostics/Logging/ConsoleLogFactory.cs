@@ -1,4 +1,6 @@
-﻿namespace Surreal.Diagnostics.Logging;
+﻿using Surreal.Text;
+
+namespace Surreal.Diagnostics.Logging;
 
 public sealed class ConsoleLogFactory : ILogFactory
 {
@@ -41,7 +43,12 @@ public sealed class ConsoleLogFactory : ILogFactory
 
     public void WriteMessage(LogLevel level, string message)
     {
-      Console.WriteLine(formatter(category, Environment.CurrentManagedThreadId, level, message));
+      Console.WriteLine(formatter(category, level, message));
+    }
+
+    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    {
+      Console.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
     }
   }
 }

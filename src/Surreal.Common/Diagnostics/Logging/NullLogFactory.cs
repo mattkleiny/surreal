@@ -1,4 +1,6 @@
-﻿namespace Surreal.Diagnostics.Logging;
+﻿using Surreal.Text;
+
+namespace Surreal.Diagnostics.Logging;
 
 public sealed class NullLogFactory : ILogFactory
 {
@@ -11,6 +13,11 @@ public sealed class NullLogFactory : ILogFactory
     public bool IsLevelEnabled(LogLevel level) => false;
 
     public void WriteMessage(LogLevel level, string message)
+    {
+      // no-op
+    }
+
+    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
     {
       // no-op
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Text;
 
 namespace Surreal.Collections.Pooling;
 
@@ -24,9 +25,13 @@ public sealed class Pool<T>
       result = factory();
     }
 
-    if (result is IPoolAware aware)
+    switch (result)
     {
-      aware.OnRent();
+      case IPoolAware aware:
+      {
+        aware.OnRent();
+        break;
+      }
     }
 
     return result;
@@ -41,6 +46,10 @@ public sealed class Pool<T>
     else if (value is IList list)
     {
       list.Clear();
+    }
+    else if (value is StringBuilder stringBuilder)
+    {
+      stringBuilder.Clear();
     }
 
     instances.TryEnqueue(value);

@@ -1,4 +1,6 @@
-﻿namespace Surreal.Diagnostics.Logging;
+﻿using Surreal.Text;
+
+namespace Surreal.Diagnostics.Logging;
 
 public sealed class CompositeLogFactory : ILogFactory
 {
@@ -40,10 +42,21 @@ public sealed class CompositeLogFactory : ILogFactory
       for (var i = 0; i < logs.Length; i++)
       {
         var log = logs[i];
-
         if (log.IsLevelEnabled(level))
         {
           log.WriteMessage(level, message);
+        }
+      }
+    }
+
+    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    {
+      for (var i = 0; i < logs.Length; i++)
+      {
+        var log = logs[i];
+        if (log.IsLevelEnabled(level))
+        {
+          log.WriteMessage(level, ref handler);
         }
       }
     }
