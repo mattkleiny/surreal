@@ -46,9 +46,6 @@ public sealed class GeometryBatch : IDisposable
   public void DrawLine(Vector2 from, Vector2 to, Color color)
     => DrawPrimitive(stackalloc[] { from, to }, color, PrimitiveType.Lines);
 
-  public void DrawLine(Line segment, Color color)
-    => DrawPrimitive(stackalloc[] { segment.From, segment.To }, color, PrimitiveType.Lines);
-
   public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
     => DrawPrimitive(points, color, PrimitiveType.Lines);
 

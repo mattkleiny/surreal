@@ -3,8 +3,6 @@
 /// <summary>Enumerates entities that match a particular <see cref="Aspect"/>.</summary>
 public struct AspectEnumerator : IEnumerator<ActorId>, IEnumerable<ActorId>
 {
-  // TODO: implement me
-
   public ActorId     Current => throw new NotImplementedException();
   object IEnumerator.Current => Current;
 

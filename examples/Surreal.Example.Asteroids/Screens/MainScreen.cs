@@ -10,8 +10,8 @@ namespace Asteroids.Screens;
 
 public sealed class MainScreen : Screen<Game>
 {
-  private Texture   shipSprite;
-  private Texture[] asteroidSprites;
+  private Texture?   shipSprite;
+  private Texture[]? asteroidSprites;
 
   public MainScreen(Game game)
     : base(game)
@@ -50,11 +50,11 @@ public sealed class MainScreen : Screen<Game>
   {
     var random = seed.ToRandom();
 
-    Scene.Spawn(new Ship(shipSprite));
+    Scene.Spawn(new Ship(shipSprite!));
 
     for (var i = 0; i < random.NextRange(AsteroidRange); i++)
     {
-      Scene.Spawn(new Asteroid(asteroidSprites.SelectRandomly(random)!));
+      Scene.Spawn(new Asteroid(asteroidSprites!.SelectRandomly(random)!));
     }
   }
 

@@ -2,4 +2,7 @@
   <PropertyGroup>
     <Description>Common tools, collections, etc for Surreal.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Pipelines" Version="6.0.0" PrivateAssets="compile" />
+  </ItemGroup>
 </Project>
