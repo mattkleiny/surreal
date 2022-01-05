@@ -59,18 +59,10 @@ internal sealed class OpenTkShaderCompiler : IShaderCompiler
 
   private static void CompileIncludes(IShaderCodeBuilderScope builder, IEnumerable<Statement.Include> includes)
   {
-    var didInclude = false;
-
     foreach (var include in includes)
     {
+      // TODO: actually insert the included module
       builder.AppendLine($"#include {include.Module}");
-
-      didInclude = true;
-    }
-
-    if (didInclude)
-    {
-      builder.AppendBlankLine();
     }
   }
 
@@ -79,7 +71,7 @@ internal sealed class OpenTkShaderCompiler : IShaderCompiler
     switch (instruction)
     {
       case Statement.Include:
-        // no-op (included in preamble)q
+        // no-op (included in preamble)
         break;
 
       case Statement.BlankLine:

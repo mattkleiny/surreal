@@ -5,6 +5,19 @@ namespace Surreal.Graphics.Shaders;
 public class SimpleShaderParserTests
 {
   [Test]
+  public async Task it_should_parse_tokens()
+  {
+    IShaderParser language = new SimpleShaderParser();
+
+    var metadata = await language.ParseShaderAsync(
+      name: "test.shader",
+      sourceCode: @"(){},.-+*/;"
+    );
+
+    Assert.IsNotNull(metadata);
+  }
+
+  [Test, Ignore("Not yet implemented")]
   public async Task it_should_parse_a_simple_program()
   {
     IShaderParser language = new SimpleShaderParser();
