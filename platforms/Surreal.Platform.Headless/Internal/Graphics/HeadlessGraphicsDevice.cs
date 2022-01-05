@@ -1,6 +1,7 @@
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Internal.Graphics.Resources;
 using Surreal.Mathematics;
@@ -9,7 +10,8 @@ namespace Surreal.Internal.Graphics;
 
 internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
 {
-  public IPipelineState Pipeline { get; } = new HeadlessPipelineState();
+  public IPipelineState  Pipeline       { get; } = new HeadlessPipelineState();
+  public IShaderCompiler ShaderCompiler { get; } = new HeadlessShaderCompiler();
 
   public void BeginFrame()
   {
@@ -79,5 +81,10 @@ internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
   public RenderTexture CreateFrameBuffer(in RenderTextureDescriptor descriptor)
   {
     return new HeadlessRenderTexture();
+  }
+
+  public ShaderProgram CreateShaderProgram(ICompiledShader compiled)
+  {
+    throw new NotImplementedException();
   }
 }

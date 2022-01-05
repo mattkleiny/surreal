@@ -1,4 +1,5 @@
 ﻿using Surreal.Assets;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Surreal.Mathematics;

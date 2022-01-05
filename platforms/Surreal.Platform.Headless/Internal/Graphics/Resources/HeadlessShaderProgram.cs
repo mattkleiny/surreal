@@ -1,5 +1,6 @@
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
 
 namespace Surreal.Internal.Graphics.Resources;

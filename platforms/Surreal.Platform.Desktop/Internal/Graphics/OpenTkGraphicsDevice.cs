@@ -3,6 +3,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Internal.Graphics.Resources;
 using Surreal.Mathematics;
@@ -20,7 +21,8 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
     this.window = window;
   }
 
-  public IPipelineState Pipeline { get; } = new OpenTkPipelineState();
+  public IPipelineState  Pipeline       { get; } = new OpenTkPipelineState();
+  public IShaderCompiler ShaderCompiler => throw new NotImplementedException();
 
   public void BeginFrame()
   {
@@ -112,6 +114,11 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
     texture.Upload(image);
 
     return new OpenTkRenderTexture(texture, image);
+  }
+
+  public ShaderProgram CreateShaderProgram(ICompiledShader compiled)
+  {
+    throw new NotImplementedException();
   }
 
   private static void DrawMesh(int count, PrimitiveType type)

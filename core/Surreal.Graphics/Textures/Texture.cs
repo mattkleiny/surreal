@@ -80,16 +80,23 @@ public sealed class TextureLoader : AssetLoader<Texture>
   private readonly IGraphicsDevice   device;
   private readonly TextureFilterMode defaultFilterMode;
   private readonly TextureWrapMode   defaultWrapMode;
+  private readonly bool              hotReloading;
 
-  public TextureLoader(IGraphicsDevice device, TextureFilterMode defaultFilterMode, TextureWrapMode defaultWrapMode)
+  public TextureLoader(IGraphicsDevice device, TextureFilterMode defaultFilterMode, TextureWrapMode defaultWrapMode, bool hotReloading)
   {
     this.device            = device;
     this.defaultFilterMode = defaultFilterMode;
     this.defaultWrapMode   = defaultWrapMode;
+    this.hotReloading      = hotReloading;
   }
 
   public override async Task<Texture> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
+    if (hotReloading)
+    {
+      // TODO: implement hot reloading with a file watcher
+    }
+
     var image   = await context.LoadAsset<Image>(path, cancellationToken);
     var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 

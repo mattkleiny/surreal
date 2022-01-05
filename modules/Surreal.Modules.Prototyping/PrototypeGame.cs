@@ -8,6 +8,8 @@ using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Shaders;
+using Surreal.Graphics.Shaders.Simple;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
@@ -77,8 +79,8 @@ public abstract class PrototypeGame : Game
     assets.AddLoader(new ComputeProgramLoader(ComputeDevice));
     assets.AddLoader(new ImageLoader());
     assets.AddLoader(new MaterialLoader());
-    assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, hotReloading: Debugger.IsAttached));
-    assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
+    assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, new SimpleShadingLanguage(), hotReloading: Debugger.IsAttached));
+    assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
     assets.AddLoader(new TextureRegionLoader());
     assets.AddLoader(new TrueTypeFontLoader());
   }

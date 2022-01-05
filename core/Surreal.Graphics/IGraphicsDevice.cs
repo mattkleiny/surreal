@@ -1,5 +1,6 @@
 ﻿using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
@@ -11,7 +12,8 @@ public readonly record struct Viewport(int X, int Y, int Width, int Height);
 /// <summary>Represents the underlying graphics device.</summary>
 public interface IGraphicsDevice
 {
-  IPipelineState Pipeline { get; }
+  IPipelineState  Pipeline       { get; }
+  IShaderCompiler ShaderCompiler { get; }
 
   Viewport Viewport
   {
@@ -51,6 +53,7 @@ public interface IGraphicsDevice
   );
 
   RenderTexture CreateFrameBuffer(in RenderTextureDescriptor descriptor);
+  ShaderProgram CreateShaderProgram(ICompiledShader compiled);
 }
 
 /// <summary>Represents the underlying state of the graphics fixed-function pipeline.</summary>

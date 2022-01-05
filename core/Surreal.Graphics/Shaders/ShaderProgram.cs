@@ -3,7 +3,7 @@ using Surreal.Graphics.Meshes;
 using Surreal.IO;
 using Surreal.Mathematics;
 
-namespace Surreal.Graphics.Materials;
+namespace Surreal.Graphics.Shaders;
 
 /// <summary>A low-level shader program on the GPU.</summary>
 public abstract class ShaderProgram : GraphicsResource
@@ -26,18 +26,35 @@ public abstract class ShaderProgram : GraphicsResource
 public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 {
   private readonly IGraphicsDevice device;
+  private readonly IShaderParser   parser;
+  private readonly Encoding        encoding;
   private readonly bool            hotReloading;
 
-  public ShaderProgramLoader(IGraphicsDevice device, bool hotReloading)
+  public ShaderProgramLoader(IGraphicsDevice device, IShaderParser parser, bool hotReloading)
+    : this(device, parser, hotReloading, Encoding.UTF8)
+  {
+  }
+
+  public ShaderProgramLoader(IGraphicsDevice device, IShaderParser parser, bool hotReloading, Encoding encoding)
   {
     this.device       = device;
+    this.parser       = parser;
+    this.encoding     = encoding;
     this.hotReloading = hotReloading;
   }
 
   public override async Task<ShaderProgram> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
+    if (hotReloading)
+    {
+      // TODO: implement hot reloading with a file watcher
+    }
+
     await using var stream = await path.OpenInputStreamAsync();
 
-    throw new NotImplementedException();
+    var parsed   = await parser.ParseShaderAsync(stream, encoding, cancellationToken);
+    var compiled = await device.ShaderCompiler.CompileAsync(parsed);
+
+    return device.CreateShaderProgram(compiled);
   }
 }
