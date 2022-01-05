@@ -10,6 +10,7 @@ public abstract class ComputeProgram : ComputeResource
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ComputeProgram"/>s.</summary>
+[RegisterService(typeof(IAssetLoader))]
 public sealed class ComputeProgramLoader : AssetLoader<ComputeProgram>
 {
   private readonly IComputeDevice device;

@@ -1,9 +1,68 @@
-﻿using System.ComponentModel.Design;
+﻿using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Surreal;
 
+/// <summary>Abstractions over service lifetime scopes.</summary>
+public enum ServiceLifetime
+{
+  Transient,
+  Singleton,
+}
+
+/// <summary>A module for service registrations.</summary>
+public interface IServiceModule
+{
+  void RegisterServices(IServiceRegistry registry);
+}
+
+/// <summary>A registry for services.</summary>
+public interface IServiceRegistry
+{
+  void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
+  void RegisterService(Type serviceType, object instance);
+
+  void AddTransient<TService, TImplementation>()
+    where TImplementation : TService
+  {
+    RegisterService(ServiceLifetime.Transient, typeof(TService), typeof(TImplementation));
+  }
+
+  void AddSingleton<TService, TImplementation>()
+    where TImplementation : TService
+  {
+    RegisterService(ServiceLifetime.Singleton, typeof(TService), typeof(TImplementation));
+  }
+
+  void AddSingleton<TService>(TService implementation)
+    where TService : class
+  {
+    RegisterService(typeof(TService), implementation);
+  }
+
+  /// <summary>Adds the given <see cref="IServiceModule"/> to the registry.</summary>
+  void AddModule(IServiceModule module)
+  {
+    module.RegisterServices(this);
+  }
+
+  /// <summary>Registers all of the <see cref="RegisterServiceAttribute"/>-annotated types in the given assembly.</summary>
+  void AddAssemblyServices(Assembly assembly)
+  {
+    var candidates =
+      from type in assembly.GetTypes()
+      from attribute in type.GetCustomAttributes<RegisterServiceAttribute>(inherit: true)
+      select new { Attribute = attribute, Type = type };
+
+    foreach (var candidate in candidates)
+    {
+      candidate.Attribute.RegisterService(candidate.Type, this);
+    }
+  }
+}
+
 /// <summary>Static extension methods for <see cref="IServiceProvider"/> and related.</summary>
-public static class Services
+public static class ServicesExtensions
 {
   public static T GetRequiredService<T>(this IServiceProvider provider)
   {
@@ -28,11 +87,24 @@ public static class Services
     result = default!;
     return false;
   }
+}
 
-  public static void AddService<T>(this IServiceContainer services, T service, bool promote = false)
-    where T : class
+/// <summary>Exports a type as the implementation of some service, for use in auto-discovery.</summary>
+[MeansImplicitUse]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public sealed class RegisterServiceAttribute : Attribute
+{
+  public Type?           ServiceType { get; }
+  public ServiceLifetime Lifetime    { get; set; } = ServiceLifetime.Singleton;
+
+  public RegisterServiceAttribute(Type? serviceType = null)
   {
-    services.AddService(typeof(T), service, promote);
+    ServiceType = serviceType;
+  }
+
+  public void RegisterService(Type type, IServiceRegistry registry)
+  {
+    registry.RegisterService(Lifetime, ServiceType ?? type, type);
   }
 }
 

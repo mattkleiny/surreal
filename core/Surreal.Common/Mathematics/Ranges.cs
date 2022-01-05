@@ -1,5 +1,7 @@
 ﻿namespace Surreal.Mathematics;
 
+#pragma warning disable S3358
+
 /// <summary>An integral range.</summary>
 public readonly record struct IntRange(int Min, int Max)
 {

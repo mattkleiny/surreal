@@ -73,6 +73,6 @@ public sealed class Chunk
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private ref ushort Sample(int x, int y, int z)
   {
-    return ref voxels.Span[x + y * Size.Width + z * Size.Width * Size.Height];
+    return ref voxels.Span[x + y * Width + z * Width * Height];
   }
 }

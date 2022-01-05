@@ -1,11 +1,11 @@
 ﻿using System.Runtime;
-using Microsoft.Extensions.DependencyInjection;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Fibers;
 using Surreal.IO;
 using Surreal.Timing;
+using Surreal.Utilities;
 using Stopwatch = Surreal.Timing.Stopwatch;
 
 namespace Surreal;
@@ -146,12 +146,12 @@ public abstract class Game : IDisposable
   {
     Host.Resized += OnResized;
 
-    var container = new ServiceCollection();
+    var registry = new ServiceCollectionRegistry();
 
     RegisterFileSystems(FileSystem.Registry);
-    RegisterServices(container);
+    RegisterServices(registry);
 
-    Services = container.BuildServiceProvider();
+    Services = registry.BuildServiceProvider();
   }
 
   protected virtual async Task LoadContentAsync(IAssetContext assets)
@@ -162,7 +162,7 @@ public abstract class Game : IDisposable
     }
   }
 
-  protected virtual void RegisterServices(IServiceCollection services)
+  protected virtual void RegisterServices(IServiceRegistry services)
   {
     services.AddSingleton(Assets);
     services.AddSingleton(Host);
@@ -239,147 +239,13 @@ public abstract class Game : IDisposable
     Host.Dispose();
   }
 
-  public interface ILoopStrategy
+  /// <summary>Configuration for the <see cref="Game"/>.</summary>
+  public sealed class Configuration
   {
-    GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime);
+    public IPlatform? Platform { get; init; }
   }
 
-  public sealed class ChillLoopStrategy : ILoopStrategy
-  {
-    public ChillLoopStrategy(ILoopStrategy strategy)
-    {
-      Strategy = strategy;
-    }
-
-    public ILoopStrategy Strategy         { get; }
-    public TimeSpan      MaxSleepInterval { get; set; } = 16.Milliseconds();
-
-    public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
-    {
-      var time = Strategy.Tick(target, deltaTime, totalTime);
-
-      if (!time.IsRunningSlowly)
-      {
-        var sleepTime = MaxSleepInterval - time.DeltaTime;
-        if (sleepTime.TotalMilliseconds > 0f)
-        {
-          using (Profiler.Track("Chilling"))
-          {
-            Thread.Sleep(sleepTime);
-          }
-        }
-      }
-
-      return time;
-    }
-  }
-
-  public sealed class AveragingLoopStrategy : ILoopStrategy
-  {
-    private readonly RingBuffer<TimeSpan> samples;
-
-    public AveragingLoopStrategy(int samples = 10)
-    {
-      Debug.Assert(samples > 0, "samples > 0");
-
-      this.samples = new RingBuffer<TimeSpan>(samples);
-    }
-
-    public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
-
-    public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
-    {
-      samples.Add(deltaTime);
-
-      var averagedDeltaTime = samples.FastAverage();
-
-      var time = new GameTime(
-        DeltaTime: averagedDeltaTime,
-        TotalTime: totalTime,
-        IsRunningSlowly: averagedDeltaTime > TargetDeltaTime
-      );
-
-      target.Begin(time);
-      target.Input(time);
-      target.Update(time);
-      target.Draw(time);
-      target.End(time);
-
-      return time;
-    }
-  }
-
-  public sealed class VariableStepLoopStrategy : ILoopStrategy
-  {
-    public TimeSpan TargetDeltaTime { get; set; } = 16.Milliseconds();
-
-    public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
-    {
-      var time = new GameTime(
-        DeltaTime: deltaTime,
-        TotalTime: totalTime,
-        IsRunningSlowly: deltaTime > TargetDeltaTime
-      );
-
-      target.Begin(time);
-      target.Input(time);
-      target.Update(time);
-      target.Draw(time);
-      target.End(time);
-
-      return time;
-    }
-  }
-
-  public sealed class FixedStepLoopStrategy : ILoopStrategy
-  {
-    private double accumulator;
-
-    public TimeSpan Step            { get; set; } = 16.Milliseconds();
-    public TimeSpan TargetDeltaTime { get; set; } = 16.Milliseconds();
-
-    public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
-    {
-      var time = new GameTime(
-        DeltaTime: deltaTime,
-        TotalTime: totalTime,
-        IsRunningSlowly: deltaTime > TargetDeltaTime
-      );
-
-      accumulator += deltaTime.TimeSpan.TotalSeconds;
-
-      target.Begin(time);
-      target.Input(time);
-
-      while (accumulator >= Step.TotalSeconds)
-      {
-        var stepTime = new GameTime(
-          DeltaTime: Step,
-          TotalTime: time.TotalTime,
-          IsRunningSlowly: time.IsRunningSlowly
-        );
-
-        target.Update(stepTime);
-
-        accumulator -= Step.TotalSeconds;
-      }
-
-      target.Draw(time);
-      target.End(time);
-
-      return time;
-    }
-  }
-
-  public interface ILoopTarget
-  {
-    void Begin(GameTime time);
-    void Input(GameTime time);
-    void Update(GameTime time);
-    void Draw(GameTime time);
-    void End(GameTime time);
-  }
-
+  /// <summary>A <see cref="ILoopTarget"/> that profiles it's target operations.</summary>
   private sealed class ProfiledLoopTarget : ILoopTarget
   {
     private readonly Game game;
@@ -424,9 +290,5 @@ public abstract class Game : IDisposable
       game.End(time);
     }
   }
-
-  public sealed class Configuration
-  {
-    public IPlatform? Platform { get; init; }
-  }
 }
+

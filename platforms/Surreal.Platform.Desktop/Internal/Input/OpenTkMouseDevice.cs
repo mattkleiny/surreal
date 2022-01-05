@@ -29,14 +29,10 @@ internal sealed class OpenTkMouseDevice : BufferedInputDevice<MouseState>, IMous
     set => window.IsCursorVisible = value;
   }
 
-  public bool IsButtonDown(MouseButton button) => CurrentState.IsButtonDown(Convert(button));
-  public bool IsButtonUp(MouseButton button)   => !CurrentState.IsButtonDown(Convert(button));
-
-  public bool IsButtonPressed(MouseButton button) =>
-    CurrentState.IsButtonDown(Convert(button)) && !PreviousState.IsButtonDown(Convert(button));
-
-  public bool IsButtonReleased(MouseButton button) =>
-    PreviousState.IsButtonDown(Convert(button)) && !CurrentState.IsButtonDown(Convert(button));
+  public bool IsButtonDown(MouseButton button)     => CurrentState.IsButtonDown(Convert(button));
+  public bool IsButtonUp(MouseButton button)       => !CurrentState.IsButtonDown(Convert(button));
+  public bool IsButtonPressed(MouseButton button)  => CurrentState.IsButtonDown(Convert(button)) && !PreviousState.IsButtonDown(Convert(button));
+  public bool IsButtonReleased(MouseButton button) => PreviousState.IsButtonDown(Convert(button)) && !CurrentState.IsButtonDown(Convert(button));
 
   public override void Update()
   {

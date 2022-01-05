@@ -19,18 +19,18 @@ public sealed class Image : ITextureData, IDisposable
   public static async Task<Image> LoadAsync(VirtualPath path)
   {
     await using var stream = await path.OpenInputStreamAsync();
-    var             image  = await SixLabors.ImageSharp.Image.LoadAsync(stream);
+    var             temp   = await SixLabors.ImageSharp.Image.LoadAsync(stream);
 
     // we're already in the right format
-    if (image is Image<Rgba32> rgba)
+    if (temp is Image<Rgba32> rgba)
     {
       return new Image(rgba);
     }
 
     // we need to convert
-    using (image)
+    using (temp)
     {
-      return new Image(image.CloneAs<Rgba32>());
+      return new Image(temp.CloneAs<Rgba32>());
     }
   }
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Surreal.Assets;
+﻿using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Compute;
@@ -54,7 +53,7 @@ public abstract class PrototypeGame : Game
     OnResized(Host.Width, Host.Height); // initial resize
   }
 
-  protected override void RegisterServices(IServiceCollection services)
+  protected override void RegisterServices(IServiceRegistry services)
   {
     base.RegisterServices(services);
 

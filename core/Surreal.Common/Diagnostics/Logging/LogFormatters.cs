@@ -1,4 +1,6 @@
-﻿namespace Surreal.Diagnostics.Logging;
+﻿using System.Globalization;
+
+namespace Surreal.Diagnostics.Logging;
 
 /// <summary>Formats log messages with the given details.</summary>
 public delegate string LogFormatter(string category, LogLevel level, string message);
@@ -19,7 +21,7 @@ public static class LogFormatters
 
       if (includeTime)
       {
-        builder.Append($"{DateTime.Now:h:mm:ss tt} - ");
+        builder.Append(CultureInfo.InvariantCulture, $"{DateTime.Now:h:mm:ss tt} - ");
       }
 
       if (includeThreadId)

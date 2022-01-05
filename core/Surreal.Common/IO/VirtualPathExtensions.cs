@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Xml;
 using System.Xml.Serialization;
 using Surreal.Memory;
 
@@ -124,9 +125,17 @@ public static class VirtualPathExtensions
   public static async Task<T> DeserializeXmlAsync<T>(this VirtualPath path)
     where T : class
   {
-    await using var stream     = await path.OpenInputStreamAsync();
-    var             serializer = new XmlSerializer(typeof(T));
+    await using var stream = await path.OpenInputStreamAsync();
 
-    return (T) serializer.Deserialize(stream)!;
+    // fixes a vulnerability in DTD processing
+    using var reader = new XmlTextReader(stream)
+    {
+      DtdProcessing = DtdProcessing.Ignore,
+      XmlResolver   = null,
+    };
+
+    var serializer = new XmlSerializer(typeof(T));
+
+    return (T) serializer.Deserialize(reader)!;
   }
 }

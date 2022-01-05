@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Surreal.Fibers;
@@ -39,6 +40,11 @@ public static class FiberScheduler
     FiberSynchronizationContext.Instance.Execute();
   }
 
+  [SuppressMessage(
+    "Critical Code Smell",
+    "S927:Parameter names should match base declaration and other partial definitions",
+    Justification = "Poorly named base class parameters in the standard library"
+  )]
   private sealed class FiberSynchronizationContext : SynchronizationContext
   {
     public static FiberSynchronizationContext Instance { get; } = new();

@@ -85,6 +85,7 @@ public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware
 
   void IPoolAware.OnRent()
   {
+    // no-op
   }
 
   void IPoolAware.OnReturn()

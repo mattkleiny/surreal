@@ -84,6 +84,7 @@ public sealed class RingBuffer<T> : IEnumerable<T>
 
     public void Dispose()
     {
+      // no-op
     }
   }
 }

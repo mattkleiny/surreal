@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Surreal.Fibers.Internal;
 using Surreal.Fibers.Promises;
@@ -79,6 +80,11 @@ public readonly struct FiberTask : IDisposable
   public void Cancel()  => Promise?.Cancel(Version);
   public void Dispose() => Cancel();
 
+  [SuppressMessage(
+    "Performance",
+    "CA1822:Mark members as static",
+    Justification = "Used to erase the type of the task."
+  )]
   public void Forget()
   {
     // no-op

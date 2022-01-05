@@ -140,6 +140,7 @@ public struct FiberTaskBuilder<T>
   [DebuggerHidden]
   public void SetStateMachine(IAsyncStateMachine stateMachine)
   {
+    // no-op
   }
 
   [UsedImplicitly]

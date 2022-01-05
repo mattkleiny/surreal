@@ -14,10 +14,10 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
 
   public override string ToString()
   {
-    if (Terabytes > 0) return $"{Terabytes:F} terabytes";
-    if (Gigabytes > 0) return $"{Gigabytes:F} gigabytes";
-    if (Megabytes > 0) return $"{Megabytes:F} megabytes";
-    if (Kilobytes > 0) return $"{Kilobytes:F} kilobytes";
+    if (Terabytes > 1) return $"{Terabytes:F} terabytes";
+    if (Gigabytes > 1) return $"{Gigabytes:F} gigabytes";
+    if (Megabytes > 1) return $"{Megabytes:F} megabytes";
+    if (Kilobytes > 1) return $"{Kilobytes:F} kilobytes";
 
     return $"{Bytes} bytes";
   }

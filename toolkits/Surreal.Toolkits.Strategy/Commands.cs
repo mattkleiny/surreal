@@ -61,6 +61,11 @@ public sealed class SelectedUnitCommandProvider : ICommandProvider
 {
   private readonly IUnitSelectionProvider selectionProvider;
 
+  public SelectedUnitCommandProvider(IUnitSelectionProvider selectionProvider)
+  {
+    this.selectionProvider = selectionProvider;
+  }
+
   public IEnumerable<ICommand> GetCommands(CommandContext context)
   {
     return selectionProvider.SelectedUnits.OfType<ICommandProvider>().SelectMany(_ => _.GetCommands(context));

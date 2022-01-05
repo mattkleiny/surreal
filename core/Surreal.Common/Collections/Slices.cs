@@ -72,6 +72,7 @@ public readonly struct Slice<T> : IEnumerable<T>
 
     public void Dispose()
     {
+      // no-op
     }
   }
 }
@@ -141,6 +142,7 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
 
     public void Dispose()
     {
+       // no-op
     }
   }
 }

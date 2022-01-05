@@ -15,15 +15,14 @@ internal interface IFiberTaskPromise<T> : IPromise<T>
 internal sealed class FiberTaskPromise<T, TStateMachine> : Promise<T>, IFiberTaskPromise<T>
   where TStateMachine : IAsyncStateMachine
 {
-  private static readonly Pool<FiberTaskPromise<T, TStateMachine>> Pool = Pool<FiberTaskPromise<T, TStateMachine>>
-    .Shared;
+  private static readonly Pool<FiberTaskPromise<T, TStateMachine>> Pool = Pool<FiberTaskPromise<T, TStateMachine>>.Shared;
 
-  public static void Allocate(ref TStateMachine stateMachine, out IFiberTaskPromise<T> promise)
+  public static void Allocate(ref TStateMachine stateMachine, out IFiberTaskPromise<T> result)
   {
-    var result = Pool.CreateOrRent();
+    var promise = Pool.CreateOrRent();
 
-    promise             = result;
-    result.stateMachine = stateMachine;
+    promise.stateMachine = stateMachine;
+    result               = promise;
   }
 
   private T?             result;
@@ -100,7 +99,7 @@ internal sealed class FiberTaskPromise<T, TStateMachine> : Promise<T>, IFiberTas
 
     if (!isObserved && error is Exception exception)
     {
-      // TODO: log exception
+      Debug.WriteLine(exception.ToString());
     }
 
     result       = default;
