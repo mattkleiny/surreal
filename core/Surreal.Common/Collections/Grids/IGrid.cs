@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Surreal.Mathematics;
 using Surreal.Memory;
 

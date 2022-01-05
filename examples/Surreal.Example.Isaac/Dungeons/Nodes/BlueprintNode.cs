@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Isaac.Dungeons.Nodes;
+﻿namespace Isaac.Dungeons.Nodes;
 
 public abstract class BlueprintNode : IEnumerable<BlueprintNode>
 {

@@ -26,7 +26,6 @@ dotnet_diagnostic.S1199.severity = None # Extract this nested code block into a 
 dotnet_diagnostic.S3459.severity = None # Remove unassigned auto-property 'Blah', or set its value
 dotnet_diagnostic.S1144.severity = None # Remove the unused private set accessor in property 'Version'
 dotnet_diagnostic.S3903.severity = None # Move type into named namespace
-dotnet_diagnostic.S3903.severity = None # Move type into named namespace
 dotnet_diagnostic.S3973.severity = None # Multi-line loops
 
 # IDE Analyzers

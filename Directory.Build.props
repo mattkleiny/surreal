@@ -1,6 +1,7 @@
 <!-- common configuration for all projects -->
 <Project>
   <PropertyGroup>
+    <!-- shared project properties -->
     <Product>Surreal</Product>
     <Authors>Matthew Kleinschafer</Authors>
     <Company>MK Productions</Company>
@@ -10,6 +11,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- shared build properties -->
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
@@ -22,19 +24,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- analyze all assemblies for basic style and code quality issues -->
     <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503" PrivateAssets="all" />
-  </ItemGroup>
 
-  <ItemGroup>
+    <!-- shared usings for all projects -->
+    <Using Include="System.Collections" />
+    <Using Include="System.Collections.Concurrent" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Collections.Immutable" />
+    <Using Include="System.Diagnostics" />
     <Using Include="System.Numerics" />
-  </ItemGroup>
+    <Using Include="System.Text" />
 
-  <ItemGroup>
     <!-- automatically embed resources -->
     <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
-  </ItemGroup>
 
-  <ItemGroup>
+    <!-- link shared code into all assemblies -->
     <Compile Include="..\..\core\JetBrainsAnnotations.cs">
       <Link>Shared\JetBrainsAnnotations.cs</Link>
     </Compile>
@@ -51,9 +56,8 @@
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Include="coverlet.collector" Version="3.0.3" />
-  </ItemGroup>
 
-  <ItemGroup Condition="!$(ProjectName.EndsWith('Tests'))">
+    <!-- make internals automatically visible to associated test project -->
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(ProjectName).Tests</_Parameter1>
     </AssemblyAttribute>

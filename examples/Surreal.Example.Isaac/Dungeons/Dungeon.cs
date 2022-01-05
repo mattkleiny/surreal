@@ -1,5 +1,5 @@
 ﻿namespace Isaac.Dungeons;
 
-public sealed class Dungeon
+public sealed class Dungeon : Actor
 {
 }

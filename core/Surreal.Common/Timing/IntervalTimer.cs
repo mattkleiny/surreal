@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Surreal.Timing;
 
 /// <summary>A stack-allocated interval timer.</summary>

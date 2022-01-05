@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 /// <summary>A lightweight circular/ring buffer with fixed capacity.</summary>
 public sealed class RingBuffer<T> : IEnumerable<T>

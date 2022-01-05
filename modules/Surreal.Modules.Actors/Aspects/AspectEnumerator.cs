@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Surreal.Aspects;
+﻿namespace Surreal.Aspects;
 
 /// <summary>Enumerates entities that match a particular <see cref="Aspect"/>.</summary>
 public struct AspectEnumerator : IEnumerator<ActorId>, IEnumerable<ActorId>

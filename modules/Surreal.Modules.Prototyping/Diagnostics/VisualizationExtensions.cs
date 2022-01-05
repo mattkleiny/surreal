@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Surreal.Collections.Grids;
+﻿using Surreal.Collections.Grids;
 using Surreal.Graphics.Images;
 using Surreal.Mathematics;
 using Surreal.Memory;

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.Design;
 using System.Composition;
 using System.Composition.Hosting;
-using System.Diagnostics;
 using System.Reflection;
 using Surreal.Collections;
 using Surreal.Diagnostics.Logging;

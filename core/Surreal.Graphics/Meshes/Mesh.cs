@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Surreal.Graphics.Materials;
+﻿using Surreal.Graphics.Materials;
 
 namespace Surreal.Graphics.Meshes;
 

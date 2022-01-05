@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Surreal.Collections.Pooling;
+﻿namespace Surreal.Collections.Pooling;
 
 /// <summary>A generically pooled <see cref="List{T}"/>.</summary>
 public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware

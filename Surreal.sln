@@ -117,6 +117,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Minecraft.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Isaac.Tests", "examples\Surreal.Example.Isaac.Tests\Surreal.Example.Isaac.Tests.csproj", "{29A7451C-8506-43B6-B5D5-862B3545CEFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Procedural", "toolkits\Surreal.Toolkits.Procedural\Surreal.Toolkits.Procedural.csproj", "{43D2A2F2-6829-4911-8599-60E41E22C2D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Procedural.Tests", "toolkits\Surreal.Toolkits.Procedural.Tests\Surreal.Toolkits.Procedural.Tests.csproj", "{63CCE2E1-5899-4902-A179-C368730EE73B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Prelude.Tests", "examples\Surreal.Example.Prelude.Tests\Surreal.Example.Prelude.Tests.csproj", "{445C6857-5712-41F1-8ED2-AA33011857C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -283,6 +289,18 @@ Global
 		{29A7451C-8506-43B6-B5D5-862B3545CEFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29A7451C-8506-43B6-B5D5-862B3545CEFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29A7451C-8506-43B6-B5D5-862B3545CEFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43D2A2F2-6829-4911-8599-60E41E22C2D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43D2A2F2-6829-4911-8599-60E41E22C2D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43D2A2F2-6829-4911-8599-60E41E22C2D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43D2A2F2-6829-4911-8599-60E41E22C2D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63CCE2E1-5899-4902-A179-C368730EE73B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63CCE2E1-5899-4902-A179-C368730EE73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63CCE2E1-5899-4902-A179-C368730EE73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63CCE2E1-5899-4902-A179-C368730EE73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445C6857-5712-41F1-8ED2-AA33011857C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445C6857-5712-41F1-8ED2-AA33011857C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445C6857-5712-41F1-8ED2-AA33011857C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445C6857-5712-41F1-8ED2-AA33011857C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -320,5 +338,8 @@ Global
 		{86277929-C82F-4BBE-9CA1-705C0547EA8A} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{CD736D7D-1D81-4F96-879E-89AB22B6C343} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{29A7451C-8506-43B6-B5D5-862B3545CEFF} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{43D2A2F2-6829-4911-8599-60E41E22C2D9} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
+		{63CCE2E1-5899-4902-A179-C368730EE73B} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
+		{445C6857-5712-41F1-8ED2-AA33011857C5} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal

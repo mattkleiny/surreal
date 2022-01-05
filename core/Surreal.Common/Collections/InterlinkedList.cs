@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 /// <summary>Represents an element in a <see cref="InterlinkedList{TNode}"/>.</summary>
 public interface IInterlinkedElement<TSelf>

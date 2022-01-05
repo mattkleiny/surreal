@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace Surreal.Text;
 
 /// <summary>General purpose string extensions.</summary>

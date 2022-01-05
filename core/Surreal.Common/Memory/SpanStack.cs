@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Surreal.Memory;
+﻿namespace Surreal.Memory;
 
 #pragma warning disable CA1711
 

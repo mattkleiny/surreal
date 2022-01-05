@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Surreal.Timing;
+﻿namespace Surreal.Timing;
 
 /// <summary>Wraps delta-time for passing through the callstack.</summary>
 [DebuggerDisplay("{TimeSpan.TotalMilliseconds}ms")]

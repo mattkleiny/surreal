@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Surreal.Memory;
+﻿namespace Surreal.Memory;
 
 /// <summary>A <see cref="Span{T}"/> that is interpreted as a grid.</summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]

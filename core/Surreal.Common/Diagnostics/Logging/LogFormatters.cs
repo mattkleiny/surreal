@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Surreal.Diagnostics.Logging;
+﻿namespace Surreal.Diagnostics.Logging;
 
 public delegate string LogFormatter(string category, LogLevel level, string message);
 

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 using Surreal.Graphics.Images;

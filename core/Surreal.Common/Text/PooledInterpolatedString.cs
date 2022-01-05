@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Surreal.Collections.Pooling;
 
 namespace Surreal.Text;

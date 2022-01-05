@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Immutable;
-using System.Text;
 using Surreal.Mathematics;
 using Surreal.Text;
 

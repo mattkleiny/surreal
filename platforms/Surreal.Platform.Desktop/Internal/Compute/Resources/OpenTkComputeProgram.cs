@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Compute.Execution;
 using Surreal.Internal.Graphics.Resources;

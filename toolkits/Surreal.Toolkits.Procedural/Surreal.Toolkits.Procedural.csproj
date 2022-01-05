@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A toolkit for procedural content generation.</Description>
+  </PropertyGroup>
+</Project>

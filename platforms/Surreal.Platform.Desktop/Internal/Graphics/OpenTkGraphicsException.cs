@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 
 namespace Surreal.Internal.Graphics;
 

@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Surreal.Memory;
 
 /// <summary>A <see cref="Span{T}"/> that is operated like a <see cref="List{T}"/>.</summary>

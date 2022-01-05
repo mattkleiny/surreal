@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using OpenTK.Audio.OpenAL;
 using Surreal.Audio.Clips;
 using Surreal.Audio.Playback;

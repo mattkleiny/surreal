@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Text;
-
-namespace Surreal.Collections.Pooling;
+﻿namespace Surreal.Collections.Pooling;
 
 /// <summary>A pool of objects of type, <see cref="T"/>.</summary>
 public sealed class Pool<T>

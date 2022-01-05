@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Surreal.Text;
 
 namespace Surreal.Diagnostics.Logging;

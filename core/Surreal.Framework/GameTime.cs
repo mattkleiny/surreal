@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal;
 

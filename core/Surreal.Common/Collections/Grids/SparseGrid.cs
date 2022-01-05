@@ -1,4 +1,3 @@
-using System.Collections;
 using Surreal.Mathematics;
 
 namespace Surreal.Collections.Grids;

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 #pragma warning disable CA1711
 
