@@ -5,23 +5,56 @@ namespace Surreal.Serialization;
 
 public class SerializationTests
 {
-  private static SerializationContext Context { get; } = new();
+  [Test, AutoFixture] public ValueTask it_should_serialize_Angle(Angle value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
 
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Angle value)       => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Area value)        => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(BoundingBox value) => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Color value)       => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(FloatRange value)  => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Guid value)        => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(IntRange value)    => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Quaternion value)  => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Rectangle value)   => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Seed value)        => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Vector2I value)    => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Vector2 value)     => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Vector3I value)    => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Vector3 value)     => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Vector4 value)     => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(VolumeI value)     => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
-  [Test, AutoFixture] public ValueTask it_should_serialize_basic_types(Volume value)      => Context.SerializeAsync(value, new StreamSerializerWriter(new MemoryStream()));
+  [Test, AutoFixture] public ValueTask it_should_serialize_Area(Area value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_BoundingBox(BoundingBox value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Color(Color value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_FloatRange(FloatRange value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Guid(Guid value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_IntRange(IntRange value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Quaternion(Quaternion value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Rectangle(Rectangle value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Seed(Seed value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Vector2I(Vector2I value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Vector2(Vector2 value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Vector3I(Vector3I value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Vector3(Vector3 value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Vector4(Vector4 value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_VolumeI(VolumeI value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Volume(Volume value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  private static StreamBinaryWriter CreateWriter() => new(new MemoryStream());
 }

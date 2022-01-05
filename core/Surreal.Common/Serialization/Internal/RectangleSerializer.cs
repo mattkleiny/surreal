@@ -3,9 +3,9 @@
 namespace Surreal.Serialization.Internal;
 
 [Serializer(typeof(Rectangle))]
-public sealed class RectangleSerializer : Serializer<Rectangle>
+public sealed class RectangleSerializer : BinarySerializer<Rectangle>
 {
-  public override async ValueTask SerializeAsync(Rectangle value, ISerializationWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(Rectangle value, IBinaryWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
   {
     await writer.WriteFloatAsync(value.Left, cancellationToken);
     await writer.WriteFloatAsync(value.Top, cancellationToken);
@@ -13,7 +13,7 @@ public sealed class RectangleSerializer : Serializer<Rectangle>
     await writer.WriteFloatAsync(value.Bottom, cancellationToken);
   }
 
-  public override async ValueTask<Rectangle> DeserializeAsync(ISerializationReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Rectangle> DeserializeAsync(IBinaryReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
   {
     var left   = await reader.ReadFloatAsync(cancellationToken);
     var top    = await reader.ReadFloatAsync(cancellationToken);

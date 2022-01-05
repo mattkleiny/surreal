@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 using Surreal.Memory;
+using Surreal.Serialization;
 
 namespace Surreal.IO;
 
@@ -74,26 +75,20 @@ public static class VirtualPathExtensions
     await writer.FlushAsync();
   }
 
-  public static async Task SerializeBinaryAsync<T>(this VirtualPath path, T value,
-    Optional<Encoding> encoding = default)
-    where T : class, IBinarySerializable
+  public static async Task SerializeBinaryAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenOutputStreamAsync();
-    await using var writer = new BinaryWriter(stream, encoding.GetOrDefault(DefaultEncoding));
+    await using var writer = new StreamBinaryWriter(stream);
 
-    value.Serialize(writer);
+    await BinarySerializer.SerializeAsync(value, writer, cancellationToken);
   }
 
-  public static async Task<T> DeserializeBinaryAsync<T>(this VirtualPath path, Optional<Encoding> encoding = default)
-    where T : class, IBinarySerializable, new()
+  public static async Task<T> DeserializeBinaryAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
-    var             reader = new BinaryReader(stream, encoding.GetOrDefault(DefaultEncoding));
+    await using var reader = new StreamBinaryReader(stream);
 
-    var result = new T();
-    result.Deserialize(reader);
-
-    return result;
+    return await BinarySerializer.DeserializeAsync<T>(reader, cancellationToken);
   }
 
   public static async Task SerializeJsonAsync<T>(this VirtualPath path, T value)

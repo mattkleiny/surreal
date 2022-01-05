@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Serialization;
 
 /// <summary>Allows reading values from a serialization stream.</summary>
-public interface ISerializationReader
+public interface IBinaryReader
 {
   ValueTask<bool>   ReadBoolAsync(CancellationToken cancellationToken = default);
   ValueTask<byte>   ReadByteAsync(CancellationToken cancellationToken = default);

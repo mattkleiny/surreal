@@ -3,9 +3,9 @@
 namespace Surreal.Serialization.Internal;
 
 [Serializer(typeof(Color))]
-public sealed class ColorSerializer : Serializer<Color>
+public sealed class ColorSerializer : BinarySerializer<Color>
 {
-  public override async ValueTask SerializeAsync(Color value, ISerializationWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(Color value, IBinaryWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
   {
     await writer.WriteFloatAsync(value.R, cancellationToken);
     await writer.WriteFloatAsync(value.G, cancellationToken);
@@ -13,7 +13,7 @@ public sealed class ColorSerializer : Serializer<Color>
     await writer.WriteFloatAsync(value.A, cancellationToken);
   }
 
-  public override async ValueTask<Color> DeserializeAsync(ISerializationReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Color> DeserializeAsync(IBinaryReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
   {
     var r = await reader.ReadFloatAsync(cancellationToken);
     var g = await reader.ReadFloatAsync(cancellationToken);

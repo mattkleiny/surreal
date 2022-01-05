@@ -3,7 +3,7 @@
 namespace Surreal.Serialization;
 
 /// <summary>Allows writing values into a serialization stream.</summary>
-public interface ISerializationWriter
+public interface IBinaryWriter
 {
   ValueTask WriteBoolAsync(bool value, CancellationToken cancellationToken = default)
   {
@@ -86,37 +86,4 @@ public interface ISerializationWriter
 
   ValueTask WriteSpanAsync(ReadOnlySpan<byte> value, CancellationToken cancellationToken = default);
   ValueTask WriteMemoryAsync(ReadOnlyMemory<byte> value, CancellationToken cancellationToken = default);
-}
-
-/// <summary>A <see cref="ISerializationWriter"/> that writes to the given <see cref="Stream"/>.</summary>
-public sealed class StreamSerializerWriter : ISerializationWriter, IDisposable, IAsyncDisposable
-{
-  private readonly Stream stream;
-
-  public StreamSerializerWriter(Stream stream)
-  {
-    this.stream = stream;
-  }
-
-  public ValueTask WriteSpanAsync(ReadOnlySpan<byte> value, CancellationToken cancellationToken = default)
-  {
-    stream.Write(value);
-
-    return ValueTask.CompletedTask;
-  }
-
-  public ValueTask WriteMemoryAsync(ReadOnlyMemory<byte> value, CancellationToken cancellationToken = default)
-  {
-    return stream.WriteAsync(value, cancellationToken);
-  }
-
-  public void Dispose()
-  {
-    stream.Dispose();
-  }
-
-  public ValueTask DisposeAsync()
-  {
-    return stream.DisposeAsync();
-  }
 }
