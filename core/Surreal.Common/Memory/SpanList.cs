@@ -17,17 +17,15 @@ public ref struct SpanList<T>
   public int Count    { get; private set; }
   public int Capacity => storage.Length;
 
-  public T this[int index]
-  {
-    get => storage[index];
-    set => storage[index] = value;
-  }
+  public ref T this[Index index] => ref storage[index];
+
+  public Span<T> this[Range range] => storage[range];
 
   public void Add(T element)
   {
     if (Count > Capacity)
     {
-      throw new Exception("Cannot add any more elements, it will overflow the buffer!");
+      throw new InvalidOperationException("Cannot add any more elements, it will overflow the buffer!");
     }
 
     storage[Count++] = element;

@@ -1,4 +1,4 @@
-namespace Surreal.Objects.Templates;
+namespace Surreal.Objects;
 
 /// <summary>A template for creating objects.</summary>
 public interface ITemplate

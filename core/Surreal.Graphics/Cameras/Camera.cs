@@ -88,8 +88,8 @@ public abstract class Camera : ICamera
   {
     var result = Vector3.Transform(worldPosition, projectionView);
 
-    result.X = (Viewport.Width * (result.X + 1) / 2) + Viewport.X;
-    result.Y = (Viewport.Height * (result.Y + 1) / 2) + Viewport.Y;
+    result.X = Viewport.Width * (result.X + 1) / 2 + Viewport.X;
+    result.Y = Viewport.Height * (result.Y + 1) / 2 + Viewport.Y;
     result.Z = (result.Z + 1) / 2f;
 
     return new Vector2I((int) result.X, (int) result.Y);
@@ -98,8 +98,8 @@ public abstract class Camera : ICamera
   public Vector3 Unproject(Vector2I screenPosition)
   {
     var result = new Vector3(
-      x: (2 * (screenPosition.X - Viewport.X) / Viewport.Width) - 1,
-      y: (2 * (Viewport.Height - screenPosition.Y - 1 - Viewport.Y) / Viewport.Height) - 1,
+      x: 2 * (screenPosition.X - Viewport.X) / Viewport.Width - 1,
+      y: 2 * (Viewport.Height - screenPosition.Y - 1 - Viewport.Y) / Viewport.Height - 1,
       z: -1
     );
 

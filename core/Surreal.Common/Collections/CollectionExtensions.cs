@@ -5,19 +5,26 @@ public static class CollectionExtensions
 {
   public static T? SelectRandomly<T>(this IEnumerable<T> elements, Random random)
   {
-    if (elements is IReadOnlyList<T> list)
+    switch (elements)
     {
-      if (list.Count > 0)
+      case IReadOnlyList<T> list:
       {
-        return list[random.Next(0, list.Count)];
+        if (list.Count > 0)
+        {
+          return list[random.Next(0, list.Count)];
+        }
+
+        break;
       }
-    }
-    else
-    {
-      var array = elements.ToArray();
-      if (array.Length > 0)
+      default:
       {
-        return array[random.Next(0, array.Length)];
+        var array = elements.ToArray();
+        if (array.Length > 0)
+        {
+          return array[random.Next(0, array.Length)];
+        }
+
+        break;
       }
     }
 

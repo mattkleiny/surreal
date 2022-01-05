@@ -2,7 +2,7 @@
 
 /// <summary>A <see cref="Span{T}"/> that is interpreted as a grid.</summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
-public ref struct SpanGrid<T>
+public readonly ref struct SpanGrid<T>
   where T : unmanaged
 {
   public static SpanGrid<T> Empty => default;
@@ -20,16 +20,9 @@ public ref struct SpanGrid<T>
   public int Height => storage.Length / stride;
   public int Length => storage.Length;
 
-  public ref T this[int index]
-  {
-    get
-    {
-      Debug.Assert(index >= 0, "index >= 0");
-      Debug.Assert(index < storage.Length, "index < length");
+  public ref T this[Index index] => ref storage[index];
 
-      return ref storage[index];
-    }
-  }
+  public Span<T> this[Range range] => storage[range];
 
   public ref T this[int x, int y]
   {

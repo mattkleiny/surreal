@@ -102,6 +102,7 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
 
     public void Dispose()
     {
+      // no-op
     }
   }
 }

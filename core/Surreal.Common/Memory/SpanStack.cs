@@ -1,7 +1,5 @@
 ﻿namespace Surreal.Memory;
 
-#pragma warning disable CA1711
-
 /// <summary>A <see cref="Span{T}"/> that is operated like a <see cref="Stack{T}"/>.</summary>
 [DebuggerDisplay("SpanStack {Count}/{Capacity}")]
 public ref struct SpanStack<T>
@@ -19,17 +17,15 @@ public ref struct SpanStack<T>
   public int Count    { get; private set; }
   public int Capacity => storage.Length;
 
-  public T this[int index]
-  {
-    get => storage[index];
-    set => storage[index] = value;
-  }
+  public ref T this[Index index] => ref storage[index];
+
+  public Span<T> this[Range range] => storage[range];
 
   public void Push(T element)
   {
     if (Count >= Capacity)
     {
-      throw new Exception("Cannot add any more elements, it will overflow the buffer!");
+      throw new InvalidOperationException("Cannot add any more elements, it will overflow the buffer!");
     }
 
     storage[Count++] = element;
@@ -50,7 +46,7 @@ public ref struct SpanStack<T>
   {
     if (Count < 0)
     {
-      throw new Exception("Can't pop any more elements, it will underflow the buffer"!);
+      throw new InvalidOperationException("Can't pop any more elements, it will underflow the buffer"!);
     }
 
     return storage[Count-- - 1];

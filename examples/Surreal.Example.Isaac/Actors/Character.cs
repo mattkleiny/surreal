@@ -1,4 +1,6 @@
-﻿namespace Isaac.Actors;
+﻿using Surreal.Combat;
+
+namespace Isaac.Actors;
 
 /// <summary>An anonymous character <see cref="Actor"/> that can move about the game world.</summary>
 public class Character : Actor, IDamageReceiver

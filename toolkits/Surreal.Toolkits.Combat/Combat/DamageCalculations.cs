@@ -1,4 +1,4 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Combat;
 
 /// <summary>Allows calculation of damage from one object to another.</summary>
 public delegate void DamageCalculation(Damage baseDamage, ref Damage damage);

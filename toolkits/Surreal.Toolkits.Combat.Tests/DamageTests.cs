@@ -1,37 +1,36 @@
 ﻿using NUnit.Framework;
+using Surreal.Combat;
 
 namespace Surreal;
 
 public class DamageTests
 {
-  private static DamageType Acid { get; } = new("Acid");
-
   [SetUp]
   public void Setup()
   {
     Damage.Calculation = null;
   }
 
-  [Test]
-  public void it_should_calculate_damage_without_callback()
+  [Test, AutoFixture]
+  public void it_should_calculate_damage_without_callback(int amount)
   {
-    var damage = Damage.Calculate(5, DamageType.Standard);
+    var damage = Damage.Calculate(amount, DamageType.Standard);
 
-    Assert.AreEqual(5, damage.Amount);
+    Assert.AreEqual(amount, damage.Amount);
     Assert.AreEqual(DamageType.Standard, damage.Type);
   }
 
-  [Test]
-  public void it_should_calculate_damage_via_callback()
+  [Test, AutoFixture]
+  public void it_should_calculate_damage_via_callback(int amount, DamageType type)
   {
     Damage.Calculation += DamageCalculations.Combine(
       DamageCalculations.Multiplicative(2),
-      DamageCalculations.ReplaceWithType(Acid)
+      DamageCalculations.ReplaceWithType(type)
     );
 
-    var damage = Damage.Calculate(5, DamageType.Standard);
+    var damage = Damage.Calculate(amount, type);
 
-    Assert.AreEqual(10, damage.Amount);
-    Assert.AreEqual(Acid, damage.Type);
+    Assert.AreEqual(amount * 2, damage.Amount);
+    Assert.AreEqual(type, damage.Type);
   }
 }

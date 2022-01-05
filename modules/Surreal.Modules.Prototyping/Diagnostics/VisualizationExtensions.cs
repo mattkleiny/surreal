@@ -1,5 +1,4 @@
-﻿using Surreal.Collections.Grids;
-using Surreal.Graphics.Images;
+﻿using Surreal.Graphics.Images;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
@@ -8,7 +7,8 @@ namespace Surreal.Diagnostics;
 /// <summary>Extensions to aid in visualization of data.</summary>
 public static class VisualizationExtensions
 {
-  public static string ToString<T>(this IGrid<T> grid, Func<int, int, T?, char> painter)
+  public static string ToString<T>(this SpanGrid<T> grid, Func<int, int, T?, char> painter)
+    where T : unmanaged
   {
     var builder = new StringBuilder();
 
@@ -28,10 +28,11 @@ public static class VisualizationExtensions
     return builder.ToString();
   }
 
-  public static Image ToImage<T>(this IGrid<T> grid, Func<int, int, T?, Color> painter, int scale = 1)
+  public static Image ToImage<T>(this SpanGrid<T> grid, Func<int, int, T?, Color> painter, int scale = 1)
+    where T : unmanaged
   {
-    var image = new Image(grid.Width * scale, grid.Height * scale);
-    var span  = new SpanGrid<Color>(image.Pixels, image.Width);
+    var image  = new Image(grid.Width * scale, grid.Height * scale);
+    var output = new SpanGrid<Color>(image.Pixels, image.Width);
 
     for (var y = 0; y < grid.Height; y++)
     for (var x = 0; x < grid.Width; x++)
@@ -42,7 +43,7 @@ public static class VisualizationExtensions
       for (var yy = 0; yy < scale; yy++)
       for (var xx = 0; xx < scale; xx++)
       {
-        span[(x * scale) + xx, (y * scale) + yy] = color;
+        output[x * scale + xx, y * scale + yy] = color;
       }
     }
 

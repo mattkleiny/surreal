@@ -1,4 +1,4 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Combat;
 
 /// <summary>An object capable of receiving <see cref="Damage"/>.</summary>
 public interface IDamageReceiver

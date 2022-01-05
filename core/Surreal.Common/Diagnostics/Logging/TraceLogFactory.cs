@@ -2,34 +2,33 @@
 
 namespace Surreal.Diagnostics.Logging;
 
-public sealed class ConsoleLogFactory : ILogFactory
+/// <summary>A <see cref="ILogFactory"/> that writes to the built-in .NET <see cref="Trace"/> console.</summary>
+public sealed class TraceLogFactory : ILogFactory
 {
   private readonly LogLevel     minLevel;
   private readonly LogFormatter formatter;
 
-  public ConsoleLogFactory(LogLevel minLevel)
+  public TraceLogFactory(LogLevel minLevel)
     : this(minLevel, LogFormatters.Default())
   {
   }
 
-  public ConsoleLogFactory(LogLevel minLevel, LogFormatter formatter)
+  public TraceLogFactory(LogLevel minLevel, LogFormatter formatter)
   {
     this.minLevel  = minLevel;
     this.formatter = formatter;
   }
 
-  public ILog GetLog(string category)
-  {
-    return new ConsoleLog(category, minLevel, formatter);
-  }
+  public ILog GetLog(string category) => new TraceLog(category, minLevel, formatter);
 
-  private sealed class ConsoleLog : ILog
+  /// <summary>A <see cref="ILog"/> that writes to <see cref="Trace"/>.</summary>
+  private sealed class TraceLog : ILog
   {
     private readonly string       category;
     private readonly LogLevel     minLevel;
     private readonly LogFormatter formatter;
 
-    public ConsoleLog(string category, LogLevel minLevel, LogFormatter formatter)
+    public TraceLog(string category, LogLevel minLevel, LogFormatter formatter)
     {
       this.category  = category;
       this.minLevel  = minLevel;
@@ -43,12 +42,12 @@ public sealed class ConsoleLogFactory : ILogFactory
 
     public void WriteMessage(LogLevel level, string message)
     {
-      Console.WriteLine(formatter(category, level, message));
+      Trace.WriteLine(formatter(category, level, message));
     }
 
     public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
     {
-      Console.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
+      Trace.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
     }
   }
 }

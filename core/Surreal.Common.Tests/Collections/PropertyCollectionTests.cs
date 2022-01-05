@@ -2,15 +2,15 @@
 
 namespace Surreal.Collections;
 
-public class BlackboardTests
+public class PropertyCollectionTests
 {
-  private static BlackboardProperty<string> Message { get; } = new(nameof(Message));
-  private static BlackboardProperty<float>  Factor  { get; } = new(nameof(Factor), 1.14159f);
+  private static Property<string> Message { get; } = new(nameof(Message));
+  private static Property<float>  Factor  { get; } = new(nameof(Factor), 1.14159f);
 
   [Test]
   public void it_should_read_and_write_keys()
   {
-    var blackboard = new Blackboard();
+    var blackboard = new PropertyCollection();
 
     blackboard.Set(Message, "Hello, World!");
     blackboard.Set(Factor, MathF.PI);
@@ -22,7 +22,7 @@ public class BlackboardTests
   [Test]
   public void it_should_favor_default_values_in_hierarchy()
   {
-    var blackboard = new Blackboard();
+    var blackboard = new PropertyCollection();
 
     Assert.AreEqual("Test", blackboard.Get(Message, "Test"));
     Assert.AreEqual(1.14159f, blackboard.Get(Factor));

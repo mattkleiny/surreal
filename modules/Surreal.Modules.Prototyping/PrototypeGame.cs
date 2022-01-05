@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.Design;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
@@ -36,7 +36,7 @@ public abstract class PrototypeGame : Game
   protected override void Initialize()
   {
     LogFactory.Current = new CompositeLogFactory(
-      new ConsoleLogFactory(DefaultLogLevel),
+      new TextWriterLogFactory(Console.Out, DefaultLogLevel),
       new DebugLogFactory(DefaultLogLevel)
     );
 
@@ -54,7 +54,7 @@ public abstract class PrototypeGame : Game
     OnResized(Host.Width, Host.Height); // initial resize
   }
 
-  protected override void RegisterServices(IServiceContainer services)
+  protected override void RegisterServices(IServiceCollection services)
   {
     base.RegisterServices(services);
 
@@ -62,12 +62,12 @@ public abstract class PrototypeGame : Game
     Keyboard     = InputManager.GetRequiredDevice<IKeyboardDevice>();
     Mouse        = InputManager.GetRequiredDevice<IMouseDevice>();
 
-    services.AddService(AudioDevice);
-    services.AddService(GraphicsDevice);
-    services.AddService(InputManager);
-    services.AddService(Keyboard);
-    services.AddService(Mouse);
-    services.AddService(Screens);
+    services.AddSingleton(AudioDevice);
+    services.AddSingleton(GraphicsDevice);
+    services.AddSingleton(InputManager);
+    services.AddSingleton(Keyboard);
+    services.AddSingleton(Mouse);
+    services.AddSingleton(Screens);
   }
 
   protected virtual void RegisterAssetLoaders(IAssetManager assets)

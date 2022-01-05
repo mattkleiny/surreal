@@ -3,18 +3,14 @@
 namespace Surreal.Memory;
 
 /// <summary>Represents a measure of bytes, convertible to other representations.</summary>
-public readonly struct Size : IComparable<Size>, IComparable, IEquatable<Size>
+public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
 {
   public static readonly Size Zero = new(0);
 
-  public Size(long bytes) => Bytes = bytes;
-
-  public long Bytes { get; }
-
-  public long Kilobytes => Bytes / 1024;
-  public long Megabytes => Kilobytes / 1024;
-  public long Gigabytes => Megabytes / 1024;
-  public long Terabytes => Gigabytes / 1024;
+  public float Kilobytes => Bytes / 1024f;
+  public float Megabytes => Kilobytes / 1024f;
+  public float Gigabytes => Megabytes / 1024f;
+  public float Terabytes => Gigabytes / 1024f;
 
   public override string ToString()
   {
@@ -24,21 +20,6 @@ public readonly struct Size : IComparable<Size>, IComparable, IEquatable<Size>
     if (Kilobytes > 0) return $"{Kilobytes:F} kilobytes";
 
     return $"{Bytes} bytes";
-  }
-
-  public override int GetHashCode()
-  {
-    return Bytes.GetHashCode();
-  }
-
-  public bool Equals(Size other)
-  {
-    return Bytes == other.Bytes;
-  }
-
-  public override bool Equals(object? obj)
-  {
-    return obj is Size other && Equals(other);
   }
 
   public int CompareTo(Size other)
@@ -56,8 +37,6 @@ public readonly struct Size : IComparable<Size>, IComparable, IEquatable<Size>
   public static Size operator +(Size a, Size b) => new(a.Bytes + b.Bytes);
   public static Size operator -(Size a, Size b) => new(a.Bytes - b.Bytes);
 
-  public static bool operator ==(Size left, Size right) => left.Bytes == right.Bytes;
-  public static bool operator !=(Size left, Size right) => left.Bytes != right.Bytes;
   public static bool operator <(Size left, Size right)  => left.Bytes < right.Bytes;
   public static bool operator >(Size left, Size right)  => left.Bytes > right.Bytes;
   public static bool operator <=(Size left, Size right) => left.Bytes <= right.Bytes;

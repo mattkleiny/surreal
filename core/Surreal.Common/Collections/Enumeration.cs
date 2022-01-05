@@ -2,8 +2,6 @@
 
 namespace Surreal.Collections;
 
-#pragma warning disable CA1711 // deliberately suffixed with Enum
-
 /// <summary>A structured enumeration with support for lookups and complex objects.</summary>
 public abstract record Enumeration<T>
   where T : Enumeration<T>

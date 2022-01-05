@@ -1,6 +1,6 @@
-﻿namespace Surreal.Collections;
+﻿using System.Diagnostics.CodeAnalysis;
 
-#pragma warning disable CA1711
+namespace Surreal.Collections;
 
 /// <summary>A <see cref="Queue{T}"/> with a fixed-sized upper bound.</summary>
 public sealed class BoundedQueue<T> : IEnumerable<T>
@@ -21,6 +21,11 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
   public int Count    => queue.Count;
   public int Capacity => maxCapacity;
 
+  public bool TryPeek([MaybeNullWhen(false)] out T result)
+  {
+    return queue.TryPeek(out result);
+  }
+
   public bool TryEnqueue(T value)
   {
     if (queue.Count < maxCapacity)
@@ -32,16 +37,9 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
     return false;
   }
 
-  public bool TryDequeue(out T result)
+  public bool TryDequeue([MaybeNullWhen(false)] out T result)
   {
-    if (queue.Count > 0)
-    {
-      result = queue.Dequeue();
-      return true;
-    }
-
-    result = default!;
-    return false;
+    return queue.TryDequeue(out result);
   }
 
   public void Clear()
@@ -52,4 +50,47 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
   public Queue<T>.Enumerator    GetEnumerator() => queue.GetEnumerator();
   IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+}
+
+/// <summary>A <see cref="Queue{T}"/> with a fixed-sized upper bound.</summary>
+public sealed class BoundedConcurrentQueue<T>
+{
+  private readonly ConcurrentQueue<T> queue;
+  private readonly int                maxCapacity;
+
+  public BoundedConcurrentQueue(int maxCapacity = 32)
+  {
+    queue = new ConcurrentQueue<T>();
+
+    this.maxCapacity = maxCapacity;
+  }
+
+  public int Count    => queue.Count;
+  public int Capacity => maxCapacity;
+
+  public bool TryPeek([MaybeNullWhen(false)] out T result)
+  {
+    return queue.TryPeek(out result);
+  }
+
+  public bool TryEnqueue(T value)
+  {
+    if (queue.Count < maxCapacity)
+    {
+      queue.Enqueue(value);
+      return true;
+    }
+
+    return false;
+  }
+
+  public bool TryDequeue([MaybeNullWhen(false)] out T result)
+  {
+    return queue.TryDequeue(out result);
+  }
+
+  public void Clear()
+  {
+    queue.Clear();
+  }
 }

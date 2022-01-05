@@ -5,7 +5,7 @@ namespace Surreal.Assets;
 /// <summary>Allows loading assets from storage.</summary>
 public interface IAssetLoader
 {
-  Type AssetType { get; }
+  bool CanHandle(Type type);
 
   Task<object> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default);
 }
@@ -13,7 +13,10 @@ public interface IAssetLoader
 /// <summary>Base class for any <see cref="IAssetLoader"/> implementation.</summary>
 public abstract class AssetLoader<T> : IAssetLoader
 {
-  public virtual Type AssetType { get; } = typeof(T);
+  public virtual bool CanHandle(Type type)
+  {
+    return type == typeof(T);
+  }
 
   public abstract Task<T> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default);
 

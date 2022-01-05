@@ -8,7 +8,7 @@ namespace Surreal.Clips;
 public class AudioBufferTests
 {
   [Test]
-  public void it_should_buffer_data()
+  public void it_should_allocate_buffer_data()
   {
     using var buffer = new AudioBuffer(1.Seconds(), AudioSampleRate.Standard);
 

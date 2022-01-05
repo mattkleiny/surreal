@@ -1,4 +1,5 @@
-﻿using Surreal.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using Surreal.IO;
 
 namespace Surreal.Assets;
 
@@ -11,23 +12,24 @@ public interface IAssetManager : IAssetContext
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
 public sealed class AssetManager : IAssetManager, IDisposable
 {
-  private readonly Dictionary<Type, IAssetLoader> loadersByType = new();
-  private readonly Dictionary<AssetId, object>    assetsById    = new();
+  private readonly List<IAssetLoader>          loaders    = new();
+  private readonly Dictionary<AssetId, object> assetsById = new();
 
   public void AddLoader(IAssetLoader loader)
   {
-    loadersByType[loader.AssetType] = loader;
+    loaders.Add(loader);
   }
 
   public async Task<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
     where T : class
   {
-    if (!loadersByType.TryGetValue(typeof(T), out var loader))
-    {
-      throw new UnsupportedAssetException($"An unsupported asset type was requested: {typeof(T).Name}");
-    }
+    var assetType = typeof(T);
+    var assetId   = new AssetId(assetType, path);
 
-    var assetId = new AssetId(typeof(T), path);
+    if (!TryGetLoader(assetType, out var loader))
+    {
+      throw new UnsupportedAssetException($"An unsupported asset type was requested: {assetType.Name}");
+    }
 
     if (!assetsById.TryGetValue(assetId, out var asset))
     {
@@ -47,7 +49,7 @@ public sealed class AssetManager : IAssetManager, IDisposable
       }
     }
 
-    foreach (var loader in loadersByType.Values)
+    foreach (var loader in loaders)
     {
       if (loader is IDisposable disposable)
       {
@@ -56,6 +58,24 @@ public sealed class AssetManager : IAssetManager, IDisposable
     }
 
     assetsById.Clear();
+    loaders.Clear();
+  }
+
+  /// <summary>Attempts to locate a valid loader for the given type.</summary>
+  private bool TryGetLoader(Type type, [NotNullWhen(true)] out IAssetLoader? result)
+  {
+    for (var i = 0; i < loaders.Count; i++)
+    {
+      var loader = loaders[i];
+      if (loader.CanHandle(type))
+      {
+        result = loader;
+        return true;
+      }
+    }
+
+    result = default;
+    return false;
   }
 
   /// <summary>Represents uniquely some asset type at a given path.</summary>

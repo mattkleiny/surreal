@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Composition;
+﻿using System.Composition;
 using System.Composition.Hosting;
 using System.Reflection;
 using Surreal.Collections;
@@ -133,12 +132,12 @@ public sealed class ModPlugin : GamePlugin
   /// <summary>The default <see cref="IModRegistry"/> implementation.</summary>
   private sealed class ModRegistry : IModRegistry
   {
-    public ModRegistry(IServiceContainer services)
+    public ModRegistry(IServiceProvider services)
     {
       Services = services;
     }
 
-    public IServiceContainer Services { get; }
+    public IServiceProvider Services { get; }
   }
 
   /// <summary>Represents a mod that is installed in the game.</summary>

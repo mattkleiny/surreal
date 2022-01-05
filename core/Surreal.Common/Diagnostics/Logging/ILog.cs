@@ -127,32 +127,4 @@ public interface ILog
       Trace($"{message}. Time taken: {stopwatch.Elapsed:g}");
     }
   }
-
-  async Task ProfileAsync(string message, Func<Task> body)
-  {
-    var stopwatch = Stopwatch.StartNew();
-    try
-    {
-      await body();
-    }
-    finally
-    {
-      stopwatch.Stop();
-      Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
-    }
-  }
-
-  async Task<TResult> ProfileAsync<TResult>(string message, Func<Task<TResult>> body)
-  {
-    var stopwatch = Stopwatch.StartNew();
-    try
-    {
-      return await body();
-    }
-    finally
-    {
-      stopwatch.Stop();
-      Trace($"{message}. Time taken: {stopwatch.Elapsed.ToString("g")}");
-    }
-  }
 }

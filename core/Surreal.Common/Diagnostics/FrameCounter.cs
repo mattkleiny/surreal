@@ -3,12 +3,12 @@ using Surreal.Timing;
 
 namespace Surreal.Diagnostics;
 
-/// <summary>Counts frames per second.</summary>
-public sealed class FpsCounter
+/// <summary>A utility which counts frames per second.</summary>
+public sealed class FrameCounter
 {
   private readonly RingBuffer<TimeSpan> samples;
 
-  public FpsCounter(int sampleCount = 100)
+  public FrameCounter(int sampleCount = 100)
   {
     samples = new RingBuffer<TimeSpan>(sampleCount);
   }

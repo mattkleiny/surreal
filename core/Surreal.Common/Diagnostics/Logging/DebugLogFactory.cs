@@ -2,6 +2,7 @@ using Surreal.Text;
 
 namespace Surreal.Diagnostics.Logging;
 
+/// <summary>A <see cref="ILogFactory"/> that writes to the built-in .NET <see cref="Debug"/> console.</summary>
 public sealed class DebugLogFactory : ILogFactory
 {
   private readonly LogLevel     minLevel;
@@ -20,6 +21,7 @@ public sealed class DebugLogFactory : ILogFactory
 
   public ILog GetLog(string category) => new DebugLog(category, minLevel, formatter);
 
+  /// <summary>A <see cref="ILog"/> that writes to <see cref="Debug"/>.</summary>
   private sealed class DebugLog : ILog
   {
     private readonly string       category;

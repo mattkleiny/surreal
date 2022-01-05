@@ -1,6 +1,6 @@
 ﻿using Isaac.Dungeons.Nodes;
 using Surreal.Mathematics;
-using Surreal.Objects.Templates;
+using Surreal.Objects;
 
 namespace Isaac.Dungeons;
 

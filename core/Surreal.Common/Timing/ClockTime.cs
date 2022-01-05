@@ -1,4 +1,6 @@
-﻿namespace Surreal.Timing;
+﻿using System.Runtime.CompilerServices;
+
+namespace Surreal.Timing;
 
 /// <summary>Represents a discrete time in a 24 hour clock with hours, minutes and seconds.</summary>
 public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
@@ -74,6 +76,7 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
   public static bool operator <=(ClockTime left, ClockTime right) => left.Ticks <= right.Ticks;
   public static bool operator >=(ClockTime left, ClockTime right) => left.Ticks >= right.Ticks;
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static int CalculateTicks(int hour, int minute, int second)
   {
     var totalSeconds = hour * TicksPerHour + minute * TicksPerMinute + second;

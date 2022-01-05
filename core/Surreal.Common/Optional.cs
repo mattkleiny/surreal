@@ -1,5 +1,12 @@
 ﻿namespace Surreal;
 
+/// <summary>Static factory for <see cref="Optional{T}"/> types.</summary>
+public static class Optional
+{
+  public static Optional<T> Some<T>(T value) => new(value, hasValue: true);
+  public static Optional<T> None<T>()        => new(default, hasValue: false);
+}
+
 /// <summary>An optional type for <see cref="T"/>.</summary>
 public readonly struct Optional<T>
 {
@@ -27,20 +34,4 @@ public readonly struct Optional<T>
   }
 
   public static implicit operator Optional<T>(T value) => new(value, true);
-}
-
-public static class Optional
-{
-  public static Optional<T> Some<T>(T value) => new(value, hasValue: true);
-  public static Optional<T> None<T>()        => new(default, hasValue: false);
-
-  public static Optional<T> ToOptional<T>(this T? nullable) where T : struct
-  {
-    if (nullable.HasValue)
-    {
-      return Some(nullable.Value);
-    }
-
-    return None<T>();
-  }
 }

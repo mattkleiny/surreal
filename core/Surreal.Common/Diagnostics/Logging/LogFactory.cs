@@ -2,11 +2,13 @@
 
 namespace Surreal.Diagnostics.Logging;
 
+/// <summary>A factory for <see cref="ILog"/>s.</summary>
 public interface ILogFactory
 {
   ILog GetLog(string category);
 }
 
+/// <summary>Entry point for <see cref="ILogFactory"/>s.</summary>
 public static class LogFactory
 {
   public static ILogFactory Current { get; set; } = NullLogFactory.Instance;
@@ -15,6 +17,7 @@ public static class LogFactory
   public static ILog GetLog(Type type)       => GetLog(type.GetFullNameWithoutGenerics());
   public static ILog GetLog(string category) => new LazyLog(category);
 
+  /// <summary>A <see cref="ILog"/> that lazily acquires the <see cref="ILog"/> target.</summary>
   private sealed class LazyLog : ILog
   {
     private readonly Lazy<ILog> log;

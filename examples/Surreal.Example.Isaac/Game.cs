@@ -1,6 +1,6 @@
 ﻿using Isaac.Dungeons;
 using Surreal.Assets;
-using Surreal.Objects.Templates;
+using Surreal.Objects;
 
 namespace Isaac;
 

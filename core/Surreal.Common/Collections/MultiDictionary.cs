@@ -1,7 +1,5 @@
 namespace Surreal.Collections;
 
-#pragma warning disable CA1711
-
 /// <summary>A dictionary with multiple values per key.</summary>
 public sealed class MultiDictionary<TKey, TValue>
   where TKey : notnull

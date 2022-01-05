@@ -1,4 +1,4 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Combat;
 
 /// <summary>Indicates a type of damage to be applied from object to another.</summary>
 public readonly record struct DamageType(string Name)

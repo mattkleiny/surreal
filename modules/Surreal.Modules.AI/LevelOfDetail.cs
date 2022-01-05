@@ -1,6 +1,6 @@
 ﻿namespace Surreal;
 
-/// <summary>Possible levels of detail for a <see cref="Reasoner"/>.</summary>
+/// <summary>Possible levels of detail.</summary>
 public enum LevelOfDetail : byte
 {
   Minimum = 0,

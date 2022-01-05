@@ -1,4 +1,4 @@
-﻿namespace Surreal.Thinking.Utility;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>A curve for utility considerations.</summary>
 public delegate float UtilityCurve(float t);

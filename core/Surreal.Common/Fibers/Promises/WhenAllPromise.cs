@@ -1,4 +1,4 @@
-﻿using Surreal.Collections.Pooling;
+﻿using Surreal.Collections;
 
 namespace Surreal.Fibers.Promises;
 

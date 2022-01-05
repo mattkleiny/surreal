@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using Surreal.Collections.Pooling;
+using Surreal.Collections;
 
 namespace Surreal.Fibers.Promises;
 

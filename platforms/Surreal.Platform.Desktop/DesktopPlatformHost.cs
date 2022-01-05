@@ -17,7 +17,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
 {
   private readonly DesktopConfiguration configuration;
 
-  private readonly FpsCounter    fpsCounter        = new();
+  private readonly FrameCounter  frameCounter      = new();
   private          IntervalTimer frameDisplayTimer = new(1.Seconds());
 
   public DesktopPlatformHost(DesktopConfiguration configuration)
@@ -64,11 +64,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
       // show the game's FPS in the window title
       if (configuration.ShowFpsInTitle)
       {
-        fpsCounter.Tick(deltaTime);
+        frameCounter.Tick(deltaTime);
 
         if (frameDisplayTimer.Tick(deltaTime))
         {
-          Window.Title = $"{configuration.Title} - {fpsCounter.FramesPerSecond:F} FPS";
+          Window.Title = $"{configuration.Title} - {frameCounter.FramesPerSecond:F} FPS";
         }
       }
     }

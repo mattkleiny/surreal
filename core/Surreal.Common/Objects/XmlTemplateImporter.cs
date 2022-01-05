@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using Surreal.Assets;
 using Surreal.IO;
 
-namespace Surreal.Objects.Templates;
+namespace Surreal.Objects;
 
 /// <summary>Imports <see cref="ITemplate{T}"/>s from XML.</summary>
 public static class XmlTemplateImporter

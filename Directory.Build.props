@@ -40,9 +40,17 @@
     <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
 
     <!-- link shared code into all assemblies -->
-    <Compile Include="..\..\core\JetBrainsAnnotations.cs">
+    <Compile Include="..\..\JetBrainsAnnotations.cs">
       <Link>Shared\JetBrainsAnnotations.cs</Link>
     </Compile>
+
+    <!-- make internals automatically visible to associated test project and NSubstitute -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(ProjectName).Tests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <!-- test project configuration -->
@@ -51,15 +59,21 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
+    <PackageReference Include="AutoFixture" Version="4.17.0" />
+    <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.17.0" />
+    <PackageReference Include="AutoFixture.NUnit3" Version="4.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Include="coverlet.collector" Version="3.0.3" />
 
-    <!-- make internals automatically visible to associated test project -->
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>$(ProjectName).Tests</_Parameter1>
-    </AssemblyAttribute>
+    <!-- shared usings for test projects -->
+    <Using Include="NSubstitute.ReceivedExtensions" />
+
+    <!-- link shared code into test assemblies -->
+    <Compile Include="..\..\SharedTestHelpers.cs">
+      <Link>Shared\SharedTestHelpers.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

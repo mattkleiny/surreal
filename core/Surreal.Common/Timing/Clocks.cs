@@ -14,6 +14,7 @@ public static class Clocks
     return new AnonymousClock(() => new DeltaTime(other.DeltaTime * scale));
   }
 
+  /// <summary>An anonymous, delegate-based <see cref="IClock"/> instance.</summary>
   private sealed class AnonymousClock : IClock
   {
     private readonly Func<TimeSpan> provider;

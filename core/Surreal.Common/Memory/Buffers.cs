@@ -34,6 +34,7 @@ public static class Buffers
     return new NativeBuffer<T>(length, zeroFill);
   }
 
+  /// <summary>A buffer backed by a managed array.</summary>
   private sealed class ManagedBuffer<T> : IBuffer<T>
   {
     private readonly T[] elements;
@@ -46,6 +47,7 @@ public static class Buffers
     public Span<T> Span => elements;
   }
 
+  /// <summary>A buffer backed by a pinned array.</summary>
   private sealed class PinnedBuffer<T> : IBuffer<T>
     where T : unmanaged
   {
@@ -61,6 +63,7 @@ public static class Buffers
     public Span<T> Span => new(elements);
   }
 
+  /// <summary>A buffer backed by native memory.</summary>
   private sealed unsafe class NativeBuffer<T> : IDisposableBuffer<T>
     where T : unmanaged
   {

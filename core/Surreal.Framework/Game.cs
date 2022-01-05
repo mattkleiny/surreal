@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.Design;
-using System.Runtime;
+﻿using System.Runtime;
+using Microsoft.Extensions.DependencyInjection;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
@@ -91,8 +91,8 @@ public abstract class Game : IDisposable
 
   public bool              IsRunning    { get; private set; }  = false;
   public IPlatformHost     Host         { get; private init; } = null!;
+  public IServiceProvider  Services     { get; private set; }  = null!;
   public IAssetManager     Assets       { get; }               = new AssetManager();
-  public IServiceContainer Services     { get; }               = new ServiceContainer();
   public ILoopStrategy     LoopStrategy { get; set; }          = new AveragingLoopStrategy();
   public List<IGamePlugin> Plugins      { get; }               = new();
 
@@ -146,8 +146,12 @@ public abstract class Game : IDisposable
   {
     Host.Resized += OnResized;
 
+    var container = new ServiceCollection();
+
     RegisterFileSystems(FileSystem.Registry);
-    RegisterServices(Services);
+    RegisterServices(container);
+
+    Services = container.BuildServiceProvider();
   }
 
   protected virtual async Task LoadContentAsync(IAssetContext assets)
@@ -158,10 +162,10 @@ public abstract class Game : IDisposable
     }
   }
 
-  protected virtual void RegisterServices(IServiceContainer services)
+  protected virtual void RegisterServices(IServiceCollection services)
   {
-    services.AddService(Assets);
-    services.AddService(Host);
+    services.AddSingleton(Assets);
+    services.AddSingleton(Host);
   }
 
   protected virtual void RegisterFileSystems(IFileSystemRegistry registry)
