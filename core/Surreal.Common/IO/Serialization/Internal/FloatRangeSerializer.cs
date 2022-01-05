@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.Serialization.Internal;
+namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(FloatRange))]
 public sealed class FloatRangeSerializer : BinarySerializer<FloatRange>

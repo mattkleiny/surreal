@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.Serialization.Internal;
+namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(Rectangle))]
 public sealed class RectangleSerializer : BinarySerializer<Rectangle>

@@ -1,4 +1,4 @@
-﻿namespace Surreal.Serialization.Internal;
+﻿namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(Guid))]
 public sealed class GuidSerializer : BinarySerializer<Guid>

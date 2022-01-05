@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Surreal.Serialization;
+namespace Surreal.IO.Serialization;
 
 /// <summary>Allows writing values into a serialization stream.</summary>
 public interface IBinaryWriter

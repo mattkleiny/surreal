@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.Serialization.Internal;
+namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(VolumeI))]
 public sealed class VolumeISerializer : BinarySerializer<VolumeI>

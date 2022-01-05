@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Surreal.IO.Serialization;
 using Surreal.Mathematics;
 
 namespace Surreal.Serialization;

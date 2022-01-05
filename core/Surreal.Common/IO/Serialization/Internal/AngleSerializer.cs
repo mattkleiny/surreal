@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.Serialization.Internal;
+namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(Angle))]
 public sealed class AngleSerializer : BinarySerializer<Angle>

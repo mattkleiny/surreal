@@ -1,4 +1,4 @@
-﻿namespace Surreal.Serialization;
+﻿namespace Surreal.IO.Serialization;
 
 /// <summary>Allows reading values from a serialization stream.</summary>
 public interface IBinaryReader

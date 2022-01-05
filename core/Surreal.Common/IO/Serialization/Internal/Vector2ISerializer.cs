@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.Serialization.Internal;
+namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(Vector2I))]
 public sealed class Vector2ISerializer : BinarySerializer<Vector2I>

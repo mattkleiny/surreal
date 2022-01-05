@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace Surreal.Serialization;
+namespace Surreal.IO.Serialization;
 
 #pragma warning disable CA2255
 

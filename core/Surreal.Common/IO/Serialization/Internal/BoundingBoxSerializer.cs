@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.Serialization.Internal;
+namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(BoundingBox))]
 public sealed class BoundingBoxSerializer : BinarySerializer<BoundingBox>

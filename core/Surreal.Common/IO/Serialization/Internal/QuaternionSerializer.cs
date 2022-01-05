@@ -1,4 +1,4 @@
-﻿namespace Surreal.Serialization.Internal;
+﻿namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(Quaternion))]
 public sealed class QuaternionSerializer : BinarySerializer<Quaternion>

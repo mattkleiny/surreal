@@ -1,4 +1,4 @@
-﻿namespace Surreal.Serialization;
+﻿namespace Surreal.IO.Serialization;
 
 /// <summary>A <see cref="IBinaryReader"/> that readers from the given <see cref="Stream"/>.</summary>
 public sealed class StreamBinaryReader : IBinaryReader, IDisposable, IAsyncDisposable

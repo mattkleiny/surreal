@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
+using Surreal.IO.Serialization;
 using Surreal.Memory;
-using Surreal.Serialization;
 
 namespace Surreal.IO;
 

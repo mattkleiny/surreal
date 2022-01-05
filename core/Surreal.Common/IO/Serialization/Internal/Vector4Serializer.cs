@@ -1,4 +1,4 @@
-﻿namespace Surreal.Serialization.Internal;
+﻿namespace Surreal.IO.Serialization.Internal;
 
 [Serializer(typeof(Vector4))]
 public sealed class Vector4Serializer : BinarySerializer<Vector4>

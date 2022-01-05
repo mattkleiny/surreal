@@ -1,4 +1,4 @@
-﻿namespace Surreal.Serialization;
+﻿namespace Surreal.IO.Serialization;
 
 /// <summary>Context for serialization operations.</summary>
 public interface ISerializationContext
