@@ -22,7 +22,7 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
   }
 
   public IPipelineState  Pipeline       { get; } = new OpenTkPipelineState();
-  public IShaderCompiler ShaderCompiler => throw new NotImplementedException();
+  public IShaderCompiler ShaderCompiler { get; } = new OpenTkShaderCompiler();
 
   public void BeginFrame()
   {
@@ -116,9 +116,9 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
     return new OpenTkRenderTexture(texture, image);
   }
 
-  public ShaderProgram CreateShaderProgram(ICompiledShader compiled)
+  public ShaderProgram CreateShaderProgram(ICompiledShader shader)
   {
-    throw new NotImplementedException();
+    return new OpenTkShaderProgram((OpenTkShaderSet) shader);
   }
 
   private static void DrawMesh(int count, PrimitiveType type)

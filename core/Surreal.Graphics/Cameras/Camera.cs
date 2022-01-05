@@ -10,7 +10,7 @@ public interface ICamera
   void Update();
 
   Vector2I Project(Vector3 worldPosition);
-  Vector3  Unproject(Vector2I screenPosition);
+  Vector3  UnProject(Vector2I screenPosition);
 }
 
 /// <summary>Base class for any <see cref="ICamera"/> implementation.</summary>
@@ -95,7 +95,7 @@ public abstract class Camera : ICamera
     return new Vector2I((int) result.X, (int) result.Y);
   }
 
-  public Vector3 Unproject(Vector2I screenPosition)
+  public Vector3 UnProject(Vector2I screenPosition)
   {
     var result = new Vector3(
       x: 2 * (screenPosition.X - Viewport.X) / Viewport.Width - 1,

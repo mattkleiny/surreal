@@ -12,7 +12,7 @@ public class StatusEffectTests
 
     effects.Add(effect);
 
-    effect.Received(Quantity.Exactly(1)).OnEffectAdded(owner);
+    effect.Received(1).OnEffectAdded(owner);
   }
 
   [Test, AutoFixture]
@@ -22,6 +22,6 @@ public class StatusEffectTests
 
     effects.Add(effect);
 
-    effect.Received(Quantity.Exactly(1)).OnEffectAdded(owner);
+    effect.Received(1).OnEffectAdded(owner);
   }
 }

@@ -13,7 +13,7 @@ internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
 
   public int Id { get; } = GL.CreateProgram();
 
-  public OpenTkShaderProgram(IReadOnlyList<OpenTkShader> shaders)
+  public OpenTkShaderProgram(OpenTkShaderSet shaders)
   {
     Link(shaders);
   }
@@ -46,13 +46,14 @@ internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
     }
   }
 
-  private void Link(IReadOnlyList<OpenTkShader> shaders)
+  private void Link(OpenTkShaderSet shaderSet)
   {
-    var shaderIds = new int[shaders.Count];
+    var shaders   = shaderSet.Shaders;
+    var shaderIds = new int[shaders.Length];
 
     GL.UseProgram(Id);
 
-    for (var i = 0; i < shaders.Count; i++)
+    for (var i = 0; i < shaders.Length; i++)
     {
       var shader = shaders[i];
       var code   = shader.Code;

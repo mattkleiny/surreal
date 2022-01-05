@@ -53,7 +53,7 @@ public interface IGraphicsDevice
   );
 
   RenderTexture CreateFrameBuffer(in RenderTextureDescriptor descriptor);
-  ShaderProgram CreateShaderProgram(ICompiledShader compiled);
+  ShaderProgram CreateShaderProgram(ICompiledShader shader);
 }
 
 /// <summary>Represents the underlying state of the graphics fixed-function pipeline.</summary>

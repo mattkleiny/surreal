@@ -5,6 +5,7 @@ using Surreal.IO;
 
 namespace Surreal.Graphics.Fonts;
 
+/// <summary>A font represented as mathematical curves.</summary>
 public sealed class TrueTypeFont
 {
   private readonly FontFamily    font;
@@ -79,14 +80,27 @@ public sealed class TrueTypeFont
   }
 }
 
+/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="TrueTypeFont"/>s.</summary>
 public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
 {
+  private readonly CultureInfo culture;
+
+  public TrueTypeFontLoader()
+    : this(CultureInfo.InvariantCulture)
+  {
+  }
+
+  public TrueTypeFontLoader(CultureInfo culture)
+  {
+    this.culture = culture;
+  }
+
   public override async Task<TrueTypeFont> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 
     var fonts      = new FontCollection();
-    var fontFamily = fonts.Install(stream, CultureInfo.InvariantCulture);
+    var fontFamily = fonts.Install(stream, culture);
 
     return new TrueTypeFont(fontFamily);
   }

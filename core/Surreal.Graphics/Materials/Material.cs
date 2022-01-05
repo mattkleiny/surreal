@@ -31,6 +31,8 @@ public sealed class Material : GraphicsResource
   // textures
   public void SetProperty(MaterialProperty<Texture> property, Texture value)             => throw new NotImplementedException();
   public void SetProperty(MaterialProperty<RenderTexture> property, RenderTexture value) => throw new NotImplementedException();
+
+  public void ApplyEffect(MaterialEffect effect) => effect.ApplyToMaterial(this);
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Material"/>s.</summary>

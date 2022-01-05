@@ -83,8 +83,8 @@ internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
     return new HeadlessRenderTexture();
   }
 
-  public ShaderProgram CreateShaderProgram(ICompiledShader compiled)
+  public ShaderProgram CreateShaderProgram(ICompiledShader shader)
   {
-    throw new NotImplementedException();
+    return new HeadlessShaderProgram();
   }
 }

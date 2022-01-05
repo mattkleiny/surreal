@@ -34,6 +34,9 @@ public abstract class PrototypeGame : Game
 
   public Color ClearColor { get; set; } = Color.Black;
 
+  /// <summary>The <see cref="IShaderParser"/> to use when loading <see cref="ShaderProgram"/>s.</summary>
+  public virtual IShaderParser ShadingLanguage { get; } = new SimpleShadingLanguage();
+
   protected override void Initialize()
   {
     LogFactory.Current = new CompositeLogFactory(
@@ -79,7 +82,7 @@ public abstract class PrototypeGame : Game
     assets.AddLoader(new ComputeProgramLoader(ComputeDevice));
     assets.AddLoader(new ImageLoader());
     assets.AddLoader(new MaterialLoader());
-    assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, new SimpleShadingLanguage(), hotReloading: Debugger.IsAttached));
+    assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, ShadingLanguage, hotReloading: Debugger.IsAttached));
     assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
     assets.AddLoader(new TextureRegionLoader());
     assets.AddLoader(new TrueTypeFontLoader());
