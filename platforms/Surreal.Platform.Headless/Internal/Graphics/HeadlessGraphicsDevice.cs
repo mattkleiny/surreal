@@ -38,7 +38,7 @@ internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
     Material material,
     int vertexCount,
     int indexCount,
-    PrimitiveType type = PrimitiveType.Triangles)
+    MeshType type = MeshType.Triangles)
     where TVertex : unmanaged
   {
     // no-op
@@ -83,7 +83,7 @@ internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
     return new HeadlessRenderTexture();
   }
 
-  public ShaderProgram CreateShaderProgram(ICompiledShader shader)
+  public ShaderProgram CreateShaderProgram(ICompiledShaderProgram program)
   {
     return new HeadlessShaderProgram();
   }

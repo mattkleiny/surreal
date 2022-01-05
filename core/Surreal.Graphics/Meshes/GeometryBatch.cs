@@ -41,31 +41,31 @@ public sealed class GeometryBatch : IDisposable
   }
 
   public void DrawPoint(Vector2 position, Color color)
-    => DrawPrimitive(stackalloc[] { position }, color, PrimitiveType.Points);
+    => DrawPrimitive(stackalloc[] { position }, color, MeshType.Points);
 
   public void DrawLine(Vector2 from, Vector2 to, Color color)
-    => DrawPrimitive(stackalloc[] { from, to }, color, PrimitiveType.Lines);
+    => DrawPrimitive(stackalloc[] { from, to }, color, MeshType.Lines);
 
   public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
-    => DrawPrimitive(points, color, PrimitiveType.Lines);
+    => DrawPrimitive(points, color, MeshType.Lines);
 
   public void DrawLineLoop(ReadOnlySpan<Vector2> points, Color color)
-    => DrawPrimitive(points, color, PrimitiveType.LineLoop);
+    => DrawPrimitive(points, color, MeshType.LineLoop);
 
   public void DrawLineStrip(ReadOnlySpan<Vector2> points, Color color)
-    => DrawPrimitive(points, color, PrimitiveType.LineStrip);
+    => DrawPrimitive(points, color, MeshType.LineStrip);
 
   public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-    => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.Triangles);
+    => DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.Triangles);
 
   public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-    => DrawPrimitive(stackalloc[] { a, b, c }, color, PrimitiveType.LineLoop);
+    => DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.LineLoop);
 
   public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
-    => DrawQuad(center, size, color, PrimitiveType.Quads);
+    => DrawQuad(center, size, color, MeshType.Quads);
 
   public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
-    => DrawQuad(center, size, color, PrimitiveType.LineLoop);
+    => DrawQuad(center, size, color, MeshType.LineLoop);
 
   public void DrawCircle(Vector2 center, float radius, Color color, int segments = 16)
   {
@@ -115,7 +115,7 @@ public sealed class GeometryBatch : IDisposable
     DrawLineStrip(points.ToSpan(), color);
   }
 
-  public void DrawQuad(Vector2 center, Vector2 size, Color color, PrimitiveType type)
+  public void DrawQuad(Vector2 center, Vector2 size, Color color, MeshType type)
   {
     var halfWidth  = size.X / 2f;
     var halfHeight = size.Y / 2f;
@@ -133,7 +133,7 @@ public sealed class GeometryBatch : IDisposable
     );
   }
 
-  public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, PrimitiveType type)
+  public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, MeshType type)
   {
     var destination = new SpanList<Vertex>(vertices.Span[vertexCount..points.Length]);
 
@@ -147,7 +147,7 @@ public sealed class GeometryBatch : IDisposable
     Flush(type);
   }
 
-  private void Flush(PrimitiveType type)
+  private void Flush(MeshType type)
   {
     if (vertexCount == 0) return;
     if (material == null) return;

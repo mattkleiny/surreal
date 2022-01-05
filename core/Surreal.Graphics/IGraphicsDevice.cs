@@ -30,7 +30,7 @@ public interface IGraphicsDevice
     Material material,
     int vertexCount,
     int indexCount,
-    PrimitiveType type = PrimitiveType.Triangles)
+    MeshType type = MeshType.Triangles)
     where TVertex : unmanaged;
 
   void BeginFrame();
@@ -53,7 +53,7 @@ public interface IGraphicsDevice
   );
 
   RenderTexture CreateFrameBuffer(in RenderTextureDescriptor descriptor);
-  ShaderProgram CreateShaderProgram(ICompiledShader shader);
+  ShaderProgram CreateShaderProgram(ICompiledShaderProgram program);
 }
 
 /// <summary>Represents the underlying state of the graphics fixed-function pipeline.</summary>

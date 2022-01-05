@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Graphics.Meshes;
 
 /// <summary>Different types of supported primitive shapes.</summary>
-public enum PrimitiveType
+public enum MeshType
 {
   Points,
   Lines,

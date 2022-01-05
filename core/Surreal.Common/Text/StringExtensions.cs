@@ -3,6 +3,11 @@ namespace Surreal.Text;
 /// <summary>General purpose string extensions.</summary>
 public static class StringExtensions
 {
+  public static StringBuilder AppendIndent(this StringBuilder builder, int indentLevel)
+  {
+    return builder.Append(new string('\t', Math.Max(0, indentLevel)));
+  }
+
   public static StringBuilder AppendWithSeparator(this StringBuilder builder, string value, string seperator)
   {
     if (builder.Length > 0)

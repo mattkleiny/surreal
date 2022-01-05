@@ -35,8 +35,13 @@ internal sealed class OpenTkWindow : IDesktopWindow
       VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
     };
 
-    if (configuration.Icon is { Format: TextureFormat.Rgba8888 })
+    if (configuration.Icon != null)
     {
+      if (configuration.Icon is not { Format: TextureFormat.Rgba8888 })
+      {
+        throw new InvalidOperationException($"Expected an image in the {nameof(TextureFormat.Rgba8888)} format");
+      }
+
       var icon   = configuration.Icon;
       var pixels = MemoryMarshal.Cast<Color, byte>(icon.Pixels);
 

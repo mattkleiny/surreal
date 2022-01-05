@@ -2,4 +2,4 @@
 
 namespace Surreal.Internal.Graphics.Resources;
 
-internal record HeadlessShaderSet : ICompiledShader;
+internal record HeadlessShaderSet : ICompiledShaderProgram;

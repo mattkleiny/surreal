@@ -9,7 +9,6 @@ using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
-using Surreal.Graphics.Shaders.Simple;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
@@ -35,7 +34,7 @@ public abstract class PrototypeGame : Game
   public Color ClearColor { get; set; } = Color.Black;
 
   /// <summary>The <see cref="IShaderParser"/> to use when loading <see cref="ShaderProgram"/>s.</summary>
-  public virtual IShaderParser ShadingLanguage { get; } = new SimpleShadingLanguage();
+  public virtual IShaderParser ShadingLanguage { get; } = new SimpleShaderParser();
 
   protected override void Initialize()
   {

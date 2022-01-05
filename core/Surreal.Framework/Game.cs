@@ -1,6 +1,5 @@
 ﻿using System.Runtime;
 using Surreal.Assets;
-using Surreal.Collections;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Fibers;
 using Surreal.IO;

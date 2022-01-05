@@ -1,5 +1,4 @@
-﻿using NSubstitute;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Surreal;
 

@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;

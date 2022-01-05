@@ -26,7 +26,7 @@ public sealed class ChunkMesh : IDisposable
   public bool IsDirty { get; private set; } = true;
   public bool IsReady { get; private set; }
 
-  public void Render(PrimitiveType type)
+  public void Render(MeshType type)
   {
     if (IsDirty)
     {

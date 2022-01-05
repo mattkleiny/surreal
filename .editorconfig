@@ -19,6 +19,7 @@ dotnet_diagnostic.CA1707.severity = None # Do not use underscores in method name
 dotnet_diagnostic.CA1000.severity = None # Do not declare static fields in generic types
 dotnet_diagnostic.CA1816.severity = None # Call SuppressFinalize so sub-classes don't have to
 dotnet_diagnostic.CA1711.severity = None # Don't suffix with reserved type names
+dotnet_diagnostic.CA1720.severity = None # Don't use reserved type names
 dotnet_diagnostic.CA1822.severity = None # Member can be marked as static
 
 ## Sonar Analyzers

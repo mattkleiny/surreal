@@ -52,7 +52,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 
     await using var stream = await path.OpenInputStreamAsync();
 
-    var parsed   = await parser.ParseShaderAsync(stream, encoding, cancellationToken);
+    var parsed   = await parser.ParseShaderAsync(path.ToString(), stream, encoding, cancellationToken);
     var compiled = await device.ShaderCompiler.CompileAsync(parsed);
 
     return device.CreateShaderProgram(compiled);

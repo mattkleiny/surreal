@@ -25,7 +25,7 @@ public sealed class Mesh<TVertex> : IDisposable
 
   public void DrawImmediate(
     Material material,
-    PrimitiveType type = PrimitiveType.Triangles
+    MeshType type = MeshType.Triangles
   )
   {
     DrawImmediate(material, Vertices.Length, Indices.Length, type);
@@ -35,7 +35,7 @@ public sealed class Mesh<TVertex> : IDisposable
     Material material,
     int vertexCount,
     int indexCount,
-    PrimitiveType type = PrimitiveType.Triangles
+    MeshType type = MeshType.Triangles
   )
   {
     device.DrawMesh(this, material, vertexCount, indexCount, type);

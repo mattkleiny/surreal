@@ -7,7 +7,7 @@ using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Internal.Graphics.Resources;
 using Surreal.Mathematics;
-using PrimitiveType = Surreal.Graphics.Meshes.PrimitiveType;
+using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Internal.Graphics;
@@ -51,7 +51,7 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
     Material material,
     int vertexCount,
     int indexCount,
-    PrimitiveType type = PrimitiveType.Triangles)
+    MeshType type = MeshType.Triangles)
     where TVertex : unmanaged
   {
     if (vertexCount == 0) return; // empty mesh? don't render
@@ -116,34 +116,36 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
     return new OpenTkRenderTexture(texture, image);
   }
 
-  public ShaderProgram CreateShaderProgram(ICompiledShader shader)
+  public ShaderProgram CreateShaderProgram(ICompiledShaderProgram program)
   {
-    return new OpenTkShaderProgram((OpenTkShaderSet) shader);
+    var shaderSet = (OpenTkShaderSet) program;
+
+    return new OpenTkShaderProgram(shaderSet);
   }
 
-  private static void DrawMesh(int count, PrimitiveType type)
+  private static void DrawMesh(int count, MeshType type)
   {
     Debug.Assert(count >= 0, "count >= 0");
 
     GL.DrawArrays(ConvertPrimitiveType(type), 0, count);
   }
 
-  private static void DrawMeshIndexed(int count, PrimitiveType type)
+  private static void DrawMeshIndexed(int count, MeshType type)
   {
     Debug.Assert(count >= 0, "count >= 0");
 
     GL.DrawElements(ConvertPrimitiveType(type), count, DrawElementsType.UnsignedShort, IntPtr.Zero);
   }
 
-  private static OpenTK.Graphics.OpenGL.PrimitiveType ConvertPrimitiveType(PrimitiveType type) => type switch
+  private static PrimitiveType ConvertPrimitiveType(MeshType type) => type switch
   {
-    PrimitiveType.Points    => OpenTK.Graphics.OpenGL.PrimitiveType.Points,
-    PrimitiveType.Lines     => OpenTK.Graphics.OpenGL.PrimitiveType.Lines,
-    PrimitiveType.LineStrip => OpenTK.Graphics.OpenGL.PrimitiveType.LineStrip,
-    PrimitiveType.LineLoop  => OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop,
-    PrimitiveType.Triangles => OpenTK.Graphics.OpenGL.PrimitiveType.Triangles,
-    PrimitiveType.Quads     => OpenTK.Graphics.OpenGL.PrimitiveType.Quads,
-    PrimitiveType.QuadStrip => OpenTK.Graphics.OpenGL.PrimitiveType.QuadStrip,
-    _                       => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested."),
+    MeshType.Points    => PrimitiveType.Points,
+    MeshType.Lines     => PrimitiveType.Lines,
+    MeshType.LineStrip => PrimitiveType.LineStrip,
+    MeshType.LineLoop  => PrimitiveType.LineLoop,
+    MeshType.Triangles => PrimitiveType.Triangles,
+    MeshType.Quads     => PrimitiveType.Quads,
+    MeshType.QuadStrip => PrimitiveType.QuadStrip,
+    _                  => throw new ArgumentOutOfRangeException(nameof(type), type, "An unrecognized primitive type was requested."),
   };
 }

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+  </ItemGroup>
+</Project>
