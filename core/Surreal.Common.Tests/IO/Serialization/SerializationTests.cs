@@ -1,7 +1,6 @@
-﻿using Surreal.IO.Serialization;
-using Surreal.Mathematics;
+﻿using Surreal.Mathematics;
 
-namespace Surreal.Serialization;
+namespace Surreal.IO.Serialization;
 
 public class SerializationTests
 {

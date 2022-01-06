@@ -29,7 +29,7 @@ public sealed class MainScreen : Screen<AsteroidsGame>
     Restart(Seed.FromString("LLAMAS"));
   }
 
-  protected override async Task LoadContentAsync(IAssetContext assets)
+  protected override async Task LoadContentAsync(IAssetManager assets)
   {
     shipSprite = await assets.LoadAsset<Texture>("Assets/sprites/ship.png");
 

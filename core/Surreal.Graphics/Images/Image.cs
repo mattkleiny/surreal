@@ -88,8 +88,8 @@ public sealed class Image : ITextureData, IDisposable
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>
 public sealed class ImageLoader : AssetLoader<Image>
 {
-  public override async Task<Image> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    return await Image.LoadAsync(path);
+    return await Image.LoadAsync(context.Path);
   }
 }

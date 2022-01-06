@@ -39,6 +39,24 @@ public abstract record GraphNode<TSelf> : IEnumerable<TSelf>, IGraphNode
   public void Add(TSelf node)    => Children.Add(node);
   public void Remove(TSelf node) => Children.Remove(node);
 
+  public IEnumerable<TSelf> GetChildrenRecursively(int depth = 0, int maxDepth = int.MaxValue)
+  {
+    if (depth > maxDepth)
+    {
+      throw new InvalidOperationException("Maximum depth exceeded.");
+    }
+
+    foreach (var child in Children)
+    {
+      yield return child;
+
+      foreach (var subChild in child.GetChildrenRecursively(depth + 1, maxDepth))
+      {
+        yield return subChild;
+      }
+    }
+  }
+
   public IEnumerator<TSelf> GetEnumerator()
   {
     return Children.GetEnumerator();

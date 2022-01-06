@@ -39,7 +39,7 @@ public abstract class Screen : IScreen
     await LoadContentAsync(Game.Assets);
   }
 
-  protected virtual Task LoadContentAsync(IAssetContext assets)
+  protected virtual Task LoadContentAsync(IAssetManager assets)
   {
     return Task.CompletedTask;
   }

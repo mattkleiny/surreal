@@ -1,7 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Materials;
@@ -45,9 +44,9 @@ public sealed class Material : GraphicsResource
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Material"/>s.</summary>
 public sealed class MaterialLoader : AssetLoader<Material>
 {
-  public override async Task<Material> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<Material> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    var program = await context.LoadAsset<ShaderProgram>(path, cancellationToken);
+    var program = await context.Manager.LoadAsset<ShaderProgram>(context.Path, cancellationToken);
 
     return new Material(program);
   }

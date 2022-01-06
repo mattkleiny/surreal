@@ -1,5 +1,4 @@
 ﻿using Isaac.Dungeons;
-using Isaac.Dungeons.Nodes;
 
 namespace Surreal.Dungeons;
 
@@ -10,8 +9,8 @@ public class DungeonBlueprintTests
   {
     var blueprint = new DungeonBlueprint
     {
-      new PlaceSpawn(),
-      new PlaceShop(),
+      new DungeonNode.PlaceSpawn(),
+      new DungeonNode.PlaceShop(),
     };
 
     Assert.IsNotNull(blueprint.CreatePlan());

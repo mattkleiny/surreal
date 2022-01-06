@@ -5,7 +5,7 @@ public class SimpleShaderParserTests
   [Test, Benchmark(Milliseconds = 0.5f)]
   public async Task it_should_parse_a_simple_program()
   {
-    IShaderParser language = new SimpleShaderParser();
+    IShaderParser language = new StandardShaderParser();
 
     var metadata = await language.ParseShaderAsync(
       name: "test.shader",

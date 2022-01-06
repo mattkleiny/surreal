@@ -43,16 +43,16 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     this.hotReloading = hotReloading;
   }
 
-  public override async Task<ShaderProgram> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     if (hotReloading)
     {
       // TODO: implement hot reloading with a file watcher
     }
 
-    await using var stream = await path.OpenInputStreamAsync();
+    await using var stream = await context.Path.OpenInputStreamAsync();
 
-    var parsed   = await parser.ParseShaderAsync(path.ToString(), stream, encoding, cancellationToken);
+    var parsed   = await parser.ParseShaderAsync(context.Path.ToString(), stream, encoding, cancellationToken);
     var compiled = await device.ShaderCompiler.CompileAsync(parsed);
 
     return device.CreateShaderProgram(compiled);

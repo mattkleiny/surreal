@@ -1,5 +1,4 @@
 using Surreal.Assets;
-using Surreal.IO;
 using Surreal.Memory;
 
 namespace Surreal.Audio.Clips;
@@ -41,9 +40,9 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
     this.device = device;
   }
 
-  public override async Task<AudioClip> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<AudioClip> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    var buffer = await context.LoadAsset<AudioBuffer>(path, cancellationToken);
+    var buffer = await context.Manager.LoadAsset<AudioBuffer>(context.Path, cancellationToken);
 
     return device.CreateAudioClip(buffer);
   }

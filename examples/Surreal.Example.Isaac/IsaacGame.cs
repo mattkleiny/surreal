@@ -1,11 +1,12 @@
 ﻿using Isaac.Dungeons;
 using Surreal.Assets;
-using Surreal.Objects;
 
 namespace Isaac;
 
 public sealed class IsaacGame : PrototypeGame
 {
+  private DungeonBlueprint blueprint;
+
   public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
     Platform = new DesktopPlatform
@@ -19,10 +20,10 @@ public sealed class IsaacGame : PrototypeGame
     },
   });
 
-  protected override void RegisterAssetLoaders(IAssetManager assets)
+  protected override async Task LoadContentAsync(IAssetManager assets)
   {
-    base.RegisterAssetLoaders(assets);
+    await base.LoadContentAsync(assets);
 
-    assets.AddLoader(new XmlTemplateLoader<DungeonBlueprint.Template>("Dungeon"));
+    blueprint = await assets.LoadAsset<DungeonBlueprint>("Assets/dungeons/dungeon-test-01.xml");
   }
 }

@@ -1,5 +1,4 @@
 ﻿using Surreal.Assets;
-using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Textures;
@@ -19,9 +18,9 @@ public readonly record struct TextureRegion(Texture Texture)
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="TextureRegion"/>s.</summary>
 public sealed class TextureRegionLoader : AssetLoader<TextureRegion>
 {
-  public override async Task<TextureRegion> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<TextureRegion> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    var texture = await context.LoadAsset<Texture>(path, cancellationToken);
+    var texture = await context.Manager.LoadAsset<Texture>(context.Path, cancellationToken);
 
     return texture.ToRegion();
   }

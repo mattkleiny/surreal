@@ -96,9 +96,9 @@ public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
     this.culture = culture;
   }
 
-  public override async Task<TrueTypeFont> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<TrueTypeFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenInputStreamAsync();
+    await using var stream = await context.Path.OpenInputStreamAsync();
 
     var fonts      = new FontCollection();
     var fontFamily = fonts.Install(stream, culture);

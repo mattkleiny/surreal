@@ -2,19 +2,15 @@
 
 namespace Isaac.Dungeons;
 
-public sealed class DungeonPlan
+/// <summary>A contribution to a <see cref="DungeonPlan"/>.</summary>
+public interface IDungeonPlanContribution
 {
-  public DungeonPlan(Seed seed, int width, int height)
-  {
-    Seed   = seed;
-    Width  = width;
-    Height = height;
-  }
+  void ApplyTo(DungeonPlan plan);
+}
 
-  public Seed Seed   { get; }
-  public int  Width  { get; }
-  public int  Height { get; }
-
+/// <summary>A plan for a <see cref="Dungeon"/>.</summary>
+public sealed record DungeonPlan(Seed Seed, int Width, int Height)
+{
   public Dungeon Spawn(IActorContext context)
   {
     return new Dungeon(context);

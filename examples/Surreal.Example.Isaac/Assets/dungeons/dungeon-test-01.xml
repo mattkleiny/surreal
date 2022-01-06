@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<Dungeon Description="A simple testing dungeon for debugging purposes">
+<Dungeon Description="A simple testing dungeon for debugging purposes" Width="16" Height="16">
   <PlaceSpawnRoom />
   <For From="10" To="20">
     <PlaceStandardRoom />

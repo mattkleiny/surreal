@@ -4,7 +4,7 @@ using Surreal.Text;
 namespace Surreal.Graphics.Shaders;
 
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
-public sealed class SimpleShaderParser : IShaderParser
+public sealed class StandardShaderParser : IShaderParser
 {
   private static HashSet<string> Keywords { get; } = new() { "for", "if", "else" };
 
@@ -186,7 +186,7 @@ public sealed class SimpleShaderParser : IShaderParser
     return new ParseException(position, span, message);
   }
 
-  /// <summary>Different types of tokens recognized by the <see cref="SimpleShaderParser"/>.</summary>
+  /// <summary>Different types of tokens recognized by the parser.</summary>
   private enum TokenType
   {
     // single character tokens
@@ -223,7 +223,7 @@ public sealed class SimpleShaderParser : IShaderParser
     Comment,
   }
 
-  /// <summary>Encodes a single token in the <see cref="SimpleShaderParser"/>.</summary>
+  /// <summary>Encodes a single token in the <see cref="StandardShaderParser"/>.</summary>
   private readonly record struct Token(TokenType Type, LinePosition Position, StringSpan Span, object? Literal = null);
 
   /// <summary>A position of a token in it's source text.</summary>

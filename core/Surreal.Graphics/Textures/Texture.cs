@@ -1,6 +1,5 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
-using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
@@ -90,14 +89,14 @@ public sealed class TextureLoader : AssetLoader<Texture>
     this.hotReloading      = hotReloading;
   }
 
-  public override async Task<Texture> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     if (hotReloading)
     {
       // TODO: implement hot reloading with a file watcher
     }
 
-    var image   = await context.LoadAsset<Image>(path, cancellationToken);
+    var image   = await context.Manager.LoadAsset<Image>(context.Path, cancellationToken);
     var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 
     return texture;

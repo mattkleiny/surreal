@@ -4,9 +4,12 @@ using Surreal.IO;
 namespace Surreal.Assets;
 
 /// <summary>Allows managing assets.</summary>
-public interface IAssetManager : IAssetContext
+public interface IAssetManager
 {
   void AddLoader(IAssetLoader loader);
+
+  Task<object> LoadAsset(Type type, VirtualPath path, CancellationToken cancellationToken = default);
+  Task<T>      LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
@@ -20,23 +23,33 @@ public sealed class AssetManager : IAssetManager, IDisposable
     loaders.Add(loader);
   }
 
-  public async Task<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
-    where T : class
+  public async Task<object> LoadAsset(Type type, VirtualPath path, CancellationToken cancellationToken = default)
   {
-    var assetType = typeof(T);
-    var assetId   = new AssetId(assetType, path);
-
-    if (!TryGetLoader(assetType, out var loader))
+    var context = new AssetLoaderContext
     {
-      throw new UnsupportedAssetException($"An unsupported asset type was requested: {assetType.Name}");
+      Path      = path,
+      AssetType = type,
+      Manager   = this,
+    };
+
+    var assetId = new AssetId(context.AssetType, path);
+
+    if (!TryGetLoader(context, out var loader))
+    {
+      throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.AssetType.Name}");
     }
 
     if (!assetsById.TryGetValue(assetId, out var asset))
     {
-      assetsById[assetId] = asset = await loader.LoadAsync(path, this, cancellationToken);
+      assetsById[assetId] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
-    return (T) asset;
+    return asset;
+  }
+
+  public async Task<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    return (T) await LoadAsset(typeof(T), path, cancellationToken);
   }
 
   public void Dispose()
@@ -62,12 +75,12 @@ public sealed class AssetManager : IAssetManager, IDisposable
   }
 
   /// <summary>Attempts to locate a valid loader for the given type.</summary>
-  private bool TryGetLoader(Type type, [NotNullWhen(true)] out IAssetLoader? result)
+  private bool TryGetLoader(AssetLoaderContext context, [NotNullWhen(true)] out IAssetLoader? result)
   {
     for (var i = 0; i < loaders.Count; i++)
     {
       var loader = loaders[i];
-      if (loader.CanHandle(type))
+      if (loader.CanHandle(context))
       {
         result = loader;
         return true;

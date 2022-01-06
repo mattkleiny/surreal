@@ -1,10 +1,11 @@
-﻿using Isaac.Dungeons.Nodes;
-using Surreal.Mathematics;
+﻿using Surreal.Mathematics;
 using Surreal.Objects;
 
 namespace Isaac.Dungeons;
 
-public sealed class DungeonBlueprint : BlueprintNode
+/// <summary>A blueprint for a dungeon.</summary>
+[Template(typeof(DungeonBlueprintTemplate))]
+public sealed record DungeonBlueprint : DungeonNode
 {
   public int Width  { get; init; } = 15;
   public int Height { get; init; } = 9;
@@ -13,12 +14,18 @@ public sealed class DungeonBlueprint : BlueprintNode
   {
     var plan = new DungeonPlan(seed, Width, Height);
 
-    PlanDungeon(plan);
+    foreach (var node in GetChildrenRecursively())
+    {
+      if (node is IDungeonPlanContribution contribution)
+      {
+        contribution.ApplyTo(plan);
+      }
+    }
 
     return plan;
   }
 
-  public sealed class Template : IImportableTemplate<DungeonBlueprint>
+  private sealed record DungeonBlueprintTemplate : IImportableTemplate<DungeonBlueprint>
   {
     public int Width  { get; set; }
     public int Height { get; set; }

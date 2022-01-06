@@ -38,17 +38,17 @@ public sealed class AudioBuffer : AudioResource, IAudioData, IHasSizeEstimate
 [RegisterService(typeof(IAssetLoader))]
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
-  public override async Task<AudioBuffer> LoadAsync(VirtualPath path, IAssetContext context, CancellationToken cancellationToken = default)
+  public override async Task<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenInputStreamAsync();
+    await using var stream = await context.Path.OpenInputStreamAsync();
 
-    await using WaveStream reader = path.Extension switch
+    await using WaveStream reader = context.Path.Extension switch
     {
       ".wav"  => new WaveFileReader(stream),
       ".mp3"  => new Mp3FileReader(stream),
       ".aiff" => new AiffFileReader(stream),
 
-      _ => throw new UnsupportedAudioFormatException($"An unrecognized audio file format was requested: {path}"),
+      _ => throw new UnsupportedAudioFormatException($"An unrecognized audio file format was requested: {context.Path}"),
     };
 
     var format = reader.WaveFormat;

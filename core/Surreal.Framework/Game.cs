@@ -115,7 +115,7 @@ public abstract partial class Game : IDisposable, ITestableGame
     Services = registry.BuildServiceProvider();
   }
 
-  protected virtual async Task LoadContentAsync(IAssetContext assets)
+  protected virtual async Task LoadContentAsync(IAssetManager assets)
   {
     foreach (var plugin in Plugins)
     {

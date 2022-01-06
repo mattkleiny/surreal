@@ -14,6 +14,7 @@ using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Mathematics;
+using Surreal.Objects;
 using Surreal.Screens;
 
 namespace Surreal;
@@ -34,7 +35,7 @@ public abstract class PrototypeGame : Game
   public Color ClearColor { get; set; } = Color.Black;
 
   /// <summary>The <see cref="IShaderParser"/> to use when loading <see cref="ShaderProgram"/>s.</summary>
-  public virtual IShaderParser ShadingLanguage { get; } = new SimpleShaderParser();
+  public virtual IShaderParser ShadingLanguage { get; } = new StandardShaderParser();
 
   protected override void Initialize()
   {
@@ -85,6 +86,7 @@ public abstract class PrototypeGame : Game
     assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
     assets.AddLoader(new TextureRegionLoader());
     assets.AddLoader(new TrueTypeFontLoader());
+    assets.AddLoader(new XmlTemplateLoader());
   }
 
   protected override void OnResized(int width, int height)
