@@ -123,7 +123,27 @@ public static class StringSpanExtensions
 
     for (var i = 1; i < span.Length; i++)
     {
-      if (!char.IsLetterOrDigit(span[i]))
+      var character = span[i];
+
+      if (!char.IsLetterOrDigit(character) && character != '_')
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>Consumes all alpha-numeric characters in the span</summary>
+  public static StringSpan ConsumeAny(this StringSpan span, HashSet<char> characters)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (!characters.Contains(span[i]))
       {
         break;
       }

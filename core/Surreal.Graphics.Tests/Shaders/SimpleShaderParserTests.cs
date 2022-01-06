@@ -3,26 +3,6 @@
 public class SimpleShaderParserTests
 {
   [Test]
-  public async Task it_should_parse_tokens()
-  {
-    IShaderParser language = new SimpleShaderParser();
-
-    var metadata = await language.ParseShaderAsync(
-      name: "test.shader",
-      sourceCode: @"
-        // this is a comment
-        (( )){} // grouping stuff
-        !*+-/=<> <= == // operators
-        ""This is a test string""
-        341525.43.2
-        if (test > 0) { }
-      "
-    );
-
-    Assert.IsNotNull(metadata);
-  }
-
-  [Test]
   public async Task it_should_parse_a_simple_program()
   {
     IShaderParser language = new SimpleShaderParser();
@@ -30,6 +10,9 @@ public class SimpleShaderParserTests
     var metadata = await language.ParseShaderAsync(
       name: "test.shader",
       sourceCode: @"
+      // A simple sprite shader, for testing purposes.
+      // This description should be attached up-front.
+
       shader_type sprite;
 
       uniform vec3  _Position;

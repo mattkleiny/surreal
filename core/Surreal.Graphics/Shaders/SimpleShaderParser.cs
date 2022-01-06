@@ -1,4 +1,5 @@
-﻿using Surreal.Text;
+﻿using Surreal.Collections;
+using Surreal.Text;
 
 namespace Surreal.Graphics.Shaders;
 
@@ -11,12 +12,34 @@ public sealed class SimpleShaderParser : IShaderParser
   {
     var tokens = await TokenizeAsync(reader, cancellationToken);
 
-    return new ShaderProgramDeclaration(name, string.Empty, ShaderArchetype.Sprite);
+    var description  = ParseDescription(tokens);
+    var declarations = ParseDeclarations(tokens);
+
+    return new ShaderProgramDeclaration(name, description, ShaderArchetype.Sprite);
   }
 
-  private static async Task<IEnumerable<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
+  private static string ParseDescription(Queue<Token> tokens)
   {
-    var results = new List<Token>();
+    var builder = new StringBuilder();
+
+    while (tokens.TryPeekAndDequeue(_ => _.Type == TokenType.Comment, out var token))
+    {
+      builder.AppendLine(token.Literal?.ToString()?.Trim());
+    }
+
+    return builder.ToString();
+  }
+
+  private static IEnumerable<ShaderDeclaration> ParseDeclarations(Queue<Token> tokens)
+  {
+    // TODO: implement me
+
+    yield break;
+  }
+
+  private static async Task<Queue<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
+  {
+    var results = new Queue<Token>();
 
     for (var line = 0;; line++)
     {
@@ -32,7 +55,7 @@ public sealed class SimpleShaderParser : IShaderParser
         var token = ScanToken(new(line + 1, column + 1), span[column..]);
         if (token != null)
         {
-          results.Add(token.Value);
+          results.Enqueue(token.Value);
 
           // skip forward on long spans
           if (token.Value.Span.Length > 1)
@@ -51,6 +74,7 @@ public sealed class SimpleShaderParser : IShaderParser
 
     switch (character)
     {
+      // simple characters
       case '(': return new Token(TokenType.LeftParenthesis, position, span[..1]);
       case ')': return new Token(TokenType.RightParenthesis, position, span[..1]);
       case '{': return new Token(TokenType.LeftBrace, position, span[..1]);
@@ -62,31 +86,41 @@ public sealed class SimpleShaderParser : IShaderParser
       case '*': return new Token(TokenType.Star, position, span[..1]);
       case ':': return new Token(TokenType.Colon, position, span[..1]);
       case ';': return new Token(TokenType.SemiColon, position, span[..1]);
+
+      // dual characters
       case '!':
       {
         if (span.Match('='))
+        {
           return new Token(TokenType.BangEqual, position, span[..2]);
+        }
 
         return new Token(TokenType.Bang, position, span[..1]);
       }
       case '=':
       {
         if (span.Match('='))
+        {
           return new Token(TokenType.EqualEqual, position, span[..2]);
+        }
 
         return new Token(TokenType.Equal, position, span[..1]);
       }
       case '<':
       {
         if (span.Match('='))
+        {
           return new Token(TokenType.LessEqual, position, span[..2]);
+        }
 
         return new Token(TokenType.Less, position, span[..1]);
       }
       case '>':
       {
         if (span.Match('='))
+        {
           return new Token(TokenType.GreaterEqual, position, span[..2]);
+        }
 
         return new Token(TokenType.Greater, position, span[..1]);
       }
@@ -94,30 +128,34 @@ public sealed class SimpleShaderParser : IShaderParser
       {
         if (span.Match('/'))
         {
-          return new Token(TokenType.Comment, position, span);
+          return new Token(TokenType.Comment, position, span, span[2..]);
         }
 
         return new Token(TokenType.Slash, position, span[..1]);
       }
-      case ' ':
-      case '\t':
-      case '\r':
-      case '\n':
-      {
-        // ignore whitespace
-        return null;
-      }
+
+      // strings
       case '"':
       {
         var literal = span.ConsumeUntil('"');
 
         if (literal[^1] != '"')
+        {
           throw ErrorAt(position, span, $"Unterminated string literal: {literal}");
+        }
 
         return new Token(TokenType.String, position, literal, literal[1..^1].ToString());
       }
+
       default:
       {
+        // whitespace
+        if (char.IsWhiteSpace(character))
+        {
+          // ignore whitespace
+          return null;
+        }
+
         // numbers
         if (char.IsDigit(character))
         {
@@ -126,7 +164,8 @@ public sealed class SimpleShaderParser : IShaderParser
           return new Token(TokenType.Number, position, number, decimal.Parse(number.ToString()!));
         }
 
-        if (char.IsLetter(character))
+        // identifiers and keywords
+        if (char.IsLetter(character) || character == '_')
         {
           var identifier = span.ConsumeAlphaNumeric();
 

@@ -1,4 +1,6 @@
-﻿namespace Surreal.Collections;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Surreal.Collections;
 
 /// <summary>General purpose collection extensions</summary>
 public static class CollectionExtensions
@@ -29,5 +31,21 @@ public static class CollectionExtensions
     }
 
     return default;
+  }
+
+  public static bool TryPeekAndDequeue<T>(this Queue<T> queue, Predicate<T> predicate, [NotNullWhen(true)] out T? result)
+    where T : notnull
+  {
+    if (queue.TryPeek(out var value))
+    {
+      if (predicate(value))
+      {
+        result = queue.Dequeue()!;
+        return true;
+      }
+    }
+
+    result = default;
+    return false;
   }
 }
