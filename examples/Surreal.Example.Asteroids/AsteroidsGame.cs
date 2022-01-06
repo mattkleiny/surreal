@@ -2,9 +2,9 @@ using Asteroids.Screens;
 
 namespace Asteroids;
 
-public sealed class Game : PrototypeGame
+public sealed class AsteroidsGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<Game>(new Configuration
+  public static Task Main() => StartAsync<AsteroidsGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {

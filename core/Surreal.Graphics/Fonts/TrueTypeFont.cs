@@ -21,6 +21,7 @@ public sealed class TrueTypeFont
     throw new NotImplementedException();
   }
 
+  /// <summary>A <see cref="IColorGlyphRenderer"/> for true type font rasterisation.</summary>
   private sealed class GlyphRenderer : IColorGlyphRenderer
   {
     public void BeginFigure()

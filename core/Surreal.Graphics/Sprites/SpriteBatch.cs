@@ -132,7 +132,7 @@ public sealed class SpriteBatch : IDisposable
 
     material.SetProperty(TextureView, lastTexture!);
 
-    mesh.Vertices.Write(vertices.Span[..indexCount]);
+    mesh.Vertices.Write(vertices.Span[..vertexCount]);
     mesh.DrawImmediate(material, vertexCount, indexCount);
 
     vertexCount = 0;
@@ -161,8 +161,9 @@ public sealed class SpriteBatch : IDisposable
     vertices.Dispose();
   }
 
+  [VisibleForTesting]
   [StructLayout(LayoutKind.Sequential)]
-  private struct Vertex
+  internal struct Vertex
   {
     [VertexDescriptor(
       Alias = "a_position",

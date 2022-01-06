@@ -1,9 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Surreal.Graphics</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- automatically copy assets to output path -->
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

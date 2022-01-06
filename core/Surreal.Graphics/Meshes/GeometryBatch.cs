@@ -169,8 +169,9 @@ public sealed class GeometryBatch : IDisposable
     indices.Dispose();
   }
 
+  [VisibleForTesting]
   [StructLayout(LayoutKind.Sequential)]
-  private struct Vertex
+  internal struct Vertex
   {
     [VertexDescriptor(
       Alias = "a_position",

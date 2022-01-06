@@ -8,12 +8,12 @@ using Surreal.Screens;
 
 namespace Asteroids.Screens;
 
-public sealed class MainScreen : Screen<Game>
+public sealed class MainScreen : Screen<AsteroidsGame>
 {
   private Texture?   shipSprite;
   private Texture[]? asteroidSprites;
 
-  public MainScreen(Game game)
+  public MainScreen(AsteroidsGame game)
     : base(game)
   {
   }

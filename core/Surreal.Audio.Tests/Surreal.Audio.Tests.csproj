@@ -1,5 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Surreal.Audio</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- automatically copy assets to output path -->
+    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

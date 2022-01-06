@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Surreal.Compute</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Compute\Surreal.Compute.csproj" />
   </ItemGroup>

@@ -1,9 +1,8 @@
 ﻿using NUnit.Framework;
-using Surreal.Audio.Clips;
 using Surreal.Memory;
 using Surreal.Timing;
 
-namespace Surreal.Clips;
+namespace Surreal.Audio.Clips;
 
 public class AudioBufferTests
 {

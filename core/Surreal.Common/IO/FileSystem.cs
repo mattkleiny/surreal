@@ -1,4 +1,3 @@
-using Surreal.Collections;
 using Surreal.Memory;
 
 namespace Surreal.IO;
@@ -10,14 +9,7 @@ public abstract class FileSystem : IFileSystem
 
   public static IFileSystem? GetForScheme(string scheme)
   {
-    var systems = Registry.GetByScheme(scheme);
-
-    if (systems.Length > 0)
-    {
-      return systems[0];
-    }
-
-    return default;
+    return Registry.GetByScheme(scheme);
   }
 
   protected FileSystem(params string[] schemes)
@@ -50,18 +42,28 @@ public abstract class FileSystem : IFileSystem
 
   private sealed class FileSystemRegistry : IFileSystemRegistry
   {
-    private readonly MultiDictionary<string, IFileSystem> fileSystemByScheme = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, IFileSystem> fileSystemByScheme = new(StringComparer.OrdinalIgnoreCase);
 
-    public ReadOnlySlice<IFileSystem> GetByScheme(string scheme)
+    public FileSystemRegistry()
     {
-      return fileSystemByScheme[scheme];
+      Add(new LocalFileSystem());
+    }
+
+    public IFileSystem? GetByScheme(string scheme)
+    {
+      if (!fileSystemByScheme.TryGetValue(scheme, out var fileSystem))
+      {
+        return default;
+      }
+
+      return fileSystem;
     }
 
     public void Add(IFileSystem system)
     {
       foreach (var scheme in system.Schemes)
       {
-        fileSystemByScheme.Add(scheme, system);
+        fileSystemByScheme[scheme] = system;
       }
     }
 

@@ -9,51 +9,14 @@ using Stopwatch = Surreal.Timing.Stopwatch;
 
 namespace Surreal;
 
-public delegate GameLoopDelegate GameSetupDelegate(IPlatformHost host);
-public delegate FiberTask        GameLoopDelegate(GameContext context);
-
-/// <summary>Context for per-frame game loop updates.</summary>
-public readonly record struct GameContext(IPlatformHost Host, GameTime GameTime);
-
 /// <summary>Base class for any game built with Surreal.</summary>
-public abstract class Game : IDisposable
+public abstract partial class Game : IDisposable, ITestableGame
 {
   private static readonly IProfiler               Profiler = ProfilerFactory.GetProfiler<Game>();
   private static readonly ConcurrentQueue<Action> Actions  = new();
 
   private readonly TimeStamp   startTime = TimeStamp.Now;
   private readonly ILoopTarget loopTarget;
-
-  /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
-  public static void Start(IPlatform platform, GameSetupDelegate gameSetup)
-  {
-    GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
-
-    using var host = platform.BuildHost();
-
-    var stopwatch = new Stopwatch();
-    var startTime = TimeStamp.Now;
-    var gameLoop  = gameSetup(host);
-
-    while (!host.IsClosing)
-    {
-      var deltaTime = stopwatch.Tick();
-      var totalTime = TimeStamp.Now - startTime;
-
-      host.Tick(deltaTime);
-      FiberScheduler.Tick();
-
-      var gameTime = new GameTime(
-        DeltaTime: deltaTime,
-        TotalTime: totalTime,
-        IsRunningSlowly: deltaTime > 32.Milliseconds()
-      );
-
-      gameLoop(new GameContext(host, gameTime));
-
-      Thread.Yield();
-    }
-  }
 
   public static TGame Create<TGame>(Configuration configuration)
     where TGame : Game, new()
@@ -238,6 +201,10 @@ public abstract class Game : IDisposable
     Host.Dispose();
   }
 
+  ILoopTarget ITestableGame.LoopTarget => loopTarget;
+
+  Task ITestableGame.InitializeAsync() => InitializeAsync();
+
   /// <summary>Configuration for the <see cref="Game"/>.</summary>
   public sealed class Configuration
   {
@@ -290,4 +257,3 @@ public abstract class Game : IDisposable
     }
   }
 }
-

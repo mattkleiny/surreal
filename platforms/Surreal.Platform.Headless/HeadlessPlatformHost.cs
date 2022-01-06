@@ -6,7 +6,6 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
-using Surreal.IO;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -19,7 +18,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProv
   public HeadlessComputeDevice  ComputeDevice  { get; } = new();
   public HeadlessGraphicsDevice GraphicsDevice { get; } = new();
   public HeadlessInputManager   InputManager   { get; } = new();
-  public LocalFileSystem        FileSystem     { get; } = new();
 
   public int  Width     => 1920;
   public int  Height    => 1080;
@@ -38,7 +36,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProv
     if (serviceType == typeof(IComputeDevice)) return ComputeDevice;
     if (serviceType == typeof(IGraphicsDevice)) return GraphicsDevice;
     if (serviceType == typeof(IInputManager)) return InputManager;
-    if (serviceType == typeof(IFileSystem)) return FileSystem;
 
     return null;
   }

@@ -1,5 +1,4 @@
-﻿using Surreal.Collections;
-using Surreal.Memory;
+﻿using Surreal.Memory;
 
 namespace Surreal.IO;
 
@@ -27,7 +26,7 @@ public interface IFileSystem
 /// <summary>A registry for <see cref="IFileSystem"/>s.</summary>
 public interface IFileSystemRegistry
 {
-  ReadOnlySlice<IFileSystem> GetByScheme(string scheme);
+  IFileSystem? GetByScheme(string scheme);
 
   void Add(IFileSystem system);
   void Clear();

@@ -4,9 +4,9 @@ using Surreal.Objects;
 
 namespace Isaac;
 
-public sealed class Game : PrototypeGame
+public sealed class IsaacGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<Game>(new Configuration
+  public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {

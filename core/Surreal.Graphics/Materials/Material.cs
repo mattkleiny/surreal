@@ -29,8 +29,15 @@ public sealed class Material : GraphicsResource
   public void SetProperty(MaterialProperty<Matrix4x4> property, in Matrix4x4 value) => Program.SetUniform(property.Name, in value);
 
   // textures
-  public void SetProperty(MaterialProperty<Texture> property, Texture value)             => throw new NotImplementedException();
-  public void SetProperty(MaterialProperty<RenderTexture> property, RenderTexture value) => throw new NotImplementedException();
+  public void SetProperty(MaterialProperty<Texture> property, Texture value)
+  {
+    // TODO: implement me
+  }
+
+  public void SetProperty(MaterialProperty<RenderTexture> property, RenderTexture value)
+  {
+    // TODO: implement me
+  }
 
   public void ApplyEffect(MaterialEffect effect) => effect.ApplyToMaterial(this);
 }

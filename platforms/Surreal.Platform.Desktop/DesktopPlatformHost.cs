@@ -8,7 +8,6 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
-using Surreal.IO;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -29,7 +28,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
     ComputeDevice  = new OpenTkComputeDevice();
     GraphicsDevice = new OpenTkGraphicsDevice(Window);
     InputManager   = new OpenTkInputManager(Window);
-    FileSystem     = new LocalFileSystem();
   }
 
   public event Action<int, int> Resized
@@ -43,7 +41,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
   public OpenTkComputeDevice  ComputeDevice  { get; }
   public OpenTkGraphicsDevice GraphicsDevice { get; }
   public OpenTkInputManager   InputManager   { get; }
-  public LocalFileSystem      FileSystem     { get; }
 
   public IServiceProvider Services => this;
 
@@ -86,7 +83,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
     if (serviceType == typeof(IComputeDevice)) return ComputeDevice;
     if (serviceType == typeof(IGraphicsDevice)) return GraphicsDevice;
     if (serviceType == typeof(IInputManager)) return InputManager;
-    if (serviceType == typeof(IFileSystem)) return FileSystem;
 
     return null;
   }

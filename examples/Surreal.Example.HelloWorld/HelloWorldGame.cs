@@ -5,12 +5,12 @@ using Surreal.Mathematics;
 
 namespace HelloWorld;
 
-public sealed class Game : PrototypeGame
+public sealed class HelloWorldGame : PrototypeGame
 {
   private readonly OrthographicCamera camera = new(256 / 4, 144 / 4);
   private          GeometryBatch?     batch;
 
-  public static Task Main() => StartAsync<Game>(new Configuration
+  public static Task Main() => StartAsync<HelloWorldGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {

@@ -1,8 +1,8 @@
 ﻿namespace Minecraft;
 
-public sealed class Game : PrototypeGame
+public sealed class MinecraftGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<Game>(new Configuration
+  public static Task Main() => StartAsync<MinecraftGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {

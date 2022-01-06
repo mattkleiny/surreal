@@ -1,8 +1,8 @@
 ﻿namespace Prelude;
 
-public sealed class Game : PrototypeGame
+public sealed class PreludeGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<Game>(new Configuration
+  public static Task Main() => StartAsync<PreludeGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
