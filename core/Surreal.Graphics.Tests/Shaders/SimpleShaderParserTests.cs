@@ -2,7 +2,7 @@
 
 public class SimpleShaderParserTests
 {
-  [Test, Benchmark(MaxIterations = 5, ThresholdMs = 5)]
+  [Test, Benchmark(Milliseconds = 0.5f)]
   public async Task it_should_parse_a_simple_program()
   {
     IShaderParser language = new SimpleShaderParser();

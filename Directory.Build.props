@@ -76,11 +76,8 @@
     <Using Include="NSubstitute" />
 
     <!-- link shared code into test assemblies -->
-    <Compile Include="$(MSBuildProjectDirectory)..\..\..\AutoFixtures.cs">
-      <Link>Shared\AutoFixtures.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildProjectDirectory)..\..\..\BenchmarkTest.cs">
-      <Link>Shared\BenchmarkTest.cs</Link>
+    <Compile Include="$(MSBuildProjectDirectory)..\..\..\SharedTestHelpers.cs">
+      <Link>Shared\SharedTestHelpers.cs</Link>
     </Compile>
   </ItemGroup>
 

@@ -6,7 +6,7 @@ namespace Surreal.Internal.Graphics;
 
 public class OpenTkShaderCompilerTests
 {
-  [Test]
+  [Test, Benchmark(Milliseconds = 0.5f)]
   public async Task it_should_compile_simple_instructions()
   {
     var compiler = new OpenTkShaderCompiler();
