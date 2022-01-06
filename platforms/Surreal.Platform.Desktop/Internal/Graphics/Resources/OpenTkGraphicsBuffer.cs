@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Meshes;
 using Surreal.Memory;
@@ -6,17 +7,19 @@ using Surreal.Memory;
 namespace Surreal.Internal.Graphics.Resources;
 
 [DebuggerDisplay("Graphics buffer with {Length} elements ({Size})")]
-internal sealed class OpenTkGraphicsBuffer<T> : GraphicsBuffer<T>, IHasNativeId
+internal sealed class OpenTkGraphicsBuffer<T> : GraphicsBuffer<T>
   where T : unmanaged
 {
   private static readonly int Stride = Unsafe.SizeOf<T>();
 
-  public int Id { get; } = GL.GenBuffer();
+  public BufferHandle Id { get; } = GL.GenBuffer();
 
   public override Memory<T> Read(Optional<Range> range = default)
   {
-    GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
-    GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out int sizeInBytes);
+    int sizeInBytes = 0;
+
+    GL.BindBuffer(BufferTargetARB.ArrayBuffer, Id);
+    GL.GetBufferParameteri(BufferTargetARB.ArrayBuffer, BufferPNameARB.BufferSize, ref sizeInBytes);
 
     var (offset, length) = range.GetOrDefault(Range.All).GetOffsetAndLength(sizeInBytes / Stride);
 
@@ -24,7 +27,7 @@ internal sealed class OpenTkGraphicsBuffer<T> : GraphicsBuffer<T>, IHasNativeId
     var buffer        = new T[length];
 
     GL.GetBufferSubData(
-      target: BufferTarget.CopyWriteBuffer,
+      target: BufferTargetARB.CopyWriteBuffer,
       offset: new IntPtr(offsetInBytes),
       size: new IntPtr(sizeInBytes),
       data: ref buffer[0]
@@ -39,8 +42,8 @@ internal sealed class OpenTkGraphicsBuffer<T> : GraphicsBuffer<T>, IHasNativeId
 
     fixed (T* raw = data)
     {
-      GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
-      GL.BufferData(BufferTarget.ArrayBuffer, bytes, ref Unsafe.AsRef<T>(raw), BufferUsageHint.DynamicCopy);
+      GL.BindBuffer(BufferTargetARB.ArrayBuffer, Id);
+      GL.BufferData(BufferTargetARB.ArrayBuffer, new Span<T>(raw, data.Length), BufferUsageARB.DynamicCopy);
     }
 
     Length = data.Length;

@@ -20,7 +20,5 @@ public sealed class MinecraftGame : PrototypeGame
     base.Initialize();
 
     Mouse.IsCursorVisible = false;
-
-    GraphicsDevice.Pipeline.Rasterizer.IsDepthTestingEnabled = true;
   }
 }

@@ -3,6 +3,6 @@
     <Description>A Surreal platform implementation for desktop environments.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OpenTK" Version="4.6.7" PrivateAssets="compile" />
+    <PackageReference Include="OpenTK" Version="5.0.0-pre.6" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

@@ -12,14 +12,8 @@ public readonly record struct Viewport(int X, int Y, int Width, int Height);
 /// <summary>Represents the underlying graphics device.</summary>
 public interface IGraphicsDevice
 {
-  IPipelineState  Pipeline       { get; }
   IShaderCompiler ShaderCompiler { get; }
-
-  Viewport Viewport
-  {
-    get => Pipeline.Rasterizer.Viewport;
-    set => Pipeline.Rasterizer.Viewport = value;
-  }
+  Viewport        Viewport       { get; set; }
 
   void Clear(Color color);
   void ClearColor(Color color);
@@ -54,30 +48,4 @@ public interface IGraphicsDevice
 
   RenderTexture CreateFrameBuffer(in RenderTextureDescriptor descriptor);
   ShaderProgram CreateShaderProgram(ICompiledShaderProgram program);
-}
-
-/// <summary>Represents the underlying state of the graphics fixed-function pipeline.</summary>
-public interface IPipelineState
-{
-  RenderTexture?   ActiveFrameBuffer  { get; set; }
-  ShaderProgram?   ActiveShader       { get; set; }
-  GraphicsBuffer?  ActiveVertexBuffer { get; set; }
-  GraphicsBuffer?  ActiveIndexBuffer  { get; set; }
-  ITextureUnits    TextureUnits       { get; }
-  IRasterizerState Rasterizer         { get; }
-}
-
-/// <summary>Represents the underlying state of the graphics device rasterizer.</summary>
-public interface IRasterizerState
-{
-  Viewport Viewport { get; set; }
-
-  bool IsDepthTestingEnabled { get; set; }
-  bool IsBlendingEnabled     { get; set; }
-}
-
-/// <summary>Permits interaction with individual texture units on a <see cref="IPipelineState"/>.</summary>
-public interface ITextureUnits
-{
-  Texture? this[int unit] { get; set; }
 }

@@ -10,8 +10,8 @@ namespace Surreal.Internal.Graphics;
 
 internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
 {
-  public IPipelineState  Pipeline       { get; } = new HeadlessPipelineState();
   public IShaderCompiler ShaderCompiler { get; } = new HeadlessShaderCompiler();
+  public Viewport        Viewport       { get; set; }
 
   public void BeginFrame()
   {

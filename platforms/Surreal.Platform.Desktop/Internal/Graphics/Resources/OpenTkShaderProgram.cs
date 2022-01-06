@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -6,11 +7,11 @@ using Surreal.Mathematics;
 
 namespace Surreal.Internal.Graphics.Resources;
 
-internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
+internal sealed class OpenTkShaderProgram : ShaderProgram
 {
   private readonly Dictionary<string, int> locationCache = new();
 
-  public int Id { get; } = GL.CreateProgram();
+  public ProgramHandle Id { get; } = GL.CreateProgram();
 
   public OpenTkShaderProgram(OpenTkShaderSet shaders)
   {
@@ -34,21 +35,21 @@ internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
       if (location == -1) continue; // attribute undefined in the shader? just move on
 
       GL.VertexAttribPointer(
-        index: location,
+        index: (uint) location,
         size: attribute.Count,
         type: ConvertVertexType(attribute.Type),
         normalized: attribute.Normalized,
         stride: descriptors.Stride,
         offset: attribute.Offset
       );
-      GL.EnableVertexAttribArray(location);
+      GL.EnableVertexAttribArray((uint) location);
     }
   }
 
   private void Link(OpenTkShaderSet shaderSet)
   {
     var shaders   = shaderSet.Shaders;
-    var shaderIds = new int[shaders.Length];
+    var shaderIds = new ShaderHandle[shaders.Length];
 
     GL.UseProgram(Id);
 
@@ -57,25 +58,29 @@ internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
       var shader = shaders[i];
       var code   = shader.Code;
 
-      var shaderId = shaderIds[i] = GL.CreateShader(shader.Type);
+      var handle = shaderIds[i] = GL.CreateShader(shader.Type);
 
-      GL.ShaderSource(shaderId, code);
-      GL.CompileShader(shaderId);
+      GL.ShaderSource(handle, code);
+      GL.CompileShader(handle);
 
-      GL.GetShader(shaderId, ShaderParameter.CompileStatus, out var status);
+      var compileStatus = 0;
 
-      if (status != 1)
+      GL.GetShaderi(handle, ShaderParameterName.CompileStatus, ref compileStatus);
+
+      if (compileStatus != 1)
       {
-        GL.GetShaderInfoLog(shaderId, out var errorLog);
+        GL.GetShaderInfoLog(handle, out var errorLog);
 
         throw new ShaderProgramException($"An error occurred whilst compiling a {shader.Type} shader.", errorLog);
       }
 
-      GL.AttachShader(Id, shaderId);
+      GL.AttachShader(Id, handle);
     }
 
+    int linkStatus = 0;
+
     GL.LinkProgram(Id);
-    GL.GetProgram(Id, GetProgramParameterName.LinkStatus, out var linkStatus);
+    GL.GetProgrami(Id, ProgramPropertyARB.LinkStatus, ref linkStatus);
 
     if (linkStatus != 1)
     {
@@ -92,42 +97,42 @@ internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
 
   public override void SetUniform(string name, int scalar)
   {
-    GL.Uniform1(GetUniformLocation(name), scalar);
+    GL.Uniform1i(GetUniformLocation(name), scalar);
   }
 
   public override void SetUniform(string name, float scalar)
   {
-    GL.Uniform1(GetUniformLocation(name), scalar);
+    GL.Uniform1f(GetUniformLocation(name), scalar);
   }
 
   public override void SetUniform(string name, Vector2I point)
   {
-    GL.Uniform2(GetUniformLocation(name), point.X, point.Y);
+    GL.Uniform2i(GetUniformLocation(name), point.X, point.Y);
   }
 
   public override void SetUniform(string name, Vector3I point)
   {
-    GL.Uniform3(GetUniformLocation(name), point.X, point.Y, point.Z);
+    GL.Uniform3i(GetUniformLocation(name), point.X, point.Y, point.Z);
   }
 
   public override void SetUniform(string name, Vector2 vector)
   {
-    GL.Uniform2(GetUniformLocation(name), vector.X, vector.Y);
+    GL.Uniform2f(GetUniformLocation(name), vector.X, vector.Y);
   }
 
   public override void SetUniform(string name, Vector3 vector)
   {
-    GL.Uniform3(GetUniformLocation(name), vector.X, vector.Y, vector.Z);
+    GL.Uniform3f(GetUniformLocation(name), vector.X, vector.Y, vector.Z);
   }
 
   public override void SetUniform(string name, Vector4 vector)
   {
-    GL.Uniform4(GetUniformLocation(name), vector.W, vector.X, vector.Y, vector.Z);
+    GL.Uniform4f(GetUniformLocation(name), vector.W, vector.X, vector.Y, vector.Z);
   }
 
   public override void SetUniform(string name, Quaternion quaternion)
   {
-    GL.Uniform4(GetUniformLocation(name), quaternion.W, quaternion.X, quaternion.Y, quaternion.Z);
+    GL.Uniform4f(GetUniformLocation(name), quaternion.W, quaternion.X, quaternion.Y, quaternion.Z);
   }
 
   public override unsafe void SetUniform(string name, in Matrix3x2 matrix)
@@ -136,8 +141,9 @@ internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
 
     ref var source   = ref Unsafe.AsRef(in matrix);
     var     elements = (float*) Unsafe.AsPointer(ref source);
+    var     span     = new ReadOnlySpan<float>(elements, 3 * 2);
 
-    GL.UniformMatrix4(location, 1, false, elements);
+    GL.UniformMatrix4f(location, 1, false, span);
   }
 
   public override unsafe void SetUniform(string name, in Matrix4x4 matrix)
@@ -146,8 +152,9 @@ internal sealed class OpenTkShaderProgram : ShaderProgram, IHasNativeId
 
     ref var source   = ref Unsafe.AsRef(in matrix);
     var     elements = (float*) Unsafe.AsPointer(ref source);
+    var     span     = new ReadOnlySpan<float>(elements, 4 * 4);
 
-    GL.UniformMatrix4(location, 1, false, elements);
+    GL.UniformMatrix4f(location, 1, false, span);
   }
 
   protected override void Dispose(bool managed)

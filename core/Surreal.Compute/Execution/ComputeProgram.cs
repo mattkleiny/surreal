@@ -6,7 +6,7 @@ namespace Surreal.Compute.Execution;
 /// <summary>A compute program that can be executed on the GPGPU.</summary>
 public abstract class ComputeProgram : ComputeResource
 {
-  public abstract void Execute(int groupsX, int groupsY, int groupsZ);
+  public abstract void Execute(uint groupsX, uint groupsY, uint groupsZ);
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ComputeProgram"/>s.</summary>

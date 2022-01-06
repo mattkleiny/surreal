@@ -19,7 +19,6 @@ internal sealed class OpenTkGraphicsException : PlatformException
         ErrorCode.StackUnderflow              => "The OpenGL stack has underflowed.",
         ErrorCode.OutOfMemory                 => "OpenGL is out of memory.",
         ErrorCode.InvalidFramebufferOperation => "An invalid OpenGL frame buffer operation was attempted.",
-        ErrorCode.ContextLost                 => "The OpenGL context was lost.",
         ErrorCode.TableTooLarge               => "The OpenGL table is too large.",
         ErrorCode.TextureTooLargeExt          => "The OpenGL texture is too large.",
         _                                     => "An unexpected OpenGL error occurred.",

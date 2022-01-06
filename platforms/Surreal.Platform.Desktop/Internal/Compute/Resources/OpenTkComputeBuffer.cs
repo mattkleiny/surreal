@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Compute.Memory;
 using Surreal.Memory;
@@ -6,17 +7,19 @@ using Surreal.Memory;
 namespace Surreal.Internal.Compute.Resources;
 
 [DebuggerDisplay("Compute buffer with {Length} elements ({Size})")]
-internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>, IHasNativeId
+internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>
   where T : unmanaged
 {
   private static readonly int Stride = Unsafe.SizeOf<T>();
 
-  public int Id { get; } = GL.GenBuffer();
+  public BufferHandle Handle { get; } = GL.GenBuffer();
 
   public override Memory<T> Read(Optional<Range> range = default)
   {
-    GL.BindBuffer(BufferTarget.CopyWriteBuffer, Id);
-    GL.GetBufferParameter(BufferTarget.CopyWriteBuffer, BufferParameterName.BufferSize, out int sizeInBytes);
+    int sizeInBytes = 0;
+
+    GL.BindBuffer(BufferTargetARB.CopyWriteBuffer, Handle);
+    GL.GetBufferParameteri(BufferTargetARB.CopyWriteBuffer, BufferPNameARB.BufferSize, ref sizeInBytes);
 
     var (offset, length) = range.GetOrDefault(Range.All).GetOffsetAndLength(sizeInBytes / Stride);
 
@@ -24,7 +27,7 @@ internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>, IHasNativeId
     var buffer        = new T[length];
 
     GL.GetBufferSubData(
-      target: BufferTarget.CopyWriteBuffer,
+      target: BufferTargetARB.CopyWriteBuffer,
       offset: new IntPtr(offsetInBytes),
       size: new IntPtr(sizeInBytes),
       data: ref buffer[0]
@@ -39,8 +42,8 @@ internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>, IHasNativeId
 
     fixed (T* raw = data)
     {
-      GL.BindBuffer(BufferTarget.CopyWriteBuffer, Id);
-      GL.BufferData(BufferTarget.CopyWriteBuffer, bytes, ref Unsafe.AsRef<T>(raw), BufferUsageHint.DynamicCopy);
+      GL.BindBuffer(BufferTargetARB.CopyWriteBuffer, Handle);
+      GL.BufferData(BufferTargetARB.CopyWriteBuffer, new Span<T>(raw, data.Length), BufferUsageARB.DynamicCopy);
     }
 
     Length = data.Length;
@@ -49,7 +52,7 @@ internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>, IHasNativeId
 
   protected override void Dispose(bool managed)
   {
-    GL.DeleteBuffer(Id);
+    GL.DeleteBuffer(Handle);
 
     base.Dispose(managed);
   }

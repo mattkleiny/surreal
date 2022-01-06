@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Textures;
@@ -8,9 +9,9 @@ using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 namespace Surreal.Internal.Graphics.Resources;
 
 [DebuggerDisplay("Texture {Width}x{Height} @ {Format} ~{Size}")]
-internal sealed class OpenTkTexture : Texture, IHasNativeId
+internal sealed class OpenTkTexture : Texture
 {
-  public int Id { get; } = GL.GenTexture();
+  public TextureHandle Id { get; } = GL.GenTexture();
 
   public OpenTkTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
     : this(data.Format, filterMode, wrapMode)
@@ -21,24 +22,24 @@ internal sealed class OpenTkTexture : Texture, IHasNativeId
   public OpenTkTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
     : base(format, filterMode, wrapMode)
   {
-    GL.BindTexture(TextureTarget.Texture2D, Id);
+    GL.BindTexture(TextureTarget.Texture2d, Id);
 
-    GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
+    GL.PixelStorei(PixelStoreParameter.UnpackAlignment, 1);
 
     var (minFilter, magFilter) = ConvertFilterMode(filterMode);
 
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) minFilter);
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) magFilter);
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, (int) minFilter);
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, (int) magFilter);
 
     var wrapping = ConvertWrapMode(wrapMode);
 
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) wrapping);
-    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) wrapping);
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, (int) wrapping);
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, (int) wrapping);
   }
 
   protected override unsafe void Upload(ITextureData? existingData, ITextureData newData)
   {
-    GL.BindTexture(TextureTarget.Texture2D, Id);
+    GL.BindTexture(TextureTarget.Texture2d, Id);
 
     var (pixelFormat, pixelType) = ConvertTextureFormat(newData.Format);
 
@@ -47,21 +48,21 @@ internal sealed class OpenTkTexture : Texture, IHasNativeId
       if (existingData == null || existingData.Format != newData.Format)
       {
         GL.TexImage2D(
-          target: TextureTarget.Texture2D,
+          target: TextureTarget.Texture2d,
           level: 0,
-          internalformat: PixelInternalFormat.Rgba,
+          internalformat: 0, // TODO: fix me
           width: newData.Width,
           height: newData.Height,
           border: 0,
           format: pixelFormat,
           type: pixelType,
-          pixels: ref Unsafe.AsRef<Color>(pixels)
+          pixels: new IntPtr(pixels)
         );
       }
       else
       {
         GL.TexSubImage2D(
-          target: TextureTarget.Texture2D,
+          target: TextureTarget.Texture2d,
           level: 0,
           xoffset: 0,
           yoffset: 0,
@@ -69,7 +70,7 @@ internal sealed class OpenTkTexture : Texture, IHasNativeId
           height: newData.Height,
           format: pixelFormat,
           type: pixelType,
-          pixels: ref Unsafe.AsRef<Color>(pixels)
+          pixels: new IntPtr(pixels)
         );
       }
     }
@@ -77,14 +78,17 @@ internal sealed class OpenTkTexture : Texture, IHasNativeId
 
   public override Image Download()
   {
-    GL.BindTexture(TextureTarget.Texture2D, Id);
-    GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
-    GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
+    var width  = 0;
+    var height = 0;
+
+    GL.BindTexture(TextureTarget.Texture2d, Id);
+    GL.GetTexParameteri(TextureTarget.Texture2d, GetTextureParameter.TextureWidth, ref width);
+    GL.GetTexParameteri(TextureTarget.Texture2d, GetTextureParameter.TextureHeight, ref height);
 
     var image = new Image(width, height);
 
     GL.GetTexImage(
-      target: TextureTarget.Texture2D,
+      target: TextureTarget.Texture2d,
       level: 0,
       format: PixelFormat.Rgba,
       type: PixelType.UnsignedByte,

@@ -21,7 +21,8 @@ Game.Start(platform, host =>
 
   return async context =>
   {
-    var color = Color.Lerp(sourceColor, targetColor, MathF.Sin((float) context.GameTime.TotalTime.TotalSeconds));
+    var amount = MathF.Sin((float) context.GameTime.TotalTime.TotalSeconds);
+    var color  = Color.Lerp(sourceColor, targetColor, amount);
 
     graphics.Clear(color);
     graphics.Present();

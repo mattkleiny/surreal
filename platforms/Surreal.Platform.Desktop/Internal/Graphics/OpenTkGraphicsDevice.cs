@@ -21,8 +21,8 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
     this.window = window;
   }
 
-  public IPipelineState  Pipeline       { get; } = new OpenTkPipelineState();
   public IShaderCompiler ShaderCompiler { get; } = new OpenTkShaderCompiler();
+  public Viewport        Viewport       { get; set; }
 
   public void BeginFrame()
   {
@@ -56,9 +56,7 @@ internal sealed class OpenTkGraphicsDevice : IGraphicsDevice
   {
     if (vertexCount == 0) return; // empty mesh? don't render
 
-    Pipeline.ActiveShader       = material.Program;
-    Pipeline.ActiveVertexBuffer = mesh.Vertices;
-    Pipeline.ActiveIndexBuffer  = mesh.Indices;
+    // TODO: bind shader and buffers
 
     material.Program.Bind(mesh.Descriptors);
 

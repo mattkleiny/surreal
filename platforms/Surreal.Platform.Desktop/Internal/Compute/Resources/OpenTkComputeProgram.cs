@@ -13,16 +13,12 @@ internal sealed class OpenTkComputeProgram : ComputeProgram
     throw new NotImplementedException();
   }
 
-  public override void Execute(int groupsX, int groupsY, int groupsZ)
+  public override void Execute(uint groupsX, uint groupsY, uint groupsZ)
   {
-    Debug.Assert(groupsX >= 0, "groupsX >= 0");
-    Debug.Assert(groupsY >= 0, "groupsY >= 0");
-    Debug.Assert(groupsZ >= 0, "groupsZ >= 0");
-
     computeShader.Bind();
 
     GL.DispatchCompute(groupsX, groupsY, groupsZ);
-    GL.MemoryBarrier(MemoryBarrierFlags.ShaderImageAccessBarrierBit);
+    GL.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
   }
 
   protected override void Dispose(bool managed)

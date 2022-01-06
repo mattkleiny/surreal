@@ -29,7 +29,6 @@ public abstract partial class Game
       var totalTime = TimeStamp.Now - startTime;
 
       host.Tick(deltaTime);
-      FiberScheduler.Tick();
 
       var gameTime = new GameTime(
         DeltaTime: deltaTime,

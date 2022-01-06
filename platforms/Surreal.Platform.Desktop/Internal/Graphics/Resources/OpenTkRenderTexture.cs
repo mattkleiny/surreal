@@ -1,3 +1,4 @@
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Textures;
@@ -5,9 +6,9 @@ using Surreal.Graphics.Textures;
 namespace Surreal.Internal.Graphics.Resources;
 
 [DebuggerDisplay("Render Target {Texture.Width}x{Texture.Height} @ {Texture.Format} ~{Texture.Size}")]
-internal sealed class OpenTkRenderTexture : RenderTexture, IHasNativeId
+internal sealed class OpenTkRenderTexture : RenderTexture
 {
-  public int Id { get; } = GL.GenFramebuffer();
+  public FramebufferHandle Id { get; } = GL.GenFramebuffer();
 
   public override Texture Texture { get; }
   public          Image   Image   { get; }

@@ -4,7 +4,7 @@ namespace Surreal.Internal.Compute.Resources;
 
 internal sealed class HeadlessComputeProgram : ComputeProgram
 {
-  public override void Execute(int groupsX, int groupsY, int groupsZ)
+  public override void Execute(uint groupsX, uint groupsY, uint groupsZ)
   {
     // no-op
   }
