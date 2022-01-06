@@ -6,12 +6,12 @@ using Surreal.Mathematics;
 namespace Surreal.Internal.Audio.Resources;
 
 [DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
-internal sealed class OpenTkAudioSource : AudioSource
+internal sealed class OpenTKAudioSource : AudioSource
 {
-  private readonly OpenTkAudioDevice device;
+  private readonly OpenTKAudioDevice device;
   private          float             volume;
 
-  public OpenTkAudioSource(OpenTkAudioDevice device)
+  public OpenTKAudioSource(OpenTKAudioDevice device)
   {
     this.device = device;
   }
@@ -36,7 +36,7 @@ internal sealed class OpenTkAudioSource : AudioSource
 
   public override void Play(AudioClip clip)
   {
-    var innerClip = (OpenTkAudioClip) clip;
+    var innerClip = (OpenTKAudioClip) clip;
 
     AL.Source(Id, ALSourcef.Gain, volume * device.MasterVolume);
     AL.Source(Id, ALSourcei.Buffer, innerClip.Id);

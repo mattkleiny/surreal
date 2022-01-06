@@ -7,7 +7,7 @@ var platform = new DesktopPlatform
   Configuration =
   {
     Title          = "Hello, Surreal!",
-    IsVsyncEnabled = true,
+    IsVsyncEnabled = false,
     ShowFpsInTitle = true,
   },
 };
@@ -19,7 +19,7 @@ Game.Start(platform, host =>
   var sourceColor = Random.Shared.NextColor();
   var targetColor = Random.Shared.NextColor();
 
-  return async context =>
+  return context =>
   {
     var amount = MathF.Sin((float) context.GameTime.TotalTime.TotalSeconds);
     var color  = Color.Lerp(sourceColor, targetColor, amount);
@@ -27,6 +27,6 @@ Game.Start(platform, host =>
     graphics.Clear(color);
     graphics.Present();
 
-    await FiberTask.Yield();
+    return FiberTask.CompletedTask;
   };
 });

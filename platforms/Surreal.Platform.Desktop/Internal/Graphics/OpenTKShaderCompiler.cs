@@ -7,18 +7,18 @@ using PrimitiveType = Surreal.Graphics.Shaders.PrimitiveType;
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class OpenTkShaderCompiler : IShaderCompiler
+internal sealed class OpenTKShaderCompiler : IShaderCompiler
 {
   private readonly string version;
 
-  public OpenTkShaderCompiler(string version = "330")
+  public OpenTKShaderCompiler(string version = "330")
   {
     this.version = version;
   }
 
   public Task<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration)
   {
-    var shaders = new OpenTkShader[declaration.Shaders.Length];
+    var shaders = new OpenTKShader[declaration.Shaders.Length];
 
     for (var i = 0; i < declaration.Shaders.Length; i++)
     {
@@ -27,17 +27,17 @@ internal sealed class OpenTkShaderCompiler : IShaderCompiler
       var source = BuildSourceCode(declaration, instructions);
       var type   = ConvertType(kind);
 
-      shaders[i] = new OpenTkShader(source, type);
+      shaders[i] = new OpenTKShader(source, type);
     }
 
-    var shaderSet = new OpenTkShaderSet(declaration.FileName, declaration.Description, shaders);
+    var shaderSet = new OpenTKShaderSet(declaration.FileName, declaration.Description, shaders);
 
     return Task.FromResult<ICompiledShaderProgram>(shaderSet);
   }
 
   private string BuildSourceCode(ShaderProgramDeclaration declaration, ShaderInstruction[] instructions)
   {
-    var builder = new GlslCodeBuilder();
+    var builder = new ShaderCodeBuilder();
 
     CompilePreamble(builder, declaration);
     CompileIncludes(builder, instructions.OfType<Statement.Include>());

@@ -5,16 +5,16 @@ using Surreal.Internal.Compute.Resources;
 
 namespace Surreal.Internal.Compute;
 
-internal sealed class OpenTkComputeDevice : IComputeDevice
+internal sealed class OpenTKComputeDevice : IComputeDevice
 {
   public ComputeBuffer<T> CreateBuffer<T>()
     where T : unmanaged
   {
-    return new OpenTkComputeBuffer<T>();
+    return new OpenTKComputeBuffer<T>();
   }
 
   public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw)
   {
-    return new OpenTkComputeProgram(raw);
+    return new OpenTKComputeProgram(raw);
   }
 }

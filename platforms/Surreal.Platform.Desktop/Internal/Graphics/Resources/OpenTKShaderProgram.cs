@@ -7,13 +7,13 @@ using Surreal.Mathematics;
 
 namespace Surreal.Internal.Graphics.Resources;
 
-internal sealed class OpenTkShaderProgram : ShaderProgram
+internal sealed class OpenTKShaderProgram : ShaderProgram
 {
   private readonly Dictionary<string, int> locationCache = new();
 
   public ProgramHandle Id { get; } = GL.CreateProgram();
 
-  public OpenTkShaderProgram(OpenTkShaderSet shaders)
+  public OpenTKShaderProgram(OpenTKShaderSet shaders)
   {
     Link(shaders);
   }
@@ -46,7 +46,7 @@ internal sealed class OpenTkShaderProgram : ShaderProgram
     }
   }
 
-  private void Link(OpenTkShaderSet shaderSet)
+  private void Link(OpenTKShaderSet shaderSet)
   {
     var shaders   = shaderSet.Shaders;
     var shaderIds = new ShaderHandle[shaders.Length];

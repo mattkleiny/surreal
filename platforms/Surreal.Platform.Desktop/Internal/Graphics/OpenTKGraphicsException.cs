@@ -2,7 +2,7 @@
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class OpenTkGraphicsException : PlatformException
+internal sealed class OpenTKGraphicsException : PlatformException
 {
   [Conditional("DEBUG")]
   public static void CheckAndThrow()
@@ -10,7 +10,7 @@ internal sealed class OpenTkGraphicsException : PlatformException
     var errorCode = GL.GetError();
     if (errorCode != ErrorCode.NoError)
     {
-      throw new OpenTkGraphicsException(errorCode switch
+      throw new OpenTKGraphicsException(errorCode switch
       {
         ErrorCode.InvalidEnum                 => "An invalid OpenGL enum was passed.",
         ErrorCode.InvalidValue                => "An invalid OpenGL value was passed.",
@@ -26,7 +26,7 @@ internal sealed class OpenTkGraphicsException : PlatformException
     }
   }
 
-  public OpenTkGraphicsException(string message)
+  public OpenTKGraphicsException(string message)
     : base(message)
   {
   }

@@ -1,8 +1,11 @@
-﻿namespace Minecraft;
+﻿using Surreal.Graphics.Images;
+using Surreal.Input.Keyboard;
+
+namespace Minecraft;
 
 public sealed class MinecraftGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<MinecraftGame>(new Configuration
+  public static async Task Main() => await StartAsync<MinecraftGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
@@ -11,6 +14,7 @@ public sealed class MinecraftGame : PrototypeGame
         Title          = "Minecraft",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
+        Icon           = await Image.LoadAsync("resx://Minecraft/Minecraft.png"),
       },
     },
   });
@@ -20,5 +24,12 @@ public sealed class MinecraftGame : PrototypeGame
     base.Initialize();
 
     Mouse.IsCursorVisible = false;
+  }
+
+  protected override void Input(GameTime time)
+  {
+    if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
+
+    base.Input(time);
   }
 }

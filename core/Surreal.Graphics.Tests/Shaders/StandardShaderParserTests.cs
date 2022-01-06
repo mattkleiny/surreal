@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Graphics.Shaders;
 
-public class SimpleShaderParserTests
+public class StandardShaderParserTests
 {
   [Test, Benchmark(Milliseconds = 0.5f)]
   public async Task it_should_parse_a_simple_program()

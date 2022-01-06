@@ -47,6 +47,7 @@ public abstract class FileSystem : IFileSystem
     public FileSystemRegistry()
     {
       Add(new LocalFileSystem());
+      Add(new ResourceFileSystem());
     }
 
     public IFileSystem? GetByScheme(string scheme)

@@ -4,8 +4,8 @@ using SixLabors.ImageSharp.PixelFormats;
 using Surreal.Assets;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
+using Surreal.Mathematics;
 using Surreal.Memory;
-using Color = Surreal.Mathematics.Color;
 using Size = Surreal.Memory.Size;
 
 namespace Surreal.Graphics.Images;
@@ -52,7 +52,7 @@ public sealed class Image : ITextureData, IDisposable
   public int           Width  => image.Width;
   public int           Height => image.Height;
 
-  public Span<Color> Pixels
+  public Span<Color32> Pixels
   {
     get
     {
@@ -61,11 +61,11 @@ public sealed class Image : ITextureData, IDisposable
         throw new InvalidOperationException("The image span is not contiguous, unable to access pixels!");
       }
 
-      return MemoryMarshal.Cast<Rgba32, Color>(span);
+      return MemoryMarshal.Cast<Rgba32, Color32>(span);
     }
   }
 
-  public void Fill(Color value)
+  public void Fill(Color32 value)
   {
     Pixels.Fill(value);
   }
@@ -82,7 +82,7 @@ public sealed class Image : ITextureData, IDisposable
     image.Dispose();
   }
 
-  ReadOnlySpan<Color> ITextureData.Pixels => Pixels;
+  ReadOnlySpan<Color32> ITextureData.Pixels => Pixels;
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>

@@ -7,14 +7,14 @@ using Surreal.Memory;
 namespace Surreal.Internal.Compute.Resources;
 
 [DebuggerDisplay("Compute buffer with {Length} elements ({Size})")]
-internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>
+internal sealed class OpenTKComputeBuffer<T> : ComputeBuffer<T>
   where T : unmanaged
 {
   private static readonly int Stride = Unsafe.SizeOf<T>();
 
   public BufferHandle Handle { get; } = GL.GenBuffer();
 
-  public override Memory<T> Read(Optional<Range> range = default)
+  public override unsafe Memory<T> Read(Optional<Range> range = default)
   {
     int sizeInBytes = 0;
 
@@ -26,27 +26,30 @@ internal sealed class OpenTkComputeBuffer<T> : ComputeBuffer<T>
     var offsetInBytes = offset * Stride;
     var buffer        = new T[length];
 
-    GL.GetBufferSubData(
-      target: BufferTargetARB.CopyWriteBuffer,
-      offset: new IntPtr(offsetInBytes),
-      size: new IntPtr(sizeInBytes),
-      data: ref buffer[0]
-    );
+    fixed (T* raw = buffer)
+    {
+      GL.GetBufferSubData(
+        target: BufferTargetARB.CopyWriteBuffer,
+        offset: new IntPtr(offsetInBytes),
+        size: sizeInBytes,
+        data: raw
+      );
+    }
 
     return buffer;
   }
 
-  public override unsafe void Write(ReadOnlySpan<T> data)
+  public override unsafe void Write(ReadOnlySpan<T> buffer)
   {
-    var bytes = data.Length * Stride;
+    var bytes = buffer.Length * Stride;
 
-    fixed (T* raw = data)
+    fixed (T* raw = buffer)
     {
       GL.BindBuffer(BufferTargetARB.CopyWriteBuffer, Handle);
-      GL.BufferData(BufferTargetARB.CopyWriteBuffer, new Span<T>(raw, data.Length), BufferUsageARB.DynamicCopy);
+      GL.BufferData(BufferTargetARB.CopyWriteBuffer, new Span<T>(raw, buffer.Length), BufferUsageARB.DynamicCopy);
     }
 
-    Length = data.Length;
+    Length = buffer.Length;
     Size   = new Size(bytes);
   }
 

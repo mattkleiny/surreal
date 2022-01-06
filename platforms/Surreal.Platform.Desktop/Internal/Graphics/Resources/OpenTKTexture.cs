@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Images;
@@ -9,17 +8,17 @@ using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 namespace Surreal.Internal.Graphics.Resources;
 
 [DebuggerDisplay("Texture {Width}x{Height} @ {Format} ~{Size}")]
-internal sealed class OpenTkTexture : Texture
+internal sealed class OpenTKTexture : Texture
 {
   public TextureHandle Id { get; } = GL.GenTexture();
 
-  public OpenTkTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+  public OpenTKTexture(ITextureData data, TextureFilterMode filterMode, TextureWrapMode wrapMode)
     : this(data.Format, filterMode, wrapMode)
   {
     Upload(data);
   }
 
-  public OpenTkTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+  public OpenTKTexture(TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
     : base(format, filterMode, wrapMode)
   {
     GL.BindTexture(TextureTarget.Texture2d, Id);
@@ -43,7 +42,7 @@ internal sealed class OpenTkTexture : Texture
 
     var (pixelFormat, pixelType) = ConvertTextureFormat(newData.Format);
 
-    fixed (Color* pixels = newData.Pixels)
+    fixed (Color32* pixels = newData.Pixels)
     {
       if (existingData == null || existingData.Format != newData.Format)
       {
@@ -56,7 +55,7 @@ internal sealed class OpenTkTexture : Texture
           border: 0,
           format: pixelFormat,
           type: pixelType,
-          pixels: new IntPtr(pixels)
+          pixels: pixels
         );
       }
       else
@@ -70,7 +69,7 @@ internal sealed class OpenTkTexture : Texture
           height: newData.Height,
           format: pixelFormat,
           type: pixelType,
-          pixels: new IntPtr(pixels)
+          pixels: pixels
         );
       }
     }

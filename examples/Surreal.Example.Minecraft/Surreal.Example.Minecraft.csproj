@@ -8,4 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Minecraft.png" />
+  </ItemGroup>
 </Project>

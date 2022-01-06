@@ -1,50 +1,39 @@
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Surreal.Input;
 using Surreal.Input.Keyboard;
 
 namespace Surreal.Internal.Input;
 
-internal sealed class OpenTkKeyboardDevice : BufferedInputDevice<KeyboardState>, IKeyboardDevice
+internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
 {
-  private readonly OpenTkWindow window;
+  private readonly OpenTKWindow  window;
+  private readonly KeyboardState keyboardState;
 
-  public OpenTkKeyboardDevice(OpenTkWindow window)
+  public OpenTKKeyboardDevice(OpenTKWindow window)
   {
     this.window = window;
 
-    UpdateState();
+    keyboardState = window.KeyboardState;
   }
 
   public event Action<Key> KeyPressed  = null!;
   public event Action<Key> KeyReleased = null!;
 
-  public bool IsKeyDown(Key key)     => CurrentState[Lookup[key]];
-  public bool IsKeyUp(Key key)       => !CurrentState[Lookup[key]];
-  public bool IsKeyPressed(Key key)  => CurrentState[Lookup[key]] && !PreviousState[Lookup[key]];
-  public bool IsKeyReleased(Key key) => PreviousState[Lookup[key]] && !CurrentState[Lookup[key]];
+  public bool IsKeyDown(Key key)     => keyboardState.IsKeyDown(Lookup[key]);
+  public bool IsKeyUp(Key key)       => !keyboardState.IsKeyDown(Lookup[key]);
+  public bool IsKeyPressed(Key key)  => keyboardState.IsKeyPressed(Lookup[key]);
+  public bool IsKeyReleased(Key key) => keyboardState.IsKeyReleased(Lookup[key]);
 
-  public override void Update()
+  public void Update()
   {
     // only capture state if the window is focused
     if (window.IsFocused)
     {
-      base.Update();
-
-      // fire events, if necessary
-      if (CurrentState != PreviousState)
+      foreach (var (key, _) in Lookup)
       {
-        foreach (var (key, _) in Lookup)
-        {
-          if (IsKeyPressed(key)) KeyPressed?.Invoke(key);
-          if (IsKeyReleased(key)) KeyReleased?.Invoke(key);
-        }
+        if (IsKeyPressed(key)) KeyPressed?.Invoke(key);
+        if (IsKeyReleased(key)) KeyReleased?.Invoke(key);
       }
     }
-  }
-
-  protected override KeyboardState CaptureState()
-  {
-    return window.GetKeyboardState();
   }
 
   private static readonly Dictionary<Key, Keys> Lookup = new()

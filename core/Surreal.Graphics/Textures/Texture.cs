@@ -33,7 +33,7 @@ public interface ITextureData
   TextureFormat Format { get; }
   Size          Size   { get; }
 
-  ReadOnlySpan<Color> Pixels { get; }
+  ReadOnlySpan<Color32> Pixels { get; }
 }
 
 /// <summary>A texture that can be uploaded to the GPU.</summary>

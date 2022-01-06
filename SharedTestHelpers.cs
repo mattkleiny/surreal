@@ -130,7 +130,7 @@ internal class BenchmarkAttribute : PropertyAttribute, IWrapSetUpTearDown
 
     public override TestResult Execute(TestExecutionContext context)
     {
-      var iterations = 0;
+      var iteration = 0;
       var stopwatch  = new Stopwatch();
 
       while (true)
@@ -139,11 +139,13 @@ internal class BenchmarkAttribute : PropertyAttribute, IWrapSetUpTearDown
         var result = innerCommand.Execute(context);
         stopwatch.Stop();
 
+        context.OutWriter.WriteLine($"Iteration {iteration} took {stopwatch.Elapsed:g}");
+
         if (stopwatch.Elapsed.TotalMilliseconds > thresholdMs)
         {
           result.SetResult(ResultState.Failure, $"Execution exceeded maximum benchmark time of {thresholdMs}ms");
 
-          if (iterations++ < maxIterations)
+          if (iteration++ < maxIterations)
           {
             continue;
           }

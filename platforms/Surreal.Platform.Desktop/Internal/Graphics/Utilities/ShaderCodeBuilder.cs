@@ -2,7 +2,7 @@
 
 namespace Surreal.Internal.Graphics.Utilities;
 
-/// <summary>A scope of a <see cref="GlslCodeBuilder"/>, for writing raw GLSL.</summary>
+/// <summary>A scope of a <see cref="ShaderCodeBuilder"/>, for writing raw GLSL.</summary>
 internal interface IShaderCodeBuilderScope : IDisposable
 {
   void AppendLine(string raw);
@@ -22,7 +22,7 @@ internal interface IShaderCodeBuilderScope : IDisposable
 }
 
 /// <summary>A utility for building shader programs from raw source text.</summary>
-internal sealed class GlslCodeBuilder : IShaderCodeBuilderScope
+internal sealed class ShaderCodeBuilder : IShaderCodeBuilderScope
 {
   private readonly Scope rootScope = new(new StringBuilder(), IndentLevel: 0);
 

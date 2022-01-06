@@ -135,8 +135,6 @@ public abstract partial class Game : IDisposable, ITestableGame
     {
       registry.Add(platformFileSystem);
     }
-
-    registry.Add(new ResourceFileSystem());
   }
 
   protected virtual void Begin(GameTime time)

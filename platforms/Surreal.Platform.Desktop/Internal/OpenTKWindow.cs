@@ -10,11 +10,11 @@ using Image = OpenTK.Windowing.Common.Input.Image;
 
 namespace Surreal.Internal;
 
-internal sealed class OpenTkWindow : IDesktopWindow
+internal sealed class OpenTKWindow : IDesktopWindow
 {
   private readonly GameWindow window;
 
-  public OpenTkWindow(DesktopConfiguration configuration)
+  public OpenTKWindow(DesktopConfiguration configuration)
   {
     var gameWindowSettings = new GameWindowSettings
     {
@@ -43,7 +43,7 @@ internal sealed class OpenTkWindow : IDesktopWindow
       }
 
       var icon   = configuration.Icon;
-      var pixels = MemoryMarshal.Cast<Color, byte>(icon.Pixels);
+      var pixels = MemoryMarshal.Cast<Color32, byte>(icon.Pixels);
 
       window.Icon = new WindowIcon(new Image(icon.Width, icon.Height, pixels.ToArray()));
     }
@@ -113,15 +113,8 @@ internal sealed class OpenTkWindow : IDesktopWindow
 
   public bool IsClosing => window.IsExiting;
 
-  public KeyboardState GetKeyboardState()
-  {
-    return window.KeyboardState;
-  }
-
-  public MouseState GetMouseState()
-  {
-    return window.MouseState;
-  }
+  public KeyboardState KeyboardState => window.KeyboardState;
+  public MouseState    MouseState    => window.MouseState;
 
   public void Update()
   {

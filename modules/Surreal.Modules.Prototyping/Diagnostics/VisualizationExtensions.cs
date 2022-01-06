@@ -28,11 +28,11 @@ public static class VisualizationExtensions
     return builder.ToString();
   }
 
-  public static Image ToImage<T>(this SpanGrid<T> grid, Func<int, int, T?, Color> painter, int scale = 1)
+  public static Image ToImage<T>(this SpanGrid<T> grid, Func<int, int, T?, Color32> painter, int scale = 1)
     where T : unmanaged
   {
     var image  = new Image(grid.Width * scale, grid.Height * scale);
-    var output = new SpanGrid<Color>(image.Pixels, image.Width);
+    var output = new SpanGrid<Color32>(image.Pixels, image.Width);
 
     for (var y = 0; y < grid.Height; y++)
     for (var x = 0; x < grid.Width; x++)

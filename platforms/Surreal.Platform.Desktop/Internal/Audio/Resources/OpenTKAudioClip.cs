@@ -5,11 +5,11 @@ using Surreal.Audio.Clips;
 namespace Surreal.Internal.Audio.Resources;
 
 [DebuggerDisplay("Audio Clip {Duration} ~{Size}")]
-internal sealed class OpenTkAudioClip : AudioClip
+internal sealed class OpenTKAudioClip : AudioClip
 {
   public int Id { get; } = AL.GenBuffer();
 
-  public OpenTkAudioClip(IAudioData data)
+  public OpenTKAudioClip(IAudioData data)
   {
     Upload(data);
   }

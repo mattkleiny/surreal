@@ -16,18 +16,18 @@ internal sealed class HeadlessGraphicsBuffer<T> : GraphicsBuffer<T>
     return buffer[range.GetOrDefault(Range.All)];
   }
 
-  public override void Write(ReadOnlySpan<T> data)
+  public override void Write(ReadOnlySpan<T> buffer)
   {
-    var bytes = data.Length * Stride;
+    var bytes = buffer.Length * Stride;
 
-    if (data.Length > buffer.Length)
+    if (buffer.Length > this.buffer.Length)
     {
-      Array.Resize(ref buffer, data.Length);
+      Array.Resize(ref this.buffer, buffer.Length);
     }
 
-    data.CopyTo(buffer);
+    buffer.CopyTo(this.buffer);
 
-    Length = data.Length;
+    Length = buffer.Length;
     Size   = new Size(bytes);
   }
 }

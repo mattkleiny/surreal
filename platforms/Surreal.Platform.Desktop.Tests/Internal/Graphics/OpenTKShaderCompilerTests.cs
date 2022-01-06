@@ -4,12 +4,12 @@ using static Surreal.Graphics.Shaders.ShaderInstruction.Statement;
 
 namespace Surreal.Internal.Graphics;
 
-public class OpenTkShaderCompilerTests
+public class OpenTKShaderCompilerTests
 {
   [Test, Benchmark(Milliseconds = 0.5f)]
   public async Task it_should_compile_simple_instructions()
   {
-    var compiler = new OpenTkShaderCompiler();
+    var compiler = new OpenTKShaderCompiler();
 
     var program = await compiler.CompileAsync(new ShaderProgramDeclaration(
       FileName: "test.shader",

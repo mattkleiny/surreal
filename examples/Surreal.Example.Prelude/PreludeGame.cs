@@ -1,4 +1,6 @@
-﻿namespace Prelude;
+﻿using Surreal.Input.Keyboard;
+
+namespace Prelude;
 
 public sealed class PreludeGame : PrototypeGame
 {
@@ -14,4 +16,11 @@ public sealed class PreludeGame : PrototypeGame
       },
     },
   });
+
+  protected override void Input(GameTime time)
+  {
+    if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
+
+    base.Input(time);
+  }
 }

@@ -14,5 +14,5 @@ public abstract class GraphicsBuffer<T> : GraphicsBuffer
   where T : unmanaged
 {
   public abstract Memory<T> Read(Optional<Range> range = default);
-  public abstract void      Write(ReadOnlySpan<T> data);
+  public abstract void      Write(ReadOnlySpan<T> buffer);
 }
