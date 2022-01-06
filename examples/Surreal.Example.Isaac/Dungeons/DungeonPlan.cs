@@ -17,6 +17,6 @@ public sealed class DungeonPlan
 
   public Dungeon CreateDungeon()
   {
-    return new Dungeon();
+    throw new NotImplementedException();
   }
 }

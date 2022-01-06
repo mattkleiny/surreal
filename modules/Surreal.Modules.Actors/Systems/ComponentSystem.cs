@@ -1,6 +1,22 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Aspects;
+using Surreal.Timing;
 
 namespace Surreal.Systems;
+
+/// <summary>Represents a component system, capable of operating on components.</summary>
+public interface IComponentSystem
+{
+  void OnInput(DeltaTime time);
+  void OnUpdate(DeltaTime time);
+  void OnDraw(DeltaTime time);
+}
+
+/// <summary>Context for component system operations.</summary>
+public interface IComponentSystemContext
+{
+  /// <summary>Queries actors that match a given <see cref="Aspect"/>.</summary>
+  AspectEnumerator QueryActors(Aspect aspect);
+}
 
 /// <summary>Base class for any <see cref="IComponentSystem"/> implementation.</summary>
 public abstract class ComponentSystem : IComponentSystem

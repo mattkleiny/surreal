@@ -9,6 +9,7 @@ public interface IComponentStorage
 
 /// <summary>Represents storage for a component of type <see cref="T"/>.</summary>
 public interface IComponentStorage<T> : IComponentStorage
+  where T : notnull
 {
   ref T GetOrCreateComponent(ActorId id, Optional<T> prototype)
   {
