@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NUnit.Framework;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Meshes;

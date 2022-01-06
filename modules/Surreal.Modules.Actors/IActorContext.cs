@@ -1,4 +1,4 @@
-﻿using Surreal.Storage;
+﻿using Surreal.Components;
 
 namespace Surreal;
 

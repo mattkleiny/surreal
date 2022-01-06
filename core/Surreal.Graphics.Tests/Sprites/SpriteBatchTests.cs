@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Surreal.Graphics.Materials;
+﻿using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Graphics.Utilities;

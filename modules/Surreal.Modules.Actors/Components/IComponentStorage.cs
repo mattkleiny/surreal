@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Surreal.Storage;
+namespace Surreal.Components;
 
 /// <summary>Represents generically any <see cref="IComponentStorage{T}"/> type.</summary>
 public interface IComponentStorage

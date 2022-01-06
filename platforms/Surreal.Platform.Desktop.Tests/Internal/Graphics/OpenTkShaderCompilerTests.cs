@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Surreal.Graphics.Shaders;
+﻿using Surreal.Graphics.Shaders;
 using static Surreal.Graphics.Shaders.ShaderInstruction.Expression;
 using static Surreal.Graphics.Shaders.ShaderInstruction.Statement;
 

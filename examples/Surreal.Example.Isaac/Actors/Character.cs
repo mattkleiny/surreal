@@ -5,8 +5,7 @@ namespace Isaac.Actors;
 /// <summary>An anonymous character <see cref="Actor"/> that can move about the game world.</summary>
 public class Character : Actor, IDamageReceiver
 {
-  public Character(IActorContext context)
-    : base(context)
+  public Character()
   {
     AddComponent(new Transform());
     AddComponent(new Sprite());

@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Surreal.Text;
+﻿namespace Surreal.Text;
 
 public class StringSpanTests
 {

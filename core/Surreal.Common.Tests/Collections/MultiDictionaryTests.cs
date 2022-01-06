@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 public class MultiDictionaryTests
 {

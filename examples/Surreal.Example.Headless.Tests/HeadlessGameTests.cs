@@ -1,8 +1,8 @@
-﻿using Minecraft;
+﻿using Headless;
 
 namespace Surreal;
 
-public class MinecraftGameTests : GameTestCase<MinecraftGame>
+public class HeadlessGameTests : GameTestCase<HeadlessGame>
 {
   [Test]
   public void it_should_bootstrap_and_tick()

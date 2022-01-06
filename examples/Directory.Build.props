@@ -31,4 +31,8 @@
     <ProjectReference Include="..\..\modules\Surreal.Modules.Prototyping\Surreal.Modules.Prototyping.csproj" />
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
+
+  <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
+    <ProjectReference Include="..\..\core\Surreal.Testing\Surreal.Testing.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Surreal.Assets;
+﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
 
 namespace Surreal.Graphics.Textures;

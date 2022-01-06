@@ -1,8 +1,8 @@
-﻿using Minecraft;
+﻿using HelloWorld;
 
 namespace Surreal;
 
-public class MinecraftGameTests : GameTestCase<MinecraftGame>
+public class HelloWorldGameTests : GameTestCase<HelloWorldGame>
 {
   [Test]
   public void it_should_bootstrap_and_tick()

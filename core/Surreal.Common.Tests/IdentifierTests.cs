@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Surreal;
+﻿namespace Surreal;
 
 public class IdentifierTests
 {

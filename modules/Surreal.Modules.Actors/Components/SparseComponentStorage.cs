@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Surreal.Storage;
+namespace Surreal.Components;
 
 /// <summary>A sparsely packed <see cref="IComponentStorage{T}"/>.</summary>
 public sealed class SparseComponentStorage<T> : IComponentStorage<T>

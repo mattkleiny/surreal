@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Surreal.Fibers;
+﻿namespace Surreal.Fibers;
 
 public class FiberTests
 {

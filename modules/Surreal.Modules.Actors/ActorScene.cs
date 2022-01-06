@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using Surreal.Aspects;
-using Surreal.Storage;
+using Surreal.Components;
 using Surreal.Systems;
 using Surreal.Timing;
 
@@ -9,14 +9,32 @@ namespace Surreal;
 /// <summary>A scene of managed <see cref="Actor"/>s.</summary>
 public sealed class ActorScene : IActorContext, IComponentSystemContext, IDisposable
 {
-  private readonly Dictionary<ActorId, Node<Actor>>    nodes    = new();
-  private readonly Dictionary<Type, IComponentStorage> storages = new();
-  private readonly LinkedList<IComponentSystem>        systems  = new();
+  private readonly Dictionary<ActorId, Node<Actor>> nodes        = new();
+  private readonly LinkedList<IComponentSystem>     systems      = new();
+  private readonly SceneStorageGroup                storageGroup = new();
 
   private readonly Queue<Actor> destroyQueue = new();
 
   public void AddSystem(IComponentSystem system)    => systems.AddLast(system);
   public void RemoveSystem(IComponentSystem system) => systems.Remove(system);
+
+  public void Spawn(Actor actor)
+  {
+    if (nodes.TryGetValue(actor.Id, out var node))
+    {
+      node.Status = ActorStatus.Active;
+    }
+    else
+    {
+      nodes[actor.Id] = new Node<Actor>(actor)
+      {
+        Status = ActorStatus.Active,
+      };
+
+      actor.ConnectToContext(this, storageGroup);
+      actor.OnAwake();
+    }
+  }
 
   public void Input(DeltaTime time)
   {
@@ -78,23 +96,6 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     return ActorStatus.Unknown;
   }
 
-  public void Spawn(Actor actor)
-  {
-    if (nodes.TryGetValue(actor.Id, out var node))
-    {
-      node.Status = ActorStatus.Active;
-    }
-    else
-    {
-      nodes[actor.Id] = new Node<Actor>(actor)
-      {
-        Status = ActorStatus.Active,
-      };
-
-      actor.OnAwake();
-    }
-  }
-
   void IActorContext.Enable(ActorId id)
   {
     if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
@@ -121,14 +122,26 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     }
   }
 
+  private void ProcessDestroyQueue()
+  {
+    while (destroyQueue.TryDequeue(out var actor))
+    {
+      actor.DisconnectFromContext(this, storageGroup);
+      actor.OnDestroy();
+
+      nodes.Remove(actor.Id);
+    }
+  }
+
+  public void Dispose()
+  {
+    storageGroup.Dispose();
+    nodes.Clear();
+  }
+
   IComponentStorage<T> IActorContext.GetStorage<T>()
   {
-    if (!storages.TryGetValue(typeof(T), out var storage))
-    {
-      storages[typeof(T)] = storage = CreateStorage<T>();
-    }
-
-    return (IComponentStorage<T>) storage;
+    return storageGroup.GetOrCreateStorage<T>();
   }
 
   AspectEnumerator IComponentSystemContext.QueryActors(Aspect aspect)
@@ -136,51 +149,58 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     throw new NotImplementedException();
   }
 
-  private void ProcessDestroyQueue()
-  {
-    while (destroyQueue.TryDequeue(out var actor))
-    {
-      actor.OnDestroy();
-
-      nodes.Remove(actor.Id);
-    }
-  }
-
-  private static IComponentStorage<T> CreateStorage<T>()
-    where T : notnull
-  {
-    var storageType = typeof(SparseComponentStorage<>);
-
-    // check for per-component storage types
-    var attribute = typeof(T).GetCustomAttribute<ComponentAttribute>();
-    if (attribute != null)
-    {
-      storageType = attribute.StorageType ?? storageType;
-    }
-
-    var instance = Activator.CreateInstance(storageType.MakeGenericType(typeof(T)))!;
-
-    return (IComponentStorage<T>) instance;
-  }
-
-  public void Dispose()
-  {
-    foreach (var storage in storages)
-    {
-      if (storage.Value is IDisposable disposable)
-      {
-        disposable.Dispose();
-      }
-    }
-
-    nodes.Clear();
-    storages.Clear();
-  }
-
+  /// <summary>A single node in the scene.</summary>
   private sealed record Node<T>(T Data)
   {
     public ActorStatus   Status   { get; set; }
     public Node<T>?      Parent   { get; set; }
     public List<Node<T>> Children { get; } = new();
+  }
+
+  /// <summary>An <see cref="IComponentStorageGroup"/> for use in scene actors.</summary>
+  private sealed class SceneStorageGroup : IComponentStorageGroup, IDisposable
+  {
+    private readonly Dictionary<Type, IComponentStorage> storages = new();
+
+    public IComponentStorage<T> GetOrCreateStorage<T>()
+      where T : notnull
+    {
+      if (!storages.TryGetValue(typeof(T), out var storage))
+      {
+        storages[typeof(T)] = storage = CreateStorage<T>();
+      }
+
+      return (IComponentStorage<T>) storage;
+    }
+
+    public void Dispose()
+    {
+      foreach (var storage in storages.Values)
+      {
+        if (storage is IDisposable disposable)
+        {
+          disposable.Dispose();
+        }
+      }
+
+      storages.Clear();
+    }
+
+    private static IComponentStorage<T> CreateStorage<T>()
+      where T : notnull
+    {
+      var storageType = typeof(SparseComponentStorage<>);
+      var attribute   = typeof(T).GetCustomAttribute<ComponentAttribute>();
+
+      // check for per-component storage types
+      if (attribute != null)
+      {
+        storageType = attribute.StorageType ?? storageType;
+      }
+
+      var instance = Activator.CreateInstance(storageType.MakeGenericType(typeof(T)))!;
+
+      return (IComponentStorage<T>) instance;
+    }
   }
 }

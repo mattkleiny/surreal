@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Surreal.Graphics.Shaders;
+﻿namespace Surreal.Graphics.Shaders;
 
 public class SimpleShaderParserTests
 {

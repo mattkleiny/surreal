@@ -69,6 +69,7 @@
     <PackageReference Include="coverlet.collector" Version="3.0.3" />
 
     <!-- shared usings for test projects -->
+    <Using Include="NUnit.Framework" />
     <Using Include="NSubstitute" />
 
     <!-- link shared code into test assemblies -->

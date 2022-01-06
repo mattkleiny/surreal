@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Testing\Surreal.Testing.csproj" />
     <ProjectReference Include="..\Surreal.Example.Minecraft\Surreal.Example.Minecraft.csproj" />
   </ItemGroup>
 </Project>

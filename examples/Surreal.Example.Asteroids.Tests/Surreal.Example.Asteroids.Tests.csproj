@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Example.Asteroids\Surreal.Example.Asteroids.csproj" />
+  </ItemGroup>
+</Project>

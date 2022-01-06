@@ -1,6 +1,5 @@
 ﻿using Isaac.Dungeons;
 using Isaac.Dungeons.Nodes;
-using NUnit.Framework;
 
 namespace Surreal.Dungeons;
 

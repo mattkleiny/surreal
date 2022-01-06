@@ -4,8 +4,7 @@ namespace Asteroids.Actors;
 
 public sealed class Asteroid : Actor
 {
-  public Asteroid(IActorContext context, TextureRegion sprite)
-    : base(context)
+  public Asteroid(TextureRegion sprite)
   {
     AddComponent(new Health(1));
     AddComponent(new Sprite(sprite));

@@ -50,11 +50,11 @@ public sealed class MainScreen : Screen<AsteroidsGame>
   {
     var random = seed.ToRandom();
 
-    Scene.Spawn(new Ship(Scene, shipSprite!));
+    Scene.Spawn(new Ship(shipSprite!));
 
     for (var i = 0; i < random.NextRange(AsteroidRange); i++)
     {
-      Scene.Spawn(new Asteroid(Scene, asteroidSprites!.SelectRandomly(random)!));
+      Scene.Spawn(new Asteroid(asteroidSprites!.SelectRandomly(random)!));
     }
   }
 

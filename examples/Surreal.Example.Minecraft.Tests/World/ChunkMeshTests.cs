@@ -1,5 +1,4 @@
 ﻿using Minecraft.Worlds;
-using NUnit.Framework;
 using Surreal.Graphics;
 
 namespace Surreal.World;

@@ -1,5 +1,4 @@
 ﻿using Isaac;
-using NUnit.Framework;
 
 namespace Surreal;
 

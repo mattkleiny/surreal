@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Surreal.Memory;
+﻿using Surreal.Memory;
 using Surreal.Timing;
 
 namespace Surreal.Audio.Clips;

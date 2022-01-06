@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Surreal.Combat;
+﻿using Surreal.Combat;
 
 namespace Surreal;
 

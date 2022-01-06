@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Surreal.Graphics.Cameras;
+﻿namespace Surreal.Graphics.Cameras;
 
 public sealed class PerspectiveCameraTests
 {

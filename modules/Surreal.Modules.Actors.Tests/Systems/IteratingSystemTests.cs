@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Surreal.Aspects;
+﻿using Surreal.Aspects;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -7,7 +6,7 @@ namespace Surreal.Systems;
 
 public class IteratingSystemTests
 {
-  [Test]
+  [Test, Ignore("Not yet implemented")]
   public void it_should_iterate_over_aspect()
   {
     var scene     = new ActorScene();

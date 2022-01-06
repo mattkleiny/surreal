@@ -1,4 +1,4 @@
-﻿namespace Surreal.Storage;
+﻿namespace Surreal.Components;
 
 /// <summary>Adds metadata to a component type.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]

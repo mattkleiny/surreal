@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Surreal.Effects;
+﻿using Surreal.Effects;
 
 namespace Surreal;
 

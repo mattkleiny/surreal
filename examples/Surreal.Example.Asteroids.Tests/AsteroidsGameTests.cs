@@ -1,8 +1,8 @@
-﻿using Minecraft;
+﻿using Asteroids;
 
 namespace Surreal;
 
-public class MinecraftGameTests : GameTestCase<MinecraftGame>
+public class AsteroidsGameTests : GameTestCase<AsteroidsGame>
 {
   [Test]
   public void it_should_bootstrap_and_tick()

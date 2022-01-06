@@ -1,8 +1,8 @@
-﻿using Minecraft;
+﻿using Prelude;
 
 namespace Surreal;
 
-public class MinecraftGameTests : GameTestCase<MinecraftGame>
+public class PreludeGameTests : GameTestCase<PreludeGame>
 {
   [Test]
   public void it_should_bootstrap_and_tick()

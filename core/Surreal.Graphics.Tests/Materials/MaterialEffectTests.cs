@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace Surreal.Graphics.Materials;
+﻿namespace Surreal.Graphics.Materials;
 
 public class MaterialEffectTests
 {
