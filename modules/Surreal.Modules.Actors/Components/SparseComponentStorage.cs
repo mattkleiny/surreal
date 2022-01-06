@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace Surreal.Components;
 
@@ -42,22 +41,5 @@ public sealed class SparseComponentStorage<T> : IComponentStorage<T>
   public bool RemoveComponent(ActorId id)
   {
     return boxes.Remove(id);
-  }
-
-  public bool UnsafeTryGetComponent(ActorId id, [NotNullWhen(true)] out object? component)
-  {
-    if (!boxes.TryGetValue(id, out var box))
-    {
-      component = default;
-      return false;
-    }
-
-    component = box.Value;
-    return true;
-  }
-
-  public void UnsafeAddComponent(ActorId id, object component)
-  {
-    boxes[id] = new Box<T>((T) component);
   }
 }

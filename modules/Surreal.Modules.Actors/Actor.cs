@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Runtime.CompilerServices;
 using Surreal.Components;
 using Surreal.Timing;
@@ -39,42 +38,28 @@ public readonly record struct ActorId(ulong Id)
 /// </remarks>
 public class Actor
 {
-  private IActorContext?        context;
-  private InternalStorageGroup? internalStorageGroup = new();
+  private readonly IActorContext context;
 
-  public   ActorId     Id     { get; } = ActorId.Allocate();
-  internal ActorStatus Status => context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public Actor(IActorContext context)
+  {
+    this.context = context;
+  }
+
+  public ActorId     Id     { get; } = ActorId.Allocate();
+  public ActorStatus Status => context.GetStatus(Id);
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
   public bool IsActive    => Status == ActorStatus.Active;
   public bool IsInactive  => Status == ActorStatus.Inactive;
 
-  public void Enable()  => context?.Enable(Id);
-  public void Disable() => context?.Disable(Id);
-  public void Destroy() => context?.Destroy(Id);
-
-  internal void ConnectToContext(IActorContext context, IComponentStorageGroup storageGroup)
-  {
-    // transfer components from the internal storage group to the context
-    internalStorageGroup!.UnsafeTransferComponents(Id, storageGroup);
-    internalStorageGroup = null;
-
-    this.context = context;
-  }
-
-  internal void DisconnectFromContext(IActorContext context, IComponentStorageGroup storageGroup)
-  {
-    // transfer components to the local storage group
-    internalStorageGroup = new InternalStorageGroup();
-    storageGroup.UnsafeTransferComponents(Id, internalStorageGroup);
-
-    this.context = null;
-  }
+  public void Enable()  => context.Enable(Id);
+  public void Disable() => context.Disable(Id);
+  public void Destroy() => context.Destroy(Id);
 
   public ref T GetOrCreateComponent<T>(T prototype)
     where T : notnull
   {
-    var storage = GetComponentStorage<T>();
+    var storage = context.GetStorage<T>();
 
     return ref storage.GetOrCreateComponent(Id, prototype);
   }
@@ -82,7 +67,7 @@ public class Actor
   public ref T AddComponent<T>(T prototype)
     where T : notnull
   {
-    var storage = GetComponentStorage<T>();
+    var storage = context.GetStorage<T>();
 
     return ref storage.AddComponent(Id, prototype);
   }
@@ -90,7 +75,7 @@ public class Actor
   public ref T GetComponent<T>()
     where T : notnull
   {
-    var     storage   = GetComponentStorage<T>();
+    var     storage   = context.GetStorage<T>();
     ref var component = ref storage.GetComponent(Id);
 
     if (Unsafe.IsNullRef(ref component))
@@ -104,7 +89,7 @@ public class Actor
   public bool RemoveComponent<T>()
     where T : notnull
   {
-    var storage = GetComponentStorage<T>();
+    var storage = context.GetStorage<T>();
 
     return storage.RemoveComponent(Id);
   }
@@ -135,123 +120,6 @@ public class Actor
 
   protected internal virtual void OnDestroy()
   {
-  }
-
-  private IComponentStorage<T> GetComponentStorage<T>()
-    where T : notnull
-  {
-    if (context == null)
-    {
-      if (internalStorageGroup == null)
-      {
-        throw new InvalidOperationException("Missing internal storage in unlinked actor");
-      }
-
-      return internalStorageGroup.GetOrCreateStorage<T>();
-    }
-
-    return context.GetStorage<T>();
-  }
-
-  /// <summary>An internal <see cref="IComponentStorageGroup"/> for use in unlinked actors.</summary>
-  private sealed class InternalStorageGroup : IComponentStorageGroup
-  {
-    private readonly Dictionary<Type, IComponentStorage> storagesByType = new();
-
-    public IComponentStorage<T> GetOrCreateStorage<T>()
-      where T : notnull
-    {
-      var type = typeof(T);
-
-      if (!storagesByType.TryGetValue(type, out var storage))
-      {
-        storagesByType[type] = storage = new InternalStorage<T>();
-      }
-
-      return (IComponentStorage<T>) storage;
-    }
-
-    public IComponentStorage UnsafeGetOrCreateStorage(Type type)
-    {
-      if (!storagesByType.TryGetValue(type, out var storage))
-      {
-        var genericType = typeof(InternalStorage<>)
-          .MakeGenericType(type);
-
-        storagesByType[type] = storage = (IComponentStorage) Activator.CreateInstance(genericType)!;
-      }
-
-      return storage;
-    }
-
-    public void UnsafeTransferComponents(ActorId id, IComponentStorageGroup otherGroup)
-    {
-      foreach (var (componentType, storage) in storagesByType)
-      {
-        if (storage.UnsafeTryGetComponent(id, out var component))
-        {
-          var otherStorage = otherGroup.UnsafeGetOrCreateStorage(componentType);
-
-          otherStorage.UnsafeAddComponent(id, component);
-        }
-      }
-    }
-
-    /// <summary>A <see cref="IComponentStorage{T}"/> for a single component <see cref="T"/>.</summary>
-    private sealed class InternalStorage<T> : IComponentStorage<T>
-      where T : notnull
-    {
-      private T    value   = default!;
-      private bool isValid = false;
-
-      public ref T GetOrCreateComponent(ActorId id, Optional<T> prototype)
-      {
-        if (!isValid)
-        {
-          value   = prototype.GetOrDefault(default!);
-          isValid = true;
-        }
-
-        return ref value;
-      }
-
-      public ref T GetComponent(ActorId id)
-      {
-        if (!isValid)
-        {
-          return ref Unsafe.NullRef<T>();
-        }
-
-        return ref value;
-      }
-
-      public ref T AddComponent(ActorId id, Optional<T> prototype)
-      {
-        value   = prototype.GetOrDefault(default!);
-        isValid = true;
-        return ref value;
-      }
-
-      public bool RemoveComponent(ActorId id)
-      {
-        value   = default!;
-        isValid = false;
-
-        return true;
-      }
-
-      public bool UnsafeTryGetComponent(ActorId id, [NotNullWhen(true)] out object? component)
-      {
-        component = value;
-        return isValid;
-      }
-
-      public void UnsafeAddComponent(ActorId id, object component)
-      {
-        value   = (T) component;
-        isValid = true;
-      }
-    }
   }
 }
 

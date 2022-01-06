@@ -7,7 +7,8 @@ public class ActorTests
   [Test]
   public void it_should_read_and_write_components_to_internal_storage_group()
   {
-    var actor = new Actor();
+    var scene = new ActorScene();
+    var actor = new Actor(scene);
 
     actor.GetOrCreateComponent(new Transform
     {

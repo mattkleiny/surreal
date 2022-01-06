@@ -9,7 +9,7 @@ public class ActorSceneTests
   public void it_should_spawn_actors()
   {
     var scene = new ActorScene();
-    var actor = Substitute.For<Actor>();
+    var actor = Substitute.For<Actor>(scene);
 
     scene.Spawn(actor);
 
@@ -21,7 +21,7 @@ public class ActorSceneTests
   public void it_should_apply_input_to_actors()
   {
     var scene     = new ActorScene();
-    var actor     = Substitute.For<Actor>();
+    var actor     = Substitute.For<Actor>(scene);
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
@@ -46,7 +46,7 @@ public class ActorSceneTests
   public void it_should_apply_update_to_actors()
   {
     var scene     = new ActorScene();
-    var actor     = Substitute.For<Actor>();
+    var actor     = Substitute.For<Actor>(scene);
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
@@ -71,7 +71,7 @@ public class ActorSceneTests
   public void it_should_apply_draw_to_actors()
   {
     var scene     = new ActorScene();
-    var actor     = Substitute.For<Actor>();
+    var actor     = Substitute.For<Actor>(scene);
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
@@ -96,7 +96,7 @@ public class ActorSceneTests
   public void it_should_destroy_actors_after_next_tick()
   {
     var scene     = new ActorScene();
-    var actor     = Substitute.For<Actor>();
+    var actor     = Substitute.For<Actor>(scene);
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);

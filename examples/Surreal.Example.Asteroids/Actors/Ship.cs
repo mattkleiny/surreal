@@ -4,7 +4,8 @@ namespace Asteroids.Actors;
 
 public sealed class Ship : Actor
 {
-  public Ship(TextureRegion sprite)
+  public Ship(IActorContext context, TextureRegion sprite)
+    : base(context)
   {
     AddComponent(new Health(1));
     AddComponent(new Sprite(sprite));

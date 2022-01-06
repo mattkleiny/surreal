@@ -4,7 +4,7 @@
 public sealed class Player : Character
 {
   public Player(IActorContext context)
-    : base()
+    : base(context)
   {
   }
 }

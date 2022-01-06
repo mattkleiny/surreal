@@ -31,7 +31,6 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
         Status = ActorStatus.Active,
       };
 
-      actor.ConnectToContext(this, storageGroup);
       actor.OnAwake();
     }
   }
@@ -126,10 +125,10 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   {
     while (destroyQueue.TryDequeue(out var actor))
     {
-      actor.DisconnectFromContext(this, storageGroup);
       actor.OnDestroy();
 
       nodes.Remove(actor.Id);
+      storageGroup.RemoveAll(actor.Id);
     }
   }
 
@@ -157,24 +156,10 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     public List<Node<T>> Children { get; } = new();
   }
 
-  /// <summary>An <see cref="IComponentStorageGroup"/> for use in scene actors.</summary>
-  private sealed class SceneStorageGroup : IComponentStorageGroup, IDisposable
+  /// <summary>A storage group for components, for use in scene actors.</summary>
+  private sealed class SceneStorageGroup : IDisposable
   {
     private readonly Dictionary<Type, IComponentStorage> storagesByType = new();
-
-    public IComponentStorage UnsafeGetOrCreateStorage(Type type)
-    {
-      if (!storagesByType.TryGetValue(type, out var storage))
-      {
-        var factoryMethod = typeof(SceneStorageGroup)
-          .GetMethod(nameof(CreateStorage), BindingFlags.NonPublic | BindingFlags.Static)!
-          .MakeGenericMethod(type);
-
-        storagesByType[type] = storage = (IComponentStorage) factoryMethod.Invoke(null, null)!;
-      }
-
-      return storage;
-    }
 
     public IComponentStorage<T> GetOrCreateStorage<T>()
       where T : notnull
@@ -187,9 +172,12 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
       return (IComponentStorage<T>) storage;
     }
 
-    public void UnsafeTransferComponents(ActorId id, IComponentStorageGroup otherGroup)
+    public void RemoveAll(ActorId id)
     {
-      throw new NotImplementedException();
+      foreach (var storage in storagesByType.Values)
+      {
+        storage.RemoveComponent(id);
+      }
     }
 
     public void Dispose()

@@ -15,8 +15,8 @@ public sealed class DungeonPlan
   public int  Width  { get; }
   public int  Height { get; }
 
-  public Dungeon CreateDungeon()
+  public Dungeon Spawn(IActorContext context)
   {
-    return new Dungeon();
+    return new Dungeon(context);
   }
 }
