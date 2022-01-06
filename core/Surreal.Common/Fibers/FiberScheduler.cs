@@ -1,22 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Surreal.Fibers;
-
-#pragma warning disable CA2255
 
 /// <summary>A scheduler for <see cref="FiberTask"/>s.</summary>
 [UsedImplicitly]
 public static class FiberScheduler
 {
   private static readonly ConcurrentQueue<Action> Callbacks = new();
-
-  [ModuleInitializer]
-  internal static void Configure()
-  {
-    SynchronizationContext.SetSynchronizationContext(FiberSynchronizationContext.Instance);
-  }
 
   internal static void Schedule(Action callback)
   {
