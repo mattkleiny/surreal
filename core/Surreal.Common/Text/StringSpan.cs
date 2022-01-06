@@ -1,4 +1,6 @@
-﻿namespace Surreal.Text;
+﻿using System.Runtime.CompilerServices;
+
+namespace Surreal.Text;
 
 /// <summary>Represents a span of a <see cref="string"/>.</summary>
 public readonly record struct StringSpan(string? Source, int Offset, int Length)
@@ -10,37 +12,45 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
 
   public char this[Index index]
   {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     get
     {
-      if (Source == null) return default;
-      var offset = index.GetOffset(Length);
+      if (Source != null)
+      {
+        var offset = index.GetOffset(Length);
 
-      return Source[Offset + offset];
+        return Source[Offset + offset];
+      }
+
+      return default;
     }
   }
 
   public StringSpan this[Range range]
   {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     get
     {
-      if (Source == null) return default;
-      var (offset, length) = range.GetOffsetAndLength(Length);
+      if (Source != null)
+      {
+        var (offset, length) = range.GetOffsetAndLength(Length);
 
-      return new StringSpan(Source, Offset + offset, length);
+        return new StringSpan(Source, Offset + offset, length);
+      }
+
+      return default;
     }
   }
 
-  public ReadOnlySpan<char> ToSpan()
-  {
-    if (Source == null) return default;
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public bool Match(char token) => Peek() == token;
 
-    return Source.AsSpan(Offset, Length);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public char Peek() => Length > 1 ? this[1] : '\0';
 
-  public override string? ToString()
-  {
-    return Source?.AsSpan(Offset, Length).ToString();
-  }
+  public ReadOnlySpan<char> ToSpan() => Source != null ? Source.AsSpan(Offset, Length) : default;
+
+  public override string? ToString() => Source?.AsSpan(Offset, Length).ToString();
 
   public static implicit operator StringSpan(string value)            => new(value);
   public static implicit operator ReadOnlySpan<char>(StringSpan span) => span.ToSpan();
@@ -62,5 +72,101 @@ public static class StringSpanExtensions
   public static StringSpan AsStringSpan(this string source, int offset, int length)
   {
     return new StringSpan(source, offset, length);
+  }
+
+  /// <summary>Consumes all of the next contiguous digits in the span.</summary>
+  public static StringSpan ConsumeNumeric(this StringSpan span)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (!char.IsDigit(span[i]))
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>Consumes all of the next contiguous digits, including decimal places in the span.</summary>
+  public static StringSpan ConsumeNumericWithFractions(this StringSpan span)
+  {
+    var offset      = 1;
+    var hasFraction = false;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (span[i] == '.')
+      {
+        if (hasFraction) break;
+        hasFraction = true;
+      }
+      else if (!char.IsDigit(span[i]))
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>Consumes all alpha-numeric characters in the span</summary>
+  public static StringSpan ConsumeAlphaNumeric(this StringSpan span)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (!char.IsLetterOrDigit(span[i]))
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>Consumes all of the given characters from the span.</summary>
+  public static StringSpan ConsumeWhile(this StringSpan span, char token)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (span[i] != token)
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>Consumes all characters until the given token is detected.</summary>
+  public static StringSpan ConsumeUntil(this StringSpan span, char token)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      offset++;
+
+      if (span[i] == token)
+      {
+        break;
+      }
+    }
+
+    return span[..offset];
   }
 }

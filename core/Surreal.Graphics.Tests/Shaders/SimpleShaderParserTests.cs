@@ -9,13 +9,20 @@ public class SimpleShaderParserTests
 
     var metadata = await language.ParseShaderAsync(
       name: "test.shader",
-      sourceCode: @"(){},.-+*/;"
+      sourceCode: @"
+        // this is a comment
+        (( )){} // grouping stuff
+        !*+-/=<> <= == // operators
+        ""This is a test string""
+        341525.43.2
+        if (test > 0) { }
+      "
     );
 
     Assert.IsNotNull(metadata);
   }
 
-  [Test, Ignore("Not yet implemented")]
+  [Test]
   public async Task it_should_parse_a_simple_program()
   {
     IShaderParser language = new SimpleShaderParser();

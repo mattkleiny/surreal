@@ -28,13 +28,7 @@ public enum Precision
 }
 
 /// <summary>A type declaration with optional cardinality for vector representations.</summary>
-public readonly record struct Primitive(
-  PrimitiveType Type,
-  int? Cardinality = null,
-  Precision? Precision = null)
-{
-  public static implicit operator Primitive(PrimitiveType type) => new(type);
-}
+public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = null, Precision? Precision = null);
 
 /// <summary>Base class for the shader program instruction AST.</summary>
 public abstract record ShaderInstruction

@@ -30,7 +30,9 @@ internal sealed class OpenTkShaderCompiler : IShaderCompiler
       shaders[i] = new OpenTkShader(source, type);
     }
 
-    return Task.FromResult<ICompiledShaderProgram>(new OpenTkShaderSet(shaders));
+    var shaderSet = new OpenTkShaderSet(declaration.FileName, declaration.Description, shaders);
+
+    return Task.FromResult<ICompiledShaderProgram>(shaderSet);
   }
 
   private string BuildSourceCode(ShaderProgramDeclaration declaration, ShaderInstruction[] instructions)

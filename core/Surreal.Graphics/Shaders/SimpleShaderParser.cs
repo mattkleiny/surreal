@@ -5,6 +5,8 @@ namespace Surreal.Graphics.Shaders;
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class SimpleShaderParser : IShaderParser
 {
+  private static HashSet<string> Keywords { get; } = new() { "for", "if", "else" };
+
   public async Task<ShaderProgramDeclaration> ParseShaderAsync(string name, TextReader reader, CancellationToken cancellationToken = default)
   {
     var tokens = await TokenizeAsync(reader, cancellationToken);
@@ -23,37 +25,121 @@ public sealed class SimpleShaderParser : IShaderParser
       var text = await reader.ReadLineAsync();
       if (text == null) break;
 
-      var span = text.Trim().AsStringSpan();
+      var span = text.AsStringSpan();
 
       for (var column = 0; column < span.Length; column++)
       {
-        var position = new LinePosition(line + 1, column + 1);
-        var token    = ScanToken(span[column], position, span[column..]);
+        var token = ScanToken(new(line + 1, column + 1), span[column..]);
+        if (token != null)
+        {
+          results.Add(token.Value);
 
-        results.Add(token);
+          // skip forward on long spans
+          if (token.Value.Span.Length > 1)
+            column += token.Value.Span.Length - 1;
+        }
       }
     }
 
     return results;
+  }
 
-    static Token ScanToken(char token, LinePosition position, StringSpan span)
+  /// <summary>Scans a token from the given <see cref="StringSpan"/>.</summary>
+  private static Token? ScanToken(LinePosition position, StringSpan span)
+  {
+    var character = span[0];
+
+    switch (character)
     {
-      return token switch
+      case '(': return new Token(TokenType.LeftParenthesis, position, span[..1]);
+      case ')': return new Token(TokenType.RightParenthesis, position, span[..1]);
+      case '{': return new Token(TokenType.LeftBrace, position, span[..1]);
+      case '}': return new Token(TokenType.RightBrace, position, span[..1]);
+      case ',': return new Token(TokenType.Comma, position, span[..1]);
+      case '.': return new Token(TokenType.Dot, position, span[..1]);
+      case '-': return new Token(TokenType.Minus, position, span[..1]);
+      case '+': return new Token(TokenType.Plus, position, span[..1]);
+      case '*': return new Token(TokenType.Star, position, span[..1]);
+      case ':': return new Token(TokenType.Colon, position, span[..1]);
+      case ';': return new Token(TokenType.SemiColon, position, span[..1]);
+      case '!':
       {
-        '(' => new Token(TokenType.LeftParenthesis, position, span[..1]),
-        ')' => new Token(TokenType.RightParenthesis, position, span[..1]),
-        '{' => new Token(TokenType.LeftBrace, position, span[..1]),
-        '}' => new Token(TokenType.RightBrace, position, span[..1]),
-        ',' => new Token(TokenType.Comma, position, span[..1]),
-        '.' => new Token(TokenType.Dot, position, span[..1]),
-        '-' => new Token(TokenType.Minus, position, span[..1]),
-        '+' => new Token(TokenType.Plus, position, span[..1]),
-        '*' => new Token(TokenType.Star, position, span[..1]),
-        '/' => new Token(TokenType.Slash, position, span[..1]),
-        ';' => new Token(TokenType.Semicolon, position, span[..1]),
+        if (span.Match('='))
+          return new Token(TokenType.BangEqual, position, span[..2]);
 
-        _ => throw ErrorAt(position, span, $"Unknown token '{token}'"),
-      };
+        return new Token(TokenType.Bang, position, span[..1]);
+      }
+      case '=':
+      {
+        if (span.Match('='))
+          return new Token(TokenType.EqualEqual, position, span[..2]);
+
+        return new Token(TokenType.Equal, position, span[..1]);
+      }
+      case '<':
+      {
+        if (span.Match('='))
+          return new Token(TokenType.LessEqual, position, span[..2]);
+
+        return new Token(TokenType.Less, position, span[..1]);
+      }
+      case '>':
+      {
+        if (span.Match('='))
+          return new Token(TokenType.GreaterEqual, position, span[..2]);
+
+        return new Token(TokenType.Greater, position, span[..1]);
+      }
+      case '/':
+      {
+        if (span.Match('/'))
+        {
+          return new Token(TokenType.Comment, position, span);
+        }
+
+        return new Token(TokenType.Slash, position, span[..1]);
+      }
+      case ' ':
+      case '\t':
+      case '\r':
+      case '\n':
+      {
+        // ignore whitespace
+        return null;
+      }
+      case '"':
+      {
+        var literal = span.ConsumeUntil('"');
+
+        if (literal[^1] != '"')
+          throw ErrorAt(position, span, $"Unterminated string literal: {literal}");
+
+        return new Token(TokenType.String, position, literal, literal[1..^1].ToString());
+      }
+      default:
+      {
+        // numbers
+        if (char.IsDigit(character))
+        {
+          var number = span.ConsumeNumericWithFractions();
+
+          return new Token(TokenType.Number, position, number, decimal.Parse(number.ToString()!));
+        }
+
+        if (char.IsLetter(character))
+        {
+          var identifier = span.ConsumeAlphaNumeric();
+
+          if (Keywords.Contains(identifier.ToString()!))
+          {
+            return new Token(TokenType.Keyword, position, identifier);
+          }
+
+          return new Token(TokenType.Identifier, position, identifier, identifier.ToString());
+        }
+
+        throw ErrorAt(position, span, $"Unknown token '{character}'");
+      }
     }
   }
 
@@ -65,10 +151,6 @@ public sealed class SimpleShaderParser : IShaderParser
   /// <summary>Different types of tokens recognized by the <see cref="SimpleShaderParser"/>.</summary>
   private enum TokenType
   {
-    // text
-    WhiteSpace,
-    EndOfFile,
-
     // single character tokens
     LeftParenthesis,
     RightParenthesis,
@@ -80,7 +162,8 @@ public sealed class SimpleShaderParser : IShaderParser
     Plus,
     Star,
     Slash,
-    Semicolon,
+    Colon,
+    SemiColon,
 
     // one or two character tokens
     Bang,
@@ -93,12 +176,13 @@ public sealed class SimpleShaderParser : IShaderParser
     LessEqual,
 
     // literals
-    Identifier,
     String,
     Number,
+    Identifier,
+    Keyword,
 
-    // TODO: keywords
-    Keyword
+    // comments/etc
+    Comment,
   }
 
   /// <summary>Encodes a single token in the <see cref="SimpleShaderParser"/>.</summary>
@@ -106,7 +190,6 @@ public sealed class SimpleShaderParser : IShaderParser
     TokenType Type,
     LinePosition Position,
     StringSpan Span,
-    string? Lexeme = null,
     object? Literal = null
   );
 
@@ -116,6 +199,7 @@ public sealed class SimpleShaderParser : IShaderParser
     public override string ToString() => $"{Line}:{Column}";
   }
 
+  /// <summary>Indicates an error whilst parsing a program.</summary>
   private sealed class ParseException : Exception
   {
     public ParseException(LinePosition position, StringSpan span, string message)

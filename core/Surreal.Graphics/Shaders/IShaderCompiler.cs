@@ -10,4 +10,6 @@ public interface IShaderCompiler
 /// <summary>Represents a shader program that has been compiled from source.</summary>
 public interface ICompiledShaderProgram
 {
+  string FileName    { get; }
+  string Description { get; }
 }

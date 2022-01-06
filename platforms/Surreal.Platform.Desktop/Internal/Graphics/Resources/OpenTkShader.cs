@@ -7,4 +7,4 @@ namespace Surreal.Internal.Graphics.Resources;
 internal sealed record OpenTkShader(string Code, ShaderType Type);
 
 /// <summary>A set of <see cref="OpenTkShader"/>s.</summary>
-internal sealed record OpenTkShaderSet(OpenTkShader[] Shaders) : ICompiledShaderProgram;
+internal sealed record OpenTkShaderSet(string FileName, string Description, OpenTkShader[] Shaders) : ICompiledShaderProgram;
