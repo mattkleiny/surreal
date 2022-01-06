@@ -40,7 +40,7 @@ public static class CollectionExtensions
     {
       if (predicate(value))
       {
-        result = queue.Dequeue()!;
+        result = queue.Dequeue();
         return true;
       }
     }

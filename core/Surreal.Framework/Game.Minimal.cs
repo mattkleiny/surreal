@@ -1,7 +1,6 @@
 ﻿using System.Runtime;
 using Surreal.Fibers;
 using Surreal.Timing;
-using Stopwatch = Surreal.Timing.Stopwatch;
 
 namespace Surreal;
 
@@ -20,7 +19,7 @@ public abstract partial class Game
 
     using var host = platform.BuildHost();
 
-    var stopwatch = new Stopwatch();
+    var stopwatch = new Chronometer();
     var startTime = TimeStamp.Now;
     var gameLoop  = gameSetup(host);
 

@@ -15,7 +15,7 @@ public sealed class SimpleShaderParser : IShaderParser
     var description  = ParseDescription(tokens);
     var declarations = ParseDeclarations(tokens);
 
-    return new ShaderProgramDeclaration(name, description, ShaderArchetype.Sprite);
+    return new ShaderProgramDeclaration(name, description, ShaderArchetype.Sprite, declarations.ToArray());
   }
 
   private static string ParseDescription(Queue<Token> tokens)
@@ -33,7 +33,6 @@ public sealed class SimpleShaderParser : IShaderParser
   private static IEnumerable<ShaderDeclaration> ParseDeclarations(Queue<Token> tokens)
   {
     // TODO: implement me
-
     yield break;
   }
 
@@ -169,7 +168,7 @@ public sealed class SimpleShaderParser : IShaderParser
         {
           var identifier = span.ConsumeAlphaNumeric();
 
-          if (Keywords.Contains(identifier.ToString()!))
+          if (Keywords.Contains(identifier.ToString()))
           {
             return new Token(TokenType.Keyword, position, identifier);
           }
@@ -225,12 +224,7 @@ public sealed class SimpleShaderParser : IShaderParser
   }
 
   /// <summary>Encodes a single token in the <see cref="SimpleShaderParser"/>.</summary>
-  private readonly record struct Token(
-    TokenType Type,
-    LinePosition Position,
-    StringSpan Span,
-    object? Literal = null
-  );
+  private readonly record struct Token(TokenType Type, LinePosition Position, StringSpan Span, object? Literal = null);
 
   /// <summary>A position of a token in it's source text.</summary>
   private readonly record struct LinePosition(int Line, int Column)

@@ -40,13 +40,16 @@
     <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
 
     <!-- link shared code into all assemblies -->
-    <Compile Include="..\..\JetBrainsAnnotations.cs">
+    <Compile Include="$(MSBuildProjectDirectory)..\..\..\JetBrainsAnnotations.cs">
       <Link>Shared\JetBrainsAnnotations.cs</Link>
     </Compile>
 
-    <!-- make internals automatically visible to associated test project and NSubstitute -->
+    <!-- make internals automatically visible to associated projectd and NSubstitute -->
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(ProjectName).Tests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(ProjectName).Benchmarks</_Parameter1>
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
@@ -73,8 +76,26 @@
     <Using Include="NSubstitute" />
 
     <!-- link shared code into test assemblies -->
-    <Compile Include="..\..\SharedTestHelpers.cs">
-      <Link>Shared\SharedTestHelpers.cs</Link>
+    <Compile Include="$(MSBuildProjectDirectory)..\..\..\AutoFixtures.cs">
+      <Link>Shared\AutoFixtures.cs</Link>
     </Compile>
+    <Compile Include="$(MSBuildProjectDirectory)..\..\..\BenchmarkTest.cs">
+      <Link>Shared\BenchmarkTest.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <!-- benchmark project configuration -->
+  <PropertyGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+
+    <!-- shared usings for benchmark projects -->
+    <Using Include="BenchmarkDotNet" />
+    <Using Include="BenchmarkDotNet.Attributes" />
+    <Using Include="BenchmarkDotNet.Running" />
   </ItemGroup>
 </Project>

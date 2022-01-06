@@ -50,7 +50,7 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
 
   public ReadOnlySpan<char> ToSpan() => Source != null ? Source.AsSpan(Offset, Length) : default;
 
-  public override string? ToString() => Source?.AsSpan(Offset, Length).ToString();
+  public override string ToString() => Source?.AsSpan(Offset, Length).ToString() ?? string.Empty;
 
   public static implicit operator StringSpan(string value)            => new(value);
   public static implicit operator ReadOnlySpan<char>(StringSpan span) => span.ToSpan();

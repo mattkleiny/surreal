@@ -5,7 +5,6 @@ using Surreal.Fibers;
 using Surreal.IO;
 using Surreal.Timing;
 using Surreal.Utilities;
-using Stopwatch = Surreal.Timing.Stopwatch;
 
 namespace Surreal;
 
@@ -73,7 +72,7 @@ public abstract partial class Game : IDisposable, ITestableGame
 
       IsRunning = true;
 
-      var stopwatch = new Stopwatch();
+      var stopwatch = new Chronometer();
 
       while (IsRunning && !Host.IsClosing)
       {
