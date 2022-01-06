@@ -1,4 +1,6 @@
-﻿using Surreal.Collections;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using Surreal.Collections;
 using Surreal.Text;
 
 namespace Surreal.Graphics.Shaders;
@@ -51,7 +53,9 @@ public sealed class StandardShaderParser : IShaderParser
 
       for (var column = 0; column < span.Length; column++)
       {
-        var token = ScanToken(new(line + 1, column + 1), span[column..]);
+        var position = new LinePosition(line + 1, column + 1);
+        var token    = ScanToken(position, span[column..]);
+
         if (token != null)
         {
           results.Enqueue(token.Value);
@@ -67,6 +71,7 @@ public sealed class StandardShaderParser : IShaderParser
   }
 
   /// <summary>Scans a token from the given <see cref="StringSpan"/>.</summary>
+  [SuppressMessage("ReSharper", "CognitiveComplexity")]
   private static Token? ScanToken(LinePosition position, StringSpan span)
   {
     var character = span[0];
@@ -160,20 +165,21 @@ public sealed class StandardShaderParser : IShaderParser
         {
           var number = span.ConsumeNumericWithFractions();
 
-          return new Token(TokenType.Number, position, number, decimal.Parse(number.ToString()!));
+          return new Token(TokenType.Number, position, number, decimal.Parse(number.ToString(), CultureInfo.InvariantCulture));
         }
 
         // identifiers and keywords
         if (char.IsLetter(character) || character == '_')
         {
           var identifier = span.ConsumeAlphaNumeric();
+          var literal    = identifier.ToString();
 
-          if (Keywords.Contains(identifier.ToString()))
+          if (Keywords.Contains(literal))
           {
-            return new Token(TokenType.Keyword, position, identifier);
+            return new Token(TokenType.Keyword, position, identifier, literal);
           }
 
-          return new Token(TokenType.Identifier, position, identifier, identifier.ToString());
+          return new Token(TokenType.Identifier, position, identifier, literal);
         }
 
         throw ErrorAt(position, span, $"Unknown token '{character}'");
@@ -224,7 +230,12 @@ public sealed class StandardShaderParser : IShaderParser
   }
 
   /// <summary>Encodes a single token in the <see cref="StandardShaderParser"/>.</summary>
-  private readonly record struct Token(TokenType Type, LinePosition Position, StringSpan Span, object? Literal = null);
+  private readonly record struct Token(
+    TokenType Type,
+    LinePosition Position,
+    StringSpan Span,
+    object? Literal = null
+  );
 
   /// <summary>A position of a token in it's source text.</summary>
   private readonly record struct LinePosition(int Line, int Column)
