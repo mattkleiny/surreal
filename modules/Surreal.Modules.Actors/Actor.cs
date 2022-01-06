@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Surreal.Components;
 using Surreal.Timing;
@@ -54,18 +55,18 @@ public class Actor
 
   internal void ConnectToContext(IActorContext context, IComponentStorageGroup storageGroup)
   {
-    this.context = context;
-
-    // TODO: transfer components to context
-
+    // transfer components from the internal storage group to the context
+    internalStorageGroup!.UnsafeTransferComponents(Id, storageGroup);
     internalStorageGroup = null;
+
+    this.context = context;
   }
 
   internal void DisconnectFromContext(IActorContext context, IComponentStorageGroup storageGroup)
   {
+    // transfer components to the local storage group
     internalStorageGroup = new InternalStorageGroup();
-
-    // TODO: transfer components to local
+    storageGroup.UnsafeTransferComponents(Id, internalStorageGroup);
 
     this.context = null;
   }
@@ -155,7 +156,7 @@ public class Actor
   /// <summary>An internal <see cref="IComponentStorageGroup"/> for use in unlinked actors.</summary>
   private sealed class InternalStorageGroup : IComponentStorageGroup
   {
-    private readonly Dictionary<Type, object> storagesByType = new();
+    private readonly Dictionary<Type, IComponentStorage> storagesByType = new();
 
     public IComponentStorage<T> GetOrCreateStorage<T>()
       where T : notnull
@@ -164,14 +165,40 @@ public class Actor
 
       if (!storagesByType.TryGetValue(type, out var storage))
       {
-        storagesByType[type] = storage = new ComponentStorage<T>();
+        storagesByType[type] = storage = new InternalStorage<T>();
       }
 
       return (IComponentStorage<T>) storage;
     }
 
+    public IComponentStorage UnsafeGetOrCreateStorage(Type type)
+    {
+      if (!storagesByType.TryGetValue(type, out var storage))
+      {
+        var genericType = typeof(InternalStorage<>)
+          .MakeGenericType(type);
+
+        storagesByType[type] = storage = (IComponentStorage) Activator.CreateInstance(genericType)!;
+      }
+
+      return storage;
+    }
+
+    public void UnsafeTransferComponents(ActorId id, IComponentStorageGroup otherGroup)
+    {
+      foreach (var (componentType, storage) in storagesByType)
+      {
+        if (storage.UnsafeTryGetComponent(id, out var component))
+        {
+          var otherStorage = otherGroup.UnsafeGetOrCreateStorage(componentType);
+
+          otherStorage.UnsafeAddComponent(id, component);
+        }
+      }
+    }
+
     /// <summary>A <see cref="IComponentStorage{T}"/> for a single component <see cref="T"/>.</summary>
-    private sealed class ComponentStorage<T> : IComponentStorage<T>
+    private sealed class InternalStorage<T> : IComponentStorage<T>
       where T : notnull
     {
       private T    value   = default!;
@@ -211,6 +238,18 @@ public class Actor
         isValid = false;
 
         return true;
+      }
+
+      public bool UnsafeTryGetComponent(ActorId id, [NotNullWhen(true)] out object? component)
+      {
+        component = value;
+        return isValid;
+      }
+
+      public void UnsafeAddComponent(ActorId id, object component)
+      {
+        value   = (T) component;
+        isValid = true;
       }
     }
   }

@@ -1,10 +1,13 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Surreal.Components;
 
 /// <summary>Represents generically any <see cref="IComponentStorage{T}"/> type.</summary>
 public interface IComponentStorage
 {
+  bool UnsafeTryGetComponent(ActorId id, [NotNullWhen(true)] out object? component);
+  void UnsafeAddComponent(ActorId id, object component);
 }
 
 /// <summary>Represents storage for a component of type <see cref="T"/>.</summary>

@@ -160,22 +160,41 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   /// <summary>An <see cref="IComponentStorageGroup"/> for use in scene actors.</summary>
   private sealed class SceneStorageGroup : IComponentStorageGroup, IDisposable
   {
-    private readonly Dictionary<Type, IComponentStorage> storages = new();
+    private readonly Dictionary<Type, IComponentStorage> storagesByType = new();
+
+    public IComponentStorage UnsafeGetOrCreateStorage(Type type)
+    {
+      if (!storagesByType.TryGetValue(type, out var storage))
+      {
+        var factoryMethod = typeof(SceneStorageGroup)
+          .GetMethod(nameof(CreateStorage), BindingFlags.NonPublic | BindingFlags.Static)!
+          .MakeGenericMethod(type);
+
+        storagesByType[type] = storage = (IComponentStorage) factoryMethod.Invoke(null, null)!;
+      }
+
+      return storage;
+    }
 
     public IComponentStorage<T> GetOrCreateStorage<T>()
       where T : notnull
     {
-      if (!storages.TryGetValue(typeof(T), out var storage))
+      if (!storagesByType.TryGetValue(typeof(T), out var storage))
       {
-        storages[typeof(T)] = storage = CreateStorage<T>();
+        storagesByType[typeof(T)] = storage = CreateStorage<T>();
       }
 
       return (IComponentStorage<T>) storage;
     }
 
+    public void UnsafeTransferComponents(ActorId id, IComponentStorageGroup otherGroup)
+    {
+      throw new NotImplementedException();
+    }
+
     public void Dispose()
     {
-      foreach (var storage in storages.Values)
+      foreach (var storage in storagesByType.Values)
       {
         if (storage is IDisposable disposable)
         {
@@ -183,7 +202,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
         }
       }
 
-      storages.Clear();
+      storagesByType.Clear();
     }
 
     private static IComponentStorage<T> CreateStorage<T>()
