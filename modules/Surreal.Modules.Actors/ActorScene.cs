@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Surreal.Aspects;
 using Surreal.Components;
 using Surreal.Systems;
 using Surreal.Timing;
@@ -9,14 +8,25 @@ namespace Surreal;
 /// <summary>A scene of managed <see cref="Actor"/>s.</summary>
 public sealed class ActorScene : IActorContext, IComponentSystemContext, IDisposable
 {
-  private readonly Dictionary<ActorId, Node<Actor>> nodes        = new();
-  private readonly LinkedList<IComponentSystem>     systems      = new();
-  private readonly SceneStorageGroup                storageGroup = new();
+  private readonly Dictionary<ActorId, Node<Actor>> nodes      = new();
+  private readonly ComponentStorageGroup            components = new();
+  private readonly LinkedList<IComponentSystem>     systems    = new();
 
   private readonly Queue<Actor> destroyQueue = new();
 
-  public void AddSystem(IComponentSystem system)    => systems.AddLast(system);
-  public void RemoveSystem(IComponentSystem system) => systems.Remove(system);
+  // TODO: find a way to fire these?
+  public event ComponentChangeListener? ComponentAdded;
+  public event ComponentChangeListener? ComponentRemoved;
+
+  public void AddSystem(IComponentSystem system)
+  {
+    systems.AddLast(system);
+  }
+
+  public void RemoveSystem(IComponentSystem system)
+  {
+    systems.Remove(system);
+  }
 
   public void Spawn(Actor actor)
   {
@@ -128,24 +138,19 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
       actor.OnDestroy();
 
       nodes.Remove(actor.Id);
-      storageGroup.RemoveAll(actor.Id);
+      components.RemoveAll(actor.Id);
     }
   }
 
   public void Dispose()
   {
-    storageGroup.Dispose();
+    components.Dispose();
     nodes.Clear();
   }
 
   IComponentStorage<T> IActorContext.GetStorage<T>()
   {
-    return storageGroup.GetOrCreateStorage<T>();
-  }
-
-  AspectEnumerator IComponentSystemContext.QueryActors(Aspect aspect)
-  {
-    throw new NotImplementedException();
+    return components.GetOrCreateStorage<T>();
   }
 
   /// <summary>A single node in the scene.</summary>
@@ -157,7 +162,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   }
 
   /// <summary>A storage group for components, for use in scene actors.</summary>
-  private sealed class SceneStorageGroup : IDisposable
+  private sealed class ComponentStorageGroup : IDisposable
   {
     private readonly Dictionary<Type, IComponentStorage> storagesByType = new();
 

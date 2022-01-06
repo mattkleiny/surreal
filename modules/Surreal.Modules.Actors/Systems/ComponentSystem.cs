@@ -1,7 +1,10 @@
-﻿using Surreal.Aspects;
+﻿using Surreal.Components;
 using Surreal.Timing;
 
 namespace Surreal.Systems;
+
+/// <summary>A listener for changes in component composition.</summary>
+public delegate void ComponentChangeListener(ActorId id, ComponentType type);
 
 /// <summary>Represents a component system, capable of operating on components.</summary>
 public interface IComponentSystem
@@ -14,8 +17,8 @@ public interface IComponentSystem
 /// <summary>Context for component system operations.</summary>
 public interface IComponentSystemContext
 {
-  /// <summary>Queries actors that match a given <see cref="Aspect"/>.</summary>
-  AspectEnumerator QueryActors(Aspect aspect);
+  event ComponentChangeListener ComponentAdded;
+  event ComponentChangeListener ComponentRemoved;
 }
 
 /// <summary>Base class for any <see cref="IComponentSystem"/> implementation.</summary>

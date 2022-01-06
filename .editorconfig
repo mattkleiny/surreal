@@ -32,6 +32,8 @@ dotnet_diagnostic.S3903.severity = None # Move type into named namespace
 dotnet_diagnostic.S3973.severity = None # Multi-line loops
 dotnet_diagnostic.S2699.severity = None # At least one assertion in test case
 dotnet_diagnostic.S3881.severity = None # Rigid dispose patterns
+dotnet_diagnostic.S2743.severity = None # Static field in generic type
+dotnet_diagnostic.S2326.severity = None # Unused type parameter
 
 # IDE Analyzers
 dotnet_diagnostic.IDE1006.severity = None # Do not use underscores in method names

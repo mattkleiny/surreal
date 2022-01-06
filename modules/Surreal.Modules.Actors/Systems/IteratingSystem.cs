@@ -1,4 +1,4 @@
-﻿using Surreal.Aspects;
+﻿using Surreal.Components;
 using Surreal.Timing;
 
 namespace Surreal.Systems;
@@ -6,19 +6,24 @@ namespace Surreal.Systems;
 /// <summary>A simple <see cref="ComponentSystem"/> that iterates components linearly.</summary>
 public abstract class IteratingSystem : ComponentSystem
 {
-  protected IteratingSystem(IComponentSystemContext context, Aspect aspect)
+  private readonly HashSet<ActorId> actorIds = new();
+
+  protected IteratingSystem(IComponentSystemContext context, ComponentMask mask)
     : base(context)
   {
-    Aspect = aspect;
+    Mask = mask;
+
+    context.ComponentAdded   += OnComponentAdded;
+    context.ComponentRemoved += OnComponentRemoved;
   }
 
-  public Aspect Aspect { get; }
+  public ComponentMask Mask { get; }
 
   public sealed override void OnInput(DeltaTime time)
   {
     OnBeginInput(time);
 
-    foreach (var actor in Context.QueryActors(Aspect))
+    foreach (var actor in actorIds)
     {
       OnInput(time, actor);
     }
@@ -42,7 +47,7 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginUpdate(time);
 
-    foreach (var actor in Context.QueryActors(Aspect))
+    foreach (var actor in actorIds)
     {
       OnUpdate(time, actor);
     }
@@ -66,7 +71,7 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginDraw(time);
 
-    foreach (var actor in Context.QueryActors(Aspect))
+    foreach (var actor in actorIds)
     {
       OnDraw(time, actor);
     }
@@ -84,5 +89,21 @@ public abstract class IteratingSystem : ComponentSystem
 
   protected virtual void OnEndDraw(DeltaTime time)
   {
+  }
+
+  private void OnComponentAdded(ActorId id, ComponentType type)
+  {
+    if (Mask.Contains(type))
+    {
+      actorIds.Add(id);
+    }
+  }
+
+  private void OnComponentRemoved(ActorId id, ComponentType type)
+  {
+    if (Mask.Contains(type))
+    {
+      actorIds.Remove(id);
+    }
   }
 }

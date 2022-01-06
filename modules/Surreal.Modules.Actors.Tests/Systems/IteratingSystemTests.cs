@@ -1,4 +1,4 @@
-﻿using Surreal.Aspects;
+﻿using Surreal.Components;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -6,7 +6,7 @@ namespace Surreal.Systems;
 
 public class IteratingSystemTests
 {
-  [Test, Ignore("Not yet implemented")]
+  [Test]
   public void it_should_iterate_over_aspect()
   {
     var scene     = new ActorScene();
@@ -22,7 +22,7 @@ public class IteratingSystemTests
   private sealed class TestSystem : IteratingSystem
   {
     public TestSystem(IComponentSystemContext context)
-      : base(context, Aspect.Of<Transform>())
+      : base(context, ComponentMask.Of<Transform>())
     {
     }
   }
