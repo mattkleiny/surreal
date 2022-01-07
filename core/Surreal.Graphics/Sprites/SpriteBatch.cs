@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
@@ -50,6 +51,7 @@ public sealed class SpriteBatch : IDisposable
     DrawInternal(region, position, size, rotation, region.Offset, region.Size, Color);
   }
 
+  [SkipLocalsInit]
   private void DrawInternal(
     in TextureRegion region,
     Vector2 position,

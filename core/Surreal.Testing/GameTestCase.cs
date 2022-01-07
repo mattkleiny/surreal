@@ -6,18 +6,23 @@ namespace Surreal;
 public abstract class GameTestCase<TGame>
   where TGame : Game, new()
 {
-  public IGameUnderTest<TGame> GameUnderTest { get; } = new GameUnderTest<TGame>();
+  public IGameUnderTest<TGame> GameUnderTest { get; private set; } = null!;
   public TGame                 Game          => GameUnderTest.Instance;
 
   [SetUp]
-  public async Task OnSetUp()
+  public void OnSetUp()
   {
-    await GameUnderTest.InitializeAsync();
+    GameUnderTest = new GameUnderTest<TGame>(CreatePlatform());
   }
 
   [TearDown]
   public void OnTearDown()
   {
     GameUnderTest.Dispose();
+  }
+
+  protected virtual IPlatform CreatePlatform()
+  {
+    return new HeadlessPlatform();
   }
 }

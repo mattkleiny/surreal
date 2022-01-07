@@ -33,6 +33,9 @@ public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = n
 /// <summary>Base class for the shader program instruction AST.</summary>
 public abstract record ShaderInstruction
 {
+  /// <summary>A compilation unit for all shader instructions. This represents the top-level 'file' input to a shader.</summary>
+  public sealed record CompilationUnit(params Statement[] Statements) : ShaderInstruction;
+
   /// <summary>A single statement, in a single line and terminated.</summary>
   public abstract record Statement : ShaderInstruction
   {

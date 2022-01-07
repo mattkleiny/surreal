@@ -11,6 +11,6 @@ public class ChunkMeshTests
     var chunk = Chunk.Generate(ChunkGenerators.Chaotic());
     var mesh  = new ChunkMesh(Substitute.For<IGraphicsDevice>(), chunk);
 
-    Assert.DoesNotThrowAsync(mesh.Invalidate);
+    Assert.DoesNotThrow(mesh.Invalidate);
   }
 }

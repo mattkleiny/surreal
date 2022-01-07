@@ -24,10 +24,10 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     {
       var (kind, instructions) = declaration.Shaders[i];
 
-      var source = BuildSourceCode(declaration, instructions);
-      var type   = ConvertType(kind);
+      var sourceCode = BuildSourceCode(declaration, instructions);
+      var shaderType = ConvertShaderKind(kind);
 
-      shaders[i] = new OpenTKShader(source, type);
+      shaders[i] = new OpenTKShader(sourceCode, shaderType);
     }
 
     var shaderSet = new OpenTKShaderSet(declaration.FileName, declaration.Description, shaders);
@@ -35,16 +35,16 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     return Task.FromResult<ICompiledShaderProgram>(shaderSet);
   }
 
-  private string BuildSourceCode(ShaderProgramDeclaration declaration, ShaderInstruction[] instructions)
+  private string BuildSourceCode(ShaderProgramDeclaration declaration, CompilationUnit compilationUnit)
   {
     var builder = new ShaderCodeBuilder();
 
     CompilePreamble(builder, declaration);
-    CompileIncludes(builder, instructions.OfType<Statement.Include>());
+    CompileIncludes(builder, compilationUnit.Statements.OfType<Statement.Include>());
 
-    foreach (var instruction in instructions)
+    foreach (var statement in compilationUnit.Statements)
     {
-      CompileInstruction(builder, instruction);
+      CompileStatement(builder, statement);
     }
 
     return builder.ToSourceCode();
@@ -68,9 +68,9 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     }
   }
 
-  private static void CompileInstruction(IShaderCodeBuilderScope builder, ShaderInstruction instruction)
+  private static void CompileStatement(IShaderCodeBuilderScope builder, Statement statement)
   {
-    switch (instruction)
+    switch (statement)
     {
       case Statement.Include:
         // no-op (included in preamble)
@@ -114,16 +114,16 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
           parameters: body.OfType<Expression.Parameter>().Select(CompileExpression)
         );
 
-        foreach (var statement in body.OfType<Statement>())
+        foreach (var functionStatement in body.OfType<Statement>())
         {
-          CompileInstruction(function, statement);
+          CompileStatement(function, functionStatement);
         }
 
         break;
       }
 
       default:
-        throw new InvalidOperationException($"An unexpected instruction was encountered: {instruction}");
+        throw new InvalidOperationException($"An unexpected instruction was encountered: {statement}");
     }
   }
 
@@ -209,7 +209,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
   };
 
-  private static ShaderType ConvertType(ShaderKind kind) => kind switch
+  private static ShaderType ConvertShaderKind(ShaderKind kind) => kind switch
   {
     ShaderKind.Vertex   => ShaderType.VertexShader,
     ShaderKind.Geometry => ShaderType.GeometryShader,

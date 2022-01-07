@@ -1,4 +1,5 @@
-﻿using Surreal.Collections;
+﻿using System.Runtime.CompilerServices;
+using Surreal.Collections;
 using Surreal.Mathematics;
 
 namespace Minecraft.Worlds;
@@ -47,6 +48,9 @@ public sealed class BlockPalette
     idsByBlock = blocks.ToDictionary(_ => _, _ => _.Id);
   }
 
-  public Block  GetBlock(ushort id) => blocksById[id];
-  public ushort GetId(Block block)  => idsByBlock[block];
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Block GetBlock(ushort id) => blocksById[id];
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public ushort GetId(Block block) => idsByBlock[block];
 }

@@ -2,8 +2,8 @@
 
 namespace Minecraft.Worlds;
 
-/// <summary>Generates a chunk of the world, given a view of it.</summary>
-public delegate void ChunkGenerator(Chunk chunk);
+/// <summary>Generates a chunk of the world, given a slice of it.</summary>
+public delegate void ChunkGenerator(ChunkSlice slice);
 
 /// <summary>Commonly used <see cref="ChunkGenerator"/>s.</summary>
 public static class ChunkGenerators
@@ -14,7 +14,7 @@ public static class ChunkGenerators
     chunk.NotifyChanged();
   };
 
-  public static ChunkGenerator Flat(int height, Block flatBlock) => chunk =>
+  public static ChunkGenerator Flat(Block flatBlock, int height) => chunk =>
   {
     var voxels = chunk.Voxels;
 

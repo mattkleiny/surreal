@@ -6,14 +6,6 @@ public enum ShaderArchetype
   Sprite,
 }
 
-/// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
-public sealed record ShaderProgramDeclaration(
-  string FileName,
-  string Description,
-  ShaderArchetype Archetype,
-  params ShaderDeclaration[] Shaders
-);
-
 /// <summary>Different types of shader programs.</summary>
 public enum ShaderKind
 {
@@ -22,8 +14,16 @@ public enum ShaderKind
   Fragment,
 }
 
+/// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
+public sealed record ShaderProgramDeclaration(
+  string FileName,
+  string Description,
+  ShaderArchetype Archetype,
+  params ShaderDeclaration[] Shaders
+);
+
 /// <summary>Represents a parsed shader, ready for interrogation and compilation.</summary>
 public sealed record ShaderDeclaration(
   ShaderKind Kind,
-  params ShaderInstruction[] Instructions
+  ShaderInstruction.CompilationUnit CompilationUnit
 );

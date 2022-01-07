@@ -9,6 +9,8 @@ public interface IGameUnderTest : IDisposable
   ILoopTarget LoopTarget { get; }
 
   Task InitializeAsync();
+  Task RunAsync(TimeSpan duration);
+
   void Tick(DeltaTime deltaTime);
 }
 
@@ -24,16 +26,27 @@ internal sealed class GameUnderTest<TGame> : IGameUnderTest<TGame>
 {
   private readonly TimeStamp startTime = TimeStamp.Now;
 
-  public TGame Instance { get; } = Game.Create<TGame>(new Game.Configuration
+  public GameUnderTest(IPlatform platform)
   {
-    Platform = new HeadlessPlatform()
-  });
+    Instance = Game.Create<TGame>(new Game.Configuration
+    {
+      Platform = platform
+    });
+  }
 
+  public TGame       Instance   { get; }
   public ILoopTarget LoopTarget => Instance.LoopTarget;
 
   public Task InitializeAsync()
   {
     return Instance.InitializeAsync();
+  }
+
+  public Task RunAsync(TimeSpan duration)
+  {
+    using var cancellationToken = new CancellationTokenSource(5.Seconds());
+
+    return Instance.RunAsync(cancellationToken.Token);
   }
 
   public void Tick(DeltaTime deltaTime)

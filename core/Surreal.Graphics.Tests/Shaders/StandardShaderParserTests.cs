@@ -2,13 +2,13 @@
 
 public class StandardShaderParserTests
 {
-  [Test, Benchmark(Milliseconds = 0.5f)]
+  [Test, Benchmark(ThresholdMs = 0.2f)]
   public async Task it_should_parse_a_simple_program()
   {
     IShaderParser language = new StandardShaderParser();
 
     var metadata = await language.ParseShaderAsync(
-      name: "test.shader",
+      path: "test.shader",
       sourceCode: @"
       // A simple sprite shader, for testing purposes.
       // This description should be attached up-front.

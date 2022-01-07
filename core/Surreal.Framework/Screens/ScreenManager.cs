@@ -30,7 +30,7 @@ public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
   public IScreen? ActiveScreen   => screens.Head;
   public IScreen? PreviousScreen => screens.Head?.Previous;
 
-  public override async Task InitializeAsync()
+  public override async Task InitializeAsync(CancellationToken cancellationToken = default)
   {
     if (ActiveScreen != null)
     {

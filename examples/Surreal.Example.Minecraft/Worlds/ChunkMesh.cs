@@ -7,6 +7,7 @@ using Surreal.Mathematics;
 
 namespace Minecraft.Worlds;
 
+/// <summary>A triangle mesh constructed from a source <see cref="Chunk"/>.</summary>
 public sealed class ChunkMesh : IDisposable
 {
   private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<ChunkMesh>();
@@ -33,7 +34,7 @@ public sealed class ChunkMesh : IDisposable
       IsDirty = false;
       IsReady = false;
 
-      Invalidate();
+      Task.Run(Invalidate); // invalidate on background thread
     }
 
     if (IsReady)
@@ -47,21 +48,19 @@ public sealed class ChunkMesh : IDisposable
     IsDirty = true;
   }
 
-  public Task Invalidate() => Task.Run(() =>
+  /// <summary>Synchronously rebuilds the underlying mesh geometry.</summary>
+  public void Invalidate()
   {
     using var _ = Profiler.Track(nameof(Invalidate));
 
     var tessellator = new Tessellator();
-    var voxels      = chunk.Voxels;
 
     // TODO: fix bounds checks
     for (var z = 1; z < chunk.Depth - 1; z++)
     for (var y = 1; y < chunk.Height - 1; y++)
     for (var x = 1; x < chunk.Width - 1; x++)
     {
-      var voxel = voxels[x + y * chunk.Width + z * chunk.Width * chunk.Height];
-      var block = chunk.Palette.GetBlock(voxel);
-
+      var block = chunk.GetBlock(x, y, z);
       if (!block.IsSolid) continue; // don't render geometry for non-solid blocks
 
       if (!chunk.GetBlock(x - 1, y, z).IsSolid) tessellator.AddFace(x, y, z, Face.Left, block.Color);
@@ -80,7 +79,7 @@ public sealed class ChunkMesh : IDisposable
 
       IsReady = true;
     });
-  });
+  }
 
   public void Dispose()
   {

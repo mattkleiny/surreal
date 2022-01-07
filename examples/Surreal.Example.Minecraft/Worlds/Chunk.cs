@@ -40,21 +40,27 @@ public sealed class Chunk
   public Span<ushort> Voxels  => voxels.Span;
   public BlockPalette Palette { get; }
 
+  public ChunkSlice this[Vector3I offset, VolumeI size] => new(this, offset, size);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Block GetBlock(int x, int y, int z)
   {
     return Palette.GetBlock(GetVoxel(x, y, z));
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void SetBlock(int x, int y, int z, Block value)
   {
     SetVoxel(x, y, z, Palette.GetId(value));
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public ushort GetVoxel(int x, int y, int z)
   {
     return Sample(x, y, z);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void SetVoxel(int x, int y, int z, ushort value, bool notifyChanged = true)
   {
     Sample(x, y, z) = value;
@@ -65,6 +71,7 @@ public sealed class Chunk
     }
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void NotifyChanged()
   {
     Changed?.Invoke();
@@ -75,4 +82,62 @@ public sealed class Chunk
   {
     return ref voxels.Span[x + y * Width + z * Width * Height];
   }
+}
+
+/// <summary>A sub-slice of a larger <see cref="Chunk"/>.</summary>
+public readonly struct ChunkSlice
+{
+  public static ChunkSlice Empty => default;
+
+  private readonly Chunk?   chunk;
+  private readonly Vector3I offset;
+  private readonly VolumeI  size;
+
+  public ChunkSlice(Chunk chunk, Vector3I offset, VolumeI size)
+  {
+    this.chunk  = chunk;
+    this.offset = offset;
+    this.size   = size;
+  }
+
+  public int Width  => size.Width;
+  public int Height => size.Height;
+  public int Depth  => size.Depth;
+
+  public BlockPalette Palette => chunk?.Palette ?? Block.Palette;
+
+  public ChunkSlice this[Vector3I offset, VolumeI size]
+  {
+    get
+    {
+      if (chunk == null)
+      {
+        return Empty;
+      }
+
+      return new ChunkSlice(chunk, this.offset + offset, size);
+    }
+  }
+
+  public Span<ushort> Voxels
+  {
+    get
+    {
+      if (chunk == null)
+      {
+        return Span<ushort>.Empty;
+      }
+
+      var start = offset.X + offset.Y * Chunk.Size.Width + offset.Z * Chunk.Size.Width * Chunk.Size.Height;
+
+      return chunk.Voxels[start..(start + size.Total)];
+    }
+  }
+
+  public void NotifyChanged()
+  {
+    chunk?.NotifyChanged();
+  }
+
+  public static implicit operator ChunkSlice(Chunk chunk) => new(chunk, Vector3I.Zero, Chunk.Size);
 }

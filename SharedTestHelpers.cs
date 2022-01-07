@@ -107,12 +107,12 @@ internal abstract class SpecimenBuilder<T> : ISpecimenBuilder
 [AttributeUsage(AttributeTargets.Method)]
 internal class BenchmarkAttribute : PropertyAttribute, IWrapSetUpTearDown
 {
-  public float Milliseconds { get; set; } = 1000f;
-  public int   Iterations   { get; set; } = 4;
+  public int   MaxIterations { get; set; } = 4;
+  public float ThresholdMs   { get; set; } = 0.1f;
 
   public TestCommand Wrap(TestCommand command)
   {
-    return new BenchmarkCommand(command, Iterations, Milliseconds);
+    return new BenchmarkCommand(command, MaxIterations, ThresholdMs);
   }
 
   /// <summary>Wraps the test execution to allow measuring time taken.</summary>
@@ -131,7 +131,7 @@ internal class BenchmarkAttribute : PropertyAttribute, IWrapSetUpTearDown
     public override TestResult Execute(TestExecutionContext context)
     {
       var iteration = 0;
-      var stopwatch  = new Stopwatch();
+      var stopwatch = new Stopwatch();
 
       while (true)
       {

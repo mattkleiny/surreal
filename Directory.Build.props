@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <!-- analyze all assemblies for basic style and code quality issues -->
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503" PrivateAssets="all" />
+    <!-- <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503" PrivateAssets="all" /> -->
 
     <!-- shared usings for all projects -->
     <Using Include="System.Collections" />

@@ -5,8 +5,8 @@ namespace Surreal;
 /// <summary>A plugin for a <see cref="Game"/>.</summary>
 public interface IGamePlugin : IDisposable
 {
-  Task LoadContentAsync(IAssetManager assets);
-  Task InitializeAsync();
+  Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default);
+  Task InitializeAsync(CancellationToken cancellationToken = default);
 
   void Input(GameTime time);
   void Update(GameTime time);
@@ -33,12 +33,12 @@ public abstract class GamePlugin<TGame> : IGamePlugin
 
   public TGame Game { get; }
 
-  public virtual Task LoadContentAsync(IAssetManager assets)
+  public virtual Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
   {
     return Task.CompletedTask;
   }
 
-  public virtual Task InitializeAsync()
+  public virtual Task InitializeAsync(CancellationToken cancellationToken = default)
   {
     return Task.CompletedTask;
   }

@@ -31,13 +31,12 @@ public abstract partial class Game : IDisposable, ITestableGame
     };
   }
 
-  public static async Task StartAsync<TGame>(Configuration configuration)
+  public static Task StartAsync<TGame>(Configuration configuration, CancellationToken cancellationToken = default)
     where TGame : Game, new()
   {
     using var game = Create<TGame>(configuration);
 
-    await game.InitializeAsync();
-    await game.RunAsync();
+    return game.StartAsync(cancellationToken);
   }
 
   public static void Schedule(Action callback)
@@ -45,10 +44,7 @@ public abstract partial class Game : IDisposable, ITestableGame
     Actions.Enqueue(callback);
   }
 
-  protected Game()
-  {
-    loopTarget = new ProfiledLoopTarget(this);
-  }
+  protected Game() => loopTarget = new ProfiledLoopTarget(this);
 
   public bool              IsRunning    { get; private set; }  = false;
   public IPlatformHost     Host         { get; private init; } = null!;
@@ -57,7 +53,25 @@ public abstract partial class Game : IDisposable, ITestableGame
   public ILoopStrategy     LoopStrategy { get; set; }          = new AveragingLoopStrategy();
   public List<IGamePlugin> Plugins      { get; }               = new();
 
-  private async Task RunAsync()
+  private async Task StartAsync(CancellationToken cancellationToken = default)
+  {
+    await InitializeAsync(cancellationToken);
+    await RunAsync(cancellationToken);
+  }
+
+  private async Task InitializeAsync(CancellationToken cancellationToken = default)
+  {
+    Initialize();
+
+    foreach (var plugin in Plugins)
+    {
+      await plugin.InitializeAsync(cancellationToken);
+    }
+
+    await LoadContentAsync(Assets, cancellationToken);
+  }
+
+  private async Task RunAsync(CancellationToken cancellationToken = default)
   {
     // TODO: make this properly async
 
@@ -74,7 +88,7 @@ public abstract partial class Game : IDisposable, ITestableGame
 
       var stopwatch = new Chronometer();
 
-      while (IsRunning && !Host.IsClosing)
+      while (IsRunning && !Host.IsClosing && !cancellationToken.IsCancellationRequested)
       {
         var deltaTime = stopwatch.Tick();
         var totalTime = TimeStamp.Now - startTime;
@@ -91,18 +105,6 @@ public abstract partial class Game : IDisposable, ITestableGame
     }
   }
 
-  private async Task InitializeAsync()
-  {
-    Initialize();
-
-    for (var i = 0; i < Plugins.Count; i++)
-    {
-      await Plugins[i].InitializeAsync();
-    }
-
-    await LoadContentAsync(Assets);
-  }
-
   protected virtual void Initialize()
   {
     Host.Resized += OnResized;
@@ -115,11 +117,11 @@ public abstract partial class Game : IDisposable, ITestableGame
     Services = registry.BuildServiceProvider();
   }
 
-  protected virtual async Task LoadContentAsync(IAssetManager assets)
+  protected virtual async Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
   {
     foreach (var plugin in Plugins)
     {
-      await plugin.LoadContentAsync(assets);
+      await plugin.LoadContentAsync(assets, cancellationToken);
     }
   }
 
@@ -200,7 +202,8 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   ILoopTarget ITestableGame.LoopTarget => loopTarget;
 
-  Task ITestableGame.InitializeAsync() => InitializeAsync();
+  Task ITestableGame.InitializeAsync(CancellationToken cancellationToken) => InitializeAsync(cancellationToken);
+  Task ITestableGame.RunAsync(CancellationToken cancellationToken)        => RunAsync(cancellationToken);
 
   /// <summary>Configuration for the <see cref="Game"/>.</summary>
   public sealed class Configuration

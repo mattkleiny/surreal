@@ -10,14 +10,14 @@ public sealed class StandardShaderParser : IShaderParser
 {
   private static HashSet<string> Keywords { get; } = new() { "for", "if", "else" };
 
-  public async Task<ShaderProgramDeclaration> ParseShaderAsync(string name, TextReader reader, CancellationToken cancellationToken = default)
+  public async Task<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default)
   {
     var tokens = await TokenizeAsync(reader, cancellationToken);
 
     var description  = ParseDescription(tokens);
     var declarations = ParseDeclarations(tokens);
 
-    return new ShaderProgramDeclaration(name, description, ShaderArchetype.Sprite, declarations.ToArray());
+    return new ShaderProgramDeclaration(path, description, ShaderArchetype.Sprite, declarations.ToArray());
   }
 
   private static string ParseDescription(Queue<Token> tokens)
