@@ -22,7 +22,7 @@ public sealed class StandardShaderParser : IShaderParser
   {
     var nodes = new List<ShaderSyntaxTree>();
 
-    // TODO: parse the thing
+    // TODO: recursive decent parser
 
     return new CompilationUnit(nodes);
   }
