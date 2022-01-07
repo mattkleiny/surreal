@@ -3,14 +3,12 @@ using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Compute;
 using Surreal.Compute.Execution;
-using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Mathematics;
@@ -22,37 +20,17 @@ namespace Surreal;
 /// <summary>Base class for any <see cref="Game"/> that uses rapid prototyping services.</summary>
 public abstract class PrototypeGame : Game
 {
-  private const LogLevel DefaultLogLevel = LogLevel.Trace;
-
-  public IAudioDevice    AudioDevice    { get; private set; } = null!;
-  public IComputeDevice  ComputeDevice  { get; private set; } = null!;
-  public IGraphicsDevice GraphicsDevice { get; private set; } = null!;
-  public IInputManager   InputManager   { get; private set; } = null!;
-  public IKeyboardDevice Keyboard       { get; private set; } = null!;
-  public IMouseDevice    Mouse          { get; private set; } = null!;
-  public IScreenManager  Screens        { get; private set; } = null!;
+  public IAudioDevice    AudioDevice    => Services.GetRequiredService<IAudioDevice>();
+  public IComputeDevice  ComputeDevice  => Services.GetRequiredService<IComputeDevice>();
+  public IGraphicsDevice GraphicsDevice => Services.GetRequiredService<IGraphicsDevice>();
+  public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
+  public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
+  public IScreenManager  Screens        => Services.GetRequiredService<IScreenManager>();
 
   public Color ClearColor { get; set; } = Color.Black;
 
-  /// <summary>The <see cref="IShaderParser"/> to use when loading <see cref="ShaderProgram"/>s.</summary>
-  public virtual IShaderParser ShadingLanguage { get; } = new StandardShaderParser();
-
   protected override void Initialize()
   {
-    LogFactory.Current = new CompositeLogFactory(
-      new TextWriterLogFactory(Console.Out, DefaultLogLevel),
-      new DebugLogFactory(DefaultLogLevel)
-    );
-
-    AudioDevice    = Host.Services.GetRequiredService<IAudioDevice>();
-    ComputeDevice  = Host.Services.GetRequiredService<IComputeDevice>();
-    GraphicsDevice = Host.Services.GetRequiredService<IGraphicsDevice>();
-    Screens        = new ScreenManager(this);
-
-    Plugins.Add(Screens);
-
-    RegisterAssetLoaders(Assets);
-
     base.Initialize();
 
     OnResized(Host.Width, Host.Height); // initial resize
@@ -62,31 +40,32 @@ public abstract class PrototypeGame : Game
   {
     base.RegisterServices(services);
 
-    InputManager = Host.Services.GetRequiredService<IInputManager>();
-    Keyboard     = InputManager.GetRequiredDevice<IKeyboardDevice>();
-    Mouse        = InputManager.GetRequiredDevice<IMouseDevice>();
-
-    services.AddSingleton(AudioDevice);
-    services.AddSingleton(GraphicsDevice);
-    services.AddSingleton(InputManager);
-    services.AddSingleton(Keyboard);
-    services.AddSingleton(Mouse);
-    services.AddSingleton(Screens);
+    services.AddSingleton<IScreenManager>(new ScreenManager(this));
+    services.AddSingleton<IShaderParser>(new StandardShaderParser());
   }
 
-  protected virtual void RegisterAssetLoaders(IAssetManager assets)
+  protected override void RegisterAssetLoaders(IAssetManager manager)
   {
-    assets.AddLoader(new AudioBufferLoader());
-    assets.AddLoader(new AudioClipLoader(AudioDevice));
-    assets.AddLoader(new BitmapFontLoader());
-    assets.AddLoader(new ComputeProgramLoader(ComputeDevice));
-    assets.AddLoader(new ImageLoader());
-    assets.AddLoader(new MaterialLoader());
-    assets.AddLoader(new ShaderProgramLoader(GraphicsDevice, ShadingLanguage, hotReloading: Debugger.IsAttached));
-    assets.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
-    assets.AddLoader(new TextureRegionLoader());
-    assets.AddLoader(new TrueTypeFontLoader());
-    assets.AddLoader(new XmlTemplateLoader());
+    base.RegisterAssetLoaders(manager);
+
+    manager.AddLoader(new AudioBufferLoader());
+    manager.AddLoader(new AudioClipLoader(AudioDevice));
+    manager.AddLoader(new BitmapFontLoader());
+    manager.AddLoader(new ComputeProgramLoader(ComputeDevice));
+    manager.AddLoader(new ImageLoader());
+    manager.AddLoader(new MaterialLoader());
+    manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, Services.GetRequiredService<IShaderParser>(), hotReloading: Debugger.IsAttached));
+    manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
+    manager.AddLoader(new TextureRegionLoader());
+    manager.AddLoader(new TrueTypeFontLoader());
+    manager.AddLoader(new XmlTemplateLoader());
+  }
+
+  protected override void RegisterPlugins(IGamePluginRegistry plugins)
+  {
+    base.RegisterPlugins(plugins);
+
+    plugins.Add(Services.GetRequiredService<IScreenManager>());
   }
 
   protected override void OnResized(int width, int height)

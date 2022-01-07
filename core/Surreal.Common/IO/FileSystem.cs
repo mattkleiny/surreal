@@ -68,6 +68,14 @@ public abstract class FileSystem : IFileSystem
       }
     }
 
+    public void Remove(IFileSystem system)
+    {
+      foreach (var scheme in system.Schemes)
+      {
+        fileSystemByScheme.Remove(scheme);
+      }
+    }
+
     public void Clear()
     {
       fileSystemByScheme.Clear();

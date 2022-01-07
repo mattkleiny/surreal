@@ -3,6 +3,8 @@ using Surreal.Compute;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Input;
+using Surreal.Input.Keyboard;
+using Surreal.Input.Mouse;
 using Surreal.Internal;
 using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
@@ -12,7 +14,7 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvider
+internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
 {
   private readonly DesktopConfiguration configuration;
 
@@ -42,7 +44,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
   public OpenTKGraphicsDevice GraphicsDevice { get; }
   public OpenTKInputManager   InputManager   { get; }
 
-  public IServiceProvider Services => this;
+  public IServiceModule Services => this;
 
   public int Width  => Window.Width;
   public int Height => Window.Height;
@@ -76,15 +78,15 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceProvid
     Window.Dispose();
   }
 
-  object? IServiceProvider.GetService(Type serviceType)
+  public void RegisterServices(IServiceRegistry services)
   {
-    if (serviceType == typeof(IDesktopWindow)) return Window;
-    if (serviceType == typeof(IAudioDevice)) return AudioDevice;
-    if (serviceType == typeof(IComputeDevice)) return ComputeDevice;
-    if (serviceType == typeof(IGraphicsDevice)) return GraphicsDevice;
-    if (serviceType == typeof(IInputManager)) return InputManager;
-
-    return null;
+    services.AddSingleton<IDesktopWindow>(Window);
+    services.AddSingleton<IAudioDevice>(AudioDevice);
+    services.AddSingleton<IComputeDevice>(ComputeDevice);
+    services.AddSingleton<IGraphicsDevice>(GraphicsDevice);
+    services.AddSingleton<IInputManager>(InputManager);
+    services.AddSingleton<IKeyboardDevice>(InputManager.Keyboard);
+    services.AddSingleton<IMouseDevice>(InputManager.Mouse);
   }
 
   IDesktopWindow IDesktopPlatformHost.Window => Window;

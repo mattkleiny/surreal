@@ -2,6 +2,8 @@ using Surreal.Audio;
 using Surreal.Compute;
 using Surreal.Graphics;
 using Surreal.Input;
+using Surreal.Input.Keyboard;
+using Surreal.Input.Mouse;
 using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
@@ -10,7 +12,7 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProvider
+internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModule
 {
   public event Action<int, int> Resized = null!;
 
@@ -25,19 +27,21 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceProv
   public bool IsFocused => true;
   public bool IsClosing => false;
 
-  public IServiceProvider Services => this;
+  public IServiceModule Services => this;
 
   public IHeadlessKeyboardDevice Keyboard => InputManager.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputManager.Mouse;
 
-  object? IServiceProvider.GetService(Type serviceType)
+  public void RegisterServices(IServiceRegistry services)
   {
-    if (serviceType == typeof(IAudioDevice)) return AudioDevice;
-    if (serviceType == typeof(IComputeDevice)) return ComputeDevice;
-    if (serviceType == typeof(IGraphicsDevice)) return GraphicsDevice;
-    if (serviceType == typeof(IInputManager)) return InputManager;
-
-    return null;
+    services.AddSingleton<IAudioDevice>(AudioDevice);
+    services.AddSingleton<IComputeDevice>(ComputeDevice);
+    services.AddSingleton<IGraphicsDevice>(GraphicsDevice);
+    services.AddSingleton<IInputManager>(InputManager);
+    services.AddSingleton<IKeyboardDevice>(InputManager.Keyboard);
+    services.AddSingleton<IHeadlessKeyboardDevice>(InputManager.Keyboard);
+    services.AddSingleton<IMouseDevice>(InputManager.Mouse);
+    services.AddSingleton<IHeadlessMouseDevice>(InputManager.Mouse);
   }
 
   public void Tick(DeltaTime deltaTime)

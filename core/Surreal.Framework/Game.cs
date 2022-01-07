@@ -1,10 +1,11 @@
 ﻿using System.Runtime;
 using Surreal.Assets;
+using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Fibers;
+using Surreal.Internal;
 using Surreal.IO;
 using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -17,6 +18,11 @@ public abstract partial class Game : IDisposable, ITestableGame
   private readonly TimeStamp   startTime = TimeStamp.Now;
   private readonly ILoopTarget loopTarget;
 
+  public static void Schedule(Action callback)
+  {
+    Actions.Enqueue(callback);
+  }
+
   public static TGame Create<TGame>(Configuration configuration)
     where TGame : Game, new()
   {
@@ -27,7 +33,8 @@ public abstract partial class Game : IDisposable, ITestableGame
 
     return new TGame
     {
-      Host = configuration.Platform.BuildHost(),
+      Host             = configuration.Platform.BuildHost(),
+      ServiceOverrides = configuration.ServiceOverrides,
     };
   }
 
@@ -39,19 +46,21 @@ public abstract partial class Game : IDisposable, ITestableGame
     return game.StartAsync(cancellationToken);
   }
 
-  public static void Schedule(Action callback)
+  protected Game()
   {
-    Actions.Enqueue(callback);
+    loopTarget = new ProfiledLoopTarget(this);
   }
 
-  protected Game() => loopTarget = new ProfiledLoopTarget(this);
+  public bool          IsRunning    { get; private set; }  = false;
+  public IPlatformHost Host         { get; private init; } = null!;
+  public ILoopStrategy LoopStrategy { get; set; }          = new AveragingLoopStrategy();
 
-  public bool              IsRunning    { get; private set; }  = false;
-  public IPlatformHost     Host         { get; private init; } = null!;
-  public IServiceProvider  Services     { get; private set; }  = null!;
-  public IAssetManager     Assets       { get; }               = new AssetManager();
-  public ILoopStrategy     LoopStrategy { get; set; }          = new AveragingLoopStrategy();
-  public List<IGamePlugin> Plugins      { get; }               = new();
+  public IServiceRegistry    Services { get; } = new ServiceRegistry();
+  public IAssetManager       Assets   { get; } = new AssetManager();
+  public IGamePluginRegistry Plugins  { get; } = new GamePluginRegistry();
+
+  [VisibleForTesting]
+  private Action<IServiceRegistry>? ServiceOverrides { get; set; }
 
   private async Task StartAsync(CancellationToken cancellationToken = default)
   {
@@ -63,7 +72,7 @@ public abstract partial class Game : IDisposable, ITestableGame
   {
     Initialize();
 
-    foreach (var plugin in Plugins)
+    foreach (var plugin in Plugins.ActivePlugins)
     {
       await plugin.InitializeAsync(cancellationToken);
     }
@@ -107,19 +116,24 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   protected virtual void Initialize()
   {
+    LogFactory.Current = new CompositeLogFactory(
+      new TextWriterLogFactory(Console.Out, LogLevel.Trace),
+      new DebugLogFactory(LogLevel.Trace)
+    );
+
     Host.Resized += OnResized;
 
-    var registry = new ServiceCollectionRegistry();
-
+    RegisterServices(Services);
+    RegisterAssetLoaders(Assets);
     RegisterFileSystems(FileSystem.Registry);
-    RegisterServices(registry);
+    RegisterPlugins(Plugins);
 
-    Services = registry.BuildServiceProvider();
+    Services.SealExistingServices();
   }
 
   protected virtual async Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
   {
-    foreach (var plugin in Plugins)
+    foreach (var plugin in Plugins.ActivePlugins)
     {
       await plugin.LoadContentAsync(assets, cancellationToken);
     }
@@ -127,16 +141,24 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   protected virtual void RegisterServices(IServiceRegistry services)
   {
+    services.AddSingleton(this);
     services.AddSingleton(Assets);
     services.AddSingleton(Host);
+    services.AddModule(Host.Services);
+
+    ServiceOverrides?.Invoke(services);
+  }
+
+  protected virtual void RegisterAssetLoaders(IAssetManager manager)
+  {
   }
 
   protected virtual void RegisterFileSystems(IFileSystemRegistry registry)
   {
-    if (Host.Services.TryGetService(out IFileSystem platformFileSystem))
-    {
-      registry.Add(platformFileSystem);
-    }
+  }
+
+  protected virtual void RegisterPlugins(IGamePluginRegistry plugins)
+  {
   }
 
   protected virtual void Begin(GameTime time)
@@ -145,7 +167,7 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   protected virtual void Input(GameTime time)
   {
-    foreach (var plugin in Plugins)
+    foreach (var plugin in Plugins.ActivePlugins)
     {
       plugin.Input(time);
     }
@@ -153,7 +175,7 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   protected virtual void Update(GameTime time)
   {
-    foreach (var plugin in Plugins)
+    foreach (var plugin in Plugins.ActivePlugins)
     {
       plugin.Update(time);
     }
@@ -166,7 +188,7 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   protected virtual void Draw(GameTime time)
   {
-    foreach (var plugin in Plugins)
+    foreach (var plugin in Plugins.ActivePlugins)
     {
       plugin.Draw(time);
     }
@@ -187,16 +209,12 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   public virtual void Dispose()
   {
-    foreach (var plugin in Plugins)
+    foreach (var plugin in Plugins.ActivePlugins)
     {
       plugin.Dispose();
     }
 
-    if (Services is IDisposable services)
-    {
-      services.Dispose();
-    }
-
+    Services.Dispose();
     Host.Dispose();
   }
 
@@ -208,7 +226,8 @@ public abstract partial class Game : IDisposable, ITestableGame
   /// <summary>Configuration for the <see cref="Game"/>.</summary>
   public sealed class Configuration
   {
-    public IPlatform? Platform { get; init; }
+    public IPlatform?                Platform         { get; init; }
+    public Action<IServiceRegistry>? ServiceOverrides { get; init; }
   }
 
   /// <summary>A <see cref="ILoopTarget"/> that profiles it's target operations.</summary>

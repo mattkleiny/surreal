@@ -1,4 +1,5 @@
 ﻿using Surreal.Assets;
+using Surreal.Collections;
 
 namespace Surreal;
 
@@ -11,6 +12,17 @@ public interface IGamePlugin : IDisposable
   void Input(GameTime time);
   void Update(GameTime time);
   void Draw(GameTime time);
+}
+
+/// <summary>A registry for <see cref="IGamePlugin"/>s.</summary>
+public interface IGamePluginRegistry
+{
+  ReadOnlySlice<IGamePlugin> ActivePlugins { get; }
+
+  void Add(IGamePlugin plugin);
+  void Remove(IGamePlugin plugin);
+
+  void Clear();
 }
 
 /// <summary>Base class for any <see cref="IGamePlugin"/> implementation.</summary>

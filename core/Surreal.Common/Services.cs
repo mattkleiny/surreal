@@ -13,14 +13,19 @@ public enum ServiceLifetime
 /// <summary>A module for service registrations.</summary>
 public interface IServiceModule
 {
-  void RegisterServices(IServiceRegistry registry);
+  void RegisterServices(IServiceRegistry services);
 }
 
 /// <summary>A registry for services.</summary>
-public interface IServiceRegistry
+public interface IServiceRegistry : IServiceProvider, IDisposable
 {
   void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
   void RegisterService(Type serviceType, object instance);
+  void ReplaceService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
+  void ReplaceService(Type serviceType, object instance);
+
+  /// <summary>Prevents new services from being installed beyond this point.</summary>
+  void SealExistingServices();
 
   void AddTransient<TService, TImplementation>()
     where TImplementation : TService
@@ -38,6 +43,24 @@ public interface IServiceRegistry
     where TService : class
   {
     RegisterService(typeof(TService), implementation);
+  }
+
+  void ReplaceTransient<TService, TImplementation>()
+    where TService : class
+  {
+    ReplaceService(ServiceLifetime.Transient, typeof(TService), typeof(TImplementation));
+  }
+
+  void ReplaceSingleton<TService, TImplementation>()
+    where TService : class
+  {
+    ReplaceService(ServiceLifetime.Singleton, typeof(TService), typeof(TImplementation));
+  }
+
+  void ReplaceSingleton<TService>(TService implementation)
+    where TService : class
+  {
+    ReplaceService(typeof(TService), implementation);
   }
 
   /// <summary>Adds the given <see cref="IServiceModule"/> to the registry.</summary>
@@ -64,6 +87,16 @@ public interface IServiceRegistry
 /// <summary>Static extension methods for <see cref="IServiceProvider"/> and related.</summary>
 public static class ServicesExtensions
 {
+  public static IEnumerable<T> GetServices<T>(this IServiceProvider provider)
+  {
+    if (!provider.TryGetService<IEnumerable<T>>(out var results))
+    {
+      return Enumerable.Empty<T>();
+    }
+
+    return results;
+  }
+
   public static T GetRequiredService<T>(this IServiceProvider provider)
   {
     if (!provider.TryGetService(out T service))

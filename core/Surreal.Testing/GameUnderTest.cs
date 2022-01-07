@@ -26,11 +26,12 @@ internal sealed class GameUnderTest<TGame> : IGameUnderTest<TGame>
 {
   private readonly TimeStamp startTime = TimeStamp.Now;
 
-  public GameUnderTest(IPlatform platform)
+  public GameUnderTest(IPlatform platform, Action<IServiceRegistry> serviceOverrides)
   {
     Instance = Game.Create<TGame>(new Game.Configuration
     {
-      Platform = platform
+      Platform         = platform,
+      ServiceOverrides = serviceOverrides,
     });
   }
 

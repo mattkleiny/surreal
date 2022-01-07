@@ -13,7 +13,7 @@ public interface IPlatformHost : IDisposable
   bool IsFocused { get; }
   bool IsClosing { get; }
 
-  IServiceProvider Services { get; }
+  IServiceModule Services { get; }
 
   void Tick(DeltaTime deltaTime);
 }

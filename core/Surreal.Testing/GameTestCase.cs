@@ -10,15 +10,21 @@ public abstract class GameTestCase<TGame>
   public TGame                 Game          => GameUnderTest.Instance;
 
   [SetUp]
-  public void OnSetUp()
+  public async Task OnSetUp()
   {
-    GameUnderTest = new GameUnderTest<TGame>(CreatePlatform());
+    GameUnderTest = new GameUnderTest<TGame>(CreatePlatform(), ConfigureServices);
+
+    await GameUnderTest.InitializeAsync();
   }
 
   [TearDown]
   public void OnTearDown()
   {
     GameUnderTest.Dispose();
+  }
+
+  protected virtual void ConfigureServices(IServiceRegistry services)
+  {
   }
 
   protected virtual IPlatform CreatePlatform()

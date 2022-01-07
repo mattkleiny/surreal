@@ -29,5 +29,7 @@ public interface IFileSystemRegistry
   IFileSystem? GetByScheme(string scheme);
 
   void Add(IFileSystem system);
+  void Remove(IFileSystem system);
+
   void Clear();
 }
