@@ -8,10 +8,7 @@ public sealed class XmlAssetLoader : AssetLoader<object>
 {
   public override bool CanHandle(AssetLoaderContext context)
   {
-    var isTemplate  = typeof(ITemplate).IsAssignableFrom(context.AssetType);
-    var hasTemplate = TemplateFactory.HasTemplate(context.AssetType);
-
-    return isTemplate || hasTemplate;
+    return context.Path.Extension == ".xml";
   }
 
   public override async Task<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
