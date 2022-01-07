@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphics.Shaders;
+﻿using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
+
+namespace Surreal.Graphics.Shaders;
 
 /// <summary>Different archetypes of shader programs, for template expansiosn.</summary>
 public enum ShaderArchetype
@@ -16,14 +18,7 @@ public enum ShaderKind
 
 /// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
 public sealed record ShaderProgramDeclaration(
-  string FileName,
-  string Description,
+  string Path,
   ShaderArchetype Archetype,
-  params ShaderDeclaration[] Shaders
-);
-
-/// <summary>Represents a parsed shader, ready for interrogation and compilation.</summary>
-public sealed record ShaderDeclaration(
-  ShaderKind Kind,
-  ShaderInstruction.CompilationUnit CompilationUnit
+  CompilationUnit CompilationUnit
 );

@@ -2,7 +2,8 @@
 using Surreal.Graphics.Shaders;
 using Surreal.Internal.Graphics.Resources;
 using Surreal.Internal.Graphics.Utilities;
-using static Surreal.Graphics.Shaders.ShaderInstruction;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 using PrimitiveType = Surreal.Graphics.Shaders.PrimitiveType;
 
 namespace Surreal.Internal.Graphics;
@@ -18,48 +19,79 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
   public Task<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration)
   {
-    var shaders = new OpenTKShader[declaration.Shaders.Length];
+    var shaders = ImmutableArray.CreateBuilder<OpenTKShader>(declaration.CompilationUnit.Stages.Length);
 
-    for (var i = 0; i < declaration.Shaders.Length; i++)
+    foreach (var stage in declaration.CompilationUnit.Stages)
     {
-      var (kind, instructions) = declaration.Shaders[i];
+      var shaderType = ConvertShaderKind(stage.Kind);
+      var sourceCode = BuildSourceCode(declaration, declaration.CompilationUnit, stage);
 
-      var sourceCode = BuildSourceCode(declaration, instructions);
-      var shaderType = ConvertShaderKind(kind);
-
-      shaders[i] = new OpenTKShader(sourceCode, shaderType);
+      shaders.Add(new OpenTKShader(shaderType, sourceCode));
     }
 
-    var shaderSet = new OpenTKShaderSet(declaration.FileName, declaration.Description, shaders);
-
-    return Task.FromResult<ICompiledShaderProgram>(shaderSet);
+    return Task.FromResult<ICompiledShaderProgram>(new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable()));
   }
 
-  private string BuildSourceCode(ShaderProgramDeclaration declaration, CompilationUnit compilationUnit)
+  private string BuildSourceCode(ShaderProgramDeclaration declaration, CompilationUnit compilationUnit, StageDeclaration stage)
   {
-    var builder = new ShaderCodeBuilder();
+    var stringBuilder = new StringBuilder();
+    var codeBuilder   = new ShaderCodeBuilder(stringBuilder);
 
-    CompilePreamble(builder, declaration);
-    CompileIncludes(builder, compilationUnit.Statements.OfType<Statement.Include>());
+    // compile preamble and include other modules
+    CompilePreamble(codeBuilder, declaration);
 
-    foreach (var statement in compilationUnit.Statements)
+    codeBuilder.AppendBlankLine();
+
+    if (compilationUnit.Includes.Length > 0)
     {
-      CompileStatement(builder, statement);
+      CompileIncludes(codeBuilder, compilationUnit.Includes);
+
+      codeBuilder.AppendBlankLine();
     }
 
-    return builder.ToSourceCode();
+    // compile globals
+    if (compilationUnit.Uniforms.Length > 0)
+    {
+      foreach (var uniform in compilationUnit.Uniforms)
+      {
+        CompileStatement(codeBuilder, uniform);
+      }
+
+      codeBuilder.AppendBlankLine();
+    }
+
+    if (compilationUnit.Varyings.Length > 0)
+    {
+      foreach (var varying in compilationUnit.Varyings)
+      {
+        CompileStatement(codeBuilder, varying);
+      }
+
+      codeBuilder.AppendBlankLine();
+    }
+
+    if (compilationUnit.Functions.Length > 0)
+    {
+      foreach (var function in compilationUnit.Functions)
+      {
+        CompileStatement(codeBuilder, function);
+      }
+    }
+
+    // compile stage local
+    CompileStatement(codeBuilder, stage);
+
+    return stringBuilder.ToString();
   }
 
-  private void CompilePreamble(IShaderCodeBuilderScope builder, ShaderProgramDeclaration declaration)
+  private void CompilePreamble(ShaderCodeBuilder builder, ShaderProgramDeclaration declaration)
   {
-    builder.AppendComment(declaration.FileName);
-    builder.AppendComment(declaration.Description);
+    builder.AppendComment(declaration.Path);
     builder.AppendBlankLine();
     builder.AppendLine($"#version {version}");
-    builder.AppendBlankLine();
   }
 
-  private static void CompileIncludes(IShaderCodeBuilderScope builder, IEnumerable<Statement.Include> includes)
+  private static void CompileIncludes(ShaderCodeBuilder builder, IEnumerable<Include> includes)
   {
     foreach (var include in includes)
     {
@@ -68,53 +100,70 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     }
   }
 
-  private static void CompileStatement(IShaderCodeBuilderScope builder, Statement statement)
+  private static void CompileStatement(ShaderCodeBuilder builder, Statement statement)
   {
     switch (statement)
     {
-      case Statement.Include:
+      case Include:
         // no-op (included in preamble)
         break;
 
-      case Statement.BlankLine:
+      case BlankLine:
         builder.AppendBlankLine();
         break;
 
-      case Statement.Comment(var text):
+      case Comment(var text):
         builder.AppendComment(text);
         break;
 
-      case Statement.UniformDeclaration(var type, var name):
+      case UniformDeclaration(var type, var name):
         builder.AppendUniformDeclaration(ConvertPrecision(type.Precision), ConvertType(type), name);
         break;
 
-      case Statement.VaryingDeclaration(var type, var name):
+      case VaryingDeclaration(var type, var name):
         builder.AppendVaryingDeclaration(ConvertPrecision(type.Precision), ConvertType(type), name);
         break;
 
-      case Statement.ConstantDeclaration(var type, var name, var value):
+      case ConstantDeclaration(var type, var name, var value):
         builder.AppendConstantDeclaration(ConvertPrecision(type.Precision), ConvertType(type), name, CompileExpression(value));
         break;
 
-      case Statement.Assignment(var variable, var value):
+      case Assignment(var variable, var value):
         builder.AppendAssignment(variable, CompileExpression(value));
         break;
 
       // TODO: convert this into something GLSL specific
-      case Statement.IntrinsicAssignment(var intrinsicType, var value):
+      case IntrinsicAssignment(var intrinsicType, var value):
         builder.AppendAssignment(ConvertIntrinsic(intrinsicType), CompileExpression(value));
         break;
 
-      case Statement.FunctionDeclaration(var returnType, var name, var body):
+      case StageDeclaration(var kind) declaration:
+      {
+        using var function = builder.AppendFunctionDeclaration(
+          precision: null,
+          returnType: "void",
+          name: kind.ToString().ToLower(),
+          parameters: declaration.Parameters.Select(CompileExpression)
+        );
+
+        foreach (var functionStatement in declaration.Statements)
+        {
+          CompileStatement(function, functionStatement);
+        }
+
+        break;
+      }
+
+      case FunctionDeclaration(var returnType, var name) declaration:
       {
         using var function = builder.AppendFunctionDeclaration(
           precision: ConvertPrecision(returnType.Precision),
           returnType: ConvertType(returnType),
           name: name,
-          parameters: body.OfType<Expression.Parameter>().Select(CompileExpression)
+          parameters: declaration.Parameters.Select(CompileExpression)
         );
 
-        foreach (var functionStatement in body.OfType<Statement>())
+        foreach (var functionStatement in declaration.Statements)
         {
           CompileStatement(function, functionStatement);
         }
@@ -140,7 +189,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       case Expression.Parameter(var type, var name):
         return $"{ConvertType(type)} {name}";
 
-      case Expression.Constructor(var type, var value) when type.Cardinality > 0:
+      case Expression.Constructor({ Cardinality: > 0 } type, var value):
         return $"{ConvertType(type)}({CompileExpression(value)})";
 
       case Expression.Constructor(_, var value):

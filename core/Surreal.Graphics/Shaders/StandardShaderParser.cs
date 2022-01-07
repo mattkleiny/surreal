@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Surreal.Collections;
 using Surreal.Text;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 
 namespace Surreal.Graphics.Shaders;
 
@@ -12,30 +12,19 @@ public sealed class StandardShaderParser : IShaderParser
 
   public async Task<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default)
   {
-    var tokens = await TokenizeAsync(reader, cancellationToken);
+    var tokens          = await TokenizeAsync(reader, cancellationToken);
+    var compilationUnit = ParseCompilationUnit(new ParseContext(tokens));
 
-    var description  = ParseDescription(tokens);
-    var declarations = ParseDeclarations(tokens);
-
-    return new ShaderProgramDeclaration(path, description, ShaderArchetype.Sprite, declarations.ToArray());
+    return new ShaderProgramDeclaration(path, ShaderArchetype.Sprite, compilationUnit);
   }
 
-  private static string ParseDescription(Queue<Token> tokens)
+  private static CompilationUnit ParseCompilationUnit(ParseContext context)
   {
-    var builder = new StringBuilder();
+    var nodes = new List<ShaderSyntaxTree>();
 
-    while (tokens.TryPeekAndDequeue(_ => _.Type == TokenType.Comment, out var token))
-    {
-      builder.AppendLine(token.Literal?.ToString()?.Trim());
-    }
+    // TODO: parse the thing
 
-    return builder.ToString();
-  }
-
-  private static IEnumerable<ShaderDeclaration> ParseDeclarations(Queue<Token> tokens)
-  {
-    // TODO: implement me
-    yield break;
+    return new CompilationUnit(nodes);
   }
 
   private static async Task<Queue<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
@@ -241,6 +230,43 @@ public sealed class StandardShaderParser : IShaderParser
   private readonly record struct LinePosition(int Line, int Column)
   {
     public override string ToString() => $"{Line}:{Column}";
+  }
+
+  /// <summary>Context for parsing operations.</summary>
+  private sealed class ParseContext
+  {
+    private readonly Queue<Token> tokens;
+
+    public ParseContext(Queue<Token> tokens)
+    {
+      this.tokens = tokens;
+    }
+
+    public bool TryPeek(out Token token)
+    {
+      return tokens.TryPeek(out token);
+    }
+
+    public bool TryDequeue(out Token token)
+    {
+      return tokens.TryDequeue(out token);
+    }
+
+    /// <summary>Attempts to consume a single token from the remaining tokens.</summary>
+    public bool TryConsume(TokenType type, out Token result)
+    {
+      if (TryPeek(out var token))
+      {
+        if (token.Type == type)
+        {
+          result = tokens.Dequeue();
+          return true;
+        }
+      }
+
+      result = default;
+      return false;
+    }
   }
 
   /// <summary>Indicates an error whilst parsing a program.</summary>

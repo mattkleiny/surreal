@@ -2,4 +2,4 @@
 
 namespace Surreal.Internal.Graphics.Resources;
 
-internal record HeadlessCompiledShader(string FileName, string Description) : ICompiledShaderProgram;
+internal record HeadlessCompiledShader(string Path) : ICompiledShaderProgram;

@@ -7,8 +7,6 @@ internal sealed class HeadlessShaderCompiler : IShaderCompiler
 {
   public Task<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration)
   {
-    var result = new HeadlessCompiledShader(declaration.FileName, declaration.Description);
-
-    return Task.FromResult<ICompiledShaderProgram>(result);
+    return Task.FromResult<ICompiledShaderProgram>(new HeadlessCompiledShader(declaration.Path));
   }
 }

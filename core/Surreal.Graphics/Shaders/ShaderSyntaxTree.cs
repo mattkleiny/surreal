@@ -1,16 +1,8 @@
-﻿namespace Surreal.Graphics.Shaders;
+﻿using System.Diagnostics.CodeAnalysis;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
-/// <summary>Different kinds of <see cref="Primitive"/>s.</summary>
-public enum PrimitiveType
-{
-  Void,
-  Bool,
-  Int,
-  UInt,
-  Float,
-  Matrix,
-  Sampler,
-}
+namespace Surreal.Graphics.Shaders;
 
 /// <summary>Intrinsic outputs for shader instructions.</summary>
 public enum IntrinsicType
@@ -27,17 +19,59 @@ public enum Precision
   High,
 }
 
-/// <summary>A type declaration with optional cardinality for vector representations.</summary>
-public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = null, Precision? Precision = null);
-
-/// <summary>Base class for the shader program instruction AST.</summary>
-public abstract record ShaderInstruction
+/// <summary>Different kinds of <see cref="Primitive"/>s used in shaders.</summary>
+public enum PrimitiveType
 {
-  /// <summary>A compilation unit for all shader instructions. This represents the top-level 'file' input to a shader.</summary>
-  public sealed record CompilationUnit(params Statement[] Statements) : ShaderInstruction;
+  Void,
+  Bool,
+  Int,
+  UInt,
+  Float,
+  Matrix,
+  Sampler,
+}
 
-  /// <summary>A single statement, in a single line and terminated.</summary>
-  public abstract record Statement : ShaderInstruction
+/// <summary>A primitive type declaration with optional cardinality for vector representations.</summary>
+public readonly record struct Primitive(
+  PrimitiveType Type,
+  int? Cardinality = null,
+  Precision? Precision = null
+);
+
+/// <summary>Base type for the shader program instruction syntax tree.</summary>
+public abstract record ShaderSyntaxTree
+{
+  /// <summary>
+  /// A compilation unit for all shader instructions.
+  /// <para/>
+  /// This represents the top-level 'file' input to a shader and includes potentially many 'stages'
+  /// </summary>
+  public sealed record CompilationUnit : ShaderSyntaxTree
+  {
+    public CompilationUnit(params ShaderSyntaxTree[] nodes)
+      : this(nodes.AsEnumerable())
+    {
+    }
+
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+    public CompilationUnit(IEnumerable<ShaderSyntaxTree> nodes)
+    {
+      Uniforms  = nodes.OfType<UniformDeclaration>().ToImmutableArray();
+      Varyings  = nodes.OfType<VaryingDeclaration>().ToImmutableArray();
+      Includes  = nodes.OfType<Include>().ToImmutableArray();
+      Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray();
+      Stages    = nodes.OfType<StageDeclaration>().ToImmutableArray();
+    }
+
+    public ImmutableArray<UniformDeclaration>  Uniforms  { get; init; }
+    public ImmutableArray<VaryingDeclaration>  Varyings  { get; init; }
+    public ImmutableArray<Include>             Includes  { get; init; }
+    public ImmutableArray<FunctionDeclaration> Functions { get; init; }
+    public ImmutableArray<StageDeclaration>    Stages    { get; init; }
+  }
+
+  /// <summary>A single statement in a shader program.</summary>
+  public abstract record Statement : ShaderSyntaxTree
   {
     /// <summary>A manually placed blank line</summary>
     public sealed record BlankLine : Statement;
@@ -70,21 +104,47 @@ public abstract record ShaderInstruction
     /// <example>COLOR = vec3(1,1,1);</example>
     public sealed record IntrinsicAssignment(IntrinsicType Intrinsic, Expression Value) : Statement;
 
+    /// <summary>Declares a shader stage function.</summary>
+    /// <example>void fragment() { ... }</example>
+    public sealed record StageDeclaration(ShaderKind Kind) : Statement
+    {
+      public StageDeclaration(ShaderKind kind, params ShaderSyntaxTree[] nodes)
+        : this(kind)
+      {
+        Parameters = nodes.OfType<Parameter>().ToImmutableArray();
+        Statements = nodes.OfType<Statement>().ToImmutableArray();
+      }
+
+      public ImmutableArray<Parameter> Parameters { get; init; }
+      public ImmutableArray<Statement> Statements { get; init; }
+    }
+
     /// <summary>Declares a standard function.</summary>
     /// <example>float circle(float radius) { ... }</example>
-    public sealed record FunctionDeclaration(Primitive ReturnType, string Name, params ShaderInstruction[] Body) : Statement;
+    public sealed record FunctionDeclaration(Primitive ReturnType, string Name) : Statement
+    {
+      public FunctionDeclaration(Primitive returnType, string name, params ShaderSyntaxTree[] nodes)
+        : this(returnType, name)
+      {
+        Parameters = nodes.OfType<Parameter>().ToImmutableArray();
+        Statements = nodes.OfType<Statement>().ToImmutableArray();
+      }
+
+      public ImmutableArray<Parameter> Parameters { get; init; }
+      public ImmutableArray<Statement> Statements { get; init; }
+    }
 
     /// <summary>Standard control flow variants.</summary>
     public abstract record ControlFlow : Statement
     {
       /// <summary>Checks if a value is true or false.</summary>
       /// <example>if (test) { ... }</example>
-      public sealed record If(Expression value, params ShaderInstruction[] Body) : ControlFlow;
+      public sealed record If(Expression value, params ShaderSyntaxTree[] Body) : ControlFlow;
     }
   }
 
   /// <summary>A single expression, composite within a larger statement.</summary>
-  public abstract record Expression : ShaderInstruction
+  public abstract record Expression : ShaderSyntaxTree
   {
     /// <summary>A constant value.</summary>
     /// <example>42</example>

@@ -17,7 +17,6 @@ public class StandardShaderParserTests
 
       uniform vec3  _Position;
       uniform float _Intensity;
-
       varying vec3  _Color;
 
       void vertex()

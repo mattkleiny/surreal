@@ -19,14 +19,17 @@ public sealed class XmlSerializerAttribute : Attribute
     Type = type;
   }
 
-  public Type Type { get; }
+  public Type    Type        { get; }
+  public string? Name { get; set; }
 }
 
 /// <summary>Context for xml serialization operations.</summary>
 public interface IXmlSerializationContext
 {
+  ValueTask<object> DeserializeAsync(XElement element, CancellationToken cancellationToken = default);
   ValueTask<object> DeserializeAsync(Type type, XElement element, CancellationToken cancellationToken = default);
-  ValueTask<T>      DeserializeAsync<T>(XElement element, CancellationToken cancellationToken = default) where T : notnull;
+
+  ValueTask<T> DeserializeAsync<T>(XElement element, CancellationToken cancellationToken = default) where T : notnull;
 }
 
 /// <summary>Represents all possible <see cref="XmlSerializer{T}"/>s.</summary>
@@ -52,6 +55,11 @@ public static class XmlSerializer
 {
   private static SerializationContext Context { get; } = new SerializationContext();
 
+  public static ValueTask<object> DeserializeAsync(XElement element, CancellationToken cancellationToken = default)
+  {
+    return Context.DeserializeAsync(element, cancellationToken);
+  }
+
   public static ValueTask<object> DeserializeAsync(Type type, XElement element, CancellationToken cancellationToken = default)
   {
     return Context.DeserializeAsync(type, element, cancellationToken);
@@ -66,7 +74,8 @@ public static class XmlSerializer
   /// <summary>A default <see cref="IXmlSerializationContext"/> implementation that uses the <see cref="XmlSerializer{T}"/> metadata.</summary>
   internal sealed class SerializationContext : IXmlSerializationContext
   {
-    private readonly Dictionary<Type, IXmlSerializer> serializersByType = new();
+    private readonly Dictionary<Type, IXmlSerializer>   serializersByType = new();
+    private readonly Dictionary<string, IXmlSerializer> serializersByName = new();
 
     [ModuleInitializer]
     internal static void Initialize()
@@ -88,18 +97,33 @@ public static class XmlSerializer
       {
         var serializer = (IXmlSerializer) Activator.CreateInstance(candidate.Type)!;
 
-        RegisterSerializer(candidate.Attribute.Type, serializer);
-      }
-    }
+        serializersByType[candidate.Attribute.Type] = serializer;
 
-    private void RegisterSerializer(Type type, IXmlSerializer serializer)
-    {
-      serializersByType[type] = serializer;
+        if (candidate.Attribute.Name != null)
+        {
+          serializersByName[candidate.Attribute.Name] = serializer;
+        }
+      }
     }
 
     private bool TryGetSerializer(Type type, [MaybeNullWhen(false)] out IXmlSerializer result)
     {
       return serializersByType.TryGetValue(type, out result);
+    }
+
+    private bool TryGetSerializer(string name, [MaybeNullWhen(false)] out IXmlSerializer result)
+    {
+      return serializersByName.TryGetValue(name, out result);
+    }
+
+    public ValueTask<object> DeserializeAsync(XElement element, CancellationToken cancellationToken = default)
+    {
+      if (!TryGetSerializer(element.Name.LocalName, out var serializer))
+      {
+        throw new InvalidOperationException($"Unable to deserialize {element.Name.LocalName}, no serializer is registered for it");
+      }
+
+      return serializer.DeserializeAsync(element, this, cancellationToken);
     }
 
     public ValueTask<object> DeserializeAsync(Type type, XElement element, CancellationToken cancellationToken = default)

@@ -54,7 +54,7 @@ public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>
     public Image Create() => Plan(new SpritePlan(Width, Height)).ToImage();
 
     /// <summary>The <see cref="XmlSerializer{T}"/> for this node.</summary>
-    [XmlSerializer(typeof(SpriteBlueprint))]
+    [XmlSerializer(typeof(SpriteBlueprint), Name = "Sprite")]
     private sealed class Serializer : XmlSerializer<SpriteBlueprint>
     {
       public override async ValueTask<SpriteBlueprint> DeserializeAsync(XElement element, IXmlSerializationContext context, CancellationToken cancellationToken = default)
@@ -65,7 +65,9 @@ public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>
           Width       = (int) element.Attribute("Width")!,
           Height      = (int) element.Attribute("Height")!,
           Description = (string) element.Attribute("Description")!,
-          Children    = await DeserializeChildrenAsync(element, context, cancellationToken),
+          Children = await element.Elements()
+            .SelectAsync(async _ => (SpriteBlueprintNode) await context.DeserializeAsync(_, cancellationToken))
+            .ToListAsync(cancellationToken),
         };
       }
     }
@@ -75,7 +77,7 @@ public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>
   public sealed record SampleRandomlyNode : SpriteBlueprintNode
   {
     /// <summary>The <see cref="XmlSerializer{T}"/> for this node.</summary>
-    [XmlSerializer(typeof(SampleRandomlyNode))]
+    [XmlSerializer(typeof(SampleRandomlyNode), Name = "SampleRandomly")]
     private sealed class Serializer : XmlSerializer<SampleRandomlyNode>
     {
       public override async ValueTask<SampleRandomlyNode> DeserializeAsync(XElement element, IXmlSerializationContext context, CancellationToken cancellationToken = default)
@@ -93,13 +95,8 @@ public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>
   {
     public VirtualPath Path { get; init; }
 
-    protected override SpritePlan Plan(SpritePlan plan)
-    {
-      return base.Plan(plan);
-    }
-
     /// <summary>The <see cref="XmlSerializer{T}"/> for this node.</summary>
-    [XmlSerializer(typeof(SampleImageNode))]
+    [XmlSerializer(typeof(SampleImageNode), Name = "SampleImage")]
     private sealed class Serializer : XmlSerializer<SampleImageNode>
     {
       public override ValueTask<SampleImageNode> DeserializeAsync(XElement element, IXmlSerializationContext context, CancellationToken cancellationToken = default)
@@ -115,15 +112,9 @@ public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>
   /// <summary>Deserializes all child <see cref="SpriteBlueprintNode"/>s from the given element.</summary>
   private static ValueTask<List<SpriteBlueprintNode>> DeserializeChildrenAsync(XElement element, IXmlSerializationContext context, CancellationToken cancellationToken)
   {
-    Type? GetNodeType(XElement child)
-    {
-      return Type.GetType($"Isaac.Sprites.SpriteBlueprintNode+{child.Name.LocalName}Node, Isaac");
-    }
-
     return element
       .Elements()
-      .Where(child => GetNodeType(child) != null)
-      .SelectAsync(async child => (SpriteBlueprintNode) await context.DeserializeAsync(GetNodeType(child)!, child, cancellationToken))
+      .SelectAsync(async child => (SpriteBlueprintNode) await context.DeserializeAsync(child, cancellationToken))
       .ToListAsync(cancellationToken);
   }
 }

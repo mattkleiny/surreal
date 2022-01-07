@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 
 namespace Surreal.Graphics.Shaders;
 
@@ -11,7 +12,8 @@ public sealed class RoslynShaderParser : IShaderParser
     var syntaxTree = CSharpSyntaxTree.ParseText(SourceText.From(reader, length), CSharpParseOptions.Default, path, cancellationToken);
 
     // TODO: implement me
+    var compilationUnit = new CompilationUnit();
 
-    return Task.FromResult(new ShaderProgramDeclaration(path, string.Empty, ShaderArchetype.Sprite));
+    return Task.FromResult(new ShaderProgramDeclaration(path, ShaderArchetype.Sprite, compilationUnit));
   }
 }
