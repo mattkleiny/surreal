@@ -12,7 +12,7 @@ public class ImageLoaderTests
 
     manager.AddLoader(new ImageLoader());
 
-    var image = await manager.LoadAsset<Image>(path);
+    var image = await manager.LoadAssetAsync<Image>(path);
 
     Assert.That(image.Width, Is.GreaterThan(0));
     Assert.That(image.Height, Is.GreaterThan(0));

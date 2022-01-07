@@ -1,4 +1,4 @@
-﻿namespace Surreal.IO.Serialization;
+﻿namespace Surreal.IO.Binary;
 
 /// <summary>A <see cref="IBinaryWriter"/> that writes to the given <see cref="Stream"/>.</summary>
 public sealed class StreamBinaryWriter : IBinaryWriter, IDisposable, IAsyncDisposable

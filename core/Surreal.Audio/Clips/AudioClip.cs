@@ -42,7 +42,7 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
 
   public override async Task<AudioClip> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    var buffer = await context.Manager.LoadAsset<AudioBuffer>(context.Path, cancellationToken);
+    var buffer = await context.Manager.LoadAssetAsync<AudioBuffer>(context.Path, cancellationToken);
 
     return device.CreateAudioClip(buffer);
   }

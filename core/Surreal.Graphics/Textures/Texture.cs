@@ -96,7 +96,7 @@ public sealed class TextureLoader : AssetLoader<Texture>
       // TODO: implement hot reloading with a file watcher
     }
 
-    var image   = await context.Manager.LoadAsset<Image>(context.Path, cancellationToken);
+    var image   = await context.Manager.LoadAssetAsync<Image>(context.Path, cancellationToken);
     var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 
     return texture;

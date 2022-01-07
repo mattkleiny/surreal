@@ -31,18 +31,18 @@ public sealed class MainScreen : Screen<AsteroidsGame>
 
   protected override async Task LoadContentAsync(IAssetManager assets)
   {
-    shipSprite = await assets.LoadAsset<Texture>("Assets/sprites/ship.png");
+    shipSprite = await assets.LoadAssetAsync<Texture>("Assets/sprites/ship.png");
 
     asteroidSprites = await Task.WhenAll(
-      assets.LoadAsset<Texture>("Assets/sprites/large_asteroid_1.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/large_asteroid_2.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/large_asteroid_3.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/medium_asteroid_1.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/medium_asteroid_2.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/medium_asteroid_3.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/small_asteroid_1.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/small_asteroid_2.png"),
-      assets.LoadAsset<Texture>("Assets/sprites/small_asteroid_3.png")
+      assets.LoadAssetAsync<Texture>("Assets/sprites/large_asteroid_1.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/large_asteroid_2.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/large_asteroid_3.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/medium_asteroid_1.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/medium_asteroid_2.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/medium_asteroid_3.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/small_asteroid_1.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/small_asteroid_2.png"),
+      assets.LoadAssetAsync<Texture>("Assets/sprites/small_asteroid_3.png")
     );
   }
 

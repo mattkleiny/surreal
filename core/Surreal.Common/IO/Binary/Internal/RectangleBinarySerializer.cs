@@ -1,11 +1,11 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.IO.Serialization.Internal;
+namespace Surreal.IO.Binary.Internal;
 
-[Serializer(typeof(Rectangle))]
-public sealed class RectangleSerializer : BinarySerializer<Rectangle>
+[BinarySerializer(typeof(Rectangle))]
+public sealed class RectangleBinarySerializer : BinarySerializer<Rectangle>
 {
-  public override async ValueTask SerializeAsync(Rectangle value, IBinaryWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(Rectangle value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     await writer.WriteFloatAsync(value.Left, cancellationToken);
     await writer.WriteFloatAsync(value.Top, cancellationToken);
@@ -13,7 +13,7 @@ public sealed class RectangleSerializer : BinarySerializer<Rectangle>
     await writer.WriteFloatAsync(value.Bottom, cancellationToken);
   }
 
-  public override async ValueTask<Rectangle> DeserializeAsync(IBinaryReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Rectangle> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     var left   = await reader.ReadFloatAsync(cancellationToken);
     var top    = await reader.ReadFloatAsync(cancellationToken);

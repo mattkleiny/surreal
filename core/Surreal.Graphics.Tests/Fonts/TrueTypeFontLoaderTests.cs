@@ -12,7 +12,7 @@ public class TrueTypeFontLoaderTests
 
     manager.AddLoader(new TrueTypeFontLoader());
 
-    var font = await manager.LoadAsset<TrueTypeFont>(path);
+    var font = await manager.LoadAssetAsync<TrueTypeFont>(path);
 
     Assert.IsNotNull(font);
   }

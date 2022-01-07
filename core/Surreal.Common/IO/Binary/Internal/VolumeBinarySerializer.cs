@@ -1,18 +1,18 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.IO.Serialization.Internal;
+namespace Surreal.IO.Binary.Internal;
 
-[Serializer(typeof(Volume))]
-public sealed class VolumeSerializer : BinarySerializer<Volume>
+[BinarySerializer(typeof(Volume))]
+public sealed class VolumeBinarySerializer : BinarySerializer<Volume>
 {
-  public override async ValueTask SerializeAsync(Volume value, IBinaryWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(Volume value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     await writer.WriteFloatAsync(value.Width, cancellationToken);
     await writer.WriteFloatAsync(value.Height, cancellationToken);
     await writer.WriteFloatAsync(value.Depth, cancellationToken);
   }
 
-  public override async ValueTask<Volume> DeserializeAsync(IBinaryReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Volume> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     var width  = await reader.ReadFloatAsync(cancellationToken);
     var height = await reader.ReadFloatAsync(cancellationToken);

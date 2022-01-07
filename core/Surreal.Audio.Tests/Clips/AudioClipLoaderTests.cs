@@ -12,7 +12,7 @@ public class AudioClipLoaderTests
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(device));
 
-    await manager.LoadAsset<AudioClip>("Assets/audio/test.wav");
+    await manager.LoadAssetAsync<AudioClip>("Assets/audio/test.wav");
 
     device.Received(1).CreateAudioClip(Arg.Any<IAudioData>());
   }

@@ -13,7 +13,7 @@ public class TextureLoaderTests
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new TextureLoader(device, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: false));
 
-    await manager.LoadAsset<Texture>("Assets/images/test.png");
+    await manager.LoadAssetAsync<Texture>("Assets/images/test.png");
 
     device.Received(1).CreateTexture(Arg.Any<ITextureData>(), TextureFilterMode.Point, TextureWrapMode.Clamp);
   }

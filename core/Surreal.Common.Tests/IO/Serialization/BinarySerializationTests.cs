@@ -1,8 +1,9 @@
-﻿using Surreal.Mathematics;
+﻿using Surreal.IO.Binary;
+using Surreal.Mathematics;
 
 namespace Surreal.IO.Serialization;
 
-public class SerializationTests
+public class BinarySerializationTests
 {
   [Test, AutoFixture] public ValueTask it_should_serialize_Angle(Angle value)
     => BinarySerializer.SerializeAsync(value, CreateWriter());

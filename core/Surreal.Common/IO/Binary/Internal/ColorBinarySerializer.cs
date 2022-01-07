@@ -1,11 +1,11 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.IO.Serialization.Internal;
+namespace Surreal.IO.Binary.Internal;
 
-[Serializer(typeof(Color))]
-public sealed class ColorSerializer : BinarySerializer<Color>
+[BinarySerializer(typeof(Color))]
+public sealed class ColorBinarySerializer : BinarySerializer<Color>
 {
-  public override async ValueTask SerializeAsync(Color value, IBinaryWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(Color value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     await writer.WriteFloatAsync(value.R, cancellationToken);
     await writer.WriteFloatAsync(value.G, cancellationToken);
@@ -13,7 +13,7 @@ public sealed class ColorSerializer : BinarySerializer<Color>
     await writer.WriteFloatAsync(value.A, cancellationToken);
   }
 
-  public override async ValueTask<Color> DeserializeAsync(IBinaryReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Color> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     var r = await reader.ReadFloatAsync(cancellationToken);
     var g = await reader.ReadFloatAsync(cancellationToken);

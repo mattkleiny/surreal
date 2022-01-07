@@ -24,7 +24,7 @@ public class IsaacGameTests : GameTestCase<IsaacGame>
           Height         = 144,
           IsResizable    = false,
           ShowFpsInTitle = false,
-        }
+        },
       };
     }
 

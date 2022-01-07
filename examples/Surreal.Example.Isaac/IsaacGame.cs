@@ -25,7 +25,7 @@ public sealed class IsaacGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    blueprint = await assets.LoadAsset<DungeonBlueprint>("Assets/dungeons/dungeon-test-01.xml", cancellationToken);
+    blueprint = await assets.LoadAssetAsync<DungeonBlueprint>("Assets/dungeons/dungeon-test-01.xml", cancellationToken);
   }
 
   protected override void Input(GameTime time)

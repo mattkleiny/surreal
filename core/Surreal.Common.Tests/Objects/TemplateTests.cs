@@ -8,9 +8,9 @@ public class TemplateTests
     Assert.IsNotNull(TemplateFactory.Create<TestObject>());
   }
 
-  [Template(typeof(TestObjectBlueprint))]
   private sealed class TestObject
   {
+    [Template(typeof(TestObject))]
     private sealed class TestObjectBlueprint : ITemplate<TestObject>
     {
       public TestObject Create()

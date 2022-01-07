@@ -1,10 +1,11 @@
-﻿using Surreal.Mathematics;
+﻿using System.Xml.Linq;
+using Surreal.IO.Xml;
+using Surreal.Mathematics;
 using Surreal.Objects;
 
 namespace Isaac.Dungeons;
 
 /// <summary>A blueprint for a dungeon.</summary>
-[Template(typeof(DungeonBlueprintTemplate))]
 public sealed record DungeonBlueprint : DungeonNode
 {
   public int Width  { get; init; } = 15;
@@ -24,25 +25,35 @@ public sealed record DungeonBlueprint : DungeonNode
 
     return plan;
   }
+}
 
-  private sealed record DungeonBlueprintTemplate : IImportableTemplate<DungeonBlueprint>
+[Template(typeof(DungeonBlueprint))]
+public sealed record DungeonBlueprintTemplate : ITemplate<DungeonBlueprint>
+{
+  public int Width  { get; init; } = 15;
+  public int Height { get; init; } = 9;
+
+  public DungeonBlueprint Create()
   {
-    public int Width  { get; set; }
-    public int Height { get; set; }
-
-    public DungeonBlueprint Create()
+    return new DungeonBlueprint
     {
-      return new DungeonBlueprint
-      {
-        Width  = Width,
-        Height = Height,
-      };
-    }
+      Width  = Width,
+      Height = Height,
+    };
+  }
+}
 
-    public void OnImportTemplate(ITemplateImportContext context)
+[XmlSerializer(typeof(DungeonBlueprintTemplate))]
+public sealed class DungeonBlueprintTemplateSerializer : XmlSerializer<DungeonBlueprintTemplate>
+{
+  public override ValueTask<DungeonBlueprintTemplate> DeserializeAsync(XElement element, IXmlSerializationContext context, CancellationToken cancellationToken = default)
+  {
+    var blueprint = new DungeonBlueprintTemplate
     {
-      Width  = context.Parse(nameof(Width), 15);
-      Height = context.Parse(nameof(Height), 9);
-    }
+      Width  = (int) element.Attribute("Width")!,
+      Height = (int) element.Attribute("Height")!,
+    };
+
+    return ValueTask.FromResult(blueprint);
   }
 }

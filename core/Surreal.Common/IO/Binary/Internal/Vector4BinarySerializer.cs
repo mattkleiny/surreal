@@ -1,9 +1,9 @@
-﻿namespace Surreal.IO.Serialization.Internal;
+﻿namespace Surreal.IO.Binary.Internal;
 
-[Serializer(typeof(Vector4))]
-public sealed class Vector4Serializer : BinarySerializer<Vector4>
+[BinarySerializer(typeof(Vector4))]
+public sealed class Vector4BinarySerializer : BinarySerializer<Vector4>
 {
-  public override async ValueTask SerializeAsync(Vector4 value, IBinaryWriter writer, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(Vector4 value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     await writer.WriteFloatAsync(value.X, cancellationToken);
     await writer.WriteFloatAsync(value.Y, cancellationToken);
@@ -11,7 +11,7 @@ public sealed class Vector4Serializer : BinarySerializer<Vector4>
     await writer.WriteFloatAsync(value.W, cancellationToken);
   }
 
-  public override async ValueTask<Vector4> DeserializeAsync(IBinaryReader reader, ISerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Vector4> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
     var x = await reader.ReadFloatAsync(cancellationToken);
     var y = await reader.ReadFloatAsync(cancellationToken);

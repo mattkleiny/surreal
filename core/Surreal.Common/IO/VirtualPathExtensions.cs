@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using System.Xml;
-using System.Xml.Serialization;
-using Surreal.IO.Serialization;
+using System.Xml.Linq;
+using Surreal.IO.Binary;
+using Surreal.IO.Xml;
 using Surreal.Memory;
 
 namespace Surreal.IO;
@@ -13,7 +13,7 @@ public static class VirtualPathExtensions
 
   public static IFileSystem GetFileSystem(this VirtualPath path)
   {
-    return FileSystem.GetForScheme(path.Scheme.ToString()!)!;
+    return FileSystem.GetForScheme(path.Scheme.ToString())!;
   }
 
   public static VirtualPath Resolve(this VirtualPath path, params string[] name) => path.GetFileSystem().Resolve(path.Target.ToString()!, name);
@@ -107,30 +107,22 @@ public static class VirtualPathExtensions
     return await JsonSerializer.DeserializeAsync<T>(stream);
   }
 
-  public static async Task SerializeXmlAsync<T>(this VirtualPath path, T value)
-    where T : class
+  public static async Task<object> DeserializeXmlAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenOutputStreamAsync();
+    await using var stream = await path.OpenInputStreamAsync();
 
-    var serializer = new XmlSerializer(typeof(T));
+    var element = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
 
-    serializer.Serialize(stream, value);
+    return await XmlSerializer.DeserializeAsync(type, element, cancellationToken);
   }
 
-  public static async Task<T> DeserializeXmlAsync<T>(this VirtualPath path)
+  public static async Task<T> DeserializeXmlAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
     where T : class
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    // fixes a vulnerability in DTD processing
-    using var reader = new XmlTextReader(stream)
-    {
-      DtdProcessing = DtdProcessing.Ignore,
-      XmlResolver   = null,
-    };
+    var element = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
 
-    var serializer = new XmlSerializer(typeof(T));
-
-    return (T) serializer.Deserialize(reader)!;
+    return await XmlSerializer.DeserializeAsync<T>(element, cancellationToken);
   }
 }

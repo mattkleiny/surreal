@@ -1,7 +1,6 @@
-using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Xml;
-using System.Xml.Linq;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Surreal.Objects;
@@ -23,23 +22,6 @@ public interface ITemplate<out T> : ITemplate
   }
 }
 
-/// <summary>A <see cref="ITemplate{T}"/> that can be imported.</summary>
-public interface IImportableTemplate : ITemplate
-{
-  void OnImportTemplate(ITemplateImportContext context);
-}
-
-/// <summary>A <see cref="ITemplate{T}"/> that can be imported.</summary>
-public interface IImportableTemplate<out T> : IImportableTemplate, ITemplate<T>
-{
-}
-
-/// <summary>A context for <see cref="ITemplate{T}"/> imports.</summary>
-public interface ITemplateImportContext
-{
-  T Parse<T>(string key, T defaultValue = default!);
-}
-
 /// <summary>Indicates the associated type is a <see cref="ITemplate{T}"/>.</summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Class)]
@@ -56,21 +38,23 @@ public sealed class TemplateAttribute : Attribute
 /// <summary>Static factory for <see cref="ITemplate{T}"/>s.</summary>
 public static class TemplateFactory
 {
+  private static TemplateContext Context { get; } = new();
+
+  /// <summary>Determines if the given type has a valid template associated with it.</summary>
+  public static bool HasTemplate(Type type)
+  {
+    return Context.TryGetTemplateType(type, out _);
+  }
+
   /// <summary>Gets the template associated with the given type.</summary>
   public static Type GetTemplateType(Type type)
   {
-    if (typeof(ITemplate).IsAssignableFrom(type))
-    {
-      return type;
-    }
-
-    var attribute = type.GetCustomAttribute<TemplateAttribute>();
-    if (attribute == null || !typeof(ITemplate).IsAssignableFrom(attribute.Type))
+    if (!Context.TryGetTemplateType(type, out var templateType))
     {
       throw new InvalidOperationException($"The type {type} does not have a valid template associated");
     }
 
-    return attribute.Type;
+    return templateType;
   }
 
   /// <summary>Creates a blank instance of <see cref="T"/> from a default <see cref="ITemplate{T}"/> of it's type.</summary>
@@ -91,65 +75,46 @@ public static class TemplateFactory
     return (ITemplate) Activator.CreateInstance(GetTemplateType(type))!;
   }
 
-  /// <summary>Imports a template for the given type from the given XML stream.</summary>
-  public static async Task<ITemplate<T>> ImportTemplateAsync<T>(Stream stream, CancellationToken cancellationToken)
-  {
-    return (ITemplate<T>) await ImportTemplateAsync(typeof(T), stream, cancellationToken);
-  }
-
-  /// <summary>Imports a template for the given type from the given XML stream.</summary>
-  public static async Task<ITemplate> ImportTemplateAsync(Type type, Stream stream, CancellationToken cancellationToken)
-  {
-    var document = await XDocument.LoadAsync(stream, LoadOptions.None, cancellationToken);
-    var element  = document.Elements().SingleOrDefault(); // expect a single top-level element
-
-    if (element == null)
-    {
-      throw new XmlException("Expected a single top-level element");
-    }
-
-    var context  = new XmlImportContext(element);
-    var template = CreateTemplate(type);
-
-    if (template is not IImportableTemplate importable)
-    {
-      throw new InvalidOperationException($"The template {template.GetType()} is not importable");
-    }
-
-    importable.OnImportTemplate(context);
-
-    return template;
-  }
-
   /// <summary>A static cache for <see cref="ITemplate{T}"/>s for <see cref="T"/>.</summary>
   private static class TemplateCache<T>
   {
     public static ITemplate<T> Template { get; } = CreateTemplate<T>();
   }
 
-  /// <summary>A <see cref="ITemplateImportContext"/> for XML parsing.</summary>
-  private sealed class XmlImportContext : ITemplateImportContext
+  internal sealed class TemplateContext
   {
-    private readonly XElement element;
+    private readonly Dictionary<Type, Type> templatesByType = new();
 
-    public XmlImportContext(XElement element)
+    [ModuleInitializer]
+    internal static void Initialize()
     {
-      this.element = element;
+      foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+      {
+        Context.RegisterTemplates(assembly);
+      }
     }
 
-    public T Parse<T>(string key, T defaultValue = default!)
+    private void RegisterTemplates(Assembly assembly)
     {
-      if (this.element.Attribute(key) is { Value: var attribute })
-      {
-        return (T) Convert.ChangeType(attribute, typeof(T), CultureInfo.InvariantCulture);
-      }
+      var candidates =
+        from type in assembly.GetTypes()
+        from attribute in type.GetCustomAttributes<TemplateAttribute>(inherit: true)
+        select new { Attribute = attribute, Type = type };
 
-      if (this.element.Element(key) is { Value: var element })
+      foreach (var candidate in candidates)
       {
-        return (T) Convert.ChangeType(element, typeof(T), CultureInfo.InvariantCulture);
+        RegisterTemplate(candidate.Attribute.Type, candidate.Type);
       }
+    }
 
-      return defaultValue;
+    private void RegisterTemplate(Type type, Type templateType)
+    {
+      templatesByType[type] = templateType;
+    }
+
+    public bool TryGetTemplateType(Type type, [MaybeNullWhen(false)] out Type result)
+    {
+      return templatesByType.TryGetValue(type, out result);
     }
   }
 }

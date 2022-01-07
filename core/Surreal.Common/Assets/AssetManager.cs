@@ -8,8 +8,8 @@ public interface IAssetManager
 {
   void AddLoader(IAssetLoader loader);
 
-  Task<object> LoadAsset(Type type, VirtualPath path, CancellationToken cancellationToken = default);
-  Task<T>      LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  Task<object> LoadAssetAsync(Type type, VirtualPath path, CancellationToken cancellationToken = default);
+  Task<T>      LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
@@ -23,7 +23,7 @@ public sealed class AssetManager : IAssetManager, IDisposable
     loaders.Add(loader);
   }
 
-  public async Task<object> LoadAsset(Type type, VirtualPath path, CancellationToken cancellationToken = default)
+  public async Task<object> LoadAssetAsync(Type type, VirtualPath path, CancellationToken cancellationToken = default)
   {
     var context = new AssetLoaderContext
     {
@@ -47,9 +47,9 @@ public sealed class AssetManager : IAssetManager, IDisposable
     return asset;
   }
 
-  public async Task<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    return (T) await LoadAsset(typeof(T), path, cancellationToken);
+    return (T) await LoadAssetAsync(typeof(T), path, cancellationToken);
   }
 
   public void Dispose()
