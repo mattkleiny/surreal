@@ -88,6 +88,13 @@ public sealed class Image : ITextureData, IDisposable
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>
 public sealed class ImageLoader : AssetLoader<Image>
 {
+  private static ImmutableHashSet<string> Extensions { get; } = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga" }.ToImmutableHashSet();
+
+  public override bool CanHandle(AssetLoaderContext context)
+  {
+    return base.CanHandle(context) && Extensions.Contains(context.Path.Extension);
+  }
+
   public override async Task<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     return await Image.LoadAsync(context.Path);

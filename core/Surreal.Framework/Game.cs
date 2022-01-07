@@ -38,12 +38,12 @@ public abstract partial class Game : IDisposable, ITestableGame
     };
   }
 
-  public static Task StartAsync<TGame>(Configuration configuration, CancellationToken cancellationToken = default)
+  public static async Task StartAsync<TGame>(Configuration configuration, CancellationToken cancellationToken = default)
     where TGame : Game, new()
   {
     using var game = Create<TGame>(configuration);
 
-    return game.StartAsync(cancellationToken);
+    await game.StartAsync(cancellationToken);
   }
 
   protected Game()
@@ -214,6 +214,7 @@ public abstract partial class Game : IDisposable, ITestableGame
       plugin.Dispose();
     }
 
+    Assets.Dispose();
     Services.Dispose();
     Host.Dispose();
   }

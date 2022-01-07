@@ -4,7 +4,7 @@ using Surreal.IO;
 namespace Surreal.Assets;
 
 /// <summary>Allows managing assets.</summary>
-public interface IAssetManager
+public interface IAssetManager : IDisposable
 {
   void AddLoader(IAssetLoader loader);
 
@@ -13,7 +13,7 @@ public interface IAssetManager
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
-public sealed class AssetManager : IAssetManager, IDisposable
+public sealed class AssetManager : IAssetManager
 {
   private readonly List<IAssetLoader>          loaders    = new();
   private readonly Dictionary<AssetId, object> assetsById = new();

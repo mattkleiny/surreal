@@ -1,7 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Surreal.Collections;
 
 namespace Surreal.Objects;
 
@@ -43,18 +43,31 @@ public static class TemplateFactory
   /// <summary>Determines if the given type has a valid template associated with it.</summary>
   public static bool HasTemplate(Type type)
   {
-    return Context.TryGetTemplateType(type, out _);
+    return Context.TryGetTemplateTypes(type, out _);
+  }
+
+  /// <summary>Gets the templates associated with the given type.</summary>
+  public static ReadOnlySlice<Type> GetTemplateTypes(Type type)
+  {
+    if (!Context.TryGetTemplateTypes(type, out var templateTypes))
+    {
+      throw new InvalidOperationException($"The type {type} does not have a valid template associated");
+    }
+
+    return templateTypes;
   }
 
   /// <summary>Gets the template associated with the given type.</summary>
   public static Type GetTemplateType(Type type)
   {
-    if (!Context.TryGetTemplateType(type, out var templateType))
+    var templateTypes = GetTemplateTypes(type);
+
+    if (templateTypes.Length > 1)
     {
-      throw new InvalidOperationException($"The type {type} does not have a valid template associated");
+      throw new InvalidOperationException($"There is more than one template associated with {type}");
     }
 
-    return templateType;
+    return templateTypes[0];
   }
 
   /// <summary>Creates a blank instance of <see cref="T"/> from a default <see cref="ITemplate{T}"/> of it's type.</summary>
@@ -83,7 +96,7 @@ public static class TemplateFactory
 
   internal sealed class TemplateContext
   {
-    private readonly Dictionary<Type, Type> templatesByType = new();
+    private readonly MultiDictionary<Type, Type> templatesByType = new();
 
     [ModuleInitializer]
     internal static void Initialize()
@@ -109,12 +122,12 @@ public static class TemplateFactory
 
     private void RegisterTemplate(Type type, Type templateType)
     {
-      templatesByType[type] = templateType;
+      templatesByType.Add(type, templateType);
     }
 
-    public bool TryGetTemplateType(Type type, [MaybeNullWhen(false)] out Type result)
+    public bool TryGetTemplateTypes(Type type, out ReadOnlySlice<Type> result)
     {
-      return templatesByType.TryGetValue(type, out result);
+      return templatesByType.TryGetValues(type, out result);
     }
   }
 }

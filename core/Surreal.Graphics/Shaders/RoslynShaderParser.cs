@@ -10,6 +10,8 @@ public sealed class RoslynShaderParser : IShaderParser
   {
     var syntaxTree = CSharpSyntaxTree.ParseText(SourceText.From(reader, length), CSharpParseOptions.Default, path, cancellationToken);
 
-    throw new NotImplementedException();
+    // TODO: implement me
+
+    return Task.FromResult(new ShaderProgramDeclaration(path, string.Empty, ShaderArchetype.Sprite));
   }
 }

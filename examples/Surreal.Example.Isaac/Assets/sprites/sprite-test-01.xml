@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Sprite Description="A simple sprite generation plan" Width="16" Height="16">
+  <SampleRandomly>
+    <SampleImage Path="local://Assets/sprites/test-01.png" />
+    <SampleImage Path="local://Assets/sprites/test-02.png" />
+  </SampleRandomly>
+</Sprite>

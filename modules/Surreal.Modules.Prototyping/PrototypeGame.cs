@@ -13,7 +13,6 @@ using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;
-using Surreal.Objects;
 using Surreal.Screens;
 
 namespace Surreal;

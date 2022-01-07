@@ -3,7 +3,7 @@ using Surreal.Objects;
 
 namespace Surreal.IO.Xml;
 
-/// <summary>Loads <see cref="ITemplate{T}"/>s from XML.</summary>
+/// <summary>Loads templated objects from XML.</summary>
 public sealed class XmlAssetLoader : AssetLoader<object>
 {
   public override bool CanHandle(AssetLoaderContext context)
