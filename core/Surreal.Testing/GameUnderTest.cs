@@ -11,6 +11,7 @@ public interface IGameUnderTest : IDisposable
   Task InitializeAsync();
   Task RunAsync(TimeSpan duration);
 
+  void Tick();
   void Tick(DeltaTime deltaTime);
 }
 
@@ -45,9 +46,14 @@ internal sealed class GameUnderTest<TGame> : IGameUnderTest<TGame>
 
   public Task RunAsync(TimeSpan duration)
   {
-    using var cancellationToken = new CancellationTokenSource(5.Seconds());
+    using var cancellationToken = new CancellationTokenSource(duration);
 
     return Instance.RunAsync(cancellationToken.Token);
+  }
+
+  public void Tick()
+  {
+    Tick(16.Milliseconds());
   }
 
   public void Tick(DeltaTime deltaTime)
