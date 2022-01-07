@@ -32,7 +32,7 @@ public enum PrimitiveType
   Sampler,
 }
 
-/// <summary>Different archetypes of shader programs, for template expansiosn.</summary>
+/// <summary>Different archetypes of shader programs, for template expansions.</summary>
 public enum ShaderArchetype
 {
   Sprite,
@@ -80,6 +80,7 @@ public abstract record ShaderSyntaxTree
     {
       Uniforms  = nodes.OfType<UniformDeclaration>().ToImmutableArray();
       Varyings  = nodes.OfType<VaryingDeclaration>().ToImmutableArray();
+      Constants = nodes.OfType<ConstantDeclaration>().ToImmutableArray();
       Includes  = nodes.OfType<Include>().ToImmutableArray();
       Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray();
       Stages    = nodes.OfType<StageDeclaration>().ToImmutableArray();
@@ -87,6 +88,7 @@ public abstract record ShaderSyntaxTree
 
     public ImmutableArray<UniformDeclaration>  Uniforms  { get; init; }
     public ImmutableArray<VaryingDeclaration>  Varyings  { get; init; }
+    public ImmutableArray<ConstantDeclaration> Constants { get; init; }
     public ImmutableArray<Include>             Includes  { get; init; }
     public ImmutableArray<FunctionDeclaration> Functions { get; init; }
     public ImmutableArray<StageDeclaration>    Stages    { get; init; }

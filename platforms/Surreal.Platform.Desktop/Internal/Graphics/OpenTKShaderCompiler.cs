@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Shaders;
 using Surreal.Internal.Graphics.Resources;
-using Surreal.Internal.Graphics.Utilities;
+using Surreal.Text;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 using PrimitiveType = Surreal.Graphics.Shaders.PrimitiveType;
@@ -65,6 +65,16 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       foreach (var varying in compilationUnit.Varyings)
       {
         CompileStatement(codeBuilder, varying);
+      }
+
+      codeBuilder.AppendBlankLine();
+    }
+
+    if (compilationUnit.Constants.Length > 0)
+    {
+      foreach (var constant in compilationUnit.Constants)
+      {
+        CompileStatement(codeBuilder, constant);
       }
 
       codeBuilder.AppendBlankLine();
@@ -266,4 +276,95 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
     _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
   };
+
+  /// <summary>A utility for building shader programs from raw source text.</summary>
+  private sealed record ShaderCodeBuilder(StringBuilder Builder, int IndentLevel = 0) : IDisposable
+  {
+    public void AppendLine(string raw) => Builder.AppendLine(raw);
+    public void AppendBlankLine()      => Builder.AppendLine();
+
+    public void AppendComment(string text)
+    {
+      Builder
+        .AppendIndent(IndentLevel)
+        .Append("/* ")
+        .Append(text)
+        .AppendLine(" */");
+    }
+
+    public void AppendUniformDeclaration(string? precision, string type, string name)
+    {
+      Builder
+        .AppendIndent(IndentLevel)
+        .Append("uniform ")
+        .Append(precision)
+        .Append(precision != null ? ' ' : null)
+        .Append(type)
+        .Append(' ')
+        .Append(name)
+        .AppendLine(";");
+    }
+
+    public void AppendVaryingDeclaration(string? precision, string type, string name)
+    {
+      Builder
+        .AppendIndent(IndentLevel)
+        .Append("varying ")
+        .Append(precision)
+        .Append(precision != null ? ' ' : null)
+        .Append(type)
+        .Append(' ')
+        .Append(name)
+        .AppendLine(";");
+    }
+
+    public void AppendConstantDeclaration(string? precision, string type, string name, string value)
+    {
+      Builder
+        .AppendIndent(IndentLevel)
+        .Append("const ")
+        .Append(precision)
+        .Append(precision != null ? ' ' : null)
+        .Append(type)
+        .Append(' ')
+        .Append(name)
+        .Append(" = ")
+        .Append(value)
+        .AppendLine(";");
+    }
+
+    public void AppendAssignment(string name, string value)
+    {
+      Builder
+        .AppendIndent(IndentLevel)
+        .Append(name)
+        .Append(" = ")
+        .Append(value)
+        .AppendLine(";");
+    }
+
+    public ShaderCodeBuilder AppendFunctionDeclaration(string? precision, string returnType, string name, IEnumerable<string> parameters)
+    {
+      Builder
+        .AppendIndent(IndentLevel)
+        .Append(precision)
+        .Append(precision != null ? ' ' : null)
+        .Append(returnType)
+        .Append(' ')
+        .Append(name)
+        .Append("(")
+        .Append(string.Join(", ", parameters))
+        .Append(")")
+        .AppendLine(" {");
+
+      return this with { IndentLevel = IndentLevel + 1 };
+    }
+
+    public void Dispose()
+    {
+      Builder
+        .AppendIndent(IndentLevel - 1)
+        .AppendLine("}");
+    }
+  }
 }
