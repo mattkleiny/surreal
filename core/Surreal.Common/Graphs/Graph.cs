@@ -34,7 +34,7 @@ public abstract class Graph<TNode> : IGraph
 public abstract record GraphNode<TSelf> : IEnumerable<TSelf>, IGraphNode
   where TSelf : GraphNode<TSelf>
 {
-  protected List<TSelf> Children { get; } = new();
+  protected List<TSelf> Children { get; init; } = new();
 
   public void Add(TSelf node)    => Children.Add(node);
   public void Remove(TSelf node) => Children.Remove(node);

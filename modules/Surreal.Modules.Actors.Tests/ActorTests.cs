@@ -13,7 +13,7 @@ public class ActorTests
     actor.GetOrCreateComponent(new Transform
     {
       Position = Vector2.UnitX,
-      Rotation = -2f
+      Rotation = -2f,
     });
   }
 }

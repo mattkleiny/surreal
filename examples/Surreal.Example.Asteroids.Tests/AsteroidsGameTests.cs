@@ -24,7 +24,7 @@ public class AsteroidsGameTests : GameTestCase<AsteroidsGame>
           Height         = 144,
           IsResizable    = false,
           ShowFpsInTitle = false,
-        }
+        },
       };
     }
 

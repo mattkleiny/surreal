@@ -24,7 +24,7 @@ public class PreludeGameTests : GameTestCase<PreludeGame>
           Height         = 144,
           IsResizable    = false,
           ShowFpsInTitle = false,
-        }
+        },
       };
     }
 

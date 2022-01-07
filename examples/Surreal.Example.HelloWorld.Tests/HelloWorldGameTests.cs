@@ -24,7 +24,7 @@ public class HelloWorldGameTests : GameTestCase<HelloWorldGame>
           Height         = 144,
           IsResizable    = false,
           ShowFpsInTitle = false,
-        }
+        },
       };
     }
 

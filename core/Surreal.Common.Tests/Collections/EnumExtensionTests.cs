@@ -36,6 +36,6 @@ public class EnumExtensionTests
     One,
     Two,
     Three,
-    Four
+    Four,
   }
 }

@@ -22,6 +22,6 @@ public abstract record StatusEffect
   public enum Transition
   {
     Continue,
-    Remove
+    Remove,
   }
 }

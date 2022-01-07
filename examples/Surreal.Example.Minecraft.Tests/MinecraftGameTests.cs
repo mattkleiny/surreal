@@ -24,7 +24,7 @@ public class MinecraftGameTests : GameTestCase<MinecraftGame>
           Height         = 144,
           IsResizable    = false,
           ShowFpsInTitle = false,
-        }
+        },
       };
     }
 

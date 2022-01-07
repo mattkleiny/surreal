@@ -1,4 +1,5 @@
-﻿using Isaac.Dungeons;
+﻿using Isaac.Blueprints;
+using Isaac.Dungeons;
 using Surreal.Assets;
 using Surreal.Graphics.Images;
 using Surreal.Input.Keyboard;
@@ -7,8 +8,8 @@ namespace Isaac;
 
 public sealed class IsaacGame : PrototypeGame
 {
-  private DungeonBlueprint dungeonBlueprint;
-  private Image            sprite01;
+  private DungeonPlan dungeon01;
+  private Image       sprite01;
 
   public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
@@ -27,8 +28,8 @@ public sealed class IsaacGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    dungeonBlueprint = await assets.LoadAssetAsync<DungeonBlueprint>("Assets/dungeons/dungeon-test-01.xml", cancellationToken);
-    sprite01         = await assets.LoadAssetAsync<Image>("Assets/sprites/sprite-test-01.xml", cancellationToken);
+    dungeon01 = await assets.LoadAssetAsync<DungeonPlan>("Assets/blueprints/dungeon-test-01.xml", cancellationToken);
+    sprite01  = await assets.LoadAssetAsync<Image>("Assets/blueprints/sprite-test-01.xml", cancellationToken);
   }
 
   protected override void Input(GameTime time)

@@ -101,7 +101,7 @@ internal sealed class ServiceRegistry : IServiceRegistry
       ServiceLifetime.Transient => Microsoft.Extensions.DependencyInjection.ServiceLifetime.Transient,
       ServiceLifetime.Singleton => Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
 
-      _ => throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null),
     };
   }
 }

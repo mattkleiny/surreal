@@ -172,7 +172,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     IntrinsicType.Position => "POSITION",
     IntrinsicType.Color    => "COLOR",
 
-    _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
   };
 
   private static string ConvertType(Primitive type) => type.Type switch
@@ -215,6 +215,6 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     ShaderKind.Geometry => ShaderType.GeometryShader,
     ShaderKind.Fragment => ShaderType.FragmentShader,
 
-    _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+    _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
   };
 }
