@@ -1,5 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
+using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
@@ -91,14 +92,77 @@ public sealed class TextureLoader : AssetLoader<Texture>
 
   public override async Task<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    if (hotReloading)
-    {
-      // TODO: implement hot reloading with a file watcher
-    }
-
     var image   = await context.Manager.LoadAssetAsync<Image>(context.Path, cancellationToken);
     var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
 
+    if (hotReloading && context.Path.GetFileSystem().SupportsWatcher)
+    {
+      var watcher = context.Path.Watch();
+
+      return new HotLoadingTexture(this, texture, watcher);
+    }
+
     return texture;
+  }
+
+  /// <summary>A <see cref="Texture"/> that supports hot reloading from the file system.</summary>
+  private sealed class HotLoadingTexture : Texture
+  {
+    private readonly TextureLoader loader;
+    private          Texture?      texture;
+    private readonly IPathWatcher  watcher;
+
+    public HotLoadingTexture(TextureLoader loader, Texture texture, IPathWatcher watcher)
+      : base(texture.Format, texture.FilterMode, texture.WrapMode)
+    {
+      this.loader  = loader;
+      this.texture = texture;
+      this.watcher = watcher;
+
+      watcher.Created  += OnTextureModified;
+      watcher.Modified += OnTextureModified;
+      watcher.Deleted  += OnTextureDeleted;
+    }
+
+    public override Image Download()
+    {
+      if (texture == null)
+      {
+        throw new InvalidOperationException("The texture is no longer valid and cannot be accessed");
+      }
+
+      return texture.Download();
+    }
+
+    protected override void Upload(ITextureData? existingData, ITextureData newData)
+    {
+      if (texture == null)
+      {
+        throw new InvalidOperationException("The texture is no longer valid and cannot be accessed");
+      }
+
+      texture.Upload(newData);
+    }
+
+    private void OnTextureModified(VirtualPath path)
+    {
+      // TODO: reload the texture
+    }
+
+    private void OnTextureDeleted(VirtualPath path)
+    {
+      // TODO: delete the texture
+    }
+
+    protected override void Dispose(bool managed)
+    {
+      if (managed)
+      {
+        watcher.Dispose();
+        texture?.Dispose();
+      }
+
+      base.Dispose(managed);
+    }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
@@ -31,11 +32,32 @@ public enum PrimitiveType
   Sampler,
 }
 
+/// <summary>Different archetypes of shader programs, for template expansiosn.</summary>
+public enum ShaderArchetype
+{
+  Sprite,
+}
+
+/// <summary>Different types of shader programs.</summary>
+public enum ShaderKind
+{
+  Vertex,
+  Geometry,
+  Fragment,
+}
+
 /// <summary>A primitive type declaration with optional cardinality for vector representations.</summary>
 public readonly record struct Primitive(
   PrimitiveType Type,
   int? Cardinality = null,
   Precision? Precision = null
+);
+
+/// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
+public sealed record ShaderProgramDeclaration(
+  string Path,
+  ShaderArchetype Archetype,
+  CompilationUnit CompilationUnit
 );
 
 /// <summary>Base type for the shader program instruction syntax tree.</summary>
