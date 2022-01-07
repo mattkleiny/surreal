@@ -1,5 +1,6 @@
 ﻿using System.Runtime;
 using Surreal.Fibers;
+using Surreal.Internal;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -7,7 +8,7 @@ namespace Surreal;
 /// <summary>Context for per-frame game loop updates.</summary>
 public readonly record struct GameContext(IPlatformHost Host, GameTime GameTime);
 
-public delegate GameLoopDelegate GameSetupDelegate(IPlatformHost host);
+public delegate GameLoopDelegate GameSetupDelegate(IServiceRegistry services);
 public delegate FiberTask        GameLoopDelegate(GameContext context);
 
 public abstract partial class Game
@@ -17,11 +18,15 @@ public abstract partial class Game
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
-    using var host = platform.BuildHost();
+    using var              host     = platform.BuildHost();
+    using IServiceRegistry services = new ServiceRegistry();
+
+    services.AddSingleton(host);
+    services.AddModule(host.Services);
 
     var stopwatch = new Chronometer();
     var startTime = TimeStamp.Now;
-    var gameLoop  = gameSetup(host);
+    var gameLoop  = gameSetup(services);
 
     while (!host.IsClosing)
     {
