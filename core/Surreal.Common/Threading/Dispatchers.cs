@@ -34,12 +34,7 @@ public sealed class ImmediateDispatcher : IDispatcher
 
   private sealed class ImmediateAwaitable : IDispatcher.IDispatcherAwaitable
   {
-    private readonly DispatcherAwaiter awaiter;
-
-    public ImmediateAwaitable()
-    {
-      awaiter = new DispatcherAwaiter();
-    }
+    private readonly DispatcherAwaiter awaiter = new();
 
     public IDispatcher.IDispatchAwaiter GetAwaiter()
     {
