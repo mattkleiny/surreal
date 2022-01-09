@@ -1,20 +1,22 @@
-﻿namespace Surreal;
+﻿using Surreal.Automata.DecisionTrees;
 
-public class TacticTests
+namespace Surreal;
+
+public class DecisionTreeTests
 {
   [Test, AutoFixture]
-  public void it_should_evaluate_conditions_and_actions(TacticCondition condition, TacticAction action)
+  public void it_should_evaluate_conditions_and_actions(Decision.Condition condition, Decision.Action action)
   {
-    var context = new TacticContext();
+    var context = new DecisionContext();
 
     condition.CanExecute(context).Returns(true);
     action.CanExecute(context).Returns(true);
 
-    var strategy = new Strategy("Prioritize healing")
+    var strategy = new DecisionTree
     {
-      Tactics =
+      Decisions =
       {
-        new Tactic
+        new Decision
         {
           Conditions = { condition },
           Actions    = { action },

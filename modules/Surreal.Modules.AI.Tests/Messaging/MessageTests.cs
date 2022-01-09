@@ -32,7 +32,7 @@ public class MessageTests
 
   private sealed class TestListener : IMessageListener
   {
-    public void OnMessageReceived(Message message)
+    void IMessageListener.OnMessageReceived(Message message)
     {
       Assert.IsTrue(message.Is<TestMessage>());
 

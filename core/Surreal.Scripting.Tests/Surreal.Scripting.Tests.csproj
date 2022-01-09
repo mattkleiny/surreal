@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Surreal.Scripting</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />
+  </ItemGroup>
+</Project>

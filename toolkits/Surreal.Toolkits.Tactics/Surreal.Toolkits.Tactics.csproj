@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-    <Description>A module for procedural tactics and decision trees.</Description>
-	</PropertyGroup>
-</Project>
