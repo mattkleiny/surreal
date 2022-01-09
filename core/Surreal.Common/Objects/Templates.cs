@@ -5,6 +5,8 @@ using Surreal.Collections;
 
 namespace Surreal.Objects;
 
+#pragma warning disable CA2255
+
 /// <summary>A template for objects.</summary>
 public interface ITemplate
 {

@@ -8,6 +8,7 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
+using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -27,7 +28,8 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public bool IsFocused => true;
   public bool IsClosing => false;
 
-  public IServiceModule Services => this;
+  public IServiceModule Services   => this;
+  public IDispatcher    Dispatcher { get; } = new ImmediateDispatcher();
 
   public IHeadlessKeyboardDevice Keyboard => InputManager.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputManager.Mouse;
@@ -39,8 +41,8 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
     services.AddSingleton<IGraphicsDevice>(GraphicsDevice);
     services.AddSingleton<IInputManager>(InputManager);
     services.AddSingleton<IKeyboardDevice>(InputManager.Keyboard);
-    services.AddSingleton<IHeadlessKeyboardDevice>(InputManager.Keyboard);
     services.AddSingleton<IMouseDevice>(InputManager.Mouse);
+    services.AddSingleton<IHeadlessKeyboardDevice>(InputManager.Keyboard);
     services.AddSingleton<IHeadlessMouseDevice>(InputManager.Mouse);
   }
 

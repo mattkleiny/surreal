@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Threading;
+using Surreal.Timing;
 
 namespace Surreal;
 
@@ -13,7 +14,8 @@ public interface IPlatformHost : IDisposable
   bool IsFocused { get; }
   bool IsClosing { get; }
 
-  IServiceModule Services { get; }
+  IServiceModule Services   { get; }
+  IDispatcher    Dispatcher { get; }
 
   void Tick(DeltaTime deltaTime);
 }

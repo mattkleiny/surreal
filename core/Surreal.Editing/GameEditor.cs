@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
+using Surreal.Internal;
 using Surreal.Threading;
 
 namespace Surreal;
@@ -23,11 +24,11 @@ public static class GameEditor
     return ThreadFactory.Create(options, async () =>
     {
       using var game       = Game.Create<TGame>(configuration);
-      var       dispatcher = new WindowGameDispatcher(Dispatcher.CurrentDispatcher);
+      var       dispatcher = new WindowsDispatcher(Dispatcher.CurrentDispatcher);
 
       await game.InitializeAsync(cancellationToken);
 
-      dispatcher.Schedule(async () =>
+      Dispatcher.CurrentDispatcher.BeginInvoke(async () =>
       {
         await game.RunAsync(dispatcher, cancellationToken);
 
@@ -42,20 +43,5 @@ public static class GameEditor
   public static void ShowWindow(Window window)
   {
     Dispatcher.CurrentDispatcher.BeginInvoke(window.Show);
-  }
-
-  private sealed class WindowGameDispatcher : IGameDispatcher
-  {
-    private readonly Dispatcher dispatcher;
-
-    public WindowGameDispatcher(Dispatcher dispatcher)
-    {
-      this.dispatcher = dispatcher;
-    }
-
-    public void Schedule(Action continuation)
-    {
-      Dispatcher.CurrentDispatcher.BeginInvoke(continuation);
-    }
   }
 }

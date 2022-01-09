@@ -10,7 +10,7 @@ var platform = new DesktopPlatform
   },
 };
 
-Game.Start(platform, services =>
+await Game.StartAsync(platform, services =>
 {
   var graphics = services.GetRequiredService<IGraphicsDevice>();
   var keyboard = services.GetRequiredService<IKeyboardDevice>();

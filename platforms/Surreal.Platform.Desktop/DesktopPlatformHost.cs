@@ -10,9 +10,16 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
+using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
+
+/// <summary>A specialization of <see cref="IPlatformHost"/> for desktop environments.</summary>
+public interface IDesktopPlatformHost : IPlatformHost
+{
+  IDesktopWindow Window { get; }
+}
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
 {
@@ -30,6 +37,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     ComputeDevice  = new OpenTKComputeDevice();
     GraphicsDevice = new OpenTKGraphicsDevice(Window);
     InputManager   = new OpenTKInputManager(Window);
+    Dispatcher     = new ImmediateDispatcher();
   }
 
   public event Action<int, int> Resized
@@ -44,7 +52,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public OpenTKGraphicsDevice GraphicsDevice { get; }
   public OpenTKInputManager   InputManager   { get; }
 
-  public IServiceModule Services => this;
+  public IServiceModule Services   => this;
+  public IDispatcher    Dispatcher { get; }
 
   public int Width  => Window.Width;
   public int Height => Window.Height;

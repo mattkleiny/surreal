@@ -75,17 +75,17 @@ public abstract class PrototypeGame : Game
     GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
   }
 
-  protected override void Begin(GameTime time)
+  protected override void BeginFrame(GameTime time)
   {
     GraphicsDevice.BeginFrame();
     GraphicsDevice.Clear(ClearColor);
 
-    base.Begin(time);
+    base.BeginFrame(time);
   }
 
-  protected override void End(GameTime time)
+  protected override void EndFrame(GameTime time)
   {
-    base.End(time);
+    base.EndFrame(time);
 
     GraphicsDevice.EndFrame();
     GraphicsDevice.Present();

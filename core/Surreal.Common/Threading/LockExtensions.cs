@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Threading;
 
 /// <summary>Static extensions for reader/writer locks.</summary>
-public static class ReaderWriterLockExtensions
+public static class LockExtensions
 {
   public static ReadLockScope ScopeReadLock(this ReaderWriterLockSlim readerWriterLock)
   {

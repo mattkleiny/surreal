@@ -12,11 +12,11 @@ public interface ILoopStrategy
 /// <summary>A target for the <see cref="ILoopStrategy"/>.</summary>
 public interface ILoopTarget
 {
-  void Begin(GameTime time);
+  void BeginFrame(GameTime time);
   void Input(GameTime time);
   void Update(GameTime time);
   void Draw(GameTime time);
-  void End(GameTime time);
+  void EndFrame(GameTime time);
 }
 
 /// <summary>A <see cref="ILoopStrategy"/> that calculates an average delta time over multiple frames.</summary>
@@ -45,11 +45,11 @@ public sealed class AveragingLoopStrategy : ILoopStrategy
       IsRunningSlowly: averagedDeltaTime > TargetDeltaTime
     );
 
-    target.Begin(time);
+    target.BeginFrame(time);
     target.Input(time);
     target.Update(time);
     target.Draw(time);
-    target.End(time);
+    target.EndFrame(time);
 
     return time;
   }
@@ -68,11 +68,11 @@ public sealed class VariableStepLoopStrategy : ILoopStrategy
       IsRunningSlowly: deltaTime > TargetDeltaTime
     );
 
-    target.Begin(time);
+    target.BeginFrame(time);
     target.Input(time);
     target.Update(time);
     target.Draw(time);
-    target.End(time);
+    target.EndFrame(time);
 
     return time;
   }
@@ -96,7 +96,7 @@ public sealed class FixedStepLoopStrategy : ILoopStrategy
 
     accumulator += deltaTime.TimeSpan.TotalSeconds;
 
-    target.Begin(time);
+    target.BeginFrame(time);
     target.Input(time);
 
     while (accumulator >= Step.TotalSeconds)
@@ -113,7 +113,7 @@ public sealed class FixedStepLoopStrategy : ILoopStrategy
     }
 
     target.Draw(time);
-    target.End(time);
+    target.EndFrame(time);
 
     return time;
   }

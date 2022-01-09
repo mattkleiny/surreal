@@ -10,6 +10,7 @@ public sealed record ThreadOptions
   public ThreadPriority Priority     { get; set; } = ThreadPriority.Normal;
 
   /// <summary>Use a single threading apartment (for Win32 COM interop).</summary>
+  /// <remarks>This is only applicable to Windows, and will be ignored on other platforms.</remarks>
   public bool UseSingleThreadApartment { get; set; } = false;
 }
 
@@ -51,7 +52,7 @@ public static class ThreadFactory
       Priority     = options.Priority,
     };
 
-    if (options.UseSingleThreadApartment)
+    if (OperatingSystem.IsWindows() && options.UseSingleThreadApartment)
     {
       thread.SetApartmentState(ApartmentState.STA);
     }
@@ -95,7 +96,7 @@ public static class ThreadFactory
       Priority     = options.Priority,
     };
 
-    if (options.UseSingleThreadApartment)
+    if (OperatingSystem.IsWindows() && options.UseSingleThreadApartment)
     {
       thread.SetApartmentState(ApartmentState.STA);
     }

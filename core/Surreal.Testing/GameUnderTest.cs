@@ -64,11 +64,11 @@ internal sealed class GameUnderTest<TGame> : IGameUnderTest<TGame>
       IsRunningSlowly: false
     );
 
-    LoopTarget.Begin(gameTime);
+    LoopTarget.BeginFrame(gameTime);
     LoopTarget.Input(gameTime);
     LoopTarget.Update(gameTime);
     LoopTarget.Draw(gameTime);
-    LoopTarget.End(gameTime);
+    LoopTarget.EndFrame(gameTime);
   }
 
   public void Dispose()

@@ -4,6 +4,7 @@ using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Internal;
 using Surreal.IO;
+using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -11,10 +12,8 @@ namespace Surreal;
 /// <summary>Base class for any game built with Surreal.</summary>
 public abstract partial class Game : IDisposable, ITestableGame
 {
-  private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
-
-  /// <summary>The active <see cref="IGameDispatcher"/>.</summary>
-  public static IGameDispatcher Dispatcher { get; } = new GameDispatcher();
+  private static readonly IProfiler               Profiler = ProfilerFactory.GetProfiler<Game>();
+  private static readonly ConcurrentQueue<Action> Actions  = new();
 
   private readonly TimeStamp   startTime = TimeStamp.Now;
   private readonly ILoopTarget loopTarget;
@@ -41,6 +40,12 @@ public abstract partial class Game : IDisposable, ITestableGame
 
     await game.InitializeAsync(cancellationToken);
     await game.RunAsync(cancellationToken);
+  }
+
+  /// <summary>Schedules an action to be performed at the start of the next frame/</summary>
+  public static void Schedule(Action action)
+  {
+    Actions.Enqueue(action);
   }
 
   protected Game()
@@ -75,11 +80,11 @@ public abstract partial class Game : IDisposable, ITestableGame
   /// <summary>Runs the main game loop.</summary>
   public ValueTask RunAsync(CancellationToken cancellationToken = default)
   {
-    return RunAsync(Dispatcher, cancellationToken);
+    return RunAsync(Host.Dispatcher, cancellationToken);
   }
 
   /// <summary>Runs the main game loop.</summary>
-  public async ValueTask RunAsync(IGameDispatcher dispatcher, CancellationToken cancellationToken = default)
+  public async ValueTask RunAsync(IDispatcher dispatcher, CancellationToken cancellationToken = default)
   {
     if (IsRunning)
     {
@@ -92,12 +97,17 @@ public abstract partial class Game : IDisposable, ITestableGame
 
       IsRunning = true;
 
-      var stopwatch = new Chronometer();
+      var chronometer = new Chronometer();
 
       while (IsRunning && !Host.IsClosing && !cancellationToken.IsCancellationRequested)
       {
-        var deltaTime = stopwatch.Tick();
+        var deltaTime = chronometer.Tick();
         var totalTime = TimeStamp.Now - startTime;
+
+        while (Actions.TryDequeue(out var action))
+        {
+          action.Invoke();
+        }
 
         Host.Tick(deltaTime);
         LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
@@ -141,6 +151,7 @@ public abstract partial class Game : IDisposable, ITestableGame
     services.AddSingleton(this);
     services.AddSingleton(Assets);
     services.AddSingleton(Host);
+    services.AddSingleton(Host.Dispatcher);
     services.AddModule(Host.Services);
 
     ServiceOverrides?.Invoke(services);
@@ -158,7 +169,7 @@ public abstract partial class Game : IDisposable, ITestableGame
   {
   }
 
-  protected virtual void Begin(GameTime time)
+  protected virtual void BeginFrame(GameTime time)
   {
   }
 
@@ -186,7 +197,7 @@ public abstract partial class Game : IDisposable, ITestableGame
     }
   }
 
-  protected virtual void End(GameTime time)
+  protected virtual void EndFrame(GameTime time)
   {
   }
 
@@ -244,11 +255,11 @@ public abstract partial class Game : IDisposable, ITestableGame
       this.game = game;
     }
 
-    public void Begin(GameTime time)
+    public void BeginFrame(GameTime time)
     {
-      using var _ = Profiler.Track(nameof(Begin));
+      using var _ = Profiler.Track(nameof(BeginFrame));
 
-      game.Begin(time);
+      game.BeginFrame(time);
     }
 
     public void Input(GameTime time)
@@ -272,32 +283,11 @@ public abstract partial class Game : IDisposable, ITestableGame
       game.Draw(time);
     }
 
-    public void End(GameTime time)
+    public void EndFrame(GameTime time)
     {
-      using var _ = Profiler.Track(nameof(End));
+      using var _ = Profiler.Track(nameof(EndFrame));
 
-      game.End(time);
-    }
-  }
-
-  /// <summary>The default <see cref="IGameDispatcher"/> implementation.</summary>
-  private sealed class GameDispatcher : IGameDispatcher
-  {
-    private readonly ConcurrentQueue<Action> continuations = new();
-
-    public void Schedule(Action continuation)
-    {
-      continuations.Enqueue(continuation);
-    }
-
-    public IGameDispatcher.GameDispatcherYieldAwaitable Yield()
-    {
-      while (continuations.TryDequeue(out var continuation))
-      {
-        continuation.Invoke();
-      }
-
-      return default;
+      game.EndFrame(time);
     }
   }
 }
