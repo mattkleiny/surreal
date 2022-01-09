@@ -20,6 +20,6 @@ public class SpriteBatchTests
     batch.Draw(texture, Vector2.Zero, new Vector2(16, 16));
     batch.Flush();
 
-    device.Received(1).DrawMesh(Arg.Any<Mesh<Vertex>>(), material, vertexCount: 4, indexCount: 6, MeshType.Triangles);
+    device.Received(1).DrawMesh(Arg.Any<Mesh<Vertex>>(), material, vertexCount: 4, indexCount: 6);
   }
 }

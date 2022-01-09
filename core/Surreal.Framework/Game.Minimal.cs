@@ -4,22 +4,10 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>Context for per-frame game loop updates.</summary>
-public sealed record GameContext(IPlatformHost Host, CancellationToken CancellationToken)
-{
-  public bool IsClosing { get; private set; } = false;
-
-  /// <summary>Exits the game at the end of the frame.</summary>
-  public void Exit()
-  {
-    IsClosing = true;
-  }
-}
-
 public abstract partial class Game
 {
-  public delegate GameLoopDelegate GameSetupDelegate(IServiceRegistry services);
-  public delegate ValueTask        GameLoopDelegate(GameContext context, GameTime time);
+  public delegate ValueTask GameSetupDelegate(GameContext context);
+  public delegate void      GameLoopDelegate(GameTime time);
 
   /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
   public static async ValueTask StartAsync(IPlatform platform, GameSetupDelegate gameSetup, CancellationToken cancellationToken = default)
@@ -32,26 +20,40 @@ public abstract partial class Game
     services.AddSingleton(host);
     services.AddModule(host.Services);
 
-    var stopwatch = new Chronometer();
-    var startTime = TimeStamp.Now;
-    var gameLoop  = gameSetup(services);
-    var context   = new GameContext(host, cancellationToken);
+    await gameSetup(new GameContext(services, cancellationToken));
+  }
 
-    while (!host.IsClosing && !context.IsClosing && !cancellationToken.IsCancellationRequested)
+  /// <summary>Context for per-frame game loop updates.</summary>
+  public sealed record GameContext(IServiceRegistry Services, CancellationToken CancellationToken)
+  {
+    public bool IsClosing { get; private set; } = false;
+
+    public IPlatformHost Host => Services.GetRequiredService<IPlatformHost>();
+
+    public async ValueTask ExecuteAsync(GameLoopDelegate gameLoop)
     {
-      var deltaTime = stopwatch.Tick();
-      var totalTime = TimeStamp.Now - startTime;
+      var stopwatch = new Chronometer();
+      var startTime = TimeStamp.Now;
 
-      host.Tick(deltaTime);
+      while (!Host.IsClosing && !IsClosing && !CancellationToken.IsCancellationRequested)
+      {
+        var gameTime = new GameTime(
+          DeltaTime: stopwatch.Tick(),
+          TotalTime: TimeStamp.Now - startTime,
+          IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
+        );
 
-      var gameTime = new GameTime(
-        DeltaTime: deltaTime,
-        TotalTime: totalTime,
-        IsRunningSlowly: deltaTime > 32.Milliseconds()
-      );
+        Host.Tick(gameTime.DeltaTime);
+        gameLoop(gameTime);
 
-      await gameLoop(context, gameTime);
-      await host.Dispatcher.Yield();
+        await Host.Dispatcher.Yield();
+      }
+    }
+
+    /// <summary>Exits the game at the end of the frame.</summary>
+    public void Exit()
+    {
+      IsClosing = true;
     }
   }
 }
