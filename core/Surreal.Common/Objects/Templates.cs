@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -96,6 +97,7 @@ public static class TemplateFactory
     public static ITemplate<T> Template { get; } = CreateTemplate<T>();
   }
 
+  [RequiresUnreferencedCode("Discovers templates via reflection")]
   internal sealed class TemplateContext
   {
     private readonly MultiDictionary<Type, Type> templatesByType = new();

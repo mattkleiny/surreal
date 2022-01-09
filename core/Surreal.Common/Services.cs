@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using JetBrains.Annotations;
 
 namespace Surreal;
@@ -70,6 +71,7 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
   }
 
   /// <summary>Registers all of the <see cref="RegisterServiceAttribute"/>-annotated types in the given assembly.</summary>
+  [RequiresUnreferencedCode("Discovers services via reflection")]
   void AddAssemblyServices(Assembly assembly)
   {
     var candidates =

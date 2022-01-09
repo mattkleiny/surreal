@@ -72,6 +72,7 @@ public static class XmlSerializer
   }
 
   /// <summary>A default <see cref="IXmlSerializationContext"/> implementation that uses the <see cref="XmlSerializer{T}"/> metadata.</summary>
+  [RequiresUnreferencedCode("Discovers serializers via reflection")]
   internal sealed class SerializationContext : IXmlSerializationContext
   {
     private readonly Dictionary<Type, IXmlSerializer>   serializersByType = new();

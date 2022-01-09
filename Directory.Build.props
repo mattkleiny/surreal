@@ -60,6 +60,7 @@
   <!-- test project configuration -->
   <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <IsPackable>false</IsPackable>
+    <NoWarn>IL2026</NoWarn>
   </PropertyGroup>
 
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">

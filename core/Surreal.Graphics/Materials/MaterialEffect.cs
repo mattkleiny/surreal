@@ -2,8 +2,8 @@
 
 namespace Surreal.Graphics.Materials;
 
-#pragma warning disable CA1010 -- used for initialization syntax only, not a collection
-#pragma warning disable CA1710 -- used for initialization syntax only, not a collection
+#pragma warning disable CA1010
+#pragma warning disable CA1710
 
 /// <summary>An effect is a set of <see cref="MaterialProperty{T}"/>s that can be applied on demand.</summary>
 public sealed record MaterialEffect : IEnumerable

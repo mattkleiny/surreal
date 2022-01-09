@@ -66,7 +66,7 @@ internal class AutoFixtureAttribute : AutoDataAttribute
       return new TimeOnly(hour, minute, second);
     }
   }
-
+  
   private static IEnumerable<ISpecimenBuilder> DiscoverSpecimenBuilders()
   {
     return from type in Assembly.GetExecutingAssembly().GetTypes()

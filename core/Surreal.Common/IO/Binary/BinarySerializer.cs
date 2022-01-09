@@ -56,6 +56,7 @@ public static class BinarySerializer
   }
 
   /// <summary>A default <see cref="IBinarySerializationContext"/> implementation that uses the <see cref="BinarySerializer{T}"/> metadata.</summary>
+  [RequiresUnreferencedCode("Discovers serializers via reflection")]
   internal sealed class SerializationContext : IBinarySerializationContext
   {
     private readonly Dictionary<Type, IBinarySerializer> serializersByType = new();
