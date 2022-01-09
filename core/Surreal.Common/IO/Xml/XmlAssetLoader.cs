@@ -11,7 +11,7 @@ public sealed class XmlAssetLoader : AssetLoader<object>
     return context.Path.Extension == ".xml";
   }
 
-  public override async Task<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     // instantiate template
     if (!typeof(ITemplate).IsAssignableFrom(context.AssetType))

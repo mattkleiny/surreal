@@ -22,14 +22,14 @@ public sealed class MainScreen : Screen<AsteroidsGame>
   public IntRange   AsteroidRange { get; set; } = new(32, 128);
   public ActorScene Scene         { get; set; } = new();
 
-  public override async Task InitializeAsync()
+  public override async ValueTask InitializeAsync()
   {
     await base.InitializeAsync();
 
     Restart(Seed.FromString("LLAMAS"));
   }
 
-  protected override async Task LoadContentAsync(IAssetManager assets)
+  protected override async ValueTask LoadContentAsync(IAssetManager assets)
   {
     shipSprite = await assets.LoadAssetAsync<Texture>("Assets/sprites/ship.png");
 

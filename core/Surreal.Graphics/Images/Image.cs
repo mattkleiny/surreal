@@ -16,7 +16,7 @@ public sealed class Image : ITextureData, IDisposable
 {
   private readonly Image<Rgba32> image;
 
-  public static async Task<Image> LoadAsync(VirtualPath path)
+  public static async ValueTask<Image> LoadAsync(VirtualPath path)
   {
     await using var stream = await path.OpenInputStreamAsync();
     var             temp   = await SixLabors.ImageSharp.Image.LoadAsync(stream);
@@ -70,7 +70,7 @@ public sealed class Image : ITextureData, IDisposable
     Pixels.Fill(value);
   }
 
-  public async Task SaveAsync(VirtualPath path)
+  public async ValueTask SaveAsync(VirtualPath path)
   {
     await using var stream = await path.OpenOutputStreamAsync();
 
@@ -95,7 +95,7 @@ public sealed class ImageLoader : AssetLoader<Image>
     return base.CanHandle(context) && Extensions.Contains(context.Path.Extension);
   }
 
-  public override async Task<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     return await Image.LoadAsync(context.Path);
   }

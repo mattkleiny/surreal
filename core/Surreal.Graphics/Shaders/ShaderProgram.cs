@@ -43,7 +43,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     this.hotReloading = hotReloading;
   }
 
-  public override async Task<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     var program = await LoadShaderAsync(context.Path, cancellationToken);
 
@@ -57,7 +57,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     return program;
   }
 
-  private async Task<ShaderProgram> LoadShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
+  private async ValueTask<ShaderProgram> LoadShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 

@@ -32,7 +32,7 @@ public static class VirtualPathExtensions
     return path.GetFileSystem().EnumerateAsync(path.Target.ToString()!, wildcard);
   }
 
-  public static async Task CopyToAsync(this VirtualPath from, VirtualPath to)
+  public static async ValueTask CopyToAsync(this VirtualPath from, VirtualPath to)
   {
     await using var input  = await from.OpenInputStreamAsync();
     await using var output = await to.OpenOutputStreamAsync();
@@ -40,7 +40,7 @@ public static class VirtualPathExtensions
     await input.CopyToAsync(output);
   }
 
-  public static async Task<byte[]> ReadAllBytesAsync(this VirtualPath path)
+  public static async ValueTask<byte[]> ReadAllBytesAsync(this VirtualPath path)
   {
     await using var stream = await path.OpenInputStreamAsync();
     await using var buffer = new MemoryStream();
@@ -50,7 +50,7 @@ public static class VirtualPathExtensions
     return buffer.ToArray();
   }
 
-  public static async Task WriteAllBytesAsync(this VirtualPath path, ReadOnlyMemory<byte> data)
+  public static async ValueTask WriteAllBytesAsync(this VirtualPath path, ReadOnlyMemory<byte> data)
   {
     await using var stream = await path.OpenOutputStreamAsync();
 
@@ -58,7 +58,7 @@ public static class VirtualPathExtensions
     await stream.FlushAsync();
   }
 
-  public static async Task<string> ReadAllTextAsync(this VirtualPath path, Encoding? encoding = default)
+  public static async ValueTask<string> ReadAllTextAsync(this VirtualPath path, Encoding? encoding = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
     using var       reader = new StreamReader(stream, encoding ?? DefaultEncoding);
@@ -66,7 +66,7 @@ public static class VirtualPathExtensions
     return await reader.ReadToEndAsync();
   }
 
-  public static async Task WriteAllTextAsync(this VirtualPath path, string text, Encoding? encoding = default)
+  public static async ValueTask WriteAllTextAsync(this VirtualPath path, string text, Encoding? encoding = default)
   {
     await using var stream = await path.OpenOutputStreamAsync();
     await using var writer = new StreamWriter(stream, encoding ?? DefaultEncoding);
@@ -75,7 +75,7 @@ public static class VirtualPathExtensions
     await writer.FlushAsync();
   }
 
-  public static async Task SerializeBinaryAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
+  public static async ValueTask SerializeBinaryAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenOutputStreamAsync();
     await using var writer = new StreamBinaryWriter(stream);
@@ -83,7 +83,7 @@ public static class VirtualPathExtensions
     await BinarySerializer.SerializeAsync(value, writer, cancellationToken);
   }
 
-  public static async Task<T> DeserializeBinaryAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
+  public static async ValueTask<T> DeserializeBinaryAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
     await using var reader = new StreamBinaryReader(stream);
@@ -91,7 +91,7 @@ public static class VirtualPathExtensions
     return await BinarySerializer.DeserializeAsync<T>(reader, cancellationToken);
   }
 
-  public static async Task SerializeJsonAsync<T>(this VirtualPath path, T value)
+  public static async ValueTask SerializeJsonAsync<T>(this VirtualPath path, T value)
     where T : class
   {
     await using var stream = await path.OpenOutputStreamAsync();
@@ -99,7 +99,7 @@ public static class VirtualPathExtensions
     await JsonSerializer.SerializeAsync(stream, value);
   }
 
-  public static async Task<T?> DeserializeJsonAsync<T>(this VirtualPath path)
+  public static async ValueTask<T?> DeserializeJsonAsync<T>(this VirtualPath path)
     where T : class
   {
     await using var stream = await path.OpenInputStreamAsync();
@@ -107,7 +107,7 @@ public static class VirtualPathExtensions
     return await JsonSerializer.DeserializeAsync<T>(stream);
   }
 
-  public static async Task<object> DeserializeXmlAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
+  public static async ValueTask<object> DeserializeXmlAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 
@@ -116,7 +116,7 @@ public static class VirtualPathExtensions
     return await XmlSerializer.DeserializeAsync(type, element, cancellationToken);
   }
 
-  public static async Task<T> DeserializeXmlAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
+  public static async ValueTask<T> DeserializeXmlAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
     where T : class
   {
     await using var stream = await path.OpenInputStreamAsync();

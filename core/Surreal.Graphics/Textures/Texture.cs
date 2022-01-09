@@ -90,7 +90,7 @@ public sealed class TextureLoader : AssetLoader<Texture>
     this.hotReloading      = hotReloading;
   }
 
-  public override async Task<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     var image   = await context.Manager.LoadAssetAsync<Image>(context.Path, cancellationToken);
     var texture = device.CreateTexture(image, defaultFilterMode, defaultWrapMode);

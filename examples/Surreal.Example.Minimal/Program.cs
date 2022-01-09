@@ -1,4 +1,6 @@
-﻿var platform = new DesktopPlatform
+﻿using Surreal.Input.Keyboard;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -11,18 +13,24 @@
 Game.Start(platform, services =>
 {
   var graphics = services.GetRequiredService<IGraphicsDevice>();
+  var keyboard = services.GetRequiredService<IKeyboardDevice>();
 
   var sourceColor = Random.Shared.NextColor();
   var targetColor = Random.Shared.NextColor();
 
-  return context =>
+  return (context, time) =>
   {
-    var amount = MathF.Sin((float) context.GameTime.TotalTime.TotalSeconds);
+    var amount = MathF.Sin((float) time.TotalTime.TotalSeconds);
     var color  = Color.Lerp(sourceColor, targetColor, amount);
 
     graphics.Clear(color);
     graphics.Present();
 
-    return FiberTask.CompletedTask;
+    if (keyboard.IsKeyPressed(Key.Escape))
+    {
+      context.Exit();
+    }
+
+    return ValueTask.CompletedTask;
   };
 });

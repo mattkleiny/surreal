@@ -6,6 +6,7 @@
     <Description>An example game based on Surreal; a simple Isaac-inspired dungeon crawler.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Editing\Surreal.Editing.csproj" />
     <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
     <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Combat\Surreal.Toolkits.Combat.csproj" />
   </ItemGroup>

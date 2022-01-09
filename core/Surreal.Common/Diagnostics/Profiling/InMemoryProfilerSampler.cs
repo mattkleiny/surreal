@@ -24,7 +24,7 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
   }
 
   /// <summary>Exports the results to the given CSV file.</summary>
-  public async Task ExportToCsvAsync(VirtualPath path)
+  public async ValueTask ExportToCsvAsync(VirtualPath path)
   {
     await using var stream = await path.OpenOutputStreamAsync();
     await using var writer = new StreamWriter(stream, Encoding.UTF8);

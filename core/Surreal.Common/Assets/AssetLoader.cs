@@ -15,7 +15,7 @@ public interface IAssetLoader
 {
   bool CanHandle(AssetLoaderContext context);
 
-  Task<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default);
+  ValueTask<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default);
 }
 
 /// <summary>Base class for any <see cref="IAssetLoader"/> implementation.</summary>
@@ -27,9 +27,9 @@ public abstract class AssetLoader<T> : IAssetLoader
     return context.AssetType == typeof(T);
   }
 
-  public abstract Task<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default);
+  public abstract ValueTask<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default);
 
-  async Task<object> IAssetLoader.LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  async ValueTask<object> IAssetLoader.LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     return await LoadAsync(context, cancellationToken);
   }

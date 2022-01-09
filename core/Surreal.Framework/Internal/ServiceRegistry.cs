@@ -51,7 +51,7 @@ internal sealed class ServiceRegistry : IServiceRegistry
     isDirty = true;
   }
 
-  public void SealExistingServices()
+  public void SealRegistry()
   {
     isSealed = true;
   }

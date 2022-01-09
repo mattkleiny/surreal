@@ -25,7 +25,7 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
   void ReplaceService(Type serviceType, object instance);
 
   /// <summary>Prevents new services from being installed beyond this point.</summary>
-  void SealExistingServices();
+  void SealRegistry();
 
   void AddTransient<TService, TImplementation>()
     where TImplementation : TService

@@ -96,7 +96,7 @@ public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
     this.culture = culture;
   }
 
-  public override async Task<TrueTypeFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<TrueTypeFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 

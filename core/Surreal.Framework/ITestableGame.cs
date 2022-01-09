@@ -9,6 +9,6 @@ internal interface ITestableGame
 {
   ILoopTarget LoopTarget { get; }
 
-  Task InitializeAsync(CancellationToken cancellationToken = default);
-  Task RunAsync(CancellationToken cancellationToken = default);
+  ValueTask InitializeAsync(CancellationToken cancellationToken = default);
+  ValueTask RunAsync(CancellationToken cancellationToken = default);
 }

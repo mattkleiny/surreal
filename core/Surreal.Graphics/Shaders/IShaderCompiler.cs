@@ -4,7 +4,7 @@
 public interface IShaderCompiler
 {
   /// <summary>Compiles the given <see cref="ShaderProgramDeclaration"/> for use in the runtime.</summary>
-  Task<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration);
+  ValueTask<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration);
 }
 
 /// <summary>Represents a shader program that has been compiled from source.</summary>

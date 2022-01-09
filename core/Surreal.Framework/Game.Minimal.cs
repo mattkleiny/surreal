@@ -1,15 +1,22 @@
 ﻿using System.Runtime;
-using Surreal.Fibers;
 using Surreal.Internal;
 using Surreal.Timing;
 
 namespace Surreal;
 
 /// <summary>Context for per-frame game loop updates.</summary>
-public readonly record struct GameContext(IPlatformHost Host, GameTime GameTime);
+public sealed record GameContext(IPlatformHost Host)
+{
+  public bool IsClosing { get; private set; } = false;
+
+  public void Exit()
+  {
+    IsClosing = true;
+  }
+}
 
 public delegate GameLoopDelegate GameSetupDelegate(IServiceRegistry services);
-public delegate FiberTask        GameLoopDelegate(GameContext context);
+public delegate ValueTask        GameLoopDelegate(GameContext context, GameTime time);
 
 public abstract partial class Game
 {
@@ -27,8 +34,9 @@ public abstract partial class Game
     var stopwatch = new Chronometer();
     var startTime = TimeStamp.Now;
     var gameLoop  = gameSetup(services);
+    var context   = new GameContext(host);
 
-    while (!host.IsClosing)
+    while (!host.IsClosing && !context.IsClosing)
     {
       var deltaTime = stopwatch.Tick();
       var totalTime = TimeStamp.Now - startTime;
@@ -41,7 +49,7 @@ public abstract partial class Game
         IsRunningSlowly: deltaTime > 32.Milliseconds()
       );
 
-      gameLoop(new GameContext(host, gameTime));
+      gameLoop(context, gameTime);
 
       Thread.Yield();
     }

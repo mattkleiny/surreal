@@ -4,7 +4,7 @@
 public interface IShaderParser
 {
   /// <summary>Parses a shader from the given <see cref="Stream"/>.</summary>
-  Task<ShaderProgramDeclaration> ParseShaderAsync(string path, Stream stream, Encoding encoding, CancellationToken cancellationToken = default)
+  ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, Stream stream, Encoding encoding, CancellationToken cancellationToken = default)
   {
     using var reader = new StreamReader(stream, encoding);
 
@@ -12,7 +12,7 @@ public interface IShaderParser
   }
 
   /// <summary>Parses a shader from the given <see cref="TextReader"/>.</summary>
-  Task<ShaderProgramDeclaration> ParseShaderAsync(string path, string sourceCode, CancellationToken cancellationToken = default)
+  ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, string sourceCode, CancellationToken cancellationToken = default)
   {
     var reader = new StringReader(sourceCode);
 
@@ -20,5 +20,5 @@ public interface IShaderParser
   }
 
   /// <summary>Parses a shader from the given <see cref="TextReader"/>.</summary>
-  Task<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default);
+  ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default);
 }

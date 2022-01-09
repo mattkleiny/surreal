@@ -17,7 +17,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     this.version = version;
   }
 
-  public Task<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration)
+  public ValueTask<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration)
   {
     var shaders = ImmutableArray.CreateBuilder<OpenTKShader>(declaration.CompilationUnit.Stages.Length);
 
@@ -29,7 +29,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       shaders.Add(new OpenTKShader(shaderType, sourceCode));
     }
 
-    return Task.FromResult<ICompiledShaderProgram>(new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable()));
+    return ValueTask.FromResult<ICompiledShaderProgram>(new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable()));
   }
 
   private string BuildSourceCode(ShaderProgramDeclaration declaration, CompilationUnit compilationUnit, StageDeclaration stage)

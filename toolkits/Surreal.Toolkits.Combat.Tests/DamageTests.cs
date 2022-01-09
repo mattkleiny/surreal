@@ -22,10 +22,8 @@ public class DamageTests
   [Test, AutoFixture]
   public void it_should_calculate_damage_via_callback(int amount, DamageType type)
   {
-    Damage.Calculation += DamageCalculations.Combine(
-      DamageCalculations.Multiplicative(2),
-      DamageCalculations.ReplaceWithType(type)
-    );
+    Damage.Calculation += DamageCalculations.Multiplicative(2);
+    Damage.Calculation += DamageCalculations.ReplaceWithType(type);
 
     var damage = Damage.Calculate(amount, type);
 

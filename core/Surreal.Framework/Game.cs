@@ -2,7 +2,6 @@
 using Surreal.Assets;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
-using Surreal.Fibers;
 using Surreal.Internal;
 using Surreal.IO;
 using Surreal.Timing;
@@ -12,16 +11,13 @@ namespace Surreal;
 /// <summary>Base class for any game built with Surreal.</summary>
 public abstract partial class Game : IDisposable, ITestableGame
 {
-  private static readonly IProfiler               Profiler = ProfilerFactory.GetProfiler<Game>();
-  private static readonly ConcurrentQueue<Action> Actions  = new();
+  private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
+
+  /// <summary>The active <see cref="IGameDispatcher"/>.</summary>
+  public static IGameDispatcher Dispatcher { get; } = new GameDispatcher();
 
   private readonly TimeStamp   startTime = TimeStamp.Now;
   private readonly ILoopTarget loopTarget;
-
-  public static void Schedule(Action callback)
-  {
-    Actions.Enqueue(callback);
-  }
 
   public static TGame Create<TGame>(Configuration configuration)
     where TGame : Game, new()
@@ -43,7 +39,8 @@ public abstract partial class Game : IDisposable, ITestableGame
   {
     using var game = Create<TGame>(configuration);
 
-    await game.StartAsync(cancellationToken);
+    await game.InitializeAsync(cancellationToken);
+    await game.RunAsync(cancellationToken);
   }
 
   protected Game()
@@ -62,13 +59,8 @@ public abstract partial class Game : IDisposable, ITestableGame
   [VisibleForTesting]
   private Action<IServiceRegistry>? ServiceOverrides { get; set; }
 
-  private async Task StartAsync(CancellationToken cancellationToken = default)
-  {
-    await InitializeAsync(cancellationToken);
-    await RunAsync(cancellationToken);
-  }
-
-  private async Task InitializeAsync(CancellationToken cancellationToken = default)
+  /// <summary>Initializes the game and all of it's systems.</summary>
+  public async ValueTask InitializeAsync(CancellationToken cancellationToken = default)
   {
     Initialize();
 
@@ -80,10 +72,15 @@ public abstract partial class Game : IDisposable, ITestableGame
     await LoadContentAsync(Assets, cancellationToken);
   }
 
-  private async Task RunAsync(CancellationToken cancellationToken = default)
+  /// <summary>Runs the main game loop.</summary>
+  public ValueTask RunAsync(CancellationToken cancellationToken = default)
   {
-    // TODO: make this properly async
+    return RunAsync(Dispatcher, cancellationToken);
+  }
 
+  /// <summary>Runs the main game loop.</summary>
+  public async ValueTask RunAsync(IGameDispatcher dispatcher, CancellationToken cancellationToken = default)
+  {
     if (IsRunning)
     {
       throw new InvalidOperationException("The engine is already running, and cannot start again!");
@@ -105,7 +102,7 @@ public abstract partial class Game : IDisposable, ITestableGame
         Host.Tick(deltaTime);
         LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
 
-        FiberScheduler.Tick();
+        await dispatcher.Yield();
       }
     }
     finally
@@ -128,7 +125,7 @@ public abstract partial class Game : IDisposable, ITestableGame
     RegisterFileSystems(FileSystem.Registry);
     RegisterPlugins(Plugins);
 
-    Services.SealExistingServices();
+    Services.SealRegistry();
   }
 
   protected virtual async Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
@@ -179,11 +176,6 @@ public abstract partial class Game : IDisposable, ITestableGame
     {
       plugin.Update(time);
     }
-
-    while (Actions.TryDequeue(out var action))
-    {
-      action.Invoke();
-    }
   }
 
   protected virtual void Draw(GameTime time)
@@ -221,14 +213,25 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   ILoopTarget ITestableGame.LoopTarget => loopTarget;
 
-  Task ITestableGame.InitializeAsync(CancellationToken cancellationToken) => InitializeAsync(cancellationToken);
-  Task ITestableGame.RunAsync(CancellationToken cancellationToken)        => RunAsync(cancellationToken);
+  ValueTask ITestableGame.InitializeAsync(CancellationToken cancellationToken) => InitializeAsync(cancellationToken);
+  ValueTask ITestableGame.RunAsync(CancellationToken cancellationToken)        => RunAsync(cancellationToken);
 
   /// <summary>Configuration for the <see cref="Game"/>.</summary>
   public sealed class Configuration
   {
-    public IPlatform?                Platform         { get; init; }
-    public Action<IServiceRegistry>? ServiceOverrides { get; init; }
+    public   IPlatform?                Platform         { get; init; }
+    internal Action<IServiceRegistry>? ServiceOverrides { get; set; }
+
+    public void AddServiceOverrides(Action<IServiceRegistry> overrides)
+    {
+      var oldOverrides = ServiceOverrides;
+
+      ServiceOverrides = registry =>
+      {
+        oldOverrides?.Invoke(registry);
+        overrides(registry);
+      };
+    }
   }
 
   /// <summary>A <see cref="ILoopTarget"/> that profiles it's target operations.</summary>
@@ -274,6 +277,27 @@ public abstract partial class Game : IDisposable, ITestableGame
       using var _ = Profiler.Track(nameof(End));
 
       game.End(time);
+    }
+  }
+
+  /// <summary>The default <see cref="IGameDispatcher"/> implementation.</summary>
+  private sealed class GameDispatcher : IGameDispatcher
+  {
+    private readonly ConcurrentQueue<Action> continuations = new();
+
+    public void Schedule(Action continuation)
+    {
+      continuations.Enqueue(continuation);
+    }
+
+    public IGameDispatcher.GameDispatcherYieldAwaitable Yield()
+    {
+      while (continuations.TryDequeue(out var continuation))
+      {
+        continuation.Invoke();
+      }
+
+      return default;
     }
   }
 }

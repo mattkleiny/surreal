@@ -5,7 +5,7 @@ namespace Surreal.Effects;
 /// <summary>A managed collection of <see cref="StatusEffect"/>s.</summary>
 public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
 {
-  private readonly LinkedList<StatusEffect> effects = new();
+  private readonly LinkedList<StatusEffect> effects = new(); // linked list for fast insertion/removal
   private readonly object                   owner;
 
   public StatusEffectCollection(object owner)

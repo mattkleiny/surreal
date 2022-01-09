@@ -18,7 +18,7 @@ public readonly record struct TextureRegion(Texture Texture)
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="TextureRegion"/>s.</summary>
 public sealed class TextureRegionLoader : AssetLoader<TextureRegion>
 {
-  public override async Task<TextureRegion> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<TextureRegion> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     var texture = await context.Manager.LoadAssetAsync<Texture>(context.Path, cancellationToken);
 

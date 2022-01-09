@@ -8,8 +8,8 @@ public interface IGameUnderTest : IDisposable
   Game        Instance   { get; }
   ILoopTarget LoopTarget { get; }
 
-  Task InitializeAsync();
-  Task RunAsync(TimeSpan duration);
+  ValueTask InitializeAsync();
+  ValueTask RunAsync(TimeSpan duration);
 
   void Tick();
   void Tick(DeltaTime deltaTime);
@@ -39,12 +39,12 @@ internal sealed class GameUnderTest<TGame> : IGameUnderTest<TGame>
   public TGame       Instance   { get; }
   public ILoopTarget LoopTarget => Instance.LoopTarget;
 
-  public Task InitializeAsync()
+  public ValueTask InitializeAsync()
   {
     return Instance.InitializeAsync();
   }
 
-  public Task RunAsync(TimeSpan duration)
+  public ValueTask RunAsync(TimeSpan duration)
   {
     using var cancellationToken = new CancellationTokenSource(duration);
 
