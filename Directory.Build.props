@@ -6,7 +6,7 @@
     <Authors>Matthew Kleinschafer</Authors>
     <Company>MK Productions</Company>
     <Copyright>Copyright© 2018, All Rights Reserved.</Copyright>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
   </PropertyGroup>
 
