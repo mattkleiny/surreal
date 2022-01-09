@@ -1,4 +1,4 @@
-﻿namespace Surreal.Stores;
+﻿namespace Surreal.IO.Persistence;
 
 public class InMemoryPersistentStoreTests
 {

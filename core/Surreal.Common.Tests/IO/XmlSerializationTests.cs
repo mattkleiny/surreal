@@ -1,7 +1,6 @@
 ﻿using System.Xml.Linq;
-using Surreal.IO.Xml;
 
-namespace Surreal.IO.Serialization;
+namespace Surreal.IO.Xml;
 
 public class XmlSerializationTests
 {

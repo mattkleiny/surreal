@@ -1,4 +1,4 @@
-namespace Surreal;
+namespace Surreal.IO.Persistence;
 
 /// <summary>Identifies an object with persistent data.</summary>
 public interface IPersistentObject

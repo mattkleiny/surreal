@@ -1,4 +1,4 @@
-﻿namespace Surreal.Stores;
+﻿namespace Surreal.IO.Persistence;
 
 /// <summary>In-memory storage of persistent data, for use in testing and in-process transitions.</summary>
 public sealed class InMemoryPersistenceStore : IPersistenceStore

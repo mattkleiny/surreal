@@ -1,4 +1,4 @@
-namespace Surreal;
+namespace Surreal.IO.Persistence;
 
 /// <summary>A store for persistent data.</summary>
 public interface IPersistenceStore

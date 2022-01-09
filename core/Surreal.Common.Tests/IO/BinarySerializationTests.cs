@@ -1,7 +1,6 @@
-﻿using Surreal.IO.Binary;
-using Surreal.Mathematics;
+﻿using Surreal.Mathematics;
 
-namespace Surreal.IO.Serialization;
+namespace Surreal.IO.Binary;
 
 public class BinarySerializationTests
 {

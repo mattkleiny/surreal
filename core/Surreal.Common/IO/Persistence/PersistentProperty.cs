@@ -1,4 +1,4 @@
-﻿namespace Surreal;
+﻿namespace Surreal.IO.Persistence;
 
 /// <summary>A strongly-typed id for a persistent object property.</summary>
 public readonly record struct PersistentProperty<T>(string Name, T? DefaultValue = default)
