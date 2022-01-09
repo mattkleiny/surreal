@@ -9,5 +9,5 @@ public interface IComputeDevice
   ComputeBuffer<T> CreateBuffer<T>()
     where T : unmanaged;
 
-  ComputeProgram CreateProgram(ReadOnlySpan<byte> raw);
+  ComputeProgram CreateProgram();
 }

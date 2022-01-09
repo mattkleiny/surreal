@@ -34,7 +34,17 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public IHeadlessKeyboardDevice Keyboard => InputManager.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputManager.Mouse;
 
-  public void RegisterServices(IServiceRegistry services)
+  public void Tick(DeltaTime deltaTime)
+  {
+    InputManager.Update();
+  }
+
+  public void Dispose()
+  {
+    // no-op
+  }
+
+  void IServiceModule.RegisterServices(IServiceRegistry services)
   {
     services.AddSingleton<IAudioDevice>(AudioDevice);
     services.AddSingleton<IComputeDevice>(ComputeDevice);
@@ -44,15 +54,5 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
     services.AddSingleton<IMouseDevice>(InputManager.Mouse);
     services.AddSingleton<IHeadlessKeyboardDevice>(InputManager.Keyboard);
     services.AddSingleton<IHeadlessMouseDevice>(InputManager.Mouse);
-  }
-
-  public void Tick(DeltaTime deltaTime)
-  {
-    InputManager.Update();
-  }
-
-  public void Dispose()
-  {
-    // no-op
   }
 }

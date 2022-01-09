@@ -1,6 +1,4 @@
-﻿using Surreal.Objects;
-
-namespace Surreal.Controls;
+﻿namespace Surreal.Controls;
 
 /// <summary>An inspector for objects.</summary>
 public partial class ObjectInspector
@@ -9,7 +7,4 @@ public partial class ObjectInspector
   {
     InitializeComponent();
   }
-
-  public object         Target   { get; }
-  public ObjectMetadata Metadata { get; }
 }

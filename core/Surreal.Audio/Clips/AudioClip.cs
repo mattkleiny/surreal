@@ -30,7 +30,6 @@ public abstract class AudioClip : AudioResource, IHasSizeEstimate
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioClip"/>s.</summary>
-[RegisterService(typeof(IAssetLoader))]
 public sealed class AudioClipLoader : AssetLoader<AudioClip>
 {
   private readonly IAudioDevice device;

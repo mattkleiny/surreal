@@ -152,7 +152,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
         using var function = builder.AppendFunctionDeclaration(
           precision: null,
           returnType: "void",
-          name: kind.ToString().ToLower(),
+          name: kind.ToString().ToLowerInvariant(),
           parameters: declaration.Parameters.Select(CompileExpression)
         );
 
@@ -352,9 +352,9 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
         .Append(returnType)
         .Append(' ')
         .Append(name)
-        .Append("(")
+        .Append('(')
         .Append(string.Join(", ", parameters))
-        .Append(")")
+        .Append(')')
         .AppendLine(" {");
 
       return this with { IndentLevel = IndentLevel + 1 };

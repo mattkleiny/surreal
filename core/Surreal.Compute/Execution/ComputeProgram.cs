@@ -1,5 +1,4 @@
 using Surreal.Assets;
-using Surreal.IO;
 
 namespace Surreal.Compute.Execution;
 
@@ -10,7 +9,6 @@ public abstract class ComputeProgram : ComputeResource
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ComputeProgram"/>s.</summary>
-[RegisterService(typeof(IAssetLoader))]
 public sealed class ComputeProgramLoader : AssetLoader<ComputeProgram>
 {
   private readonly IComputeDevice device;
@@ -20,10 +18,8 @@ public sealed class ComputeProgramLoader : AssetLoader<ComputeProgram>
     this.device = device;
   }
 
-  public override async ValueTask<ComputeProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override ValueTask<ComputeProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    var raw = await context.Path.ReadAllBytesAsync();
-
-    return device.CreateProgram(raw);
+    throw new NotImplementedException();
   }
 }

@@ -5,7 +5,7 @@ namespace Surreal;
 public class DecisionTreeTests
 {
   [Test, AutoFixture]
-  public void it_should_evaluate_conditions_and_actions(Decision.Condition condition, Decision.Action action)
+  public async Task it_should_evaluate_conditions_and_actions(Decision.Condition condition, Decision.Action action)
   {
     var context = new DecisionContext();
 
@@ -24,10 +24,11 @@ public class DecisionTreeTests
       },
     };
 
-    strategy.Evaluate(context);
+    await strategy.EvaluateAsync(context);
 
     condition.Received(1).CanExecute(context);
     action.Received(1).CanExecute(context);
-    action.Received(1).Execute(context);
+
+    await action.Received(1).Execute(context);
   }
 }

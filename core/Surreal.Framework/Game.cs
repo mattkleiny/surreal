@@ -69,11 +69,6 @@ public abstract partial class Game : IDisposable, ITestableGame
   {
     Initialize();
 
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      await plugin.InitializeAsync(cancellationToken);
-    }
-
     await LoadContentAsync(Assets, cancellationToken);
   }
 
@@ -136,6 +131,11 @@ public abstract partial class Game : IDisposable, ITestableGame
     RegisterPlugins(Plugins);
 
     Services.SealRegistry();
+
+    foreach (var plugin in Plugins.ActivePlugins)
+    {
+      plugin.Initialize();
+    }
   }
 
   protected virtual async Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)

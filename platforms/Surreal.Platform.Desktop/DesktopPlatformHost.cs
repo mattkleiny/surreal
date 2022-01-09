@@ -87,7 +87,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     Window.Dispose();
   }
 
-  public void RegisterServices(IServiceRegistry services)
+  void IServiceModule.RegisterServices(IServiceRegistry services)
   {
     services.AddSingleton<IDesktopWindow>(Window);
     services.AddSingleton<IAudioDevice>(AudioDevice);

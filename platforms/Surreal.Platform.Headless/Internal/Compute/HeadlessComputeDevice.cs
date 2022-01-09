@@ -12,7 +12,7 @@ internal sealed class HeadlessComputeDevice : IComputeDevice
     return new HeadlessComputeBuffer<T>();
   }
 
-  public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw)
+  public ComputeProgram CreateProgram()
   {
     return new HeadlessComputeProgram();
   }

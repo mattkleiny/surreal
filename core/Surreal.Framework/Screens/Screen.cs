@@ -9,7 +9,8 @@ public interface IScreen : IInterlinkedElement<IScreen>, IDisposable
   bool IsInitialized { get; }
   bool IsDisposed    { get; }
 
-  ValueTask InitializeAsync();
+  void      Initialize();
+  ValueTask LoadContentAsync(IAssetManager assets);
 
   void Show();
   void Hide();
@@ -32,14 +33,12 @@ public abstract class Screen : IScreen
   public bool IsInitialized { get; private set; }
   public bool IsDisposed    { get; private set; }
 
-  public virtual async ValueTask InitializeAsync()
+  public virtual void Initialize()
   {
     IsInitialized = true;
-
-    await LoadContentAsync(Game.Assets);
   }
 
-  protected virtual ValueTask LoadContentAsync(IAssetManager assets)
+  public virtual ValueTask LoadContentAsync(IAssetManager assets)
   {
     return ValueTask.CompletedTask;
   }

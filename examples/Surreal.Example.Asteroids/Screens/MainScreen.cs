@@ -3,7 +3,6 @@ using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
-using Surreal.Mathematics;
 using Surreal.Screens;
 
 namespace Asteroids.Screens;
@@ -22,14 +21,14 @@ public sealed class MainScreen : Screen<AsteroidsGame>
   public IntRange   AsteroidRange { get; set; } = new(32, 128);
   public ActorScene Scene         { get; set; } = new();
 
-  public override async ValueTask InitializeAsync()
+  public override void Initialize()
   {
-    await base.InitializeAsync();
+    base.Initialize();
 
     Restart(Seed.FromString("LLAMAS"));
   }
 
-  protected override async ValueTask LoadContentAsync(IAssetManager assets)
+  public override async ValueTask LoadContentAsync(IAssetManager assets)
   {
     shipSprite = await assets.LoadAssetAsync<Texture>("Assets/sprites/ship.png");
 

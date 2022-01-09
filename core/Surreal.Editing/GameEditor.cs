@@ -28,12 +28,15 @@ public static class GameEditor
 
       await game.InitializeAsync(cancellationToken);
 
+#pragma warning disable CS4014
+      // TODO: clean this up?
       Dispatcher.CurrentDispatcher.BeginInvoke(async () =>
       {
         await game.RunAsync(dispatcher, cancellationToken);
 
         Dispatcher.ExitAllFrames();
       });
+#pragma warning restore CS4014
 
       Dispatcher.Run();
     });

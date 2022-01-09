@@ -30,12 +30,9 @@ public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
   public IScreen? ActiveScreen   => screens.Head;
   public IScreen? PreviousScreen => screens.Head?.Previous;
 
-  public override async ValueTask InitializeAsync(CancellationToken cancellationToken = default)
+  public override void Initialize()
   {
-    if (ActiveScreen != null)
-    {
-      await ActiveScreen.InitializeAsync();
-    }
+    ActiveScreen?.Initialize();
   }
 
   public void Push(IScreen screen)
@@ -44,7 +41,7 @@ public sealed class ScreenManager : GamePlugin<Game>, IScreenManager
 
     if (!screen.IsInitialized)
     {
-      screen.InitializeAsync();
+      screen.Initialize();
     }
 
     screen.Show();

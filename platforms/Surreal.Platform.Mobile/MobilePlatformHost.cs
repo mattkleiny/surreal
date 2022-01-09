@@ -3,7 +3,7 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-internal sealed class MobilePlatformHost : IPlatformHost
+internal sealed class MobilePlatformHost : IPlatformHost, IServiceModule
 {
   private readonly MobileConfiguration configuration;
 
@@ -20,8 +20,8 @@ internal sealed class MobilePlatformHost : IPlatformHost
   public bool IsFocused { get; }
   public bool IsClosing { get; }
 
-  public IServiceModule Services   { get; }
-  public IDispatcher    Dispatcher { get; }
+  public IServiceModule Services   => this;
+  public IDispatcher    Dispatcher { get; } = new ImmediateDispatcher();
 
   public void Tick(DeltaTime deltaTime)
   {
@@ -31,5 +31,9 @@ internal sealed class MobilePlatformHost : IPlatformHost
   public void Dispose()
   {
     throw new NotImplementedException();
+  }
+
+  void IServiceModule.RegisterServices(IServiceRegistry services)
+  {
   }
 }

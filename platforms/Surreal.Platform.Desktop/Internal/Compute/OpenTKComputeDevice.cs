@@ -13,8 +13,8 @@ internal sealed class OpenTKComputeDevice : IComputeDevice
     return new OpenTKComputeBuffer<T>();
   }
 
-  public ComputeProgram CreateProgram(ReadOnlySpan<byte> raw)
+  public ComputeProgram CreateProgram()
   {
-    return new OpenTKComputeProgram(raw);
+    return new OpenTKComputeProgram();
   }
 }

@@ -11,13 +11,13 @@ public sealed record DecisionTree
 {
   public List<Decision> Decisions { get; init; } = new();
 
-  public ValueTask Evaluate(DecisionContext context)
+  public ValueTask EvaluateAsync(DecisionContext context)
   {
     foreach (var tactic in Decisions)
     {
       if (tactic.CanExecute(context))
       {
-        return tactic.Execute(context);
+        return tactic.ExecuteAsync(context);
       }
     }
 
@@ -44,7 +44,7 @@ public sealed record Decision
     return false;
   }
 
-  public async ValueTask Execute(DecisionContext context)
+  public async ValueTask ExecuteAsync(DecisionContext context)
   {
     foreach (var action in Actions)
     {
