@@ -1,7 +1,6 @@
-﻿using Headless;
-using Surreal.Memory;
+﻿using Surreal.Memory;
 
-namespace Surreal;
+namespace Headless;
 
 public class HeadlessGameTests : GameTestCase<HeadlessGame>
 {

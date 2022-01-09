@@ -1,6 +1,4 @@
-﻿using Isaac;
-
-namespace Surreal;
+﻿namespace Isaac;
 
 public class IsaacGameTests : GameTestCase<IsaacGame>
 {

@@ -1,6 +1,6 @@
 ﻿using Isaac.Blueprints;
 
-namespace Surreal.Dungeons;
+namespace Isaac.Dungeons;
 
 public class DungeonPlanTests
 {

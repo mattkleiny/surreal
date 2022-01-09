@@ -1,7 +1,6 @@
 ﻿using Minecraft.Worlds;
-using Surreal.Graphics;
 
-namespace Surreal.World;
+namespace Minecraft.World;
 
 public class ChunkMeshTests
 {

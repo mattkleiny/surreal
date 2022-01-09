@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Asteroids</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Example.Asteroids\Surreal.Example.Asteroids.csproj" />
   </ItemGroup>

@@ -1,6 +1,4 @@
-﻿using Prelude;
-
-namespace Surreal;
+﻿namespace Prelude;
 
 public class PreludeGameTests : GameTestCase<PreludeGame>
 {

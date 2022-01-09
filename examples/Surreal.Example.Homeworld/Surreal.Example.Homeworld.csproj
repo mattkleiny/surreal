@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Homeworld</AssemblyName>
+    <RootNamespace>Homeworld</RootNamespace>
+    <Description>An example game based on Surreal; a Homeworld inspired RTS game.</Description>
+  </PropertyGroup>
+</Project>

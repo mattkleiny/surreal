@@ -1,6 +1,6 @@
 ﻿using Minecraft.Worlds;
 
-namespace Surreal.World;
+namespace Minecraft.World;
 
 public class ChunkGeneratorTests
 {

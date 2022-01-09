@@ -1,6 +1,4 @@
-﻿using HelloWorld;
-
-namespace Surreal;
+﻿namespace HelloWorld;
 
 public class HelloWorldGameTests : GameTestCase<HelloWorldGame>
 {

@@ -1,6 +1,6 @@
-﻿namespace Asteroids;
+﻿namespace Homeworld;
 
-public class AsteroidsGameTests : GameTestCase<AsteroidsGame>
+public class HomeworldGameTests : GameTestCase<HomeworldGame>
 {
   [Test]
   public async Task it_should_bootstrap_and_tick()

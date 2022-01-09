@@ -1,6 +1,4 @@
-﻿using Minecraft;
-
-namespace Surreal;
+﻿namespace Minecraft;
 
 public class MinecraftGameTests : GameTestCase<MinecraftGame>
 {

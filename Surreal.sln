@@ -146,6 +146,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Tactics", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Tactics.Tests", "toolkits\Surreal.Toolkits.Tactics.Tests\Surreal.Toolkits.Tactics.Tests.csproj", "{E538CEB5-B5D6-4E6A-8A68-D2615BE0BF58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Homeworld", "examples\Surreal.Example.Homeworld\Surreal.Example.Homeworld.csproj", "{76187451-F3B2-4C96-B5FA-8569C8909E74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Homeworld.Tests", "examples\Surreal.Example.Homeworld.Tests\Surreal.Example.Homeworld.Tests.csproj", "{CF3FA7FF-1114-4F08-A304-37FD7F8F6E0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -364,6 +368,14 @@ Global
 		{E538CEB5-B5D6-4E6A-8A68-D2615BE0BF58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E538CEB5-B5D6-4E6A-8A68-D2615BE0BF58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E538CEB5-B5D6-4E6A-8A68-D2615BE0BF58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76187451-F3B2-4C96-B5FA-8569C8909E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76187451-F3B2-4C96-B5FA-8569C8909E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76187451-F3B2-4C96-B5FA-8569C8909E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76187451-F3B2-4C96-B5FA-8569C8909E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF3FA7FF-1114-4F08-A304-37FD7F8F6E0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3FA7FF-1114-4F08-A304-37FD7F8F6E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF3FA7FF-1114-4F08-A304-37FD7F8F6E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3FA7FF-1114-4F08-A304-37FD7F8F6E0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -427,5 +439,7 @@ Global
 		{10B394AF-E1FE-4C4C-A69E-7F5EF0B1A7C9} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{694F6435-9921-4C84-89B8-8DEF980019B7} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
 		{E538CEB5-B5D6-4E6A-8A68-D2615BE0BF58} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
+		{76187451-F3B2-4C96-B5FA-8569C8909E74} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{CF3FA7FF-1114-4F08-A304-37FD7F8F6E0F} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal
