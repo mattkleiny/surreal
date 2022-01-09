@@ -21,10 +21,12 @@ public abstract record ScriptSyntaxTree
     [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public CompilationUnit(IEnumerable<ScriptSyntaxTree> nodes)
     {
-      Includes = nodes.OfType<Include>().ToImmutableArray();
+      Includes  = nodes.OfType<Include>().ToImmutableArray();
+      Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray();
     }
 
-    public ImmutableArray<Include> Includes { get; init; }
+    public ImmutableArray<Include>             Includes  { get; init; }
+    public ImmutableArray<FunctionDeclaration> Functions { get; init; }
   }
 
   /// <summary>A single statement in a shader program.</summary>
@@ -44,6 +46,9 @@ public abstract record ScriptSyntaxTree
     /// <summary>Assigns a value to a variable.</summary>
     /// <example>test = vec3(1,1,1);</example>
     public sealed record Assignment(string Variable, Expression Value) : Statement;
+
+    /// <summary>Declares a new function.</summary>
+    public sealed record FunctionDeclaration(string Name, params Statement[] Body) : Statement;
   }
 
   /// <summary>A single expression, composite within a larger statement.</summary>

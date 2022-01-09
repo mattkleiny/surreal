@@ -19,4 +19,10 @@ public sealed class BytecodeCompiler : IScriptCompiler
   {
     throw new NotImplementedException();
   }
+
+  /// <summary>A no-op <see cref="IBytecodeOptimizer"/> implementation.</summary>
+  private sealed class NullBytecodeOptimizer : IBytecodeOptimizer
+  {
+    public static NullBytecodeOptimizer Instance { get; } = new();
+  }
 }

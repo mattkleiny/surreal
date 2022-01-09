@@ -1,8 +1,11 @@
-﻿using Surreal.Text;
+﻿using System.ComponentModel;
+using System.Globalization;
+using Surreal.Text;
 
 namespace Surreal.IO;
 
 /// <summary>Represents a path in the virtual file system.</summary>
+[TypeConverter(typeof(VirtualPathConverter))]
 public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 {
   private const string SchemeSeparator = "://";
@@ -32,4 +35,38 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
   public override string ToString() => $"<{Scheme}://{Target}>";
 
   public static implicit operator VirtualPath(string uri) => Parse(uri);
+}
+
+/// <summary>The <see cref="TypeConverter"/> for <see cref="VirtualPath"/>s.</summary>
+public sealed class VirtualPathConverter : TypeConverter
+{
+  public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
+  {
+    return destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
+  }
+
+  public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
+  {
+    return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+  }
+
+  public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
+  {
+    if (value == null || destinationType != typeof(string))
+    {
+      return base.ConvertTo(context, culture, value, destinationType);
+    }
+
+    return (VirtualPath) value.ToString()!;
+  }
+
+  public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+  {
+    if (value is not string raw)
+    {
+      return base.ConvertFrom(context, culture, value);
+    }
+
+    return (VirtualPath) raw;
+  }
 }

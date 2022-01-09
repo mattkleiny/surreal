@@ -4,9 +4,3 @@ namespace Surreal.Scripting.Bytecode;
 public interface IBytecodeOptimizer
 {
 }
-
-/// <summary>A no-op <see cref="IBytecodeOptimizer"/> implementation.</summary>
-internal sealed class NullBytecodeOptimizer : IBytecodeOptimizer
-{
-  public static NullBytecodeOptimizer Instance { get; } = new();
-}

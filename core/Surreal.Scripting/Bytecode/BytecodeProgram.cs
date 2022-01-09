@@ -4,12 +4,26 @@ using Surreal.IO.Binary;
 
 namespace Surreal.Scripting.Bytecode;
 
+/// <summary>Different kinds of <see cref="BytecodeInstruction"/>s.</summary>
+public enum InstructionType : ushort
+{
+  Nop = 0,
+
+  Mov,
+  Push,
+  Pop,
+
+  /// <summary>Yield control back to the caller thread.</summary>
+  Yield,
+}
+
+/// <summary>Encapsulates a single bytecode instruction.</summary>
+public readonly record struct BytecodeInstruction(InstructionType Type);
+
 /// <summary>A <see cref="ICompiledScript"/> in the form of bytecode.</summary>
 public sealed record BytecodeProgram : ICompiledScript
 {
-  public Memory<byte> Preamble  { get; init; }
-  public Memory<byte> Resources { get; init; }
-  public Memory<byte> Code      { get; init; }
+  public ImmutableList<BytecodeInstruction> Instructions { get; init; } = ImmutableList<BytecodeInstruction>.Empty;
 
   /// <summary>The <see cref="BinarySerializer"/> for <see cref="BytecodeProgram"/>s.</summary>
   [BinarySerializer(typeof(BytecodeProgram))]
@@ -19,9 +33,7 @@ public sealed record BytecodeProgram : ICompiledScript
     {
       await writer.WriteSpanAsync(stackalloc byte[] { 0x73, 0x73, 0x37, 0x37 }, cancellationToken);
 
-      await writer.WriteMemoryAsync(value.Preamble, cancellationToken);
-      await writer.WriteMemoryAsync(value.Resources, cancellationToken);
-      await writer.WriteMemoryAsync(value.Code, cancellationToken);
+      throw new NotImplementedException();
     }
 
     public override ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
