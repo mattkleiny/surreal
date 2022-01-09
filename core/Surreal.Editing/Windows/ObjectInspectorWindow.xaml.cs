@@ -1,8 +1,6 @@
-﻿using System.Windows;
+﻿namespace Surreal.Windows;
 
-namespace Surreal.Windows;
-
-public partial class ObjectInspectorWindow : Window
+public partial class ObjectInspectorWindow
 {
   public ObjectInspectorWindow()
   {

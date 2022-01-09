@@ -11,6 +11,7 @@ using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
+using Surreal.IO.Json;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;
 using Surreal.Screens;
@@ -58,6 +59,7 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
     manager.AddLoader(new TextureRegionLoader());
     manager.AddLoader(new TrueTypeFontLoader());
+    manager.AddLoader(new JsonAssetLoader());
     manager.AddLoader(new XmlAssetLoader());
   }
 

@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Runtime.Serialization;
+using System.Xml.Linq;
 using Surreal.Graphs;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;

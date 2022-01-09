@@ -99,12 +99,31 @@ public static class VirtualPathExtensions
     await JsonSerializer.SerializeAsync(stream, value);
   }
 
-  public static async ValueTask<T?> DeserializeJsonAsync<T>(this VirtualPath path)
+  public static async ValueTask<object> DeserializeJsonAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
+  {
+    await using var stream = await path.OpenInputStreamAsync();
+
+    var result = await JsonSerializer.DeserializeAsync(stream, type, cancellationToken: cancellationToken);
+    if (result == null)
+    {
+      throw new JsonException($"Failed to parse {type} from stream");
+    }
+
+    return result;
+  }
+
+  public static async ValueTask<T> DeserializeJsonAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
     where T : class
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    return await JsonSerializer.DeserializeAsync<T>(stream);
+    var result = await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken);
+    if (result == null)
+    {
+      throw new JsonException($"Failed to parse {typeof(T)} from stream");
+    }
+
+    return result;
   }
 
   public static async ValueTask<object> DeserializeXmlAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
