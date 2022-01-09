@@ -8,7 +8,7 @@ namespace Surreal.Graphics.Shaders;
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class StandardShaderParser : IShaderParser
 {
-  private static HashSet<string> Keywords { get; } = new() { "for", "if", "else" };
+  private static ImmutableHashSet<string> Keywords { get; } = new[] { "for", "if", "else" }.ToImmutableHashSet();
 
   public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default)
   {

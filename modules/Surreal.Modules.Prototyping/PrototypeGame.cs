@@ -16,6 +16,12 @@ using Surreal.IO.Xml;
 using Surreal.Mathematics;
 using Surreal.Networking.Transports;
 using Surreal.Screens;
+using Surreal.Scripting;
+using Surreal.Scripting.Bytecode;
+using Surreal.Scripting.Languages.Basic;
+using Surreal.Scripting.Languages.Lisp;
+using Surreal.Scripting.Languages.Lox;
+using Surreal.Scripting.Languages.Lua;
 
 namespace Surreal;
 
@@ -54,9 +60,14 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioDevice));
     manager.AddLoader(new BitmapFontLoader());
+    manager.AddLoader(new BytecodeProgramLoader());
     manager.AddLoader(new ComputeProgramLoader(ComputeDevice));
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());
+    manager.AddLoader(new ScriptLoader(new BasicScriptParser(), ".basic", ".bas"));
+    manager.AddLoader(new ScriptLoader(new LispScriptParser(), ".lisp"));
+    manager.AddLoader(new ScriptLoader(new LoxScriptParser(), ".lox"));
+    manager.AddLoader(new ScriptLoader(new LuaScriptParser(), ".lua"));
     manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, Services.GetRequiredService<IShaderParser>(), hotReloading: Debugger.IsAttached));
     manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
     manager.AddLoader(new TextureRegionLoader());

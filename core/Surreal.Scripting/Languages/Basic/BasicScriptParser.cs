@@ -1,7 +1,7 @@
-﻿namespace Surreal.Scripting.Languages.Lisp;
+﻿namespace Surreal.Scripting.Languages.Basic;
 
-/// <summary>A <see cref="IScriptParser"/> for Lisp programs.</summary>
-public sealed class LispScriptParser : IScriptParser
+/// <summary>A <see cref="IScriptParser"/> for BASIC programs.</summary>
+public sealed class BasicScriptParser : IScriptParser
 {
   public ValueTask<ScriptDeclaration> ParseScriptAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default)
   {

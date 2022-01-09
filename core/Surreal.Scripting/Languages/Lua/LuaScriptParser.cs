@@ -1,7 +1,7 @@
-﻿namespace Surreal.Scripting.Languages.Lisp;
+﻿namespace Surreal.Scripting.Languages.Lua;
 
-/// <summary>A <see cref="IScriptParser"/> for Lisp programs.</summary>
-public sealed class LispScriptParser : IScriptParser
+/// <summary>A <see cref="IScriptParser"/> for Lua programs.</summary>
+public sealed class LuaScriptParser : IScriptParser
 {
   public ValueTask<ScriptDeclaration> ParseScriptAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default)
   {

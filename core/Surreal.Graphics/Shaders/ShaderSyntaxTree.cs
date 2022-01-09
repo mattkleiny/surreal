@@ -60,7 +60,7 @@ public sealed record ShaderProgramDeclaration(
   CompilationUnit CompilationUnit
 );
 
-/// <summary>Base type for the shader program instruction syntax tree.</summary>
+/// <summary>Common AST graph root for our shading languages.</summary>
 public abstract record ShaderSyntaxTree
 {
   /// <summary>
