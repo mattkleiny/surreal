@@ -12,5 +12,6 @@
     <ProjectReference Include="..\..\core\Surreal.Compute\Surreal.Compute.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Input\Surreal.Input.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Networking\Surreal.Networking.csproj" />
   </ItemGroup>
 </Project>

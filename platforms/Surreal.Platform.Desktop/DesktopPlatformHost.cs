@@ -10,6 +10,8 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
+using Surreal.Internal.Networking;
+using Surreal.Networking.Transports;
 using Surreal.Threading;
 using Surreal.Timing;
 
@@ -32,12 +34,13 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   {
     this.configuration = configuration;
 
-    Window         = new OpenTKWindow(configuration);
-    AudioDevice    = new OpenTKAudioDevice();
-    ComputeDevice  = new OpenTKComputeDevice();
-    GraphicsDevice = new OpenTKGraphicsDevice(Window);
-    InputManager   = new OpenTKInputManager(Window);
-    Dispatcher     = new ImmediateDispatcher();
+    Window           = new OpenTKWindow(configuration);
+    AudioDevice      = new OpenTKAudioDevice();
+    ComputeDevice    = new OpenTKComputeDevice();
+    GraphicsDevice   = new OpenTKGraphicsDevice(Window);
+    InputManager     = new OpenTKInputManager(Window);
+    TransportFactory = new DesktopTransportFactory();
+    Dispatcher       = new ImmediateDispatcher();
   }
 
   public event Action<int, int> Resized
@@ -46,11 +49,12 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     remove => Window.Resized -= value;
   }
 
-  public OpenTKWindow         Window         { get; }
-  public OpenTKAudioDevice    AudioDevice    { get; }
-  public OpenTKComputeDevice  ComputeDevice  { get; }
-  public OpenTKGraphicsDevice GraphicsDevice { get; }
-  public OpenTKInputManager   InputManager   { get; }
+  public OpenTKWindow            Window           { get; }
+  public OpenTKAudioDevice       AudioDevice      { get; }
+  public OpenTKComputeDevice     ComputeDevice    { get; }
+  public OpenTKGraphicsDevice    GraphicsDevice   { get; }
+  public OpenTKInputManager      InputManager     { get; }
+  public DesktopTransportFactory TransportFactory { get; }
 
   public IServiceModule Services   => this;
   public IDispatcher    Dispatcher { get; }
@@ -96,6 +100,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     services.AddSingleton<IInputManager>(InputManager);
     services.AddSingleton<IKeyboardDevice>(InputManager.Keyboard);
     services.AddSingleton<IMouseDevice>(InputManager.Mouse);
+    services.AddSingleton<ITransportFactory>(TransportFactory);
   }
 
   IDesktopWindow IDesktopPlatformHost.Window => Window;

@@ -1,6 +1,4 @@
-﻿using Surreal.Mathematics;
-
-namespace Minecraft.Worlds;
+﻿namespace Minecraft.Worlds;
 
 /// <summary>Generates a chunk of the world, given a slice of it.</summary>
 public delegate void ChunkGenerator(ChunkSlice slice);

@@ -1,10 +1,8 @@
 ﻿using System.Xml.Linq;
-using Surreal.Collections;
 using Surreal.Graphics.Images;
 using Surreal.Graphs;
 using Surreal.IO;
 using Surreal.IO.Xml;
-using Surreal.Mathematics;
 using Surreal.Objects;
 
 namespace Isaac.Blueprints;

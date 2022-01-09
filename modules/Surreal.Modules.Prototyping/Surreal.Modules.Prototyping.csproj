@@ -9,5 +9,7 @@
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Input\Surreal.Input.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Networking\Surreal.Networking.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />
   </ItemGroup>
 </Project>

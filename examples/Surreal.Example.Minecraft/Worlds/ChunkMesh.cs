@@ -1,9 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using Surreal.Diagnostics.Profiling;
-using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
-using Surreal.Mathematics;
 
 namespace Minecraft.Worlds;
 

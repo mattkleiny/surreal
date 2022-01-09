@@ -14,6 +14,7 @@ using Surreal.Input.Mouse;
 using Surreal.IO.Json;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;
+using Surreal.Networking.Transports;
 using Surreal.Screens;
 
 namespace Surreal;
@@ -21,12 +22,13 @@ namespace Surreal;
 /// <summary>Base class for any <see cref="Game"/> that uses rapid prototyping services.</summary>
 public abstract class PrototypeGame : Game
 {
-  public IAudioDevice    AudioDevice    => Services.GetRequiredService<IAudioDevice>();
-  public IComputeDevice  ComputeDevice  => Services.GetRequiredService<IComputeDevice>();
-  public IGraphicsDevice GraphicsDevice => Services.GetRequiredService<IGraphicsDevice>();
-  public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
-  public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
-  public IScreenManager  Screens        => Services.GetRequiredService<IScreenManager>();
+  public IAudioDevice      AudioDevice      => Services.GetRequiredService<IAudioDevice>();
+  public IComputeDevice    ComputeDevice    => Services.GetRequiredService<IComputeDevice>();
+  public IGraphicsDevice   GraphicsDevice   => Services.GetRequiredService<IGraphicsDevice>();
+  public IKeyboardDevice   Keyboard         => Services.GetRequiredService<IKeyboardDevice>();
+  public IMouseDevice      Mouse            => Services.GetRequiredService<IMouseDevice>();
+  public IScreenManager    Screens          => Services.GetRequiredService<IScreenManager>();
+  public ITransportFactory TransportFactory => Services.GetRequiredService<ITransportFactory>();
 
   public Color ClearColor { get; set; } = Color.Black;
 

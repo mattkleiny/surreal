@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Using Include="Surreal" />
+    <Using Include="Surreal.Collections" />
     <Using Include="Surreal.Diagnostics" />
     <Using Include="Surreal.Diagnostics.Logging" />
     <Using Include="Surreal.Graphics" />
