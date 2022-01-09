@@ -1,4 +1,4 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Selection;
 
 public class UnitSelectionManagerTests
 {
@@ -6,7 +6,7 @@ public class UnitSelectionManagerTests
   public void it_should_notify_on_newly_selected_units()
   {
     var selectedUnits = new HashSet<ISelectableUnit>();
-    var manager       = new UnitSelectionProvider();
+    var manager       = new UnitSelectionManager();
 
     manager.UnitSelected   += unit => selectedUnits.Add(unit);
     manager.UnitDeselected += unit => selectedUnits.Remove(unit);

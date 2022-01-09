@@ -1,9 +1,10 @@
-﻿<Window x:Class="Surreal.Windows.GraphEditorWindow"
+﻿<Window x:Class="Surreal.Controls.TileGridEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:controls="clr-namespace:Surreal.Controls"
         mc:Ignorable="d"
-        Title="Graph Editor" Width="1024" Height="768">
-  <Grid />
+        Title="Tile Grid Editor" Width="800" Height="600">
+  <controls:TileGridEditor />
 </Window>

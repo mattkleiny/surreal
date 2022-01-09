@@ -1,22 +1,20 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace Surreal;
+namespace Surreal.Selection;
 
-public interface ISelectableUnit
-{
-}
-
+/// <summary>A provider of selected <see cref="ISelectableUnit"/>s.</summary>
 public interface IUnitSelectionProvider
 {
   IEnumerable<ISelectableUnit> SelectedUnits { get; }
 }
 
-public sealed class UnitSelectionProvider : IUnitSelectionProvider
+/// <summary>The default <see cref="IUnitSelectionProvider"/>, a locally managed collection of units.</summary>
+public sealed class UnitSelectionManager : IUnitSelectionProvider
 {
   private readonly ObservableCollection<ISelectableUnit> selectedUnits = new();
 
-  public UnitSelectionProvider()
+  public UnitSelectionManager()
   {
     selectedUnits.CollectionChanged += OnCollectionChanged;
   }
@@ -33,36 +31,36 @@ public sealed class UnitSelectionProvider : IUnitSelectionProvider
   {
     if (eventArgs.Action == NotifyCollectionChangedAction.Add)
     {
-      foreach (ISelectableUnit unit in eventArgs.NewItems!)
-      {
-        UnitSelected?.Invoke(unit);
-      }
+      OnUnitsSelected(eventArgs);
     }
     else if (eventArgs.Action == NotifyCollectionChangedAction.Remove)
     {
-      foreach (ISelectableUnit unit in eventArgs.OldItems!)
-      {
-        UnitDeselected?.Invoke(unit);
-      }
+      OnUnitsDeselected(eventArgs);
     }
     else if (eventArgs.Action == NotifyCollectionChangedAction.Replace)
     {
-      foreach (ISelectableUnit unit in eventArgs.OldItems!)
-      {
-        UnitDeselected?.Invoke(unit);
-      }
-
-      foreach (ISelectableUnit unit in eventArgs.NewItems!)
-      {
-        UnitSelected?.Invoke(unit);
-      }
+      OnUnitsDeselected(eventArgs);
+      OnUnitsSelected(eventArgs);
     }
     else if (eventArgs.Action == NotifyCollectionChangedAction.Reset)
     {
-      foreach (ISelectableUnit item in eventArgs.OldItems!)
-      {
-        UnitDeselected?.Invoke(item);
-      }
+      OnUnitsDeselected(eventArgs);
+    }
+  }
+
+  private void OnUnitsSelected(NotifyCollectionChangedEventArgs eventArgs)
+  {
+    foreach (ISelectableUnit unit in eventArgs.NewItems!)
+    {
+      UnitSelected?.Invoke(unit);
+    }
+  }
+
+  private void OnUnitsDeselected(NotifyCollectionChangedEventArgs eventArgs)
+  {
+    foreach (ISelectableUnit unit in eventArgs.OldItems!)
+    {
+      UnitDeselected?.Invoke(unit);
     }
   }
 }

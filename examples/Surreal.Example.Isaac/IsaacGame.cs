@@ -1,5 +1,5 @@
-﻿using Surreal.Input.Keyboard;
-using Surreal.Windows;
+﻿using Surreal.Controls;
+using Surreal.Input.Keyboard;
 
 namespace Isaac;
 
@@ -21,12 +21,7 @@ public sealed class IsaacGame : PrototypeGame
   protected override void Input(GameTime time)
   {
     if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
-
-    if (Keyboard.IsKeyPressed(Key.F8))
-    {
-      // TODO: implement me
-      GameEditor.ShowWindow(new ObjectInspectorWindow());
-    }
+    if (Keyboard.IsKeyPressed(Key.F8)) GameEditor.ShowWindow(new ObjectInspectorWindow());
 
     base.Input(time);
   }
