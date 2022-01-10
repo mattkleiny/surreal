@@ -1,4 +1,6 @@
-﻿namespace Surreal.IO.Binary.Internal;
+﻿using System.Buffers;
+
+namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Guid))]
 public sealed class GuidBinarySerializer : BinarySerializer<Guid>
@@ -12,8 +14,17 @@ public sealed class GuidBinarySerializer : BinarySerializer<Guid>
 
   public override async ValueTask<Guid> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
   {
-    var buffer = await reader.ReadBufferAsync(cancellationToken);
+    var buffer = ArrayPool<byte>.Shared.Rent(4);
 
-    return new Guid(buffer.ToArray());
+    try
+    {
+      await reader.ReadMemoryAsync(buffer, cancellationToken);
+
+      return new Guid(buffer);
+    }
+    finally
+    {
+      ArrayPool<byte>.Shared.Return(buffer);
+    }
   }
 }

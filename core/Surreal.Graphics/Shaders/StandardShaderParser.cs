@@ -12,8 +12,10 @@ public sealed class StandardShaderParser : IShaderParser
 
   public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
-    var tokens          = await TokenizeAsync(reader, cancellationToken);
-    var compilationUnit = ParseCompilationUnit(new ParseContext(tokens));
+    var tokens  = await TokenizeAsync(reader, cancellationToken);
+    var context = new ParseContext(tokens);
+
+    var compilationUnit = ParseCompilationUnit(context);
 
     return new ShaderProgramDeclaration(path, ShaderArchetype.Sprite, compilationUnit);
   }

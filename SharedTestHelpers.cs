@@ -193,7 +193,7 @@ internal class BenchmarkAttribute : PropertyAttribute, IWrapSetUpTearDown
 
         context.OutWriter.WriteLine($"Iteration {iteration} took {stopwatch.Elapsed:g}");
 
-        if (stopwatch.Elapsed.TotalMilliseconds > thresholdMs)
+        if (!Debugger.IsAttached && stopwatch.Elapsed.TotalMilliseconds > thresholdMs)
         {
           result.SetResult(ResultState.Failure, $"Execution exceeded maximum benchmark time of {thresholdMs}ms");
 

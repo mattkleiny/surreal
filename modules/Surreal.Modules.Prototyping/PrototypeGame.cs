@@ -50,7 +50,6 @@ public abstract class PrototypeGame : Game
     base.RegisterServices(services);
 
     services.AddSingleton<IScreenManager>(new ScreenManager(this));
-    services.AddSingleton<IShaderParser>(new StandardShaderParser());
   }
 
   protected override void RegisterAssetLoaders(IAssetManager manager)
@@ -68,7 +67,7 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new ScriptDeclarationLoader(new LispScriptParser(), ".lisp"));
     manager.AddLoader(new ScriptDeclarationLoader(new LoxScriptParser(), ".lox"));
     manager.AddLoader(new ScriptDeclarationLoader(new LuaScriptParser(), ".lua"));
-    manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, Services.GetRequiredService<IShaderParser>(), hotReloading: Debugger.IsAttached));
+    manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, new StandardShaderParser(), hotReloading: Debugger.IsAttached));
     manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
     manager.AddLoader(new TextureRegionLoader());
     manager.AddLoader(new TrueTypeFontLoader());

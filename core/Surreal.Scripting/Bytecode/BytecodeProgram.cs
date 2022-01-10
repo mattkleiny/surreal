@@ -31,12 +31,12 @@ public sealed record BytecodeProgram : ICompiledScript
   {
     public override async ValueTask SerializeAsync(BytecodeProgram value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
     {
-      await writer.WriteSpanAsync(stackalloc byte[] { 0x73, 0x73, 0x37, 0x37 }, cancellationToken);
+      await writer.WriteSpanAsync(stackalloc byte[] { 0x73, 0x37, 0x73, 0x37 }, cancellationToken);
 
       throw new NotImplementedException();
     }
 
-    public override ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
+    public override async ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
     {
       throw new NotImplementedException();
     }

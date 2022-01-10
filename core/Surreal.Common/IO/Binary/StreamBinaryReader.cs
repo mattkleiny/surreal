@@ -70,12 +70,12 @@ public sealed class StreamBinaryReader : IBinaryReader, IDisposable, IAsyncDispo
     throw new NotImplementedException();
   }
 
-  public ValueTask ReadBufferAsync(Span<byte> buffer, CancellationToken cancellationToken = default)
+  public ValueTask ReadSpanAsync(Span<byte> buffer, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }
 
-  public ValueTask<Memory<byte>> ReadBufferAsync(CancellationToken cancellationToken = default)
+  public ValueTask ReadMemoryAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }

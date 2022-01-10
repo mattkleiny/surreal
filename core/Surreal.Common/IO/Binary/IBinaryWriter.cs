@@ -1,13 +1,11 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Surreal.IO.Binary;
+﻿namespace Surreal.IO.Binary;
 
 /// <summary>Allows writing values into a serialization stream.</summary>
 public interface IBinaryWriter
 {
   ValueTask WriteBoolAsync(bool value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<bool>()];
+    Span<byte> buffer = stackalloc byte[sizeof(bool)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -22,7 +20,7 @@ public interface IBinaryWriter
 
   ValueTask WriteShortAsync(short value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<short>()];
+    Span<byte> buffer = stackalloc byte[sizeof(short)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -30,7 +28,7 @@ public interface IBinaryWriter
 
   ValueTask WriteUShortAsync(ushort value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<ushort>()];
+    Span<byte> buffer = stackalloc byte[sizeof(ushort)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -38,7 +36,7 @@ public interface IBinaryWriter
 
   ValueTask WriteIntAsync(int value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<int>()];
+    Span<byte> buffer = stackalloc byte[sizeof(int)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -46,7 +44,7 @@ public interface IBinaryWriter
 
   ValueTask WriteUIntAsync(uint value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<uint>()];
+    Span<byte> buffer = stackalloc byte[sizeof(uint)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -54,7 +52,7 @@ public interface IBinaryWriter
 
   ValueTask WriteLongAsync(long value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<long>()];
+    Span<byte> buffer = stackalloc byte[sizeof(long)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -62,7 +60,7 @@ public interface IBinaryWriter
 
   ValueTask WriteULongAsync(ulong value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<ulong>()];
+    Span<byte> buffer = stackalloc byte[sizeof(ulong)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -70,7 +68,7 @@ public interface IBinaryWriter
 
   ValueTask WriteFloatAsync(float value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<float>()];
+    Span<byte> buffer = stackalloc byte[sizeof(float)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
@@ -78,7 +76,7 @@ public interface IBinaryWriter
 
   ValueTask WriteDoubleAsync(double value, CancellationToken cancellationToken = default)
   {
-    Span<byte> buffer = stackalloc byte[Unsafe.SizeOf<double>()];
+    Span<byte> buffer = stackalloc byte[sizeof(double)];
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);

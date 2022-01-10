@@ -16,6 +16,6 @@ public interface IBinaryReader
   ValueTask<double> ReadDoubleAsync(CancellationToken cancellationToken = default);
   ValueTask<string> ReadStringAsync(CancellationToken cancellationToken = default);
 
-  ValueTask               ReadBufferAsync(Span<byte> buffer, CancellationToken cancellationToken = default);
-  ValueTask<Memory<byte>> ReadBufferAsync(CancellationToken cancellationToken = default);
+  ValueTask ReadSpanAsync(Span<byte> buffer, CancellationToken cancellationToken = default);
+  ValueTask ReadMemoryAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
 }
