@@ -11,12 +11,22 @@ internal sealed class HeadlessTransport : IHeadlessTransport, IClientTransport, 
 
   public TransportType Type { get; }
 
-  public ValueTask SendAsync(ReadOnlySpan<byte> buffer, CancellationToken cancellationToken = default)
+  public ValueTask ConnectToServerAsync()
   {
     return ValueTask.CompletedTask;
   }
 
-  public ValueTask ReceiveAsync(Span<byte> buffer, CancellationToken cancellationToken = default)
+  public ValueTask StartServerAsync()
+  {
+    return ValueTask.CompletedTask;
+  }
+
+  public ValueTask SendAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+  {
+    return ValueTask.CompletedTask;
+  }
+
+  public ValueTask ReceiveAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
   {
     return ValueTask.CompletedTask;
   }

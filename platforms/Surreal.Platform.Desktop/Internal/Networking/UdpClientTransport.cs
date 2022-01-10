@@ -1,27 +1,18 @@
-﻿using Surreal.Networking.Transports;
+﻿using System.Net.Sockets;
+using Surreal.Networking.Transports;
 
 namespace Surreal.Internal.Networking;
 
-internal sealed class UdpClientTransport : IClientTransport
+internal sealed class UdpClientTransport : SocketTransport, IClientTransport
 {
+  public UdpClientTransport(TransportOptions options)
+    : base(SocketType.Dgram)
+  {
+  }
+
   public TransportType Type => TransportType.Throughput;
 
-  public ValueTask SendAsync(ReadOnlySpan<byte> buffer, CancellationToken cancellationToken = default)
-  {
-    throw new NotImplementedException();
-  }
-
-  public ValueTask ReceiveAsync(Span<byte> buffer, CancellationToken cancellationToken = default)
-  {
-    throw new NotImplementedException();
-  }
-
-  public void Dispose()
-  {
-    throw new NotImplementedException();
-  }
-
-  public ValueTask DisposeAsync()
+  public ValueTask ConnectToServerAsync()
   {
     throw new NotImplementedException();
   }

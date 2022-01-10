@@ -8,8 +8,8 @@ internal sealed class DesktopTransportFactory : ITransportFactory
   {
     return options.Type switch
     {
-      TransportType.Throughput  => new UdpServerTransport(),
-      TransportType.Reliability => new TcpServerTransport(),
+      TransportType.Throughput  => new UdpServerTransport(options),
+      TransportType.Reliability => new TcpServerTransport(options),
 
       _ => throw new InvalidOperationException($"An unrecognized transport type was requested: {options.Type}"),
     };
@@ -19,8 +19,8 @@ internal sealed class DesktopTransportFactory : ITransportFactory
   {
     return options.Type switch
     {
-      TransportType.Throughput  => new UdpClientTransport(),
-      TransportType.Reliability => new TcpClientTransport(),
+      TransportType.Throughput  => new UdpClientTransport(options),
+      TransportType.Reliability => new TcpClientTransport(options),
 
       _ => throw new InvalidOperationException($"An unrecognized transport type was requested: {options.Type}"),
     };

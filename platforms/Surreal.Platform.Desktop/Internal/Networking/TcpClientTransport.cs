@@ -1,28 +1,23 @@
-﻿using Surreal.Networking.Transports;
+﻿using System.Net;
+using System.Net.Sockets;
+using Surreal.Networking.Transports;
 
 namespace Surreal.Internal.Networking;
 
-internal sealed class TcpClientTransport : IClientTransport
+internal sealed class TcpClientTransport : SocketTransport, IClientTransport
 {
+  private readonly TransportOptions options;
+
+  public TcpClientTransport(TransportOptions options)
+    : base(SocketType.Stream)
+  {
+    this.options = options;
+  }
+
   public TransportType Type => TransportType.Reliability;
 
-  public ValueTask SendAsync(ReadOnlySpan<byte> buffer, CancellationToken cancellationToken = default)
+  public async ValueTask ConnectToServerAsync()
   {
-    throw new NotImplementedException();
-  }
-
-  public ValueTask ReceiveAsync(Span<byte> buffer, CancellationToken cancellationToken = default)
-  {
-    throw new NotImplementedException();
-  }
-
-  public void Dispose()
-  {
-    throw new NotImplementedException();
-  }
-
-  public ValueTask DisposeAsync()
-  {
-    throw new NotImplementedException();
+    await Socket.ConnectAsync(IPAddress.Parse("127.0.0.1"), options.Port);
   }
 }

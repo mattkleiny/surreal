@@ -28,16 +28,18 @@ public interface ITransport : IDisposable, IAsyncDisposable
 {
   TransportType Type { get; }
 
-  ValueTask SendAsync(ReadOnlySpan<byte> buffer, CancellationToken cancellationToken = default);
-  ValueTask ReceiveAsync(Span<byte> buffer, CancellationToken cancellationToken = default);
+  ValueTask SendAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default);
+  ValueTask ReceiveAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
 }
 
 /// <summary>Client-side <see cref="ITransport"/>.</summary>
 public interface IClientTransport : ITransport
 {
+  ValueTask ConnectToServerAsync();
 }
 
 /// <summary>Server-side <see cref="ITransport"/>.</summary>
 public interface IServerTransport : ITransport
 {
+  ValueTask StartServerAsync();
 }
