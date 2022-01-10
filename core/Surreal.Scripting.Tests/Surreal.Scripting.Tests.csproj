@@ -5,8 +5,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <!-- automatically copy assets to output path -->
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
 </Project>

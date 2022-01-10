@@ -10,7 +10,7 @@ public sealed class StandardShaderParser : IShaderParser
 {
   private static ImmutableHashSet<string> Keywords { get; } = new[] { "for", "if", "else" }.ToImmutableHashSet();
 
-  public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, int length, CancellationToken cancellationToken = default)
+  public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var tokens          = await TokenizeAsync(reader, cancellationToken);
     var compilationUnit = ParseCompilationUnit(new ParseContext(tokens));

@@ -9,10 +9,10 @@ public class ScriptLoaderTests
   {
     using var manager = new AssetManager();
 
-    manager.AddLoader(new ScriptLoader(parser, ".script"));
+    manager.AddLoader(new ScriptDeclarationLoader(parser, ".script"));
 
     await manager.LoadAssetAsync<ScriptDeclaration>("Assets/scripts/test.script");
 
-    await parser.Received(1).ParseScriptAsync(Arg.Any<string>(), Arg.Any<Stream>(), Arg.Any<Encoding>(), Arg.Any<CancellationToken>());
+    await parser.Received(1).ParseScriptAsync(Arg.Any<string>(), Arg.Any<TextReader>(), Arg.Any<CancellationToken>());
   }
 }

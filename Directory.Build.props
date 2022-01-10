@@ -25,9 +25,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- analyze all assemblies for basic style and code quality issues -->
-    <!-- <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503" PrivateAssets="all" /> -->
-
     <!-- shared usings for all projects -->
     <Using Include="System.Collections" />
     <Using Include="System.Collections.Concurrent" />
@@ -37,7 +34,10 @@
     <Using Include="System.Numerics" />
     <Using Include="System.Text" />
 
-    <!-- automatically embed resources -->
+    <!-- automatically copy assets and embed resources -->
+    <Content Include="$(ProjectDir)\Assets\**"
+             CopyToOutputDirectory="PreserveNewest"
+             Condition="!$(ProjectName.EndsWith('Common'))" />
     <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
 
     <!-- link shared code into all assemblies -->
@@ -67,7 +67,7 @@
     <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.17.0" />
     <PackageReference Include="AutoFixture.NUnit3" Version="4.17.0" />
     <PackageReference Include="coverlet.collector" Version="3.0.3" />
-    <PackageReference Include="JetBrains.DotMemoryUnit" Version="3.1.20200127.214830 "/>
+    <PackageReference Include="JetBrains.DotMemoryUnit" Version="3.1.20200127.214830 " />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="NUnit" Version="3.13.2" />

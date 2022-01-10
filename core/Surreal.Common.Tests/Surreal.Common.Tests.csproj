@@ -2,8 +2,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <!-- automatically copy assets to output path -->
-    <Content Include="$(ProjectDir)\Assets\**" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
 </Project>

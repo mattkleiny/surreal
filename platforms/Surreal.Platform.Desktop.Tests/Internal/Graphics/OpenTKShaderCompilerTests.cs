@@ -1,5 +1,6 @@
 ﻿using Surreal.Graphics.Shaders;
 using Surreal.Internal.Graphics.Resources;
+using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -54,34 +55,16 @@ public class OpenTKShaderCompilerTests
     Assert.That(program.Shaders[1].Code, Is.Not.Empty);
   }
 
-  [Test, Benchmark(ThresholdMs = 0.2f)]
-  public async Task it_should_compile_simple_program_from_standard_language()
+  [Test]
+  [TestCase("Assets/shaders/test01.shader")]
+  public async Task it_should_compile_simple_program_from_standard_language(VirtualPath path)
   {
-    IShaderParser parser   = new StandardShaderParser();
-    var           compiler = new OpenTKShaderCompiler();
+    await using var stream = await path.OpenInputStreamAsync();
 
-    var declaration = await parser.ParseShaderAsync(
-      path: "test.shader",
-      sourceCode: @"
-      // A simple sprite shader, for testing purposes.
-      // This description should be attached up-front.
+    var parser   = new StandardShaderParser();
+    var compiler = new OpenTKShaderCompiler();
 
-      shader_type sprite;
-
-      uniform vec3  _Position;
-      uniform float _Intensity;
-      varying vec3  _Color;
-
-      void vertex()
-      {
-        _Color = vec3(1,1,1) * _Position * _Intensity;
-      }
-
-      void fragment()
-      {
-        COLOR = _Color;
-      }
-    ");
+    var declaration = await parser.ParseShaderAsync(path.ToString(), stream);
 
     var program = await compiler.CompileAsync(declaration);
 

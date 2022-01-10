@@ -64,10 +64,10 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new ComputeProgramLoader(ComputeDevice));
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());
-    manager.AddLoader(new ScriptLoader(new BasicScriptParser(), ".basic", ".bas"));
-    manager.AddLoader(new ScriptLoader(new LispScriptParser(), ".lisp"));
-    manager.AddLoader(new ScriptLoader(new LoxScriptParser(), ".lox"));
-    manager.AddLoader(new ScriptLoader(new LuaScriptParser(), ".lua"));
+    manager.AddLoader(new ScriptDeclarationLoader(new BasicScriptParser(), ".basic", ".bas"));
+    manager.AddLoader(new ScriptDeclarationLoader(new LispScriptParser(), ".lisp"));
+    manager.AddLoader(new ScriptDeclarationLoader(new LoxScriptParser(), ".lox"));
+    manager.AddLoader(new ScriptDeclarationLoader(new LuaScriptParser(), ".lua"));
     manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, Services.GetRequiredService<IShaderParser>(), hotReloading: Debugger.IsAttached));
     manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
     manager.AddLoader(new TextureRegionLoader());
