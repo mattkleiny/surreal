@@ -2,15 +2,15 @@
 using System.Runtime.CompilerServices;
 using Surreal.Collections;
 
-namespace Surreal.Text;
+namespace Surreal.Diagnostics.Logging;
 
 /// <summary>Allows pooled and deferred interpolated string construction in messages.</summary>
 [InterpolatedStringHandler]
-public readonly ref struct PooledInterpolatedString
+public readonly ref struct LogInterpolator
 {
   private readonly StringBuilder builder;
 
-  public PooledInterpolatedString(int literalLength, int formattedCount)
+  public LogInterpolator(int literalLength, int formattedCount)
   {
     builder = Pool<StringBuilder>.Shared.CreateOrRent();
   }

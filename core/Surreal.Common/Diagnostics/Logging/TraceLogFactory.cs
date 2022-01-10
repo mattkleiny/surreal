@@ -45,7 +45,7 @@ public sealed class TraceLogFactory : ILogFactory
       Trace.WriteLine(formatter(category, level, message));
     }
 
-    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
     {
       Trace.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
     }

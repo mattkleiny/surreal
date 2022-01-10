@@ -51,7 +51,7 @@ public sealed class CompositeLogFactory : ILogFactory
       }
     }
 
-    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
     {
       for (var i = 0; i < logs.Length; i++)
       {

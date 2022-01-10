@@ -18,7 +18,7 @@ public interface ILog
   bool IsLevelEnabled(LogLevel level);
 
   void WriteMessage(LogLevel level, string message);
-  void WriteMessage(LogLevel level, ref PooledInterpolatedString handler);
+  void WriteMessage(LogLevel level, ref LogInterpolator handler);
 
   void Trace(string message)
   {
@@ -28,7 +28,7 @@ public interface ILog
     }
   }
 
-  void Trace(ref PooledInterpolatedString handler)
+  void Trace(ref LogInterpolator handler)
   {
     if (IsLevelEnabled(LogLevel.Trace))
     {
@@ -44,7 +44,7 @@ public interface ILog
     }
   }
 
-  void Debug(ref PooledInterpolatedString handler)
+  void Debug(ref LogInterpolator handler)
   {
     if (IsLevelEnabled(LogLevel.Debug))
     {
@@ -60,7 +60,7 @@ public interface ILog
     }
   }
 
-  void Warn(ref PooledInterpolatedString handler)
+  void Warn(ref LogInterpolator handler)
   {
     if (IsLevelEnabled(LogLevel.Warn))
     {
@@ -76,7 +76,7 @@ public interface ILog
     }
   }
 
-  void Error(ref PooledInterpolatedString handler)
+  void Error(ref LogInterpolator handler)
   {
     if (IsLevelEnabled(LogLevel.Error))
     {
@@ -92,7 +92,7 @@ public interface ILog
     }
   }
 
-  void Fatal(ref PooledInterpolatedString handler)
+  void Fatal(ref LogInterpolator handler)
   {
     if (IsLevelEnabled(LogLevel.Fatal))
     {

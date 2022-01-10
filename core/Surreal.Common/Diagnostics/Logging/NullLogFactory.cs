@@ -19,7 +19,7 @@ public sealed class NullLogFactory : ILogFactory
       // no-op
     }
 
-    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
     {
       // no-op
     }

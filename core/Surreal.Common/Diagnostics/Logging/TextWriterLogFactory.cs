@@ -52,7 +52,7 @@ public sealed class TextWriterLogFactory : ILogFactory
       writer.WriteLine(formatter(category, level, message));
     }
 
-    public void WriteMessage(LogLevel level, ref PooledInterpolatedString handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
     {
       writer.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
     }

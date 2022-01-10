@@ -1,12 +1,6 @@
-﻿namespace Surreal.UI.Events;
+﻿using Surreal.Input.Mouse;
 
-/// <summary>Possible buttons for mouse events.</summary>
-public enum MouseButton
-{
-  Left,
-  Middle,
-  Right,
-}
+namespace Surreal.UI.Events;
 
 /// <summary>A mouse button was pressed.</summary>
 public record MouseDownEvent(MouseButton Button) : IEvent;
