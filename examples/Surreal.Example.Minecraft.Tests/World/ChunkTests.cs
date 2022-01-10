@@ -4,7 +4,7 @@ namespace Minecraft.World;
 
 public class ChunkTests
 {
-  [Test, Benchmark(ThresholdMs = 0.1f)]
+  [Test]
   public void it_should_generate_a_valid_chunk()
   {
     var chunk = Chunk.Generate(ChunkGenerators.Solid(Block.Dirt));

@@ -9,7 +9,23 @@ namespace Surreal.Internal.Graphics;
 
 public class OpenTKShaderCompilerTests
 {
-  [Test, Benchmark(ThresholdMs = 0.2f)]
+  [Test]
+  [TestCase("Assets/shaders/test01.shader")]
+  public async Task it_should_compile_shader_programs(VirtualPath path)
+  {
+    await using var stream = await path.OpenInputStreamAsync();
+
+    var parser   = new StandardShaderParser();
+    var compiler = new OpenTKShaderCompiler();
+
+    var declaration = await parser.ParseShaderAsync(path.ToString(), stream);
+
+    var program = await compiler.CompileAsync(declaration);
+
+    Assert.IsNotNull(program);
+  }
+
+  [Test]
   public async Task it_should_compile_simple_instructions()
   {
     var compiler = new OpenTKShaderCompiler();
@@ -53,21 +69,5 @@ public class OpenTKShaderCompilerTests
     Assert.AreEqual(2, program.Shaders.Length);
     Assert.That(program.Shaders[0].Code, Is.Not.Empty);
     Assert.That(program.Shaders[1].Code, Is.Not.Empty);
-  }
-
-  [Test]
-  [TestCase("Assets/shaders/test01.shader")]
-  public async Task it_should_compile_simple_program_from_standard_language(VirtualPath path)
-  {
-    await using var stream = await path.OpenInputStreamAsync();
-
-    var parser   = new StandardShaderParser();
-    var compiler = new OpenTKShaderCompiler();
-
-    var declaration = await parser.ParseShaderAsync(path.ToString(), stream);
-
-    var program = await compiler.CompileAsync(declaration);
-
-    Assert.IsNotNull(program);
   }
 }
