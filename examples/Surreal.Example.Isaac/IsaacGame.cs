@@ -22,6 +22,7 @@ public sealed class IsaacGame : PrototypeGame
   {
     if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
     if (Keyboard.IsKeyPressed(Key.F8)) GameEditor.ShowWindow(new GraphEditorWindow());
+    if (Keyboard.IsKeyPressed(Key.F9)) GameEditor.ShowWindow(new TileGridEditorWindow());
 
     base.Input(time);
   }
