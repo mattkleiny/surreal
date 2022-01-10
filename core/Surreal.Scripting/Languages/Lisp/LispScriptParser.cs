@@ -12,7 +12,7 @@ public sealed class LispScriptParser : IScriptParser
     throw new NotImplementedException();
   }
 
-  /// <summary>An s-expression, for use in partial deconstruction of LISP expressions.</summary>
+  /// <summary>A symbolic expression (or s-expression), for use in recursive deconstruction of the LISP tree.</summary>
   private abstract record SymbolicExpression
   {
     public static async Task<IEnumerable<SymbolicExpression>> Parse(TextReader reader, CancellationToken cancellationToken)
@@ -34,42 +34,42 @@ public sealed class LispScriptParser : IScriptParser
       return results;
     }
 
-    private static SymbolicExpression Parse(string line)
+    private static SymbolicExpression Parse(StringSpan span)
     {
-      var tokens = Tokenize(line);
+      static Queue<string> Tokenize(StringSpan span)
+      {
+        var tokens = span.ToString()
+          // add spaces around parenthesis for splitting
+          .Replace("(", " ( ")
+          .Replace(")", " ) ")
+          .Split(' ');
+
+        return new Queue<string>(tokens);
+      }
+
+      var tokens = Tokenize(span);
 
       throw new NotImplementedException();
     }
 
-    private static SymbolicExpression ParseAtom(string literal)
+    private static SymbolicExpression ParseLeaf(string literal)
     {
-      if (float.TryParse(literal, out var single)) return new Atom(single);
-      if (int.TryParse(literal, out var integer)) return new Atom(integer);
+      if (float.TryParse(literal, out var single)) return new Leaf(single);
+      if (int.TryParse(literal, out var integer)) return new Leaf(integer);
 
-      return new Atom(literal);
+      return new Leaf(literal);
     }
 
-    private static Queue<string> Tokenize(StringSpan span)
+    /// <summary>A node of other <see cref="SymbolicExpression"/> nodes.</summary>
+    public record Node(ImmutableArray<SymbolicExpression> Contents) : SymbolicExpression
     {
-      var tokens = span.ToString()
-        // add spaces around parenthesis for splitting
-        .Replace("(", " ( ")
-        .Replace(")", " ) ")
-        .Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-      return new Queue<string>(tokens);
-    }
-
-    /// <summary>A single <see cref="SymbolicExpression"/> leaf</summary>
-    public record Atom(object Value) : SymbolicExpression;
-
-    /// <summary>A list of <see cref="SymbolicExpression"/> nodes.</summary>
-    public record List(ImmutableArray<SymbolicExpression> Contents) : SymbolicExpression
-    {
-      public List(IEnumerable<SymbolicExpression> expressions)
+      public Node(IEnumerable<SymbolicExpression> expressions)
         : this(ImmutableArray.CreateRange(expressions))
       {
       }
     }
+
+    /// <summary>A single <see cref="SymbolicExpression"/> leaf.</summary>
+    public record Leaf(object Value) : SymbolicExpression;
   }
 }

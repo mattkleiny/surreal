@@ -18,11 +18,9 @@ internal sealed class TcpServerTransport : SocketTransport, IServerTransport
 
   public ValueTask StartServerAsync()
   {
-    Socket.Blocking = false;
-
     Socket.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), options.Port));
     Socket.Listen();
 
-    throw new NotImplementedException();
+    return ValueTask.CompletedTask;
   }
 }

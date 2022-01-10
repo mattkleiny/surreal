@@ -7,4 +7,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Nodify" Version="1.7.0" PrivateAssets="compile" />
+	</ItemGroup>
 </Project>

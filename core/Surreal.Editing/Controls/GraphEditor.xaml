@@ -3,7 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:nodify="http://miroiu.github.io/winfx/xaml/nodify"
+             xmlns:local="clr-namespace:Surreal.Controls"
              mc:Ignorable="d"
              d:DesignWidth="800" d:DesignHeight="600">
-  <Grid />
+  <UserControl.DataContext>
+    <local:GraphEditorViewModel />
+  </UserControl.DataContext>
+
+  <nodify:NodifyEditor
+    ItemsSource="{Binding Nodes}"
+    SelectedItem="{Binding SelectedNode}"
+    SelectedItems="{Binding SelectedNodes}"
+    Connections="{Binding Connections}"
+    PendingConnection="{Binding PendingConnections}" />
 </UserControl>
