@@ -14,7 +14,7 @@ public enum BehaviourStatus
   Sleeping,
   Running,
   Success,
-  Failure
+  Failure,
 }
 
 /// <summary>The context for <see cref="BehaviourNode"/> operations.</summary>
@@ -59,7 +59,7 @@ public sealed class BehaviourTree : IAutomata, IMessageListener
       BehaviourStatus.Success  => AutomataStatus.Success,
       BehaviourStatus.Failure  => AutomataStatus.Failure,
 
-      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}")
+      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
     };
   }
 
@@ -117,21 +117,3 @@ public abstract record BehaviourDecorator(BehaviourNode Child) : BehaviourNode;
 
 /// <summary>Represent a <see cref="BehaviourNode"/> that implements some task.</summary>
 public abstract record BehaviourTask : BehaviourNode;
-
-/// <summary>A <see cref="BehaviourNode"/> that embeds some sub-<see cref="IAutomata"/>.</summary>
-public sealed record AutomataBehaviour(IAutomata Automata) : BehaviourTask
-{
-  protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
-  {
-    var status = Automata.Tick(deltaTime);
-
-    return status switch
-    {
-      AutomataStatus.Running => BehaviourStatus.Running,
-      AutomataStatus.Success => BehaviourStatus.Success,
-      AutomataStatus.Failure => BehaviourStatus.Failure,
-
-      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}")
-    };
-  }
-}

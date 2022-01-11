@@ -12,7 +12,7 @@ public class SocketTransportTests
     var factory = new DesktopTransportFactory();
     var options = TransportOptions.Default with
     {
-      Type = TransportType.Reliability
+      Type = TransportType.Reliability,
     };
 
     var semaphore = new SemaphoreSlim(0);

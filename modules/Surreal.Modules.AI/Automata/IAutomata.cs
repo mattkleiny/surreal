@@ -7,7 +7,7 @@ public enum AutomataStatus
 {
   Running,
   Success,
-  Failure
+  Failure,
 }
 
 /// <summary>Abstracts over all kinds of automata that are capable of receiving discrete lifecycle events.</summary>

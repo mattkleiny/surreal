@@ -9,7 +9,7 @@ public enum StateStatus
 {
   Running,
   Success,
-  Failure
+  Failure,
 }
 
 /// <summary>The context for <see cref="StateMachine"/> operations.</summary>
@@ -103,7 +103,7 @@ public sealed record AutomataState(IAutomata Automata) : State
       AutomataStatus.Success => StateStatus.Success,
       AutomataStatus.Failure => StateStatus.Failure,
 
-      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}")
+      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
     };
   }
 }

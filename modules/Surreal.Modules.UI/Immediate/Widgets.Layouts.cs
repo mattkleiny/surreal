@@ -19,7 +19,7 @@ public static partial class Widgets
     // TODO: implement me
     return new PaintingLayout(context)
     {
-      Rectangle = new Rectangle(100, 100, 200, 200)
+      Rectangle = new Rectangle(100, 100, 200, 200),
     };
   }
 }

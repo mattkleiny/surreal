@@ -7,14 +7,16 @@ public sealed record AlwaysSuccess(BehaviourNode Child) : BehaviourDecorator(Chi
 {
   protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
   {
-    return Child.Update(context, deltaTime) switch
+    var status = Child.Update(context, deltaTime);
+
+    return status switch
     {
       BehaviourStatus.Sleeping => BehaviourStatus.Sleeping,
       BehaviourStatus.Running  => BehaviourStatus.Running,
       BehaviourStatus.Success  => BehaviourStatus.Success,
       BehaviourStatus.Failure  => BehaviourStatus.Success,
 
-      _ => throw new ArgumentOutOfRangeException()
+      _ => throw new InvalidOperationException($"An unrecognized status was encountered: {status}"),
     };
   }
 }
