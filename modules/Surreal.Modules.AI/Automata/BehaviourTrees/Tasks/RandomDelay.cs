@@ -8,7 +8,7 @@ public sealed record RandomDelay(TimeSpanRange DurationRange) : BehaviourTask
 {
   private IntervalTimer timer;
 
-  public override void OnEnter(BehaviourContext context)
+  protected internal override void OnEnter(BehaviourContext context)
   {
     base.OnEnter(context);
 

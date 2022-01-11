@@ -13,11 +13,7 @@ public enum StateStatus
 }
 
 /// <summary>The context for <see cref="StateMachine"/> operations.</summary>
-public sealed record StateContext(
-  object Owner,
-  IPropertyCollection Properties,
-  StateMachine StateMachine
-);
+public sealed record StateContext(object Owner, IPropertyCollection Properties, StateMachine StateMachine);
 
 /// <summary>An <see cref="IAutomata"/> that implements a finite state machine.</summary>
 public sealed class StateMachine : IAutomata, IMessageListener
@@ -58,19 +54,19 @@ public abstract record State
 {
   public StateStatus CurrentStatus { get; private set; }
 
-  public virtual void OnEnter(StateContext context)
+  protected internal virtual void OnEnter(StateContext context)
   {
   }
 
-  public virtual void OnExit(StateContext context)
+  protected internal virtual void OnExit(StateContext context)
   {
   }
 
-  public virtual void OnMessageReceived(Message message)
+  protected internal virtual void OnMessageReceived(Message message)
   {
   }
 
-  public StateStatus Update(StateContext context, DeltaTime deltaTime)
+  protected internal StateStatus Update(StateContext context, DeltaTime deltaTime)
   {
     if (CurrentStatus != StateStatus.Running)
     {
@@ -87,13 +83,13 @@ public abstract record State
     return CurrentStatus;
   }
 
-  protected abstract StateStatus OnUpdate(StateContext context, DeltaTime deltaTime);
+  protected internal abstract StateStatus OnUpdate(StateContext context, DeltaTime deltaTime);
 }
 
 /// <summary>A <see cref="State"/> that implements some sub-<see cref="IAutomata"/>.</summary>
 public sealed record AutomataState(IAutomata Automata) : State
 {
-  protected override StateStatus OnUpdate(StateContext context, DeltaTime deltaTime)
+  protected internal override StateStatus OnUpdate(StateContext context, DeltaTime deltaTime)
   {
     var status = Automata.Tick(deltaTime);
 

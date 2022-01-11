@@ -12,6 +12,13 @@ public sealed record Selector : BehaviourComposite
     Children = ImmutableList.CreateRange(children);
   }
 
+  protected internal override void OnExit(BehaviourContext context)
+  {
+    base.OnExit(context);
+
+    lastIndex = 0;
+  }
+
   protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
   {
     for (; lastIndex < Children.Count; lastIndex++)
@@ -32,12 +39,5 @@ public sealed record Selector : BehaviourComposite
     }
 
     return BehaviourStatus.Failure;
-  }
-
-  public override void OnExit(BehaviourContext context)
-  {
-    base.OnExit(context);
-
-    lastIndex = 0;
   }
 }

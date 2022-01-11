@@ -7,7 +7,7 @@ public sealed record FixedDelay(TimeSpan Duration) : BehaviourTask
 {
   private IntervalTimer timer;
 
-  public override void OnEnter(BehaviourContext context)
+  protected internal override void OnEnter(BehaviourContext context)
   {
     base.OnEnter(context);
 

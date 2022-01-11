@@ -18,11 +18,7 @@ public enum BehaviourStatus
 }
 
 /// <summary>The context for <see cref="BehaviourNode"/> operations.</summary>
-public sealed record BehaviourContext(
-  object Owner,
-  IPropertyCollection Properties,
-  BehaviourTree BehaviourTree
-);
+public sealed record BehaviourContext(object Owner, IPropertyCollection Properties, BehaviourTree BehaviourTree);
 
 /// <summary>An <see cref="IAutomata"/> that implements a behaviour tree.</summary>
 public sealed class BehaviourTree : IAutomata, IMessageListener
@@ -74,19 +70,19 @@ public abstract record BehaviourNode
 {
   public BehaviourStatus CurrentStatus { get; private set; }
 
-  public virtual void OnEnter(BehaviourContext context)
+  protected internal virtual void OnEnter(BehaviourContext context)
   {
   }
 
-  public virtual void OnExit(BehaviourContext context)
+  protected internal virtual void OnExit(BehaviourContext context)
   {
   }
 
-  public virtual void OnMessageReceived(Message message)
+  protected internal virtual void OnMessageReceived(Message message)
   {
   }
 
-  public BehaviourStatus Update(BehaviourContext context, DeltaTime deltaTime)
+  protected internal BehaviourStatus Update(BehaviourContext context, DeltaTime deltaTime)
   {
     if (CurrentStatus != BehaviourStatus.Running)
     {

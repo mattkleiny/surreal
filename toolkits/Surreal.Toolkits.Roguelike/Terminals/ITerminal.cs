@@ -6,7 +6,7 @@ using Surreal.Mathematics;
 namespace Surreal.Terminals;
 
 /// <summary>A coloured character that can be painted.</summary>
-public sealed record Glyph
+public readonly record struct Glyph
 {
   public char    Character       { get; init; }
   public Color32 ForegroundColor { get; init; }
@@ -16,13 +16,13 @@ public sealed record Glyph
 /// <summary>A terminal for glyph-based rogue-like games.</summary>
 public interface ITerminal
 {
-  void Paint(Glyph glyph, int x, int y);
+  void Paint(int x, int y, in Glyph glyph);
 }
 
 /// <summary>A <see cref="ITerminal"/> that paints to the <see cref="Console"/>.</summary>
 public class ConsoleTerminal : ITerminal
 {
-  public void Paint(Glyph glyph, int x, int y)
+  public void Paint(int x, int y, in Glyph glyph)
   {
     throw new NotImplementedException();
   }
@@ -38,7 +38,7 @@ public class ImageTerminal : ITerminal, IDisposable
 
   public Image Image { get; }
 
-  public void Paint(Glyph glyph, int x, int y)
+  public void Paint(int x, int y, in Glyph glyph)
   {
     throw new NotImplementedException();
   }
