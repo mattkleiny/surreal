@@ -1,6 +1,4 @@
-﻿using Surreal.Effects;
-
-namespace Surreal;
+﻿namespace Surreal.Effects;
 
 public class StatusEffectTests
 {

@@ -1,6 +1,4 @@
-﻿using Surreal.Combat;
-
-namespace Surreal;
+﻿namespace Surreal.Combat;
 
 public class DamageTests
 {

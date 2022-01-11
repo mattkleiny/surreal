@@ -1,4 +1,6 @@
-﻿namespace Surreal.IO.Binary;
+﻿using System.Runtime.InteropServices;
+
+namespace Surreal.IO.Binary;
 
 /// <summary>Allows writing values into a serialization stream.</summary>
 public interface IBinaryWriter
@@ -80,6 +82,12 @@ public interface IBinaryWriter
     BitConverter.TryWriteBytes(buffer, value);
 
     return WriteSpanAsync(buffer, cancellationToken);
+  }
+
+  async ValueTask WriteStringAsync(string value, CancellationToken cancellationToken = default)
+  {
+    await WriteIntAsync(value.Length, cancellationToken);
+    await WriteSpanAsync(MemoryMarshal.Cast<char, byte>(value), cancellationToken);
   }
 
   ValueTask WriteSpanAsync(ReadOnlySpan<byte> value, CancellationToken cancellationToken = default);

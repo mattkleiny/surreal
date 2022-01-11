@@ -5,14 +5,14 @@ namespace Surreal.IO.Binary.Internal;
 [BinarySerializer(typeof(VolumeI))]
 public sealed class VolumeIBinarySerializer : BinarySerializer<VolumeI>
 {
-  public override async ValueTask SerializeAsync(VolumeI value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(VolumeI value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {
     await writer.WriteIntAsync(value.Width, cancellationToken);
     await writer.WriteIntAsync(value.Height, cancellationToken);
     await writer.WriteIntAsync(value.Depth, cancellationToken);
   }
 
-  public override async ValueTask<VolumeI> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<VolumeI> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
   {
     var width  = await reader.ReadIntAsync(cancellationToken);
     var height = await reader.ReadIntAsync(cancellationToken);

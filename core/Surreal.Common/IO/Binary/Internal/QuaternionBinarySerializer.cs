@@ -3,7 +3,7 @@
 [BinarySerializer(typeof(Quaternion))]
 public sealed class QuaternionBinarySerializer : BinarySerializer<Quaternion>
 {
-  public override async ValueTask SerializeAsync(Quaternion value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask SerializeAsync(Quaternion value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {
     await writer.WriteFloatAsync(value.X, cancellationToken);
     await writer.WriteFloatAsync(value.Y, cancellationToken);
@@ -11,7 +11,7 @@ public sealed class QuaternionBinarySerializer : BinarySerializer<Quaternion>
     await writer.WriteFloatAsync(value.W, cancellationToken);
   }
 
-  public override async ValueTask<Quaternion> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Quaternion> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
   {
     var x = await reader.ReadFloatAsync(cancellationToken);
     var y = await reader.ReadFloatAsync(cancellationToken);

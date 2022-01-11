@@ -1,6 +1,7 @@
-﻿using Surreal.Mathematics;
+﻿using Surreal.IO.Binary;
+using Surreal.Mathematics;
 
-namespace Surreal.IO.Binary;
+namespace Surreal.IO;
 
 public class BinarySerializationTests
 {
@@ -53,6 +54,12 @@ public class BinarySerializationTests
     => BinarySerializer.SerializeAsync(value, CreateWriter());
 
   [Test, AutoFixture] public ValueTask it_should_serialize_Volume(Volume value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_TimeSpan(TimeSpan value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_TimeSpanRange(TimeSpanRange value)
     => BinarySerializer.SerializeAsync(value, CreateWriter());
 
   private static StreamBinaryWriter CreateWriter() => new(new MemoryStream());

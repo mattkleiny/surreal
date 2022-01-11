@@ -29,14 +29,14 @@ public sealed record BytecodeProgram : ICompiledScript
   [BinarySerializer(typeof(BytecodeProgram))]
   private sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram>
   {
-    public override async ValueTask SerializeAsync(BytecodeProgram value, IBinaryWriter writer, IBinarySerializationContext context, CancellationToken cancellationToken = default)
+    public override async ValueTask SerializeAsync(BytecodeProgram value, IBinaryWriter writer, CancellationToken cancellationToken = default)
     {
       await writer.WriteSpanAsync(stackalloc byte[] { 0x73, 0x37, 0x73, 0x37 }, cancellationToken);
 
       throw new NotImplementedException();
     }
 
-    public override async ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, IBinarySerializationContext context, CancellationToken cancellationToken = default)
+    public override async ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
     {
       throw new NotImplementedException();
     }
