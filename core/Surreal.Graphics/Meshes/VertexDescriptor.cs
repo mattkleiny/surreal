@@ -83,16 +83,13 @@ public sealed class VertexDescriptorSet
       .GetMembers(BindingFlags.Public | BindingFlags.Instance)
       .OfType<FieldInfo>()
       .Where(member => member.GetCustomAttribute<VertexDescriptorAttribute>() != null)
-      .Select(member => member.GetCustomAttribute<VertexDescriptorAttribute>()!)
-      .ToArray();
+      .Select(member => member.GetCustomAttribute<VertexDescriptorAttribute>()!);
 
     return new VertexDescriptorSet(values);
   }
 
-  private VertexDescriptorSet(params VertexDescriptorAttribute[] attributes)
+  private VertexDescriptorSet(IEnumerable<VertexDescriptorAttribute> attributes)
   {
-    Debug.Assert(attributes.Length > 0, "At least one attribute must be specified.");
-
     this.attributes = CreateAttributes(attributes);
   }
 
@@ -106,30 +103,29 @@ public sealed class VertexDescriptorSet
     return string.Join(", ", attributes.Select(it => it.ToString()).ToArray());
   }
 
-  private ImmutableArray<VertexDescriptor> CreateAttributes(VertexDescriptorAttribute[] attributes)
+  private ImmutableArray<VertexDescriptor> CreateAttributes(IEnumerable<VertexDescriptorAttribute> attributes)
   {
-    var accumulator = 0;
-    var builder     = ImmutableArray.CreateBuilder<VertexDescriptor>(attributes.Length);
+    var builder = ImmutableArray.CreateBuilder<VertexDescriptor>();
+    var stride  = 0;
 
-    for (var i = 0; i < attributes.Length; i++)
+    foreach (var attribute in attributes)
     {
-      var attribute = attributes[i];
       var descriptor = new VertexDescriptor(
         alias: attribute.Alias,
         count: attribute.Count,
         type: attribute.Type,
         normalized: attribute.Normalized,
-        offset: accumulator
+        offset: stride
       );
 
-      accumulator += descriptor.Stride;
+      stride += descriptor.Stride;
 
       builder.Add(descriptor);
     }
 
     // calculate total stride of the members
-    Stride = accumulator;
+    Stride = stride;
 
-    return builder.MoveToImmutable();
+    return builder.ToImmutable();
   }
 }

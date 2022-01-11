@@ -6,7 +6,7 @@ public class ObjectMetadataTests
   public void it_should_construct_from_arbitrary_object()
   {
     var instance = new TestObject();
-    var metadata = ObjectMetadata.Create(instance);
+    var metadata = ObjectMetadata.Create<TestObject>();
 
     Assert.That(metadata.Events, Is.Not.Empty);
     Assert.That(metadata.Methods, Is.Not.Empty);

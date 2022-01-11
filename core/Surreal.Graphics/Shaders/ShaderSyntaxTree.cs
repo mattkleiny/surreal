@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -97,16 +98,13 @@ public abstract record ShaderSyntaxTree
   /// <summary>A single statement in a shader program.</summary>
   public abstract record Statement : ShaderSyntaxTree
   {
-    /// <summary>A manually placed blank line</summary>
-    public sealed record BlankLine : Statement;
-
     /// <summary>A full-line comment</summary>
     /// <example>// A full-line comment</example>
     public sealed record Comment(string Text) : Statement;
 
-    /// <summary>Includes a module of the given name</summary>
-    /// <example>#include math</example>
-    public sealed record Include(string Module) : Statement;
+    /// <summary>Includes a module of the given name from the given path.</summary>
+    /// <example>#include "local://Assets/shaders/test.shader"</example>
+    public sealed record Include(VirtualPath Path) : Statement;
 
     /// <summary>Declares a uniform parameter to the program.</summary>
     /// <example>uniform vec3 _direction;</example>

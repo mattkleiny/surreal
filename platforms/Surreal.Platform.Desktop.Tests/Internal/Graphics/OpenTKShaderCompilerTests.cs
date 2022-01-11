@@ -36,6 +36,7 @@ public class OpenTKShaderCompilerTests
         Archetype: ShaderArchetype.Sprite,
         new CompilationUnit(
           // shared globals
+          new Include("local://Assets/shaders/test.shader"),
           new UniformDeclaration(new Primitive(PrimitiveType.Float), "_Amount"),
           new UniformDeclaration(new Primitive(PrimitiveType.Float, 2), "_Position"),
           new VaryingDeclaration(new Primitive(PrimitiveType.Float, 4, Precision.Low), "_Color"),

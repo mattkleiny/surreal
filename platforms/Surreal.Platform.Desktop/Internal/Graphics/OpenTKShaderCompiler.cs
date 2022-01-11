@@ -106,7 +106,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     foreach (var include in includes)
     {
       // TODO: actually insert the included module
-      builder.AppendLine($"#include {include.Module}");
+      builder.AppendLine($"#include \"{include.Path}\"");
     }
   }
 
@@ -116,10 +116,6 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     {
       case Include:
         // no-op (included in preamble)
-        break;
-
-      case BlankLine:
-        builder.AppendBlankLine();
         break;
 
       case Comment(var text):

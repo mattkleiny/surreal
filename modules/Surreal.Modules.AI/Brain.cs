@@ -3,11 +3,7 @@
 namespace Surreal;
 
 /// <summary>Context for <see cref="Brain"/> operations.</summary>
-public record struct BrainContext(
-  DeltaTime DeltaTime,
-  LevelOfDetail LevelOfDetail,
-  Priority Priority
-);
+public readonly record struct BrainContext(DeltaTime DeltaTime, LevelOfDetail LevelOfDetail, Priority Priority);
 
 /// <summary>A brain for an intelligent actor</summary>
 public abstract class Brain

@@ -8,7 +8,8 @@ namespace Surreal.Graphics.Shaders;
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class StandardShaderParser : IShaderParser
 {
-  private static ImmutableHashSet<string> Keywords { get; } = new[] { "for", "if", "else" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords            { get; } = new[] { "for", "if", "else" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> CompileTimeKeywords { get; } = new[] { "include" }.ToImmutableHashSet();
 
   public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
@@ -86,45 +87,35 @@ public sealed class StandardShaderParser : IShaderParser
       case '!':
       {
         if (span.Match('='))
-        {
           return new Token(TokenType.BangEqual, position, span[..2]);
-        }
 
         return new Token(TokenType.Bang, position, span[..1]);
       }
       case '=':
       {
         if (span.Match('='))
-        {
           return new Token(TokenType.EqualEqual, position, span[..2]);
-        }
 
         return new Token(TokenType.Equal, position, span[..1]);
       }
       case '<':
       {
         if (span.Match('='))
-        {
           return new Token(TokenType.LessEqual, position, span[..2]);
-        }
 
         return new Token(TokenType.Less, position, span[..1]);
       }
       case '>':
       {
         if (span.Match('='))
-        {
           return new Token(TokenType.GreaterEqual, position, span[..2]);
-        }
 
         return new Token(TokenType.Greater, position, span[..1]);
       }
       case '/':
       {
         if (span.Match('/'))
-        {
           return new Token(TokenType.Comment, position, span, span[2..]);
-        }
 
         return new Token(TokenType.Slash, position, span[..1]);
       }
@@ -135,21 +126,37 @@ public sealed class StandardShaderParser : IShaderParser
         var literal = span.ConsumeUntil('"');
 
         if (literal[^1] != '"')
-        {
           throw ErrorAt(position, span, $"Unterminated string literal: {literal}");
-        }
 
         return new Token(TokenType.String, position, literal, literal[1..^1].ToString());
+      }
+
+      // pre-processor
+      case '#':
+      {
+        // recursively scan the rest of this token
+        // TODO: what about lots of nested #s?
+        var innerToken = ScanToken(position with { Column = position.Column + 1 }, span[1..]);
+
+        if (innerToken is null)
+          throw ErrorAt(position, span, $"Unrecognized pre-processor {span}");
+
+        var (_, _, innerSpan, innerLiteral) = innerToken.Value;
+
+        if (innerLiteral == null)
+          throw ErrorAt(position, span, $"Unrecognized pre-processor {span}, expected a valid literal");
+
+        if (!CompileTimeKeywords.Contains(innerLiteral.ToString()!))
+          throw ErrorAt(position, span, $"Unrecognized pre-processor keyword {innerLiteral}");
+
+        return new Token(TokenType.CompileTimeKeyword, position, span[..(innerSpan.Length + 1)], innerLiteral);
       }
 
       default:
       {
         // whitespace
         if (char.IsWhiteSpace(character))
-        {
-          // ignore whitespace
-          return null;
-        }
+          return null; // ignore whitespace
 
         // numbers
         if (char.IsDigit(character))
@@ -215,18 +222,14 @@ public sealed class StandardShaderParser : IShaderParser
     Number,
     Identifier,
     Keyword,
+    CompileTimeKeyword,
 
     // comments/etc
     Comment,
   }
 
   /// <summary>Encodes a single token in the <see cref="StandardShaderParser"/>.</summary>
-  private readonly record struct Token(
-    TokenType Type,
-    LinePosition Position,
-    StringSpan Span,
-    object? Literal = null
-  );
+  private readonly record struct Token(TokenType Type, LinePosition Position, StringSpan Span, object? Literal = null);
 
   /// <summary>A position of a token in it's source text.</summary>
   private readonly record struct LinePosition(int Line, int Column)

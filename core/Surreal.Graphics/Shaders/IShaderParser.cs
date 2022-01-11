@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphics.Shaders;
+﻿using Surreal.IO;
+
+namespace Surreal.Graphics.Shaders;
 
 /// <summary>Represents a parser front-end for shader programs.</summary>
 public interface IShaderParser
@@ -10,6 +12,18 @@ public interface IShaderParser
 /// <summary>Static extensions for <see cref="IShaderParser"/>s.</summary>
 public static class ShaderParserExtensions
 {
+  public static ValueTask<ShaderProgramDeclaration> ParseShaderAsync(this IShaderParser parser, VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    return ParseShaderAsync(parser, path, Encoding.UTF8, cancellationToken);
+  }
+
+  public static async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(this IShaderParser parser, VirtualPath path, Encoding encoding, CancellationToken cancellationToken = default)
+  {
+    await using var stream = await path.OpenInputStreamAsync();
+
+    return await ParseShaderAsync(parser, path.ToString(), stream, encoding, cancellationToken);
+  }
+
   public static ValueTask<ShaderProgramDeclaration> ParseShaderAsync(this IShaderParser parser, string path, Stream stream, CancellationToken cancellationToken = default)
   {
     return ParseShaderAsync(parser, path, stream, Encoding.UTF8, cancellationToken);

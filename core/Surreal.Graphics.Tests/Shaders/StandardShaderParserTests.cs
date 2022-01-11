@@ -8,10 +8,8 @@ public class StandardShaderParserTests
   [TestCase("Assets/shaders/test01.shader")]
   public async Task it_should_parse_shader_programs(VirtualPath path)
   {
-    await using var stream   = await path.OpenInputStreamAsync();
-    var             language = new StandardShaderParser();
-
-    var metadata = await language.ParseShaderAsync(path.ToString(), stream);
+    var parser   = new StandardShaderParser();
+    var metadata = await parser.ParseShaderAsync(path);
 
     Assert.IsNotNull(metadata);
   }

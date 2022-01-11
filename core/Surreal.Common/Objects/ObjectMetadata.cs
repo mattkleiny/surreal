@@ -16,13 +16,6 @@ public abstract record ObjectMetadata
   private static readonly ConcurrentDictionary<Type, ObjectMetadata> MetadataByType = new();
 
   /// <summary>Creates <see cref="ObjectMetadata{T}"/> metadata for the given instance.</summary>
-  public static ObjectMetadata<T> Create<T>(T instance)
-    where T : notnull
-  {
-    return Create<T>();
-  }
-
-  /// <summary>Creates <see cref="ObjectMetadata{T}"/> metadata for the given instance.</summary>
   public static ObjectMetadata<T> Create<T>()
     where T : notnull
   {

@@ -32,7 +32,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 
   public string Extension => Path.GetExtension(Target.Source)!;
 
-  public override string ToString() => $"<{Scheme}://{Target}>";
+  public override string ToString() => $"{Scheme}://{Target}";
 
   public static implicit operator VirtualPath(string uri) => Parse(uri);
 
