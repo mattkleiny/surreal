@@ -7,13 +7,19 @@ namespace Surreal.Scripting.Bytecode;
 /// <summary>Different kinds of <see cref="BytecodeInstruction"/>s.</summary>
 public enum InstructionType : ushort
 {
+  /// <summary>A standard no-op</summary>
   Nop = 0,
-
+  /// <summary>Moves a value to/from a register.</summary>
   Mov,
+  /// <summary>Pushes a value from the stack.</summary>
   Push,
+  /// <summary>Pops a value from the stack.</summary>
   Pop,
-
-  /// <summary>Yield control back to the caller thread.</summary>
+  /// <summary>Invokes a function extrinsically</summary>
+  EInvoke,
+  /// <summary>Invokes a function intrinsically</summary>
+  IInvoke,
+  /// <summary>Directly yield control back to the execution thread (for spin waits).</summary>
   Yield,
 }
 
@@ -24,22 +30,22 @@ public readonly record struct BytecodeInstruction(InstructionType Type);
 public sealed record BytecodeProgram : ICompiledScript
 {
   public ImmutableList<BytecodeInstruction> Instructions { get; init; } = ImmutableList<BytecodeInstruction>.Empty;
+}
 
-  /// <summary>The <see cref="BinarySerializer"/> for <see cref="BytecodeProgram"/>s.</summary>
-  [BinarySerializer(typeof(BytecodeProgram))]
-  private sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram>
+/// <summary>The <see cref="BinarySerializer"/> for <see cref="BytecodeProgram"/>s.</summary>
+[BinarySerializer(typeof(BytecodeProgram))]
+public sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram>
+{
+  public override async ValueTask SerializeAsync(BytecodeProgram value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {
-    public override async ValueTask SerializeAsync(BytecodeProgram value, IBinaryWriter writer, CancellationToken cancellationToken = default)
-    {
-      await writer.WriteSpanAsync(stackalloc byte[] { 0x73, 0x37, 0x73, 0x37 }, cancellationToken);
+    await writer.WriteSpanAsync(stackalloc byte[] { 0x73, 0x37, 0x73, 0x37 }, cancellationToken);
 
-      throw new NotImplementedException();
-    }
+    throw new NotImplementedException();
+  }
 
-    public override async ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
-    {
-      throw new NotImplementedException();
-    }
+  public override async ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
+  {
+    throw new NotImplementedException();
   }
 }
 

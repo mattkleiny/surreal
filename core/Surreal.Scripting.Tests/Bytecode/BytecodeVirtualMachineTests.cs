@@ -5,7 +5,14 @@ public class BytecodeVirtualMachineTests
   [Test]
   public async Task it_should_execute_a_simple_program()
   {
-    var machine = new BytecodeVirtualMachine();
+    var machine = new BytecodeVirtualMachine
+    {
+      IntrinsicFunctions =
+      {
+        new("Draw", () => 1),
+        new("Print", (string text) => Console.WriteLine(text)),
+      }
+    };
 
     var program = new BytecodeProgram
     {
