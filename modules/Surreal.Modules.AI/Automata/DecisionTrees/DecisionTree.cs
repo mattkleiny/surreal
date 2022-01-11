@@ -1,70 +1,25 @@
-﻿namespace Surreal.Automata.DecisionTrees;
+﻿using Surreal.Collections;
+using Surreal.Timing;
 
-/// <summary>Context for <see cref="Decision"/> operations.</summary>
-public sealed record DecisionContext
+namespace Surreal.Automata.DecisionTrees;
+
+/// <summary>Context for <see cref="DecisionNode"/> operations.</summary>
+public sealed record DecisionContext(
+  object Owner,
+  IPropertyCollection Properties,
+  DecisionTree DecisionTree
+);
+
+/// <summary>An <see cref="IAutomata"/> that implements a decision tree.</summary>
+public sealed record DecisionTree : IAutomata
 {
-  public object? UserData { get; init; }
-}
+  public List<DecisionNode> Decisions { get; init; } = new();
 
-/// <summary>A set of <see cref="Decision"/>s that can be evaluated and executed.</summary>
-public sealed record DecisionTree
-{
-  public List<Decision> Decisions { get; init; } = new();
-
-  public ValueTask EvaluateAsync(DecisionContext context)
+  AutomataStatus IAutomata.Tick(DeltaTime deltaTime)
   {
-    foreach (var tactic in Decisions)
-    {
-      if (tactic.CanExecute(context))
-      {
-        return tactic.ExecuteAsync(context);
-      }
-    }
-
-    return ValueTask.CompletedTask;
+    throw new NotImplementedException();
   }
 }
 
-/// <summary>A single decision in a <see cref="DecisionTree"/>.</summary>
-public sealed record Decision
-{
-  public List<Condition> Conditions { get; init; } = new();
-  public List<Action>    Actions    { get; init; } = new();
-
-  public bool CanExecute(DecisionContext context)
-  {
-    foreach (var condition in Conditions)
-    {
-      if (condition.CanExecute(context))
-      {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  public async ValueTask ExecuteAsync(DecisionContext context)
-  {
-    foreach (var action in Actions)
-    {
-      if (action.CanExecute(context))
-      {
-        await action.Execute(context);
-      }
-    }
-  }
-
-  /// <summary>Describes a possible condition for a <see cref="Decision"/>.</summary>
-  public abstract record Condition
-  {
-    public abstract bool CanExecute(DecisionContext context);
-  }
-
-  /// <summary>Describes a possible action for a <see cref="Decision"/>.</summary>
-  public abstract record Action
-  {
-    public abstract bool      CanExecute(DecisionContext context);
-    public abstract ValueTask Execute(DecisionContext context);
-  }
-}
+/// <summary>A single node in a <see cref="DecisionTree"/>.</summary>
+public abstract record DecisionNode;

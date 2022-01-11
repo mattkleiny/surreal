@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Commands;
+using Surreal.Mathematics;
 
 namespace Surreal;
 
@@ -30,6 +31,9 @@ internal class AutoFixtureAttribute : AutoDataAttribute
 
     fixture.Customizations.Add(new DateOnlyGenerator());
     fixture.Customizations.Add(new TimeOnlyGenerator());
+    fixture.Customizations.Add(new IntRangeGenerator());
+    fixture.Customizations.Add(new FloatRangeGenerator());
+    fixture.Customizations.Add(new TimeSpanRangeGenerator());
 
     foreach (var builder in DiscoverSpecimenBuilders())
     {
@@ -66,7 +70,55 @@ internal class AutoFixtureAttribute : AutoDataAttribute
       return new TimeOnly(hour, minute, second);
     }
   }
-  
+
+  private sealed class IntRangeGenerator : SpecimenBuilder<IntRange>
+  {
+    protected override IntRange Create(ISpecimenContext context, string? name = null)
+    {
+      var random = Random.Shared;
+
+      var value1 = random.Next();
+      var value2 = random.Next();
+
+      var min = Math.Min(value1, value2);
+      var max = Math.Max(value1, value2);
+
+      return new IntRange(min, max);
+    }
+  }
+
+  private sealed class FloatRangeGenerator : SpecimenBuilder<FloatRange>
+  {
+    protected override FloatRange Create(ISpecimenContext context, string? name = null)
+    {
+      var random = Random.Shared;
+
+      var value1 = random.NextFloat();
+      var value2 = random.NextFloat();
+
+      var min = MathF.Min(value1, value2);
+      var max = MathF.Max(value1, value2);
+
+      return new FloatRange(min, max);
+    }
+  }
+
+  private sealed class TimeSpanRangeGenerator : SpecimenBuilder<TimeSpanRange>
+  {
+    protected override TimeSpanRange Create(ISpecimenContext context, string? name = null)
+    {
+      var random = Random.Shared;
+
+      var value1 = random.NextTimeSpan();
+      var value2 = random.NextTimeSpan();
+
+      var min = value1 < value2 ? value1 : value2;
+      var max = value1 > value2 ? value1 : value2;
+
+      return new TimeSpanRange(min, max);
+    }
+  }
+
   private static IEnumerable<ISpecimenBuilder> DiscoverSpecimenBuilders()
   {
     return from type in Assembly.GetExecutingAssembly().GetTypes()

@@ -1,4 +1,5 @@
 ﻿using Surreal.Mathematics;
+using Surreal.UI.Painting;
 
 namespace Surreal.UI.Immediate;
 
@@ -19,6 +20,7 @@ public interface IControlStateProvider
 /// <summary>A context for painting operations in immediate mode.</summary>
 public readonly record struct PaintingContext
 {
+  public Pen                    Pen           { get; init; } = new(Brush.White);
   public PaintingStage          Stage         { get; init; } = PaintingStage.Layout;
   public IControlStateProvider? StateProvider { get; init; } = default;
 

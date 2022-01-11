@@ -18,6 +18,14 @@ public readonly record struct FloatRange(float Min, float Max)
   public override string ToString() => $"{Min:F} to {Max:F}";
 }
 
+/// <summary>A <see cref="TimeSpan"/>  range.</summary>
+public readonly record struct TimeSpanRange(TimeSpan Min, TimeSpan Max)
+{
+  public TimeSpan Delta => Max - Min;
+
+  public override string ToString() => $"{Min:F} to {Max:F}";
+}
+
 /// <summary>Utilities for working with ranges.</summary>
 public static class Ranges
 {

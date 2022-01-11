@@ -232,17 +232,6 @@ public abstract partial class Game : IDisposable, ITestableGame
   {
     public   IPlatform?                Platform         { get; init; }
     internal Action<IServiceRegistry>? ServiceOverrides { get; set; }
-
-    public void AddServiceOverrides(Action<IServiceRegistry> overrides)
-    {
-      var oldOverrides = ServiceOverrides;
-
-      ServiceOverrides = registry =>
-      {
-        oldOverrides?.Invoke(registry);
-        overrides(registry);
-      };
-    }
   }
 
   /// <summary>A <see cref="ILoopTarget"/> that profiles it's target operations.</summary>

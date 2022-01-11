@@ -7,10 +7,12 @@ public abstract record StatusEffect
 {
   public virtual void OnEffectAdded(object owner)
   {
+    // no-op by default
   }
 
   public virtual void OnEffectRemoved(object owner)
   {
+    // no-op by default
   }
 
   public virtual Transition OnEffectUpdate(object owner, DeltaTime deltaTime)
