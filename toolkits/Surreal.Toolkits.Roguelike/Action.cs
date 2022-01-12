@@ -1,14 +1,8 @@
-﻿using Surreal.Actors;
-
-namespace Surreal.Actions;
+﻿namespace Surreal;
 
 /// <summary>An action that can be executed by anything in the world.</summary>
 public abstract record Action
 {
-  public Actor?   Actor   { get; init; }
-  public Hero?    Hero    => Actor as Hero;
-  public Monster? Monster => Actor as Monster;
-
   public abstract ActionResult OnPerform();
 
   protected ActionResult Success(string? message = null)
