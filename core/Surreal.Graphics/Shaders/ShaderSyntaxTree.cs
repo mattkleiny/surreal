@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Surreal.IO;
+﻿using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -96,6 +95,10 @@ public abstract record ShaderSyntaxTree
     /// <summary>Assigns a value to a variable.</summary>
     /// <example>test = vec3(1,1,1);</example>
     public sealed record Assignment(string Variable, Expression Value) : Statement;
+
+    /// <summary>Returns a value from the function.</summary>
+    /// <example>return vec3(1,1,1);</example>
+    public sealed record Return(Expression Value) : Statement;
 
     /// <summary>Assigns a value to an intrinsic.</summary>
     /// <example>COLOR = vec3(1,1,1);</example>

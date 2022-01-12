@@ -4,8 +4,8 @@ namespace Surreal.Graphics.Textures;
 public readonly record struct RenderTextureDescriptor(
   int Width,
   int Height,
-  TextureFormat Format,
-  TextureFilterMode FilterMode
+  TextureFormat Format = TextureFormat.Rgba8888,
+  TextureFilterMode FilterMode = TextureFilterMode.Linear
 );
 
 /// <summary>A frame-buffer that can be used for off-screen rendering.</summary>

@@ -10,7 +10,7 @@ namespace Surreal.Graphics.Shaders.Languages;
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class StandardShaderParser : IShaderParser
 {
-  private static ImmutableHashSet<string> Keywords        { get; } = new[] { "uniform", "varying", "const", "for", "if", "else" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords        { get; } = new[] { "uniform", "varying", "const", "return" }.ToImmutableHashSet();
   private static ImmutableHashSet<string> CompileKeywords { get; } = new[] { "shader_type", "include" }.ToImmutableHashSet();
   private static ImmutableHashSet<string> StageKeywords   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
 
@@ -385,9 +385,22 @@ public sealed class StandardShaderParser : IShaderParser
     private Statement ParseStatement()
     {
       // TODO: implement me
-      var comment = ConsumeLiteral<string>(TokenType.Comment);
+      if (TryConsumeLiteral(TokenType.Comment, out string comment))
+      {
+        return new Comment(comment);
+      }
 
-      return new Comment(comment);
+      if (TryConsumeLiteral(TokenType.Keyword, out string keyword))
+      {
+        return keyword switch
+        {
+          "return" => new Return(ParseExpression()),
+
+          _ => throw Error($"An unexpected keyword was encountered: {keyword}"),
+        };
+      }
+
+      throw new NotImplementedException();
     }
 
     private Include ParseInclude()
@@ -504,6 +517,22 @@ public sealed class StandardShaderParser : IShaderParser
       }
 
       return literal;
+    }
+
+    private bool TryConsumeLiteral<T>(TokenType type, out T result)
+    {
+      if (TryPeek(type))
+      {
+        var token = lastToken = tokens.Dequeue();
+        if (token.Literal is T literal)
+        {
+          result = literal;
+          return true;
+        }
+      }
+
+      result = default!;
+      return false;
     }
 
     private ShaderSyntaxTree? Discard()

@@ -1,4 +1,4 @@
-﻿namespace Surreal.Utilities;
+﻿namespace Surreal.Commands;
 
 public class TransactionTests
 {

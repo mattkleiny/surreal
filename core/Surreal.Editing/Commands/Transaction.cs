@@ -1,4 +1,4 @@
-﻿namespace Surreal.Utilities;
+﻿namespace Surreal.Commands;
 
 /// <summary>An operation that can be added to a <see cref="Transaction"/>.</summary>
 public interface ITransactionOperation
