@@ -1,34 +1,30 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Surreal.Text;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
 namespace Surreal.Graphics.Shaders.Languages;
 
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class StandardShaderParser : IShaderParser
 {
-  private static ImmutableHashSet<string> Keywords        { get; } = new[] { "for", "if", "else" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords        { get; } = new[] { "uniform", "varying", "const", "for", "if", "else" }.ToImmutableHashSet();
   private static ImmutableHashSet<string> CompileKeywords { get; } = new[] { "shader_type", "include" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> StageKeywords   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
 
   public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var tokens  = await TokenizeAsync(reader, cancellationToken);
-    var context = new ParseContext(tokens);
+    var context = new SyntaxParseContext(tokens);
 
-    var compilationUnit = ParseCompilationUnit(context);
-
-    return new ShaderProgramDeclaration(path, ShaderArchetype.Sprite, compilationUnit);
+    return new ShaderProgramDeclaration(path, context.ParseCompilationUnit());
   }
 
-  private static ShaderSyntaxTree.CompilationUnit ParseCompilationUnit(ParseContext context)
-  {
-    var nodes = new List<ShaderSyntaxTree>();
+  #region Tokenization
 
-    // TODO: recursive decent parser
-
-    return new ShaderSyntaxTree.CompilationUnit(nodes);
-  }
-
+  [SuppressMessage("ReSharper", "CognitiveComplexity")]
   private static async Task<Queue<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
   {
     var results = new Queue<Token>();
@@ -125,7 +121,7 @@ public sealed class StandardShaderParser : IShaderParser
         var literal = span.ConsumeUntil('"');
 
         if (literal[^1] != '"')
-          throw ErrorAt(position, span, $"Unterminated string literal: {literal}");
+          throw ShaderParseException.Create(position, span, $"Unterminated string literal: {literal}");
 
         return new Token(TokenType.String, position, literal, literal[1..^1].ToString());
       }
@@ -137,15 +133,15 @@ public sealed class StandardShaderParser : IShaderParser
         var innerToken = ScanToken(position with { Column = position.Column + 1 }, span[1..]);
 
         if (innerToken is null)
-          throw ErrorAt(position, span, $"Unrecognized pre-processor {span}");
+          throw ShaderParseException.Create(position, span, $"Unrecognized pre-processor {span}");
 
         var (_, _, innerSpan, innerLiteral) = innerToken.Value;
 
         if (innerLiteral == null)
-          throw ErrorAt(position, span, $"Unrecognized pre-processor {span}, expected a valid literal");
+          throw ShaderParseException.Create(position, span, $"Unrecognized pre-processor {span}, expected a valid literal");
 
         if (!CompileKeywords.Contains(innerLiteral.ToString()!))
-          throw ErrorAt(position, span, $"Unrecognized pre-processor keyword {innerLiteral}");
+          throw ShaderParseException.Create(position, span, $"Unrecognized pre-processor keyword {innerLiteral}");
 
         return new Token(TokenType.CompileKeyword, position, span[..(innerSpan.Length + 1)], innerLiteral);
       }
@@ -178,14 +174,9 @@ public sealed class StandardShaderParser : IShaderParser
           return new Token(TokenType.Identifier, position, identifier, literal);
         }
 
-        throw ErrorAt(position, span, $"Unknown token '{character}'");
+        throw ShaderParseException.Create(position, span, $"Unknown token '{character}'");
       }
     }
-  }
-
-  private static Exception ErrorAt(LinePosition position, StringSpan span, string message)
-  {
-    return new ParseException(position, span, message);
   }
 
   /// <summary>Different types of tokens recognized by the parser.</summary>
@@ -235,48 +226,267 @@ public sealed class StandardShaderParser : IShaderParser
     public override string ToString() => $"{Line}:{Column}";
   }
 
-  /// <summary>Context for parsing operations.</summary>
-  private sealed class ParseContext
+  #endregion
+
+  #region Parsing
+
+  /// <summary>Context for syntax parsing operations. This is a recursive descent style parser.</summary>
+  private sealed class SyntaxParseContext
   {
     private readonly Queue<Token> tokens;
+    private          Token        lastToken;
 
-    public ParseContext(Queue<Token> tokens)
+    public SyntaxParseContext(Queue<Token> tokens)
     {
       this.tokens = tokens;
     }
 
-    public bool TryPeek(out Token token)
+    public CompilationUnit ParseCompilationUnit()
+    {
+      var nodes = new List<ShaderSyntaxTree>();
+
+      while (TryPeek(out var token))
+      {
+        var node = token.Type switch
+        {
+          TokenType.CompileKeyword => ParseCompileKeyword(),
+          TokenType.Keyword        => ParseKeyword(),
+          TokenType.Identifier     => ParseStageOrFunction(),
+          _                        => Discard(),
+        };
+
+        if (node != null)
+        {
+          nodes.Add(node);
+        }
+      }
+
+      return new CompilationUnit
+      {
+        ShaderType = nodes.OfType<ShaderTypeDeclaration>().FirstOrDefault(new ShaderTypeDeclaration("sprite")),
+        Includes   = nodes.OfType<Include>().ToImmutableArray(),
+        Uniforms   = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
+        Varyings   = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
+        Constants  = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
+        Functions  = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
+        Stages     = nodes.OfType<StageDeclaration>().ToImmutableArray(),
+      };
+    }
+
+    public ShaderSyntaxTree ParseCompileKeyword()
+    {
+      var token = Consume(TokenType.CompileKeyword);
+
+      return token.Literal switch
+      {
+        "include"     => ParseInclude(),
+        "shader_type" => ParseShaderTypeDeclaration(),
+
+        _ => throw Error($"An unrecognized compile time keyword was encountered: {token.Literal}"),
+      };
+    }
+
+    public ShaderSyntaxTree ParseKeyword()
+    {
+      var token = Consume(TokenType.Keyword);
+
+      return token.Literal switch
+      {
+        "uniform" => ParseUniformDeclaration(),
+        "varying" => ParseVaryingDeclaration(),
+        "const"   => ParseConstantDeclaration(),
+
+        _ => throw Error($"An unrecognized keyword was encountered: {token.Literal}"),
+      };
+    }
+
+    public ShaderSyntaxTree ParseStageOrFunction()
+    {
+      var returnType = ParsePrimitiveType();
+      var name       = ParseIdentifier();
+      var parameters = ParseParameters();
+      var statements = ParseStatements();
+
+      if (StageKeywords.Contains(name))
+      {
+        if (returnType.Type != PrimitiveType.Void)
+          throw Error($"The stage function {name} should have a void return type");
+
+        if (parameters.Length > 0)
+          throw Error($"The stage function {name} should have no parameters");
+
+        var shaderKind = name switch
+        {
+          "vertex"   => ShaderKind.Vertex,
+          "fragment" => ShaderKind.Fragment,
+          "geometry" => ShaderKind.Geometry,
+
+          _ => throw Error($"An unrecognized shader kind was specified {name}"),
+        };
+
+        return new StageDeclaration(shaderKind)
+        {
+          Statements = statements,
+        };
+      }
+
+      return new FunctionDeclaration(returnType, name)
+      {
+        Parameters = parameters,
+        Statements = statements,
+      };
+    }
+
+    private ImmutableArray<Parameter> ParseParameters()
+    {
+      Consume(TokenType.LeftParenthesis);
+      DiscardUntil(TokenType.RightParenthesis); // TODO: parameters
+      Consume(TokenType.RightParenthesis);
+
+      return ImmutableArray<Parameter>.Empty;
+    }
+
+    private ImmutableArray<Statement> ParseStatements()
+    {
+      Consume(TokenType.LeftBrace);
+      DiscardUntil(TokenType.RightBrace); // TODO: statements
+      Consume(TokenType.RightBrace);
+
+      return ImmutableArray<Statement>.Empty;
+    }
+
+    private Include ParseInclude()
+    {
+      var path = ConsumeLiteral<string>(TokenType.String);
+
+      return new Include(path);
+    }
+
+    private ShaderTypeDeclaration ParseShaderTypeDeclaration()
+    {
+      var type = ConsumeLiteral<string>(TokenType.Identifier);
+
+      return new ShaderTypeDeclaration(type);
+    }
+
+    private UniformDeclaration ParseUniformDeclaration()
+    {
+      var type = ParsePrimitiveType();
+      var name = ParseIdentifier();
+
+      return new UniformDeclaration(type, name);
+    }
+
+    private VaryingDeclaration ParseVaryingDeclaration()
+    {
+      var type = ParsePrimitiveType();
+      var name = ParseIdentifier();
+
+      return new VaryingDeclaration(type, name);
+    }
+
+    private ConstantDeclaration ParseConstantDeclaration()
+    {
+      var type  = ParsePrimitiveType();
+      var name  = ParseIdentifier();
+      var value = ParseExpression();
+
+      return new ConstantDeclaration(type, name, value);
+    }
+
+    private Expression ParseExpression()
+    {
+      throw new NotImplementedException();
+    }
+
+    private Primitive ParsePrimitiveType()
+    {
+      var type = ConsumeLiteral<string>(TokenType.Identifier) switch
+      {
+        "void"  => new Primitive(PrimitiveType.Void),
+        "float" => new Primitive(PrimitiveType.Float),
+        "vec2"  => new Primitive(PrimitiveType.Float, 22),
+        "vec3"  => new Primitive(PrimitiveType.Float, 3),
+
+        _ => throw Error("An unrecognized primitive type was specified"),
+      };
+      return type;
+    }
+
+    private string ParseIdentifier()
+    {
+      return ConsumeLiteral<string>(TokenType.Identifier);
+    }
+
+    private bool TryPeek(out Token token)
     {
       return tokens.TryPeek(out token);
     }
 
-    public bool TryDequeue(out Token token)
-    {
-      return tokens.TryDequeue(out token);
-    }
-
-    /// <summary>Attempts to consume a single token from the remaining tokens.</summary>
-    public bool TryConsume(TokenType type, out Token result)
+    private bool TryPeek(TokenType type)
     {
       if (TryPeek(out var token))
       {
-        if (token.Type == type)
-        {
-          result = tokens.Dequeue();
-          return true;
-        }
+        return token.Type == type;
       }
 
-      result = default;
       return false;
+    }
+
+    private Token Consume(TokenType type)
+    {
+      if (!TryPeek(type))
+      {
+        throw Error($"Expected a token of type {type}");
+      }
+
+      return lastToken = tokens.Dequeue();
+    }
+
+    private T ConsumeLiteral<T>(TokenType type)
+    {
+      if (!TryPeek(type))
+      {
+        throw Error($"Expected a token of type {type}");
+      }
+
+      var token = lastToken = tokens.Dequeue();
+      if (token.Literal is not T literal)
+      {
+        throw Error($"Expected a token literal of type {typeof(T)}");
+      }
+
+      return literal;
+    }
+
+    private ShaderSyntaxTree? Discard()
+    {
+      lastToken = tokens.Dequeue();
+
+      return null;
+    }
+
+    private void DiscardUntil(TokenType type)
+    {
+      while (!TryPeek(type))
+      {
+        Discard();
+      }
+    }
+
+    private Exception Error(string message)
+    {
+      return ShaderParseException.Create(lastToken, message);
     }
   }
 
+  #endregion
+
   /// <summary>Indicates an error whilst parsing a program.</summary>
-  private sealed class ParseException : Exception
+  private sealed class ShaderParseException : Exception
   {
-    public ParseException(LinePosition position, StringSpan span, string message)
-      : base(message)
+    public ShaderParseException(LinePosition position, StringSpan span, string message)
+      : base($"{message} (at {position} in {span})")
     {
       Position = position;
       Span     = span;
@@ -284,5 +494,15 @@ public sealed class StandardShaderParser : IShaderParser
 
     public LinePosition Position { get; }
     public StringSpan   Span     { get; }
+
+    public static Exception Create(LinePosition position, StringSpan span, string message)
+    {
+      return new ShaderParseException(position, span, message);
+    }
+
+    public static Exception Create(Token token, string message)
+    {
+      return new ShaderParseException(token.Position, token.Span, message);
+    }
   }
 }

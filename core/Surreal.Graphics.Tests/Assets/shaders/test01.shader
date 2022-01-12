@@ -1,7 +1,7 @@
 // A simple sprite shader, for testing purposes.
-// This description should be attached up-front.
 
-#include "resx://Surreal.Graphics/Resources/SpriteBatch.shader"
+#include "resx://Surreal.Graphics/Shaders/common.shader";
+#include "resx://Surreal.Graphics/Shaders/sprites.shader";
 
 #shader_type sprite;
 

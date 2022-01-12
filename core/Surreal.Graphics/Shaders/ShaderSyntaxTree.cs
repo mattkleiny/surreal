@@ -33,12 +33,6 @@ public enum PrimitiveType
   Sampler,
 }
 
-/// <summary>Different archetypes of shader programs, for template expansions.</summary>
-public enum ShaderArchetype
-{
-  Sprite,
-}
-
 /// <summary>Different types of shader programs.</summary>
 public enum ShaderKind
 {
@@ -51,7 +45,7 @@ public enum ShaderKind
 public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = null, Precision? Precision = null);
 
 /// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
-public sealed record ShaderProgramDeclaration(string Path, ShaderArchetype Archetype, CompilationUnit CompilationUnit);
+public sealed record ShaderProgramDeclaration(string Path, CompilationUnit CompilationUnit);
 
 /// <summary>Common AST graph root for our shading languages.</summary>
 public abstract record ShaderSyntaxTree
@@ -63,28 +57,13 @@ public abstract record ShaderSyntaxTree
   /// </summary>
   public sealed record CompilationUnit : ShaderSyntaxTree
   {
-    public CompilationUnit(params ShaderSyntaxTree[] nodes)
-      : this(nodes.AsEnumerable())
-    {
-    }
-
-    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-    public CompilationUnit(IEnumerable<ShaderSyntaxTree> nodes)
-    {
-      Uniforms  = nodes.OfType<UniformDeclaration>().ToImmutableArray();
-      Varyings  = nodes.OfType<VaryingDeclaration>().ToImmutableArray();
-      Constants = nodes.OfType<ConstantDeclaration>().ToImmutableArray();
-      Includes  = nodes.OfType<Include>().ToImmutableArray();
-      Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray();
-      Stages    = nodes.OfType<StageDeclaration>().ToImmutableArray();
-    }
-
-    public ImmutableArray<UniformDeclaration>  Uniforms  { get; init; }
-    public ImmutableArray<VaryingDeclaration>  Varyings  { get; init; }
-    public ImmutableArray<ConstantDeclaration> Constants { get; init; }
-    public ImmutableArray<Include>             Includes  { get; init; }
-    public ImmutableArray<FunctionDeclaration> Functions { get; init; }
-    public ImmutableArray<StageDeclaration>    Stages    { get; init; }
+    public ShaderTypeDeclaration               ShaderType { get; init; } = new("sprite");
+    public ImmutableArray<Include>             Includes   { get; init; } = ImmutableArray<Include>.Empty;
+    public ImmutableArray<UniformDeclaration>  Uniforms   { get; init; } = ImmutableArray<UniformDeclaration>.Empty;
+    public ImmutableArray<VaryingDeclaration>  Varyings   { get; init; } = ImmutableArray<VaryingDeclaration>.Empty;
+    public ImmutableArray<ConstantDeclaration> Constants  { get; init; } = ImmutableArray<ConstantDeclaration>.Empty;
+    public ImmutableArray<FunctionDeclaration> Functions  { get; init; } = ImmutableArray<FunctionDeclaration>.Empty;
+    public ImmutableArray<StageDeclaration>    Stages     { get; init; } = ImmutableArray<StageDeclaration>.Empty;
   }
 
   /// <summary>A single statement in a shader program.</summary>
@@ -97,6 +76,10 @@ public abstract record ShaderSyntaxTree
     /// <summary>Includes a module of the given name from the given path.</summary>
     /// <example>#include "local://Assets/shaders/test.shader"</example>
     public sealed record Include(VirtualPath Path) : Statement;
+
+    /// <summary>Indicates the type of shader being compiled.</summary>
+    /// <example>#shader_type sprite</example>
+    public sealed record ShaderTypeDeclaration(string Type) : Statement;
 
     /// <summary>Declares a uniform parameter to the program.</summary>
     /// <example>uniform vec3 _direction;</example>
@@ -122,30 +105,16 @@ public abstract record ShaderSyntaxTree
     /// <example>void fragment() { ... }</example>
     public sealed record StageDeclaration(ShaderKind Kind) : Statement
     {
-      public StageDeclaration(ShaderKind kind, params ShaderSyntaxTree[] nodes)
-        : this(kind)
-      {
-        Parameters = nodes.OfType<Parameter>().ToImmutableArray();
-        Statements = nodes.OfType<Statement>().ToImmutableArray();
-      }
-
-      public ImmutableArray<Parameter> Parameters { get; init; }
-      public ImmutableArray<Statement> Statements { get; init; }
+      public ImmutableArray<Parameter> Parameters { get; init; } = ImmutableArray<Parameter>.Empty;
+      public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
     }
 
     /// <summary>Declares a standard function.</summary>
     /// <example>float circle(float radius) { ... }</example>
     public sealed record FunctionDeclaration(Primitive ReturnType, string Name) : Statement
     {
-      public FunctionDeclaration(Primitive returnType, string name, params ShaderSyntaxTree[] nodes)
-        : this(returnType, name)
-      {
-        Parameters = nodes.OfType<Parameter>().ToImmutableArray();
-        Statements = nodes.OfType<Statement>().ToImmutableArray();
-      }
-
-      public ImmutableArray<Parameter> Parameters { get; init; }
-      public ImmutableArray<Statement> Statements { get; init; }
+      public ImmutableArray<Parameter> Parameters { get; init; } = ImmutableArray<Parameter>.Empty;
+      public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
     }
 
     /// <summary>Standard control flow variants.</summary>

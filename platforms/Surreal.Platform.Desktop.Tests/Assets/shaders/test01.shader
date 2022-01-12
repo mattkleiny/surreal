@@ -1,7 +1,6 @@
 // A simple sprite shader, for testing purposes.
-// This description should be attached up-front.
 
-shader_type sprite;
+#shader_type sprite;
 
 uniform vec3 _Position;
 uniform float _Intensity;

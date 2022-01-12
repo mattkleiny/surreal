@@ -13,5 +13,10 @@ public class StandardShaderParserTests
     var metadata = await parser.ParseShaderAsync(path);
 
     Assert.IsNotNull(metadata);
+    Assert.IsTrue(metadata.CompilationUnit.ShaderType is { Type: "sprite" });
+    Assert.AreEqual(2, metadata.CompilationUnit.Includes.Length);
+    Assert.AreEqual(2, metadata.CompilationUnit.Uniforms.Length);
+    Assert.AreEqual(1, metadata.CompilationUnit.Varyings.Length);
+    Assert.AreEqual(2, metadata.CompilationUnit.Stages.Length);
   }
 }

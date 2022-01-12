@@ -29,7 +29,9 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       shaders.Add(new OpenTKShader(shaderType, sourceCode));
     }
 
-    return ValueTask.FromResult<ICompiledShaderProgram>(new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable()));
+    var shaderSet = new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable());
+
+    return ValueTask.FromResult<ICompiledShaderProgram>(shaderSet);
   }
 
   private string BuildSourceCode(ShaderProgramDeclaration declaration, CompilationUnit compilationUnit, StageDeclaration stage)
@@ -86,6 +88,8 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       {
         CompileStatement(codeBuilder, function);
       }
+
+      codeBuilder.AppendBlankLine();
     }
 
     // compile stage local
@@ -249,10 +253,10 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
   private static string ConvertOperator(BinaryOperator type) => type switch
   {
-    BinaryOperator.Add => "+",
+    BinaryOperator.Add      => "+",
     BinaryOperator.Subtract => "-",
     BinaryOperator.Multiply => "*",
-    BinaryOperator.Divide => "/",
+    BinaryOperator.Divide   => "/",
 
     _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
   };
