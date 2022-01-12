@@ -25,11 +25,25 @@ public interface IComponentSystemContext
 public abstract class ComponentSystem : IComponentSystem
 {
   protected ComponentSystem(IComponentSystemContext context)
+    : this(context, ComponentMask.Empty)
   {
-    Context = context;
   }
 
-  public IComponentSystemContext Context { get; }
+  protected ComponentSystem(IComponentSystemContext context, ComponentMask mask)
+  {
+    Context = context;
+    Mask    = mask;
+
+    if (mask != ComponentMask.Empty)
+    {
+      context.ComponentAdded   += OnComponentAdded;
+      context.ComponentRemoved += OnComponentRemoved;
+    }
+  }
+
+  public IComponentSystemContext Context  { get; }
+  public ComponentMask           Mask     { get; }
+  public HashSet<ActorId>        ActorIds { get; } = new();
 
   public virtual void OnInput(DeltaTime time)
   {
@@ -41,5 +55,21 @@ public abstract class ComponentSystem : IComponentSystem
 
   public virtual void OnDraw(DeltaTime time)
   {
+  }
+
+  private void OnComponentAdded(ActorId id, ComponentType type)
+  {
+    if (Mask.Contains(type))
+    {
+      ActorIds.Add(id);
+    }
+  }
+
+  private void OnComponentRemoved(ActorId id, ComponentType type)
+  {
+    if (Mask.Contains(type))
+    {
+      ActorIds.Remove(id);
+    }
   }
 }

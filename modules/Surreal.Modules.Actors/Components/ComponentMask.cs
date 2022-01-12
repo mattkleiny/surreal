@@ -3,8 +3,7 @@ namespace Surreal.Components;
 /// <summary>Describes a union of component types for use in component queries.</summary>
 public readonly record struct ComponentMask
 {
-  public static ComponentMask Empty
-    => default;
+  public static ComponentMask Empty => default;
 
   public static ComponentMask Of<T1>()
     => new(ComponentType.GetBit<T1>());

@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Textures;
+﻿using Surreal.Graphics.Materials;
+using Surreal.Graphics.Textures;
 
 namespace Isaac.Actors;
 
@@ -20,7 +21,8 @@ public record struct Transform
 /// <summary>A sprite to be rendered in 2-space.</summary>
 public record struct Sprite
 {
-  public TextureRegion Texture { get; set; }
+  public TextureRegion Texture  { get; set; }
+  public Material?     Material { get; set; }
 }
 
 /// <summary>Character statistics.</summary>
