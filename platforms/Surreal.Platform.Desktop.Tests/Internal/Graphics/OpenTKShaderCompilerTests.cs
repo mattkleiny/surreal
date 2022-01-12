@@ -1,4 +1,5 @@
 ﻿using Surreal.Graphics.Shaders;
+using Surreal.Graphics.Shaders.Languages;
 using Surreal.Internal.Graphics.Resources;
 using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
@@ -47,7 +48,7 @@ public class OpenTKShaderCompilerTests
             ShaderKind.Vertex,
             new Assignment("_Color",
               new Binary(
-                BinaryOperator.Mul,
+                BinaryOperator.Multiply,
                 new Constant("_Position"),
                 new Constructor(
                   new Primitive(PrimitiveType.Float, 4),

@@ -3,7 +3,7 @@
 
 #include "resx://Surreal.Graphics/Resources/SpriteBatch.shader"
 
-shader_type sprite;
+#shader_type sprite;
 
 uniform vec3 _Position;
 uniform float _Intensity;

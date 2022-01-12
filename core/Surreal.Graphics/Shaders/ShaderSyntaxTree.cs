@@ -48,18 +48,10 @@ public enum ShaderKind
 }
 
 /// <summary>A primitive type declaration with optional cardinality for vector representations.</summary>
-public readonly record struct Primitive(
-  PrimitiveType Type,
-  int? Cardinality = null,
-  Precision? Precision = null
-);
+public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = null, Precision? Precision = null);
 
 /// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
-public sealed record ShaderProgramDeclaration(
-  string Path,
-  ShaderArchetype Archetype,
-  CompilationUnit CompilationUnit
-);
+public sealed record ShaderProgramDeclaration(string Path, ShaderArchetype Archetype, CompilationUnit CompilationUnit);
 
 /// <summary>Common AST graph root for our shading languages.</summary>
 public abstract record ShaderSyntaxTree
@@ -197,9 +189,9 @@ public abstract record ShaderSyntaxTree
   public enum BinaryOperator
   {
     Add,
-    Sub,
-    Mul,
-    Div,
+    Subtract,
+    Multiply,
+    Divide,
   }
 
   /// <summary>Unary operators used in unary expressions.</summary>

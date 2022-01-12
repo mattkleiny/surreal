@@ -1,8 +1,8 @@
 ﻿using Surreal.IO;
 
-namespace Surreal.Scripting.Languages.Basic;
+namespace Surreal.Scripting.Languages;
 
-public class BasicParserTests
+public class BasicScriptParserTests
 {
   [Test, Ignore("Not yet implemented")]
   [TestCase("Assets/scripts/basic/test01.bas")]

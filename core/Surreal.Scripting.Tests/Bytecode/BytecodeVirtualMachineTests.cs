@@ -14,7 +14,7 @@ public class BytecodeVirtualMachineTests
       }
     };
 
-    var program = new BytecodeProgram
+    var program = new BytecodeProgram("test.script")
     {
       Instructions = ImmutableList.Create(
         new BytecodeInstruction(InstructionType.Nop),

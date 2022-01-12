@@ -1,8 +1,8 @@
 ﻿using Surreal.IO;
 
-namespace Surreal.Scripting.Languages.Lisp;
+namespace Surreal.Scripting.Languages;
 
-public class LispParserTests
+public class LispScriptParserTests
 {
   [Test, Ignore("Not yet implemented")]
   [TestCase("Assets/scripts/lisp/test01.lsp")]

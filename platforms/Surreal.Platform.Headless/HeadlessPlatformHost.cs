@@ -9,6 +9,7 @@ using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
 using Surreal.Internal.Networking;
+using Surreal.Networking;
 using Surreal.Networking.Transports;
 using Surreal.Threading;
 using Surreal.Timing;
@@ -23,7 +24,7 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public HeadlessComputeDevice    ComputeDevice    { get; } = new();
   public HeadlessGraphicsDevice   GraphicsDevice   { get; } = new();
   public HeadlessInputManager     InputManager     { get; } = new();
-  public HeadlessTransportFactory TransportFactory { get; } = new();
+  public HeadlessNetworkFactory NetworkFactory { get; } = new();
 
   public int  Width     => 1920;
   public int  Height    => 1080;
@@ -57,6 +58,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
     services.AddSingleton<IMouseDevice>(InputManager.Mouse);
     services.AddSingleton<IHeadlessKeyboardDevice>(InputManager.Keyboard);
     services.AddSingleton<IHeadlessMouseDevice>(InputManager.Mouse);
-    services.AddSingleton<ITransportFactory>(TransportFactory);
+    services.AddSingleton<INetworkFactory>(NetworkFactory);
   }
 }

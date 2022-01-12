@@ -11,6 +11,7 @@ using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
 using Surreal.Internal.Networking;
+using Surreal.Networking;
 using Surreal.Networking.Transports;
 using Surreal.Threading;
 using Surreal.Timing;
@@ -39,7 +40,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     ComputeDevice    = new OpenTKComputeDevice();
     GraphicsDevice   = new OpenTKGraphicsDevice(Window);
     InputManager     = new OpenTKInputManager(Window);
-    TransportFactory = new DesktopTransportFactory();
+    NetworkFactory = new DesktopNetworkFactory();
     Dispatcher       = new ImmediateDispatcher();
   }
 
@@ -54,7 +55,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public OpenTKComputeDevice     ComputeDevice    { get; }
   public OpenTKGraphicsDevice    GraphicsDevice   { get; }
   public OpenTKInputManager      InputManager     { get; }
-  public DesktopTransportFactory TransportFactory { get; }
+  public DesktopNetworkFactory NetworkFactory { get; }
 
   public IServiceModule Services   => this;
   public IDispatcher    Dispatcher { get; }
@@ -100,7 +101,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     services.AddSingleton<IInputManager>(InputManager);
     services.AddSingleton<IKeyboardDevice>(InputManager.Keyboard);
     services.AddSingleton<IMouseDevice>(InputManager.Mouse);
-    services.AddSingleton<ITransportFactory>(TransportFactory);
+    services.AddSingleton<INetworkFactory>(NetworkFactory);
   }
 
   IDesktopWindow IDesktopPlatformHost.Window => Window;

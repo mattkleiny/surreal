@@ -250,9 +250,9 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
   private static string ConvertOperator(BinaryOperator type) => type switch
   {
     BinaryOperator.Add => "+",
-    BinaryOperator.Sub => "-",
-    BinaryOperator.Mul => "*",
-    BinaryOperator.Div => "/",
+    BinaryOperator.Subtract => "-",
+    BinaryOperator.Multiply => "*",
+    BinaryOperator.Divide => "/",
 
     _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
   };

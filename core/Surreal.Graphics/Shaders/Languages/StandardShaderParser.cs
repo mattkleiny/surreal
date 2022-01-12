@@ -1,15 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Surreal.Text;
-using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 
-namespace Surreal.Graphics.Shaders;
+namespace Surreal.Graphics.Shaders.Languages;
 
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class StandardShaderParser : IShaderParser
 {
-  private static ImmutableHashSet<string> Keywords            { get; } = new[] { "for", "if", "else" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> CompileTimeKeywords { get; } = new[] { "include" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords        { get; } = new[] { "for", "if", "else" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> CompileKeywords { get; } = new[] { "shader_type", "include" }.ToImmutableHashSet();
 
   public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
@@ -21,13 +20,13 @@ public sealed class StandardShaderParser : IShaderParser
     return new ShaderProgramDeclaration(path, ShaderArchetype.Sprite, compilationUnit);
   }
 
-  private static CompilationUnit ParseCompilationUnit(ParseContext context)
+  private static ShaderSyntaxTree.CompilationUnit ParseCompilationUnit(ParseContext context)
   {
     var nodes = new List<ShaderSyntaxTree>();
 
     // TODO: recursive decent parser
 
-    return new CompilationUnit(nodes);
+    return new ShaderSyntaxTree.CompilationUnit(nodes);
   }
 
   private static async Task<Queue<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
@@ -115,7 +114,7 @@ public sealed class StandardShaderParser : IShaderParser
       case '/':
       {
         if (span.Match('/'))
-          return new Token(TokenType.Comment, position, span, span[2..]);
+          return new Token(TokenType.Comment, position, span, span[2..].ToString().Trim());
 
         return new Token(TokenType.Slash, position, span[..1]);
       }
@@ -132,10 +131,9 @@ public sealed class StandardShaderParser : IShaderParser
       }
 
       // pre-processor
-      case '#':
+      case '#' when span.Peek() != '#':
       {
         // recursively scan the rest of this token
-        // TODO: what about lots of nested #s?
         var innerToken = ScanToken(position with { Column = position.Column + 1 }, span[1..]);
 
         if (innerToken is null)
@@ -146,10 +144,10 @@ public sealed class StandardShaderParser : IShaderParser
         if (innerLiteral == null)
           throw ErrorAt(position, span, $"Unrecognized pre-processor {span}, expected a valid literal");
 
-        if (!CompileTimeKeywords.Contains(innerLiteral.ToString()!))
+        if (!CompileKeywords.Contains(innerLiteral.ToString()!))
           throw ErrorAt(position, span, $"Unrecognized pre-processor keyword {innerLiteral}");
 
-        return new Token(TokenType.CompileTimeKeyword, position, span[..(innerSpan.Length + 1)], innerLiteral);
+        return new Token(TokenType.CompileKeyword, position, span[..(innerSpan.Length + 1)], innerLiteral);
       }
 
       default:
@@ -222,7 +220,7 @@ public sealed class StandardShaderParser : IShaderParser
     Number,
     Identifier,
     Keyword,
-    CompileTimeKeyword,
+    CompileKeyword,
 
     // comments/etc
     Comment,

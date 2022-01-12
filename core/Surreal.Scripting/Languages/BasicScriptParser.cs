@@ -1,4 +1,4 @@
-﻿namespace Surreal.Scripting.Languages.Basic;
+﻿namespace Surreal.Scripting.Languages;
 
 /// <summary>A <see cref="IScriptParser"/> for BASIC programs.</summary>
 public sealed class BasicScriptParser : IScriptParser

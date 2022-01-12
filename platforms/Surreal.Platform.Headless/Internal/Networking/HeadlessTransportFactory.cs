@@ -1,8 +1,9 @@
-﻿using Surreal.Networking.Transports;
+﻿using Surreal.Networking;
+using Surreal.Networking.Transports;
 
 namespace Surreal.Internal.Networking;
 
-internal sealed class HeadlessTransportFactory : ITransportFactory
+internal sealed class HeadlessNetworkFactory : INetworkFactory
 {
   public IServerTransport CreateServerTransport(TransportOptions options)
   {

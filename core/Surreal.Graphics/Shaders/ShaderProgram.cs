@@ -25,22 +25,34 @@ public abstract class ShaderProgram : GraphicsResource
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ShaderProgram"/>s.</summary>
 public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 {
-  private readonly IGraphicsDevice device;
-  private readonly IShaderParser   parser;
-  private readonly Encoding        encoding;
-  private readonly bool            hotReloading;
+  private readonly IGraphicsDevice          device;
+  private readonly IShaderParser            parser;
+  private readonly Encoding                 encoding;
+  private readonly bool                     hotReloading;
+  private readonly ImmutableHashSet<string> extensions;
 
-  public ShaderProgramLoader(IGraphicsDevice device, IShaderParser parser, bool hotReloading)
-    : this(device, parser, hotReloading, Encoding.UTF8)
+  public ShaderProgramLoader(IGraphicsDevice device, IShaderParser parser, bool hotReloading, params string[] extensions)
+    : this(device, parser, hotReloading, extensions.AsEnumerable())
   {
   }
 
-  public ShaderProgramLoader(IGraphicsDevice device, IShaderParser parser, bool hotReloading, Encoding encoding)
+  public ShaderProgramLoader(IGraphicsDevice device, IShaderParser parser, bool hotReloading, IEnumerable<string> extensions)
+    : this(device, parser, hotReloading, Encoding.UTF8, extensions)
+  {
+  }
+
+  public ShaderProgramLoader(IGraphicsDevice device, IShaderParser parser, bool hotReloading, Encoding encoding, IEnumerable<string> extensions)
   {
     this.device       = device;
     this.parser       = parser;
     this.encoding     = encoding;
     this.hotReloading = hotReloading;
+    this.extensions   = extensions.ToImmutableHashSet();
+  }
+
+  public override bool CanHandle(AssetLoaderContext context)
+  {
+    return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
   public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)

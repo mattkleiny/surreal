@@ -1,6 +1,6 @@
 ﻿using Surreal.Text;
 
-namespace Surreal.Scripting.Languages.Lisp;
+namespace Surreal.Scripting.Languages;
 
 /// <summary>A <see cref="IScriptParser"/> for Lisp programs.</summary>
 public sealed class LispScriptParser : IScriptParser

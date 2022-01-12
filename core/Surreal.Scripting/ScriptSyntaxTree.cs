@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Surreal.Assets;
 using static Surreal.Scripting.ScriptSyntaxTree;
 using static Surreal.Scripting.ScriptSyntaxTree.Statement;
 
@@ -7,7 +8,42 @@ namespace Surreal.Scripting;
 /// <summary>A declaration for a script and it's parsed AST.</summary>
 public sealed record ScriptDeclaration(string Path, CompilationUnit CompilationUnit);
 
-/// <summary>Common AST graph root for our scripting language.</summary>
+/// <summary>The <see cref="AssetLoader{T}"/> for raw <see cref="ScriptDeclaration"/>s.</summary>
+public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
+{
+  private readonly IScriptParser            parser;
+  private readonly ImmutableHashSet<string> extensions;
+  private readonly Encoding                 encoding;
+
+  public ScriptDeclarationLoader(IScriptParser parser, params string[] extensions)
+    : this(parser, extensions.AsEnumerable())
+  {
+  }
+
+  public ScriptDeclarationLoader(IScriptParser parser, IEnumerable<string> extensions)
+    : this(parser, extensions, Encoding.UTF8)
+  {
+  }
+
+  public ScriptDeclarationLoader(IScriptParser parser, IEnumerable<string> extensions, Encoding encoding)
+  {
+    this.parser     = parser;
+    this.extensions = extensions.ToImmutableHashSet();
+    this.encoding   = encoding;
+  }
+
+  public override bool CanHandle(AssetLoaderContext context)
+  {
+    return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
+  }
+
+  public override async ValueTask<ScriptDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  {
+    return await parser.ParseScriptAsync(context.Path, encoding, cancellationToken);
+  }
+}
+
+/// <summary>Common AST graph root for all scripting languages.</summary>
 public abstract record ScriptSyntaxTree
 {
   /// <summary>A compilation unit for all script instructions </summary>
@@ -75,9 +111,9 @@ public abstract record ScriptSyntaxTree
   public enum BinaryOperator
   {
     Add,
-    Sub,
-    Mul,
-    Div,
+    Subtract,
+    Multiply,
+    Divide,
   }
 
   /// <summary>Unary operators used in unary expressions.</summary>

@@ -27,7 +27,7 @@ public enum InstructionType : ushort
 public readonly record struct BytecodeInstruction(InstructionType Type);
 
 /// <summary>A <see cref="ICompiledScript"/> in the form of bytecode.</summary>
-public sealed record BytecodeProgram : ICompiledScript
+public sealed record BytecodeProgram(string Path) : ICompiledScript
 {
   public ImmutableList<BytecodeInstruction> Instructions { get; init; } = ImmutableList<BytecodeInstruction>.Empty;
 }
@@ -43,7 +43,7 @@ public sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram
     throw new NotImplementedException();
   }
 
-  public override async ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
+  public override ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }

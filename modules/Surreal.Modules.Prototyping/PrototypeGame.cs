@@ -8,33 +8,32 @@ using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
+using Surreal.Graphics.Shaders.Languages;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.IO.Json;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;
+using Surreal.Networking;
 using Surreal.Networking.Transports;
 using Surreal.Screens;
 using Surreal.Scripting;
 using Surreal.Scripting.Bytecode;
-using Surreal.Scripting.Languages.Basic;
-using Surreal.Scripting.Languages.Lisp;
-using Surreal.Scripting.Languages.Lox;
-using Surreal.Scripting.Languages.Lua;
+using Surreal.Scripting.Languages;
 
 namespace Surreal;
 
 /// <summary>Base class for any <see cref="Game"/> that uses rapid prototyping services.</summary>
 public abstract class PrototypeGame : Game
 {
-  public IAudioDevice      AudioDevice      => Services.GetRequiredService<IAudioDevice>();
-  public IComputeDevice    ComputeDevice    => Services.GetRequiredService<IComputeDevice>();
-  public IGraphicsDevice   GraphicsDevice   => Services.GetRequiredService<IGraphicsDevice>();
-  public IKeyboardDevice   Keyboard         => Services.GetRequiredService<IKeyboardDevice>();
-  public IMouseDevice      Mouse            => Services.GetRequiredService<IMouseDevice>();
-  public IScreenManager    Screens          => Services.GetRequiredService<IScreenManager>();
-  public ITransportFactory TransportFactory => Services.GetRequiredService<ITransportFactory>();
+  public IAudioDevice    AudioDevice    => Services.GetRequiredService<IAudioDevice>();
+  public IComputeDevice  ComputeDevice  => Services.GetRequiredService<IComputeDevice>();
+  public IGraphicsDevice GraphicsDevice => Services.GetRequiredService<IGraphicsDevice>();
+  public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
+  public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
+  public IScreenManager  Screens        => Services.GetRequiredService<IScreenManager>();
+  public INetworkFactory NetworkFactory => Services.GetRequiredService<INetworkFactory>();
 
   public Color ClearColor { get; set; } = Color.Black;
 
@@ -56,23 +55,34 @@ public abstract class PrototypeGame : Game
   {
     base.RegisterAssetLoaders(manager);
 
+    // common
+    manager.AddLoader(new JsonAssetLoader());
+    manager.AddLoader(new XmlAssetLoader());
+
+    // audio
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioDevice));
-    manager.AddLoader(new BitmapFontLoader());
-    manager.AddLoader(new BytecodeProgramLoader());
+
+    // compute
     manager.AddLoader(new ComputeProgramLoader(ComputeDevice));
+
+    // graphics
+    manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());
+    manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, new StandardShaderParser(), hotReloading: Debugger.IsAttached, ".shader"));
+    manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
+    manager.AddLoader(new TextureRegionLoader());
+    manager.AddLoader(new TrueTypeFontLoader());
+
+    // scripting
+    manager.AddLoader(new ScriptLoader(new BytecodeScriptCompiler(), ".basic", ".bas", ".lisp", ".lox", ".lua", ".wren"));
     manager.AddLoader(new ScriptDeclarationLoader(new BasicScriptParser(), ".basic", ".bas"));
     manager.AddLoader(new ScriptDeclarationLoader(new LispScriptParser(), ".lisp"));
     manager.AddLoader(new ScriptDeclarationLoader(new LoxScriptParser(), ".lox"));
     manager.AddLoader(new ScriptDeclarationLoader(new LuaScriptParser(), ".lua"));
-    manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, new StandardShaderParser(), hotReloading: Debugger.IsAttached));
-    manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
-    manager.AddLoader(new TextureRegionLoader());
-    manager.AddLoader(new TrueTypeFontLoader());
-    manager.AddLoader(new JsonAssetLoader());
-    manager.AddLoader(new XmlAssetLoader());
+    manager.AddLoader(new ScriptDeclarationLoader(new WrenScriptParser(), ".wren"));
+    manager.AddLoader(new BytecodeProgramLoader());
   }
 
   protected override void RegisterPlugins(IGamePluginRegistry plugins)

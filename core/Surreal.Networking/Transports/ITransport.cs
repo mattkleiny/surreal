@@ -16,13 +16,6 @@ public sealed record TransportOptions
   public int           Port { get; init; } = 28005;
 }
 
-/// <summary>A factory for <see cref="ITransport"/>s.</summary>
-public interface ITransportFactory
-{
-  IServerTransport CreateServerTransport(TransportOptions options);
-  IClientTransport CreateClientTransport(TransportOptions options);
-}
-
 /// <summary>Transport for standard purpose network I/O.</summary>
 public interface ITransport : IDisposable, IAsyncDisposable
 {

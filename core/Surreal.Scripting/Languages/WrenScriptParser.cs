@@ -1,7 +1,7 @@
-﻿namespace Surreal.Scripting.Languages.Lua;
+﻿namespace Surreal.Scripting.Languages;
 
-/// <summary>A <see cref="IScriptParser"/> for Lua programs.</summary>
-public sealed class LuaScriptParser : IScriptParser
+/// <summary>A <see cref="IScriptParser"/> for Wren programs.</summary>
+public sealed class WrenScriptParser : IScriptParser
 {
   public ValueTask<ScriptDeclaration> ParseScriptAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {

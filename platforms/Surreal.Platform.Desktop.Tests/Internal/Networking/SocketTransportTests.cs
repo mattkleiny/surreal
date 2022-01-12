@@ -9,7 +9,7 @@ public class SocketTransportTests
   [Test, Ignore("Not yet implemented")]
   public async Task it_should_communicate_between_server_and_client()
   {
-    var factory = new DesktopTransportFactory();
+    var factory = new DesktopNetworkFactory();
     var options = TransportOptions.Default with
     {
       Type = TransportType.Reliability,
