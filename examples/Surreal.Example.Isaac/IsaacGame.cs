@@ -1,10 +1,14 @@
-﻿using Surreal.Controls;
+﻿using Surreal.Assets;
+using Surreal.Controls;
+using Surreal.Graphics.Materials;
 using Surreal.Input.Keyboard;
 
 namespace Isaac;
 
 public sealed class IsaacGame : PrototypeGame
 {
+  private Material spriteMaterial;
+
   public static Task Main() => GameEditor.StartAsync<IsaacGame>(new Configuration
   {
     Platform = new DesktopPlatform
@@ -17,6 +21,13 @@ public sealed class IsaacGame : PrototypeGame
       },
     },
   });
+
+  protected override async Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
+  {
+    await base.LoadContentAsync(assets, cancellationToken);
+
+    spriteMaterial = await assets.LoadAssetAsync<Material>("Assets/shaders/sprite.shader", cancellationToken);
+  }
 
   protected override void Input(GameTime time)
   {

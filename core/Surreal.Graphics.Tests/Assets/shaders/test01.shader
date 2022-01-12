@@ -5,8 +5,8 @@
 
 #shader_type sprite;
 
-uniform vec3 _Position;
-uniform float _Intensity;
+uniform lowp vec3 _Position;
+uniform lowp float _Intensity;
 varying vec3 _Color;
 
 float circle(float radius, int depth)

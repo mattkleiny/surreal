@@ -11,7 +11,7 @@ public class TextureLoaderTests
     using var manager = new AssetManager();
 
     manager.AddLoader(new ImageLoader());
-    manager.AddLoader(new TextureLoader(device, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: false));
+    manager.AddLoader(new TextureLoader(device, TextureFilterMode.Point, TextureWrapMode.Clamp));
 
     await manager.LoadAssetAsync<Texture>("Assets/images/test.png");
 

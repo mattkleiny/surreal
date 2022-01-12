@@ -1,11 +1,11 @@
-// A simple sprite shader, for testing purposes.
+﻿// Our standard sprite shader.
 
 #include "Assets/shaders/common.shader";
 
 #shader_type sprite;
 
-uniform lowp vec3 _Position;
-uniform lowp float _Intensity;
+uniform vec3 _Position;
+uniform float _Intensity;
 varying vec3 _Color;
 
 void vertex()

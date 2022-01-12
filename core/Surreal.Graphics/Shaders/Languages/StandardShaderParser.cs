@@ -449,23 +449,38 @@ public sealed class StandardShaderParser : IShaderParser
 
     private Primitive ParsePrimitive()
     {
-      var literal = ConsumeLiteral<string>(TokenType.Identifier);
+      var precision = default(Precision?);
+      var literal   = ConsumeLiteral<string>(TokenType.Identifier);
+
+      if (literal is "lowp" or "medp" or "highp")
+      {
+        precision = literal switch
+        {
+          "lowp"  => Precision.Low,
+          "medp"  => Precision.Medium,
+          "highp" => Precision.High,
+
+          _ => throw Error($"An unrecognized precision was specified {literal}"),
+        };
+
+        literal = ConsumeLiteral<string>(TokenType.Identifier);
+      }
 
       var type = literal switch
       {
-        "void"  => new Primitive(PrimitiveType.Void),
-        "bool"  => new Primitive(PrimitiveType.Bool),
-        "bool2" => new Primitive(PrimitiveType.Bool, 2),
-        "bool3" => new Primitive(PrimitiveType.Bool, 3),
-        "bool4" => new Primitive(PrimitiveType.Bool, 4),
-        "int"   => new Primitive(PrimitiveType.Int),
-        "int2"  => new Primitive(PrimitiveType.Int),
-        "int3"  => new Primitive(PrimitiveType.Int, 2),
-        "int4"  => new Primitive(PrimitiveType.Int, 3),
-        "float" => new Primitive(PrimitiveType.Float),
-        "vec2"  => new Primitive(PrimitiveType.Float, 2),
-        "vec3"  => new Primitive(PrimitiveType.Float, 3),
-        "vec4"  => new Primitive(PrimitiveType.Float, 4),
+        "void"  => new Primitive(PrimitiveType.Void, null, precision),
+        "bool"  => new Primitive(PrimitiveType.Bool, null, precision),
+        "bool2" => new Primitive(PrimitiveType.Bool, 2, precision),
+        "bool3" => new Primitive(PrimitiveType.Bool, 3, precision),
+        "bool4" => new Primitive(PrimitiveType.Bool, 4, precision),
+        "int"   => new Primitive(PrimitiveType.Int, null, precision),
+        "int2"  => new Primitive(PrimitiveType.Int, null, precision),
+        "int3"  => new Primitive(PrimitiveType.Int, 2, precision),
+        "int4"  => new Primitive(PrimitiveType.Int, 3, precision),
+        "float" => new Primitive(PrimitiveType.Float, null, precision),
+        "vec2"  => new Primitive(PrimitiveType.Float, 2, precision),
+        "vec3"  => new Primitive(PrimitiveType.Float, 3, precision),
+        "vec4"  => new Primitive(PrimitiveType.Float, 4, precision),
 
         _ => throw Error($"An unrecognized primitive type was specified {literal}"),
       };

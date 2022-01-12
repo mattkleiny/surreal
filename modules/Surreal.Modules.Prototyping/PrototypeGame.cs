@@ -70,8 +70,9 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());
-    manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, new StandardShaderParser(), hotReloading: Debugger.IsAttached, ".shader"));
-    manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp, hotReloading: Debugger.IsAttached));
+    manager.AddLoader(new ShaderLoader(GraphicsDevice, ".shader"));
+    manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(), ".shader"));
+    manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
     manager.AddLoader(new TextureRegionLoader());
     manager.AddLoader(new TrueTypeFontLoader());
 

@@ -17,24 +17,34 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     this.version = version;
   }
 
-  public ValueTask<ICompiledShaderProgram> CompileAsync(ShaderProgramDeclaration declaration)
+  public async ValueTask<ICompiledShaderProgram> CompileAsync(
+    IShaderCompilerContext context,
+    ShaderProgramDeclaration declaration,
+    CancellationToken cancellationToken = default
+  )
   {
     var shaders = ImmutableArray.CreateBuilder<OpenTKShader>(declaration.CompilationUnit.Stages.Length);
 
     foreach (var stage in declaration.CompilationUnit.Stages)
     {
       var shaderType = ConvertShaderKind(stage.Kind);
-      var sourceCode = BuildSourceCode(declaration, declaration.CompilationUnit, stage);
+      var sourceCode = await BuildSourceCodeAsync(context, declaration, declaration.CompilationUnit, stage, cancellationToken);
 
       shaders.Add(new OpenTKShader(shaderType, sourceCode));
     }
 
-    var shaderSet = new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable());
-
-    return ValueTask.FromResult<ICompiledShaderProgram>(shaderSet);
+    return new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable());
   }
 
-  private string BuildSourceCode(ShaderProgramDeclaration declaration, CompilationUnit compilationUnit, StageDeclaration stage)
+  // TODO: use a context pattern for this?
+
+  private async ValueTask<string> BuildSourceCodeAsync(
+    IShaderCompilerContext context,
+    ShaderProgramDeclaration declaration,
+    CompilationUnit compilationUnit,
+    StageDeclaration? stage = null,
+    CancellationToken cancellationToken = default
+  )
   {
     var stringBuilder = new StringBuilder();
     var codeBuilder   = new ShaderCodeBuilder(stringBuilder);
@@ -44,11 +54,28 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
     codeBuilder.AppendBlankLine();
 
+    await BuildSourceCodeAsync(
+      context: context,
+      codeBuilder: codeBuilder,
+      compilationUnit: compilationUnit,
+      stage: stage,
+      cancellationToken: cancellationToken
+    );
+
+    return stringBuilder.ToString();
+  }
+
+  private async ValueTask BuildSourceCodeAsync(
+    IShaderCompilerContext context,
+    ShaderCodeBuilder codeBuilder,
+    CompilationUnit compilationUnit,
+    StageDeclaration? stage = null,
+    CancellationToken cancellationToken = default
+  )
+  {
     if (compilationUnit.Includes.Length > 0)
     {
-      CompileIncludes(codeBuilder, compilationUnit.Includes);
-
-      codeBuilder.AppendBlankLine();
+      await CompileIncludesAsync(codeBuilder, compilationUnit.Includes, context, cancellationToken);
     }
 
     // compile globals
@@ -93,9 +120,10 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     }
 
     // compile stage local
-    CompileStatement(codeBuilder, stage);
-
-    return stringBuilder.ToString();
+    if (stage != null)
+    {
+      CompileStatement(codeBuilder, stage);
+    }
   }
 
   private void CompilePreamble(ShaderCodeBuilder builder, ShaderProgramDeclaration declaration)
@@ -105,12 +133,19 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     builder.AppendLine($"#version {version}");
   }
 
-  private static void CompileIncludes(ShaderCodeBuilder builder, IEnumerable<Include> includes)
+  private async ValueTask CompileIncludesAsync(ShaderCodeBuilder builder, IEnumerable<Include> includes, IShaderCompilerContext context, CancellationToken cancellationToken)
   {
     foreach (var include in includes)
     {
-      // TODO: actually insert the included module
-      builder.AppendLine($"#include \"{include.Path}\"");
+      var program = await context.ExpandShaderAsync(include.Path, cancellationToken);
+
+      await BuildSourceCodeAsync(
+        context: context,
+        codeBuilder: builder,
+        compilationUnit: program.CompilationUnit,
+        stage: null,
+        cancellationToken: cancellationToken
+      );
     }
   }
 

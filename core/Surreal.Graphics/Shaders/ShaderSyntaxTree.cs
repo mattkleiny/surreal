@@ -1,4 +1,5 @@
-﻿using Surreal.IO;
+﻿using Surreal.Assets;
+using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -45,6 +46,41 @@ public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = n
 
 /// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
 public sealed record ShaderProgramDeclaration(string Path, CompilationUnit CompilationUnit);
+
+/// <summary>An <see cref="AssetLoader{T}"/> for <see cref="ShaderProgramDeclaration"/>s.</summary>
+public sealed class ShaderDeclarationLoader : AssetLoader<ShaderProgramDeclaration>
+{
+  private readonly IShaderParser            parser;
+  private readonly ImmutableHashSet<string> extensions;
+  private readonly Encoding                 encoding;
+
+  public ShaderDeclarationLoader(IShaderParser parser, params string[] extensions)
+    : this(parser, extensions.AsEnumerable())
+  {
+  }
+
+  public ShaderDeclarationLoader(IShaderParser parser, IEnumerable<string> extensions)
+    : this(parser, extensions, Encoding.UTF8)
+  {
+  }
+
+  public ShaderDeclarationLoader(IShaderParser parser, IEnumerable<string> extensions, Encoding encoding)
+  {
+    this.parser     = parser;
+    this.extensions = extensions.ToImmutableHashSet();
+    this.encoding   = encoding;
+  }
+
+  public override bool CanHandle(AssetLoaderContext context)
+  {
+    return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
+  }
+
+  public override async ValueTask<ShaderProgramDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  {
+    return await parser.ParseShaderAsync(context.Path, encoding, cancellationToken);
+  }
+}
 
 /// <summary>Common AST graph root for our shading languages.</summary>
 public abstract record ShaderSyntaxTree
