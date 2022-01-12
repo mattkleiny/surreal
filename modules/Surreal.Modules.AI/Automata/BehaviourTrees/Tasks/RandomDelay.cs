@@ -8,14 +8,14 @@ public sealed record RandomDelay(TimeSpanRange DurationRange) : BehaviourTask
 {
   private IntervalTimer timer;
 
-  protected internal override void OnEnter(BehaviourContext context)
+  protected internal override void OnEnter(in BehaviourContext context)
   {
     base.OnEnter(context);
 
     timer = new IntervalTimer(Random.Shared.NextRange(DurationRange));
   }
 
-  protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
+  protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
     if (timer.Tick(deltaTime))
     {

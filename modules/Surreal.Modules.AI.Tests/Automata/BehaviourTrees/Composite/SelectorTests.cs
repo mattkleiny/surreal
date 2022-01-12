@@ -15,7 +15,7 @@ public class SelectorTests
 
     Assert.AreEqual(BehaviourStatus.Success, tree.Update(timeStep));
 
-    failingNode.Received(1).OnUpdate(tree.Context, timeStep);
-    successfulNode.Received(1).OnUpdate(tree.Context, timeStep);
+    failingNode.Received(1).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);
+    successfulNode.Received(1).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);
   }
 }

@@ -18,7 +18,13 @@ public enum BehaviourStatus
 }
 
 /// <summary>The context for <see cref="BehaviourNode"/> operations.</summary>
-public sealed record BehaviourContext(object Owner, IPropertyCollection Properties, BehaviourTree BehaviourTree);
+public readonly record struct BehaviourContext(
+  object Owner,
+  IPropertyCollection Properties,
+  BehaviourTree BehaviourTree,
+  LevelOfDetail LevelOfDetail = LevelOfDetail.Medium,
+  Priority Priority = Priority.Medium
+);
 
 /// <summary>An <see cref="IAutomata"/> that implements a behaviour tree.</summary>
 public sealed class BehaviourTree : IAutomata, IMessageListener
@@ -30,23 +36,25 @@ public sealed class BehaviourTree : IAutomata, IMessageListener
 
   public BehaviourTree(object owner, IPropertyCollection properties, BehaviourNode root)
   {
-    Context = new BehaviourContext(owner, properties, this);
-    Root    = root;
+    Owner      = owner;
+    Properties = properties;
+    Root       = root;
   }
 
-  public BehaviourContext    Context    { get; }
+  public object              Owner      { get; }
+  public IPropertyCollection Properties { get; }
   public BehaviourNode       Root       { get; }
-  public object              Owner      => Context.Owner;
-  public IPropertyCollection Properties => Context.Properties;
 
   public BehaviourStatus Update(DeltaTime deltaTime)
   {
-    return Root.Update(Context, deltaTime);
+    var context = new BehaviourContext(Owner, Properties, this);
+
+    return Root.Update(context, deltaTime);
   }
 
-  AutomataStatus IAutomata.Tick(DeltaTime deltaTime)
+  AutomataStatus IAutomata.Tick(in AutomataContext context, DeltaTime deltaTime)
   {
-    var status = Root.Update(Context, deltaTime);
+    var status = Root.Update(new BehaviourContext(Owner, Properties, this, context.LevelOfDetail, context.Priority), deltaTime);
 
     return status switch
     {
@@ -70,11 +78,11 @@ public abstract record BehaviourNode
 {
   public BehaviourStatus CurrentStatus { get; private set; }
 
-  protected internal virtual void OnEnter(BehaviourContext context)
+  protected internal virtual void OnEnter(in BehaviourContext context)
   {
   }
 
-  protected internal virtual void OnExit(BehaviourContext context)
+  protected internal virtual void OnExit(in BehaviourContext context)
   {
   }
 
@@ -82,24 +90,24 @@ public abstract record BehaviourNode
   {
   }
 
-  protected internal BehaviourStatus Update(BehaviourContext context, DeltaTime deltaTime)
+  protected internal BehaviourStatus Update(in BehaviourContext context, DeltaTime deltaTime)
   {
     if (CurrentStatus != BehaviourStatus.Running)
     {
-      OnEnter(context);
+      OnEnter(in context);
     }
 
-    CurrentStatus = OnUpdate(context, deltaTime);
+    CurrentStatus = OnUpdate(in context, deltaTime);
 
     if (CurrentStatus != BehaviourStatus.Running)
     {
-      OnExit(context);
+      OnExit(in context);
     }
 
     return CurrentStatus;
   }
 
-  protected internal abstract BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime);
+  protected internal abstract BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime);
 }
 
 /// <summary>Represent a <see cref="BehaviourNode"/> that implements some composite.</summary>

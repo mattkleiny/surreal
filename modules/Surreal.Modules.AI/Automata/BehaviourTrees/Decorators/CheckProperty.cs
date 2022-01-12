@@ -7,7 +7,7 @@ namespace Surreal.Automata.BehaviourTrees.Decorators;
 public sealed record CheckProperty<T>(BehaviourNode Child, Property<T> Property, T Value) : BehaviourDecorator(Child)
   where T : IEquatable<T>
 {
-  protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
+  protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
     if (Value.Equals(context.Properties.Get(Property)))
     {

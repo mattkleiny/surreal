@@ -14,11 +14,11 @@ public class CheckPropertyTests
     var timeStep   = 0.25f.Seconds();
 
     tree.Update(timeStep);
-    childNode.Received(0).OnUpdate(tree.Context, timeStep);
+    childNode.Received(0).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);
 
     tree.Properties.Set(TestProperty, true);
 
     tree.Update(timeStep);
-    childNode.Received(1).OnUpdate(tree.Context, timeStep);
+    childNode.Received(1).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);
   }
 }

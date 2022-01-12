@@ -15,7 +15,7 @@ public class SequenceTests
 
     Assert.AreEqual(BehaviourStatus.Failure, tree.Update(timeStep));
 
-    successfulNode.Received(1).OnUpdate(tree.Context, timeStep);
-    failingNode.Received(1).OnUpdate(tree.Context, timeStep);
+    successfulNode.Received(1).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);
+    failingNode.Received(1).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);
   }
 }

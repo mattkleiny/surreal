@@ -10,13 +10,13 @@ public class NestedAutomataTests
     var tree     = new BehaviourTree(this, new NestedAutomata(automata));
     var timeStep = 0.25f.Seconds();
 
-    automata.Tick(timeStep).Returns(AutomataStatus.Running);
+    automata.Tick(Arg.Any<AutomataContext>(), timeStep).Returns(AutomataStatus.Running);
     Assert.AreEqual(BehaviourStatus.Running, tree.Update(timeStep));
 
-    automata.Tick(timeStep).Returns(AutomataStatus.Success);
+    automata.Tick(Arg.Any<AutomataContext>(), timeStep).Returns(AutomataStatus.Success);
     Assert.AreEqual(BehaviourStatus.Success, tree.Update(timeStep));
 
-    automata.Tick(timeStep).Returns(AutomataStatus.Failure);
+    automata.Tick(Arg.Any<AutomataContext>(), timeStep).Returns(AutomataStatus.Failure);
     Assert.AreEqual(BehaviourStatus.Failure, tree.Update(timeStep));
   }
 }

@@ -7,14 +7,14 @@ public sealed record FixedDelay(TimeSpan Duration) : BehaviourTask
 {
   private IntervalTimer timer;
 
-  protected internal override void OnEnter(BehaviourContext context)
+  protected internal override void OnEnter(in BehaviourContext context)
   {
     base.OnEnter(context);
 
     timer = new IntervalTimer(Duration);
   }
 
-  protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
+  protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
     if (timer.Tick(deltaTime))
     {

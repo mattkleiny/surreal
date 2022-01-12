@@ -12,14 +12,14 @@ public sealed record Selector : BehaviourComposite
     Children = ImmutableList.CreateRange(children);
   }
 
-  protected internal override void OnExit(BehaviourContext context)
+  protected internal override void OnExit(in BehaviourContext context)
   {
     base.OnExit(context);
 
     lastIndex = 0;
   }
 
-  protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
+  protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
     for (; lastIndex < Children.Count; lastIndex++)
     {

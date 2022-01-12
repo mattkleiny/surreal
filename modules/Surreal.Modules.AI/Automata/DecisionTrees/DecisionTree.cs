@@ -1,21 +1,13 @@
-﻿using Surreal.Collections;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal.Automata.DecisionTrees;
-
-/// <summary>Context for <see cref="DecisionNode"/> operations.</summary>
-public sealed record DecisionContext(
-  object Owner,
-  IPropertyCollection Properties,
-  DecisionTree DecisionTree
-);
 
 /// <summary>An <see cref="IAutomata"/> that implements a decision tree.</summary>
 public sealed record DecisionTree : IAutomata
 {
   public List<DecisionNode> Decisions { get; init; } = new();
 
-  AutomataStatus IAutomata.Tick(DeltaTime deltaTime)
+  AutomataStatus IAutomata.Tick(in AutomataContext context, DeltaTime deltaTime)
   {
     throw new NotImplementedException();
   }

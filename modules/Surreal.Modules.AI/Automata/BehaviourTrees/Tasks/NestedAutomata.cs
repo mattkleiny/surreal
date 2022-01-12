@@ -5,9 +5,9 @@ namespace Surreal.Automata.BehaviourTrees.Tasks;
 /// <summary>A <see cref="BehaviourTask"/> that embeds some sub-<see cref="IAutomata"/>.</summary>
 public sealed record NestedAutomata(IAutomata Automata) : BehaviourTask
 {
-  protected internal override BehaviourStatus OnUpdate(BehaviourContext context, DeltaTime deltaTime)
+  protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
-    var status = Automata.Tick(deltaTime);
+    var status = Automata.Tick(new AutomataContext(context.LevelOfDetail, context.Priority), deltaTime);
 
     return status switch
     {
