@@ -51,8 +51,8 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice
     Material material,
     int vertexCount,
     int indexCount,
-    MeshType type = MeshType.Triangles)
-    where TVertex : unmanaged
+    MeshType type = MeshType.Triangles
+  ) where TVertex : unmanaged
   {
     if (vertexCount == 0) return; // empty mesh? don't render
 

@@ -24,8 +24,8 @@ public interface IGraphicsDevice
     Material material,
     int vertexCount,
     int indexCount,
-    MeshType type = MeshType.Triangles)
-    where TVertex : unmanaged;
+    MeshType type = MeshType.Triangles
+  ) where TVertex : unmanaged;
 
   void BeginFrame();
   void EndFrame();

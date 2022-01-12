@@ -22,8 +22,8 @@ public sealed class VertexDescriptorTests
     var attributes = VertexDescriptorSet.Create<Vertex>();
 
     Assert.AreEqual(12, attributes[0].Stride);
-    Assert.AreEqual(4, attributes[1].Stride);
-    Assert.AreEqual(16, attributes.Stride);
+    Assert.AreEqual(16, attributes[1].Stride);
+    Assert.AreEqual(28, attributes.Stride);
   }
 
   [Test]
@@ -48,7 +48,7 @@ public sealed class VertexDescriptorTests
     [VertexDescriptor(
       Alias = "a_color",
       Count = 4,
-      Type = VertexType.UnsignedByte,
+      Type = VertexType.Float,
       Normalized = true
     )]
     public Color Color;
