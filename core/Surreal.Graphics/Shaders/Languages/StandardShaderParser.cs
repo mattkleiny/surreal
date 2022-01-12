@@ -302,7 +302,7 @@ public sealed class StandardShaderParser : IShaderParser
 
     public ShaderSyntaxTree ParseStageOrFunction()
     {
-      var returnType = ParsePrimitiveType();
+      var returnType = ParsePrimitive();
       var name       = ParseIdentifier();
       var parameters = ParseParameters();
       var statements = ParseStatements();
@@ -339,20 +339,55 @@ public sealed class StandardShaderParser : IShaderParser
 
     private ImmutableArray<Parameter> ParseParameters()
     {
+      var parameters = ImmutableArray.CreateBuilder<Parameter>();
+
       Consume(TokenType.LeftParenthesis);
-      DiscardUntil(TokenType.RightParenthesis); // TODO: parameters
+
+      while (!TryPeek(TokenType.RightParenthesis))
+      {
+        parameters.Add(ParseParameter());
+
+        if (TryPeek(TokenType.Comma))
+        {
+          Discard();
+        }
+      }
+
       Consume(TokenType.RightParenthesis);
 
-      return ImmutableArray<Parameter>.Empty;
+      return parameters.ToImmutable();
+    }
+
+    private Parameter ParseParameter()
+    {
+      var type = ParsePrimitive();
+      var name = ParseIdentifier();
+
+      return new Parameter(type, name);
     }
 
     private ImmutableArray<Statement> ParseStatements()
     {
+      var statements = ImmutableArray.CreateBuilder<Statement>();
+
       Consume(TokenType.LeftBrace);
-      DiscardUntil(TokenType.RightBrace); // TODO: statements
+
+      while (!TryPeek(TokenType.RightBrace))
+      {
+        statements.Add(ParseStatement());
+      }
+
       Consume(TokenType.RightBrace);
 
-      return ImmutableArray<Statement>.Empty;
+      return statements.ToImmutable();
+    }
+
+    private Statement ParseStatement()
+    {
+      // TODO: implement me
+      var comment = ConsumeLiteral<string>(TokenType.Comment);
+
+      return new Comment(comment);
     }
 
     private Include ParseInclude()
@@ -371,7 +406,7 @@ public sealed class StandardShaderParser : IShaderParser
 
     private UniformDeclaration ParseUniformDeclaration()
     {
-      var type = ParsePrimitiveType();
+      var type = ParsePrimitive();
       var name = ParseIdentifier();
 
       return new UniformDeclaration(type, name);
@@ -379,7 +414,7 @@ public sealed class StandardShaderParser : IShaderParser
 
     private VaryingDeclaration ParseVaryingDeclaration()
     {
-      var type = ParsePrimitiveType();
+      var type = ParsePrimitive();
       var name = ParseIdentifier();
 
       return new VaryingDeclaration(type, name);
@@ -387,7 +422,7 @@ public sealed class StandardShaderParser : IShaderParser
 
     private ConstantDeclaration ParseConstantDeclaration()
     {
-      var type  = ParsePrimitiveType();
+      var type  = ParsePrimitive();
       var name  = ParseIdentifier();
       var value = ParseExpression();
 
@@ -399,17 +434,29 @@ public sealed class StandardShaderParser : IShaderParser
       throw new NotImplementedException();
     }
 
-    private Primitive ParsePrimitiveType()
+    private Primitive ParsePrimitive()
     {
-      var type = ConsumeLiteral<string>(TokenType.Identifier) switch
+      var literal = ConsumeLiteral<string>(TokenType.Identifier);
+
+      var type = literal switch
       {
         "void"  => new Primitive(PrimitiveType.Void),
+        "bool"  => new Primitive(PrimitiveType.Bool),
+        "bool2" => new Primitive(PrimitiveType.Bool, 2),
+        "bool3" => new Primitive(PrimitiveType.Bool, 3),
+        "bool4" => new Primitive(PrimitiveType.Bool, 4),
+        "int"   => new Primitive(PrimitiveType.Int),
+        "int2"  => new Primitive(PrimitiveType.Int),
+        "int3"  => new Primitive(PrimitiveType.Int, 2),
+        "int4"  => new Primitive(PrimitiveType.Int, 3),
         "float" => new Primitive(PrimitiveType.Float),
-        "vec2"  => new Primitive(PrimitiveType.Float, 22),
+        "vec2"  => new Primitive(PrimitiveType.Float, 2),
         "vec3"  => new Primitive(PrimitiveType.Float, 3),
+        "vec4"  => new Primitive(PrimitiveType.Float, 4),
 
-        _ => throw Error("An unrecognized primitive type was specified"),
+        _ => throw Error($"An unrecognized primitive type was specified {literal}"),
       };
+
       return type;
     }
 
