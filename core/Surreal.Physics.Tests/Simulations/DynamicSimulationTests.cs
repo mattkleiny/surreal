@@ -12,7 +12,7 @@ public class DynamicSimulationTests
       Gravity = new Vector3(0f, -9.8f, 0f),
     };
 
-    var value = new TestObject();
+    var value = new DynamicObject();
 
     simulation.Add(value);
 
@@ -32,7 +32,7 @@ public class DynamicSimulationTests
       Gravity = Vector3.Zero
     };
 
-    var value = new TestObject
+    var value = new DynamicObject
     {
       Velocity = Vector3.UnitX * 2f
     };
@@ -47,7 +47,7 @@ public class DynamicSimulationTests
     Assert.AreNotEqual(Vector3.Zero, value.Position);
   }
 
-  private sealed class TestObject : IDynamicObject
+  private sealed record DynamicObject : IDynamicObject
   {
     private Vector3 position;
     private Vector3 velocity;

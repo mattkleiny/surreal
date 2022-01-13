@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Physics;
 
 /// <summary>An object that can participate in dynamics simulations.</summary>
-public interface IDynamicObject : ICollisionObject
+public interface IDynamicObject
 {
   ref Vector3 Position { get; }
   ref Vector3 Velocity { get; }
