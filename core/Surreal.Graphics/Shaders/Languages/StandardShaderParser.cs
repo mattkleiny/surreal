@@ -17,7 +17,7 @@ public sealed class StandardShaderParser : IShaderParser
   public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var tokens  = await TokenizeAsync(reader, cancellationToken);
-    var context = new SyntaxParseContext(tokens);
+    var context = new ShaderParseContext(tokens);
 
     return new ShaderProgramDeclaration(path, context.ParseCompilationUnit());
   }
@@ -231,12 +231,12 @@ public sealed class StandardShaderParser : IShaderParser
   #region Parsing
 
   /// <summary>Context for syntax parsing operations. This is a recursive descent style parser.</summary>
-  private sealed class SyntaxParseContext
+  private sealed class ShaderParseContext
   {
     private readonly Queue<Token> tokens;
     private          Token        lastToken;
 
-    public SyntaxParseContext(Queue<Token> tokens)
+    public ShaderParseContext(Queue<Token> tokens)
     {
       this.tokens = tokens;
     }

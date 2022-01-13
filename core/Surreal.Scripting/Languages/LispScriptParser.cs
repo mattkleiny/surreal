@@ -1,4 +1,5 @@
 ﻿using Surreal.Text;
+using static Surreal.Scripting.ScriptSyntaxTree;
 
 namespace Surreal.Scripting.Languages;
 
@@ -8,8 +9,32 @@ public sealed class LispScriptParser : IScriptParser
   public async ValueTask<ScriptDeclaration> ParseScriptAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var expressions = await SymbolicExpression.Parse(reader, cancellationToken);
+    var context     = new LispParserContext(expressions);
 
-    throw new NotImplementedException();
+    var compilationUnit = context.ParseCompilationUnit();
+
+    return new ScriptDeclaration(path, compilationUnit);
+  }
+
+  /// <summary>A context for parsing <see cref="SymbolicExpression"/>s to the <see cref="ScriptSyntaxTree"/>.</summary>
+  private sealed class LispParserContext
+  {
+    private readonly Queue<SymbolicExpression> expressions;
+
+    public LispParserContext(IEnumerable<SymbolicExpression> expressions)
+    {
+      this.expressions = new Queue<SymbolicExpression>(expressions);
+    }
+
+    public CompilationUnit ParseCompilationUnit()
+    {
+      throw new NotImplementedException();
+    }
+
+    public Expression ParseExpression()
+    {
+      throw new NotImplementedException();
+    }
   }
 
   /// <summary>A symbolic expression (or s-expression), for use in recursive deconstruction of the LISP tree.</summary>
@@ -42,14 +67,39 @@ public sealed class LispScriptParser : IScriptParser
           // add spaces around parenthesis for splitting
           .Replace("(", " ( ")
           .Replace(")", " ) ")
-          .Split(' ');
+          .Split()
+          .Where(token => token != "");
 
         return new Queue<string>(tokens);
       }
 
       var tokens = Tokenize(span);
 
-      throw new NotImplementedException();
+      return ParseNode(tokens);
+    }
+
+    private static SymbolicExpression ParseNode(Queue<string> tokens)
+    {
+      var token = tokens.Dequeue();
+
+      if (token == ")")
+      {
+        throw new LispParseException("Unexpected ')' character");
+      }
+
+      if (token == "(")
+      {
+        var builder = ImmutableArray.CreateBuilder<SymbolicExpression>();
+
+        while (tokens.TryPeek(out token) && token != ")")
+        {
+          builder.Add(ParseNode(tokens));
+        }
+
+        return new Node(builder.ToImmutable());
+      }
+
+      return new Leaf(token);
     }
 
     private static SymbolicExpression ParseLeaf(string literal)
@@ -61,15 +111,18 @@ public sealed class LispScriptParser : IScriptParser
     }
 
     /// <summary>A node of other <see cref="SymbolicExpression"/> nodes.</summary>
-    public record Node(ImmutableArray<SymbolicExpression> Contents) : SymbolicExpression
-    {
-      public Node(IEnumerable<SymbolicExpression> expressions)
-        : this(ImmutableArray.CreateRange(expressions))
-      {
-      }
-    }
+    public record Node(ImmutableArray<SymbolicExpression> Contents) : SymbolicExpression;
 
     /// <summary>A single <see cref="SymbolicExpression"/> leaf.</summary>
     public record Leaf(object Value) : SymbolicExpression;
+  }
+
+  /// <summary>Indicates an error whilst parsing a lisp program.</summary>
+  private sealed class LispParseException : Exception
+  {
+    public LispParseException(string message)
+      : base(message)
+    {
+    }
   }
 }
