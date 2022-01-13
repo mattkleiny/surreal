@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Physics.Simulations;
+namespace Surreal.Physics.Dynamics;
 
 public class DynamicSimulationTests
 {
@@ -12,16 +12,16 @@ public class DynamicSimulationTests
       Gravity = new Vector3(0f, -9.8f, 0f),
     };
 
-    var value = new DynamicObject();
+    var sphere = new Sphere();
 
-    simulation.Add(value);
+    simulation.Add(sphere);
 
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
 
-    Assert.AreNotEqual(Vector3.Zero, value.Position);
+    Assert.AreNotEqual(Vector3.Zero, sphere.Position);
   }
 
   [Test]
@@ -32,31 +32,18 @@ public class DynamicSimulationTests
       Gravity = Vector3.Zero
     };
 
-    var value = new DynamicObject
+    var sphere = new Sphere
     {
       Velocity = Vector3.UnitX * 2f
     };
 
-    simulation.Add(value);
+    simulation.Add(sphere);
 
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
 
-    Assert.AreNotEqual(Vector3.Zero, value.Position);
-  }
-
-  private sealed record DynamicObject : IDynamicObject
-  {
-    private Vector3 position;
-    private Vector3 velocity;
-    private Vector3 force;
-
-    public float Mass { get; set; } = 1f;
-
-    public ref Vector3 Position => ref position;
-    public ref Vector3 Velocity => ref velocity;
-    public ref Vector3 Force    => ref force;
+    Assert.AreNotEqual(Vector3.Zero, sphere.Position);
   }
 }

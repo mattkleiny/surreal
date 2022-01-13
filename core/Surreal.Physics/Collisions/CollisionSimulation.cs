@@ -1,13 +1,13 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Physics.Simulations;
+namespace Surreal.Physics.Collisions;
 
 /// <summary>A simple collision simulation against <see cref="ICollisionObject"/>s.</summary>
 public class CollisionSimulation
 {
   private readonly List<ICollisionObject> objects = new();
 
-  public event Action<CollisionDetails> CollisionDetected;
+  public event Action<CollisionDetails>? CollisionDetected;
 
   public void Add(ICollisionObject value)    => objects.Add(value);
   public void Remove(ICollisionObject value) => objects.Remove(value);

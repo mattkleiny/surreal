@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Physics.Simulations;
+namespace Surreal.Physics.Dynamics;
 
 /// <summary>A simple dynamics simulation against <see cref="IDynamicObject"/>s.</summary>
 public class DynamicsSimulation

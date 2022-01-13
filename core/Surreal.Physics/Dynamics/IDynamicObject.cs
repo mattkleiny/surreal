@@ -1,11 +1,11 @@
-﻿namespace Surreal.Physics;
+﻿namespace Surreal.Physics.Dynamics;
 
 /// <summary>An object that can participate in dynamics simulations.</summary>
 public interface IDynamicObject
 {
-  ref Vector3 Position { get; }
-  ref Vector3 Velocity { get; }
-  ref Vector3 Force    { get; }
+  Vector3 Position { get; set; }
+  Vector3 Velocity { get; set; }
+  Vector3 Force    { get; set; }
 
   float Mass { get; }
 }

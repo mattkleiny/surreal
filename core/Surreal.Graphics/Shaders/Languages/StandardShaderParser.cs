@@ -275,28 +275,28 @@ public sealed class StandardShaderParser : IShaderParser
 
     public ShaderSyntaxTree ParseCompileKeyword()
     {
-      var token = Consume(TokenType.CompileKeyword);
+      var literal = ConsumeLiteral<string>(TokenType.CompileKeyword);
 
-      return token.Literal switch
+      return literal switch
       {
         "include"     => ParseInclude(),
         "shader_type" => ParseShaderTypeDeclaration(),
 
-        _ => throw Error($"An unrecognized compile time keyword was encountered: {token.Literal}"),
+        _ => throw Error($"An unrecognized compile time keyword was encountered: {literal}"),
       };
     }
 
     public ShaderSyntaxTree ParseKeyword()
     {
-      var token = Consume(TokenType.Keyword);
+      var literal = ConsumeLiteral<string>(TokenType.Keyword);
 
-      return token.Literal switch
+      return literal switch
       {
         "uniform" => ParseUniformDeclaration(),
         "varying" => ParseVaryingDeclaration(),
         "const"   => ParseConstantDeclaration(),
 
-        _ => throw Error($"An unrecognized keyword was encountered: {token.Literal}"),
+        _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
       };
     }
 
