@@ -2,9 +2,24 @@
 
 namespace Surreal.Graphics.Meshes;
 
+/// <summary>Different types of supported primitive shapes for meshes.</summary>
+public enum MeshType
+{
+  Points,
+  Lines,
+  LineStrip,
+  LineLoop,
+  Triangles,
+  Quads,
+  QuadStrip,
+}
+
 /// <summary>Abstracts over all possible <see cref="Mesh{TVertex}"/> types.</summary>
 public abstract class Mesh : IDisposable
 {
+  /// <summary>The <see cref="VertexDescriptorSet"/> for the mesh.</summary>
+  public abstract VertexDescriptorSet Descriptors { get; }
+
   public abstract void Dispose();
 }
 
@@ -25,9 +40,10 @@ public sealed class Mesh<TVertex> : Mesh
     Indices  = device.CreateBuffer<ushort>();
   }
 
-  public GraphicsBuffer<TVertex> Vertices    { get; }
-  public GraphicsBuffer<ushort>  Indices     { get; }
-  public VertexDescriptorSet     Descriptors => VertexDescriptorSet;
+  public GraphicsBuffer<TVertex> Vertices { get; }
+  public GraphicsBuffer<ushort>  Indices  { get; }
+
+  public override VertexDescriptorSet Descriptors => VertexDescriptorSet;
 
   public void DrawImmediate(
     Material material,

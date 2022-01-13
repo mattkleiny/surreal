@@ -46,13 +46,13 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice
     GL.Clear(ClearBufferMask.DepthBufferBit);
   }
 
-  public void DrawMesh<TVertex>(
-    Mesh<TVertex> mesh,
+  public void DrawMesh(
+    Mesh mesh,
     Material material,
     int vertexCount,
     int indexCount,
     MeshType type = MeshType.Triangles
-  ) where TVertex : unmanaged
+  )
   {
     if (vertexCount == 0) return; // empty mesh? don't render
 

@@ -20,7 +20,8 @@ await Game.StartAsync(platform, async context =>
 
   await context.ExecuteAsync(time =>
   {
-    var color = Color.Lerp(color1, color2, MathF.Sin((float) time.TotalTime.TotalSeconds));
+    var t     = MathF.Sin((float) time.TotalTime.TotalSeconds);
+    var color = Color.Lerp(color1, color2, t);
 
     graphics.Clear(color);
     graphics.Present();

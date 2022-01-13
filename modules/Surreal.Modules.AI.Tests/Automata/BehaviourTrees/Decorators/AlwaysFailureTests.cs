@@ -5,7 +5,7 @@ namespace Surreal.Automata.BehaviourTrees.Decorators;
 public class AlwaysFailureTests
 {
   [Test, AutoFixture]
-  public void it_should_return_success_regardless_of_child(BehaviourNode childNode)
+  public void it_should_return_failure_regardless_of_child(BehaviourNode childNode)
   {
     childNode.OnUpdate(Arg.Any<BehaviourContext>(), Arg.Any<DeltaTime>()).Returns(BehaviourStatus.Success);
 

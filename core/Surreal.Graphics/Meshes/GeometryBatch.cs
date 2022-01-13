@@ -169,6 +169,7 @@ public sealed class GeometryBatch : IDisposable
     indices.Dispose();
   }
 
+  /// <summary>A single vertex in the batch.</summary>
   [VisibleForTesting]
   [StructLayout(LayoutKind.Sequential)]
   internal struct Vertex

@@ -33,13 +33,13 @@ internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
     // no-op
   }
 
-  public void DrawMesh<TVertex>(
-    Mesh<TVertex> mesh,
+  public void DrawMesh(
+    Mesh mesh,
     Material material,
     int vertexCount,
     int indexCount,
     MeshType type = MeshType.Triangles
-  ) where TVertex : unmanaged
+  )
   {
     // no-op
   }

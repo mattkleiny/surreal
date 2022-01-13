@@ -19,13 +19,13 @@ public interface IGraphicsDevice
   void ClearColor(Color color);
   void ClearDepth();
 
-  void DrawMesh<TVertex>(
-    Mesh<TVertex> mesh,
+  void DrawMesh(
+    Mesh mesh,
     Material material,
     int vertexCount,
     int indexCount,
     MeshType type = MeshType.Triangles
-  ) where TVertex : unmanaged;
+  );
 
   void BeginFrame();
   void EndFrame();
