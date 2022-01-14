@@ -2,6 +2,8 @@
 
 namespace Surreal.Graphics.Meshes;
 
+// TODO: implement IBuffer<T> somehow?
+
 /// <summary>A buffer of data on the <see cref="IGraphicsDevice"/>.</summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {

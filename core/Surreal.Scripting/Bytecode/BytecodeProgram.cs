@@ -52,8 +52,8 @@ public sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="BytecodeProgram"/>s.</summary>
 public sealed class BytecodeProgramLoader : AssetLoader<BytecodeProgram>
 {
-  public override async ValueTask<BytecodeProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<BytecodeProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
-    return await context.Path.DeserializeBinaryAsync<BytecodeProgram>(cancellationToken);
+    return await context.Path.DeserializeBinaryAsync<BytecodeProgram>(progressToken.CancellationToken);
   }
 }

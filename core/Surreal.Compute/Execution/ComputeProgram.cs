@@ -18,7 +18,7 @@ public sealed class ComputeProgramLoader : AssetLoader<ComputeProgram>
     this.device = device;
   }
 
-  public override ValueTask<ComputeProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override ValueTask<ComputeProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     throw new NotImplementedException();
   }

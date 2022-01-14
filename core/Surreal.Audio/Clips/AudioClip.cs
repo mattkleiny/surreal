@@ -9,7 +9,7 @@ public interface IAudioData
   TimeSpan        Duration { get; }
   AudioSampleRate Rate     { get; }
   Size            Size     { get; }
-  Span<byte>      Buffer   { get; }
+  Memory<byte>    Data     { get; }
 }
 
 /// <summary>A clip of audio that can be played back via an audio device.</summary>
@@ -39,9 +39,9 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
     this.device = device;
   }
 
-  public override async ValueTask<AudioClip> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<AudioClip> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
-    var buffer = await context.Manager.LoadAssetAsync<AudioBuffer>(context.Path, cancellationToken);
+    var buffer = await context.Manager.LoadAssetAsync<AudioBuffer>(context.Path);
 
     return device.CreateAudioClip(buffer);
   }

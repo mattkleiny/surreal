@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using OpenTK.Audio.OpenAL;
 using Surreal.Audio.Clips;
 
@@ -18,11 +17,12 @@ internal sealed class OpenTKAudioClip : AudioClip
   {
     var (frequency, channels, bitsPerSample) = newData.Rate;
 
-    var raw     = newData.Buffer;
-    var pointer = Unsafe.AsPointer(ref raw.GetPinnableReference());
-    var format  = GetSoundFormat(channels, bitsPerSample);
+    var       memory = newData.Data;
+    using var handle = memory.Pin();
 
-    AL.BufferData(Id, format, new IntPtr(pointer), raw.Length, frequency);
+    var format = GetSoundFormat(channels, bitsPerSample);
+
+    AL.BufferData(Id, format, handle.Pointer, memory.Length, frequency);
   }
 
   protected override void Dispose(bool managed)

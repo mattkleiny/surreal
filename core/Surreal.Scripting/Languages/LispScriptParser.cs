@@ -28,11 +28,30 @@ public sealed class LispScriptParser : IScriptParser
 
     public CompilationUnit ParseCompilationUnit()
     {
-      throw new NotImplementedException();
+      var nodes = new List<ScriptSyntaxTree>();
+
+      while (expressions.TryPeek(out _))
+      {
+        nodes.Add(ParseStatement());
+      }
+
+      return new CompilationUnit(nodes);
     }
 
-    public Expression ParseExpression()
+    public Statement ParseStatement()
     {
+      if (expressions.TryDequeue(out var expression))
+      {
+        switch (expression)
+        {
+          case SymbolicExpression.Atom(var atom):
+            throw new LispParseException("An unexpected atom was encountered");
+
+          case SymbolicExpression.Node(var node):
+            throw new LispParseException("An unexpected node was encountered");
+        }
+      }
+
       throw new NotImplementedException();
     }
   }
@@ -99,22 +118,22 @@ public sealed class LispScriptParser : IScriptParser
         return new Node(builder.ToImmutable());
       }
 
-      return new Leaf(token);
+      return new Atom(token);
     }
 
-    private static SymbolicExpression ParseLeaf(string literal)
+    private static SymbolicExpression ParseAtom(string literal)
     {
-      if (float.TryParse(literal, out var single)) return new Leaf(single);
-      if (int.TryParse(literal, out var integer)) return new Leaf(integer);
+      if (int.TryParse(literal, out var integer)) return new Atom(integer);
+      if (float.TryParse(literal, out var single)) return new Atom(single);
 
-      return new Leaf(literal);
+      return new Atom(literal);
     }
 
     /// <summary>A node of other <see cref="SymbolicExpression"/> nodes.</summary>
     public record Node(ImmutableArray<SymbolicExpression> Contents) : SymbolicExpression;
 
     /// <summary>A single <see cref="SymbolicExpression"/> leaf.</summary>
-    public record Leaf(object Value) : SymbolicExpression;
+    public record Atom(object Value) : SymbolicExpression;
   }
 
   /// <summary>Indicates an error whilst parsing a lisp program.</summary>

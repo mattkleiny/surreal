@@ -26,7 +26,7 @@ public sealed class IsaacGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    spriteMaterial = await assets.LoadAssetAsync<Material>("Assets/shaders/sprite.shader", cancellationToken);
+    spriteMaterial = await assets.LoadAssetAsync<Material>("Assets/shaders/sprite.shader");
   }
 
   protected override void Input(GameTime time)

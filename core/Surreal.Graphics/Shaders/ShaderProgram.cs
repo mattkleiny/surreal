@@ -44,13 +44,13 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     // TODO: support hot reloading?
     var compilerContext = new AssetCompilerContext(context.Manager);
 
-    var declaration = await context.Manager.LoadAssetAsync<ShaderProgramDeclaration>(context.Path, cancellationToken);
-    var compiled    = await device.ShaderCompiler.CompileAsync(compilerContext, declaration, cancellationToken);
+    var declaration = await context.Manager.LoadAssetAsync<ShaderProgramDeclaration>(context.Path);
+    var compiled    = await device.ShaderCompiler.CompileAsync(compilerContext, declaration, progressToken.CancellationToken);
 
     return device.CreateShaderProgram(compiled);
   }
@@ -67,7 +67,7 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
 
     public async ValueTask<ShaderProgramDeclaration> ExpandShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
     {
-      return await manager.LoadAssetAsync<ShaderProgramDeclaration>(path, cancellationToken);
+      return await manager.LoadAssetAsync<ShaderProgramDeclaration>(path);
     }
   }
 }

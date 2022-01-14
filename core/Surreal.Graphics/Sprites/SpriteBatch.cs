@@ -68,7 +68,7 @@ public sealed class SpriteBatch : IDisposable
       Flush();
       lastTexture = region.Texture;
     }
-    else if (vertexCount >= vertices.Span.Length)
+    else if (vertexCount >= vertices.Data.Length)
     {
       // if we've exceeded the batch capacity, we'll need to flush and start again
       Flush();
@@ -91,7 +91,7 @@ public sealed class SpriteBatch : IDisposable
     }
 
     // add vertex data to our batch
-    var span = vertices.Span[vertexCount..];
+    var span = vertices.Data.Span[vertexCount..];
 
     ref var vertex0 = ref span[0];
     vertex0.Position.X = position.X;
@@ -134,7 +134,7 @@ public sealed class SpriteBatch : IDisposable
 
     material.SetProperty(TextureView, lastTexture!);
 
-    mesh.Vertices.Write(vertices.Span[..vertexCount]);
+    mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
     mesh.DrawImmediate(material, vertexCount, indexCount);
 
     vertexCount = 0;

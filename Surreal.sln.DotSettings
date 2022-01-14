@@ -17,4 +17,5 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Homeworld/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Inspectable/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=rasterisation/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=sexpr/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Tessellator/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

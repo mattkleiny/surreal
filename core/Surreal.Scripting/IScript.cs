@@ -29,12 +29,12 @@ public sealed class ScriptLoader : AssetLoader<IScript>
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<IScript> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<IScript> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     // TODO: support pre-built binary scripts?
 
-    var declaration = await context.Manager.LoadAssetAsync<ScriptDeclaration>(context.Path, cancellationToken);
-    var compilation = await compiler.CompileAsync(declaration, cancellationToken);
+    var declaration = await context.Manager.LoadAssetAsync<ScriptDeclaration>(context.Path);
+    var compilation = await compiler.CompileAsync(declaration, progressToken.CancellationToken);
 
     throw new NotImplementedException();
   }

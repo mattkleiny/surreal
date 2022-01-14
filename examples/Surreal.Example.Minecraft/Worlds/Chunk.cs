@@ -36,7 +36,7 @@ public sealed class Chunk
   public int          Width   => Size.Width;
   public int          Height  => Size.Height;
   public int          Depth   => Size.Depth;
-  public Span<ushort> Voxels  => voxels.Span;
+  public Span<ushort> Voxels  => voxels.Data.Span;
   public BlockPalette Palette { get; }
 
   public ChunkSlice this[Vector3I offset, VolumeI size] => new(this, offset, size);
@@ -79,7 +79,7 @@ public sealed class Chunk
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private ref ushort Sample(int x, int y, int z)
   {
-    return ref voxels.Span[x + y * Width + z * Width * Height];
+    return ref voxels.Data.Span[x + y * Width + z * Width * Height];
   }
 }
 

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Surreal.Memory;
@@ -6,7 +7,8 @@ namespace Surreal.Memory;
 /// <summary>Represents a buffer of data of <see cref="T"/>.</summary>
 public interface IBuffer<T>
 {
-  Span<T> Span { get; }
+  /// <summary>The underlying <see cref="Memory{T}"/> representing the buffer data.</summary>
+  Memory<T> Data { get; }
 }
 
 /// <summary>A <see cref="IBuffer{T}"/> that can be deterministically disposed.</summary>
@@ -44,7 +46,7 @@ public static class Buffers
       elements = new T[length];
     }
 
-    public Span<T> Span => elements;
+    public Memory<T> Data => elements;
   }
 
   /// <summary>A buffer backed by a pinned array.</summary>
@@ -60,11 +62,11 @@ public static class Buffers
         : GC.AllocateUninitializedArray<T>(length, pinned: true);
     }
 
-    public Span<T> Span => new(elements);
+    public Memory<T> Data => elements;
   }
 
   /// <summary>A buffer backed by native memory.</summary>
-  private sealed unsafe class NativeBuffer<T> : IDisposableBuffer<T>
+  private sealed unsafe class NativeBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
     private readonly int   length;
@@ -75,39 +77,42 @@ public static class Buffers
     public NativeBuffer(int length, bool zeroFill)
     {
       this.length = length;
-
-      address = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
+      address     = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
 
       if (zeroFill)
       {
-        Span.Fill(default!);
+        Memory.Span.Fill(default!);
       }
     }
 
     ~NativeBuffer()
     {
-      Dispose();
+      Dispose(false);
     }
 
-    public Span<T> Span
-    {
-      get
-      {
-        CheckNotDisposed();
+    public Memory<T> Data => Memory;
 
-        return new Span<T>(address, length);
-      }
+    public override Span<T> GetSpan()
+    {
+      CheckNotDisposed();
+
+      return new Span<T>(address, length);
     }
 
-    public void Dispose()
+    public override MemoryHandle Pin(int elementIndex = 0)
     {
-      if (!isDisposed)
-      {
-        NativeMemory.Free(address);
-        GC.SuppressFinalize(this);
+      return default;
+    }
 
-        isDisposed = true;
-      }
+    public override void Unpin()
+    {
+      // no-op
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+      NativeMemory.Free(address);
+      isDisposed = true;
     }
 
     [Conditional("DEBUG")]

@@ -20,8 +20,8 @@ public sealed class AudioBuffer : AudioResource, IAudioData, IHasSizeEstimate
 
   public TimeSpan        Duration { get; }
   public AudioSampleRate Rate     { get; }
-  public Span<byte>      Buffer   => buffer.Span;
-  public Size            Size     => buffer.Span.CalculateSize();
+  public Memory<byte>    Data     => buffer.Data;
+  public Size            Size     => buffer.Data.Span.CalculateSize();
 
   protected override void Dispose(bool managed)
   {
@@ -37,7 +37,7 @@ public sealed class AudioBuffer : AudioResource, IAudioData, IHasSizeEstimate
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioBuffer"/>s.</summary>
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
-  public override async ValueTask<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<AudioBuffer> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 
@@ -55,7 +55,7 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
     var rate   = new AudioSampleRate(format.SampleRate, format.Channels, format.BitsPerSample);
     var buffer = new AudioBuffer(reader.TotalTime, rate);
 
-    reader.Read(buffer.Buffer);
+    await reader.ReadAsync(buffer.Data, progressToken.CancellationToken);
 
     return buffer;
   }

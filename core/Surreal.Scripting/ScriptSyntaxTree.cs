@@ -37,9 +37,9 @@ public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<ScriptDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<ScriptDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
-    return await parser.ParseScriptAsync(context.Path, encoding, cancellationToken);
+    return await parser.ParseScriptAsync(context.Path, encoding, progressToken.CancellationToken);
   }
 }
 
@@ -57,12 +57,12 @@ public abstract record ScriptSyntaxTree
     [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public CompilationUnit(IEnumerable<ScriptSyntaxTree> nodes)
     {
-      Includes  = nodes.OfType<Include>().ToImmutableArray();
-      Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray();
+      Includes   = nodes.OfType<Include>().ToImmutableArray();
+      Statements = nodes.OfType<Statement>().ToImmutableArray();
     }
 
-    public ImmutableArray<Include>             Includes  { get; init; }
-    public ImmutableArray<FunctionDeclaration> Functions { get; init; }
+    public ImmutableArray<Include>   Includes   { get; init; }
+    public ImmutableArray<Statement> Statements { get; init; }
   }
 
   /// <summary>A single statement in a shader program.</summary>

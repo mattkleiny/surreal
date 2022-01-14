@@ -135,7 +135,7 @@ public sealed class GeometryBatch : IDisposable
 
   public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, MeshType type)
   {
-    var destination = new SpanList<Vertex>(vertices.Span[vertexCount..points.Length]);
+    var destination = new SpanList<Vertex>(vertices.Data.Span[vertexCount..points.Length]);
 
     for (var i = 0; i < points.Length; i++)
     {
@@ -152,8 +152,8 @@ public sealed class GeometryBatch : IDisposable
     if (vertexCount == 0) return;
     if (material == null) return;
 
-    mesh.Vertices.Write(vertices.Span[..vertexCount]);
-    mesh.Indices.Write(indices.Span[..indexCount]);
+    mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
+    mesh.Indices.Write(indices.Data.Span[..indexCount]);
 
     mesh.DrawImmediate(material, vertexCount, indexCount, type);
 
