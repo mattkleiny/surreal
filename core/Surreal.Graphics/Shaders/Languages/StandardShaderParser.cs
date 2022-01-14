@@ -14,12 +14,12 @@ public sealed class StandardShaderParser : IShaderParser
   private static ImmutableHashSet<string> CompileKeywords { get; } = new[] { "shader_type", "include" }.ToImmutableHashSet();
   private static ImmutableHashSet<string> StageKeywords   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
 
-  public async ValueTask<ShaderProgramDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
+  public async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var tokens  = await TokenizeAsync(reader, cancellationToken);
     var context = new ShaderParseContext(tokens);
 
-    return new ShaderProgramDeclaration(path, context.ParseCompilationUnit());
+    return new ShaderDeclaration(path, context.ParseCompilationUnit());
   }
 
   #region Tokenization

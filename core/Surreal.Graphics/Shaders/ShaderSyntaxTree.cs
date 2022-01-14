@@ -1,4 +1,5 @@
 ﻿using Surreal.Assets;
+using Surreal.Graphics.Shaders.Transformers;
 using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
@@ -45,10 +46,10 @@ public enum ShaderKind
 public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = null, Precision? Precision = null);
 
 /// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
-public sealed record ShaderProgramDeclaration(string Path, CompilationUnit CompilationUnit);
+public sealed record ShaderDeclaration(string Path, CompilationUnit CompilationUnit);
 
-/// <summary>An <see cref="AssetLoader{T}"/> for <see cref="ShaderProgramDeclaration"/>s.</summary>
-public sealed class ShaderDeclarationLoader : AssetLoader<ShaderProgramDeclaration>
+/// <summary>An <see cref="AssetLoader{T}"/> for <see cref="ShaderDeclaration"/>s.</summary>
+public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 {
   private readonly IShaderParser            parser;
   private readonly ImmutableHashSet<string> extensions;
@@ -71,14 +72,35 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderProgramDeclarati
     this.encoding   = encoding;
   }
 
+  /// <summary>The <see cref="IShaderTransformer"/>s to apply to the loaded shaders.</summary>
+  public List<IShaderTransformer> Transformers { get; init; } = new()
+  {
+    new SpriteShaderTransformer(),
+  };
+
   public override bool CanHandle(AssetLoaderContext context)
   {
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<ShaderProgramDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
-    return await parser.ParseShaderAsync(context.Path, encoding, progressToken.CancellationToken);
+    var declaration = await parser.ParseShaderAsync(context.Path, encoding, progressToken.CancellationToken);
+
+    return await TransformShaderAsync(declaration, progressToken.CancellationToken);
+  }
+
+  private async Task<ShaderDeclaration> TransformShaderAsync(ShaderDeclaration declaration, CancellationToken cancellationToken = default)
+  {
+    foreach (var transformer in Transformers)
+    {
+      if (transformer.CanTransform(declaration))
+      {
+        declaration = await transformer.TransformAsync(declaration, cancellationToken);
+      }
+    }
+
+    return declaration;
   }
 }
 

@@ -32,6 +32,9 @@ public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
     this.encoding   = encoding;
   }
 
+  /// <summary>The <see cref="IScriptTransformer"/>s to apply to the loaded scripts.</summary>
+  public List<IScriptTransformer> Transformers { get; init; } = new();
+
   public override bool CanHandle(AssetLoaderContext context)
   {
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
@@ -39,7 +42,22 @@ public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
 
   public override async ValueTask<ScriptDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
-    return await parser.ParseScriptAsync(context.Path, encoding, progressToken.CancellationToken);
+    var declaration = await parser.ParseScriptAsync(context.Path, encoding, progressToken.CancellationToken);
+
+    return await TransformScriptAsync(declaration, progressToken.CancellationToken);
+  }
+
+  private async Task<ScriptDeclaration> TransformScriptAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default)
+  {
+    foreach (var transformer in Transformers)
+    {
+      if (transformer.CanTransform(declaration))
+      {
+        declaration = await transformer.TransformAsync(declaration, cancellationToken);
+      }
+    }
+
+    return declaration;
   }
 }
 

@@ -49,7 +49,7 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
     // TODO: support hot reloading?
     var compilerContext = new AssetCompilerContext(context.Manager);
 
-    var declaration = await context.Manager.LoadAssetAsync<ShaderProgramDeclaration>(context.Path);
+    var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path);
     var compiled    = await device.ShaderCompiler.CompileAsync(compilerContext, declaration, progressToken.CancellationToken);
 
     return device.CreateShaderProgram(compiled);
@@ -65,9 +65,9 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
       this.manager = manager;
     }
 
-    public async ValueTask<ShaderProgramDeclaration> ExpandShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
+    public async ValueTask<ShaderDeclaration> ExpandShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
     {
-      return await manager.LoadAssetAsync<ShaderProgramDeclaration>(path);
+      return await manager.LoadAssetAsync<ShaderDeclaration>(path);
     }
   }
 }

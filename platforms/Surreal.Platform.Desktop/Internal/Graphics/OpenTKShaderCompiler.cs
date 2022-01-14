@@ -19,7 +19,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
   public async ValueTask<ICompiledShaderProgram> CompileAsync(
     IShaderCompilerContext context,
-    ShaderProgramDeclaration declaration,
+    ShaderDeclaration declaration,
     CancellationToken cancellationToken = default
   )
   {
@@ -40,7 +40,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
   private async ValueTask<string> BuildSourceCodeAsync(
     IShaderCompilerContext context,
-    ShaderProgramDeclaration declaration,
+    ShaderDeclaration declaration,
     CompilationUnit compilationUnit,
     StageDeclaration? stage = null,
     CancellationToken cancellationToken = default
@@ -126,7 +126,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     }
   }
 
-  private void CompilePreamble(ShaderCodeBuilder builder, ShaderProgramDeclaration declaration)
+  private void CompilePreamble(ShaderCodeBuilder builder, ShaderDeclaration declaration)
   {
     builder.AppendComment(declaration.Path);
     builder.AppendBlankLine();

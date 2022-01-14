@@ -29,7 +29,7 @@ public class OpenTKShaderCompilerTests
       this.parser = parser;
     }
 
-    public ValueTask<ShaderProgramDeclaration> ExpandShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
+    public ValueTask<ShaderDeclaration> ExpandShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
     {
       return parser.ParseShaderAsync(path, cancellationToken);
     }

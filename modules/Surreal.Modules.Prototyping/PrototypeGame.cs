@@ -9,6 +9,7 @@ using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Shaders.Languages;
+using Surreal.Graphics.Shaders.Transformers;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;

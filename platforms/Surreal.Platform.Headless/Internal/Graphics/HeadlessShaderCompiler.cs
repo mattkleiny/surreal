@@ -7,7 +7,7 @@ internal sealed class HeadlessShaderCompiler : IShaderCompiler
 {
   public ValueTask<ICompiledShaderProgram> CompileAsync(
     IShaderCompilerContext context,
-    ShaderProgramDeclaration declaration,
+    ShaderDeclaration declaration,
     CancellationToken cancellationToken = default
   )
   {
