@@ -7,4 +7,6 @@ public partial class GraphEditorWindow
   {
     InitializeComponent();
   }
+
+  public GraphEditorViewModel ViewModel => GraphEditor.ViewModel;
 }
