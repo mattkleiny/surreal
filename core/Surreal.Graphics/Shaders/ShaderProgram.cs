@@ -47,20 +47,21 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
   public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     // TODO: support hot reloading?
-    var compilerContext = new AssetCompilerContext(context.Manager);
+
+    var environment = new ShaderCompilerAssetEnvironment(context.Manager);
 
     var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path);
-    var compiled    = await device.ShaderCompiler.CompileAsync(compilerContext, declaration, progressToken.CancellationToken);
+    var compiled    = await device.ShaderCompiler.CompileAsync(environment, declaration, progressToken.CancellationToken);
 
     return device.CreateShaderProgram(compiled);
   }
 
-  /// <summary>A <see cref="IShaderCompilerContext"/> implementation that delegates back to the asset system..</summary>
-  private sealed class AssetCompilerContext : IShaderCompilerContext
+  /// <summary>A <see cref="IShaderCompilerEnvironment"/> implementation that delegates back to the asset system..</summary>
+  private sealed class ShaderCompilerAssetEnvironment : IShaderCompilerEnvironment
   {
     private readonly IAssetManager manager;
 
-    public AssetCompilerContext(IAssetManager manager)
+    public ShaderCompilerAssetEnvironment(IAssetManager manager)
     {
       this.manager = manager;
     }

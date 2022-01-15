@@ -1,5 +1,4 @@
 ﻿using Surreal.Assets;
-using Surreal.Graphics.Shaders.Transformers;
 using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
@@ -73,10 +72,7 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
   }
 
   /// <summary>The <see cref="IShaderTransformer"/>s to apply to the loaded shaders.</summary>
-  public List<IShaderTransformer> Transformers { get; init; } = new()
-  {
-    new SpriteShaderTransformer(),
-  };
+  public List<IShaderTransformer> Transformers { get; init; } = new();
 
   public override bool CanHandle(AssetLoaderContext context)
   {

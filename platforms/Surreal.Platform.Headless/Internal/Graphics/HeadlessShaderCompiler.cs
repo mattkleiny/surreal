@@ -6,7 +6,7 @@ namespace Surreal.Internal.Graphics;
 internal sealed class HeadlessShaderCompiler : IShaderCompiler
 {
   public ValueTask<ICompiledShaderProgram> CompileAsync(
-    IShaderCompilerContext context,
+    IShaderCompilerEnvironment environment,
     ShaderDeclaration declaration,
     CancellationToken cancellationToken = default
   )

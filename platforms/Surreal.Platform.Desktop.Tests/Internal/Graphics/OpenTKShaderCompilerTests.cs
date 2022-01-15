@@ -12,26 +12,11 @@ public class OpenTKShaderCompilerTests
   {
     var parser   = new StandardShaderParser();
     var compiler = new OpenTKShaderCompiler();
-    var context  = new ShaderCompilerContext(parser);
+    var context  = new ShaderCompilerEnvironment(parser);
 
     var declaration = await parser.ParseShaderAsync(path);
     var compiled    = await compiler.CompileAsync(context, declaration);
 
     Assert.IsNotNull(compiled);
-  }
-
-  private sealed class ShaderCompilerContext : IShaderCompilerContext
-  {
-    private readonly IShaderParser parser;
-
-    public ShaderCompilerContext(IShaderParser parser)
-    {
-      this.parser = parser;
-    }
-
-    public ValueTask<ShaderDeclaration> ExpandShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
-    {
-      return parser.ParseShaderAsync(path, cancellationToken);
-    }
   }
 }
