@@ -79,6 +79,11 @@ public struct Color : IEquatable<Color>
 /// <summary>A 32-bit representation of color.</summary>
 public struct Color32 : IEquatable<Color32>
 {
+  public static Color32 Parse(string raw)
+  {
+    throw new NotImplementedException();
+  }
+
   public Color32(byte red, byte green, byte blue, byte alpha = 255)
   {
     R = red;

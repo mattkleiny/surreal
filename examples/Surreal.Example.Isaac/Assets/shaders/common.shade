@@ -1,9 +1,7 @@
 ﻿// Common shader code for the entire project.
 
-#include "resx://Surreal.Graphics/Resources/shaders/common.shade";
-
 uniform sampler2d _CombinedPaletteTex;
-uniform int _CombinedPaletteWidth;
+uniform int       _CombinedPaletteWidth;
 
 vec4 sample_palette(vec4 color)
 {
