@@ -2,17 +2,11 @@
 
 #include "resx://Surreal.Graphics/Resources/shaders/common.shader";
 
-float circle(float radius, int depth)
-{
-  // return 1f * MathF.Pi;
-}
+uniform sampler2D _CombinedPaletteTex;
+uniform int _CombinedPaletteWidth;
 
-float square(float radius, int depth)
+vec4 sample_palette(vec4 color)
 {
-  // return 1f * MathF.Pi;
-}
-
-float triangle(float radius, int depth)
-{
-  // return 1f * MathF.Pi;
+  // TODO: sample the color palette texture
+  return color;
 }

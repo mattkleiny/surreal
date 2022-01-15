@@ -4,8 +4,7 @@
 
 #shader_type sprite;
 
-uniform vec3 _Position;
-uniform float _Intensity;
+uniform vec3 _Tint;
 varying vec3 _Color;
 
 void vertex()
@@ -15,5 +14,5 @@ void vertex()
 
 void fragment()
 {
-  COLOR = _Color;
+  COLOR = sample_palette(_Color) * _Tint;
 }

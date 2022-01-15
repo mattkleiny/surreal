@@ -7,6 +7,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Palettes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Shaders.Languages;
 using Surreal.Graphics.Textures;
@@ -67,6 +68,7 @@ public abstract class PrototypeGame : Game
 
     // graphics
     manager.AddLoader(new BitmapFontLoader());
+    manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());
     manager.AddLoader(new ShaderLoader(GraphicsDevice, ".shader"));
