@@ -48,7 +48,7 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
   {
     // TODO: support hot reloading?
 
-    var environment = new ShaderCompilerAssetEnvironment(context.Manager);
+    var environment = new ShaderAssetEnvironment(context.Manager);
 
     var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path);
     var compiled    = await device.ShaderCompiler.CompileAsync(environment, declaration, progressToken.CancellationToken);
@@ -57,11 +57,11 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
   }
 
   /// <summary>A <see cref="IShaderCompilerEnvironment"/> implementation that delegates back to the asset system..</summary>
-  private sealed class ShaderCompilerAssetEnvironment : IShaderCompilerEnvironment
+  private sealed class ShaderAssetEnvironment : IShaderCompilerEnvironment
   {
     private readonly IAssetManager manager;
 
-    public ShaderCompilerAssetEnvironment(IAssetManager manager)
+    public ShaderAssetEnvironment(IAssetManager manager)
     {
       this.manager = manager;
     }

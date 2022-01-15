@@ -10,9 +10,10 @@ namespace Surreal.Graphics.Shaders.Languages;
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class StandardShaderParser : IShaderParser
 {
-  private static ImmutableHashSet<string> Keywords        { get; } = new[] { "uniform", "varying", "const", "return" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> CompileKeywords { get; } = new[] { "shader_type", "include" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> StageKeywords   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords          { get; } = new[] { "uniform", "varying", "const", "return" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> CompileKeywords   { get; } = new[] { "shader_type", "include" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> StageKeywords     { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> IntrinsicKeywords { get; } = new[] { "POSITION", "COLOR" }.ToImmutableHashSet();
 
   public async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
@@ -21,8 +22,6 @@ public sealed class StandardShaderParser : IShaderParser
 
     return new ShaderDeclaration(path, context.ParseCompilationUnit());
   }
-
-  #region Tokenization
 
   [SuppressMessage("ReSharper", "CognitiveComplexity")]
   private static async Task<Queue<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
@@ -226,10 +225,6 @@ public sealed class StandardShaderParser : IShaderParser
     public override string ToString() => $"{Line}:{Column}";
   }
 
-  #endregion
-
-  #region Parsing
-
   /// <summary>Context for syntax parsing operations. This is a recursive descent style parser.</summary>
   private sealed class ShaderParseContext
   {
@@ -252,7 +247,7 @@ public sealed class StandardShaderParser : IShaderParser
           TokenType.CompileKeyword => ParseCompileKeyword(),
           TokenType.Keyword        => ParseKeyword(),
           TokenType.Identifier     => ParseStageOrFunction(),
-          _                        => Discard(),
+          _                        => ConsumeAny(),
         };
 
         if (node != null)
@@ -349,7 +344,7 @@ public sealed class StandardShaderParser : IShaderParser
 
         if (TryPeek(TokenType.Comma))
         {
-          Discard();
+          ConsumeAny();
         }
       }
 
@@ -384,7 +379,6 @@ public sealed class StandardShaderParser : IShaderParser
 
     private Statement ParseStatement()
     {
-      // TODO: implement me
       if (TryConsumeLiteral(TokenType.Comment, out string comment))
       {
         return new Comment(comment);
@@ -398,6 +392,24 @@ public sealed class StandardShaderParser : IShaderParser
 
           _ => throw Error($"An unexpected keyword was encountered: {keyword}"),
         };
+      }
+
+      if (TryConsumeLiteral(TokenType.Identifier, out string variable))
+      {
+        if (IntrinsicKeywords.Contains(variable))
+        {
+          var intrinsicType = variable switch
+          {
+            "POSITION" => IntrinsicType.Position,
+            "COLOR"    => IntrinsicType.Color,
+
+            _ => throw Error($"An unexpected keyword was encountered: {keyword}"),
+          };
+
+          return new IntrinsicAssignment(intrinsicType, ParseExpression());
+        }
+
+        return new Assignment(variable, ParseExpression());
       }
 
       throw new NotImplementedException();
@@ -444,7 +456,20 @@ public sealed class StandardShaderParser : IShaderParser
 
     private Expression ParseExpression()
     {
+      if (TryPeek(TokenType.Minus))
+      {
+        var value = ParseExpression();
+
+        return new UnaryOperation(UnaryOperator.Negate, value);
+      }
+
       throw new NotImplementedException();
+
+      // var left  = ParseExpression();
+      // var op    = ParseBinaryOperator();
+      // var right = ParseExpression();
+      //
+      // return new BinaryOperation(op, left, right);
     }
 
     private Primitive ParsePrimitive()
@@ -493,6 +518,18 @@ public sealed class StandardShaderParser : IShaderParser
       return ConsumeLiteral<string>(TokenType.Identifier);
     }
 
+    private BinaryOperator ParseBinaryOperator()
+    {
+      if (TryConsume(TokenType.Plus)) return BinaryOperator.Add;
+      if (TryConsume(TokenType.Minus)) return BinaryOperator.Subtract;
+      if (TryConsume(TokenType.Star)) return BinaryOperator.Multiply;
+      if (TryConsume(TokenType.Slash)) return BinaryOperator.Divide;
+      if (TryConsume(TokenType.Equal)) return BinaryOperator.Equal;
+      if (TryConsume(TokenType.BangEqual)) return BinaryOperator.NotEqual;
+
+      throw Error("An unrecognized token was encountered");
+    }
+
     private bool TryPeek(out Token token)
     {
       return tokens.TryPeek(out token);
@@ -508,6 +545,17 @@ public sealed class StandardShaderParser : IShaderParser
       return false;
     }
 
+    private bool TryConsume(TokenType type)
+    {
+      if (TryPeek(out var token))
+      {
+        tokens.Dequeue();
+        return true;
+      }
+
+      return false;
+    }
+
     private Token Consume(TokenType type)
     {
       if (!TryPeek(type))
@@ -516,6 +564,13 @@ public sealed class StandardShaderParser : IShaderParser
       }
 
       return lastToken = tokens.Dequeue();
+    }
+
+    private ShaderSyntaxTree? ConsumeAny()
+    {
+      lastToken = tokens.Dequeue();
+
+      return null;
     }
 
     private T ConsumeLiteral<T>(TokenType type)
@@ -550,28 +605,11 @@ public sealed class StandardShaderParser : IShaderParser
       return false;
     }
 
-    private ShaderSyntaxTree? Discard()
-    {
-      lastToken = tokens.Dequeue();
-
-      return null;
-    }
-
-    private void DiscardUntil(TokenType type)
-    {
-      while (!TryPeek(type))
-      {
-        Discard();
-      }
-    }
-
     private Exception Error(string message)
     {
       return ShaderParseException.Create(lastToken, message);
     }
   }
-
-  #endregion
 
   /// <summary>Indicates an error whilst parsing a program.</summary>
   private sealed class ShaderParseException : Exception

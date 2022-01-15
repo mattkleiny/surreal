@@ -1,7 +1,6 @@
 // A simple sprite shader, for testing purposes.
 
-#include "resx://Surreal.Graphics/Shaders/common.shader";
-#include "resx://Surreal.Graphics/Shaders/sprites.shader";
+#include "resx://Surreal.Graphics/Resources/Shaders/sprites.shader";
 
 #shader_type sprite;
 
@@ -9,17 +8,12 @@ uniform lowp vec3 _Position;
 uniform lowp float _Intensity;
 varying vec3 _Color;
 
-float circle(float radius, int depth)
-{
-  // return 1f * MathF.Pi;
-}
-
 void vertex()
 {
-  // _Color = vec3(1,1,1) * _Position * _Intensity;
+  POSITION = _Position + sin(_Intensity) * _Position.x;
 }
 
 void fragment()
 {
-  // COLOR = _Color;
+  COLOR = _Color;
 }

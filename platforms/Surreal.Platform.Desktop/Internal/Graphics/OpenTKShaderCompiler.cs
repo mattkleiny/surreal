@@ -147,10 +147,6 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     {
       switch (statement)
       {
-        case Include:
-          // no-op (included in preamble)
-          break;
-
         case Comment(var text):
           builder.AppendComment(text);
           break;
@@ -171,7 +167,6 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
           builder.AppendAssignment(variable, CompileExpression(value));
           break;
 
-        // TODO: convert this into something GLSL specific
         case IntrinsicAssignment(var intrinsicType, var value):
           builder.AppendAssignment(ConvertIntrinsic(intrinsicType), CompileExpression(value));
           break;
@@ -234,10 +229,10 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
         case Expression.Constructor(_, var value):
           return CompileExpression(value);
 
-        case Expression.Binary(var @operator, var left, var right):
+        case Expression.BinaryOperation(var @operator, var left, var right):
           return $"{CompileExpression(left)} {ConvertOperator(@operator)} {CompileExpression(right)}";
 
-        case Expression.Unary(var @operator, var value):
+        case Expression.UnaryOperation(var @operator, var value):
           return $"{ConvertOperator(@operator)}{CompileExpression(value)}";
 
         default:
@@ -257,8 +252,8 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
     private static string ConvertIntrinsic(IntrinsicType type) => type switch
     {
-      IntrinsicType.Position => "POSITION",
-      IntrinsicType.Color    => "COLOR",
+      IntrinsicType.Position => "gl_Position",
+      IntrinsicType.Color    => "FragColor",
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
     };

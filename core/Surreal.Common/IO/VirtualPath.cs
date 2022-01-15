@@ -5,7 +5,7 @@ using Surreal.Text;
 namespace Surreal.IO;
 
 /// <summary>Represents a path in the virtual file system.</summary>
-[TypeConverter(typeof(VirtualPathConverter))]
+[TypeConverter(typeof(VirtualPathTypeConverter))]
 public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 {
   private const string SchemeSeparator = "://";
@@ -37,7 +37,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
   public static implicit operator VirtualPath(string uri) => Parse(uri);
 
   /// <summary>The <see cref="TypeConverter"/> for <see cref="VirtualPath"/>s.</summary>
-  private sealed class VirtualPathConverter : TypeConverter
+  private sealed class VirtualPathTypeConverter : TypeConverter
   {
     public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
     {

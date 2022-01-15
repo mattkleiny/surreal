@@ -162,7 +162,6 @@ public abstract record ShaderSyntaxTree
     /// <example>void fragment() { ... }</example>
     public sealed record StageDeclaration(ShaderKind Kind) : Statement
     {
-      public ImmutableArray<Parameter> Parameters { get; init; } = ImmutableArray<Parameter>.Empty;
       public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
     }
 
@@ -204,11 +203,11 @@ public abstract record ShaderSyntaxTree
 
     /// <summary>A simple binary operator expression.</summary>
     /// <example>1 + 2</example>
-    public sealed record Binary(BinaryOperator Operator, Expression Left, Expression Right) : Expression;
+    public sealed record BinaryOperation(BinaryOperator Operator, Expression Left, Expression Right) : Expression;
 
     /// <summary>A simple unary operator expression.</summary>
     /// <example>-4</example>
-    public sealed record Unary(UnaryOperator Operator, Expression Value) : Expression;
+    public sealed record UnaryOperation(UnaryOperator Operator, Expression Value) : Expression;
   }
 
   /// <summary>Binary operators used in binary expressions.</summary>
@@ -218,6 +217,9 @@ public abstract record ShaderSyntaxTree
     Subtract,
     Multiply,
     Divide,
+
+    Equal,
+    NotEqual,
   }
 
   /// <summary>Unary operators used in unary expressions.</summary>

@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Meshes;
@@ -95,45 +96,14 @@ internal sealed class OpenTKShaderProgram : ShaderProgram
     }
   }
 
-  public override void SetUniform(string name, int scalar)
-  {
-    GL.Uniform1i(GetUniformLocation(name), scalar);
-  }
-
-  public override void SetUniform(string name, float scalar)
-  {
-    GL.Uniform1f(GetUniformLocation(name), scalar);
-  }
-
-  public override void SetUniform(string name, Vector2I point)
-  {
-    GL.Uniform2i(GetUniformLocation(name), point.X, point.Y);
-  }
-
-  public override void SetUniform(string name, Vector3I point)
-  {
-    GL.Uniform3i(GetUniformLocation(name), point.X, point.Y, point.Z);
-  }
-
-  public override void SetUniform(string name, Vector2 vector)
-  {
-    GL.Uniform2f(GetUniformLocation(name), vector.X, vector.Y);
-  }
-
-  public override void SetUniform(string name, Vector3 vector)
-  {
-    GL.Uniform3f(GetUniformLocation(name), vector.X, vector.Y, vector.Z);
-  }
-
-  public override void SetUniform(string name, Vector4 vector)
-  {
-    GL.Uniform4f(GetUniformLocation(name), vector.W, vector.X, vector.Y, vector.Z);
-  }
-
-  public override void SetUniform(string name, Quaternion quaternion)
-  {
-    GL.Uniform4f(GetUniformLocation(name), quaternion.W, quaternion.X, quaternion.Y, quaternion.Z);
-  }
+  public override void SetUniform(string name, int scalar)            => GL.Uniform1i(GetUniformLocation(name), scalar);
+  public override void SetUniform(string name, float scalar)          => GL.Uniform1f(GetUniformLocation(name), scalar);
+  public override void SetUniform(string name, Vector2I point)        => GL.Uniform2i(GetUniformLocation(name), point.X, point.Y);
+  public override void SetUniform(string name, Vector3I point)        => GL.Uniform3i(GetUniformLocation(name), point.X, point.Y, point.Z);
+  public override void SetUniform(string name, Vector2 vector)        => GL.Uniform2f(GetUniformLocation(name), vector.X, vector.Y);
+  public override void SetUniform(string name, Vector3 vector)        => GL.Uniform3f(GetUniformLocation(name), vector.X, vector.Y, vector.Z);
+  public override void SetUniform(string name, Vector4 vector)        => GL.Uniform4f(GetUniformLocation(name), vector.X, vector.Y, vector.Z, vector.W);
+  public override void SetUniform(string name, Quaternion quaternion) => GL.Uniform4f(GetUniformLocation(name), quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
 
   public override unsafe void SetUniform(string name, in Matrix3x2 matrix)
   {
@@ -168,7 +138,7 @@ internal sealed class OpenTKShaderProgram : ShaderProgram
   {
     if (!locationCache.TryGetValue(name, out var id))
     {
-      id = locationCache[name] = GL.GetUniformLocation(this.Id, name);
+      id = locationCache[name] = GL.GetUniformLocation(Id, name);
     }
 
     return id;
@@ -176,30 +146,29 @@ internal sealed class OpenTKShaderProgram : ShaderProgram
 
   private static VertexAttribPointerType ConvertVertexType(VertexType type)
   {
-    switch (type)
+    return type switch
     {
-      case VertexType.UnsignedByte:  return VertexAttribPointerType.UnsignedByte;
-      case VertexType.Byte:          return VertexAttribPointerType.Byte;
-      case VertexType.Short:         return VertexAttribPointerType.Short;
-      case VertexType.UnsignedShort: return VertexAttribPointerType.UnsignedShort;
-      case VertexType.Int:           return VertexAttribPointerType.Int;
-      case VertexType.UnsignedInt:   return VertexAttribPointerType.UnsignedInt;
-      case VertexType.Float:         return VertexAttribPointerType.Float;
-      case VertexType.Double:        return VertexAttribPointerType.Double;
+      VertexType.UnsignedByte  => VertexAttribPointerType.UnsignedByte,
+      VertexType.Byte          => VertexAttribPointerType.Byte,
+      VertexType.Short         => VertexAttribPointerType.Short,
+      VertexType.UnsignedShort => VertexAttribPointerType.UnsignedShort,
+      VertexType.Int           => VertexAttribPointerType.Int,
+      VertexType.UnsignedInt   => VertexAttribPointerType.UnsignedInt,
+      VertexType.Float         => VertexAttribPointerType.Float,
+      VertexType.Double        => VertexAttribPointerType.Double,
 
-      default:
-        throw new ArgumentOutOfRangeException(nameof(type), type, null);
-    }
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+    };
   }
 }
 
 internal sealed class ShaderProgramException : PlatformException
 {
-  public ShaderProgramException(string message, string infoLog)
+  public ShaderProgramException(string message, string informationLog)
     : base(message)
   {
-    InfoLog = infoLog;
+    InformationLog = informationLog;
   }
 
-  public string InfoLog { get; }
+  public string InformationLog { get; }
 }
