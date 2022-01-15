@@ -1,5 +1,3 @@
-using Surreal.Text;
-
 namespace Surreal.Diagnostics.Logging;
 
 /// <summary>A <see cref="ILogFactory"/> that writes to the built-in .NET <see cref="Debug"/> console.</summary>

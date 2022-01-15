@@ -10,10 +10,10 @@ varying vec3 _Color;
 
 void vertex()
 {
-  // _Color = vec3(1,1,1) * _Position * _Intensity;
+  _Color = vec3(1,1,1) * _Position * _Intensity;
 }
 
 void fragment()
 {
-  // COLOR = _Color;
+  COLOR = _Color;
 }

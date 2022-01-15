@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using Surreal.Utilities;
+using Surreal.Reactive;
 
 namespace Surreal.Controls;
 
@@ -16,7 +16,7 @@ public partial class GraphEditor
 }
 
 /// <summary>A view model for the <see cref="GraphEditor"/>.</summary>
-public sealed class GraphEditorViewModel : ViewModel
+public sealed record GraphEditorViewModel : ViewModel
 {
   private ObservableCollection<GraphNodeViewModel>       nodes              = new();
   private GraphNodeViewModel?                            selectedNode       = default;
@@ -56,7 +56,7 @@ public sealed class GraphEditorViewModel : ViewModel
 }
 
 /// <summary>A view model for a single node in a <see cref="GraphEditor"/>.</summary>
-public sealed class GraphNodeViewModel : ViewModel
+public sealed record GraphNodeViewModel : ViewModel
 {
   private Vector2 position;
 
@@ -68,7 +68,7 @@ public sealed class GraphNodeViewModel : ViewModel
 }
 
 /// <summary>A view model for a single node in a <see cref="GraphEditor"/>.</summary>
-public sealed class GraphConnectionViewModel : ViewModel
+public sealed record GraphConnectionViewModel : ViewModel
 {
   private GraphNodeViewModel? source;
   private GraphNodeViewModel? target;

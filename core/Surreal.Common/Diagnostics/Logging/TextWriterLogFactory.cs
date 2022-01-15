@@ -1,6 +1,4 @@
-﻿using Surreal.Text;
-
-namespace Surreal.Diagnostics.Logging;
+﻿namespace Surreal.Diagnostics.Logging;
 
 /// <summary>A <see cref="ILogFactory"/> that writes to the given <see cref="TextWriter"/>.</summary>
 public sealed class TextWriterLogFactory : ILogFactory

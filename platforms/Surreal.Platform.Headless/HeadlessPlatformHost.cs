@@ -10,7 +10,6 @@ using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
 using Surreal.Internal.Networking;
 using Surreal.Networking;
-using Surreal.Networking.Transports;
 using Surreal.Threading;
 using Surreal.Timing;
 

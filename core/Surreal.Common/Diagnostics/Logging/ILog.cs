@@ -1,6 +1,4 @@
-﻿using Surreal.Text;
-
-namespace Surreal.Diagnostics.Logging;
+﻿namespace Surreal.Diagnostics.Logging;
 
 /// <summary>Different logging levels for <see cref="ILog"/> calls.</summary>
 public enum LogLevel

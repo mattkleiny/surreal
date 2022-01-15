@@ -1,6 +1,4 @@
-﻿using Surreal.Text;
-
-namespace Surreal.Diagnostics.Logging;
+﻿namespace Surreal.Diagnostics.Logging;
 
 /// <summary>A no-op <see cref="ILogFactory"/>.</summary>
 public sealed class NullLogFactory : ILogFactory

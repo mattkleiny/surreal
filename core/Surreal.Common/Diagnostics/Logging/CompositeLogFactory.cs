@@ -1,6 +1,4 @@
-﻿using Surreal.Text;
-
-namespace Surreal.Diagnostics.Logging;
+﻿namespace Surreal.Diagnostics.Logging;
 
 /// <summary>A <see cref="ILogFactory"/> that composes multiple other <see cref="ILogFactory"/>s.</summary>
 public sealed class CompositeLogFactory : ILogFactory

@@ -16,7 +16,6 @@ using Surreal.IO.Json;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;
 using Surreal.Networking;
-using Surreal.Networking.Transports;
 using Surreal.Screens;
 using Surreal.Scripting;
 using Surreal.Scripting.Bytecode;
@@ -77,13 +76,13 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new TrueTypeFontLoader());
 
     // scripting
+    manager.AddLoader(new BytecodeProgramLoader());
     manager.AddLoader(new ScriptLoader(new BytecodeScriptCompiler(), ".basic", ".bas", ".lisp", ".lox", ".lua", ".wren"));
     manager.AddLoader(new ScriptDeclarationLoader(new BasicScriptParser(), ".basic", ".bas"));
     manager.AddLoader(new ScriptDeclarationLoader(new LispScriptParser(), ".lisp"));
     manager.AddLoader(new ScriptDeclarationLoader(new LoxScriptParser(), ".lox"));
     manager.AddLoader(new ScriptDeclarationLoader(new LuaScriptParser(), ".lua"));
     manager.AddLoader(new ScriptDeclarationLoader(new WrenScriptParser(), ".wren"));
-    manager.AddLoader(new BytecodeProgramLoader());
   }
 
   protected override void RegisterPlugins(IGamePluginRegistry plugins)

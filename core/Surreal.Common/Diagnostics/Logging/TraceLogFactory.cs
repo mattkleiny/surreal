@@ -1,6 +1,4 @@
-﻿using Surreal.Text;
-
-namespace Surreal.Diagnostics.Logging;
+﻿namespace Surreal.Diagnostics.Logging;
 
 /// <summary>A <see cref="ILogFactory"/> that writes to the built-in .NET <see cref="Trace"/> console.</summary>
 public sealed class TraceLogFactory : ILogFactory

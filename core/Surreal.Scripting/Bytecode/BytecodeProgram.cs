@@ -26,7 +26,7 @@ public enum InstructionType : ushort
 /// <summary>Encapsulates a single bytecode instruction.</summary>
 public readonly record struct BytecodeInstruction(InstructionType Type);
 
-/// <summary>A <see cref="ICompiledScript"/> in the form of bytecode.</summary>
+/// <summary>A <see cref="ICompiledScript"/> in the form of bytecode that can be executed by our <see cref="BytecodeVirtualMachine"/>.</summary>
 public sealed record BytecodeProgram(string Path) : ICompiledScript
 {
   public ImmutableList<BytecodeInstruction> Instructions { get; init; } = ImmutableList<BytecodeInstruction>.Empty;
