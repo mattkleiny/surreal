@@ -12,5 +12,5 @@ public interface IActorContext
   void Destroy(ActorId id);
 
   IComponentStorage<T> GetStorage<T>()
-    where T : notnull;
+    where T : notnull, new();
 }

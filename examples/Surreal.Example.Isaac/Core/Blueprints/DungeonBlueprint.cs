@@ -3,7 +3,7 @@ using Surreal.Graphs;
 using Surreal.IO.Xml;
 using Surreal.Objects;
 
-namespace Isaac.Blueprints;
+namespace Isaac.Core.Blueprints;
 
 /// <summary>A plan for a dungeon.</summary>
 public sealed record DungeonPlan(Seed Seed, int Width, int Height);

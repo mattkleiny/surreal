@@ -18,9 +18,6 @@ public sealed class IsaacGame : PrototypeGame
     },
   });
 
-  public IsaacGameContext Context { get; } = new();
-  public ActorScene       Scene   { get; } = new();
-
   protected override void Input(GameTime time)
   {
     if (Keyboard.IsKeyPressed(Key.Escape)) Exit();

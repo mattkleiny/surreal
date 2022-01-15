@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Surreal.Reactive;
+namespace Surreal.Utilities;
 
-/// <summary>Base class for any view model.</summary>
+/// <summary>Base class for any view model that notifies of property changes.</summary>
 public abstract record ViewModel : INotifyPropertyChanged
 {
   public event PropertyChangedEventHandler? PropertyChanged;

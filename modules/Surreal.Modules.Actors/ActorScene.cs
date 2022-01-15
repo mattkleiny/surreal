@@ -167,7 +167,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     private readonly Dictionary<Type, IComponentStorage> storagesByType = new();
 
     public IComponentStorage<T> GetOrCreateStorage<T>()
-      where T : notnull
+      where T : notnull, new()
     {
       if (!storagesByType.TryGetValue(typeof(T), out var storage))
       {
@@ -199,7 +199,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     }
 
     private static IComponentStorage<T> CreateStorage<T>()
-      where T : notnull
+      where T : notnull, new()
     {
       var storageType = typeof(SparseComponentStorage<>);
       var attribute   = typeof(T).GetCustomAttribute<ComponentAttribute>();

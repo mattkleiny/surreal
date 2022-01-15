@@ -5,7 +5,7 @@ using Surreal.IO;
 using Surreal.IO.Xml;
 using Surreal.Objects;
 
-namespace Isaac.Blueprints;
+namespace Isaac.Core.Blueprints;
 
 /// <summary>A graph node for procedurally generating sprites.</summary>
 public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>

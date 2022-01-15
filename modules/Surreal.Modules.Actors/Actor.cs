@@ -56,7 +56,7 @@ public class Actor
   public void Destroy() => context.Destroy(Id);
 
   public ref T GetOrCreateComponent<T>(T prototype)
-    where T : notnull
+    where T : notnull, new()
   {
     var storage = context.GetStorage<T>();
 
@@ -64,7 +64,7 @@ public class Actor
   }
 
   public ref T AddComponent<T>(T prototype)
-    where T : notnull
+    where T : notnull, new()
   {
     var storage = context.GetStorage<T>();
 
@@ -72,7 +72,7 @@ public class Actor
   }
 
   public ref T GetComponent<T>()
-    where T : notnull
+    where T : notnull, new()
   {
     var     storage   = context.GetStorage<T>();
     ref var component = ref storage.GetComponent(Id);
@@ -86,7 +86,7 @@ public class Actor
   }
 
   public bool RemoveComponent<T>()
-    where T : notnull
+    where T : notnull, new()
   {
     var storage = context.GetStorage<T>();
 

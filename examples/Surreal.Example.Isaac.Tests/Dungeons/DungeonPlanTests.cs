@@ -1,4 +1,4 @@
-﻿using Isaac.Blueprints;
+﻿using Isaac.Core.Blueprints;
 
 namespace Isaac.Dungeons;
 

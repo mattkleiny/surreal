@@ -4,7 +4,7 @@ namespace Surreal.Components;
 
 /// <summary>A sparsely packed <see cref="IComponentStorage{T}"/>.</summary>
 public sealed class SparseComponentStorage<T> : IComponentStorage<T>
-  where T : notnull
+  where T : notnull, new()
 {
   private readonly Dictionary<ActorId, Box<T>> boxes = new();
 
@@ -12,7 +12,7 @@ public sealed class SparseComponentStorage<T> : IComponentStorage<T>
   {
     if (!boxes.TryGetValue(id, out var slot))
     {
-      boxes[id] = slot = new Box<T>(prototype.GetOrDefault(default!));
+      boxes[id] = slot = new Box<T>(prototype.GetOrDefault(new()));
     }
 
     return ref slot.Value;
@@ -30,7 +30,7 @@ public sealed class SparseComponentStorage<T> : IComponentStorage<T>
 
   public ref T AddComponent(ActorId id, Optional<T> prototype)
   {
-    var component = prototype.GetOrDefault(default!);
+    var component = prototype.GetOrDefault(new());
     var box       = new Box<T>(component);
 
     boxes[id] = box;
