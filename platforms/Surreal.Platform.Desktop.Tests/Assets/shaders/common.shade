@@ -1,0 +1,11 @@
+// Example common code.
+
+#include "Assets/shaders/math.shade";
+
+uniform sampler2d _PaletteTexture;
+uniform float     _PaletteWidth;
+
+vec3 sample_palette(vec3 color)
+{
+  return SAMPLE(_PaletteTexture, color.rg);
+}

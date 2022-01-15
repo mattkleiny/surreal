@@ -34,13 +34,13 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   {
     this.configuration = configuration;
 
-    Window           = new OpenTKWindow(configuration);
-    AudioDevice      = new OpenTKAudioDevice();
-    ComputeDevice    = new OpenTKComputeDevice();
-    GraphicsDevice   = new OpenTKGraphicsDevice(Window);
-    InputManager     = new OpenTKInputManager(Window);
+    Window         = new OpenTKWindow(configuration);
+    AudioDevice    = new OpenTKAudioDevice();
+    ComputeDevice  = new OpenTKComputeDevice();
+    GraphicsDevice = new OpenTKGraphicsDevice(Window);
+    InputManager   = new OpenTKInputManager(Window);
     NetworkFactory = new DesktopNetworkFactory();
-    Dispatcher       = new ImmediateDispatcher();
+    Dispatcher     = new ImmediateDispatcher();
   }
 
   public event Action<int, int> Resized
@@ -49,11 +49,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     remove => Window.Resized -= value;
   }
 
-  public OpenTKWindow            Window           { get; }
-  public OpenTKAudioDevice       AudioDevice      { get; }
-  public OpenTKComputeDevice     ComputeDevice    { get; }
-  public OpenTKGraphicsDevice    GraphicsDevice   { get; }
-  public OpenTKInputManager      InputManager     { get; }
+  public OpenTKWindow          Window         { get; }
+  public OpenTKAudioDevice     AudioDevice    { get; }
+  public OpenTKComputeDevice   ComputeDevice  { get; }
+  public OpenTKGraphicsDevice  GraphicsDevice { get; }
+  public OpenTKInputManager    InputManager   { get; }
   public DesktopNetworkFactory NetworkFactory { get; }
 
   public IServiceModule Services   => this;

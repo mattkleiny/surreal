@@ -1,6 +1,6 @@
 ﻿// Our standard sprite shader.
 
-#include "Assets/shaders/common.shader";
+#include "Assets/shaders/common.shade";
 
 #shader_type sprite;
 

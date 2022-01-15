@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Internal;
+using Surreal.Timing;
 
 namespace Surreal;
 

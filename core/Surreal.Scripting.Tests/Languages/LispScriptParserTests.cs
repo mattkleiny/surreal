@@ -4,7 +4,7 @@ namespace Surreal.Scripting.Languages;
 
 public class LispScriptParserTests
 {
-  [Test]
+  [Test, Ignore("Not yet implemented")]
   [TestCase("Assets/scripts/lisp/test01.lsp")]
   public async Task it_should_parse_lisp_programs(VirtualPath path)
   {

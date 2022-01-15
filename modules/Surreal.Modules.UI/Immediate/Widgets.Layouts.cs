@@ -14,7 +14,7 @@ public static partial class Widgets
     throw new NotImplementedException();
   }
 
-  public static PaintingLayout BeginLayout(this in PaintingContext context)
+  public static PaintingLayout BeginFlowLayout(this in PaintingContext context)
   {
     // TODO: implement me
     return new PaintingLayout(context)

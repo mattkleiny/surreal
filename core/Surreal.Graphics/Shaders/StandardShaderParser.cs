@@ -5,15 +5,13 @@ using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
-namespace Surreal.Graphics.Shaders.Languages;
+namespace Surreal.Graphics.Shaders;
 
 /// <summary>A <see cref="IShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
 public sealed class StandardShaderParser : IShaderParser
 {
-  private static ImmutableHashSet<string> Keywords          { get; } = new[] { "uniform", "varying", "const", "return" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> CompileKeywords   { get; } = new[] { "shader_type", "include" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> StageKeywords     { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> IntrinsicKeywords { get; } = new[] { "POSITION", "COLOR" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Stages   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
 
   public async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
@@ -24,9 +22,9 @@ public sealed class StandardShaderParser : IShaderParser
   }
 
   [SuppressMessage("ReSharper", "CognitiveComplexity")]
-  private static async Task<Queue<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
+  private static async Task<IEnumerable<Token>> TokenizeAsync(TextReader reader, CancellationToken cancellationToken)
   {
-    var results = new Queue<Token>();
+    var results = new List<Token>();
 
     for (var line = 0;; line++)
     {
@@ -44,7 +42,7 @@ public sealed class StandardShaderParser : IShaderParser
 
         if (token != null)
         {
-          results.Enqueue(token.Value);
+          results.Add(token.Value);
 
           // skip forward on long spans
           if (token.Value.Span.Length > 1)
@@ -120,29 +118,9 @@ public sealed class StandardShaderParser : IShaderParser
         var literal = span.ConsumeUntil('"');
 
         if (literal[^1] != '"')
-          throw ShaderParseException.Create(position, span, $"Unterminated string literal: {literal}");
+          throw new ShaderParseException(position, span, $"Unterminated string literal: {literal}");
 
         return new Token(TokenType.String, position, literal, literal[1..^1].ToString());
-      }
-
-      // pre-processor
-      case '#' when span.Peek() != '#':
-      {
-        // recursively scan the rest of this token
-        var innerToken = ScanToken(position with { Column = position.Column + 1 }, span[1..]);
-
-        if (innerToken is null)
-          throw ShaderParseException.Create(position, span, $"Unrecognized pre-processor {span}");
-
-        var (_, _, innerSpan, innerLiteral) = innerToken.Value;
-
-        if (innerLiteral == null)
-          throw ShaderParseException.Create(position, span, $"Unrecognized pre-processor {span}, expected a valid literal");
-
-        if (!CompileKeywords.Contains(innerLiteral.ToString()!))
-          throw ShaderParseException.Create(position, span, $"Unrecognized pre-processor keyword {innerLiteral}");
-
-        return new Token(TokenType.CompileKeyword, position, span[..(innerSpan.Length + 1)], innerLiteral);
       }
 
       default:
@@ -160,7 +138,7 @@ public sealed class StandardShaderParser : IShaderParser
         }
 
         // identifiers and keywords
-        if (char.IsLetter(character) || character == '_')
+        if (char.IsLetter(character) || character is '_' or '#')
         {
           var identifier = span.ConsumeAlphaNumeric();
           var literal    = identifier.ToString();
@@ -173,7 +151,7 @@ public sealed class StandardShaderParser : IShaderParser
           return new Token(TokenType.Identifier, position, identifier, literal);
         }
 
-        throw ShaderParseException.Create(position, span, $"Unknown token '{character}'");
+        throw new ShaderParseException(position, span, $"Unknown token '{character}'");
       }
     }
   }
@@ -210,10 +188,9 @@ public sealed class StandardShaderParser : IShaderParser
     Number,
     Identifier,
     Keyword,
-    CompileKeyword,
 
-    // comments/etc
-    Comment,
+    // miscellaneous
+    Comment
   }
 
   /// <summary>Encodes a single token in the <see cref="StandardShaderParser"/>.</summary>
@@ -231,9 +208,9 @@ public sealed class StandardShaderParser : IShaderParser
     private readonly Queue<Token> tokens;
     private          Token        lastToken;
 
-    public ShaderParseContext(Queue<Token> tokens)
+    public ShaderParseContext(IEnumerable<Token> tokens)
     {
-      this.tokens = tokens;
+      this.tokens = new Queue<Token>(tokens);
     }
 
     public CompilationUnit ParseCompilationUnit()
@@ -244,10 +221,9 @@ public sealed class StandardShaderParser : IShaderParser
       {
         var node = token.Type switch
         {
-          TokenType.CompileKeyword => ParseCompileKeyword(),
-          TokenType.Keyword        => ParseKeyword(),
-          TokenType.Identifier     => ParseStageOrFunction(),
-          _                        => ConsumeAny(),
+          TokenType.Keyword    => ParseKeyword(),
+          TokenType.Identifier => ParseFunction(),
+          _                    => ParseNull(),
         };
 
         if (node != null)
@@ -268,47 +244,34 @@ public sealed class StandardShaderParser : IShaderParser
       };
     }
 
-    public ShaderSyntaxTree ParseCompileKeyword()
-    {
-      var literal = ConsumeLiteral<string>(TokenType.CompileKeyword);
-
-      return literal switch
-      {
-        "include"     => ParseInclude(),
-        "shader_type" => ParseShaderTypeDeclaration(),
-
-        _ => throw Error($"An unrecognized compile time keyword was encountered: {literal}"),
-      };
-    }
-
-    public ShaderSyntaxTree ParseKeyword()
+    private ShaderSyntaxTree ParseKeyword()
     {
       var literal = ConsumeLiteral<string>(TokenType.Keyword);
 
       return literal switch
       {
-        "uniform" => ParseUniformDeclaration(),
-        "varying" => ParseVaryingDeclaration(),
-        "const"   => ParseConstantDeclaration(),
+        "#include"     => ParseInclude(),
+        "#shader_type" => ParseShaderTypeDeclaration(),
+        "uniform"      => ParseUniformDeclaration(),
+        "varying"      => ParseVaryingDeclaration(),
+        "const"        => ParseConstantDeclaration(),
+        "SAMPLE"       => ParseSampleOperation(),
 
         _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
       };
     }
 
-    public ShaderSyntaxTree ParseStageOrFunction()
+    private Statement ParseFunction()
     {
       var returnType = ParsePrimitive();
       var name       = ParseIdentifier();
       var parameters = ParseParameters();
       var statements = ParseStatements();
 
-      if (StageKeywords.Contains(name))
+      if (Stages.Contains(name))
       {
         if (returnType.Type != PrimitiveType.Void)
           throw Error($"The stage function {name} should have a void return type");
-
-        if (parameters.Length > 0)
-          throw Error($"The stage function {name} should have no parameters");
 
         var shaderKind = name switch
         {
@@ -321,6 +284,7 @@ public sealed class StandardShaderParser : IShaderParser
 
         return new StageDeclaration(shaderKind)
         {
+          Parameters = parameters,
           Statements = statements,
         };
       }
@@ -344,7 +308,7 @@ public sealed class StandardShaderParser : IShaderParser
 
         if (TryPeek(TokenType.Comma))
         {
-          ConsumeAny();
+          Consume();
         }
       }
 
@@ -388,31 +352,19 @@ public sealed class StandardShaderParser : IShaderParser
       {
         return keyword switch
         {
-          "return" => new Return(ParseExpression()),
+          "if"    => throw new NotImplementedException(),
+          "while" => throw new NotImplementedException(),
+          "for"   => throw new NotImplementedException(),
 
-          _ => throw Error($"An unexpected keyword was encountered: {keyword}"),
+          _ => throw Error($"An unrecognized keyword was encountered: {keyword}"),
         };
       }
 
-      if (TryConsumeLiteral(TokenType.Identifier, out string variable))
-      {
-        if (IntrinsicKeywords.Contains(variable))
-        {
-          var intrinsicType = variable switch
-          {
-            "POSITION" => IntrinsicType.Position,
-            "COLOR"    => IntrinsicType.Color,
+      var expression = ParseExpression();
 
-            _ => throw Error($"An unexpected keyword was encountered: {keyword}"),
-          };
+      Consume(TokenType.SemiColon, "Expect a semicolon after an expression");
 
-          return new IntrinsicAssignment(intrinsicType, ParseExpression());
-        }
-
-        return new Assignment(variable, ParseExpression());
-      }
-
-      throw new NotImplementedException();
+      return new StatementExpression(expression);
     }
 
     private Include ParseInclude()
@@ -456,20 +408,11 @@ public sealed class StandardShaderParser : IShaderParser
 
     private Expression ParseExpression()
     {
-      if (TryPeek(TokenType.Minus))
-      {
-        var value = ParseExpression();
-
-        return new UnaryOperation(UnaryOperator.Negate, value);
-      }
+      if (TryConsumeLiteral(TokenType.Number, out decimal number)) return new Constant(number);
+      if (TryConsumeLiteral(TokenType.String, out string value)) return new Constant(value);
+      if (TryConsumeLiteral(TokenType.Identifier, out string identifier)) return new Expression.Identifier(identifier);
 
       throw new NotImplementedException();
-
-      // var left  = ParseExpression();
-      // var op    = ParseBinaryOperator();
-      // var right = ParseExpression();
-      //
-      // return new BinaryOperation(op, left, right);
     }
 
     private Primitive ParsePrimitive()
@@ -493,19 +436,22 @@ public sealed class StandardShaderParser : IShaderParser
 
       var type = literal switch
       {
-        "void"  => new Primitive(PrimitiveType.Void, null, precision),
-        "bool"  => new Primitive(PrimitiveType.Bool, null, precision),
-        "bool2" => new Primitive(PrimitiveType.Bool, 2, precision),
-        "bool3" => new Primitive(PrimitiveType.Bool, 3, precision),
-        "bool4" => new Primitive(PrimitiveType.Bool, 4, precision),
-        "int"   => new Primitive(PrimitiveType.Int, null, precision),
-        "int2"  => new Primitive(PrimitiveType.Int, null, precision),
-        "int3"  => new Primitive(PrimitiveType.Int, 2, precision),
-        "int4"  => new Primitive(PrimitiveType.Int, 3, precision),
-        "float" => new Primitive(PrimitiveType.Float, null, precision),
-        "vec2"  => new Primitive(PrimitiveType.Float, 2, precision),
-        "vec3"  => new Primitive(PrimitiveType.Float, 3, precision),
-        "vec4"  => new Primitive(PrimitiveType.Float, 4, precision),
+        "void"      => new Primitive(PrimitiveType.Void, null, precision),
+        "bool"      => new Primitive(PrimitiveType.Bool, null, precision),
+        "bool2"     => new Primitive(PrimitiveType.Bool, 2, precision),
+        "bool3"     => new Primitive(PrimitiveType.Bool, 3, precision),
+        "bool4"     => new Primitive(PrimitiveType.Bool, 4, precision),
+        "int"       => new Primitive(PrimitiveType.Int, null, precision),
+        "int2"      => new Primitive(PrimitiveType.Int, null, precision),
+        "int3"      => new Primitive(PrimitiveType.Int, 2, precision),
+        "int4"      => new Primitive(PrimitiveType.Int, 3, precision),
+        "float"     => new Primitive(PrimitiveType.Float, null, precision),
+        "vec2"      => new Primitive(PrimitiveType.Float, 2, precision),
+        "vec3"      => new Primitive(PrimitiveType.Float, 3, precision),
+        "vec4"      => new Primitive(PrimitiveType.Float, 4, precision),
+        "sampler1d" => new Primitive(PrimitiveType.Sampler, 1),
+        "sampler2d" => new Primitive(PrimitiveType.Sampler, 2),
+        "sampler3d" => new Primitive(PrimitiveType.Sampler, 3),
 
         _ => throw Error($"An unrecognized primitive type was specified {literal}"),
       };
@@ -516,6 +462,21 @@ public sealed class StandardShaderParser : IShaderParser
     private string ParseIdentifier()
     {
       return ConsumeLiteral<string>(TokenType.Identifier);
+    }
+
+    private SampleOperation ParseSampleOperation()
+    {
+      var name  = ParseIdentifier();
+      var value = ParseExpression();
+
+      return new SampleOperation(name, value);
+    }
+
+    private UnaryOperator ParseUnaryOperator()
+    {
+      if (TryConsume(TokenType.Minus)) return UnaryOperator.Negate;
+
+      throw Error("An unrecognized token was encountered");
     }
 
     private BinaryOperator ParseBinaryOperator()
@@ -529,6 +490,15 @@ public sealed class StandardShaderParser : IShaderParser
 
       throw Error("An unrecognized token was encountered");
     }
+
+    private ShaderSyntaxTree? ParseNull()
+    {
+      Consume();
+
+      return null;
+    }
+
+    #region Token Helpers
 
     private bool TryPeek(out Token token)
     {
@@ -556,64 +526,68 @@ public sealed class StandardShaderParser : IShaderParser
       return false;
     }
 
-    private Token Consume(TokenType type)
+    private bool TryConsume(TokenType type, out Token token)
+    {
+      if (TryPeek(out token) && token.Type == type)
+      {
+        return true;
+      }
+
+      return false;
+    }
+
+    private Token Consume(TokenType type, string errorMessage = "An unexpected token was encountered")
     {
       if (!TryPeek(type))
       {
-        throw Error($"Expected a token of type {type}");
+        throw Error(errorMessage);
       }
 
+      return Consume();
+    }
+
+    private Token Consume()
+    {
       return lastToken = tokens.Dequeue();
-    }
-
-    private ShaderSyntaxTree? ConsumeAny()
-    {
-      lastToken = tokens.Dequeue();
-
-      return null;
-    }
-
-    private T ConsumeLiteral<T>(TokenType type)
-    {
-      if (!TryPeek(type))
-      {
-        throw Error($"Expected a token of type {type}");
-      }
-
-      var token = lastToken = tokens.Dequeue();
-      if (token.Literal is not T literal)
-      {
-        throw Error($"Expected a token literal of type {typeof(T)}");
-      }
-
-      return literal;
     }
 
     private bool TryConsumeLiteral<T>(TokenType type, out T result)
     {
-      if (TryPeek(type))
+      if (TryPeek(out var token) && token.Literal is T literal)
       {
-        var token = lastToken = tokens.Dequeue();
-        if (token.Literal is T literal)
-        {
-          result = literal;
-          return true;
-        }
+        lastToken = tokens.Dequeue();
+        result    = literal;
+
+        return true;
       }
 
       result = default!;
       return false;
     }
 
-    private Exception Error(string message)
+    private T ConsumeLiteral<T>(TokenType type)
     {
-      return ShaderParseException.Create(lastToken, message);
+      if (!TryConsumeLiteral(type, out T literal))
+      {
+        throw Error($"Expected a token of type {type}");
+      }
+
+      return literal;
     }
+
+    #endregion
+
+    private Exception Error(string message) => new ShaderParseException(lastToken, message);
   }
 
   /// <summary>Indicates an error whilst parsing a program.</summary>
   private sealed class ShaderParseException : Exception
   {
+    public ShaderParseException(Token token, string message)
+      : this(token.Position, token.Span, message)
+    {
+    }
+
     public ShaderParseException(LinePosition position, StringSpan span, string message)
       : base($"{message} (at {position} in {span})")
     {
@@ -623,15 +597,5 @@ public sealed class StandardShaderParser : IShaderParser
 
     public LinePosition Position { get; }
     public StringSpan   Span     { get; }
-
-    public static Exception Create(LinePosition position, StringSpan span, string message)
-    {
-      return new ShaderParseException(position, span, message);
-    }
-
-    public static Exception Create(Token token, string message)
-    {
-      return new ShaderParseException(token.Position, token.Span, message);
-    }
   }
 }

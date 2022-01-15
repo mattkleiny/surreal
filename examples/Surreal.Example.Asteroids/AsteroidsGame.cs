@@ -1,4 +1,3 @@
-using Asteroids.Screens;
 using Surreal.Input.Keyboard;
 
 namespace Asteroids;
@@ -17,13 +16,6 @@ public sealed class AsteroidsGame : PrototypeGame
       },
     },
   });
-
-  protected override void Initialize()
-  {
-    base.Initialize();
-
-    Screens.Push(new MainScreen(this));
-  }
 
   protected override void Input(GameTime time)
   {

@@ -164,11 +164,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
           break;
 
         case Assignment(var variable, var value):
-          builder.AppendAssignment(variable, CompileExpression(value));
-          break;
-
-        case IntrinsicAssignment(var intrinsicType, var value):
-          builder.AppendAssignment(ConvertIntrinsic(intrinsicType), CompileExpression(value));
+          builder.AppendAssignment(ConvertIdentifier(variable), CompileExpression(value));
           break;
 
         case StageDeclaration(var kind) declaration:
@@ -223,11 +219,14 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
         case Expression.Parameter(var type, var name):
           return $"{ConvertType(type)} {name}";
 
-        case Expression.Constructor({ Cardinality: > 0 } type, var value):
+        case Expression.TypeConstructor({ Cardinality: > 0 } type, var value):
           return $"{ConvertType(type)}({CompileExpression(value)})";
 
-        case Expression.Constructor(_, var value):
+        case Expression.TypeConstructor(_, var value):
           return CompileExpression(value);
+
+        case Expression.SampleOperation(var name, var value):
+          return $"texture({name}, {CompileExpression(value)})";
 
         case Expression.BinaryOperation(var @operator, var left, var right):
           return $"{CompileExpression(left)} {ConvertOperator(@operator)} {CompileExpression(right)}";
@@ -250,27 +249,26 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, null),
     };
 
-    private static string ConvertIntrinsic(IntrinsicType type) => type switch
+    private static string ConvertIdentifier(string identifier) => identifier switch
     {
-      IntrinsicType.Position => "gl_Position",
-      IntrinsicType.Color    => "FragColor",
-
-      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+      "POSITION" => "gl_Position",
+      "COLOR"    => "FragColor",
+      _          => identifier,
     };
 
     private static string ConvertType(Primitive type) => type.Type switch
     {
-      PrimitiveType.Void                                  => "void",
-      PrimitiveType.Bool when !type.Cardinality.HasValue  => "bool",
-      PrimitiveType.Bool when type.Cardinality.HasValue   => $"bvec{type.Cardinality}",
-      PrimitiveType.Int when !type.Cardinality.HasValue   => "int",
-      PrimitiveType.Int when type.Cardinality.HasValue    => $"ivec{type.Cardinality}",
-      PrimitiveType.UInt when !type.Cardinality.HasValue  => "uint",
-      PrimitiveType.UInt when type.Cardinality.HasValue   => $"uvec{type.Cardinality}",
-      PrimitiveType.Float when !type.Cardinality.HasValue => "float",
-      PrimitiveType.Float when type.Cardinality.HasValue  => $"vec{type.Cardinality}",
-      PrimitiveType.Matrix when type.Cardinality.HasValue => $"mat{type.Cardinality}",
-      PrimitiveType.Sampler                               => "sampler2D",
+      PrimitiveType.Void                                   => "void",
+      PrimitiveType.Bool when !type.Cardinality.HasValue   => "bool",
+      PrimitiveType.Bool when type.Cardinality.HasValue    => $"bvec{type.Cardinality}",
+      PrimitiveType.Int when !type.Cardinality.HasValue    => "int",
+      PrimitiveType.Int when type.Cardinality.HasValue     => $"ivec{type.Cardinality}",
+      PrimitiveType.UInt when !type.Cardinality.HasValue   => "uint",
+      PrimitiveType.UInt when type.Cardinality.HasValue    => $"uvec{type.Cardinality}",
+      PrimitiveType.Float when !type.Cardinality.HasValue  => "float",
+      PrimitiveType.Float when type.Cardinality.HasValue   => $"vec{type.Cardinality}",
+      PrimitiveType.Matrix when type.Cardinality.HasValue  => $"mat{type.Cardinality}",
+      PrimitiveType.Sampler when type.Cardinality.HasValue => $"sampler{type.Cardinality}d",
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
     };

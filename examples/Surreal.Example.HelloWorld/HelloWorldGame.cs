@@ -43,7 +43,7 @@ public sealed class HelloWorldGame : PrototypeGame
 
   protected override void Draw(GameTime time)
   {
-    // TODO: render something
+    // TODO: draw something
   }
 
   public override void Dispose()

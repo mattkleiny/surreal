@@ -1,17 +1,10 @@
 ﻿using Surreal.Assets;
 using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
-using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
+using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 
 namespace Surreal.Graphics.Shaders;
-
-/// <summary>Intrinsic outputs for shader instructions.</summary>
-public enum IntrinsicType
-{
-  Position,
-  Color,
-}
 
 /// <summary>Different types of precisions to use for primitive declarations.</summary>
 public enum Precision
@@ -127,7 +120,7 @@ public abstract record ShaderSyntaxTree
     public sealed record Comment(string Text) : Statement;
 
     /// <summary>Includes a module of the given name from the given path.</summary>
-    /// <example>#include "local://Assets/shaders/test.shader"</example>
+    /// <example>#include "local://Assets/shaders/test.shade"</example>
     public sealed record Include(VirtualPath Path) : Statement;
 
     /// <summary>Indicates the type of shader being compiled.</summary>
@@ -146,6 +139,22 @@ public abstract record ShaderSyntaxTree
     /// <example>const vec3 test = vec3(1,1,1);</example>
     public sealed record ConstantDeclaration(Primitive Type, string Name, Expression Value) : Statement;
 
+    /// <summary>Declares a shader stage function.</summary>
+    /// <example>void fragment() { ... }</example>
+    public sealed record StageDeclaration(ShaderKind Kind) : Statement
+    {
+      public ImmutableArray<Parameter> Parameters { get; init; } = ImmutableArray<Parameter>.Empty;
+      public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
+    }
+
+    /// <summary>Declares a standard function.</summary>
+    /// <example>float circle(vec3 position, float radius) { ... }</example>
+    public sealed record FunctionDeclaration(Primitive ReturnType, string Name) : Statement
+    {
+      public ImmutableArray<Parameter> Parameters { get; init; } = ImmutableArray<Parameter>.Empty;
+      public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
+    }
+
     /// <summary>Assigns a value to a variable.</summary>
     /// <example>test = vec3(1,1,1);</example>
     public sealed record Assignment(string Variable, Expression Value) : Statement;
@@ -154,31 +163,34 @@ public abstract record ShaderSyntaxTree
     /// <example>return vec3(1,1,1);</example>
     public sealed record Return(Expression Value) : Statement;
 
-    /// <summary>Assigns a value to an intrinsic.</summary>
-    /// <example>COLOR = vec3(1,1,1);</example>
-    public sealed record IntrinsicAssignment(IntrinsicType Intrinsic, Expression Value) : Statement;
-
-    /// <summary>Declares a shader stage function.</summary>
-    /// <example>void fragment() { ... }</example>
-    public sealed record StageDeclaration(ShaderKind Kind) : Statement
-    {
-      public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
-    }
-
-    /// <summary>Declares a standard function.</summary>
-    /// <example>float circle(float radius) { ... }</example>
-    public sealed record FunctionDeclaration(Primitive ReturnType, string Name) : Statement
-    {
-      public ImmutableArray<Parameter> Parameters { get; init; } = ImmutableArray<Parameter>.Empty;
-      public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
-    }
+    /// <summary>A statement that embodies a single expression.</summary>
+    /// <example>test(3.14159f);</example>
+    public sealed record StatementExpression(Expression Body) : Statement;
 
     /// <summary>Standard control flow variants.</summary>
     public abstract record ControlFlow : Statement
     {
-      /// <summary>Checks if a value is true or false.</summary>
-      /// <example>if (test) { ... }</example>
-      public sealed record If(Expression value, params ShaderSyntaxTree[] Body) : ControlFlow;
+      /// <summary>Checks if a value is true or false, with a single optional else clause.</summary>
+      /// <example>if (test) { ... } else { ... }</example>
+      public sealed record If(Expression Condition) : ControlFlow
+      {
+        public ImmutableArray<Statement> TrueBranch  { get; init; } = ImmutableArray<Statement>.Empty;
+        public ImmutableArray<Statement> FalseBranch { get; init; } = ImmutableArray<Statement>.Empty;
+      }
+
+      /// <summary>Evaluates the given statements in a standard 'while' loop</summary>
+      /// <example>while (test) { ... }</example>
+      public sealed record While(Expression Condition) : ControlFlow
+      {
+        public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
+      }
+
+      /// <summary>Evaluates the given statements in a standard 'for' loop</summary>
+      /// <example>if (test) { ... } else { ... }</example>
+      public sealed record For(Expression Condition) : ControlFlow
+      {
+        public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
+      }
     }
   }
 
@@ -188,6 +200,10 @@ public abstract record ShaderSyntaxTree
     /// <summary>A constant value.</summary>
     /// <example>42</example>
     public sealed record Constant(object Value) : Expression;
+
+    /// <summary>An identifier reference.</summary>
+    /// <example>test_variable</example>
+    public sealed record Identifier(string Name) : Expression;
 
     /// <summary>A list of values.</summary>
     /// <example>1, 2, 3</example>
@@ -199,7 +215,11 @@ public abstract record ShaderSyntaxTree
 
     /// <summary>A constructor expression for a primitive value.</summary>
     /// <example>vec3(1, 1, 1)</example>
-    public sealed record Constructor(Primitive Type, Expression Value) : Expression;
+    public sealed record TypeConstructor(Primitive Type, Expression Value) : Expression;
+
+    /// <summary>A texture sampler operation expression.</summary>
+    /// <example>SAMPLE(_Texture, input.uv)</example>
+    public sealed record SampleOperation(string Name, Expression Value) : Expression;
 
     /// <summary>A simple binary operator expression.</summary>
     /// <example>1 + 2</example>

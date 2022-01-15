@@ -1,0 +1,14 @@
+﻿// Standard purpose sprite shader.
+
+#include "resx://Surreal.Graphics/Resources/shaders/common.shade";
+
+varying vec3 _Color;
+
+void vertex(vec3 position, vec3 color) {
+  POSITION = position;
+  _Color = color;
+}
+
+void fragment() {
+  COLOR = _Color;
+}

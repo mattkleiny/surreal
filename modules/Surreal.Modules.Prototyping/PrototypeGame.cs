@@ -9,7 +9,6 @@ using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Palettes;
 using Surreal.Graphics.Shaders;
-using Surreal.Graphics.Shaders.Languages;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
@@ -17,7 +16,6 @@ using Surreal.IO.Json;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;
 using Surreal.Networking;
-using Surreal.Screens;
 using Surreal.Scripting;
 using Surreal.Scripting.Bytecode;
 using Surreal.Scripting.Languages;
@@ -32,7 +30,6 @@ public abstract class PrototypeGame : Game
   public IGraphicsDevice GraphicsDevice => Services.GetRequiredService<IGraphicsDevice>();
   public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
   public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
-  public IScreenManager  Screens        => Services.GetRequiredService<IScreenManager>();
   public INetworkFactory NetworkFactory => Services.GetRequiredService<INetworkFactory>();
 
   public Color ClearColor { get; set; } = Color.Black;
@@ -42,13 +39,6 @@ public abstract class PrototypeGame : Game
     base.Initialize();
 
     OnResized(Host.Width, Host.Height); // initial resize
-  }
-
-  protected override void RegisterServices(IServiceRegistry services)
-  {
-    base.RegisterServices(services);
-
-    services.AddSingleton<IScreenManager>(new ScreenManager(this));
   }
 
   protected override void RegisterAssetLoaders(IAssetManager manager)
@@ -71,8 +61,8 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());
-    manager.AddLoader(new ShaderLoader(GraphicsDevice, ".shader"));
-    manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(), ".shader"));
+    manager.AddLoader(new ShaderLoader(GraphicsDevice, ".shade"));
+    manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(), ".shade"));
     manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
     manager.AddLoader(new TextureRegionLoader());
     manager.AddLoader(new TrueTypeFontLoader());
@@ -85,13 +75,6 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new ScriptDeclarationLoader(new LoxScriptParser(), ".lox"));
     manager.AddLoader(new ScriptDeclarationLoader(new LuaScriptParser(), ".lua"));
     manager.AddLoader(new ScriptDeclarationLoader(new WrenScriptParser(), ".wren"));
-  }
-
-  protected override void RegisterPlugins(IGamePluginRegistry plugins)
-  {
-    base.RegisterPlugins(plugins);
-
-    plugins.Add(Services.GetRequiredService<IScreenManager>());
   }
 
   protected override void OnResized(int width, int height)

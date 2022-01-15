@@ -1,0 +1,18 @@
+// A simple sprite shader, for testing purposes.
+
+#include "Assets/shaders/common.shade";
+
+#shader_type sprite;
+
+uniform float _Intensity;
+varying vec3  _Color;
+
+void vertex(vec3 position)
+{
+  POSITION = position * sin(_Intensity);
+}
+
+void fragment(vec3 position)
+{
+  COLOR = _Color * position.xy;
+}

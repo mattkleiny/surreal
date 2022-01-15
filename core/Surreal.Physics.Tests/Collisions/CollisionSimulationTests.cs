@@ -4,7 +4,7 @@ namespace Surreal.Physics.Collisions;
 
 public class CollisionSimulationTests
 {
-  [Test]
+  [Test, Ignore("Not yet implemented")]
   public void it_should_simulate_objects_by_applying_gravity()
   {
     var simulation = new CollisionSimulation();

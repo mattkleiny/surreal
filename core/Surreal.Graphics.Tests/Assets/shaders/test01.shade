@@ -1,0 +1,20 @@
+// A simple sprite shader, for testing purposes.
+
+#include "resx://Surreal.Graphics/Resources/Shaders/sprites.shade";
+
+#shader_type sprite;
+
+uniform float     _Intensity;
+uniform sampler2d _Texture;
+varying vec3      _Color;
+
+void vertex(vec3 position, vec3 color)
+{
+  POSITION = position + sin(position.x) * _Intensity;
+  _Color = color;
+}
+
+void fragment(vec3 position)
+{
+  COLOR = _Color * SAMPLE(_Texture, position.xy);
+}
