@@ -1,4 +1,5 @@
 ﻿using Surreal.Assets;
+using Surreal.Graphics.Shaders.Transformers;
 using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -65,7 +66,10 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
   }
 
   /// <summary>The <see cref="IShaderTransformer"/>s to apply to the loaded shaders.</summary>
-  public List<IShaderTransformer> Transformers { get; init; } = new();
+  public List<IShaderTransformer> Transformers { get; init; } = new()
+  {
+    new SpriteShaderTransformer()
+  };
 
   public override bool CanHandle(AssetLoaderContext context)
   {
@@ -110,6 +114,16 @@ public abstract record ShaderSyntaxTree
     public ImmutableArray<ConstantDeclaration> Constants  { get; init; } = ImmutableArray<ConstantDeclaration>.Empty;
     public ImmutableArray<FunctionDeclaration> Functions  { get; init; } = ImmutableArray<FunctionDeclaration>.Empty;
     public ImmutableArray<StageDeclaration>    Stages     { get; init; } = ImmutableArray<StageDeclaration>.Empty;
+
+    public CompilationUnit MergeWith(CompilationUnit other) => this with
+    {
+      Includes = Includes.AddRange(other.Includes),
+      Uniforms = Uniforms.AddRange(other.Uniforms),
+      Varyings = Varyings.AddRange(other.Varyings),
+      Constants = Constants.AddRange(other.Constants),
+      Functions = Functions.AddRange(other.Functions),
+      Stages = Stages.AddRange(other.Stages),
+    };
   }
 
   /// <summary>A single statement in a shader program.</summary>
@@ -203,7 +217,7 @@ public abstract record ShaderSyntaxTree
 
     /// <summary>An identifier reference.</summary>
     /// <example>test_variable</example>
-    public sealed record Identifier(string Name) : Expression;
+    public sealed record Symbol(string Name) : Expression;
 
     /// <summary>A list of values.</summary>
     /// <example>1, 2, 3</example>

@@ -5,5 +5,9 @@ public interface IShaderTransformer
 {
   bool CanTransform(ShaderDeclaration declaration);
 
-  ValueTask<ShaderDeclaration> TransformAsync(ShaderDeclaration declaration, CancellationToken cancellationToken = default);
+  /// <summary>Transforms the given shader, returning it's updated counterpart.</summary>
+  ValueTask<ShaderDeclaration> TransformAsync(
+    ShaderDeclaration declaration,
+    CancellationToken cancellationToken = default
+  );
 }

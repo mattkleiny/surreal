@@ -97,7 +97,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       // link included compilation units
       if (compilationUnit.Includes.Length > 0)
       {
-        await CompileIncludesAsync(compilationUnit.Includes, cancellationToken);
+        compilationUnit = await CompileIncludesAsync(compilationUnit, cancellationToken);
       }
 
       // compile globals (N.B: order matters)
@@ -114,18 +114,21 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       builder.AppendLine();
     }
 
-    private async ValueTask CompileIncludesAsync(ImmutableArray<Include> includes, CancellationToken cancellationToken)
+    private async ValueTask<CompilationUnit> CompileIncludesAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
     {
-      foreach (var include in includes)
+      foreach (var include in compilationUnit.Includes)
       {
         // only include modules once
         if (includedPaths.Add(include.Path))
         {
           var program = await environment.ExpandShaderAsync(include.Path, cancellationToken);
 
-          await CompileUnitAsync(program.CompilationUnit, cancellationToken);
+          // merge compilation units into our own
+          compilationUnit = compilationUnit.MergeWith(program.CompilationUnit);
         }
       }
+
+      return compilationUnit;
     }
 
     private void CompileStatements<T>(ImmutableArray<T> statements)
@@ -167,7 +170,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
           builder.AppendAssignment(ConvertIdentifier(variable), CompileExpression(value));
           break;
 
-        case StageDeclaration(var kind) declaration:
+        case StageDeclaration(_) declaration:
         {
           using var function = builder.AppendFunctionDeclaration(
             precision: null,
@@ -212,6 +215,9 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       {
         case Expression.Constant(var value):
           return value.ToString() ?? string.Empty;
+
+        case Expression.Symbol(var value):
+          return value;
 
         case Expression.Variadic(var values):
           return $"{string.Join(", ", values.Select(CompileExpression))}";

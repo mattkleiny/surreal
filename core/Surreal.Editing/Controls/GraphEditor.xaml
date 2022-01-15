@@ -16,5 +16,21 @@
     SelectedItem="{Binding SelectedNode}"
     SelectedItems="{Binding SelectedNodes}"
     Connections="{Binding Connections}"
-    PendingConnection="{Binding PendingConnections}" />
+    PendingConnection="{Binding PendingConnections}">
+    <nodify:NodifyEditor.ItemTemplate>
+      <DataTemplate DataType="{x:Type local:GraphNodeViewModel}">
+        <nodify:StateNode Content="{Binding}"
+                          IsConnected="True"
+                          ActualSize="{Binding Size, Mode=OneWayToSource}"
+                          Anchor="{Binding Anchor, Mode=OneWayToSource}" />
+      </DataTemplate>
+    </nodify:NodifyEditor.ItemTemplate>
+
+    <nodify:NodifyEditor.ItemContainerStyle>
+      <Style TargetType="{x:Type nodify:ItemContainer}" BasedOn="{StaticResource {x:Type nodify:ItemContainer}}">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Location" Value="{Binding Location}" />
+      </Style>
+    </nodify:NodifyEditor.ItemContainerStyle>
+  </nodify:NodifyEditor>
 </UserControl>

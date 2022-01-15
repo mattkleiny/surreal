@@ -1,1 +1,8 @@
 ﻿// Common utilities used by all shader programs.
+
+uniform sampler2d _PaletteTexture;
+uniform float     _PaletteWidth;
+
+vec3 sample_palette(vec3 color) {
+  // return SAMPLE(_PaletteTexture, color.xy);
+}

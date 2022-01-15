@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using Surreal.Utilities;
 
 namespace Surreal.Controls;
@@ -58,12 +59,26 @@ public sealed record GraphEditorViewModel : ViewModel
 /// <summary>A view model for a single node in a <see cref="GraphEditor"/>.</summary>
 public sealed record GraphNodeViewModel : ViewModel
 {
-  private Vector2 position;
+  private Vector2 location;
+  private Size    size;
+  private Point   anchor;
 
-  public Vector2 Position
+  public Vector2 Location
   {
-    get => position;
-    set => SetProperty(ref position, value);
+    get => location;
+    set => SetProperty(ref location, value);
+  }
+
+  public Size Size
+  {
+    get => size;
+    set => SetProperty(ref size, value);
+  }
+
+  public Point Anchor
+  {
+    get => anchor;
+    set => SetProperty(ref anchor, value);
   }
 }
 

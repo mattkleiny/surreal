@@ -1,7 +1,5 @@
 // A simple sprite shader, for testing purposes.
 
-#include "Assets/shaders/common.shade";
-
 #shader_type sprite;
 
 uniform float _Intensity;

@@ -30,10 +30,10 @@ public sealed class IsaacGame : PrototypeGame
         {
           Nodes =
           {
-            new GraphNodeViewModel { Position = new Vector2(100f, 200f) },
-            new GraphNodeViewModel { Position = new Vector2(200f, 200f) },
-            new GraphNodeViewModel { Position = new Vector2(300f, 200f) },
-            new GraphNodeViewModel { Position = new Vector2(400f, 200f) },
+            new GraphNodeViewModel { Location = new Vector2(100f, 200f) },
+            new GraphNodeViewModel { Location = new Vector2(200f, 200f) },
+            new GraphNodeViewModel { Location = new Vector2(300f, 200f) },
+            new GraphNodeViewModel { Location = new Vector2(400f, 200f) },
           },
         }
       });

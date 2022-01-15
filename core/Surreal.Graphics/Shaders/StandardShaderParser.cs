@@ -408,9 +408,14 @@ public sealed class StandardShaderParser : IShaderParser
 
     private Expression ParseExpression()
     {
-      if (TryConsumeLiteral(TokenType.Number, out decimal number)) return new Constant(number);
-      if (TryConsumeLiteral(TokenType.String, out string value)) return new Constant(value);
-      if (TryConsumeLiteral(TokenType.Identifier, out string identifier)) return new Expression.Identifier(identifier);
+      if (TryConsumeLiteral(TokenType.Number, out decimal number))
+        return new Constant(number);
+
+      if (TryConsumeLiteral(TokenType.String, out string value))
+        return new Constant(value);
+
+      if (TryConsumeLiteral(TokenType.Identifier, out string symbol))
+        return new Symbol(symbol);
 
       throw new NotImplementedException();
     }
