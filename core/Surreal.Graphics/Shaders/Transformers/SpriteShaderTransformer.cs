@@ -38,12 +38,9 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
 
   private static void AttachDefaultVertexStage(ref ShaderDeclaration declaration)
   {
-    foreach (var stage in declaration.CompilationUnit.Stages)
+    if (declaration.CompilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Vertex))
     {
-      if (stage.Kind == ShaderKind.Vertex)
-      {
-        break;
-      }
+      return;
     }
 
     declaration = declaration with
@@ -64,14 +61,11 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
     };
   }
 
-  private void AttachDefaultFragmentStage(ref ShaderDeclaration declaration)
+  private static void AttachDefaultFragmentStage(ref ShaderDeclaration declaration)
   {
-    foreach (var stage in declaration.CompilationUnit.Stages)
+    if (declaration.CompilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Fragment))
     {
-      if (stage.Kind == ShaderKind.Vertex)
-      {
-        break;
-      }
+      return;
     }
 
     declaration = declaration with
