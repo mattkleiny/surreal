@@ -18,11 +18,31 @@ public class Character : Actor, IDamageReceiver
   public ref Sprite     Sprite     => ref GetComponent<Sprite>();
   public ref Statistics Statistics => ref GetComponent<Statistics>();
 
+  public PropertyCollection PropertyBag { get; } = new();
+
+  public int Health
+  {
+    get => PropertyBag.Get(Properties.Health);
+    set => PropertyBag.Set(Properties.Health, value.Clamp(0, 99));
+  }
+
+  public int Bombs
+  {
+    get => PropertyBag.Get(Properties.Bombs);
+    set => PropertyBag.Set(Properties.Bombs, value.Clamp(0, 99));
+  }
+
+  public int Coins
+  {
+    get => PropertyBag.Get(Properties.Coins);
+    set => PropertyBag.Set(Properties.Coins, value.Clamp(0, 99));
+  }
+
   void IDamageReceiver.OnDamageReceived(Damage damage)
   {
-    Statistics.Health -= damage.Amount;
+    Health -= damage.Amount;
 
-    if (Statistics.Health <= 0)
+    if (Health <= 0)
     {
       Destroy();
     }

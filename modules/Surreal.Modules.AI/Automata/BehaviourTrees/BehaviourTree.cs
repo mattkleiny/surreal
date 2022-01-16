@@ -90,7 +90,7 @@ public abstract record BehaviourNode
   {
   }
 
-  protected internal BehaviourStatus Update(in BehaviourContext context, DeltaTime deltaTime)
+  public BehaviourStatus Update(in BehaviourContext context, DeltaTime deltaTime)
   {
     if (CurrentStatus != BehaviourStatus.Running)
     {

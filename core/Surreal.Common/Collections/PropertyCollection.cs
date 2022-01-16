@@ -80,3 +80,13 @@ public sealed class PropertyCollection : IPropertyCollection
     return false;
   }
 }
+
+/// <summary>Static extensions for <see cref="IPropertyCollection"/> </summary>
+public static class PropertyCollectionExtensions
+{
+  public static void Increment(this IPropertyCollection collection, Property<int> property, int amount = 1)
+    => collection.Set(property, collection.Get(property) + amount);
+
+  public static void Decrement(this IPropertyCollection collection, Property<int> property, int amount = 1)
+    => collection.Set(property, collection.Get(property) - amount);
+}

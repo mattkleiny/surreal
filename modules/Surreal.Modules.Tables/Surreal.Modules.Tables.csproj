@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+    <Description>A system for creating tables of data from raw sources.</Description>
+	</PropertyGroup>
+</Project>

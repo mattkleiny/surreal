@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Modules.Tables\Surreal.Modules.Tables.csproj" />
+  </ItemGroup>
+</Project>
