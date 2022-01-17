@@ -19,4 +19,5 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=rasterisation/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=sexpr/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Tessellator/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Texels/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Varyings/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

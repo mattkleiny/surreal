@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Surreal.Graphics.Shaders.Transformers;
+using Surreal.IO;
 using Surreal.Text;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
@@ -13,12 +15,43 @@ public sealed class StandardShaderParser : IShaderParser
   private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE" }.ToImmutableHashSet();
   private static ImmutableHashSet<string> Stages   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
 
-  public async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
+  public List<IShaderTransformer> Transformers { get; } = new()
   {
-    var tokens  = await TokenizeAsync(reader, cancellationToken);
-    var context = new ShaderParseContext(tokens);
+    new SpriteShaderTransformer()
+  };
 
-    return new ShaderDeclaration(path, context.ParseCompilationUnit());
+  public async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, IShaderParserEnvironment environment, CancellationToken cancellationToken = default)
+  {
+    var tokens        = await TokenizeAsync(reader, cancellationToken);
+    var context       = new ShaderParserContext(tokens);
+    var includedPaths = new HashSet<VirtualPath>();
+
+    // TODO: track included paths in a new 'context' variable, pass it to transformer and expander
+
+    // parse the main shader
+    var compilationUnit = context.ParseCompilationUnit();
+
+    // transform parsed shaders
+    foreach (var transformer in Transformers)
+    {
+      if (transformer.CanTransform(compilationUnit))
+      {
+        compilationUnit = await transformer.TransformAsync(compilationUnit, cancellationToken);
+      }
+    }
+
+    // expand included shaders
+    foreach (var include in compilationUnit.Includes)
+    {
+      if (includedPaths.Add(include.Path))
+      {
+        var included = await environment.ExpandShaderAsync(this, include.Path, cancellationToken);
+
+        compilationUnit = compilationUnit.MergeWith(included.CompilationUnit);
+      }
+    }
+
+    return new ShaderDeclaration(path, compilationUnit);
   }
 
   [SuppressMessage("ReSharper", "CognitiveComplexity")]
@@ -190,7 +223,7 @@ public sealed class StandardShaderParser : IShaderParser
     Keyword,
 
     // miscellaneous
-    Comment
+    Comment,
   }
 
   /// <summary>Encodes a single token in the <see cref="StandardShaderParser"/>.</summary>
@@ -203,12 +236,12 @@ public sealed class StandardShaderParser : IShaderParser
   }
 
   /// <summary>Context for syntax parsing operations. This is a recursive descent style parser.</summary>
-  private sealed class ShaderParseContext
+  private sealed class ShaderParserContext
   {
     private readonly Queue<Token> tokens;
     private          Token        lastToken;
 
-    public ShaderParseContext(IEnumerable<Token> tokens)
+    public ShaderParserContext(IEnumerable<Token> tokens)
     {
       this.tokens = new Queue<Token>(tokens);
     }
@@ -234,8 +267,8 @@ public sealed class StandardShaderParser : IShaderParser
 
       return new CompilationUnit
       {
-        ShaderType = nodes.OfType<ShaderTypeDeclaration>().FirstOrDefault(new ShaderTypeDeclaration("sprite")),
-        Includes   = nodes.OfType<Include>().ToImmutableArray(),
+        ShaderType = nodes.OfType<ShaderTypeDeclaration>().FirstOrDefault(new ShaderTypeDeclaration("none")),
+        Includes   = nodes.OfType<Include>().ToImmutableHashSet(),
         Uniforms   = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
         Varyings   = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
         Constants  = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
@@ -447,10 +480,13 @@ public sealed class StandardShaderParser : IShaderParser
         "bool3"     => new Primitive(PrimitiveType.Bool, 3, precision),
         "bool4"     => new Primitive(PrimitiveType.Bool, 4, precision),
         "int"       => new Primitive(PrimitiveType.Int, null, precision),
-        "int2"      => new Primitive(PrimitiveType.Int, null, precision),
-        "int3"      => new Primitive(PrimitiveType.Int, 2, precision),
-        "int4"      => new Primitive(PrimitiveType.Int, 3, precision),
+        "int2"      => new Primitive(PrimitiveType.Int, 2, precision),
+        "int3"      => new Primitive(PrimitiveType.Int, 3, precision),
+        "int4"      => new Primitive(PrimitiveType.Int, 4, precision),
         "float"     => new Primitive(PrimitiveType.Float, null, precision),
+        "float2"    => new Primitive(PrimitiveType.Float, 2, precision),
+        "float3"    => new Primitive(PrimitiveType.Float, 3, precision),
+        "float4"    => new Primitive(PrimitiveType.Float, 4, precision),
         "vec2"      => new Primitive(PrimitiveType.Float, 2, precision),
         "vec3"      => new Primitive(PrimitiveType.Float, 3, precision),
         "vec4"      => new Primitive(PrimitiveType.Float, 4, precision),

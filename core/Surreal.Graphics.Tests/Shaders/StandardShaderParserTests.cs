@@ -8,14 +8,15 @@ public class StandardShaderParserTests
   [TestCase("Assets/shaders/test01.shade")]
   public async Task it_should_parse_shader_programs(VirtualPath path)
   {
-    var parser   = new StandardShaderParser();
-    var metadata = await parser.ParseShaderAsync(path);
+    var parser      = new StandardShaderParser();
+    var environment = new ShaderParserEnvironment();
+    var declaration = await parser.ParseShaderAsync(path, environment);
 
-    Assert.IsNotNull(metadata);
-    Assert.IsTrue(metadata.CompilationUnit.ShaderType is { Type: "sprite" });
-    Assert.AreEqual(1, metadata.CompilationUnit.Includes.Length);
-    Assert.AreEqual(3, metadata.CompilationUnit.Uniforms.Length);
-    Assert.AreEqual(1, metadata.CompilationUnit.Varyings.Length);
-    Assert.AreEqual(2, metadata.CompilationUnit.Stages.Length);
+    Assert.IsNotNull(declaration);
+    Assert.IsTrue(declaration.CompilationUnit.ShaderType is { Type: "sprite" });
+    Assert.AreEqual(1, declaration.CompilationUnit.Includes.Count);
+    Assert.AreEqual(4, declaration.CompilationUnit.Uniforms.Length);
+    Assert.AreEqual(1, declaration.CompilationUnit.Varyings.Length);
+    Assert.AreEqual(2, declaration.CompilationUnit.Stages.Length);
   }
 }

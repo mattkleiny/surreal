@@ -1,5 +1,4 @@
 ﻿using Surreal.Assets;
-using Surreal.Graphics.Shaders.Transformers;
 using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -65,12 +64,6 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
     this.encoding   = encoding;
   }
 
-  /// <summary>The <see cref="IShaderTransformer"/>s to apply to the loaded shaders.</summary>
-  public List<IShaderTransformer> Transformers { get; init; } = new()
-  {
-    new SpriteShaderTransformer()
-  };
-
   public override bool CanHandle(AssetLoaderContext context)
   {
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
@@ -78,22 +71,25 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 
   public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
-    var declaration = await parser.ParseShaderAsync(context.Path, encoding, progressToken.CancellationToken);
+    var environment = new ShaderAssetEnvironment(context.Manager);
 
-    return await TransformShaderAsync(declaration, progressToken.CancellationToken);
+    return await parser.ParseShaderAsync(context.Path, encoding, environment, progressToken.CancellationToken);
   }
 
-  private async Task<ShaderDeclaration> TransformShaderAsync(ShaderDeclaration declaration, CancellationToken cancellationToken = default)
+  /// <summary>A <see cref="IShaderParserEnvironment"/> implementation that delegates back to the asset system..</summary>
+  private sealed class ShaderAssetEnvironment : IShaderParserEnvironment
   {
-    foreach (var transformer in Transformers)
+    private readonly IAssetManager manager;
+
+    public ShaderAssetEnvironment(IAssetManager manager)
     {
-      if (transformer.CanTransform(declaration))
-      {
-        declaration = await transformer.TransformAsync(declaration, cancellationToken);
-      }
+      this.manager = manager;
     }
 
-    return declaration;
+    public async ValueTask<ShaderDeclaration> ExpandShaderAsync(IShaderParser parser, VirtualPath path, CancellationToken cancellationToken = default)
+    {
+      return await manager.LoadAssetAsync<ShaderDeclaration>(path);
+    }
   }
 }
 
@@ -107,8 +103,8 @@ public abstract record ShaderSyntaxTree
   /// </summary>
   public sealed record CompilationUnit : ShaderSyntaxTree
   {
-    public ShaderTypeDeclaration               ShaderType { get; init; } = new("sprite");
-    public ImmutableArray<Include>             Includes   { get; init; } = ImmutableArray<Include>.Empty;
+    public ShaderTypeDeclaration               ShaderType { get; init; } = new("none");
+    public ImmutableHashSet<Include>           Includes   { get; init; } = ImmutableHashSet<Include>.Empty;
     public ImmutableArray<UniformDeclaration>  Uniforms   { get; init; } = ImmutableArray<UniformDeclaration>.Empty;
     public ImmutableArray<VaryingDeclaration>  Varyings   { get; init; } = ImmutableArray<VaryingDeclaration>.Empty;
     public ImmutableArray<ConstantDeclaration> Constants  { get; init; } = ImmutableArray<ConstantDeclaration>.Empty;
@@ -117,7 +113,7 @@ public abstract record ShaderSyntaxTree
 
     public CompilationUnit MergeWith(CompilationUnit other) => this with
     {
-      Includes = Includes.AddRange(other.Includes),
+      Includes = Includes.Union(other.Includes),
       Uniforms = Uniforms.AddRange(other.Uniforms),
       Varyings = Varyings.AddRange(other.Varyings),
       Constants = Constants.AddRange(other.Constants),

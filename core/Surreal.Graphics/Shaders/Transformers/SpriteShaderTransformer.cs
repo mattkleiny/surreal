@@ -10,75 +10,66 @@ namespace Surreal.Graphics.Shaders.Transformers;
 /// </summary>
 public sealed class SpriteShaderTransformer : IShaderTransformer
 {
-  public bool CanTransform(ShaderDeclaration declaration)
+  public bool CanTransform(CompilationUnit compilationUnit)
   {
-    return declaration.CompilationUnit.ShaderType is { Type: "sprite" };
+    return compilationUnit.ShaderType is { Type: "sprite" };
   }
 
-  public ValueTask<ShaderDeclaration> TransformAsync(ShaderDeclaration declaration, CancellationToken cancellationToken = default)
+  public ValueTask<CompilationUnit> TransformAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken = default)
   {
-    IncludeDefaultResources(ref declaration);
+    IncludeDefaultResources(ref compilationUnit);
 
-    AttachDefaultVertexStage(ref declaration);
-    AttachDefaultFragmentStage(ref declaration);
+    AttachDefaultVertexStage(ref compilationUnit);
+    AttachDefaultFragmentStage(ref compilationUnit);
 
-    return ValueTask.FromResult(declaration);
+    return ValueTask.FromResult(compilationUnit);
   }
 
-  private static void IncludeDefaultResources(ref ShaderDeclaration declaration)
+  private static void IncludeDefaultResources(ref CompilationUnit compilationUnit)
   {
-    declaration = declaration with
+    compilationUnit = compilationUnit with
     {
-      CompilationUnit = declaration.CompilationUnit with
-      {
-        Includes = declaration.CompilationUnit.Includes.Insert(0, new Include("resx://Surreal.Graphics/Resources/shaders/common.shade"))
-      }
+      Includes = compilationUnit.Includes.Add(new Include("resx://Surreal.Graphics/Resources/shaders/common.shade")),
     };
   }
 
-  private static void AttachDefaultVertexStage(ref ShaderDeclaration declaration)
+  private static void AttachDefaultVertexStage(ref CompilationUnit compilationUnit)
   {
-    if (declaration.CompilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Vertex))
+    if (compilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Vertex))
     {
       return;
     }
 
-    declaration = declaration with
+    compilationUnit = compilationUnit with
     {
-      CompilationUnit = declaration.CompilationUnit with
+      Stages = compilationUnit.Stages.Add(new StageDeclaration(ShaderKind.Vertex)
       {
-        Stages = declaration.CompilationUnit.Stages.Add(new StageDeclaration(ShaderKind.Vertex)
-        {
-          Parameters = ImmutableArray.Create(
-            new Parameter(new Primitive(PrimitiveType.Float, 3), "position"),
-            new Parameter(new Primitive(PrimitiveType.Float, 4), "color")
-          ),
-          Statements = ImmutableArray.Create<Statement>(
-            new Assignment("POSITION", new Symbol("position"))
-          )
-        })
-      }
+        Parameters = ImmutableArray.Create(
+          new Parameter(new Primitive(PrimitiveType.Float, 3), "position"),
+          new Parameter(new Primitive(PrimitiveType.Float, 4), "color")
+        ),
+        Statements = ImmutableArray.Create<Statement>(
+          new Assignment("POSITION", new Symbol("position"))
+        ),
+      }),
     };
   }
 
-  private static void AttachDefaultFragmentStage(ref ShaderDeclaration declaration)
+  private static void AttachDefaultFragmentStage(ref CompilationUnit compilationUnit)
   {
-    if (declaration.CompilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Fragment))
+    if (compilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Fragment))
     {
       return;
     }
 
-    declaration = declaration with
+    compilationUnit = compilationUnit with
     {
-      CompilationUnit = declaration.CompilationUnit with
+      Stages = compilationUnit.Stages.Add(new StageDeclaration(ShaderKind.Fragment)
       {
-        Stages = declaration.CompilationUnit.Stages.Add(new StageDeclaration(ShaderKind.Fragment)
-        {
-          Statements = ImmutableArray.Create<Statement>(
-            new Assignment("COLOR", new Symbol("_Color"))
-          )
-        })
-      }
+        Statements = ImmutableArray.Create<Statement>(
+          new Assignment("COLOR", new Symbol("_Color"))
+        ),
+      }),
     };
   }
 }

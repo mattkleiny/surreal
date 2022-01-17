@@ -1,5 +1,6 @@
 ﻿using Surreal.Text;
 using static Surreal.Scripting.ScriptSyntaxTree;
+using static Surreal.Scripting.ScriptSyntaxTree.Statement;
 
 namespace Surreal.Scripting.Languages;
 
@@ -35,7 +36,11 @@ public sealed class LispScriptParser : IScriptParser
         nodes.Add(ParseStatement());
       }
 
-      return new CompilationUnit(nodes);
+      return new CompilationUnit
+      {
+        Includes   = nodes.OfType<Include>().ToImmutableArray(),
+        Statements = nodes.OfType<Statement>().ToImmutableArray(),
+      };
     }
 
     public Statement ParseStatement()
@@ -123,8 +128,11 @@ public sealed class LispScriptParser : IScriptParser
 
     private static SymbolicExpression ParseAtom(string literal)
     {
-      if (int.TryParse(literal, out var integer)) return new Atom(integer);
-      if (float.TryParse(literal, out var single)) return new Atom(single);
+      if (int.TryParse(literal, out var integer))
+        return new Atom(integer);
+
+      if (float.TryParse(literal, out var single))
+        return new Atom(single);
 
       return new Atom(literal);
     }

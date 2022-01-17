@@ -8,21 +8,17 @@ public class SpriteShaderTransformerTests
   [Test]
   public async Task it_should_add_default_include_for_shader_base_utilities()
   {
-    var transformer = new SpriteShaderTransformer();
-    var input       = new ShaderDeclaration("test.shade", new CompilationUnit());
+    var transformer     = new SpriteShaderTransformer();
+    var compilationUnit = await transformer.TransformAsync(new CompilationUnit());
 
-    var (_, compilationUnit) = await transformer.TransformAsync(input);
-
-    Assert.AreEqual(1, compilationUnit.Includes.Length);
+    Assert.AreEqual(1, compilationUnit.Includes.Count);
   }
 
   [Test]
   public async Task it_should_add_default_vertex_stage_if_none_exists()
   {
-    var transformer = new SpriteShaderTransformer();
-    var input       = new ShaderDeclaration("test.shade", new CompilationUnit());
-
-    var (_, compilationUnit) = await transformer.TransformAsync(input);
+    var transformer     = new SpriteShaderTransformer();
+    var compilationUnit = await transformer.TransformAsync(new CompilationUnit());
 
     Assert.AreEqual(1, compilationUnit.Stages.Count(_ => _.Kind == ShaderKind.Vertex));
   }
@@ -30,10 +26,8 @@ public class SpriteShaderTransformerTests
   [Test]
   public async Task it_should_add_default_fragment_stage_if_none_exists()
   {
-    var transformer = new SpriteShaderTransformer();
-    var input       = new ShaderDeclaration("test.shade", new CompilationUnit());
-
-    var (_, compilationUnit) = await transformer.TransformAsync(input);
+    var transformer     = new SpriteShaderTransformer();
+    var compilationUnit = await transformer.TransformAsync(new CompilationUnit());
 
     Assert.AreEqual(1, compilationUnit.Stages.Count(_ => _.Kind == ShaderKind.Fragment));
   }

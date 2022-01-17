@@ -2,7 +2,6 @@
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Shaders;
 using Surreal.Internal.Graphics.Resources;
-using Surreal.IO;
 using Surreal.Text;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -25,19 +24,15 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     this.version = version;
   }
 
-  public async ValueTask<ICompiledShaderProgram> CompileAsync(
-    IShaderCompilerEnvironment environment,
-    ShaderDeclaration declaration,
-    CancellationToken cancellationToken = default
-  )
+  public ValueTask<ICompiledShaderProgram> CompileAsync(ShaderDeclaration declaration, CancellationToken cancellationToken = default)
   {
     var shaders = ImmutableArray.CreateBuilder<OpenTKShader>(declaration.CompilationUnit.Stages.Length);
 
     foreach (var stage in declaration.CompilationUnit.Stages)
     {
-      var context = new ShaderCompileContext(version, stage.Kind, environment);
+      var context = new ShaderCompileContext(version);
 
-      await context.CompileStageAsync(declaration, stage, cancellationToken);
+      context.CompileStage(declaration, stage);
 
       var shaderType = ConvertShaderKind(stage.Kind);
       var shaderCode = context.FinaliseToString();
@@ -45,7 +40,9 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       shaders.Add(new OpenTKShader(shaderType, shaderCode));
     }
 
-    return new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable());
+    var result = new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable());
+
+    return ValueTask.FromResult<ICompiledShaderProgram>(result);
   }
 
   private static ShaderType ConvertShaderKind(ShaderKind kind) => kind switch
@@ -60,17 +57,12 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
   /// <summary>Context for compiling a single shader program.</summary>
   private sealed class ShaderCompileContext
   {
-    private readonly string                     version;
-    private readonly ShaderKind                 shaderKind;
-    private readonly IShaderCompilerEnvironment environment;
-    private readonly ShaderCodeBuilder          builder;
-    private readonly HashSet<VirtualPath>       includedPaths = new();
+    private readonly string            version;
+    private readonly ShaderCodeBuilder builder;
 
-    public ShaderCompileContext(string version, ShaderKind shaderKind, IShaderCompilerEnvironment environment)
+    public ShaderCompileContext(string version)
     {
-      this.version     = version;
-      this.shaderKind  = shaderKind;
-      this.environment = environment;
+      this.version = version;
 
       builder = new ShaderCodeBuilder(new StringBuilder());
     }
@@ -80,55 +72,18 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       return builder.StringBuilder.ToString();
     }
 
-    public async ValueTask CompileStageAsync(ShaderDeclaration declaration, StageDeclaration stage, CancellationToken cancellationToken = default)
-    {
-      // compile preamble and include other modules
-      CompilePreamble(declaration);
-
-      // compile the top-level compilation unit
-      await CompileUnitAsync(declaration.CompilationUnit, cancellationToken);
-
-      // compile stage local
-      CompileStatement(stage);
-    }
-
-    private async ValueTask CompileUnitAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken = default)
-    {
-      // link included compilation units
-      if (compilationUnit.Includes.Length > 0)
-      {
-        compilationUnit = await CompileIncludesAsync(compilationUnit, cancellationToken);
-      }
-
-      // compile globals (N.B: order matters)
-      CompileStatements(compilationUnit.Uniforms);
-      CompileStatements(compilationUnit.Varyings);
-      CompileStatements(compilationUnit.Constants);
-      CompileStatements(compilationUnit.Functions);
-    }
-
-    private void CompilePreamble(ShaderDeclaration declaration)
+    public void CompileStage(ShaderDeclaration declaration, StageDeclaration stage)
     {
       builder.AppendComment($"Compiled from: {declaration.Path}");
       builder.AppendLine($"#version {version}");
       builder.AppendLine();
-    }
 
-    private async ValueTask<CompilationUnit> CompileIncludesAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
-    {
-      foreach (var include in compilationUnit.Includes)
-      {
-        // only include modules once
-        if (includedPaths.Add(include.Path))
-        {
-          var program = await environment.ExpandShaderAsync(include.Path, cancellationToken);
+      CompileStatements(declaration.CompilationUnit.Uniforms);
+      CompileStatements(declaration.CompilationUnit.Varyings);
+      CompileStatements(declaration.CompilationUnit.Constants);
+      CompileStatements(declaration.CompilationUnit.Functions);
 
-          // merge compilation units into our own
-          compilationUnit = compilationUnit.MergeWith(program.CompilationUnit);
-        }
-      }
-
-      return compilationUnit;
+      CompileStatement(stage);
     }
 
     private void CompileStatements<T>(ImmutableArray<T> statements)
@@ -285,6 +240,8 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
       BinaryOperator.Subtract => "-",
       BinaryOperator.Multiply => "*",
       BinaryOperator.Divide   => "/",
+      BinaryOperator.Equal    => "==",
+      BinaryOperator.NotEqual => "!=",
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
     };

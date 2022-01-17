@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Surreal.Assets;
+﻿using Surreal.Assets;
 using static Surreal.Scripting.ScriptSyntaxTree;
 using static Surreal.Scripting.ScriptSyntaxTree.Statement;
 
@@ -67,20 +66,14 @@ public abstract record ScriptSyntaxTree
   /// <summary>A compilation unit for all script instructions </summary>
   public sealed record CompilationUnit : ScriptSyntaxTree
   {
-    public CompilationUnit(params ScriptSyntaxTree[] nodes)
-      : this(nodes.AsEnumerable())
-    {
-    }
+    public ImmutableArray<Include>   Includes   { get; init; } = ImmutableArray<Include>.Empty;
+    public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
 
-    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-    public CompilationUnit(IEnumerable<ScriptSyntaxTree> nodes)
+    public CompilationUnit MergeWith(CompilationUnit other) => this with
     {
-      Includes   = nodes.OfType<Include>().ToImmutableArray();
-      Statements = nodes.OfType<Statement>().ToImmutableArray();
-    }
-
-    public ImmutableArray<Include>   Includes   { get; init; }
-    public ImmutableArray<Statement> Statements { get; init; }
+      Includes = Includes.AddRange(other.Includes),
+      Statements = Statements.AddRange(other.Statements),
+    };
   }
 
   /// <summary>A single statement in a shader program.</summary>

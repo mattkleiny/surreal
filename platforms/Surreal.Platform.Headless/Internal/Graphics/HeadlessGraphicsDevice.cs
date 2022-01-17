@@ -1,6 +1,7 @@
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Pipelines;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Internal.Graphics.Resources;
@@ -10,8 +11,9 @@ namespace Surreal.Internal.Graphics;
 
 internal sealed class HeadlessGraphicsDevice : IGraphicsDevice
 {
-  public IShaderCompiler ShaderCompiler { get; } = new HeadlessShaderCompiler();
-  public Viewport        Viewport       { get; set; }
+  public IShaderCompiler   ShaderCompiler { get; } = new HeadlessShaderCompiler();
+  public IGraphicsPipeline Pipeline       => throw new NotImplementedException();
+  public Viewport          Viewport       { get; set; }
 
   public void BeginFrame()
   {
