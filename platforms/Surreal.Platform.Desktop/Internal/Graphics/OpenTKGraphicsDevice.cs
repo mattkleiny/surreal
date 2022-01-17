@@ -3,10 +3,8 @@ using Surreal.Graphics;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Pipelines;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Internal.Graphics.Pipelines;
 using Surreal.Internal.Graphics.Resources;
 using Surreal.Mathematics;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
@@ -21,11 +19,13 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice
   public OpenTKGraphicsDevice(IDesktopWindow window)
   {
     this.window = window;
+
+    Server = new OpenTKGraphicsServer(ShaderCompiler);
   }
 
-  public IShaderCompiler   ShaderCompiler { get; } = new OpenTKShaderCompiler();
-  public IGraphicsPipeline Pipeline       { get; } = new OpenTKGraphicsPipeline();
-  public Viewport          Viewport       { get; set; }
+  public IShaderCompiler ShaderCompiler { get; } = new OpenTKShaderCompiler();
+  public IGraphicsServer Server         { get; }
+  public Viewport        Viewport       { get; set; }
 
   public void BeginFrame()
   {

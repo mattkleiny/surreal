@@ -22,17 +22,17 @@ public abstract class ShaderProgram : GraphicsResource
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ShaderProgram"/>s.</summary>
-public sealed class ShaderLoader : AssetLoader<ShaderProgram>
+public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 {
   private readonly IGraphicsDevice          device;
   private readonly ImmutableHashSet<string> extensions;
 
-  public ShaderLoader(IGraphicsDevice device, params string[] extensions)
+  public ShaderProgramLoader(IGraphicsDevice device, params string[] extensions)
     : this(device, extensions.AsEnumerable())
   {
   }
 
-  public ShaderLoader(IGraphicsDevice device, IEnumerable<string> extensions)
+  public ShaderProgramLoader(IGraphicsDevice device, IEnumerable<string> extensions)
   {
     this.device     = device;
     this.extensions = extensions.ToImmutableHashSet();
@@ -43,13 +43,10 @@ public sealed class ShaderLoader : AssetLoader<ShaderProgram>
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     // TODO: support hot reloading?
 
-    var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path);
-    var compiled    = await device.ShaderCompiler.CompileAsync(declaration, progressToken.CancellationToken);
-
-    return device.CreateShaderProgram(compiled);
+    throw new NotImplementedException();
   }
 }

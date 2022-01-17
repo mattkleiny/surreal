@@ -38,26 +38,31 @@ public enum ShaderKind
 public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = null, Precision? Precision = null);
 
 /// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
-public sealed record ShaderDeclaration(string Path, CompilationUnit CompilationUnit);
+public sealed record ShaderDeclaration(string Path, CompilationUnit CompilationUnit)
+{
+  // TODO: implement these sorts of queries
+  public bool RequiresTransparentPass => throw new NotImplementedException();
+  public bool RequiresGrabPass        => throw new NotImplementedException();
+}
 
 /// <summary>An <see cref="AssetLoader{T}"/> for <see cref="ShaderDeclaration"/>s.</summary>
 public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 {
-  private readonly IShaderParser            parser;
+  private readonly ShaderParser             parser;
   private readonly ImmutableHashSet<string> extensions;
   private readonly Encoding                 encoding;
 
-  public ShaderDeclarationLoader(IShaderParser parser, params string[] extensions)
+  public ShaderDeclarationLoader(ShaderParser parser, params string[] extensions)
     : this(parser, extensions.AsEnumerable())
   {
   }
 
-  public ShaderDeclarationLoader(IShaderParser parser, IEnumerable<string> extensions)
+  public ShaderDeclarationLoader(ShaderParser parser, IEnumerable<string> extensions)
     : this(parser, extensions, Encoding.UTF8)
   {
   }
 
-  public ShaderDeclarationLoader(IShaderParser parser, IEnumerable<string> extensions, Encoding encoding)
+  public ShaderDeclarationLoader(ShaderParser parser, IEnumerable<string> extensions, Encoding encoding)
   {
     this.parser     = parser;
     this.extensions = extensions.ToImmutableHashSet();
@@ -71,25 +76,7 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 
   public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
-    var environment = new ShaderAssetEnvironment(context.Manager);
-
-    return await parser.ParseShaderAsync(context.Path, encoding, environment, progressToken.CancellationToken);
-  }
-
-  /// <summary>A <see cref="IShaderParserEnvironment"/> implementation that delegates back to the asset system..</summary>
-  private sealed class ShaderAssetEnvironment : IShaderParserEnvironment
-  {
-    private readonly IAssetManager manager;
-
-    public ShaderAssetEnvironment(IAssetManager manager)
-    {
-      this.manager = manager;
-    }
-
-    public async ValueTask<ShaderDeclaration> ExpandShaderAsync(IShaderParser parser, VirtualPath path, CancellationToken cancellationToken = default)
-    {
-      return await manager.LoadAssetAsync<ShaderDeclaration>(path);
-    }
+    return await parser.ParseShaderAsync(context.Path, encoding, progressToken.CancellationToken);
   }
 }
 

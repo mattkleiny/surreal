@@ -1,6 +1,5 @@
 ﻿using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Pipelines;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -14,7 +13,7 @@ public readonly record struct Viewport(int X, int Y, int Width, int Height);
 public interface IGraphicsDevice
 {
   IShaderCompiler   ShaderCompiler { get; }
-  IGraphicsPipeline Pipeline       { get; }
+  IGraphicsServer Server       { get; }
   Viewport          Viewport       { get; set; }
 
   void Clear(Color color);

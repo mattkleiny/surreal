@@ -1,7 +1,7 @@
 ﻿using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 
-namespace Surreal.Graphics.Pipelines;
+namespace Surreal.Graphics;
 
 /// <summary>An opaque handle to a graphics resource in the underling graphics pipeline implementation.</summary>
 public readonly record struct GraphicsId(uint Id)
@@ -15,8 +15,8 @@ public readonly record struct GraphicsId(uint Id)
   public static implicit operator int(GraphicsId id)  => (int) id.Id;
 }
 
-/// <summary>An abstraction over the different types of graphics pipelines available.</summary>
-public interface IGraphicsPipeline
+/// <summary>An abstraction over the different types of graphics servers available.</summary>
+public interface IGraphicsServer
 {
   IBuffers   Buffers   { get; }
   ITextures  Textures  { get; }
@@ -29,7 +29,7 @@ public interface IGraphicsPipeline
   {
     GraphicsId CreateBuffer();
 
-    void UploadData<T>(GraphicsId id, ReadOnlySpan<T> data);
+    void UploadBufferData<T>(GraphicsId id, ReadOnlySpan<T> data) where T : unmanaged;
   }
 
   /// <summary>The texture section of the API.</summary>
@@ -37,8 +37,8 @@ public interface IGraphicsPipeline
   {
     GraphicsId CreateTexture();
 
-    void Allocate(GraphicsId id, int width, int height, int depth, TextureFormat format);
-    void UploadTexels<T>(GraphicsId id, ReadOnlySpan<T> data, int mipLevel = 0);
+    void AllocateTexture(GraphicsId id, int width, int height, int depth, TextureFormat format);
+    void UploadTextureData<T>(GraphicsId id, int width, int height, ReadOnlySpan<T> data, int mipLevel = 0) where T : unmanaged;
   }
 
   /// <summary>The shader section of the API.</summary>
@@ -46,7 +46,7 @@ public interface IGraphicsPipeline
   {
     GraphicsId CreateShader();
 
-    void Compile(GraphicsId id, ShaderDeclaration declaration);
+    void CompileShader(GraphicsId id, ShaderDeclaration declaration);
   }
 
   /// <summary>The materials section of the API.</summary>
@@ -54,15 +54,15 @@ public interface IGraphicsPipeline
   {
     GraphicsId CreateMaterial();
 
-    void SetShader(GraphicsId materialId, GraphicsId shaderId);
+    void SetMaterialShader(GraphicsId materialId, GraphicsId shaderId);
   }
 
-  /// <summary>The lighting section of the pipeline.</summary>
+  /// <summary>The lighting section of the API.</summary>
   public interface ILighting
   {
     GraphicsId CreateLight();
 
-    void SetTransform(GraphicsId id, in Matrix4x4 transform);
+    void SetLightTransform(GraphicsId id, in Matrix4x4 transform);
     void SetShadowTransform(GraphicsId id, in Matrix4x4 transform);
   }
 }

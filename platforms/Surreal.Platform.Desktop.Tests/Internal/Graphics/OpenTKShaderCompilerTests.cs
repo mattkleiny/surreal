@@ -13,18 +13,17 @@ public class OpenTKShaderCompilerTests
   [TestCase("Assets/shaders/test01.shade")]
   public async Task it_should_compile_shader_programs(VirtualPath path)
   {
-    var parser      = new StandardShaderParser();
-    var compiler    = new OpenTKShaderCompiler();
-    var environment = new ShaderParserEnvironment();
+    var parser   = new StandardShaderParser();
+    var compiler = new OpenTKShaderCompiler();
 
-    var declaration = await parser.ParseShaderAsync(path, environment);
-    var compiled    = await compiler.CompileAsync(declaration);
+    var declaration = await parser.ParseShaderAsync(path);
+    var compiled    = compiler.Compile(declaration);
 
     Assert.IsNotNull(compiled);
   }
 
   [Test]
-  public async Task it_should_compile_simple_instructions()
+  public void it_should_compile_simple_instructions()
   {
     var compiler = new OpenTKShaderCompiler();
 
@@ -68,8 +67,7 @@ public class OpenTKShaderCompilerTests
       ),
     };
 
-    var program = (OpenTKShaderSet) await compiler.CompileAsync(new ShaderDeclaration("test.shade", compilationUnit)
-    );
+    var program = (OpenTKShaderSet) compiler.Compile(new ShaderDeclaration("test.shade", compilationUnit));
 
     Assert.IsNotNull(program);
     Assert.AreEqual(2, program.Shaders.Length);
