@@ -1,5 +1,6 @@
 ﻿using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
@@ -47,6 +48,19 @@ public interface IGraphicsServer
     GraphicsId CreateShader();
 
     void CompileShader(GraphicsId id, ShaderDeclaration declaration);
+
+    void SetShaderUniform(GraphicsId id, string name, int value);
+    void SetShaderUniform(GraphicsId id, string name, float value);
+    void SetShaderUniform(GraphicsId id, string name, Vector2I value);
+    void SetShaderUniform(GraphicsId id, string name, Vector3I value);
+    void SetShaderUniform(GraphicsId id, string name, Vector2 value);
+    void SetShaderUniform(GraphicsId id, string name, Vector3 value);
+    void SetShaderUniform(GraphicsId id, string name, Vector4 value);
+    void SetShaderUniform(GraphicsId id, string name, Quaternion value);
+    void SetShaderUniform(GraphicsId id, string name, in Matrix3x2 value);
+    void SetShaderUniform(GraphicsId id, string name, in Matrix4x4 value);
+
+    void DeleteShader(GraphicsId id);
   }
 
   /// <summary>The materials section of the API.</summary>

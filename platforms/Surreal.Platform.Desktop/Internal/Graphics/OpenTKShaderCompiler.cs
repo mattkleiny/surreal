@@ -24,7 +24,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     this.version = version;
   }
 
-  public ICompiledShaderProgram Compile(ShaderDeclaration declaration)
+  public OpenTKShaderSet Compile(ShaderDeclaration declaration)
   {
     var shaders = ImmutableArray.CreateBuilder<OpenTKShader>(declaration.CompilationUnit.Stages.Length);
 
@@ -41,6 +41,11 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     }
 
     return new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable());
+  }
+
+  ICompiledShaderProgram IShaderCompiler.Compile(ShaderDeclaration declaration)
+  {
+    return Compile(declaration);
   }
 
   private static ShaderType ConvertShaderKind(ShaderKind kind) => kind switch

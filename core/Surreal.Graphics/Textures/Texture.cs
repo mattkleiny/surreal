@@ -91,8 +91,6 @@ public sealed class TextureLoader : AssetLoader<Texture>
   {
     // TODO: support hot reloading?
 
-    var image = await context.Manager.LoadAssetAsync<Image>(context.Path);
-
-    return device.CreateTexture(image, defaultFilterMode, defaultWrapMode);
+    throw new NotImplementedException();
   }
 }

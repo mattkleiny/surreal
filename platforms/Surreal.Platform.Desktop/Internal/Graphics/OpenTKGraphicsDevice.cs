@@ -1,14 +1,9 @@
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
-using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Shaders;
-using Surreal.Graphics.Textures;
 using Surreal.Internal.Graphics.Resources;
 using Surreal.Mathematics;
-using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
-using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Internal.Graphics;
 
@@ -19,13 +14,10 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice
   public OpenTKGraphicsDevice(IDesktopWindow window)
   {
     this.window = window;
-
-    Server = new OpenTKGraphicsServer(ShaderCompiler);
   }
 
-  public IShaderCompiler ShaderCompiler { get; } = new OpenTKShaderCompiler();
-  public IGraphicsServer Server         { get; }
-  public Viewport        Viewport       { get; set; }
+  public IGraphicsServer Server   { get; } = new OpenTKGraphicsServer();
+  public Viewport        Viewport { get; set; }
 
   public void BeginFrame()
   {
@@ -83,45 +75,11 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice
     GL.Flush();
   }
 
+  [Obsolete("Use the graphics server, instead")]
   public GraphicsBuffer<T> CreateBuffer<T>()
     where T : unmanaged
   {
     return new OpenTKGraphicsBuffer<T>();
-  }
-
-  public Texture CreateTexture(
-    TextureFormat format = TextureFormat.Rgba8888,
-    TextureFilterMode filterMode = TextureFilterMode.Linear,
-    TextureWrapMode wrapMode = TextureWrapMode.Repeat
-  )
-  {
-    return new OpenTKTexture(format, filterMode, wrapMode);
-  }
-
-  public Texture CreateTexture(
-    ITextureData data,
-    TextureFilterMode filterMode = TextureFilterMode.Linear,
-    TextureWrapMode wrapMode = TextureWrapMode.Repeat
-  )
-  {
-    return new OpenTKTexture(data, filterMode, wrapMode);
-  }
-
-  public RenderTexture CreateFrameBuffer(in RenderTextureDescriptor descriptor)
-  {
-    var texture = (OpenTKTexture) CreateTexture(descriptor.Format, descriptor.FilterMode, TextureWrapMode.Clamp);
-    var image   = new Image(descriptor.Width, descriptor.Height);
-
-    texture.Upload(image);
-
-    return new OpenTKRenderTexture(texture, image);
-  }
-
-  public ShaderProgram CreateShaderProgram(ICompiledShaderProgram program)
-  {
-    var shaderSet = (OpenTKShaderSet) program;
-
-    return new OpenTKShaderProgram(shaderSet);
   }
 
   private static void DrawMesh(int count, MeshType type)

@@ -1,9 +1,10 @@
-﻿using OpenTK.Graphics;
+﻿using System.Runtime.CompilerServices;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Internal.Graphics.Resources;
+using Surreal.Mathematics;
 
 namespace Surreal.Internal.Graphics;
 
@@ -15,17 +16,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
   IGraphicsServer.IMaterials,
   IGraphicsServer.ILighting
 {
-  private readonly IShaderCompiler compiler;
-
-  public OpenTKGraphicsServer()
-    : this(new OpenTKShaderCompiler())
-  {
-  }
-
-  public OpenTKGraphicsServer(IShaderCompiler compiler)
-  {
-    this.compiler = compiler;
-  }
+  public OpenTKShaderCompiler ShaderCompiler { get; } = new();
 
   public IGraphicsServer.IBuffers   Buffers   => this;
   public IGraphicsServer.ITextures  Textures  => this;
@@ -102,16 +93,16 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
   {
     var program = new ProgramHandle(id);
 
-    var (_, shaders) = (OpenTKShaderSet) compiler.Compile(declaration);
+    var (path, shaders) = ShaderCompiler.Compile(declaration);
     var shaderIds = new ShaderHandle[shaders.Length];
 
     GL.UseProgram(program);
 
     for (var i = 0; i < shaders.Length; i++)
     {
-      var (shaderType, code) = shaders[i];
+      var (stage, code) = shaders[i];
 
-      var shader = shaderIds[i] = GL.CreateShader(shaderType);
+      var shader = shaderIds[i] = GL.CreateShader(stage);
 
       GL.ShaderSource(shader, code);
       GL.CompileShader(shader);
@@ -124,7 +115,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
       {
         GL.GetShaderInfoLog(shader, out var errorLog);
 
-        throw new ShaderProgramException($"An error occurred whilst compiling a {shaderType} shader.", errorLog);
+        throw new PlatformException($"An error occurred whilst compiling a {stage} shader from {path}: {errorLog}");
       }
 
       GL.AttachShader(program, shader);
@@ -139,13 +130,104 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     {
       GL.GetProgramInfoLog(program, out var errorLog);
 
-      throw new ShaderProgramException("An error occurred whilst linking a shader program.", errorLog);
+      throw new PlatformException($"An error occurred whilst linking a shader program from {path}: {errorLog}");
     }
 
     foreach (var shaderId in shaderIds)
     {
       GL.DeleteShader(shaderId);
     }
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, int value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform1i(location, value);
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, float value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform1f(location, value);
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, Vector2I value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform2i(location, value.X, value.Y);
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, Vector3I value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform3i(location, value.X, value.Y, value.Z);
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, Vector2 value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform2f(location, value.X, value.Y);
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, Vector3 value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform3f(location, value.X, value.Y, value.Z);
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, Vector4 value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
+  }
+
+  public void SetShaderUniform(GraphicsId id, string name, Quaternion value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
+  }
+
+  public unsafe void SetShaderUniform(GraphicsId id, string name, in Matrix3x2 value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
+
+    GL.UniformMatrix4f(location, 1, false, new ReadOnlySpan<float>(pointer, 3 * 2));
+  }
+
+  public unsafe void SetShaderUniform(GraphicsId id, string name, in Matrix4x4 value)
+  {
+    var program  = new ProgramHandle(id);
+    var location = GL.GetAttribLocation(program, name);
+
+    var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
+
+    GL.UniformMatrix4f(location, 1, false, new ReadOnlySpan<float>(pointer, 4 * 4));
+  }
+
+  public void DeleteShader(GraphicsId id)
+  {
+    var program = new ProgramHandle(id);
+
+    GL.DeleteProgram(program);
   }
 
   public GraphicsId CreateMaterial()
