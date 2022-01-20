@@ -5,7 +5,7 @@ using Surreal.Internal.Compute.Resources;
 
 namespace Surreal.Internal.Compute;
 
-internal sealed class OpenTKComputeDevice : IComputeDevice
+internal sealed class OpenTKComputeServer : IComputeServer
 {
   public ComputeBuffer<T> CreateBuffer<T>()
     where T : unmanaged

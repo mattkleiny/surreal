@@ -32,17 +32,17 @@ public abstract class AudioClip : AudioResource, IHasSizeEstimate
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioClip"/>s.</summary>
 public sealed class AudioClipLoader : AssetLoader<AudioClip>
 {
-  private readonly IAudioDevice device;
+  private readonly IAudioServer server;
 
-  public AudioClipLoader(IAudioDevice device)
+  public AudioClipLoader(IAudioServer server)
   {
-    this.device = device;
+    this.server = server;
   }
 
   public override async ValueTask<AudioClip> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     var buffer = await context.Manager.LoadAssetAsync<AudioBuffer>(context.Path);
 
-    return device.CreateAudioClip(buffer);
+    return server.CreateAudioClip(buffer);
   }
 }

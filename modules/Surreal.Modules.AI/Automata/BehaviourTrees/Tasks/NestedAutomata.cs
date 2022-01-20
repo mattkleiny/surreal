@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Messaging;
+using Surreal.Timing;
 
 namespace Surreal.Automata.BehaviourTrees.Tasks;
 
@@ -17,5 +18,15 @@ public sealed record NestedAutomata(IAutomata Automata) : BehaviourTask
 
       _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
     };
+  }
+
+  protected internal override void OnMessageReceived(Message message)
+  {
+    base.OnMessageReceived(message);
+
+    if (Automata is IMessageListener listener)
+    {
+      listener.OnMessageReceived(message);
+    }
   }
 }

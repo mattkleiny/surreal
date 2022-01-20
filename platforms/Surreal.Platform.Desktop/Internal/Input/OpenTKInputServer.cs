@@ -2,11 +2,11 @@ using Surreal.Input;
 
 namespace Surreal.Internal.Input;
 
-internal sealed class OpenTKInputManager : IInputManager
+internal sealed class OpenTKInputServer : IInputServer
 {
   private readonly List<IInputDevice> devices = new();
 
-  public OpenTKInputManager(OpenTKWindow window)
+  public OpenTKInputServer(OpenTKWindow window)
   {
     Keyboard = new OpenTKKeyboardDevice(window);
     Mouse    = new OpenTKMouseDevice(window);

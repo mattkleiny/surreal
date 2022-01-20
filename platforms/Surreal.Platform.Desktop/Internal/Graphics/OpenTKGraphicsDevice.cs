@@ -53,8 +53,6 @@ internal sealed class OpenTKGraphicsDevice : IGraphicsDevice
 
     // TODO: bind shader and buffers
 
-    material.Program.Bind(mesh.Descriptors);
-
     if (indexCount > 0)
     {
       DrawMeshIndexed(indexCount, type);

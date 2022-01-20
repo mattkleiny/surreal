@@ -128,7 +128,6 @@ public sealed class StandardShaderParser : ShaderParser
     return new ShaderDeclaration(path, compilationUnit);
   }
 
-  /// <summary>Applies all <see cref="IShaderTransformer"/>s to the given <see cref="CompilationUnit"/>.</summary>
   private async Task<CompilationUnit> ApplyTransformersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
   {
     foreach (var transformer in Transformers)
@@ -142,7 +141,6 @@ public sealed class StandardShaderParser : ShaderParser
     return compilationUnit;
   }
 
-  /// <summary>Expands all included shaders into the main compilation unit.</summary>
   private async Task<CompilationUnit> MergeIncludedShadersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
   {
     var includedPaths = new HashSet<VirtualPath>();
@@ -482,17 +480,16 @@ public sealed class StandardShaderParser : ShaderParser
     private Statement ParseStatement()
     {
       if (TryConsumeLiteral(TokenType.Comment, out string comment))
-      {
         return new Comment(comment);
-      }
 
       if (TryConsumeLiteral(TokenType.Keyword, out string keyword))
       {
         return keyword switch
         {
-          "if"    => throw new NotImplementedException(),
-          "while" => throw new NotImplementedException(),
-          "for"   => throw new NotImplementedException(),
+          "if"     => ParseIfStatement(),
+          "while"  => ParseWhileStatement(),
+          "for"    => ParseForStatement(),
+          "return" => ParseReturnStatement(),
 
           _ => throw Error($"An unrecognized keyword was encountered: {keyword}"),
         };
@@ -503,6 +500,26 @@ public sealed class StandardShaderParser : ShaderParser
       Consume(TokenType.SemiColon, "Expect a semicolon after an expression");
 
       return new StatementExpression(expression);
+    }
+
+    private Statement ParseIfStatement()
+    {
+      throw new NotImplementedException();
+    }
+
+    private Statement ParseWhileStatement()
+    {
+      throw new NotImplementedException();
+    }
+
+    private Statement ParseForStatement()
+    {
+      throw new NotImplementedException();
+    }
+
+    private Statement ParseReturnStatement()
+    {
+      return new Return(ParseExpression());
     }
 
     private Include ParseInclude()

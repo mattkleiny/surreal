@@ -8,12 +8,12 @@ namespace Surreal.Internal.Audio.Resources;
 [DebuggerDisplay("Audio Source (Playing={IsPlaying}, Volume={Volume})")]
 internal sealed class OpenTKAudioSource : AudioSource
 {
-  private readonly OpenTKAudioDevice device;
+  private readonly OpenTKAudioServer server;
   private          float             volume;
 
-  public OpenTKAudioSource(OpenTKAudioDevice device)
+  public OpenTKAudioSource(OpenTKAudioServer server)
   {
-    this.device = device;
+    this.server = server;
   }
 
   public int Id { get; } = AL.GenSource();
@@ -38,7 +38,7 @@ internal sealed class OpenTKAudioSource : AudioSource
   {
     var innerClip = (OpenTKAudioClip) clip;
 
-    AL.Source(Id, ALSourcef.Gain, volume * device.MasterVolume);
+    AL.Source(Id, ALSourcef.Gain, volume * server.MasterVolume);
     AL.Source(Id, ALSourcei.Buffer, innerClip.Id);
     AL.SourcePlay(Id);
   }

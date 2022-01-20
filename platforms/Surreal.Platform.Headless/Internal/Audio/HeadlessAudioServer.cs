@@ -6,7 +6,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Internal.Audio;
 
-internal sealed class HeadlessAudioDevice : IAudioDevice
+internal sealed class HeadlessAudioServer : IAudioServer
 {
   private float masterVolume;
 

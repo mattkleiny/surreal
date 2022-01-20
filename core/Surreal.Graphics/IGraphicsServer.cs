@@ -4,7 +4,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>An opaque handle to a graphics resource in the underling graphics pipeline implementation.</summary>
+/// <summary>An opaque handle to an graphics resource in the underling <see cref="IGraphicsServer"/> implementation.</summary>
 public readonly record struct GraphicsId(uint Id)
 {
   public GraphicsId(int id)
@@ -23,7 +23,6 @@ public interface IGraphicsServer
   ITextures  Textures  { get; }
   IShaders   Shaders   { get; }
   IMaterials Materials { get; }
-  ILighting  Lighting  { get; }
 
   /// <summary>The buffer section of the API.</summary>
   public interface IBuffers
@@ -66,17 +65,5 @@ public interface IGraphicsServer
   /// <summary>The materials section of the API.</summary>
   public interface IMaterials
   {
-    GraphicsId CreateMaterial();
-
-    void SetMaterialShader(GraphicsId materialId, GraphicsId shaderId);
-  }
-
-  /// <summary>The lighting section of the API.</summary>
-  public interface ILighting
-  {
-    GraphicsId CreateLight();
-
-    void SetLightTransform(GraphicsId id, in Matrix4x4 transform);
-    void SetShadowTransform(GraphicsId id, in Matrix4x4 transform);
   }
 }

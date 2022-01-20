@@ -6,7 +6,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Internal.Audio;
 
-internal sealed class OpenTKAudioDevice : IAudioDevice
+internal sealed class OpenTKAudioServer : IAudioServer
 {
   private float masterVolume;
 

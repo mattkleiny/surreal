@@ -25,8 +25,8 @@ namespace Surreal;
 /// <summary>Base class for any <see cref="Game"/> that uses rapid prototyping services.</summary>
 public abstract class PrototypeGame : Game
 {
-  public IAudioDevice    AudioDevice    => Services.GetRequiredService<IAudioDevice>();
-  public IComputeDevice  ComputeDevice  => Services.GetRequiredService<IComputeDevice>();
+  public IAudioServer    AudioServer    => Services.GetRequiredService<IAudioServer>();
+  public IComputeServer  ComputeServer  => Services.GetRequiredService<IComputeServer>();
   public IGraphicsDevice GraphicsDevice => Services.GetRequiredService<IGraphicsDevice>();
   public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
   public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
@@ -51,16 +51,15 @@ public abstract class PrototypeGame : Game
 
     // audio
     manager.AddLoader(new AudioBufferLoader());
-    manager.AddLoader(new AudioClipLoader(AudioDevice));
+    manager.AddLoader(new AudioClipLoader(AudioServer));
 
     // compute
-    manager.AddLoader(new ComputeProgramLoader(ComputeDevice));
+    manager.AddLoader(new ComputeProgramLoader(ComputeServer));
 
     // graphics
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
-    manager.AddLoader(new MaterialLoader());
     manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, ".shade"));
     manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(ShaderParser.Environment.FromAssets(manager)), ".shade"));
     manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));

@@ -19,10 +19,10 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
 {
   public event Action<int, int> Resized = null!;
 
-  public HeadlessAudioDevice      AudioDevice      { get; } = new();
-  public HeadlessComputeDevice    ComputeDevice    { get; } = new();
+  public HeadlessAudioServer      AudioServer      { get; } = new();
+  public HeadlessComputeServer    ComputeServer    { get; } = new();
   public HeadlessGraphicsDevice   GraphicsDevice   { get; } = new();
-  public HeadlessInputManager     InputManager     { get; } = new();
+  public HeadlessInputServer     InputServer     { get; } = new();
   public HeadlessNetworkFactory NetworkFactory { get; } = new();
 
   public int  Width     => 1920;
@@ -34,12 +34,12 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public IServiceModule Services   => this;
   public IDispatcher    Dispatcher { get; } = new ImmediateDispatcher();
 
-  public IHeadlessKeyboardDevice Keyboard => InputManager.Keyboard;
-  public IHeadlessMouseDevice    Mouse    => InputManager.Mouse;
+  public IHeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
+  public IHeadlessMouseDevice    Mouse    => InputServer.Mouse;
 
   public void Tick(DeltaTime deltaTime)
   {
-    InputManager.Update();
+    InputServer.Update();
   }
 
   public void Dispose()
@@ -49,14 +49,14 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
 
   void IServiceModule.RegisterServices(IServiceRegistry services)
   {
-    services.AddSingleton<IAudioDevice>(AudioDevice);
-    services.AddSingleton<IComputeDevice>(ComputeDevice);
+    services.AddSingleton<IAudioServer>(AudioServer);
+    services.AddSingleton<IComputeServer>(ComputeServer);
     services.AddSingleton<IGraphicsDevice>(GraphicsDevice);
-    services.AddSingleton<IInputManager>(InputManager);
-    services.AddSingleton<IKeyboardDevice>(InputManager.Keyboard);
-    services.AddSingleton<IMouseDevice>(InputManager.Mouse);
-    services.AddSingleton<IHeadlessKeyboardDevice>(InputManager.Keyboard);
-    services.AddSingleton<IHeadlessMouseDevice>(InputManager.Mouse);
+    services.AddSingleton<IInputServer>(InputServer);
+    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
+    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
+    services.AddSingleton<IHeadlessKeyboardDevice>(InputServer.Keyboard);
+    services.AddSingleton<IHeadlessMouseDevice>(InputServer.Mouse);
     services.AddSingleton<INetworkFactory>(NetworkFactory);
   }
 }

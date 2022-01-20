@@ -13,8 +13,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
   IGraphicsServer.IBuffers,
   IGraphicsServer.ITextures,
   IGraphicsServer.IShaders,
-  IGraphicsServer.IMaterials,
-  IGraphicsServer.ILighting
+  IGraphicsServer.IMaterials
 {
   public OpenTKShaderCompiler ShaderCompiler { get; } = new();
 
@@ -22,7 +21,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
   public IGraphicsServer.ITextures  Textures  => this;
   public IGraphicsServer.IShaders   Shaders   => this;
   public IGraphicsServer.IMaterials Materials => this;
-  public IGraphicsServer.ILighting  Lighting  => this;
 
   public GraphicsId CreateBuffer()
   {
@@ -114,6 +112,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
       if (compileStatus != 1)
       {
         GL.GetShaderInfoLog(shader, out var errorLog);
+        GL.DeleteShader(shader); // don't leak the shader
 
         throw new PlatformException($"An error occurred whilst compiling a {stage} shader from {path}: {errorLog}");
       }
@@ -129,10 +128,12 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     if (linkStatus != 1)
     {
       GL.GetProgramInfoLog(program, out var errorLog);
+      GL.DeleteProgram(program); // don't leak the program
 
       throw new PlatformException($"An error occurred whilst linking a shader program from {path}: {errorLog}");
     }
 
+    // we're finished with the shaders, now
     foreach (var shaderId in shaderIds)
     {
       GL.DeleteShader(shaderId);
@@ -228,30 +229,5 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     var program = new ProgramHandle(id);
 
     GL.DeleteProgram(program);
-  }
-
-  public GraphicsId CreateMaterial()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void SetMaterialShader(GraphicsId materialId, GraphicsId shaderId)
-  {
-    throw new NotImplementedException();
-  }
-
-  public GraphicsId CreateLight()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void SetLightTransform(GraphicsId id, in Matrix4x4 transform)
-  {
-    throw new NotImplementedException();
-  }
-
-  public void SetShadowTransform(GraphicsId id, in Matrix4x4 transform)
-  {
-    throw new NotImplementedException();
   }
 }

@@ -2,7 +2,7 @@ using Surreal.Memory;
 
 namespace Surreal.Compute.Memory;
 
-/// <summary>A buffer of data on the <see cref="IComputeDevice"/>.</summary>
+/// <summary>A buffer of data on the <see cref="IComputeServer"/>.</summary>
 public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate
 {
   public int  Length { get; protected set; }

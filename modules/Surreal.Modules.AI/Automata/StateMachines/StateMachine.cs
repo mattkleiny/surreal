@@ -120,4 +120,14 @@ public sealed record AutomataState(IAutomata Automata) : State
       _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
     };
   }
+
+  protected internal override void OnMessageReceived(Message message)
+  {
+    base.OnMessageReceived(message);
+
+    if (Automata is IMessageListener listener)
+    {
+      listener.OnMessageReceived(message);
+    }
+  }
 }

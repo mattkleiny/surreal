@@ -18,6 +18,12 @@ public sealed class ShaderProgram : GraphicsResource
     id = server.Shaders.CreateShader();
   }
 
+  public ShaderProgram(IGraphicsServer server, ShaderDeclaration declaration)
+    : this(server)
+  {
+    Compile(declaration);
+  }
+
   public void Bind(VertexDescriptorSet descriptors)
   {
     // GL.UseProgram(Id);
@@ -97,17 +103,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     // TODO: support hot reloading?
 
     var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path, progressToken);
-    var program     = new ShaderProgram(device.Server);
 
-    try
-    {
-      program.Compile(declaration);
-      return program;
-    }
-    catch (Exception)
-    {
-      program.Dispose();
-      throw;
-    }
+    return new ShaderProgram(device.Server, declaration);
   }
 }

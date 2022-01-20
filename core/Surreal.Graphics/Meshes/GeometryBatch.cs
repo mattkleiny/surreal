@@ -37,7 +37,8 @@ public sealed class GeometryBatch : IDisposable
   {
     this.material = material;
 
-    material.SetProperty(ProjectionView, in projectionView);
+    // TODO: set projection view?
+    // material.SetProperty(ProjectionView, in projectionView);
   }
 
   public void DrawPoint(Vector2 position, Color color)

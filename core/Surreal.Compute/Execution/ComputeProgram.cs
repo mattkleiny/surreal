@@ -11,11 +11,11 @@ public abstract class ComputeProgram : ComputeResource
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ComputeProgram"/>s.</summary>
 public sealed class ComputeProgramLoader : AssetLoader<ComputeProgram>
 {
-  private readonly IComputeDevice device;
+  private readonly IComputeServer server;
 
-  public ComputeProgramLoader(IComputeDevice device)
+  public ComputeProgramLoader(IComputeServer server)
   {
-    this.device = device;
+    this.server = server;
   }
 
   public override ValueTask<ComputeProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)

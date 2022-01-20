@@ -13,7 +13,6 @@ public sealed class SpriteBatch : IDisposable
 {
   private const int MaximumSpriteCount = 8000;
 
-  private static readonly MaterialProperty<Texture>   TextureView    = new("_Texture");
   private static readonly MaterialProperty<Matrix4x4> ProjectionView = new("_ProjectionView");
 
   private readonly IDisposableBuffer<Vertex> vertices;
@@ -43,7 +42,8 @@ public sealed class SpriteBatch : IDisposable
   {
     this.material = material;
 
-    material.SetProperty(ProjectionView, projectionView);
+    // TODO: set projection view?
+    // material.SetProperty(ProjectionView, projectionView);
   }
 
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Angle rotation = default)
@@ -131,8 +131,6 @@ public sealed class SpriteBatch : IDisposable
 
     var spriteCount = vertexCount / 4;
     var indexCount  = spriteCount * 6;
-
-    material.SetProperty(TextureView, lastTexture!);
 
     mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
     mesh.DrawImmediate(material, vertexCount, indexCount);

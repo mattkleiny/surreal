@@ -35,10 +35,10 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     this.configuration = configuration;
 
     Window         = new OpenTKWindow(configuration);
-    AudioDevice    = new OpenTKAudioDevice();
-    ComputeDevice  = new OpenTKComputeDevice();
+    AudioServer    = new OpenTKAudioServer();
+    ComputeServer  = new OpenTKComputeServer();
     GraphicsDevice = new OpenTKGraphicsDevice(Window);
-    InputManager   = new OpenTKInputManager(Window);
+    InputServer   = new OpenTKInputServer(Window);
     NetworkFactory = new DesktopNetworkFactory();
     Dispatcher     = new ImmediateDispatcher();
   }
@@ -50,10 +50,10 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   }
 
   public OpenTKWindow          Window         { get; }
-  public OpenTKAudioDevice     AudioDevice    { get; }
-  public OpenTKComputeDevice   ComputeDevice  { get; }
+  public OpenTKAudioServer     AudioServer    { get; }
+  public OpenTKComputeServer   ComputeServer  { get; }
   public OpenTKGraphicsDevice  GraphicsDevice { get; }
-  public OpenTKInputManager    InputManager   { get; }
+  public OpenTKInputServer    InputServer   { get; }
   public DesktopNetworkFactory NetworkFactory { get; }
 
   public IServiceModule Services   => this;
@@ -71,7 +71,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     if (!IsClosing)
     {
       Window.Update();
-      InputManager.Update();
+      InputServer.Update();
 
       // show the game's FPS in the window title
       if (configuration.ShowFpsInTitle)
@@ -94,12 +94,12 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   void IServiceModule.RegisterServices(IServiceRegistry services)
   {
     services.AddSingleton<IDesktopWindow>(Window);
-    services.AddSingleton<IAudioDevice>(AudioDevice);
-    services.AddSingleton<IComputeDevice>(ComputeDevice);
+    services.AddSingleton<IAudioServer>(AudioServer);
+    services.AddSingleton<IComputeServer>(ComputeServer);
     services.AddSingleton<IGraphicsDevice>(GraphicsDevice);
-    services.AddSingleton<IInputManager>(InputManager);
-    services.AddSingleton<IKeyboardDevice>(InputManager.Keyboard);
-    services.AddSingleton<IMouseDevice>(InputManager.Mouse);
+    services.AddSingleton<IInputServer>(InputServer);
+    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
+    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
     services.AddSingleton<INetworkFactory>(NetworkFactory);
   }
 
