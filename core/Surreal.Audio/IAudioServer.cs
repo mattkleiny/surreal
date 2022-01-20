@@ -3,16 +3,16 @@ using Surreal.Audio.Playback;
 
 namespace Surreal.Audio;
 
-/// <summary>An opaque handle to an audio resource in the underling <see cref="IAudioServer"/> implementation.</summary>
-public readonly record struct AudioId(uint Id)
+/// <summary>An opaque handle to a resource in the underling <see cref="IAudioServer"/> implementation.</summary>
+public readonly record struct AudioHandle(uint Id)
 {
-  public AudioId(int id)
+  public AudioHandle(int id)
     : this((uint) id)
   {
   }
 
-  public static implicit operator uint(AudioId id) => id.Id;
-  public static implicit operator int(AudioId id)  => (int) id.Id;
+  public static implicit operator uint(AudioHandle handle) => handle.Id;
+  public static implicit operator int(AudioHandle handle)  => (int) handle.Id;
 }
 
 /// <summary>Represents the audio subsystem.</summary>

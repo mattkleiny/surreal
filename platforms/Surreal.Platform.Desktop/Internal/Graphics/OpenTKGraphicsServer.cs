@@ -9,29 +9,27 @@ using Surreal.Mathematics;
 namespace Surreal.Internal.Graphics;
 
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
-internal sealed class OpenTKGraphicsServer : IGraphicsServer,
-  IGraphicsServer.IBuffers,
-  IGraphicsServer.ITextures,
-  IGraphicsServer.IShaders,
-  IGraphicsServer.IMaterials
+internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
-  public OpenTKShaderCompiler ShaderCompiler { get; } = new();
+  private readonly OpenTKShaderCompiler shaderCompiler = new();
 
-  public IGraphicsServer.IBuffers   Buffers   => this;
-  public IGraphicsServer.ITextures  Textures  => this;
-  public IGraphicsServer.IShaders   Shaders   => this;
-  public IGraphicsServer.IMaterials Materials => this;
-
-  public GraphicsId CreateBuffer()
+  public GraphicsHandle CreateBuffer()
   {
     var buffer = GL.GenBuffer();
 
-    return new GraphicsId(buffer.Handle);
+    return new GraphicsHandle(buffer.Handle);
   }
 
-  public unsafe void UploadBufferData<T>(GraphicsId id, ReadOnlySpan<T> data) where T : unmanaged
+  public void DeleteBuffer(GraphicsHandle handle)
   {
-    var buffer = new BufferHandle(id);
+    var buffer = new BufferHandle(handle);
+
+    GL.DeleteBuffer(buffer);
+  }
+
+  public unsafe void UploadBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data) where T : unmanaged
+  {
+    var buffer = new BufferHandle(handle);
     var bytes  = data.Length * sizeof(T);
 
     fixed (T* pointer = data)
@@ -41,16 +39,23 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     }
   }
 
-  public GraphicsId CreateTexture()
+  public GraphicsHandle CreateTexture()
   {
     var texture = GL.GenTexture();
 
-    return new GraphicsId(texture.Handle);
+    return new GraphicsHandle(texture.Handle);
   }
 
-  public void AllocateTexture(GraphicsId id, int width, int height, int depth, TextureFormat format)
+  public void DeleteTexture(GraphicsHandle handle)
   {
-    var texture = new TextureHandle(id);
+    var texture = new TextureHandle(handle);
+
+    GL.DeleteTexture(texture);
+  }
+
+  public void AllocateTexture(GraphicsHandle handle, int width, int height, int depth, TextureFormat format)
+  {
+    var texture = new TextureHandle(handle);
 
     GL.BindTexture(TextureTarget.Texture2d, texture);
     GL.PixelStorei(PixelStoreParameter.UnpackAlignment, 1);
@@ -58,9 +63,9 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     throw new NotImplementedException();
   }
 
-  public unsafe void UploadTextureData<T>(GraphicsId id, int width, int height, ReadOnlySpan<T> data, int mipLevel) where T : unmanaged
+  public unsafe void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> data, int mipLevel) where T : unmanaged
   {
-    var texture = new TextureHandle(id);
+    var texture = new TextureHandle(handle);
 
     GL.BindTexture(TextureTarget.Texture2d, texture);
 
@@ -80,18 +85,18 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     }
   }
 
-  public GraphicsId CreateShader()
+  public GraphicsHandle CreateShader()
   {
     var shader = GL.CreateProgram();
 
-    return new GraphicsId(shader.Handle);
+    return new GraphicsHandle(shader.Handle);
   }
 
-  public void CompileShader(GraphicsId id, ShaderDeclaration declaration)
+  public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
   {
-    var program = new ProgramHandle(id);
+    var program = new ProgramHandle(handle);
 
-    var (path, shaders) = ShaderCompiler.Compile(declaration);
+    var (path, shaders) = shaderCompiler.Compile(declaration);
     var shaderIds = new ShaderHandle[shaders.Length];
 
     GL.UseProgram(program);
@@ -140,73 +145,73 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     }
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, int value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, int value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform1i(location, value);
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, float value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, float value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform1f(location, value);
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, Vector2I value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Vector2I value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform2i(location, value.X, value.Y);
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, Vector3I value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Vector3I value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform3i(location, value.X, value.Y, value.Z);
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, Vector2 value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Vector2 value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform2f(location, value.X, value.Y);
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, Vector3 value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Vector3 value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform3f(location, value.X, value.Y, value.Z);
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, Vector4 value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Vector4 value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
 
-  public void SetShaderUniform(GraphicsId id, string name, Quaternion value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Quaternion value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
 
-  public unsafe void SetShaderUniform(GraphicsId id, string name, in Matrix3x2 value)
+  public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
@@ -214,9 +219,9 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     GL.UniformMatrix4f(location, 1, false, new ReadOnlySpan<float>(pointer, 3 * 2));
   }
 
-  public unsafe void SetShaderUniform(GraphicsId id, string name, in Matrix4x4 value)
+  public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value)
   {
-    var program  = new ProgramHandle(id);
+    var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
@@ -224,9 +229,9 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer,
     GL.UniformMatrix4f(location, 1, false, new ReadOnlySpan<float>(pointer, 4 * 4));
   }
 
-  public void DeleteShader(GraphicsId id)
+  public void DeleteShader(GraphicsHandle handle)
   {
-    var program = new ProgramHandle(id);
+    var program = new ProgramHandle(handle);
 
     GL.DeleteProgram(program);
   }
