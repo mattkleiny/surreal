@@ -15,18 +15,18 @@ public sealed class AudioClip : AudioResource, IHasSizeEstimate
     handle      = server.CreateAudioClip();
   }
 
-  public TimeSpan        Duration   { get; private set; } = TimeSpan.Zero;
-  public AudioSampleRate SampleRate { get; private set; } = AudioSampleRate.Standard;
-  public Size            Size       { get; private set; } = Size.Zero;
+  public TimeSpan        Duration { get; private set; } = TimeSpan.Zero;
+  public AudioSampleRate Rate     { get; private set; } = AudioSampleRate.Standard;
+  public Size            Size     { get; private set; } = Size.Zero;
 
-  public void WriteData<T>(TimeSpan duration, AudioSampleRate sampleRate, ReadOnlySpan<T> buffer)
+  public void WriteData<T>(TimeSpan duration, AudioSampleRate rate, ReadOnlySpan<T> buffer)
     where T : unmanaged
   {
-    Duration   = duration;
-    SampleRate = sampleRate;
-    Size       = buffer.CalculateSize();
+    Duration = duration;
+    Rate     = rate;
+    Size     = buffer.CalculateSize();
 
-    server.WriteAudioClipData(handle, sampleRate, buffer);
+    server.WriteAudioClipData(handle, rate, buffer);
   }
 
   protected override void Dispose(bool managed)

@@ -23,7 +23,7 @@ public readonly record struct MaterialProperty<T>(string Name)
 }
 
 /// <summary>A material manages and batches GPU shader effects.</summary>
-public abstract class Material : GraphicsResource
+public abstract class Material
 {
   public abstract MaterialSortingKey SortingKey { get; }
 }

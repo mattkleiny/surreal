@@ -6,7 +6,7 @@ using Surreal.Memory;
 namespace Surreal.Audio.Clips;
 
 /// <summary>A buffer of waveform data for use in audio playback.</summary>
-public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
+public sealed class AudioBuffer : AudioResource, IHasSizeEstimate, IBuffer<byte>
 {
   private readonly IDisposableBuffer<byte> buffer;
 
