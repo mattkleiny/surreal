@@ -1,4 +1,5 @@
-﻿using Surreal.Assets;
+﻿using System.Globalization;
+using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Mathematics;
 
@@ -74,26 +75,31 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
     using var       reader = new StreamReader(stream);
 
     if (await reader.ReadLineAsync() != "JASC-PAL")
-      throw new Exception($"Failed to recognize the palette file {context.Path}");
+      throw new FormatException($"Failed to recognize the palette file {context.Path}");
 
     if (await reader.ReadLineAsync() != "0100")
-      throw new Exception($"Failed to recognize the palette file {context.Path}");
+      throw new FormatException($"Failed to recognize the palette file {context.Path}");
 
-    var count  = int.Parse((await reader.ReadLineAsync())!);
+    var rawCount = await reader.ReadLineAsync();
+    if (rawCount == null)
+      throw new FormatException($"Expected a count row in palette file {context.Path}");
+
+    var count  = int.Parse(rawCount, CultureInfo.InvariantCulture);
     var colors = new Color[count];
 
     for (var i = 0; i < colors.Length; i++)
     {
       var line = await reader.ReadLineAsync();
-      var raw = line!.Split(' ')
+      if (line == null)
+        throw new FormatException($"Expected a palette entry in row {i} of palette file {context.Path}");
+
+      var raw = line.Split(' ')
         .Select(_ => _.Trim())
         .Select(byte.Parse)
         .ToArray();
 
       if (raw.Length != 3)
-      {
-        throw new Exception($"Expected 3 but received {raw.Length} color values!");
-      }
+        throw new FormatException($"Expected 3 but received {raw.Length} color values!");
 
       colors[i] = new Color32(raw[0], raw[1], raw[2]);
     }

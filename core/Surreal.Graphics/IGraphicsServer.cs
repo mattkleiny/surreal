@@ -19,18 +19,25 @@ public readonly record struct GraphicsHandle(uint Id)
 /// <summary>An abstraction over the different types of graphics servers available.</summary>
 public interface IGraphicsServer
 {
+  // intrinsics
+  void ClearColorBuffer(Color color);
+  void ClearDepthBuffer();
+
+  void FlushToDevice();
+
   // buffers
   GraphicsHandle CreateBuffer();
   void           DeleteBuffer(GraphicsHandle handle);
 
-  void UploadBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data) where T : unmanaged;
+  Memory<T> ReadBufferData<T>(GraphicsHandle handle, Range range) where T : unmanaged;
+  void      WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data) where T : unmanaged;
 
   // textures
   GraphicsHandle CreateTexture();
   void           DeleteTexture(GraphicsHandle handle);
 
   void AllocateTexture(GraphicsHandle handle, int width, int height, int depth, TextureFormat format);
-  void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> data, int mipLevel = 0) where T : unmanaged;
+  void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
 
   // shaders
   GraphicsHandle CreateShader();

@@ -6,7 +6,6 @@ using Surreal.Compute.Execution;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
-using Surreal.Graphics.Materials;
 using Surreal.Graphics.Palettes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
@@ -27,7 +26,7 @@ public abstract class PrototypeGame : Game
 {
   public IAudioServer    AudioServer    => Services.GetRequiredService<IAudioServer>();
   public IComputeServer  ComputeServer  => Services.GetRequiredService<IComputeServer>();
-  public IGraphicsDevice GraphicsDevice => Services.GetRequiredService<IGraphicsDevice>();
+  public IGraphicsServer GraphicsServer => Services.GetRequiredService<IGraphicsServer>();
   public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
   public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
   public INetworkFactory NetworkFactory => Services.GetRequiredService<INetworkFactory>();
@@ -60,9 +59,9 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
-    manager.AddLoader(new ShaderProgramLoader(GraphicsDevice, ".shade"));
+    manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));
     manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(ShaderParser.Environment.FromAssets(manager)), ".shade"));
-    manager.AddLoader(new TextureLoader(GraphicsDevice, TextureFilterMode.Point, TextureWrapMode.Clamp));
+    manager.AddLoader(new TextureLoader(GraphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
     manager.AddLoader(new TextureRegionLoader());
     manager.AddLoader(new TrueTypeFontLoader());
 
@@ -76,17 +75,9 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new ScriptDeclarationLoader(new WrenScriptParser(), ".wren"));
   }
 
-  protected override void OnResized(int width, int height)
-  {
-    base.OnResized(width, height);
-
-    GraphicsDevice.Viewport = new Viewport(0, 0, width, height);
-  }
-
   protected override void BeginFrame(GameTime time)
   {
-    GraphicsDevice.BeginFrame();
-    GraphicsDevice.Clear(ClearColor);
+    GraphicsServer.ClearColorBuffer(ClearColor);
 
     base.BeginFrame(time);
   }
@@ -95,7 +86,6 @@ public abstract class PrototypeGame : Game
   {
     base.EndFrame(time);
 
-    GraphicsDevice.EndFrame();
-    GraphicsDevice.Present();
+    GraphicsServer.FlushToDevice();
   }
 }

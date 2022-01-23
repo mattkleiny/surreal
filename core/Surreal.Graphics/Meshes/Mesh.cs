@@ -30,14 +30,14 @@ public sealed class Mesh<TVertex> : Mesh
 {
   private static VertexDescriptorSet VertexDescriptorSet { get; } = VertexDescriptorSet.Create<TVertex>();
 
-  private readonly IGraphicsDevice device;
+  private readonly IGraphicsServer server;
 
-  public Mesh(IGraphicsDevice device)
+  public Mesh(IGraphicsServer server)
   {
-    this.device = device;
+    this.server = server;
 
-    Vertices = device.CreateBuffer<TVertex>();
-    Indices  = device.CreateBuffer<ushort>();
+    Vertices = new GraphicsBuffer<TVertex>(server);
+    Indices  = new GraphicsBuffer<ushort>(server);
   }
 
   public GraphicsBuffer<TVertex> Vertices { get; }
@@ -60,7 +60,7 @@ public sealed class Mesh<TVertex> : Mesh
     MeshType type = MeshType.Triangles
   )
   {
-    device.DrawMesh(this, material, vertexCount, indexCount, type);
+    throw new NotImplementedException();
   }
 
   public override void Dispose()

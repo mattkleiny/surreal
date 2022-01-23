@@ -12,7 +12,7 @@ var platform = new DesktopPlatform
 
 await Game.StartAsync(platform, async context =>
 {
-  var graphics = context.Services.GetRequiredService<IGraphicsDevice>();
+  var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
 
   var color1 = Random.Shared.NextColor();
@@ -23,8 +23,7 @@ await Game.StartAsync(platform, async context =>
     var t     = MathF.Sin((float) time.TotalTime.TotalSeconds);
     var color = Color.Lerp(color1, color2, t);
 
-    graphics.Clear(color);
-    graphics.Present();
+    graphics.ClearColorBuffer(color);
 
     if (keyboard.IsKeyPressed(Key.Escape))
     {

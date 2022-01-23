@@ -114,15 +114,15 @@ public sealed class TerminalSlice : Terminal
   }
 }
 
-/// <summary>A <see cref="Terminal"/> that renders to a <see cref="IGraphicsDevice"/>.</summary>
+/// <summary>A <see cref="Terminal"/> that renders to a <see cref="IGraphicsServer"/>.</summary>
 public sealed class GraphicsTerminal : Terminal
 {
-  private readonly IGraphicsDevice device;
+  private readonly IGraphicsServer server;
   private readonly GlyphCanvas     canvas;
 
-  public GraphicsTerminal(int width, int height, IGraphicsDevice device)
+  public GraphicsTerminal(IGraphicsServer server, int width, int height)
   {
-    this.device = device;
+    this.server = server;
     canvas      = new(width, height);
 
     Width  = width;

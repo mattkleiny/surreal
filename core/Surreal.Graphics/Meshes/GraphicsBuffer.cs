@@ -4,7 +4,7 @@ namespace Surreal.Graphics.Meshes;
 
 // TODO: implement IBuffer<T> somehow?
 
-/// <summary>A buffer of data on the <see cref="IGraphicsDevice"/>.</summary>
+/// <summary>A buffer of data on the <see cref="IGraphicsServer"/>.</summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
   public int  Length { get; protected set; }
@@ -12,9 +12,36 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 }
 
 /// <summary>A strongly-typed <see cref="GraphicsBuffer"/> of <see cref="T"/>.</summary>
-public abstract class GraphicsBuffer<T> : GraphicsBuffer
+public sealed class GraphicsBuffer<T> : GraphicsBuffer
   where T : unmanaged
 {
-  public abstract Memory<T> Read(Optional<Range> range = default);
-  public abstract void      Write(ReadOnlySpan<T> buffer);
+  private readonly GraphicsHandle  handle;
+  private readonly IGraphicsServer server;
+
+  public GraphicsBuffer(IGraphicsServer server)
+  {
+    this.server = server;
+
+    handle = server.CreateBuffer();
+  }
+
+  public Memory<T> Read(Optional<Range> range = default)
+  {
+    return server.ReadBufferData<T>(handle, range.GetOrDefault(Range.All));
+  }
+
+  public void Write(ReadOnlySpan<T> buffer)
+  {
+    server.WriteBufferData(handle, buffer);
+  }
+
+  protected override void Dispose(bool managed)
+  {
+    if (managed)
+    {
+      server.DeleteBuffer(handle);
+    }
+
+    base.Dispose(managed);
+  }
 }

@@ -19,10 +19,10 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
 {
   public event Action<int, int> Resized = null!;
 
-  public HeadlessAudioServer      AudioServer      { get; } = new();
-  public HeadlessComputeServer    ComputeServer    { get; } = new();
-  public HeadlessGraphicsDevice   GraphicsDevice   { get; } = new();
-  public HeadlessInputServer     InputServer     { get; } = new();
+  public HeadlessAudioServer    AudioServer    { get; } = new();
+  public HeadlessComputeServer  ComputeServer  { get; } = new();
+  public HeadlessGraphicsServer GraphicsServer { get; } = new();
+  public HeadlessInputServer    InputServer    { get; } = new();
   public HeadlessNetworkFactory NetworkFactory { get; } = new();
 
   public int  Width     => 1920;
@@ -51,7 +51,7 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   {
     services.AddSingleton<IAudioServer>(AudioServer);
     services.AddSingleton<IComputeServer>(ComputeServer);
-    services.AddSingleton<IGraphicsDevice>(GraphicsDevice);
+    services.AddSingleton<IGraphicsServer>(GraphicsServer);
     services.AddSingleton<IInputServer>(InputServer);
     services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
     services.AddSingleton<IMouseDevice>(InputServer.Mouse);

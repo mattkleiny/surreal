@@ -22,7 +22,7 @@ public sealed class GeometryBatch : IDisposable
   private int       indexCount;
 
   public GeometryBatch(
-    IGraphicsDevice device,
+    IGraphicsServer server,
     int maximumVertexCount = DefaultVertexCount,
     int maximumIndexCount = DefaultVertexCount * 6
   )
@@ -30,7 +30,7 @@ public sealed class GeometryBatch : IDisposable
     vertices = Buffers.AllocateNative<Vertex>(maximumVertexCount);
     indices  = Buffers.AllocateNative<ushort>(maximumIndexCount);
 
-    mesh = new Mesh<Vertex>(device);
+    mesh = new Mesh<Vertex>(server);
   }
 
   public void Begin(Material material, in Matrix4x4 projectionView)

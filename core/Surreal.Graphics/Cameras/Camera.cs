@@ -2,6 +2,9 @@
 
 namespace Surreal.Graphics.Cameras;
 
+/// <summary>A viewport for scissoring operations.</summary>
+public readonly record struct Viewport(int X, int Y, int Width, int Height);
+
 /// <summary>Represents a camera in 3-space.</summary>
 public interface ICamera
 {

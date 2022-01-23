@@ -37,8 +37,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     Window         = new OpenTKWindow(configuration);
     AudioServer    = new OpenTKAudioServer();
     ComputeServer  = new OpenTKComputeServer();
-    GraphicsDevice = new OpenTKGraphicsDevice(Window);
-    InputServer   = new OpenTKInputServer(Window);
+    GraphicsServer = new OpenTKGraphicsServer();
+    InputServer    = new OpenTKInputServer(Window);
     NetworkFactory = new DesktopNetworkFactory();
     Dispatcher     = new ImmediateDispatcher();
   }
@@ -52,8 +52,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public OpenTKWindow          Window         { get; }
   public OpenTKAudioServer     AudioServer    { get; }
   public OpenTKComputeServer   ComputeServer  { get; }
-  public OpenTKGraphicsDevice  GraphicsDevice { get; }
-  public OpenTKInputServer    InputServer   { get; }
+  public OpenTKGraphicsServer  GraphicsServer { get; }
+  public OpenTKInputServer     InputServer    { get; }
   public DesktopNetworkFactory NetworkFactory { get; }
 
   public IServiceModule Services   => this;
@@ -71,6 +71,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     if (!IsClosing)
     {
       Window.Update();
+      Window.Present();
+
       InputServer.Update();
 
       // show the game's FPS in the window title
@@ -96,7 +98,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     services.AddSingleton<IDesktopWindow>(Window);
     services.AddSingleton<IAudioServer>(AudioServer);
     services.AddSingleton<IComputeServer>(ComputeServer);
-    services.AddSingleton<IGraphicsDevice>(GraphicsDevice);
+    services.AddSingleton<IGraphicsServer>(GraphicsServer);
     services.AddSingleton<IInputServer>(InputServer);
     services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
     services.AddSingleton<IMouseDevice>(InputServer.Mouse);

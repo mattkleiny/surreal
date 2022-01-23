@@ -13,11 +13,11 @@ public sealed class ChunkMesh : IDisposable
   private readonly Chunk        chunk;
   private readonly Mesh<Vertex> mesh;
 
-  public ChunkMesh(IGraphicsDevice device, Chunk chunk)
+  public ChunkMesh(IGraphicsServer server, Chunk chunk)
   {
     this.chunk = chunk;
 
-    mesh = new Mesh<Vertex>(device);
+    mesh = new Mesh<Vertex>(server);
 
     chunk.Changed += OnChunkChanged;
   }

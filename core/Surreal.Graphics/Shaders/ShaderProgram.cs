@@ -68,17 +68,17 @@ public sealed class ShaderProgram : GraphicsResource
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ShaderProgram"/>s.</summary>
 public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 {
-  private readonly IGraphicsDevice          device;
+  private readonly IGraphicsServer          server;
   private readonly ImmutableHashSet<string> extensions;
 
-  public ShaderProgramLoader(IGraphicsDevice device, params string[] extensions)
-    : this(device, extensions.AsEnumerable())
+  public ShaderProgramLoader(IGraphicsServer server, params string[] extensions)
+    : this(server, extensions.AsEnumerable())
   {
   }
 
-  public ShaderProgramLoader(IGraphicsDevice device, IEnumerable<string> extensions)
+  public ShaderProgramLoader(IGraphicsServer server, IEnumerable<string> extensions)
   {
-    this.device     = device;
+    this.server     = server;
     this.extensions = extensions.ToImmutableHashSet();
   }
 
@@ -93,6 +93,6 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 
     var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path, progressToken);
 
-    return new ShaderProgram(device.Server, declaration);
+    return new ShaderProgram(server, declaration);
   }
 }

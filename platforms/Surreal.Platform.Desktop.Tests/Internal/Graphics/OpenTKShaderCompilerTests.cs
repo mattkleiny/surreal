@@ -1,5 +1,4 @@
 ﻿using Surreal.Graphics.Shaders;
-using Surreal.Internal.Graphics.Resources;
 using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;

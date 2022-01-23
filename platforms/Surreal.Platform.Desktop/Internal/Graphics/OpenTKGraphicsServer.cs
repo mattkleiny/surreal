@@ -13,6 +13,22 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
   private readonly OpenTKShaderCompiler shaderCompiler = new();
 
+  public void ClearColorBuffer(Color color)
+  {
+    GL.ClearColor(color.R, color.G, color.B, color.A);
+    GL.Clear(ClearBufferMask.ColorBufferBit);
+  }
+
+  public void ClearDepthBuffer()
+  {
+    GL.Clear(ClearBufferMask.DepthBufferBit);
+  }
+
+  public void FlushToDevice()
+  {
+    GL.Flush();
+  }
+
   public GraphicsHandle CreateBuffer()
   {
     var buffer = GL.GenBuffer();
@@ -27,7 +43,37 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteBuffer(buffer);
   }
 
-  public unsafe void UploadBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data) where T : unmanaged
+  public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, Range range)
+    where T : unmanaged
+  {
+    var buffer = new BufferHandle(handle);
+
+    int sizeInBytes = 0;
+
+    GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
+    GL.GetBufferParameteri(BufferTargetARB.ArrayBuffer, BufferPNameARB.BufferSize, ref sizeInBytes);
+
+    var stride = sizeof(T);
+    var (offset, length) = range.GetOffsetAndLength(sizeInBytes / stride);
+
+    var byteOffset = offset * stride;
+    var memory     = new T[length];
+
+    fixed (T* raw = memory)
+    {
+      GL.GetBufferSubData(
+        target: BufferTargetARB.ArrayBuffer,
+        offset: new IntPtr(byteOffset),
+        size: sizeInBytes,
+        data: raw
+      );
+    }
+
+    return memory;
+  }
+
+  public unsafe void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data)
+    where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
     var bytes  = data.Length * sizeof(T);
@@ -63,23 +109,47 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     throw new NotImplementedException();
   }
 
-  public unsafe void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> data, int mipLevel) where T : unmanaged
+  public unsafe void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel)
+    where T : unmanaged
   {
+    static (PixelFormat Format, PixelType Type) GetPixelFormatType()
+    {
+      if (typeof(T) == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
+      if (typeof(T) == typeof(Vector3)) return (PixelFormat.Rgb, PixelType.Float);
+      if (typeof(T) == typeof(Vector4)) return (PixelFormat.Rgba, PixelType.Float);
+      if (typeof(T) == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
+
+      throw new InvalidOperationException($"An unrecognized pixel type was provided: {typeof(T)}");
+    }
+
+    static int GetInternalFormat(TextureFormat format)
+    {
+      return format switch
+      {
+        TextureFormat.Rgba8888 => (int) All.CompressedRgba,
+
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
+      };
+    }
+
     var texture = new TextureHandle(handle);
+
+    var (pixelFormat, pixelType) = GetPixelFormatType();
+    var internalFormat = GetInternalFormat(format);
 
     GL.BindTexture(TextureTarget.Texture2d, texture);
 
-    fixed (T* pointer = data)
+    fixed (T* pointer = pixels)
     {
       GL.TexImage2D(
         target: TextureTarget.Texture2d,
         level: mipLevel,
-        internalformat: 0, // TODO: fix me
+        internalformat: internalFormat,
         width: width,
         height: height,
         border: 0,
-        format: PixelFormat.Rgba,
-        type: PixelType.Byte,
+        format: pixelFormat,
+        type: pixelType,
         pixels: pointer
       );
     }

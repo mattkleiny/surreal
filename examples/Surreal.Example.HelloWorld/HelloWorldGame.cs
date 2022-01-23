@@ -26,7 +26,7 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     base.Initialize();
 
-    batch = new GeometryBatch(GraphicsDevice);
+    batch = new GeometryBatch(GraphicsServer);
   }
 
   protected override void Input(GameTime time)

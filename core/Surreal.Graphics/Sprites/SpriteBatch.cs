@@ -15,6 +15,7 @@ public sealed class SpriteBatch : IDisposable
 
   private static readonly MaterialProperty<Matrix4x4> ProjectionView = new("_ProjectionView");
 
+  private readonly IGraphicsServer           server;
   private readonly IDisposableBuffer<Vertex> vertices;
   private readonly Mesh<Vertex>              mesh;
 
@@ -22,21 +23,20 @@ public sealed class SpriteBatch : IDisposable
   private Texture?  lastTexture;
   private int       vertexCount;
 
-  public SpriteBatch(IGraphicsDevice device, int spriteCount)
+  public SpriteBatch(IGraphicsServer server, int spriteCount)
   {
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-    Device = device;
+    this.server = server;
 
     vertices = Buffers.AllocateNative<Vertex>(spriteCount * 4);
-    mesh     = new Mesh<Vertex>(device);
+    mesh     = new Mesh<Vertex>(server);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
-  public IGraphicsDevice Device { get; }
-  public Color           Color  { get; set; } = Color.White;
+  public Color Color { get; set; } = Color.White;
 
   public void Begin(Material material, in Matrix4x4 projectionView)
   {

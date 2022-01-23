@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Shaders;
-using Surreal.Internal.Graphics.Resources;
 using Surreal.Text;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -130,7 +129,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
 
         case StageDeclaration(_) declaration:
         {
-          using var function = builder.AppendFunctionDeclaration(
+          builder.AppendFunctionDeclaration(
             precision: null,
             returnType: "void",
             name: "main",
@@ -142,12 +141,14 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
             CompileStatement(functionStatement);
           }
 
+          builder.ExitBlock();
+
           break;
         }
 
         case FunctionDeclaration(var returnType, var name) declaration:
         {
-          using var function = builder.AppendFunctionDeclaration(
+          builder.AppendFunctionDeclaration(
             precision: ConvertPrecision(returnType.Precision),
             returnType: ConvertType(returnType),
             name: name,
@@ -158,6 +159,8 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
           {
             CompileStatement(functionStatement);
           }
+
+          builder.ExitBlock();
 
           break;
         }
@@ -258,7 +261,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
   }
 
   /// <summary>A utility for building shader programs from raw source text.</summary>
-  private sealed record ShaderCodeBuilder(StringBuilder StringBuilder) : IDisposable
+  private sealed record ShaderCodeBuilder(StringBuilder StringBuilder)
   {
     private int IndentLevel { get; set; } = 0;
 
@@ -282,15 +285,14 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     public void AppendAssignment(string name, string value)
       => StartLine().Append(name).Append(" = ").Append(value).AppendLine(";");
 
-    public ShaderCodeBuilder AppendFunctionDeclaration(string? precision, string returnType, string name, IEnumerable<string> parameters)
+    public void AppendFunctionDeclaration(string? precision, string returnType, string name, IEnumerable<string> parameters)
     {
       StartLine().AppendSpaced(precision).AppendSpaced(returnType).Append(name).Append('(').Append(string.Join(", ", parameters)).Append(") ").AppendLine(" {");
 
       IndentLevel += 1;
-      return this;
     }
 
-    public void Dispose()
+    public void ExitBlock()
     {
       IndentLevel -= 1;
 
