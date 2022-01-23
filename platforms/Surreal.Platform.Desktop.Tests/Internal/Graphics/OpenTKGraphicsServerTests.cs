@@ -14,8 +14,8 @@ public class OpenTKGraphicsServerTests
 
     var shader = await parser.ParseShaderAsync(path);
 
-    var id = pipeline.Shaders.CreateShader();
+    var id = pipeline.CreateShader();
 
-    pipeline.Shaders.CompileShader(id, shader);
+    pipeline.CompileShader(id, shader);
   }
 }
