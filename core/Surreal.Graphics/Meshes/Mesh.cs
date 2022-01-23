@@ -1,4 +1,4 @@
-﻿using Surreal.Graphics.Materials;
+﻿using Surreal.Graphics.Shaders;
 
 namespace Surreal.Graphics.Meshes;
 

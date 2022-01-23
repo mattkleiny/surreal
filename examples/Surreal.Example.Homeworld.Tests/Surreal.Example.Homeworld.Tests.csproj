@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Homeworld</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Example.Homeworld\Surreal.Example.Homeworld.csproj" />
-  </ItemGroup>
-</Project>

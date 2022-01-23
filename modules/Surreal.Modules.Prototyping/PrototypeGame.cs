@@ -6,7 +6,6 @@ using Surreal.Compute.Execution;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
-using Surreal.Graphics.Palettes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;

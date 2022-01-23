@@ -1,6 +1,6 @@
 ﻿using Isaac.Core.Actors.Components;
 using Surreal.Components;
-using Surreal.Graphics.Sprites;
+using Surreal.Graphics.Meshes;
 using Surreal.Systems;
 
 namespace Isaac.Core.Actors.Systems;

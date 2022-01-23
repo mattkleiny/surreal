@@ -25,27 +25,16 @@ public enum TextureWrapMode
   Repeat,
 }
 
-/// <summary>A type that supports the data format required for <see cref="Texture"/>s.</summary>
-public interface ITextureData
-{
-  int  Width  { get; }
-  int  Height { get; }
-  Size Size   { get; }
-
-  ReadOnlySpan<Color32> Pixels { get; }
-}
-
 /// <summary>A texture that can be uploaded to the GPU.</summary>
-public sealed class Texture : GraphicsResource, IHasSizeEstimate
+public sealed class Texture : GraphicsResource, IHasSizeEstimate, IBuffer<Color>, IBuffer<Color32>
 {
-  private readonly GraphicsHandle  handle;
   private readonly IGraphicsServer server;
+  private readonly GraphicsHandle  handle;
 
   public Texture(IGraphicsServer server, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
     this.server = server;
-
-    handle = server.CreateTexture();
+    handle      = server.CreateTexture();
 
     Format     = format;
     FilterMode = filterMode;
@@ -65,18 +54,20 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     return new TextureRegion(this);
   }
 
-  public Image Download()
+  public Memory<T> ReadPixels<T>()
+    where T : unmanaged
   {
-    throw new NotImplementedException();
+    return server.ReadTextureData<T>(handle);
   }
 
-  public void Upload(ITextureData data)
+  public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
+    where T : unmanaged
   {
-    Width  = data.Width;
-    Height = data.Height;
-    Size   = data.Size;
+    Width  = width;
+    Height = height;
+    Size   = pixels.CalculateSize();
 
-    server.UploadTextureData(handle, data.Width, data.Height, data.Pixels, Format);
+    server.WriteTextureData(handle, width, height, pixels, Format);
   }
 
   protected override void Dispose(bool managed)
@@ -88,6 +79,9 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
 
     base.Dispose(managed);
   }
+
+  Memory<Color> IBuffer<Color>.    Data => ReadPixels<Color>();
+  Memory<Color32> IBuffer<Color32>.Data => ReadPixels<Color32>();
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Texture"/>s.</summary>
@@ -110,7 +104,7 @@ public sealed class TextureLoader : AssetLoader<Texture>
     var image   = await context.Manager.LoadAssetAsync<Image>(context.Path, progressToken);
     var texture = new Texture(server, TextureFormat.Rgba8888, defaultFilterMode, defaultWrapMode);
 
-    texture.Upload(image);
+    texture.WritePixels<Color32>(image.Width, image.Height, image.Pixels);
 
     return texture;
   }

@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AssemblyName>Prelude</AssemblyName>
-    <RootNamespace>Prelude</RootNamespace>
-    <ApplicationIcon>./Prelude.ico</ApplicationIcon>
-    <Description>An example game based on Surreal; a software-rendered dungeon crawler based on a game by Notch.</Description>
-  </PropertyGroup>
-</Project>

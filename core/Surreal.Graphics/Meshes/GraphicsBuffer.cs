@@ -12,7 +12,7 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 }
 
 /// <summary>A strongly-typed <see cref="GraphicsBuffer"/> of <see cref="T"/>.</summary>
-public sealed class GraphicsBuffer<T> : GraphicsBuffer
+public sealed class GraphicsBuffer<T> : GraphicsBuffer, IBuffer<T>
   where T : unmanaged
 {
   private readonly GraphicsHandle  handle;
@@ -25,12 +25,12 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
     handle = server.CreateBuffer();
   }
 
-  public Memory<T> Read(Optional<Range> range = default)
+  public Memory<T> ReadData(Optional<Range> range = default)
   {
     return server.ReadBufferData<T>(handle, range.GetOrDefault(Range.All));
   }
 
-  public void Write(ReadOnlySpan<T> buffer)
+  public void WriteData(ReadOnlySpan<T> buffer)
   {
     server.WriteBufferData(handle, buffer);
   }
@@ -44,4 +44,6 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
 
     base.Dispose(managed);
   }
+
+  Memory<T> IBuffer<T>.Data => ReadData();
 }

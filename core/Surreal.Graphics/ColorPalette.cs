@@ -3,7 +3,7 @@ using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Mathematics;
 
-namespace Surreal.Graphics.Palettes;
+namespace Surreal.Graphics;
 
 /// <summary>A palette of <see cref="Color"/>s, with span and range support.</summary>
 public readonly record struct ColorPalette(Color[] colors, int offset, int count) : IEnumerable<Color>

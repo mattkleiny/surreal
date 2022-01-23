@@ -57,19 +57,19 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var (offset, length) = range.GetOffsetAndLength(sizeInBytes / stride);
 
     var byteOffset = offset * stride;
-    var memory     = new T[length];
+    var result     = new T[length];
 
-    fixed (T* raw = memory)
+    fixed (T* pointer = result)
     {
       GL.GetBufferSubData(
         target: BufferTargetARB.ArrayBuffer,
         offset: new IntPtr(byteOffset),
         size: sizeInBytes,
-        data: raw
+        data: pointer
       );
     }
 
-    return memory;
+    return result;
   }
 
   public unsafe void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data)
@@ -99,42 +99,41 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteTexture(texture);
   }
 
-  public void AllocateTexture(GraphicsHandle handle, int width, int height, int depth, TextureFormat format)
-  {
-    var texture = new TextureHandle(handle);
-
-    GL.BindTexture(TextureTarget.Texture2d, texture);
-    GL.PixelStorei(PixelStoreParameter.UnpackAlignment, 1);
-
-    throw new NotImplementedException();
-  }
-
-  public unsafe void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel)
+  public unsafe Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
     where T : unmanaged
   {
-    static (PixelFormat Format, PixelType Type) GetPixelFormatType()
-    {
-      if (typeof(T) == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
-      if (typeof(T) == typeof(Vector3)) return (PixelFormat.Rgb, PixelType.Float);
-      if (typeof(T) == typeof(Vector4)) return (PixelFormat.Rgba, PixelType.Float);
-      if (typeof(T) == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
+    var texture = new TextureHandle(handle);
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
 
-      throw new InvalidOperationException($"An unrecognized pixel type was provided: {typeof(T)}");
+    var width  = 0;
+    var height = 0;
+
+    GL.BindTexture(TextureTarget.Texture2d, texture);
+    GL.GetTexParameteri(TextureTarget.Texture2d, GetTextureParameter.TextureWidth, ref width);
+    GL.GetTexParameteri(TextureTarget.Texture2d, GetTextureParameter.TextureHeight, ref height);
+
+    var results = new T[width * height];
+
+    fixed (T* pointer = results)
+    {
+      GL.GetTexImage(
+        target: TextureTarget.Texture2d,
+        level: mipLevel,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
+      );
     }
 
-    static int GetInternalFormat(TextureFormat format)
-    {
-      return format switch
-      {
-        TextureFormat.Rgba8888 => (int) All.CompressedRgba,
+    return results;
+  }
 
-        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
-      };
-    }
-
+  public unsafe void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel)
+    where T : unmanaged
+  {
     var texture = new TextureHandle(handle);
 
-    var (pixelFormat, pixelType) = GetPixelFormatType();
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
     var internalFormat = GetInternalFormat(format);
 
     GL.BindTexture(TextureTarget.Texture2d, texture);
@@ -153,20 +152,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
         pixels: pointer
       );
     }
-  }
-
-  public GraphicsHandle CreateRenderTexture()
-  {
-    var buffer = GL.CreateRenderbuffer();
-
-    return new GraphicsHandle(buffer.Handle);
-  }
-
-  public void DeleteRenderTexture(GraphicsHandle handle)
-  {
-    var buffer = new RenderbufferHandle(handle);
-
-    GL.DeleteRenderbuffer(buffer);
   }
 
   public GraphicsHandle CreateShader()
@@ -318,5 +303,25 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var program = new ProgramHandle(handle);
 
     GL.DeleteProgram(program);
+  }
+
+  private static (PixelFormat Format, PixelType Type) GetPixelFormatAndType(Type type)
+  {
+    if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
+    if (type == typeof(Vector3)) return (PixelFormat.Rgb, PixelType.Float);
+    if (type == typeof(Vector4)) return (PixelFormat.Rgba, PixelType.Float);
+    if (type == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
+
+    throw new InvalidOperationException($"An unrecognized pixel type was provided: {type}");
+  }
+
+  private static int GetInternalFormat(TextureFormat format)
+  {
+    return format switch
+    {
+      TextureFormat.Rgba8888 => (int) All.CompressedRgba,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
+    };
   }
 }

@@ -1,4 +1,4 @@
-﻿using Surreal.Graphics.Materials;
+﻿using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 
 namespace Isaac.Core.Actors.Components;

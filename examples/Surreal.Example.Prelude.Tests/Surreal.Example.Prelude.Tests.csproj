@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Prelude</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Example.Prelude\Surreal.Example.Prelude.csproj" />
-  </ItemGroup>
-</Project>

@@ -1,19 +1,16 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Surreal.Graphics.Materials;
-using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Sprites;
+namespace Surreal.Graphics.Meshes;
 
-/// <summary>An efficient batch of sprites for rendering to the GPU.</summary>
+/// <summary>A batched mesh of sprites for rendering to the GPU.</summary>
 public sealed class SpriteBatch : IDisposable
 {
   private const int MaximumSpriteCount = 8000;
-
-  private static readonly MaterialProperty<Matrix4x4> ProjectionView = new("_ProjectionView");
 
   private readonly IGraphicsServer           server;
   private readonly IDisposableBuffer<Vertex> vertices;
@@ -132,7 +129,7 @@ public sealed class SpriteBatch : IDisposable
     var spriteCount = vertexCount / 4;
     var indexCount  = spriteCount * 6;
 
-    mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
+    mesh.Vertices.WriteData(vertices.Data.Span[..vertexCount]);
     mesh.DrawImmediate(material, vertexCount, indexCount);
 
     vertexCount = 0;
@@ -152,7 +149,7 @@ public sealed class SpriteBatch : IDisposable
       indices[i + 5] = j;
     }
 
-    mesh.Indices.Write(indices);
+    mesh.Indices.WriteData(indices);
   }
 
   public void Dispose()

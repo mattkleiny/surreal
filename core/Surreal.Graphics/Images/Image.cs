@@ -2,7 +2,6 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Surreal.Assets;
-using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Surreal.Mathematics;
 using Surreal.Memory;
@@ -12,7 +11,7 @@ namespace Surreal.Graphics.Images;
 
 /// <summary>An image of manipulable pixels that can also be used for a texture.</summary>
 [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
-public sealed class Image : ITextureData, IDisposable
+public sealed class Image : IDisposable
 {
   private readonly Image<Rgba32> image;
 
@@ -64,11 +63,6 @@ public sealed class Image : ITextureData, IDisposable
     }
   }
 
-  public void Fill(Color32 value)
-  {
-    Pixels.Fill(value);
-  }
-
   public async ValueTask SaveAsync(VirtualPath path)
   {
     await using var stream = await path.OpenOutputStreamAsync();
@@ -80,8 +74,6 @@ public sealed class Image : ITextureData, IDisposable
   {
     image.Dispose();
   }
-
-  ReadOnlySpan<Color32> ITextureData.Pixels => Pixels;
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>

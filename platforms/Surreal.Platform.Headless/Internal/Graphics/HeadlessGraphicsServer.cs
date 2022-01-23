@@ -9,7 +9,6 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
 {
   private int nextBufferId  = 0;
   private int nextTextureId = 0;
-  private int nextRenderTextureId = 0;
   private int nextShaderId  = 0;
 
   public void ClearColorBuffer(Color color)
@@ -57,22 +56,12 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public void AllocateTexture(GraphicsHandle handle, int width, int height, int depth, TextureFormat format)
+  public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
   {
-    // no-op
+    return Memory<T>.Empty;
   }
 
-  public void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
-  {
-    // no-op
-  }
-
-  public GraphicsHandle CreateRenderTexture()
-  {
-    return new GraphicsHandle(Interlocked.Increment(ref nextRenderTextureId));
-  }
-
-  public void DeleteRenderTexture(GraphicsHandle handle)
+  public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
   {
     // no-op
   }

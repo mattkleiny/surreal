@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using Surreal.Graphics.Materials;
+using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
 using Surreal.Memory;
 using static Surreal.Mathematics.Maths;
@@ -153,8 +153,8 @@ public sealed class GeometryBatch : IDisposable
     if (vertexCount == 0) return;
     if (material == null) return;
 
-    mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
-    mesh.Indices.Write(indices.Data.Span[..indexCount]);
+    mesh.Vertices.WriteData(vertices.Data.Span[..vertexCount]);
+    mesh.Indices.WriteData(indices.Data.Span[..indexCount]);
 
     mesh.DrawImmediate(material, vertexCount, indexCount, type);
 
