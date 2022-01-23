@@ -1,22 +1,22 @@
 ﻿using Surreal.Memory;
 
-namespace Surreal.Graphics.Meshes;
+namespace Surreal.Compute.Buffers;
 
-/// <summary>A buffer of data on the <see cref="IGraphicsServer"/>.</summary>
-public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
+/// <summary>A buffer of data on the <see cref="IComputeServer"/>.</summary>
+public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate
 {
   public int  Length { get; protected set; }
   public Size Size   { get; protected set; }
 }
 
-/// <summary>A strongly-typed <see cref="GraphicsBuffer"/> of <see cref="T"/>.</summary>
-public sealed class GraphicsBuffer<T> : GraphicsBuffer, IBuffer<T>
+/// <summary>A strongly-typed <see cref="ComputeBuffer"/> of <see cref="T"/>.</summary>
+public sealed class ComputeBuffer<T> : ComputeBuffer, IBuffer<T>
   where T : unmanaged
 {
-  private readonly GraphicsHandle  handle;
-  private readonly IGraphicsServer server;
+  private readonly ComputeHandle  handle;
+  private readonly IComputeServer server;
 
-  public GraphicsBuffer(IGraphicsServer server)
+  public ComputeBuffer(IComputeServer server)
   {
     this.server = server;
 
