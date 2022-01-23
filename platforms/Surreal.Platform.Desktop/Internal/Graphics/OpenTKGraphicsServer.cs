@@ -61,12 +61,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
     fixed (T* pointer = result)
     {
-      GL.GetBufferSubData(
-        target: BufferTargetARB.ArrayBuffer,
-        offset: new IntPtr(byteOffset),
-        size: sizeInBytes,
-        data: pointer
-      );
+      GL.GetBufferSubData(BufferTargetARB.ArrayBuffer, new IntPtr(byteOffset), sizeInBytes, pointer);
     }
 
     return result;

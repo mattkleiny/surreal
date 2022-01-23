@@ -8,13 +8,19 @@ using PrimitiveType = Surreal.Graphics.Shaders.PrimitiveType;
 
 namespace Surreal.Internal.Graphics;
 
+/// <summary>A single shader, unliked to a program.</summary>
+internal sealed record OpenTKShader(ShaderType Type, string Code);
+
+/// <summary>A set of <see cref="OpenTKShader"/>s.</summary>
+internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders);
+
 /// <summary>
-/// The <see cref="IShaderCompiler"/> for OpenTK.
+/// The shader compiler for OpenTK.
 /// <para/>
 /// This implementation transpiles shader programs into GLSL code, for later compilation.
 /// by the OpenGL driver (using the standard glShader* method).
 /// </summary>
-internal sealed class OpenTKShaderCompiler : IShaderCompiler
+internal sealed class OpenTKShaderCompiler
 {
   private readonly string version;
 
@@ -40,11 +46,6 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     }
 
     return new OpenTKShaderSet(declaration.Path, shaders.MoveToImmutable());
-  }
-
-  ICompiledShaderProgram IShaderCompiler.Compile(ShaderDeclaration declaration)
-  {
-    return Compile(declaration);
   }
 
   private static ShaderType ConvertShaderKind(ShaderKind kind) => kind switch
