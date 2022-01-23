@@ -155,6 +155,20 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
+  public GraphicsHandle CreateRenderTexture()
+  {
+    var buffer = GL.CreateRenderbuffer();
+
+    return new GraphicsHandle(buffer.Handle);
+  }
+
+  public void DeleteRenderTexture(GraphicsHandle handle)
+  {
+    var buffer = new RenderbufferHandle(handle);
+
+    GL.DeleteRenderbuffer(buffer);
+  }
+
   public GraphicsHandle CreateShader()
   {
     var shader = GL.CreateProgram();

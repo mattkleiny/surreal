@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal;
+namespace Surreal.Animations;
 
 /// <summary>A single animation that can be played over time.</summary>
 public sealed record Animation

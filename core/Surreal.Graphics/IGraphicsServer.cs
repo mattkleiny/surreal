@@ -39,6 +39,10 @@ public interface IGraphicsServer
   void AllocateTexture(GraphicsHandle handle, int width, int height, int depth, TextureFormat format);
   void UploadTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
 
+  // render textures
+  GraphicsHandle CreateRenderTexture();
+  void           DeleteRenderTexture(GraphicsHandle handle);
+
   // shaders
   GraphicsHandle CreateShader();
   void           DeleteShader(GraphicsHandle handle);

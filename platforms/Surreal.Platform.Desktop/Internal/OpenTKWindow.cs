@@ -37,7 +37,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
     if (configuration.Icon != null)
     {
-      if (configuration.Icon is not { Format: TextureFormat.Rgba8888 })
+      if (configuration.Icon is not { })
       {
         throw new InvalidOperationException($"Expected an image in the {nameof(TextureFormat.Rgba8888)} format");
       }

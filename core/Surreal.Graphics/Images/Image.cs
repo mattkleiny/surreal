@@ -47,10 +47,9 @@ public sealed class Image : ITextureData, IDisposable
     this.image = image;
   }
 
-  public TextureFormat Format => TextureFormat.Rgba8888;
-  public Size          Size   => Pixels.CalculateSize();
-  public int           Width  => image.Width;
-  public int           Height => image.Height;
+  public int  Width  => image.Width;
+  public int  Height => image.Height;
+  public Size Size   => Pixels.CalculateSize();
 
   public Span<Color32> Pixels
   {

@@ -2,7 +2,7 @@
 using Surreal.Timing;
 using Surreal.Utilities;
 
-namespace Surreal;
+namespace Surreal.Animations;
 
 /// <summary>A key-frame in an <see cref="AnimationTrack{T}"/>.</summary>
 public readonly record struct KeyFrame<T>(float Time, T Value);

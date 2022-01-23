@@ -28,10 +28,9 @@ public enum TextureWrapMode
 /// <summary>A type that supports the data format required for <see cref="Texture"/>s.</summary>
 public interface ITextureData
 {
-  int           Width  { get; }
-  int           Height { get; }
-  TextureFormat Format { get; }
-  Size          Size   { get; }
+  int  Width  { get; }
+  int  Height { get; }
+  Size Size   { get; }
 
   ReadOnlySpan<Color32> Pixels { get; }
 }

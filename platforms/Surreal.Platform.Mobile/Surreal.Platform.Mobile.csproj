@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<Description>A Surreal platform implementation for mobile environments.</Description>
-	</PropertyGroup>
-	<ItemGroup>
-	  <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" PrivateAssets="compile" />
-	</ItemGroup>
-</Project>

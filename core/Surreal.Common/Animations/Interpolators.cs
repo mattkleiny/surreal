@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Surreal.Mathematics;
 
-namespace Surreal;
+namespace Surreal.Animations;
 
 /// <summary>Interpolates between two values.</summary>
 public delegate T Interpolator<T>(T from, T to, float amount);

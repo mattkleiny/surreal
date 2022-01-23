@@ -1,7 +1,7 @@
 ﻿using Surreal.Mathematics;
 using Surreal.Timing;
 
-namespace Surreal;
+namespace Surreal.Animations;
 
 public class AnimationTests
 {
