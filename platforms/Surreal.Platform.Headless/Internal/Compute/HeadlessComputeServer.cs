@@ -1,19 +1,28 @@
 using Surreal.Compute;
-using Surreal.Compute.Execution;
-using Surreal.Compute.Memory;
-using Surreal.Internal.Compute.Resources;
 
 namespace Surreal.Internal.Compute;
 
 internal sealed class HeadlessComputeServer : IComputeServer
 {
-  public ComputeBuffer<T> CreateBuffer<T>() where T : unmanaged
+  private int nextBufferId = 0;
+
+  public ComputeHandle CreateBuffer()
   {
-    return new HeadlessComputeBuffer<T>();
+    return new ComputeHandle(Interlocked.Increment(ref nextBufferId));
   }
 
-  public ComputeProgram CreateProgram()
+  public void DeleteBuffer(ComputeHandle handle)
   {
-    return new HeadlessComputeProgram();
+    // no-op
+  }
+
+  public Memory<T> ReadBufferData<T>(ComputeHandle handle, Range range) where T : unmanaged
+  {
+    return Memory<T>.Empty;
+  }
+
+  public void WriteBufferData<T>(ComputeHandle handle, ReadOnlySpan<T> data) where T : unmanaged
+  {
+    // no-op
   }
 }

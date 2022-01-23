@@ -303,9 +303,9 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   private static (PixelFormat Format, PixelType Type) GetPixelFormatAndType(Type type)
   {
     if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
+    if (type == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
     if (type == typeof(Vector3)) return (PixelFormat.Rgb, PixelType.Float);
     if (type == typeof(Vector4)) return (PixelFormat.Rgba, PixelType.Float);
-    if (type == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
 
     throw new InvalidOperationException($"An unrecognized pixel type was provided: {type}");
   }

@@ -1,5 +1,4 @@
 using Surreal.Audio.Clips;
-using Surreal.Audio.Playback;
 
 namespace Surreal.Audio;
 
@@ -18,9 +17,13 @@ public readonly record struct AudioHandle(uint Id)
 /// <summary>Represents the audio subsystem.</summary>
 public interface IAudioServer
 {
-  /// <summary>The top-level master volume for the entire device.</summary>
-  float MasterVolume { get; set; }
+  // audio clips
+  AudioHandle CreateAudioClip();
+  void        DeleteAudioClip(AudioHandle handle);
 
-  AudioClip   CreateAudioClip(IAudioData data);
-  AudioSource CreateAudioSource();
+  void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> buffer) where T : unmanaged;
+
+  // audio sources
+  AudioHandle CreateAudioSource();
+  void        DeleteAudioSource(AudioHandle handle);
 }

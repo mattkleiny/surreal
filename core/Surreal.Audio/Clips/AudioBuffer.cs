@@ -5,8 +5,8 @@ using Surreal.Memory;
 
 namespace Surreal.Audio.Clips;
 
-/// <summary>A buffer of audio data for use in audio playback.</summary>
-public sealed class AudioBuffer : AudioResource, IAudioData, IHasSizeEstimate
+/// <summary>A buffer of waveform data for use in audio playback.</summary>
+public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
 {
   private readonly IDisposableBuffer<byte> buffer;
 
@@ -52,8 +52,8 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 
     var format = reader.WaveFormat;
 
-    var rate   = new AudioSampleRate(format.SampleRate, format.Channels, format.BitsPerSample);
-    var buffer = new AudioBuffer(reader.TotalTime, rate);
+    var sampleRate = new AudioSampleRate(format.SampleRate, format.Channels, format.BitsPerSample);
+    var buffer     = new AudioBuffer(reader.TotalTime, sampleRate);
 
     await reader.ReadAsync(buffer.Data, progressToken.CancellationToken);
 

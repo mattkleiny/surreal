@@ -2,7 +2,6 @@
 using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Compute;
-using Surreal.Compute.Execution;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
@@ -50,9 +49,6 @@ public abstract class PrototypeGame : Game
     // audio
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioServer));
-
-    // compute
-    manager.AddLoader(new ComputeProgramLoader(ComputeServer));
 
     // graphics
     manager.AddLoader(new BitmapFontLoader());

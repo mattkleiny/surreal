@@ -1,20 +1,26 @@
 using Surreal.Compute;
-using Surreal.Compute.Execution;
-using Surreal.Compute.Memory;
-using Surreal.Internal.Compute.Resources;
 
 namespace Surreal.Internal.Compute;
 
 internal sealed class OpenTKComputeServer : IComputeServer
 {
-  public ComputeBuffer<T> CreateBuffer<T>()
-    where T : unmanaged
+  public ComputeHandle CreateBuffer()
   {
-    return new OpenTKComputeBuffer<T>();
+    throw new NotImplementedException();
   }
 
-  public ComputeProgram CreateProgram()
+  public void DeleteBuffer(ComputeHandle handle)
   {
-    return new OpenTKComputeProgram();
+    throw new NotImplementedException();
+  }
+
+  public Memory<T> ReadBufferData<T>(ComputeHandle handle, Range range) where T : unmanaged
+  {
+    throw new NotImplementedException();
+  }
+
+  public void WriteBufferData<T>(ComputeHandle handle, ReadOnlySpan<T> data) where T : unmanaged
+  {
+    throw new NotImplementedException();
   }
 }

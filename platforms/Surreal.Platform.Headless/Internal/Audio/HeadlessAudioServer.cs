@@ -1,28 +1,35 @@
 using Surreal.Audio;
 using Surreal.Audio.Clips;
-using Surreal.Audio.Playback;
-using Surreal.Internal.Audio.Resources;
-using Surreal.Mathematics;
 
 namespace Surreal.Internal.Audio;
 
 internal sealed class HeadlessAudioServer : IAudioServer
 {
-  private float masterVolume;
+  private int nextClipId   = 0;
+  private int nextSourceId = 0;
 
-  public float MasterVolume
+  public AudioHandle CreateAudioClip()
   {
-    get => masterVolume;
-    set => masterVolume = value.Clamp(0f, 1f);
+    return new AudioHandle(Interlocked.Increment(ref nextClipId));
   }
 
-  public AudioClip CreateAudioClip(IAudioData data)
+  public void DeleteAudioClip(AudioHandle handle)
   {
-    return new HeadlessAudioClip();
+    // no-op
   }
 
-  public AudioSource CreateAudioSource()
+  public void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> buffer) where T : unmanaged
   {
-    return new HeadlessAudioSource();
+    // no-op
+  }
+
+  public AudioHandle CreateAudioSource()
+  {
+    return new AudioHandle(Interlocked.Increment(ref nextSourceId));
+  }
+
+  public void DeleteAudioSource(AudioHandle handle)
+  {
+    // no-op
   }
 }

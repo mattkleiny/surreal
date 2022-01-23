@@ -1,28 +1,48 @@
+using OpenTK.Audio.OpenAL;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
-using Surreal.Audio.Playback;
-using Surreal.Internal.Audio.Resources;
-using Surreal.Mathematics;
 
 namespace Surreal.Internal.Audio;
 
 internal sealed class OpenTKAudioServer : IAudioServer
 {
-  private float masterVolume;
-
-  public float MasterVolume
+  public AudioHandle CreateAudioClip()
   {
-    get => masterVolume;
-    set => masterVolume = value.Clamp(0f, 1f);
+    return new AudioHandle(AL.GenBuffer());
   }
 
-  public AudioClip CreateAudioClip(IAudioData data)
+  public void DeleteAudioClip(AudioHandle handle)
   {
-    return new OpenTKAudioClip(data);
+    AL.DeleteBuffer(handle);
   }
 
-  public AudioSource CreateAudioSource()
+  public unsafe void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> buffer)
+    where T : unmanaged
   {
-    return new OpenTKAudioSource(this);
+    var (frequency, channels, bitsPerSample) = sampleRate;
+    var format = GetSoundFormat(channels, bitsPerSample);
+
+    fixed (T* pointer = buffer)
+    {
+      AL.BufferData(handle, format, pointer, buffer.Length, frequency);
+    }
   }
+
+  public AudioHandle CreateAudioSource()
+  {
+    return new AudioHandle(AL.GenSource());
+  }
+
+  public void DeleteAudioSource(AudioHandle handle)
+  {
+    AL.DeleteSource(handle);
+  }
+
+  private static ALFormat GetSoundFormat(int channels, int bits) => channels switch
+  {
+    1 => bits == 8 ? ALFormat.Mono8 : ALFormat.Mono16,
+    2 => bits == 8 ? ALFormat.Stereo8 : ALFormat.Stereo16,
+
+    _ => throw new NotSupportedException("The specified sound format is not supported."),
+  };
 }
