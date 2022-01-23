@@ -2,4 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTK" Version="5.0.0-pre.6" />
+  </ItemGroup>
 </Project>
