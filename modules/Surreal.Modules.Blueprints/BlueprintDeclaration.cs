@@ -3,10 +3,11 @@ using static Surreal.BlueprintSyntaxTree;
 
 namespace Surreal;
 
+/// <summary>Different kinds of <see cref="BlueprintArchetype"/>s.</summary>
 public enum BlueprintArchetypeKind
 {
   Item,
-  Entity
+  Entity,
 }
 
 /// <summary>Represents a parsed blueprint, ready for interrogation and compilation.</summary>
@@ -82,5 +83,41 @@ public abstract record BlueprintSyntaxTree
 
   /// <summary>Defines a basic expression that can be evaluated at runtime</summary>
   /// <example>1 + 1</example>
-  public sealed record Expression : BlueprintSyntaxTree;
+  public abstract record Expression : BlueprintSyntaxTree
+  {
+    /// <summary>An identifier name</summary>
+    /// <example>PI</example>
+    public sealed record Identifier(string Name) : Expression
+    {
+      public override string ToString() => Name;
+    }
+
+    /// <summary>A constant value</summary>
+    /// <example>3.14159</example>
+    public sealed record Constant(object Literal) : Expression
+    {
+      public override string? ToString() => Literal.ToString();
+    }
+
+    /// <summary>A unary operation</summary>
+    /// <example>-42</example>
+    public sealed record Unary(UnaryOperator Operator, Expression Left, Expression Right) : Expression;
+
+    /// <summary>A binary operation</summary>
+    /// <example>a + b</example>
+    public sealed record Binary(BinaryOperator Operator, Expression Left, Expression Right) : Expression;
+  }
+
+  public enum UnaryOperator
+  {
+    Negate,
+  }
+
+  public enum BinaryOperator
+  {
+    Plus,
+    Minus,
+    Times,
+    Divide,
+  }
 }

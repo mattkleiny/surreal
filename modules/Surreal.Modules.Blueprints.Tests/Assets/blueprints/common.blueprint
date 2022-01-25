@@ -2,13 +2,13 @@
 
 // Any melee weapon in the game
 item MeleeWeapon {
-  attribute Damage([10-20]);
+  attribute Damage(10);
 }
 
 // Any ranged weapon in the game
 item RangedWeapon {
-  attribute Damage([10-20]);
-  attribute Range([2-4]);
-  attribute TargetMask(#tag Player);
-  attribute ObstacleMask(Layer.Tiles, Layer.Traps);
+  attribute Damage(10);
+  attribute Range(2);
+  attribute TargetMask(Player);
+  attribute ObstacleMask(Tiles, Traps);
 }

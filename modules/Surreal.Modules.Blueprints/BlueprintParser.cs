@@ -10,7 +10,7 @@ namespace Surreal;
 /// <summary>Parser front-end for blueprint descriptors.</summary>
 public sealed class BlueprintParser
 {
-  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "component", "attribute", "#tag", "entity", "item", "override" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "component", "attribute", "event", "#tag", "entity", "item", "override" }.ToImmutableHashSet();
 
   private readonly Environment environment;
 
@@ -106,7 +106,6 @@ public sealed class BlueprintParser
     Minus,
     Plus,
     Star,
-    Slash,
     Colon,
     SemiColon,
 
@@ -119,6 +118,8 @@ public sealed class BlueprintParser
     GreaterEqual,
     Less,
     LessEqual,
+    Slash,
+    SlashEqual,
 
     // literals
     String,
@@ -227,6 +228,9 @@ public sealed class BlueprintParser
           if (span.Match('/'))
             return new Token(TokenType.Comment, position, span, span[2..].ToString().Trim());
 
+          if (span.Match('='))
+            return new Token(TokenType.SlashEqual, position, span[..2]);
+
           return new Token(TokenType.Slash, position, span[..1]);
         }
 
@@ -320,37 +324,42 @@ public sealed class BlueprintParser
 
       return literal switch
       {
-        "#include" => ParseInclude(),
-        "item"     => ParseItemDeclaration(),
-        "entity"   => ParseEntityDeclaration(),
+        "#include" => ParseIncludeStatement(),
+        "item"     => ParseArchetypeDeclaration(BlueprintArchetypeKind.Item),
+        "entity"   => ParseArchetypeDeclaration(BlueprintArchetypeKind.Entity),
 
         _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
       };
     }
 
-    private IncludeStatement ParseInclude()
+    private IncludeStatement ParseIncludeStatement()
     {
       var path = ConsumeLiteral<string>(TokenType.String);
+
+      Consume(TokenType.SemiColon);
 
       return new IncludeStatement(path);
     }
 
-    private BlueprintArchetype ParseItemDeclaration()
-    {
-      return ParseArchetypeDeclaration(BlueprintArchetypeKind.Item);
-    }
-
-    private BlueprintArchetype ParseEntityDeclaration()
-    {
-      return ParseArchetypeDeclaration(BlueprintArchetypeKind.Entity);
-    }
-
     private BlueprintArchetype ParseArchetypeDeclaration(BlueprintArchetypeKind kind)
     {
-      var name = ConsumeLiteral<string>(TokenType.String);
+      var name      = ConsumeLiteral<string>(TokenType.Identifier);
+      var baseTypes = ConsumeBaseTypeList();
+      var block     = ConsumeStatementBlock();
 
-      var baseTypes    = ImmutableArray.CreateBuilder<string>();
-      var declarations = new List<BlueprintSyntaxTree>();
+      return new BlueprintArchetype(kind, name)
+      {
+        BaseTypes  = baseTypes,
+        Tags       = block.OfType<TagDeclaration>().ToImmutableArray(),
+        Attributes = block.OfType<AttributeDeclaration>().ToImmutableArray(),
+        Components = block.OfType<ComponentDeclaration>().ToImmutableArray(),
+        Events     = block.OfType<EventDeclaration>().ToImmutableArray(),
+      };
+    }
+
+    private ImmutableArray<string> ConsumeBaseTypeList()
+    {
+      var baseTypes = ImmutableArray.CreateBuilder<string>();
 
       if (TryConsume(TokenType.Colon))
       {
@@ -362,28 +371,25 @@ public sealed class BlueprintParser
         }
       }
 
+      return baseTypes.ToImmutable();
+    }
+
+    private List<BlueprintSyntaxTree> ConsumeStatementBlock()
+    {
+      var results = new List<BlueprintSyntaxTree>();
+
       Consume(TokenType.LeftBrace);
 
       while (!TryPeek(TokenType.RightBrace))
       {
-        if (TryConsume(TokenType.Comment))
-        {
-          continue; // ignore comments
-        }
+        if (TryConsume(TokenType.Comment)) continue; // ignore comments
 
-        declarations.Add(ParseLocalDeclaration());
+        results.Add(ParseLocalDeclaration());
       }
 
       Consume(TokenType.RightBrace);
 
-      return new BlueprintArchetype(kind, name)
-      {
-        BaseTypes  = baseTypes.ToImmutable(),
-        Tags       = declarations.OfType<TagDeclaration>().ToImmutableArray(),
-        Attributes = declarations.OfType<AttributeDeclaration>().ToImmutableArray(),
-        Components = declarations.OfType<ComponentDeclaration>().ToImmutableArray(),
-        Events     = declarations.OfType<EventDeclaration>().ToImmutableArray(),
-      };
+      return results;
     }
 
     private BlueprintSyntaxTree ParseLocalDeclaration()
@@ -455,18 +461,36 @@ public sealed class BlueprintParser
 
     private ImmutableArray<Expression> ParseParameterList()
     {
-      var expressions = ImmutableArray.CreateBuilder<Expression>();
+      var parameters = ImmutableArray.CreateBuilder<Expression>();
 
       Consume(TokenType.LeftParenthesis);
 
       while (!TryPeek(TokenType.RightParenthesis))
       {
-        Consume();
+        if (TryConsumeLiteral(TokenType.String, out string @string))
+        {
+          parameters.Add(new Expression.Constant(@string));
+          TryConsume(TokenType.Comma);
+        }
+        else if (TryConsumeLiteral(TokenType.Number, out decimal number))
+        {
+          parameters.Add(new Expression.Constant(number));
+          TryConsume(TokenType.Comma);
+        }
+        else if (TryConsumeLiteral(TokenType.Identifier, out string identifier))
+        {
+          parameters.Add(new Expression.Identifier(identifier));
+          TryConsume(TokenType.Comma);
+        }
+        else
+        {
+          throw Error("An unexpected parameter was encountered");
+        }
       }
 
       Consume(TokenType.RightParenthesis);
 
-      return expressions.ToImmutable();
+      return parameters.ToImmutable();
     }
 
     private bool ParseOverride()
@@ -536,7 +560,7 @@ public sealed class BlueprintParser
 
     private bool TryConsumeLiteral<T>(TokenType type, out T result)
     {
-      if (TryPeek(out var token) && token.Literal is T literal)
+      if (TryPeek(out var token) && token.Type == type && token.Literal is T literal)
       {
         lastToken = tokens.Dequeue();
         result    = literal;
@@ -550,7 +574,7 @@ public sealed class BlueprintParser
 
     private bool TryConsumeLiteralIf<T>(TokenType type, T comparison)
     {
-      if (TryPeek(out var token) && token.Literal is T literal)
+      if (TryPeek(out var token) && token.Type == type && token.Literal is T literal)
       {
         if (Equals(literal, comparison))
         {
