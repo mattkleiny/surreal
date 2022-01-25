@@ -685,7 +685,7 @@ public sealed class StandardShaderParser : ShaderParser
 
     private bool TryConsume(TokenType type)
     {
-      if (TryPeek(out var token))
+      if (TryPeek(out var token) && token.Type == type)
       {
         tokens.Dequeue();
         return true;

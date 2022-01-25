@@ -8,6 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
+    <ProjectReference
+      Include="..\..\core\Surreal.Common\Surreal.Common.csproj"
+      Condition="!$(ProjectName.Contains('Generators'))"
+    />
   </ItemGroup>
 </Project>

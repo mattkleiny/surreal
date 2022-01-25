@@ -11,6 +11,9 @@ public class BlueprintParserTests
     var parser      = new BlueprintParser();
     var declaration = await parser.ParseAsync(path);
 
-    Assert.IsNotNull(declaration);
+    Assert.AreEqual(1, declaration.Includes.Length);
+    Assert.AreEqual(7, declaration.Archetypes.Length);
+    Assert.AreEqual(7, declaration.Archetypes[3].Components.Length);
+    Assert.AreEqual(4, declaration.Archetypes[3].Events.Length);
   }
 }

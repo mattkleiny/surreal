@@ -1,14 +1,33 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Text;
+using static Surreal.BlueprintSyntaxTree;
 
 namespace Surreal;
 
 /// <summary>Parser front-end for blueprint descriptors.</summary>
 public sealed class BlueprintParser
 {
-  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "component", "attribute" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "component", "attribute", "#tag", "entity", "item", "override" }.ToImmutableHashSet();
+
+  private readonly Environment environment;
+
+  public BlueprintParser()
+    : this(Environment.Standard())
+  {
+  }
+
+  public BlueprintParser(IAssetManager manager)
+    : this(Environment.FromAssets(manager))
+  {
+  }
+
+  private BlueprintParser(Environment environment)
+  {
+    this.environment = environment;
+  }
 
   public ValueTask<BlueprintDeclaration> ParseAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
@@ -44,110 +63,35 @@ public sealed class BlueprintParser
   public async ValueTask<BlueprintDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var tokens  = await TokenizeAsync(reader, cancellationToken);
-    var context = new BlueprintParserContext(tokens);
+    var context = new BlueprintParserContext(path, tokens);
 
-    // TODO: parse the archetypes
+    var declaration = context.ParseBlueprintDeclaration();
 
-    return new BlueprintDeclaration(path);
+    declaration = await MergeIncludesAsync(declaration, cancellationToken);
+
+    // TODO: validate the result?
+
+    return declaration;
   }
 
-  /// <summary>Context for syntax parsing operations. This is a recursive descent style parser.</summary>
-  private sealed class BlueprintParserContext
+  private async Task<BlueprintDeclaration> MergeIncludesAsync(BlueprintDeclaration declaration, CancellationToken cancellationToken = default)
   {
-    private readonly Queue<Token> tokens;
-    private          Token        lastToken;
+    var includedPaths = new HashSet<VirtualPath>();
 
-    public BlueprintParserContext(IEnumerable<Token> tokens)
+    foreach (var include in declaration.Includes)
     {
-      this.tokens = new Queue<Token>(tokens);
-    }
-
-    #region Token Helpers
-
-    private bool TryPeek(out Token token)
-    {
-      return tokens.TryPeek(out token);
-    }
-
-    private bool TryPeek(TokenType type)
-    {
-      if (TryPeek(out var token))
+      if (includedPaths.Add(include.Path))
       {
-        return token.Type == type;
+        var included = await environment.LoadBlueprintAsync(this, include.Path, cancellationToken);
+
+        declaration = declaration.MergeWith(included);
       }
-
-      return false;
     }
 
-    private bool TryConsume(TokenType type)
-    {
-      if (TryPeek(out var token))
-      {
-        tokens.Dequeue();
-        return true;
-      }
-
-      return false;
-    }
-
-    private bool TryConsume(TokenType type, out Token token)
-    {
-      if (TryPeek(out token) && token.Type == type)
-      {
-        return true;
-      }
-
-      return false;
-    }
-
-    private Token Consume(TokenType type, string errorMessage = "An unexpected token was encountered")
-    {
-      if (!TryPeek(type))
-      {
-        throw Error(errorMessage);
-      }
-
-      return Consume();
-    }
-
-    private Token Consume()
-    {
-      return lastToken = tokens.Dequeue();
-    }
-
-    private bool TryConsumeLiteral<T>(TokenType type, out T result)
-    {
-      if (TryPeek(out var token) && token.Literal is T literal)
-      {
-        lastToken = tokens.Dequeue();
-        result    = literal;
-
-        return true;
-      }
-
-      result = default!;
-      return false;
-    }
-
-    private T ConsumeLiteral<T>(TokenType type)
-    {
-      if (!TryConsumeLiteral(type, out T literal))
-      {
-        throw Error($"Expected a token of type {type}");
-      }
-
-      return literal;
-    }
-
-    #endregion
-
-    private Exception Error(string message)
-    {
-      return new BlueprintParseException(lastToken, message);
-    }
+    return declaration;
   }
 
-  /// <summary>Different types of tokens recognized by the parser.</summary>
+  /// <summary>Different kinds of <see cref="Token"/>s that can be parsed.</summary>
   private enum TokenType
   {
     // single character tokens
@@ -155,6 +99,8 @@ public sealed class BlueprintParser
     RightParenthesis,
     LeftBrace,
     RightBrace,
+    LeftBracket,
+    RightBracket,
     Comma,
     Dot,
     Minus,
@@ -184,7 +130,7 @@ public sealed class BlueprintParser
     Comment,
   }
 
-  /// <summary>Encodes a single token in the <see cref="StandardShaderParser"/>.</summary>
+  /// <summary>Encodes a single token in the <see cref="BlueprintParser"/>.</summary>
   private readonly record struct Token(TokenType Type, LinePosition Position, StringSpan Span, object? Literal = null);
 
   /// <summary>A position of a token in it's source text.</summary>
@@ -237,6 +183,8 @@ public sealed class BlueprintParser
         case ')': return new Token(TokenType.RightParenthesis, position, span[..1]);
         case '{': return new Token(TokenType.LeftBrace, position, span[..1]);
         case '}': return new Token(TokenType.RightBrace, position, span[..1]);
+        case '[': return new Token(TokenType.LeftBracket, position, span[..1]);
+        case ']': return new Token(TokenType.RightBracket, position, span[..1]);
         case ',': return new Token(TokenType.Comma, position, span[..1]);
         case '.': return new Token(TokenType.Dot, position, span[..1]);
         case '-': return new Token(TokenType.Minus, position, span[..1]);
@@ -327,6 +275,311 @@ public sealed class BlueprintParser
     }
   }
 
+  /// <summary>Context for syntax parsing operations. This is a recursive descent style parser.</summary>
+  private sealed class BlueprintParserContext
+  {
+    private readonly string       path;
+    private readonly Queue<Token> tokens;
+
+    private Token lastToken;
+
+    public BlueprintParserContext(string path, IEnumerable<Token> tokens)
+    {
+      this.path   = path;
+      this.tokens = new Queue<Token>(tokens);
+    }
+
+    public BlueprintDeclaration ParseBlueprintDeclaration()
+    {
+      var nodes = new List<BlueprintSyntaxTree>();
+
+      while (TryPeek(out var token))
+      {
+        var node = token.Type switch
+        {
+          TokenType.Keyword => ParseGlobalKeyword(),
+          _                 => ParseNull(),
+        };
+
+        if (node != null)
+        {
+          nodes.Add(node);
+        }
+      }
+
+      return new BlueprintDeclaration(path)
+      {
+        Includes   = nodes.OfType<IncludeStatement>().ToImmutableArray(),
+        Archetypes = nodes.OfType<BlueprintArchetype>().ToImmutableArray(),
+      };
+    }
+
+    private BlueprintSyntaxTree ParseGlobalKeyword()
+    {
+      var literal = ConsumeLiteral<string>(TokenType.Keyword);
+
+      return literal switch
+      {
+        "#include" => ParseInclude(),
+        "item"     => ParseItemDeclaration(),
+        "entity"   => ParseEntityDeclaration(),
+
+        _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
+      };
+    }
+
+    private IncludeStatement ParseInclude()
+    {
+      var path = ConsumeLiteral<string>(TokenType.String);
+
+      return new IncludeStatement(path);
+    }
+
+    private BlueprintArchetype ParseItemDeclaration()
+    {
+      return ParseArchetypeDeclaration(BlueprintArchetypeKind.Item);
+    }
+
+    private BlueprintArchetype ParseEntityDeclaration()
+    {
+      return ParseArchetypeDeclaration(BlueprintArchetypeKind.Entity);
+    }
+
+    private BlueprintArchetype ParseArchetypeDeclaration(BlueprintArchetypeKind kind)
+    {
+      var name = ConsumeLiteral<string>(TokenType.String);
+
+      var baseTypes    = ImmutableArray.CreateBuilder<string>();
+      var declarations = new List<BlueprintSyntaxTree>();
+
+      if (TryConsume(TokenType.Colon))
+      {
+        while (!TryPeek(TokenType.LeftBrace))
+        {
+          baseTypes.Add(ConsumeLiteral<string>(TokenType.Identifier));
+
+          TryConsume(TokenType.Comma);
+        }
+      }
+
+      Consume(TokenType.LeftBrace);
+
+      while (!TryPeek(TokenType.RightBrace))
+      {
+        if (TryConsume(TokenType.Comment))
+        {
+          continue; // ignore comments
+        }
+
+        declarations.Add(ParseLocalDeclaration());
+      }
+
+      Consume(TokenType.RightBrace);
+
+      return new BlueprintArchetype(kind, name)
+      {
+        BaseTypes  = baseTypes.ToImmutable(),
+        Tags       = declarations.OfType<TagDeclaration>().ToImmutableArray(),
+        Attributes = declarations.OfType<AttributeDeclaration>().ToImmutableArray(),
+        Components = declarations.OfType<ComponentDeclaration>().ToImmutableArray(),
+        Events     = declarations.OfType<EventDeclaration>().ToImmutableArray(),
+      };
+    }
+
+    private BlueprintSyntaxTree ParseLocalDeclaration()
+    {
+      var literal = ConsumeLiteral<string>(TokenType.Keyword);
+
+      return literal switch
+      {
+        "#tag"      => ParseTagDeclaration(),
+        "attribute" => ParseAttributeDeclaration(),
+        "component" => ParseComponentDeclaration(),
+        "event"     => ParseEventDeclaration(),
+
+        _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
+      };
+    }
+
+    private TagDeclaration ParseTagDeclaration()
+    {
+      var name = ConsumeLiteral<string>(TokenType.Identifier);
+
+      return new TagDeclaration(name);
+    }
+
+    private AttributeDeclaration ParseAttributeDeclaration()
+    {
+      var name = ConsumeLiteral<string>(TokenType.Identifier);
+
+      var parameters = ParseParameterList();
+      var isOverride = ParseOverride();
+
+      Consume(TokenType.SemiColon);
+
+      return new AttributeDeclaration(name)
+      {
+        IsOverride = isOverride,
+        Parameters = parameters,
+      };
+    }
+
+    private ComponentDeclaration ParseComponentDeclaration()
+    {
+      var name = ConsumeLiteral<string>(TokenType.Identifier);
+
+      var parameters = ParseParameterList();
+      var isOverride = ParseOverride();
+
+      Consume(TokenType.SemiColon);
+
+      return new ComponentDeclaration(name)
+      {
+        IsOverride = isOverride,
+        Parameters = parameters,
+      };
+    }
+
+    private EventDeclaration ParseEventDeclaration()
+    {
+      var name       = ConsumeLiteral<string>(TokenType.Identifier);
+      var parameters = ParseParameterList();
+
+      Consume(TokenType.SemiColon);
+
+      return new EventDeclaration(name)
+      {
+        Parameters = parameters,
+      };
+    }
+
+    private ImmutableArray<Expression> ParseParameterList()
+    {
+      var expressions = ImmutableArray.CreateBuilder<Expression>();
+
+      Consume(TokenType.LeftParenthesis);
+
+      while (!TryPeek(TokenType.RightParenthesis))
+      {
+        Consume();
+      }
+
+      Consume(TokenType.RightParenthesis);
+
+      return expressions.ToImmutable();
+    }
+
+    private bool ParseOverride()
+    {
+      return TryConsumeLiteralIf(TokenType.Keyword, "override");
+    }
+
+    private BlueprintSyntaxTree? ParseNull()
+    {
+      Consume();
+
+      return null;
+    }
+
+    #region Token Helpers
+
+    private bool TryPeek(out Token token)
+    {
+      return tokens.TryPeek(out token);
+    }
+
+    private bool TryPeek(TokenType type)
+    {
+      if (TryPeek(out var token))
+      {
+        return token.Type == type;
+      }
+
+      return false;
+    }
+
+    private bool TryConsume(TokenType type)
+    {
+      if (TryPeek(out var token) && token.Type == type)
+      {
+        tokens.Dequeue();
+        return true;
+      }
+
+      return false;
+    }
+
+    private bool TryConsume(TokenType type, out Token token)
+    {
+      if (TryPeek(out token) && token.Type == type)
+      {
+        return true;
+      }
+
+      return false;
+    }
+
+    private Token Consume(TokenType type, string errorMessage = "An unexpected token was encountered")
+    {
+      if (!TryPeek(type))
+      {
+        throw Error(errorMessage);
+      }
+
+      return Consume();
+    }
+
+    private Token Consume()
+    {
+      return lastToken = tokens.Dequeue();
+    }
+
+    private bool TryConsumeLiteral<T>(TokenType type, out T result)
+    {
+      if (TryPeek(out var token) && token.Literal is T literal)
+      {
+        lastToken = tokens.Dequeue();
+        result    = literal;
+
+        return true;
+      }
+
+      result = default!;
+      return false;
+    }
+
+    private bool TryConsumeLiteralIf<T>(TokenType type, T comparison)
+    {
+      if (TryPeek(out var token) && token.Literal is T literal)
+      {
+        if (Equals(literal, comparison))
+        {
+          lastToken = tokens.Dequeue();
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    private T ConsumeLiteral<T>(TokenType type)
+    {
+      if (!TryConsumeLiteral(type, out T literal))
+      {
+        throw Error($"Expected a token of type {type}");
+      }
+
+      return literal;
+    }
+
+    #endregion
+
+    private Exception Error(string message)
+    {
+      return new BlueprintParseException(lastToken, message);
+    }
+  }
+
   /// <summary>Indicates an error whilst parsing a blueprint.</summary>
   private sealed class BlueprintParseException : Exception
   {
@@ -344,5 +597,47 @@ public sealed class BlueprintParser
 
     public LinePosition Position { get; }
     public StringSpan   Span     { get; }
+  }
+
+  /// <summary>Environmental access for the <see cref="BlueprintParser"/>.</summary>
+  private abstract class Environment
+  {
+    public static Environment Standard()                        => new DefaultEnvironment();
+    public static Environment FromAssets(IAssetManager manager) => new AssetEnvironment(manager);
+
+    /// <summary>Loads the given related shader back through the parsing pipeline pipeline.</summary>
+    public abstract ValueTask<BlueprintDeclaration> LoadBlueprintAsync(BlueprintParser parser, VirtualPath path, CancellationToken cancellationToken = default);
+
+    /// <summary>A standard <see cref="Environment"/> that delegates back to the given <see cref="ShaderParser"/> and caches the result internally.</summary>
+    private sealed class DefaultEnvironment : Environment
+    {
+      private readonly ConcurrentDictionary<VirtualPath, BlueprintDeclaration> declarationsByPath = new();
+
+      public override async ValueTask<BlueprintDeclaration> LoadBlueprintAsync(BlueprintParser parser, VirtualPath path, CancellationToken cancellationToken = default)
+      {
+        if (!declarationsByPath.TryGetValue(path, out var declaration))
+        {
+          declarationsByPath[path] = declaration = await parser.ParseAsync(path, cancellationToken);
+        }
+
+        return declaration;
+      }
+    }
+
+    /// <summary>A <see cref="Environment"/> implementation that delegates back to the asset system via the given <see cref="IAssetManager"/>.</summary>
+    private sealed class AssetEnvironment : Environment
+    {
+      private readonly IAssetManager manager;
+
+      public AssetEnvironment(IAssetManager manager)
+      {
+        this.manager = manager;
+      }
+
+      public override async ValueTask<BlueprintDeclaration> LoadBlueprintAsync(BlueprintParser parser, VirtualPath path, CancellationToken cancellationToken = default)
+      {
+        return await manager.LoadAssetAsync<BlueprintDeclaration>(path);
+      }
+    }
   }
 }
