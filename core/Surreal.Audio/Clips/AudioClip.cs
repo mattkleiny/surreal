@@ -19,7 +19,7 @@ public sealed class AudioClip : AudioResource, IHasSizeEstimate
   public AudioSampleRate Rate     { get; private set; } = AudioSampleRate.Standard;
   public Size            Size     { get; private set; } = Size.Zero;
 
-  public void WriteData<T>(TimeSpan duration, AudioSampleRate rate, ReadOnlySpan<T> buffer)
+  public void Write<T>(TimeSpan duration, AudioSampleRate rate, ReadOnlySpan<T> buffer)
     where T : unmanaged
   {
     Duration = duration;
@@ -55,7 +55,7 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
     var buffer = await context.Manager.LoadAssetAsync<AudioBuffer>(context.Path);
     var clip   = new AudioClip(server);
 
-    clip.WriteData<byte>(buffer.Duration, buffer.Rate, buffer.Data.Span);
+    clip.Write<byte>(buffer.Duration, buffer.Rate, buffer.Data.Span);
 
     return clip;
   }

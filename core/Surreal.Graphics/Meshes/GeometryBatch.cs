@@ -153,8 +153,8 @@ public sealed class GeometryBatch : IDisposable
     if (vertexCount == 0) return;
     if (material == null) return;
 
-    mesh.Vertices.WriteData(vertices.Data.Span[..vertexCount]);
-    mesh.Indices.WriteData(indices.Data.Span[..indexCount]);
+    mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
+    mesh.Indices.Write(indices.Data.Span[..indexCount]);
 
     mesh.DrawImmediate(material, vertexCount, indexCount, type);
 

@@ -26,7 +26,7 @@ public enum TextureWrapMode
 }
 
 /// <summary>A texture that can be uploaded to the GPU.</summary>
-public sealed class Texture : GraphicsResource, IHasSizeEstimate, IBuffer<Color>, IBuffer<Color32>
+public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuffer<Color>, IDisposableBuffer<Color32>
 {
   private readonly IGraphicsServer server;
   private readonly GraphicsHandle  handle;

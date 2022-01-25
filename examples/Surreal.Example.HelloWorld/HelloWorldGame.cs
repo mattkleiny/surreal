@@ -1,4 +1,3 @@
-using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Meshes;
 using Surreal.Input.Keyboard;
 
@@ -6,8 +5,7 @@ namespace HelloWorld;
 
 public sealed class HelloWorldGame : PrototypeGame
 {
-  private readonly OrthographicCamera camera = new(256 / 4, 144 / 4);
-  private          GeometryBatch?     batch;
+  private GraphicsBuffer<float>? vertices;
 
   public static Task Main() => StartAsync<HelloWorldGame>(new Configuration
   {
@@ -26,7 +24,14 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     base.Initialize();
 
-    batch = new GeometryBatch(GraphicsServer);
+    vertices = new GraphicsBuffer<float>(GraphicsServer);
+
+    vertices.Write(stackalloc float[]
+    {
+      -0.5f, -0.5f, 0.0f,
+      0.5f, -0.5f, 0.0f,
+      0.0f, 0.5f, 0.0f,
+    });
   }
 
   protected override void Input(GameTime time)
@@ -36,11 +41,6 @@ public sealed class HelloWorldGame : PrototypeGame
     base.Input(time);
   }
 
-  protected override void Update(GameTime time)
-  {
-    camera.Update();
-  }
-
   protected override void Draw(GameTime time)
   {
     // TODO: draw something
@@ -48,7 +48,7 @@ public sealed class HelloWorldGame : PrototypeGame
 
   public override void Dispose()
   {
-    batch?.Dispose();
+    vertices?.Dispose();
 
     base.Dispose();
   }

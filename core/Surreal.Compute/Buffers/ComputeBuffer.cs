@@ -10,7 +10,7 @@ public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate
 }
 
 /// <summary>A strongly-typed <see cref="ComputeBuffer"/> of <see cref="T"/>.</summary>
-public sealed class ComputeBuffer<T> : ComputeBuffer, IBuffer<T>
+public sealed class ComputeBuffer<T> : ComputeBuffer, IDisposableBuffer<T>
   where T : unmanaged
 {
   private readonly ComputeHandle  handle;
@@ -23,12 +23,12 @@ public sealed class ComputeBuffer<T> : ComputeBuffer, IBuffer<T>
     handle = server.CreateBuffer();
   }
 
-  public Memory<T> ReadData(Optional<Range> range = default)
+  public Memory<T> Read(Optional<Range> range = default)
   {
     return server.ReadBufferData<T>(handle, range.GetOrDefault(Range.All));
   }
 
-  public void WriteData(ReadOnlySpan<T> buffer)
+  public void Write(ReadOnlySpan<T> buffer)
   {
     server.WriteBufferData(handle, buffer);
   }
@@ -43,5 +43,5 @@ public sealed class ComputeBuffer<T> : ComputeBuffer, IBuffer<T>
     base.Dispose(managed);
   }
 
-  Memory<T> IBuffer<T>.Data => ReadData();
+  Memory<T> IBuffer<T>.Data => Read();
 }

@@ -72,8 +72,8 @@ public sealed class ChunkMesh : IDisposable
     Game.Schedule(() =>
     {
       // upload vertices/indices to the GPU
-      mesh.Vertices.WriteData(tessellator.Vertices);
-      mesh.Indices.WriteData(tessellator.Indices);
+      mesh.Vertices.Write(tessellator.Vertices);
+      mesh.Indices.Write(tessellator.Indices);
 
       IsReady = true;
     });

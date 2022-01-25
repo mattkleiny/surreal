@@ -3,6 +3,7 @@ using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Compute;
 using Surreal.Graphics;
+using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Shaders;
@@ -55,7 +56,7 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));
-    manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(ShaderParser.Environment.FromAssets(manager)), ".shade"));
+    manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(Assets), ".shade"));
     manager.AddLoader(new TextureLoader(GraphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
     manager.AddLoader(new TextureRegionLoader());
     manager.AddLoader(new TrueTypeFontLoader());
@@ -68,6 +69,13 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new ScriptDeclarationLoader(new LoxScriptParser(), ".lox"));
     manager.AddLoader(new ScriptDeclarationLoader(new LuaScriptParser(), ".lua"));
     manager.AddLoader(new ScriptDeclarationLoader(new WrenScriptParser(), ".wren"));
+  }
+
+  protected override void OnResized(int width, int height)
+  {
+    base.OnResized(width, height);
+
+    GraphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
   }
 
   protected override void BeginFrame(GameTime time)

@@ -47,7 +47,7 @@ public abstract class ShaderParser
   public abstract ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default);
 
   /// <summary>Environmental access for the <see cref="ShaderParser"/>.</summary>
-  public abstract class Environment
+  protected abstract class Environment
   {
     public static Environment Standard()                        => new DefaultEnvironment();
     public static Environment FromAssets(IAssetManager manager) => new AssetEnvironment(manager);
@@ -102,7 +102,12 @@ public sealed class StandardShaderParser : ShaderParser
   {
   }
 
-  public StandardShaderParser(Environment environment)
+  public StandardShaderParser(IAssetManager manager)
+    : this(Environment.FromAssets(manager))
+  {
+  }
+
+  private StandardShaderParser(Environment environment)
   {
     this.environment = environment;
   }

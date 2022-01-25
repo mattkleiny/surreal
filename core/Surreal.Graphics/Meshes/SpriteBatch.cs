@@ -129,7 +129,7 @@ public sealed class SpriteBatch : IDisposable
     var spriteCount = vertexCount / 4;
     var indexCount  = spriteCount * 6;
 
-    mesh.Vertices.WriteData(vertices.Data.Span[..vertexCount]);
+    mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
     mesh.DrawImmediate(material, vertexCount, indexCount);
 
     vertexCount = 0;
@@ -149,7 +149,7 @@ public sealed class SpriteBatch : IDisposable
       indices[i + 5] = j;
     }
 
-    mesh.Indices.WriteData(indices);
+    mesh.Indices.Write(indices);
   }
 
   public void Dispose()

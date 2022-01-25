@@ -1,4 +1,5 @@
 ﻿using Surreal.Graphics;
+using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -10,6 +11,11 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
   private int nextBufferId  = 0;
   private int nextTextureId = 0;
   private int nextShaderId  = 0;
+
+  public void SetViewportSize(Viewport viewport)
+  {
+    // no-op
+  }
 
   public void ClearColorBuffer(Color color)
   {

@@ -2,6 +2,7 @@
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
+using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -12,6 +13,11 @@ namespace Surreal.Internal.Graphics;
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
   private readonly OpenTKShaderCompiler shaderCompiler = new();
+
+  public void SetViewportSize(Viewport viewport)
+  {
+    GL.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
+  }
 
   public void ClearColorBuffer(Color color)
   {
@@ -76,7 +82,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     fixed (T* pointer = data)
     {
       GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
-      GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, BufferUsageARB.DynamicCopy);
+      GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, BufferUsageARB.StaticDraw);
     }
   }
 

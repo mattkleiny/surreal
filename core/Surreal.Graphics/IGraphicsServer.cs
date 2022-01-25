@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Shaders;
+﻿using Surreal.Graphics.Cameras;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
@@ -20,9 +21,9 @@ public readonly record struct GraphicsHandle(uint Id)
 public interface IGraphicsServer
 {
   // intrinsics
+  void SetViewportSize(Viewport viewport);
   void ClearColorBuffer(Color color);
   void ClearDepthBuffer();
-
   void FlushToDevice();
 
   // buffers
