@@ -146,6 +146,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Physics", "core\Sur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Physics.Tests", "core\Surreal.Physics.Tests\Surreal.Physics.Tests.csproj", "{CFA70889-B8DC-4A62-B373-B4FF887C0AE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Blueprints", "modules\Surreal.Modules.Blueprints\Surreal.Modules.Blueprints.csproj", "{16ABE188-FEE3-4BDC-8B1A-A98A1FE84743}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Blueprints.Tests", "modules\Surreal.Modules.Blueprints.Tests\Surreal.Modules.Blueprints.Tests.csproj", "{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -364,6 +368,14 @@ Global
 		{CFA70889-B8DC-4A62-B373-B4FF887C0AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFA70889-B8DC-4A62-B373-B4FF887C0AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFA70889-B8DC-4A62-B373-B4FF887C0AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16ABE188-FEE3-4BDC-8B1A-A98A1FE84743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16ABE188-FEE3-4BDC-8B1A-A98A1FE84743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16ABE188-FEE3-4BDC-8B1A-A98A1FE84743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16ABE188-FEE3-4BDC-8B1A-A98A1FE84743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -427,5 +439,7 @@ Global
 		{8A1E722B-F77A-409E-9710-DD9C732CEC4D} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
 		{940A8376-16AA-4DE6-BDC8-A23EA8DA9026} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{CFA70889-B8DC-4A62-B373-B4FF887C0AE8} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{16ABE188-FEE3-4BDC-8B1A-A98A1FE84743} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
+		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 	EndGlobalSection
 EndGlobal

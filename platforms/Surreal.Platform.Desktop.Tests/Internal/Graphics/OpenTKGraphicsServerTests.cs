@@ -12,7 +12,7 @@ public class OpenTKGraphicsServerTests
     var parser   = new StandardShaderParser();
     var pipeline = new OpenTKGraphicsServer();
 
-    var shader = await parser.ParseShaderAsync(path);
+    var shader = await parser.ParseAsync(path);
 
     var id = pipeline.CreateShader();
 

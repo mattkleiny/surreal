@@ -9,7 +9,7 @@ public class StandardShaderParserTests
   public async Task it_should_parse_shader_programs(VirtualPath path)
   {
     var parser      = new StandardShaderParser();
-    var declaration = await parser.ParseShaderAsync(path);
+    var declaration = await parser.ParseAsync(path);
 
     Assert.IsNotNull(declaration);
     Assert.IsTrue(declaration.CompilationUnit.ShaderType is { Type: "sprite" });

@@ -15,7 +15,7 @@ public class OpenTKShaderCompilerTests
     var parser   = new StandardShaderParser();
     var compiler = new OpenTKShaderCompiler();
 
-    var declaration = await parser.ParseShaderAsync(path);
+    var declaration = await parser.ParseAsync(path);
     var compiled    = compiler.Compile(declaration);
 
     Assert.IsNotNull(compiled);

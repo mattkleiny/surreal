@@ -1,0 +1,51 @@
+﻿// An example blueprint for the blueprint parser system.
+
+#include "resx://Surreal.Modules.Actors/Entitites/Common.blueprint";
+
+// TODO: unify the ideas of components and attributes
+//       (aka data objects that can be attached to other data objects).
+// TODO: allow reference assets and resources by name
+// TODO: allow defining entities, items, components, events, attributes and overrides
+// TODO: allow 'multiple inheritance' since this is about mixing data and not behaviour
+// TODO: support tags on entities and items?
+// TODO: support recipes on entities and items?
+
+// Any melee weapon in the game
+item MeleeWeapon {
+  attribute Damage(10);
+}
+
+// A basic sword item
+item Sword : MeleeWeapon {
+  #tag Throwable
+
+  attribute Damage(20) override; // N.B: override is a no-op and is used for validation onoly
+  attribute Sprite("sprite_sword");
+}
+
+// Represents a character in the game
+entity Character {
+  component Health(10);
+  component Toxin(0);
+  component Coins(0);
+  component MeleeWeapon(None);
+  component RangedWeapon(None);
+  component MutationSet(Empty);
+
+  event HealthReceived(Health);
+  event HealthLost(Health);
+  event ToxinReceived(Toxin);
+  event ToxinLost(Toxin);
+}
+
+// The player character
+entity Player : Character {
+  component Health(100) override;
+  component Coins(10) override;
+  component MeleeWeapon(Sword) override;
+
+  component InputReceiver(InputChannel.Player1);
+
+  event PlayerSpawned;
+  event PlayerDied;
+}

@@ -13,38 +13,38 @@ namespace Surreal.Graphics.Shaders;
 /// <summary>Base class for any parser front-end for shader programs.</summary>
 public abstract class ShaderParser
 {
-  public ValueTask<ShaderDeclaration> ParseShaderAsync(VirtualPath path, CancellationToken cancellationToken = default)
+  public ValueTask<ShaderDeclaration> ParseAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    return ParseShaderAsync(path, Encoding.UTF8, cancellationToken);
+    return ParseAsync(path, Encoding.UTF8, cancellationToken);
   }
 
-  public async ValueTask<ShaderDeclaration> ParseShaderAsync(VirtualPath path, Encoding encoding, CancellationToken cancellationToken = default)
+  public async ValueTask<ShaderDeclaration> ParseAsync(VirtualPath path, Encoding encoding, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    return await ParseShaderAsync(path.ToString(), stream, encoding, cancellationToken);
+    return await ParseAsync(path.ToString(), stream, encoding, cancellationToken);
   }
 
-  public ValueTask<ShaderDeclaration> ParseShaderAsync(string path, Stream stream, CancellationToken cancellationToken = default)
+  public ValueTask<ShaderDeclaration> ParseAsync(string path, Stream stream, CancellationToken cancellationToken = default)
   {
-    return ParseShaderAsync(path, stream, Encoding.UTF8, cancellationToken);
+    return ParseAsync(path, stream, Encoding.UTF8, cancellationToken);
   }
 
-  public async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, Stream stream, Encoding encoding, CancellationToken cancellationToken = default)
+  public async ValueTask<ShaderDeclaration> ParseAsync(string path, Stream stream, Encoding encoding, CancellationToken cancellationToken = default)
   {
     using var reader = new StreamReader(stream, encoding);
 
-    return await ParseShaderAsync(path, reader, cancellationToken);
+    return await ParseAsync(path, reader, cancellationToken);
   }
 
-  public async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, string sourceCode, CancellationToken cancellationToken = default)
+  public async ValueTask<ShaderDeclaration> ParseAsync(string path, string sourceCode, CancellationToken cancellationToken = default)
   {
     var reader = new StringReader(sourceCode);
 
-    return await ParseShaderAsync(path, reader, cancellationToken);
+    return await ParseAsync(path, reader, cancellationToken);
   }
 
-  public abstract ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default);
+  public abstract ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default);
 
   /// <summary>Environmental access for the <see cref="ShaderParser"/>.</summary>
   protected abstract class Environment
@@ -64,7 +64,7 @@ public abstract class ShaderParser
       {
         if (!declarationsByPath.TryGetValue(path, out var declaration))
         {
-          declarationsByPath[path] = declaration = await parser.ParseShaderAsync(path, cancellationToken);
+          declarationsByPath[path] = declaration = await parser.ParseAsync(path, cancellationToken);
         }
 
         return declaration;
@@ -118,7 +118,7 @@ public sealed class StandardShaderParser : ShaderParser
     new SpriteShaderTransformer(),
   };
 
-  public override async ValueTask<ShaderDeclaration> ParseShaderAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
+  public override async ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var tokens  = await TokenizeAsync(reader, cancellationToken);
     var context = new ShaderParserContext(tokens);
