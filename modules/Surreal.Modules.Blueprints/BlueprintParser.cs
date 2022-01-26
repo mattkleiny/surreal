@@ -280,9 +280,5 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 
       return null;
     }
-
-    #region Token Helpers
-
-    #endregion
   }
 }

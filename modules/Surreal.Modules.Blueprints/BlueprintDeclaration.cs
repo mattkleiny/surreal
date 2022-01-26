@@ -1,4 +1,5 @@
-﻿using Surreal.IO;
+﻿using Surreal.Assets;
+using Surreal.IO;
 using static Surreal.BlueprintSyntaxTree;
 
 namespace Surreal;
@@ -21,6 +22,27 @@ public sealed record BlueprintDeclaration(string Path)
     Includes = Includes.AddRange(other.Includes),
     Archetypes = Archetypes.AddRange(other.Archetypes)
   };
+}
+
+/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="BlueprintDeclaration"/>s.</summary>
+public sealed class BlueprintDeclarationLoader : AssetLoader<BlueprintDeclaration>
+{
+  private readonly BlueprintParser parser;
+
+  public BlueprintDeclarationLoader()
+    : this(new BlueprintParser())
+  {
+  }
+
+  public BlueprintDeclarationLoader(BlueprintParser parser)
+  {
+    this.parser = parser;
+  }
+
+  public override async ValueTask<BlueprintDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  {
+    return await parser.ParseAsync(context.Path, progressToken.CancellationToken);
+  }
 }
 
 /// <summary>Common AST graph root for our blueprint languages.</summary>

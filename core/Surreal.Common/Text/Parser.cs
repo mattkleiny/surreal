@@ -256,10 +256,10 @@ public abstract class Parser<T>
   /// <summary>Base class for a recursive descent parse context.</summary>
   protected abstract class ParserContext
   {
-    private Queue<Token> tokens;
-    private Token        lastToken;
+    private readonly Queue<Token> tokens;
+    private          Token        lastToken;
 
-    public ParserContext(IEnumerable<Token> tokens)
+    protected ParserContext(IEnumerable<Token> tokens)
     {
       this.tokens = new Queue<Token>(tokens);
     }

@@ -46,6 +46,7 @@ public abstract class PrototypeGame : Game
     // common
     manager.AddLoader(new JsonAssetLoader());
     manager.AddLoader(new XmlAssetLoader());
+    manager.AddLoader(new BlueprintDeclarationLoader());
 
     // audio
     manager.AddLoader(new AudioBufferLoader());

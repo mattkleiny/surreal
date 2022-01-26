@@ -9,7 +9,12 @@ public interface IProgressReporter
 /// <summary>An opaque token for accessing a reportable ongoing operation.</summary>
 public readonly struct ProgressToken
 {
-  public ProgressToken(IProgressReporter progressReporter, CancellationToken cancellationToken)
+  public ProgressToken(CancellationToken cancellationToken)
+    : this(null, cancellationToken)
+  {
+  }
+
+  public ProgressToken(IProgressReporter? progressReporter, CancellationToken cancellationToken)
   {
     ProgressReporter  = progressReporter;
     CancellationToken = cancellationToken;
@@ -23,4 +28,6 @@ public readonly struct ProgressToken
   {
     ProgressReporter?.Increment();
   }
+
+  public static implicit operator ProgressToken(CancellationToken cancellationToken) => new(cancellationToken);
 }

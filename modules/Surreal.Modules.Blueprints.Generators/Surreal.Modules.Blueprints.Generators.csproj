@@ -1,6 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
-    <Description>Source generators for the blueprints package.</Description>
-	</PropertyGroup>
-</Project>
