@@ -6,6 +6,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
+using Surreal.Graphics.Images.FlipBooks;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
@@ -55,6 +56,7 @@ public abstract class PrototypeGame : Game
     // graphics
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ColorPaletteLoader());
+    manager.AddLoader(new FlipBookLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));
     manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(Assets), ".shade"));
