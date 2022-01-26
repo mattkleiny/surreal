@@ -38,6 +38,20 @@ public class Character : Actor, IDamageReceiver
     set => PropertyBag.Set(Properties.Coins, value.Clamp(0, 99));
   }
 
+  protected override void OnEnable()
+  {
+    Message.SubscribeAll(this);
+
+    base.OnEnable();
+  }
+
+  protected override void OnDisable()
+  {
+    base.OnDisable();
+
+    Message.UnsubscribeAll(this);
+  }
+
   void IDamageReceiver.OnDamageReceived(Damage damage)
   {
     Health -= damage.Amount;

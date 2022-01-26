@@ -20,10 +20,6 @@ public readonly ref struct SpanGrid<T>
   public int Height => storage.Length / stride;
   public int Length => storage.Length;
 
-  public ref T this[Index index] => ref storage[index];
-
-  public Span<T> this[Range range] => storage[range];
-
   public ref T this[int x, int y]
   {
     get

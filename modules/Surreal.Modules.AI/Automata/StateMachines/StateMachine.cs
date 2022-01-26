@@ -1,5 +1,4 @@
 ﻿using Surreal.Collections;
-using Surreal.Messaging;
 using Surreal.Timing;
 
 namespace Surreal.Automata.StateMachines;
