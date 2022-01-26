@@ -7,6 +7,7 @@ using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Images.FlipBooks;
+using Surreal.Graphics.Images.Sprites;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
@@ -56,13 +57,20 @@ public abstract class PrototypeGame : Game
     // graphics
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ColorPaletteLoader());
-    manager.AddLoader(new FlipBookLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));
     manager.AddLoader(new ShaderDeclarationLoader(new StandardShaderParser(Assets), ".shade"));
     manager.AddLoader(new TextureLoader(GraphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
     manager.AddLoader(new TextureRegionLoader());
     manager.AddLoader(new TrueTypeFontLoader());
+    manager.AddLoader(new AsepriteImporter
+    {
+      FilterMode       = TextureFilterMode.Point,
+      PixelsPerUnit    = 16,
+      FramesPerSecond  = 8,
+      TransparencyMask = new Color32(255, 0, 255),
+      AnimationFlags   = SpriteAnimationFlags.Looping
+    });
 
     // scripting
     manager.AddLoader(new BytecodeProgramLoader());
