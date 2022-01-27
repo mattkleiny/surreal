@@ -6,6 +6,7 @@ public class StandardShaderParserTests
 {
   [Test]
   [TestCase("Assets/shaders/test01.shade")]
+  [TestCase("Assets/shaders/test02.shade")]
   public async Task it_should_parse_shader_programs(VirtualPath path)
   {
     var parser      = new StandardShaderParser();

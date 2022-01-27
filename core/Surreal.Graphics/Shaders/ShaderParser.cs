@@ -243,7 +243,7 @@ public sealed class StandardShaderParser : ShaderParser
 
       var expression = ParseExpression();
 
-      Consume(TokenType.SemiColon, "Expect a semicolon after an expression");
+      Consume(TokenType.SemiColon);
 
       return new StatementExpression(expression);
     }

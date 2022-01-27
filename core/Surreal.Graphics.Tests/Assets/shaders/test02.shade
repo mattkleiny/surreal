@@ -1,0 +1,29 @@
+// A more advanced sprite shader, for testing purposes.
+
+#include "resx://Surreal.Graphics/Resources/shaders/common.shade";
+
+#shader_type sprite;
+
+uniform float flash_amount;
+uniform float flash_cutoff;
+uniform vec4  flash_color;
+
+void fragment() {
+  vec4 color = SAMPLE(TEXTURE, UV);
+  vec2 pixel_size = TEXTURE_PIXEL_SIZE;
+
+  vec3 albedo = color.rgb; // we're modifying the color properties, not the alpha
+
+  // flash the sprite's luminous parts based on the given flash color
+  if (flash_amount > 0.0f) {
+    float luminance = luminance(albedo);
+
+    if (luminance > flash_cutoff) {
+      albedo = mix(color.rgb, luminance + flash_color.rgb, flash_amount);
+    } else {
+      albedo = mix(color.rgb, vec3(0, 0, 0), flash_amount);
+    }
+  }
+
+  COLOR = vec4(albedo, color.a);
+}

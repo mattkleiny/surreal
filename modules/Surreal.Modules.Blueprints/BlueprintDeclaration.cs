@@ -5,7 +5,7 @@ using static Surreal.BlueprintSyntaxTree;
 namespace Surreal;
 
 /// <summary>Different kinds of <see cref="BlueprintArchetype"/>s.</summary>
-public enum BlueprintArchetypeKind
+public enum ArchetypeKind
 {
   Item,
   Entity,
@@ -49,7 +49,7 @@ public sealed class BlueprintDeclarationLoader : AssetLoader<BlueprintDeclaratio
 public abstract record BlueprintSyntaxTree
 {
   /// <summary>Describes a single archetype and it's attributes.</summary>
-  public sealed record BlueprintArchetype(BlueprintArchetypeKind Kind, string Name) : BlueprintSyntaxTree
+  public sealed record BlueprintArchetype(ArchetypeKind Kind, string Name) : BlueprintSyntaxTree
   {
     public ImmutableArray<string>               BaseTypes  { get; init; } = ImmutableArray<string>.Empty;
     public ImmutableArray<TagDeclaration>       Tags       { get; init; } = ImmutableArray<TagDeclaration>.Empty;

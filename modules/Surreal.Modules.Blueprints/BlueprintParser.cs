@@ -101,8 +101,8 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
       return literal switch
       {
         "#include" => ParseIncludeStatement(),
-        "item"     => ParseArchetypeDeclaration(BlueprintArchetypeKind.Item),
-        "entity"   => ParseArchetypeDeclaration(BlueprintArchetypeKind.Entity),
+        "item"     => ParseArchetypeDeclaration(ArchetypeKind.Item),
+        "entity"   => ParseArchetypeDeclaration(ArchetypeKind.Entity),
 
         _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
       };
@@ -117,7 +117,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
       return new IncludeStatement(path);
     }
 
-    private BlueprintArchetype ParseArchetypeDeclaration(BlueprintArchetypeKind kind)
+    private BlueprintArchetype ParseArchetypeDeclaration(ArchetypeKind kind)
     {
       var name      = ConsumeLiteral<string>(TokenType.Identifier);
       var baseTypes = ConsumeBaseTypeList();

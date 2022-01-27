@@ -1,5 +1,4 @@
 ﻿using Surreal.Graphics.Shaders;
-using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -8,19 +7,6 @@ namespace Surreal.Internal.Graphics;
 
 public class OpenTKShaderCompilerTests
 {
-  [Test]
-  [TestCase("Assets/shaders/test01.shade")]
-  public async Task it_should_compile_shader_programs(VirtualPath path)
-  {
-    var parser   = new StandardShaderParser();
-    var compiler = new OpenTKShaderCompiler();
-
-    var declaration = await parser.ParseAsync(path);
-    var compiled    = compiler.Compile(declaration);
-
-    Assert.IsNotNull(compiled);
-  }
-
   [Test]
   public void it_should_compile_simple_instructions()
   {

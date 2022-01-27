@@ -2,13 +2,13 @@
 
 #include "resx://Surreal.Graphics/Resources/shaders/common.shade";
 
-varying vec3 _Color;
+varying vec3 tint;
 
 void vertex(vec3 position, vec3 color) {
   POSITION = position;
-  _Color = color;
+  tint = color;
 }
 
 void fragment() {
-  COLOR = _Color;
+  COLOR = tint;
 }
