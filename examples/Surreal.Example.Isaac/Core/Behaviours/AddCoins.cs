@@ -6,7 +6,7 @@ public sealed record AddCoins(int Coins) : BehaviourTask
 {
   protected override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
-    context.Properties.Increment(Properties.Coins, Coins);
+    context.Properties.Increment(SharedProperties.Coins, Coins);
 
     return BehaviourStatus.Success;
   }

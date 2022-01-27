@@ -1,4 +1,6 @@
-﻿namespace Surreal.IO.Persistence;
+﻿using Surreal.Collections;
+
+namespace Surreal.IO.Persistence;
 
 /// <summary>In-memory storage of persistent data, for use in testing and in-process transitions.</summary>
 public sealed class InMemoryPersistenceStore : IPersistenceStore
@@ -27,9 +29,9 @@ public sealed class InMemoryPersistenceStore : IPersistenceStore
   {
     private readonly Dictionary<string, object?> entries = new();
 
-    public T? Read<T>(PersistentProperty<T> property, Optional<T> defaultValue = default)
+    public T? Read<T>(Property<T> property, Optional<T> defaultValue = default)
     {
-      if (!entries.TryGetValue(property.Name, out var value))
+      if (!entries.TryGetValue(property.Key, out var value))
       {
         return defaultValue.GetOrDefault(property.DefaultValue!);
       }
@@ -37,9 +39,9 @@ public sealed class InMemoryPersistenceStore : IPersistenceStore
       return (T?) value;
     }
 
-    public void Write<T>(PersistentProperty<T> property, T value)
+    public void Write<T>(Property<T> property, T value)
     {
-      entries[property.Name] = value;
+      entries[property.Key] = value;
     }
   }
 }

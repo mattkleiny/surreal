@@ -1,3 +1,5 @@
+using Surreal.Collections;
+
 namespace Surreal.IO.Persistence;
 
 /// <summary>A store for persistent data.</summary>
@@ -7,14 +9,14 @@ public interface IPersistenceStore
   IPersistenceWriter CreateWriter(Guid identifier);
 }
 
-/// <summary>A reader for <see cref="PersistentProperty{T}"/>s.</summary>
+/// <summary>A reader for persistent <see cref="Property{T}"/>s.</summary>
 public interface IPersistenceReader
 {
-  T? Read<T>(PersistentProperty<T> property, Optional<T> defaultValue = default);
+  T? Read<T>(Property<T> property, Optional<T> defaultValue = default);
 }
 
-/// <summary>A writer for <see cref="PersistentProperty{T}"/>s.</summary>
+/// <summary>A writer for persistent <see cref="Property{T}"/>s.</summary>
 public interface IPersistenceWriter
 {
-  void Write<T>(PersistentProperty<T> property, T value);
+  void Write<T>(Property<T> property, T value);
 }

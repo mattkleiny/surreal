@@ -18,24 +18,24 @@ public class Character : Actor, IDamageReceiver
   public ref Sprite     Sprite     => ref GetComponent<Sprite>();
   public ref Statistics Statistics => ref GetComponent<Statistics>();
 
-  public PropertyCollection PropertyBag { get; } = new();
+  public PropertyCollection Properties { get; } = new();
 
   public int Health
   {
-    get => PropertyBag.Get(Properties.Health);
-    set => PropertyBag.Set(Properties.Health, value.Clamp(0, 99));
+    get => Properties.Get(SharedProperties.Health);
+    set => Properties.Set(SharedProperties.Health, value.Clamp(0, 99));
   }
 
   public int Bombs
   {
-    get => PropertyBag.Get(Properties.Bombs);
-    set => PropertyBag.Set(Properties.Bombs, value.Clamp(0, 99));
+    get => Properties.Get(SharedProperties.Bombs);
+    set => Properties.Set(SharedProperties.Bombs, value.Clamp(0, 99));
   }
 
   public int Coins
   {
-    get => PropertyBag.Get(Properties.Coins);
-    set => PropertyBag.Set(Properties.Coins, value.Clamp(0, 99));
+    get => Properties.Get(SharedProperties.Coins);
+    set => Properties.Set(SharedProperties.Coins, value.Clamp(0, 99));
   }
 
   protected override void OnEnable()

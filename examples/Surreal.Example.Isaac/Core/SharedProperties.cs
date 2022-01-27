@@ -1,7 +1,7 @@
 ﻿namespace Isaac.Core;
 
 /// <summary>Commonly used <see cref="Property{T}"/>s across the project.</summary>
-public static class Properties
+public static class SharedProperties
 {
   public static Property<int> Health { get; } = new(nameof(Health));
   public static Property<int> Bombs  { get; } = new(nameof(Bombs));

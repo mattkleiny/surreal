@@ -1,10 +1,12 @@
-﻿namespace Surreal.IO.Persistence;
+﻿using Surreal.Collections;
+
+namespace Surreal.IO.Persistence;
 
 public class InMemoryPersistentStoreTests
 {
-  private static PersistentProperty<int>   Health    { get; } = new(nameof(Health));
-  private static PersistentProperty<float> Depth     { get; } = new(nameof(Depth));
-  private static PersistentProperty<bool>  IsEnabled { get; } = new(nameof(IsEnabled), true);
+  private static Property<int>   Health    { get; } = new(nameof(Health));
+  private static Property<float> Depth     { get; } = new(nameof(Depth));
+  private static Property<bool>  IsEnabled { get; } = new(nameof(IsEnabled), true);
 
   [Test]
   public void it_should_persist_and_restore_properties()
