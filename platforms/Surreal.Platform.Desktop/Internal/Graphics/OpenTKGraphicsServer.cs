@@ -12,7 +12,7 @@ namespace Surreal.Internal.Graphics;
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
-  private readonly OpenTKShaderCompiler shaderCompiler = new();
+  public IShaderCompiler ShaderCompiler { get; } = new OpenTKShaderCompiler();
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -164,9 +164,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
   {
+    CompileShader(handle, ShaderCompiler.CompileShader(declaration));
+  }
+
+  public void CompileShader(GraphicsHandle handle, ICompiledShader compiled)
+  {
     var program = new ProgramHandle(handle);
 
-    var (path, shaders) = shaderCompiler.Compile(declaration);
+    var (path, shaders) = (OpenTKShaderSet) compiled;
     var shaderIds = new ShaderHandle[shaders.Length];
 
     GL.UseProgram(program);

@@ -225,6 +225,13 @@ public abstract record ShaderSyntaxTree
     /// <summary>A simple unary operator expression.</summary>
     /// <example>-4</example>
     public sealed record UnaryOperation(UnaryOperator Operator, Expression Value) : Expression;
+
+    /// <summary>A function call expression.</summary>
+    /// <example>luminance(color.rgb);</example>
+    public sealed record FunctionCall(string Name)
+    {
+      public ImmutableArray<Parameter> Parameters { get; init; } = ImmutableArray<Parameter>.Empty;
+    }
   }
 
   /// <summary>Binary operators used in binary expressions.</summary>

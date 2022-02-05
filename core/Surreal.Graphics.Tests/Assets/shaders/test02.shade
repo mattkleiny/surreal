@@ -5,25 +5,24 @@
 #shader_type sprite;
 
 uniform float flash_amount;
+uniform vec4  flash_color1 = vec4(1, 1, 1, 1);
+uniform vec4  flash_color2 = vec4(0, 0, 0, 1);
 uniform float flash_cutoff;
-uniform vec4  flash_color;
 
 void fragment() {
-  vec4 color = SAMPLE(TEXTURE, UV);
-  vec2 pixel_size = TEXTURE_PIXEL_SIZE;
+	vec4 color  = SAMPLE(TEXTURE, UV);
+	vec3 output = color.rgb; // we're not touching the alpha channel
 
-  vec3 albedo = color.rgb; // we're modifying the color properties, not the alpha
+	// flash the sprite's luminous parts based on the given flash color
+	if (flash_amount > 0.0f) {
+		float luminance = luminance(output);
 
-  // flash the sprite's luminous parts based on the given flash color
-  if (flash_amount > 0.0f) {
-    float luminance = luminance(albedo);
+		if (luminance > flash_cutoff) {
+			output = mix(color.rgb, flash_color1.rgb, flash_amount);
+		} else {
+			output = mix(color.rgb, flash_color2.rgb, flash_amount);
+		}
+	}
 
-    if (luminance > flash_cutoff) {
-      albedo = mix(color.rgb, luminance + flash_color.rgb, flash_amount);
-    } else {
-      albedo = mix(color.rgb, vec3(0, 0, 0), flash_amount);
-    }
-  }
-
-  COLOR = vec4(albedo, color.a);
+	COLOR = vec4(output, color.a);
 }

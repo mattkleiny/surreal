@@ -12,7 +12,7 @@ namespace Surreal.Internal.Graphics;
 internal sealed record OpenTKShader(ShaderType Type, string Code);
 
 /// <summary>A set of <see cref="OpenTKShader"/>s.</summary>
-internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders);
+internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders) : ICompiledShader;
 
 /// <summary>
 /// The shader compiler for OpenTK.
@@ -20,7 +20,7 @@ internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader>
 /// This implementation transpiles shader programs into GLSL code, for later compilation.
 /// by the OpenGL driver (using the standard glShader* method).
 /// </summary>
-internal sealed class OpenTKShaderCompiler
+internal sealed class OpenTKShaderCompiler : IShaderCompiler
 {
   private readonly string version;
 
@@ -29,7 +29,7 @@ internal sealed class OpenTKShaderCompiler
     this.version = version;
   }
 
-  public OpenTKShaderSet Compile(ShaderDeclaration declaration)
+  public ICompiledShader CompileShader(ShaderDeclaration declaration)
   {
     var shaders = ImmutableArray.CreateBuilder<OpenTKShader>(declaration.CompilationUnit.Stages.Length);
 
@@ -268,7 +268,7 @@ internal sealed class OpenTKShaderCompiler
 
     private StringBuilder StartLine() => StringBuilder.AppendIndent(IndentLevel);
 
-    public void AppendLine()           => StringBuilder.AppendLine();
+    public void AppendLine() => StringBuilder.AppendLine();
     public void AppendLine(string raw) => StringBuilder.AppendLine(raw);
 
     public void AppendComment(string text)

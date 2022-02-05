@@ -20,6 +20,8 @@ public readonly record struct GraphicsHandle(uint Id)
 /// <summary>An abstraction over the different types of graphics servers available.</summary>
 public interface IGraphicsServer
 {
+  IShaderCompiler ShaderCompiler { get; }
+
   // intrinsics
   void SetViewportSize(Viewport viewport);
   void ClearColorBuffer(Color color);
@@ -41,6 +43,7 @@ public interface IGraphicsServer
   // shaders
   GraphicsHandle CreateShader();
   void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration);
+  void CompileShader(GraphicsHandle handle, ICompiledShader compiled);
   void SetShaderUniform(GraphicsHandle handle, string name, int value);
   void SetShaderUniform(GraphicsHandle handle, string name, float value);
   void SetShaderUniform(GraphicsHandle handle, string name, Vector2I value);

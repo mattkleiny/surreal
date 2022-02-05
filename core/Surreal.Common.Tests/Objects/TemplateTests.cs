@@ -11,7 +11,7 @@ public class TemplateTests
   private sealed class TestObject
   {
     [Template(typeof(TestObject))]
-    private sealed class TestObjectBlueprint : ITemplate<TestObject>
+    private sealed record TestObjectBlueprint : ITemplate<TestObject>
     {
       public TestObject Create()
       {
