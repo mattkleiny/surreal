@@ -11,7 +11,7 @@ public readonly record struct AudioHandle(uint Id)
   }
 
   public static implicit operator uint(AudioHandle handle) => handle.Id;
-  public static implicit operator int(AudioHandle handle)  => (int) handle.Id;
+  public static implicit operator int(AudioHandle handle) => (int) handle.Id;
 }
 
 /// <summary>Represents the audio subsystem.</summary>
@@ -19,11 +19,10 @@ public interface IAudioServer
 {
   // audio clips
   AudioHandle CreateAudioClip();
-  void        DeleteAudioClip(AudioHandle handle);
-
+  void DeleteAudioClip(AudioHandle handle);
   void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> buffer) where T : unmanaged;
 
   // audio sources
   AudioHandle CreateAudioSource();
-  void        DeleteAudioSource(AudioHandle handle);
+  void DeleteAudioSource(AudioHandle handle);
 }
