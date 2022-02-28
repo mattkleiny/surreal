@@ -362,8 +362,15 @@ public abstract class Parser<T>
   /// <summary>Contextual access for including <see cref="T"/>s recursively.</summary>
   protected abstract class IncludeContext
   {
-    public static IncludeContext Standard()                        => new StaticIncludeContext();
-    public static IncludeContext FromAssets(IAssetManager manager) => new AssetIncludeContext(manager);
+    public static IncludeContext Static()
+    {
+      return new StaticIncludeContext();
+    }
+
+    public static IncludeContext FromAssets(IAssetManager manager)
+    {
+      return new AssetIncludeContext(manager);
+    }
 
     /// <summary>Loads the given related shader back through the parsing pipeline pipeline.</summary>
     public abstract ValueTask<T> LoadAsync(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default);

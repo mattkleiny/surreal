@@ -2,5 +2,5 @@
 
 // Standard RGB to Luma conversion, with variance for human eye sight
 float luminance(vec3 color) {
-	return (0.2126 * color.r) + (0.7152 * color.g) + (0.0722 * color.b);
+//	return (0.2126 * color.r) + (0.7152 * color.g) + (0.0722 * color.b);
 }

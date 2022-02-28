@@ -12,26 +12,16 @@ public interface IPersistentObject
 /// <summary>Static extensions for <see cref="IPersistentObject"/>s.</summary>
 public static class PersistentObjectExtensions
 {
-  public static void Persist(this IPersistentObject persistent, IPersistenceStore store, PersistenceMode mode = PersistenceMode.Transient)
+  public static void Persist(this IPersistentObject persistent, PersistenceContext context)
   {
-    var context = new PersistenceContext
-    {
-      Mode = mode,
-    };
-
-    var writer = store.CreateWriter(persistent.Id);
+    var writer = context.Store.CreateWriter(persistent.Id);
 
     persistent.OnPersistState(context, writer);
   }
 
-  public static void Resume(this IPersistentObject persistent, IPersistenceStore store, PersistenceMode mode = PersistenceMode.Transient)
+  public static void Resume(this IPersistentObject persistent, PersistenceContext context)
   {
-    var context = new PersistenceContext
-    {
-      Mode = mode,
-    };
-
-    if (store.CreateReader(persistent.Id, out var reader))
+    if (context.Store.CreateReader(persistent.Id, out var reader))
     {
       persistent.OnResumeState(context, reader);
     }

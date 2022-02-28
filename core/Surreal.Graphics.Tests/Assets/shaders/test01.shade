@@ -8,5 +8,5 @@ uniform float intensity;
 uniform vec4  tint;
 
 void fragment() {
-  COLOR = SAMPLE(TEXTURE, UV) * tint;
+  // COLOR = SAMPLE(TEXTURE, UV) * tint;
 }

@@ -52,7 +52,7 @@ public class OpenTKShaderCompilerTests
       ),
     };
 
-    var program = (OpenTKShaderSet) compiler.Compile(new ShaderDeclaration("test.shade", compilationUnit));
+    var program = (OpenTKShaderSet) compiler.CompileShader(new ShaderDeclaration("test.shade", compilationUnit));
 
     Assert.IsNotNull(program);
     Assert.AreEqual(2, program.Shaders.Length);

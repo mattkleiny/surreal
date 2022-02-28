@@ -15,8 +15,6 @@ public class StandardShaderParserTests
     Assert.IsNotNull(declaration);
     Assert.IsTrue(declaration.CompilationUnit.ShaderType is { Type: "sprite" });
     Assert.AreEqual(1, declaration.CompilationUnit.Includes.Count);
-    Assert.AreEqual(4, declaration.CompilationUnit.Uniforms.Length);
-    Assert.AreEqual(1, declaration.CompilationUnit.Varyings.Length);
     Assert.AreEqual(2, declaration.CompilationUnit.Stages.Length);
   }
 }

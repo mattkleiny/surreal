@@ -13,7 +13,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
   private readonly IncludeContext includeContext;
 
   public BlueprintParser()
-    : this(IncludeContext.Standard())
+    : this(IncludeContext.Static())
   {
   }
 

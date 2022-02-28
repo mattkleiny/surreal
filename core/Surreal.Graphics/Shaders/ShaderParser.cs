@@ -22,7 +22,7 @@ public sealed class StandardShaderParser : ShaderParser
   private readonly IncludeContext includeContext;
 
   public StandardShaderParser()
-    : this(IncludeContext.Standard())
+    : this(IncludeContext.Static())
   {
   }
 

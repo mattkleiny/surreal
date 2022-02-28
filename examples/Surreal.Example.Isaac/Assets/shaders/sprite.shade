@@ -6,7 +6,6 @@
 
 uniform vec3 _Tint;
 
-void fragment(vec3 color)
-{
+void fragment(vec3 color) {
   COLOR = sample_palette(color) * _Tint;
 }
