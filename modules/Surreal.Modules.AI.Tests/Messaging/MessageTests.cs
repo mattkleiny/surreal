@@ -24,7 +24,7 @@ public class MessageTests
     Assert.AreEqual(7, result.Height);
   }
 
-  private struct TestMessage
+  private record struct TestMessage()
   {
     public int Width  { get; set; } = 16;
     public int Height { get; set; } = 9;

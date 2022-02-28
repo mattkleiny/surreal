@@ -42,7 +42,7 @@ public class CanvasTests
     }
 
     /// <summary>State for our <see cref="StatisticsCanvas"/> paint operations.</summary>
-    private struct StatisticsState
+    private record struct StatisticsState()
     {
       public float FramesPerSecond  { get; set; } = 144.0f;
       public uint  VerticesOnScreen { get; set; } = 10_000;
