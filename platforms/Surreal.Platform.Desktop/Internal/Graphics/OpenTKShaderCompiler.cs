@@ -8,11 +8,11 @@ using PrimitiveType = Surreal.Graphics.Shaders.PrimitiveType;
 
 namespace Surreal.Internal.Graphics;
 
-/// <summary>A single shader, unliked to a program.</summary>
+/// <summary>A single shader, unlinked to a program.</summary>
 internal sealed record OpenTKShader(ShaderType Type, string Code);
 
 /// <summary>A set of <see cref="OpenTKShader"/>s.</summary>
-internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders) : ICompiledShader;
+internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders);
 
 /// <summary>
 /// The shader compiler for OpenTK.
@@ -20,7 +20,7 @@ internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader>
 /// This implementation transpiles shader programs into GLSL code, for later compilation.
 /// by the OpenGL driver (using the standard glShader* method).
 /// </summary>
-internal sealed class OpenTKShaderCompiler : IShaderCompiler
+internal sealed class OpenTKShaderCompiler
 {
   private readonly string version;
 
@@ -29,7 +29,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
     this.version = version;
   }
 
-  public ICompiledShader CompileShader(ShaderDeclaration declaration)
+  public OpenTKShaderSet CompileShader(ShaderDeclaration declaration)
   {
     var shaders = ImmutableArray.CreateBuilder<OpenTKShader>(declaration.CompilationUnit.Stages.Length);
 
@@ -60,7 +60,7 @@ internal sealed class OpenTKShaderCompiler : IShaderCompiler
   /// <summary>Context for compiling a single shader program.</summary>
   private sealed class ShaderCompileContext
   {
-    private readonly string            version;
+    private readonly string version;
     private readonly ShaderCodeBuilder builder;
 
     public ShaderCompileContext(string version)

@@ -12,7 +12,7 @@ namespace Surreal.Internal.Graphics;
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
-  public IShaderCompiler ShaderCompiler { get; } = new OpenTKShaderCompiler();
+  public OpenTKShaderCompiler ShaderCompiler { get; } = new();
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -63,7 +63,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var (offset, length) = range.GetOffsetAndLength(sizeInBytes / stride);
 
     var byteOffset = offset * stride;
-    var result     = new T[length];
+    var result = new T[length];
 
     fixed (T* pointer = result)
     {
@@ -77,7 +77,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
-    var bytes  = data.Length * sizeof(T);
+    var bytes = data.Length * sizeof(T);
 
     fixed (T* pointer = data)
     {
@@ -106,7 +106,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var texture = new TextureHandle(handle);
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
 
-    var width  = 0;
+    var width = 0;
     var height = 0;
 
     GL.BindTexture(TextureTarget.Texture2d, texture);
@@ -167,18 +167,17 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     CompileShader(handle, ShaderCompiler.CompileShader(declaration));
   }
 
-  public void CompileShader(GraphicsHandle handle, ICompiledShader compiled)
+  public void CompileShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
   {
     var program = new ProgramHandle(handle);
 
-    var (path, shaders) = (OpenTKShaderSet) compiled;
-    var shaderIds = new ShaderHandle[shaders.Length];
+    var shaderIds = new ShaderHandle[shaderSet.Shaders.Length];
 
     GL.UseProgram(program);
 
-    for (var i = 0; i < shaders.Length; i++)
+    for (var i = 0; i < shaderSet.Shaders.Length; i++)
     {
-      var (stage, code) = shaders[i];
+      var (stage, code) = shaderSet.Shaders[i];
 
       var shader = shaderIds[i] = GL.CreateShader(stage);
 
@@ -194,7 +193,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
         GL.GetShaderInfoLog(shader, out var errorLog);
         GL.DeleteShader(shader); // don't leak the shader
 
-        throw new PlatformException($"An error occurred whilst compiling a {stage} shader from {path}: {errorLog}");
+        throw new PlatformException($"An error occurred whilst compiling a {stage} shader from {shaderSet.Path}: {errorLog}");
       }
 
       GL.AttachShader(program, shader);
@@ -210,7 +209,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       GL.GetProgramInfoLog(program, out var errorLog);
       GL.DeleteProgram(program); // don't leak the program
 
-      throw new PlatformException($"An error occurred whilst linking a shader program from {path}: {errorLog}");
+      throw new PlatformException($"An error occurred whilst linking a shader program from {shaderSet.Path}: {errorLog}");
     }
 
     // we're finished with the shaders, now
@@ -222,7 +221,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, int value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform1i(location, value);
@@ -230,7 +229,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, float value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform1f(location, value);
@@ -238,7 +237,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, Point2 value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform2i(location, value.X, value.Y);
@@ -246,7 +245,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, Point3 value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform3i(location, value.X, value.Y, value.Z);
@@ -254,7 +253,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, Vector2 value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform2f(location, value.X, value.Y);
@@ -262,7 +261,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, Vector3 value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform3f(location, value.X, value.Y, value.Z);
@@ -270,7 +269,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, Vector4 value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
@@ -278,7 +277,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, string name, Quaternion value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
@@ -286,7 +285,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
@@ -296,7 +295,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value)
   {
-    var program  = new ProgramHandle(handle);
+    var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
 
     var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));

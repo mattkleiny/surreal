@@ -6,6 +6,7 @@ namespace Surreal.Automata.StateMachines;
 /// <summary>Status for an <see cref="State"/> operation.</summary>
 public enum StateStatus
 {
+  Sleeping,
   Running,
   Success,
   Failure,
@@ -18,7 +19,13 @@ public readonly record struct StateContext(
   StateMachine StateMachine,
   LevelOfDetail LevelOfDetail = LevelOfDetail.Medium,
   Priority Priority = Priority.Medium
-);
+)
+{
+  public void TransitionTo(State newState)
+  {
+    throw new NotImplementedException();
+  }
+}
 
 /// <summary>An <see cref="IAutomata"/> that implements a finite state machine.</summary>
 public sealed class StateMachine : IAutomata, IMessageListener
@@ -52,9 +59,10 @@ public sealed class StateMachine : IAutomata, IMessageListener
 
     return status switch
     {
-      StateStatus.Running => AutomataStatus.Running,
-      StateStatus.Success => AutomataStatus.Success,
-      StateStatus.Failure => AutomataStatus.Failure,
+      StateStatus.Sleeping => AutomataStatus.Running,
+      StateStatus.Running  => AutomataStatus.Running,
+      StateStatus.Success  => AutomataStatus.Success,
+      StateStatus.Failure  => AutomataStatus.Failure,
 
       _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
     };
@@ -71,6 +79,10 @@ public abstract record State
 {
   public StateStatus CurrentStatus { get; private set; }
 
+  protected internal virtual void OnAwake(in StateContext context)
+  {
+  }
+
   protected internal virtual void OnEnter(in StateContext context)
   {
   }
@@ -85,6 +97,11 @@ public abstract record State
 
   protected internal StateStatus Update(in StateContext context, DeltaTime deltaTime)
   {
+    if (CurrentStatus == StateStatus.Sleeping)
+    {
+      OnAwake(in context);
+    }
+
     if (CurrentStatus != StateStatus.Running)
     {
       OnEnter(in context);

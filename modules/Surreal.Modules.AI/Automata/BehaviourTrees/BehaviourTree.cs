@@ -77,6 +77,10 @@ public abstract record BehaviourNode
 {
   public BehaviourStatus CurrentStatus { get; private set; }
 
+  protected internal virtual void OnAwake(in BehaviourContext context)
+  {
+  }
+
   protected internal virtual void OnEnter(in BehaviourContext context)
   {
   }
@@ -91,6 +95,11 @@ public abstract record BehaviourNode
 
   public BehaviourStatus Update(in BehaviourContext context, DeltaTime deltaTime)
   {
+    if (CurrentStatus == BehaviourStatus.Sleeping)
+    {
+      OnAwake(in context);
+    }
+
     if (CurrentStatus != BehaviourStatus.Running)
     {
       OnEnter(in context);

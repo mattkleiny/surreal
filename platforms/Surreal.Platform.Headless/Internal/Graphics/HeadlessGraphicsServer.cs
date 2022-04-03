@@ -12,8 +12,6 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
   private int nextTextureId = 0;
   private int nextShaderId  = 0;
 
-  public IShaderCompiler ShaderCompiler => throw new NotImplementedException();
-
   public void SetViewportSize(Viewport viewport)
   {
     // no-op
@@ -79,17 +77,12 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
     return new GraphicsHandle(Interlocked.Increment(ref nextShaderId));
   }
 
-  public void CompileShader(GraphicsHandle handle, ICompiledShader compiled)
+  public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
   {
     // no-op
   }
 
   public void DeleteShader(GraphicsHandle handle)
-  {
-    // no-op
-  }
-
-  public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
   {
     // no-op
   }

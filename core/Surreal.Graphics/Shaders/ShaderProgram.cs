@@ -8,7 +8,7 @@ namespace Surreal.Graphics.Shaders;
 public sealed class ShaderProgram : GraphicsResource
 {
   private readonly IGraphicsServer server;
-  private readonly GraphicsHandle  handle;
+  private readonly GraphicsHandle handle;
 
   public ShaderProgram(IGraphicsServer server, ShaderDeclaration declaration)
   {
@@ -43,14 +43,14 @@ public sealed class ShaderProgram : GraphicsResource
     throw new NotImplementedException();
   }
 
-  public void SetUniform(string name, int value)          => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, float value)        => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Point2 value)     => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Point3 value)     => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Vector2 value)      => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Vector3 value)      => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Vector4 value)      => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Quaternion value)   => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, int value) => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, float value) => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Point2 value) => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Point3 value) => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Vector2 value) => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Vector3 value) => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Vector4 value) => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Quaternion value) => server.SetShaderUniform(handle, name, value);
   public void SetUniform(string name, in Matrix3x2 value) => server.SetShaderUniform(handle, name, in value);
   public void SetUniform(string name, in Matrix4x4 value) => server.SetShaderUniform(handle, name, in value);
 
@@ -68,7 +68,7 @@ public sealed class ShaderProgram : GraphicsResource
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ShaderProgram"/>s.</summary>
 public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 {
-  private readonly IGraphicsServer          server;
+  private readonly IGraphicsServer server;
   private readonly ImmutableHashSet<string> extensions;
 
   public ShaderProgramLoader(IGraphicsServer server, params string[] extensions)

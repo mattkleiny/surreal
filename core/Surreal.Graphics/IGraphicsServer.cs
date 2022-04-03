@@ -6,22 +6,15 @@ using Surreal.Mathematics;
 namespace Surreal.Graphics;
 
 /// <summary>An opaque handle to a resource in the underling <see cref="IGraphicsServer"/> implementation.</summary>
-public readonly record struct GraphicsHandle(uint Id)
+public readonly record struct GraphicsHandle(int Id)
 {
-  public GraphicsHandle(int id)
-    : this((uint) id)
-  {
-  }
-
-  public static implicit operator uint(GraphicsHandle handle) => handle.Id;
-  public static implicit operator int(GraphicsHandle handle) => (int) handle.Id;
+  public static implicit operator int(GraphicsHandle handle) => handle.Id;
+  public static implicit operator uint(GraphicsHandle handle) => (uint) handle.Id;
 }
 
 /// <summary>An abstraction over the different types of graphics servers available.</summary>
 public interface IGraphicsServer
 {
-  IShaderCompiler ShaderCompiler { get; }
-
   // intrinsics
   void SetViewportSize(Viewport viewport);
   void ClearColorBuffer(Color color);
@@ -43,7 +36,6 @@ public interface IGraphicsServer
   // shaders
   GraphicsHandle CreateShader();
   void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration);
-  void CompileShader(GraphicsHandle handle, ICompiledShader compiled);
   void SetShaderUniform(GraphicsHandle handle, string name, int value);
   void SetShaderUniform(GraphicsHandle handle, string name, float value);
   void SetShaderUniform(GraphicsHandle handle, string name, Point2 value);

@@ -48,9 +48,9 @@ public sealed record ShaderDeclaration(string Path, CompilationUnit CompilationU
 /// <summary>An <see cref="AssetLoader{T}"/> for <see cref="ShaderDeclaration"/>s.</summary>
 public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 {
-  private readonly ShaderParser             parser;
+  private readonly ShaderParser parser;
   private readonly ImmutableHashSet<string> extensions;
-  private readonly Encoding                 encoding;
+  private readonly Encoding encoding;
 
   public ShaderDeclarationLoader(ShaderParser parser, params string[] extensions)
     : this(parser, extensions.AsEnumerable())

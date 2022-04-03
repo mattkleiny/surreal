@@ -44,7 +44,7 @@ public sealed class StandardShaderParser : ShaderParser
 
   public override async ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
-    var tokens  = await TokenizeAsync(Keywords, reader, cancellationToken);
+    var tokens = await TokenizeAsync(Keywords, reader, cancellationToken);
     var context = new ShaderParserContext(tokens);
 
     // parse the main compilation unit
@@ -146,7 +146,7 @@ public sealed class StandardShaderParser : ShaderParser
     private Statement ParseFunction()
     {
       var returnType = ParsePrimitive();
-      var name       = ParseIdentifier();
+      var name = ParseIdentifier();
       var parameters = ParseParameters();
       var statements = ParseStatements();
 
@@ -300,8 +300,8 @@ public sealed class StandardShaderParser : ShaderParser
 
     private ConstantDeclaration ParseConstantDeclaration()
     {
-      var type  = ParsePrimitive();
-      var name  = ParseIdentifier();
+      var type = ParsePrimitive();
+      var name = ParseIdentifier();
       var value = ParseExpression();
 
       return new ConstantDeclaration(type, name, value);
@@ -324,7 +324,7 @@ public sealed class StandardShaderParser : ShaderParser
     private Primitive ParsePrimitive()
     {
       var precision = default(Precision?);
-      var literal   = ConsumeLiteral<string>(TokenType.Identifier);
+      var literal = ConsumeLiteral<string>(TokenType.Identifier);
 
       if (literal is "lowp" or "medp" or "highp")
       {
@@ -375,7 +375,7 @@ public sealed class StandardShaderParser : ShaderParser
 
     private SampleOperation ParseSampleOperation()
     {
-      var name  = ParseIdentifier();
+      var name = ParseIdentifier();
       var value = ParseExpression();
 
       return new SampleOperation(name, value);

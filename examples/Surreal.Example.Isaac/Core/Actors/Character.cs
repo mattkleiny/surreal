@@ -22,20 +22,20 @@ public class Character : Actor, IDamageReceiver
 
   public int Health
   {
-    get => Properties.Get(SharedProperties.Health);
-    set => Properties.Set(SharedProperties.Health, value.Clamp(0, 99));
+    get => Properties.Get(Core.Properties.Health);
+    set => Properties.Set(Core.Properties.Health, value.Clamp(0, 99));
   }
 
   public int Bombs
   {
-    get => Properties.Get(SharedProperties.Bombs);
-    set => Properties.Set(SharedProperties.Bombs, value.Clamp(0, 99));
+    get => Properties.Get(Core.Properties.Bombs);
+    set => Properties.Set(Core.Properties.Bombs, value.Clamp(0, 99));
   }
 
   public int Coins
   {
-    get => Properties.Get(SharedProperties.Coins);
-    set => Properties.Set(SharedProperties.Coins, value.Clamp(0, 99));
+    get => Properties.Get(Core.Properties.Coins);
+    set => Properties.Set(Core.Properties.Coins, value.Clamp(0, 99));
   }
 
   protected override void OnEnable()

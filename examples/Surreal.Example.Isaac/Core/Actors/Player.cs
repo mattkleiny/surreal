@@ -14,15 +14,15 @@ public sealed class Player : Character, IPersistentObject
 
   void IPersistentObject.OnPersistState(PersistenceContext context, IPersistenceWriter writer)
   {
-    writer.Write(SharedProperties.Health, Health);
-    writer.Write(SharedProperties.Coins, Coins);
-    writer.Write(SharedProperties.Bombs, Bombs);
+    writer.Write(Core.Properties.Health, Health);
+    writer.Write(Core.Properties.Coins, Coins);
+    writer.Write(Core.Properties.Bombs, Bombs);
   }
 
   void IPersistentObject.OnResumeState(PersistenceContext context, IPersistenceReader reader)
   {
-    Health = reader.Read(SharedProperties.Health, 100);
-    Coins = reader.Read(SharedProperties.Coins, 0);
-    Bombs = reader.Read(SharedProperties.Bombs, 0);
+    Health = reader.Read(Core.Properties.Health, 100);
+    Coins = reader.Read(Core.Properties.Coins, 0);
+    Bombs = reader.Read(Core.Properties.Bombs, 0);
   }
 }

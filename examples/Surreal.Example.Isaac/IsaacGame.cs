@@ -11,7 +11,7 @@ public sealed class IsaacGame : PrototypeGame
     {
       Configuration =
       {
-        Title = "The Binding of Isaac",
+        Title          = "The Binding of Isaac",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
       },
