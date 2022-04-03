@@ -35,22 +35,19 @@ public class BinarySerializationTests
   [Test, AutoFixture] public ValueTask it_should_serialize_Seed(Seed value)
     => BinarySerializer.SerializeAsync(value, CreateWriter());
 
-  [Test, AutoFixture] public ValueTask it_should_serialize_Vector2I(Vector2I value)
+  [Test, AutoFixture] public ValueTask it_should_serialize_Point2(Point2 value)
+    => BinarySerializer.SerializeAsync(value, CreateWriter());
+
+  [Test, AutoFixture] public ValueTask it_should_serialize_Point3(Point3 value)
     => BinarySerializer.SerializeAsync(value, CreateWriter());
 
   [Test, AutoFixture] public ValueTask it_should_serialize_Vector2(Vector2 value)
-    => BinarySerializer.SerializeAsync(value, CreateWriter());
-
-  [Test, AutoFixture] public ValueTask it_should_serialize_Vector3I(Vector3I value)
     => BinarySerializer.SerializeAsync(value, CreateWriter());
 
   [Test, AutoFixture] public ValueTask it_should_serialize_Vector3(Vector3 value)
     => BinarySerializer.SerializeAsync(value, CreateWriter());
 
   [Test, AutoFixture] public ValueTask it_should_serialize_Vector4(Vector4 value)
-    => BinarySerializer.SerializeAsync(value, CreateWriter());
-
-  [Test, AutoFixture] public ValueTask it_should_serialize_VolumeI(VolumeI value)
     => BinarySerializer.SerializeAsync(value, CreateWriter());
 
   [Test, AutoFixture] public ValueTask it_should_serialize_Volume(Volume value)

@@ -6,9 +6,9 @@ namespace Minecraft.Worlds;
 /// <summary>A chunk of the game world.</summary>
 public sealed class Chunk
 {
-  public static VolumeI Size { get; } = new(16, 128, 16);
+  public static Point3 Size { get; } = new(16, 128, 16);
 
-  private readonly IBuffer<ushort> voxels = Buffers.AllocatePinned<ushort>(Size.Total);
+  private readonly IBuffer<ushort> voxels = Buffers.AllocatePinned<ushort>(Size.X * Size.Y * Size.Z);
 
   /// <summary>Generates a <see cref="Chunk"/> with the given <see cref="ChunkGenerator"/>.</summary>
   public static Chunk Generate(ChunkGenerator generator)
@@ -33,13 +33,13 @@ public sealed class Chunk
   /// <summary>Invoked when a voxel or block is changed in the chunk.</summary>
   public event Action? Changed;
 
-  public int          Width   => Size.Width;
-  public int          Height  => Size.Height;
-  public int          Depth   => Size.Depth;
+  public int          Width   => Size.X;
+  public int          Height  => Size.Y;
+  public int          Depth   => Size.Z;
   public Span<ushort> Voxels  => voxels.Data.Span;
   public BlockPalette Palette { get; }
 
-  public ChunkSlice this[Vector3I offset, VolumeI size] => new(this, offset, size);
+  public ChunkSlice this[Point3 offset, Point3 size] => new(this, offset, size);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Block GetBlock(int x, int y, int z)
@@ -88,24 +88,24 @@ public readonly struct ChunkSlice
 {
   public static ChunkSlice Empty => default;
 
-  private readonly Chunk?   chunk;
-  private readonly Vector3I offset;
-  private readonly VolumeI  size;
+  private readonly Chunk? chunk;
+  private readonly Point3 offset;
+  private readonly Point3 size;
 
-  public ChunkSlice(Chunk chunk, Vector3I offset, VolumeI size)
+  public ChunkSlice(Chunk chunk, Point3 offset, Point3 size)
   {
     this.chunk  = chunk;
     this.offset = offset;
     this.size   = size;
   }
 
-  public int Width  => size.Width;
-  public int Height => size.Height;
-  public int Depth  => size.Depth;
+  public int Width  => size.X;
+  public int Height => size.Y;
+  public int Depth  => size.Z;
 
   public BlockPalette Palette => chunk?.Palette ?? Block.Palette;
 
-  public ChunkSlice this[Vector3I offset, VolumeI size]
+  public ChunkSlice this[Point3 offset, Point3 size]
   {
     get
     {
@@ -127,9 +127,9 @@ public readonly struct ChunkSlice
         return Span<ushort>.Empty;
       }
 
-      var start = offset.X + offset.Y * Chunk.Size.Width + offset.Z * Chunk.Size.Width * Chunk.Size.Height;
+      var start = offset.X + offset.Y * Chunk.Size.X + offset.Z * Chunk.Size.Y * Chunk.Size.Z;
 
-      return chunk.Voxels[start..(start + size.Total)];
+      return chunk.Voxels[start..(start + (size.X * size.Y * size.Z))];
     }
   }
 
@@ -138,5 +138,5 @@ public readonly struct ChunkSlice
     chunk?.NotifyChanged();
   }
 
-  public static implicit operator ChunkSlice(Chunk chunk) => new(chunk, Vector3I.Zero, Chunk.Size);
+  public static implicit operator ChunkSlice(Chunk chunk) => new(chunk, Point3.Zero, Chunk.Size);
 }

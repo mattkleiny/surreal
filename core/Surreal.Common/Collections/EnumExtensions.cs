@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Surreal.Mathematics;
 using Surreal.Text;
 
@@ -6,12 +7,14 @@ namespace Surreal.Collections;
 /// <summary>Extensions methods for enums.</summary>
 public static class EnumExtensions
 {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static unsafe int AsInt<TEnum>(this TEnum value)
     where TEnum : unmanaged, Enum
   {
     return *(int*) &value;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static unsafe TEnum AsEnum<TEnum>(this int value)
     where TEnum : unmanaged, Enum
   {

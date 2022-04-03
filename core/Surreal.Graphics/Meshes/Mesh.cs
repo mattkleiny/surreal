@@ -20,6 +20,7 @@ public abstract class Mesh : IDisposable
   /// <summary>The <see cref="VertexDescriptorSet"/> for the mesh.</summary>
   public abstract VertexDescriptorSet Descriptors { get; }
 
+  /// <summary>Disposes of the mesh, freeing any of it's allocated resources.</summary>
   public abstract void Dispose();
 }
 
@@ -37,11 +38,11 @@ public sealed class Mesh<TVertex> : Mesh
     this.server = server;
 
     Vertices = new GraphicsBuffer<TVertex>(server);
-    Indices  = new GraphicsBuffer<ushort>(server);
+    Indices = new GraphicsBuffer<ushort>(server);
   }
 
   public GraphicsBuffer<TVertex> Vertices { get; }
-  public GraphicsBuffer<ushort>  Indices  { get; }
+  public GraphicsBuffer<ushort> Indices { get; }
 
   public override VertexDescriptorSet Descriptors => VertexDescriptorSet;
 

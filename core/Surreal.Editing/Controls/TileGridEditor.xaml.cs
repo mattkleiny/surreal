@@ -8,14 +8,14 @@ namespace Surreal.Controls;
 public partial class TileGridEditor
 {
   private float    gridSpacing = 48f;
-  private Vector2I gridSize    = new(15, 9);
+  private Point2 gridSize    = new(15, 9);
 
   public TileGridEditor()
   {
     InitializeComponent();
   }
 
-  public Vector2I GridSize
+  public Point2 GridSize
   {
     get => gridSize;
     set

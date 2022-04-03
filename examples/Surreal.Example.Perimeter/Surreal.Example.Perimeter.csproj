@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Perimeter</AssemblyName>
+    <RootNamespace>Perimeter</RootNamespace>
+    <Description>An example game based on Surreal; a simple Perimeter clone.</Description>
+  </PropertyGroup>
+</Project>

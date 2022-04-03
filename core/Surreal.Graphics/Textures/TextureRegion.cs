@@ -6,8 +6,8 @@ namespace Surreal.Graphics.Textures;
 /// <summary>Describes a sub-region of a parent <see cref="Texture"/>.</summary>
 public readonly record struct TextureRegion(Texture Texture)
 {
-  public Vector2I Offset { get; init; } = Vector2I.Zero;
-  public Vector2I Size   { get; init; } = new(Texture.Width, Texture.Height);
+  public Point2 Offset { get; init; } = Point2.Zero;
+  public Point2 Size   { get; init; } = new(Texture.Width, Texture.Height);
 
   public int Width  => Size.X;
   public int Height => Size.Y;

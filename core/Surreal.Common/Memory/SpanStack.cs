@@ -19,7 +19,18 @@ public ref struct SpanStack<T>
 
   public ref T this[Index index] => ref storage[index];
 
-  public Span<T> this[Range range] => storage[range];
+  public SpanStack<T> this[Range range]
+  {
+    get
+    {
+      var (offset, _) = range.GetOffsetAndLength(storage.Length);
+
+      return new SpanStack<T>(storage[range])
+      {
+        Count = Math.Max(Count - offset, 0)
+      };
+    }
+  }
 
   public void Push(T element)
   {

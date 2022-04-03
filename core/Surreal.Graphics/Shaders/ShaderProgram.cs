@@ -45,8 +45,8 @@ public sealed class ShaderProgram : GraphicsResource
 
   public void SetUniform(string name, int value)          => server.SetShaderUniform(handle, name, value);
   public void SetUniform(string name, float value)        => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Vector2I value)     => server.SetShaderUniform(handle, name, value);
-  public void SetUniform(string name, Vector3I value)     => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Point2 value)     => server.SetShaderUniform(handle, name, value);
+  public void SetUniform(string name, Point3 value)     => server.SetShaderUniform(handle, name, value);
   public void SetUniform(string name, Vector2 value)      => server.SetShaderUniform(handle, name, value);
   public void SetUniform(string name, Vector3 value)      => server.SetShaderUniform(handle, name, value);
   public void SetUniform(string name, Vector4 value)      => server.SetShaderUniform(handle, name, value);

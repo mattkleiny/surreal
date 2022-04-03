@@ -100,21 +100,18 @@ public sealed class ChunkMesh : IDisposable
   private struct Vertex
   {
     [VertexDescriptor(
-      Alias = "a_position",
       Count = 3,
       Type = VertexType.Float
     )]
     public Vector3 Position;
 
     [VertexDescriptor(
-      Alias = "a_normal",
       Count = 3,
       Type = VertexType.Float
     )]
     public Vector3 Normal;
 
     [VertexDescriptor(
-      Alias = "a_color",
       Count = 4,
       Type = VertexType.UnsignedByte,
       Normalized = true
@@ -122,7 +119,6 @@ public sealed class ChunkMesh : IDisposable
     public Color Color;
 
     [VertexDescriptor(
-      Alias = "a_texCoord0",
       Count = 2,
       Type = VertexType.Float,
       Normalized = true

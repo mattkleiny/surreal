@@ -176,14 +176,12 @@ public sealed class GeometryBatch : IDisposable
   internal record struct Vertex(Vector2 Position, Color Color)
   {
     [VertexDescriptor(
-      Alias = "a_position",
       Count = 2,
       Type = VertexType.Float
     )]
     public Vector2 Position = Position;
 
     [VertexDescriptor(
-      Alias = "a_color",
       Count = 4,
       Type = VertexType.UnsignedByte,
       Normalized = true

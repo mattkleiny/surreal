@@ -104,12 +104,12 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector2I value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Point2 value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector3I value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Point3 value)
   {
     // no-op
   }

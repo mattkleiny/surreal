@@ -54,8 +54,8 @@ public sealed class SpriteBatch : IDisposable
     Vector2 position,
     Vector2 size,
     Angle rotation,
-    Vector2I regionOffset,
-    Vector2I regionSize,
+    Point2 regionOffset,
+    Point2 regionSize,
     Color color
   )
   {
@@ -163,14 +163,12 @@ public sealed class SpriteBatch : IDisposable
   internal struct Vertex
   {
     [VertexDescriptor(
-      Alias = "a_position",
       Count = 2,
       Type = VertexType.Float
     )]
     public Vector2 Position;
 
     [VertexDescriptor(
-      Alias = "a_color",
       Count = 4,
       Type = VertexType.UnsignedByte,
       Normalized = true
@@ -178,7 +176,6 @@ public sealed class SpriteBatch : IDisposable
     public Color Color;
 
     [VertexDescriptor(
-      Alias = "a_texCoords",
       Count = 2,
       Type = VertexType.Float
     )]

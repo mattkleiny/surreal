@@ -21,4 +21,18 @@ public class SpanStackTests
 
     Assert.IsFalse(stack.TryPop(out _));
   }
+
+  [Test]
+  public void it_should_create_a_sub_stack()
+  {
+    var stack = new SpanStack<ushort>(stackalloc ushort[8]);
+
+    stack.Push(1);
+    stack.Push(2);
+
+    Assert.AreEqual(2, stack[..].Count);
+    Assert.AreEqual(1, stack[1..].Count);
+    Assert.AreEqual(0, stack[2..].Count);
+    Assert.AreEqual(0, stack[3..].Count);
+  }
 }

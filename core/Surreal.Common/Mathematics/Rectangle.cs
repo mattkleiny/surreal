@@ -9,7 +9,7 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   public Vector2 Center => new(Left + Width / 2f, Bottom + Height / 2f);
   public Vector2 Size   => new(Width, Height);
 
-  public bool Contains(Vector2I point)
+  public bool Contains(Point2 point)
   {
     return point.X >= Left &&
            point.X <= Right &&

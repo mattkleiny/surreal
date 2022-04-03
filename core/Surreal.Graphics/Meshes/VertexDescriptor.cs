@@ -23,10 +23,9 @@ public enum VertexType
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute : Attribute
 {
-  public string     Alias      { get; set; } = string.Empty;
-  public int        Count      { get; set; }
-  public VertexType Type       { get; set; }
-  public bool       Normalized { get; set; }
+  public int Count { get; set; }
+  public VertexType Type { get; set; }
+  public bool Normalized { get; set; }
 }
 
 /// <summary>Describes a single vertex.</summary>
@@ -37,14 +36,14 @@ public readonly record struct VertexDescriptor(string Alias, int Count, VertexTy
 
   private static int DetermineSize(VertexType type) => type switch
   {
-    VertexType.Byte          => sizeof(byte),
-    VertexType.UnsignedByte  => sizeof(byte),
-    VertexType.Short         => sizeof(short),
+    VertexType.Byte => sizeof(byte),
+    VertexType.UnsignedByte => sizeof(byte),
+    VertexType.Short => sizeof(short),
     VertexType.UnsignedShort => sizeof(ushort),
-    VertexType.Int           => sizeof(int),
-    VertexType.UnsignedInt   => sizeof(uint),
-    VertexType.Float         => sizeof(float),
-    VertexType.Double        => sizeof(double),
+    VertexType.Int => sizeof(int),
+    VertexType.UnsignedInt => sizeof(uint),
+    VertexType.Float => sizeof(float),
+    VertexType.Double => sizeof(double),
 
     _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
   };
@@ -63,15 +62,15 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
     var values = typeof(TVertex)
       .GetFields(BindingFlags.Public | BindingFlags.Instance)
       .Where(member => member.GetCustomAttribute<VertexDescriptorAttribute>() != null)
-      .Select(member => member.GetCustomAttribute<VertexDescriptorAttribute>()!);
+      .Select(member => (member.Name, member.GetCustomAttribute<VertexDescriptorAttribute>()!));
 
     var builder = ImmutableArray.CreateBuilder<VertexDescriptor>();
-    var stride  = 0;
+    var stride = 0;
 
-    foreach (var attribute in (IEnumerable<VertexDescriptorAttribute>) values)
+    foreach (var (name, attribute) in values)
     {
       var descriptor = new VertexDescriptor(
-        Alias: attribute.Alias,
+        Alias: name,
         Count: attribute.Count,
         Type: attribute.Type,
         Normalized: attribute.Normalized,

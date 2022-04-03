@@ -13,7 +13,7 @@ public class ChunkGeneratorTests
   [Test]
   public void it_should_generate_a_flat_chunk()
   {
-    Assert.IsNotNull(Chunk.Generate(ChunkGenerators.Flat(Block.Dirt, height: Chunk.Size.Height / 2)));
+    Assert.IsNotNull(Chunk.Generate(ChunkGenerators.Flat(Block.Dirt, height: Chunk.Size.Y / 2)));
   }
 
   [Test]

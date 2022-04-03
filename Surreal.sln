@@ -150,6 +150,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Blueprints"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Blueprints.Tests", "modules\Surreal.Modules.Blueprints.Tests\Surreal.Modules.Blueprints.Tests.csproj", "{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Perimeter", "examples\Surreal.Example.Perimeter\Surreal.Example.Perimeter.csproj", "{7C5108EA-2855-4257-81E2-E1F3E8A93171}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Perimeter.Tests", "examples\Surreal.Example.Perimeter.Tests\Surreal.Example.Perimeter.Tests.csproj", "{DB43756F-DDEA-4668-AB62-E73B4B9A212E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -376,6 +380,14 @@ Global
 		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C5108EA-2855-4257-81E2-E1F3E8A93171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C5108EA-2855-4257-81E2-E1F3E8A93171}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C5108EA-2855-4257-81E2-E1F3E8A93171}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C5108EA-2855-4257-81E2-E1F3E8A93171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB43756F-DDEA-4668-AB62-E73B4B9A212E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB43756F-DDEA-4668-AB62-E73B4B9A212E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB43756F-DDEA-4668-AB62-E73B4B9A212E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB43756F-DDEA-4668-AB62-E73B4B9A212E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -441,5 +453,7 @@ Global
 		{CFA70889-B8DC-4A62-B373-B4FF887C0AE8} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{16ABE188-FEE3-4BDC-8B1A-A98A1FE84743} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{34862CD4-E933-4CD0-B9BF-B1C3662A7D96} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
+		{7C5108EA-2855-4257-81E2-E1F3E8A93171} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{DB43756F-DDEA-4668-AB62-E73B4B9A212E} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal

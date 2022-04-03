@@ -39,14 +39,12 @@ public sealed class VertexDescriptorTests
   private struct Vertex
   {
     [VertexDescriptor(
-      Alias = "a_position",
       Count = 3,
       Type = VertexType.Float
     )]
     public Vector3 Position;
 
     [VertexDescriptor(
-      Alias = "a_color",
       Count = 4,
       Type = VertexType.Float,
       Normalized = true

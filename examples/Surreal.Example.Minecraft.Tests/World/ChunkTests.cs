@@ -17,7 +17,7 @@ public class ChunkTests
   {
     var chunk = new Chunk();
 
-    var slice       = chunk[new Vector3I(1, 1, 1), new VolumeI(2, 2, 2)];
+    var slice       = chunk[new Point3(1, 1, 1), new Point3(2, 2, 2)];
     var sliceVoxels = slice.Voxels;
 
     for (ushort i = 0; i < sliceVoxels.Length; i++)
@@ -25,7 +25,7 @@ public class ChunkTests
       sliceVoxels[i] = i;
     }
 
-    var subSlice       = slice[new Vector3I(1, 1, 1), new VolumeI(2, 2, 2)];
+    var subSlice       = slice[new Point3(1, 1, 1), new Point3(2, 2, 2)];
     var subSliceVoxels = subSlice.Voxels;
 
     for (ushort i = 0; i < subSliceVoxels.Length; i++)

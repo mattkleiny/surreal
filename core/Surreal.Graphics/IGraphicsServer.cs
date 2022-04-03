@@ -46,8 +46,8 @@ public interface IGraphicsServer
   void CompileShader(GraphicsHandle handle, ICompiledShader compiled);
   void SetShaderUniform(GraphicsHandle handle, string name, int value);
   void SetShaderUniform(GraphicsHandle handle, string name, float value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Vector2I value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Vector3I value);
+  void SetShaderUniform(GraphicsHandle handle, string name, Point2 value);
+  void SetShaderUniform(GraphicsHandle handle, string name, Point3 value);
   void SetShaderUniform(GraphicsHandle handle, string name, Vector2 value);
   void SetShaderUniform(GraphicsHandle handle, string name, Vector3 value);
   void SetShaderUniform(GraphicsHandle handle, string name, Vector4 value);

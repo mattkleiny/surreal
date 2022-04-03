@@ -236,7 +236,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.Uniform1f(location, value);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector2I value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Point2 value)
   {
     var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
@@ -244,7 +244,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.Uniform2i(location, value.X, value.Y);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector3I value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, Point3 value)
   {
     var program  = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);

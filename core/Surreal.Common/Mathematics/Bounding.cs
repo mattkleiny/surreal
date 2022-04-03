@@ -9,7 +9,7 @@ public readonly record struct BoundingRect(Vector2 Min, Vector2 Max)
   public float Width  => Max.X - Min.X;
   public float Height => Max.Y - Min.Y;
 
-  public bool Contains(Vector2I point)
+  public bool Contains(Point2 point)
   {
     return point.X >= Min.X &&
            point.X <= Max.X &&
@@ -37,7 +37,7 @@ public readonly record struct BoundingBox(Vector3 Min, Vector3 Max)
   public float Height => Max.Y - Min.Y;
   public float Depth  => Max.Z - Min.Z;
 
-  public bool Contains(Vector3I point)
+  public bool Contains(Point3 point)
   {
     return point.X >= Min.X &&
            point.X <= Max.X &&

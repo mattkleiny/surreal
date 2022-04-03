@@ -16,7 +16,7 @@ public sealed class RingBuffer<T> : IEnumerable<T>
   public int Count    { get; private set; }
   public int Capacity => elements.Length;
 
-  public ref T this[int index] => ref elements[index];
+  public ref T this[Index index] => ref elements[index];
   public ref T Last => ref elements[Math.Max(writePos - 1, 0)];
 
   public void Add(T element)
