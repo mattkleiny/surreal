@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
-using Surreal.Graphics;
+﻿using Surreal.Graphics;
 using Surreal.Mathematics;
 
 namespace Surreal.Terminals;

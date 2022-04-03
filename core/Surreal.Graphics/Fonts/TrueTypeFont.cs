@@ -8,12 +8,12 @@ namespace Surreal.Graphics.Fonts;
 /// <summary>A font represented as mathematical curves.</summary>
 public sealed class TrueTypeFont
 {
-  private readonly FontFamily    font;
   private readonly GlyphRenderer renderer = new();
+  private readonly FontFamily fontFamily;
 
-  internal TrueTypeFont(FontFamily font)
+  internal TrueTypeFont(FontFamily fontFamily)
   {
-    this.font = font;
+    this.fontFamily = fontFamily;
   }
 
   public void DrawText(ReadOnlySpan<char> message)
@@ -85,6 +85,7 @@ public sealed class TrueTypeFont
 public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
 {
   private readonly CultureInfo culture;
+  private readonly FontCollection fontCollection = new();
 
   public TrueTypeFontLoader()
     : this(CultureInfo.InvariantCulture)
@@ -96,12 +97,13 @@ public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
     this.culture = culture;
   }
 
+  public IReadOnlyFontCollection FontCollection => fontCollection;
+
   public override async ValueTask<TrueTypeFont> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 
-    var fonts      = new FontCollection();
-    var fontFamily = fonts.Install(stream, culture);
+    var fontFamily = fontCollection.Install(stream, culture);
 
     return new TrueTypeFont(fontFamily);
   }
