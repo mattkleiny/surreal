@@ -26,7 +26,7 @@ public class ObservableTests
 
     using var _ = observable.Subscribe(onError: _ => hasError = true);
 
-    observable.NotifyError(new Exception());
+    observable.NotifyError(new InvalidOperationException());
 
     Assert.IsTrue(hasError);
   }

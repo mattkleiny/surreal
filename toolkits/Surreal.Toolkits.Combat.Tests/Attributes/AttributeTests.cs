@@ -10,22 +10,21 @@ public class AttributeTests
     character.Vigor.BaseValue += 10;
   }
 
-  [Test]
-  public void it_should_transact()
-  {
-    var character   = new Character();
-    var transaction = new AttributeTransaction();
-
-    transaction.Modify(character.Vigor, 1);
-    transaction.Modify(character.Vigor, -2);
-
-    transaction.Commit();
-  }
-
-  public sealed record Character
+  private sealed record Character
   {
     public Attribute<int> Vigor     { get; } = new(AttributeType.Vigor, 10);
     public Attribute<int> Mind      { get; } = new(AttributeType.Mind, 10);
     public Attribute<int> Endurance { get; } = new(AttributeType.Endurance, 10);
+  }
+
+  private static class AttributeType
+  {
+    public static AttributeType<int> Vigor     { get; } = new(nameof(Vigor));
+    public static AttributeType<int> Mind      { get; } = new(nameof(Mind));
+    public static AttributeType<int> Endurance { get; } = new(nameof(Endurance));
+    public static AttributeType<int> Strength  { get; } = new(nameof(Strength));
+    public static AttributeType<int> Dexterity { get; } = new(nameof(Dexterity));
+    public static AttributeType<int> Faith     { get; } = new(nameof(Faith));
+    public static AttributeType<int> Luck      { get; } = new(nameof(Luck));
   }
 }

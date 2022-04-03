@@ -42,7 +42,7 @@ public sealed class CraftingRecipe<T>
       hasAnyValue = true;
     }
 
-    builder.Append(") - Output (").Append(Output).Append(")");
+    builder.Append(") - Output (").Append(Output).Append(')');
 
     return builder.ToString();
   }

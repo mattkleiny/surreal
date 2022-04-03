@@ -6,7 +6,7 @@ namespace Surreal.Effects;
 public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
 {
   private readonly LinkedList<StatusEffect> effects = new(); // linked list for fast insertion/removal
-  private readonly object                   owner;
+  private readonly object owner;
 
   public StatusEffectCollection(object owner)
   {

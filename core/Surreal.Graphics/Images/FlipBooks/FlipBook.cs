@@ -44,7 +44,7 @@ public sealed class AsepriteImporter : AssetImporter<FlipBook>
       throw new NotImplementedException();
     }
 
-    public FileHeader Header { get; init; }
+    public FileHeader Header { get; init; } = new();
 
     public enum ColorDepth : ushort
     {
