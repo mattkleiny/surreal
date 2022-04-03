@@ -12,10 +12,9 @@ namespace Surreal;
 /// <summary>Base class for any game built with Surreal.</summary>
 public abstract partial class Game : IDisposable, ITestableGame
 {
-  private static readonly IProfiler               Profiler = ProfilerFactory.GetProfiler<Game>();
-  private static readonly ConcurrentQueue<Action> Actions  = new();
+  private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
 
-  private readonly TimeStamp   startTime = TimeStamp.Now;
+  private readonly TimeStamp startTime = TimeStamp.Now;
   private readonly ILoopTarget loopTarget;
 
   public static TGame Create<TGame>(Configuration configuration)
@@ -28,7 +27,7 @@ public abstract partial class Game : IDisposable, ITestableGame
 
     return new TGame
     {
-      Host             = configuration.Platform.BuildHost(),
+      Host = configuration.Platform.BuildHost(),
       ServiceOverrides = configuration.ServiceOverrides,
     };
   }
@@ -40,12 +39,6 @@ public abstract partial class Game : IDisposable, ITestableGame
 
     await game.InitializeAsync(cancellationToken);
     await game.RunAsync(cancellationToken);
-  }
-
-  /// <summary>Schedules an action to be performed at the start of the next frame/</summary>
-  public static void Schedule(Action action)
-  {
-    Actions.Enqueue(action);
   }
 
   protected Game()
@@ -98,11 +91,6 @@ public abstract partial class Game : IDisposable, ITestableGame
       {
         var deltaTime = chronometer.Tick();
         var totalTime = TimeStamp.Now - startTime;
-
-        while (Actions.TryDequeue(out var action))
-        {
-          action.Invoke();
-        }
 
         Host.Tick(deltaTime);
         LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
@@ -225,12 +213,14 @@ public abstract partial class Game : IDisposable, ITestableGame
   ILoopTarget ITestableGame.LoopTarget => loopTarget;
 
   ValueTask ITestableGame.InitializeAsync(CancellationToken cancellationToken) => InitializeAsync(cancellationToken);
-  ValueTask ITestableGame.RunAsync(CancellationToken cancellationToken)        => RunAsync(cancellationToken);
+  ValueTask ITestableGame.RunAsync(CancellationToken cancellationToken) => RunAsync(cancellationToken);
 
   /// <summary>Configuration for the <see cref="Game"/>.</summary>
   public sealed class Configuration
   {
-    public   IPlatform?                Platform         { get; init; }
+    public IPlatform? Platform { get; init; }
+
+    /// <summary>Custom overrides for the <see cref="IServiceRegistry"/>, to allow testing/etc.</summary>
     internal Action<IServiceRegistry>? ServiceOverrides { get; set; }
   }
 

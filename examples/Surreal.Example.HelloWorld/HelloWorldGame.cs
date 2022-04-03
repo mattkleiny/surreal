@@ -13,7 +13,7 @@ public sealed class HelloWorldGame : PrototypeGame
     {
       Configuration =
       {
-        Title          = "Hello, Surreal!",
+        Title = "Hello, Surreal!",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
       },

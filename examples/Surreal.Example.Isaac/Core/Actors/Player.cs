@@ -22,7 +22,7 @@ public sealed class Player : Character, IPersistentObject
   void IPersistentObject.OnResumeState(PersistenceContext context, IPersistenceReader reader)
   {
     Health = reader.Read(SharedProperties.Health, 100);
-    Coins  = reader.Read(SharedProperties.Coins, 0);
-    Bombs  = reader.Read(SharedProperties.Bombs, 0);
+    Coins = reader.Read(SharedProperties.Coins, 0);
+    Bombs = reader.Read(SharedProperties.Bombs, 0);
   }
 }

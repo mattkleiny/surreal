@@ -6,15 +6,18 @@ namespace Surreal;
 
 public abstract partial class Game
 {
+  /// <summary>Invoked to prepare a game prior to it's main loop.</summary>
   public delegate ValueTask GameSetupDelegate(GameContext context);
-  public delegate void      GameLoopDelegate(GameTime time);
+
+  /// <summary>Invoked to execute a single frame of a game's main loop.</summary>
+  public delegate void GameLoopDelegate(GameTime time);
 
   /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
   public static async ValueTask StartAsync(IPlatform platform, GameSetupDelegate gameSetup, CancellationToken cancellationToken = default)
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
-    using var              host     = platform.BuildHost();
+    using var host = platform.BuildHost();
     using IServiceRegistry services = new ServiceRegistry();
 
     services.AddSingleton(host);

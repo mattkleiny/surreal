@@ -4,11 +4,12 @@ var platform = new ConsolePlatform();
 
 await Game.StartAsync(platform, async context =>
 {
-  var color1 = Random.Shared.NextColor();
-  var color2 = Random.Shared.NextColor();
+  var random = Random.Shared;
+
+  var color1 = random.NextColor();
+  var color2 = random.NextColor();
 
   var terminal = new ConsoleTerminal();
-  var random = new Random();
 
   var glyph = new Glyph('X', color1, color2);
 

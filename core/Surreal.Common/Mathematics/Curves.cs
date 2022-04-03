@@ -16,11 +16,20 @@ public static class Curves
 {
   public static Curve Constant(float d) => _ => d;
 
-  public static Curve Linear        { get; } = time => time;
-  public static Curve InverseLinear { get; } = time => 1f - time;
+  public static Curve Linear        { get; } = t => t;
+  public static Curve InverseLinear { get; } = t => 1f - t;
 
-  public static Curve PlanarX<T>(T curve) where T : IPlanarCurve => time => curve.SampleAt(time).X;
-  public static Curve PlanarY<T>(T curve) where T : IPlanarCurve => time => curve.SampleAt(time).Y;
+  public static Curve PlanarX<T>(T curve)
+    where T : IPlanarCurve
+  {
+    return t => curve.SampleAt(t).X;
+  }
+
+  public static Curve PlanarY<T>(T curve)
+    where T : IPlanarCurve
+  {
+    return t => curve.SampleAt(t).Y;
+  }
 
   /// <summary>A quadratic bezier <see cref="IPlanarCurve"/>.</summary>
   public readonly record struct QuadraticBezier(Vector2 Start, Vector2 A, Vector2 End) : IPlanarCurve
@@ -42,7 +51,7 @@ public static class Curves
       var t2 = t * t;
       var t3 = t * t2;
 
-      var oneT  = 1f - t;
+      var oneT = 1f - t;
       var oneT2 = oneT * oneT;
       var oneT3 = oneT2 * oneT;
 

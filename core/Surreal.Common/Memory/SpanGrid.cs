@@ -37,4 +37,5 @@ public readonly ref struct SpanGrid<T>
   }
 
   public static implicit operator Span<T>(SpanGrid<T> grid) => grid.ToSpan();
+  public static implicit operator ReadOnlySpan<T>(SpanGrid<T> grid) => grid.ToSpan();
 }

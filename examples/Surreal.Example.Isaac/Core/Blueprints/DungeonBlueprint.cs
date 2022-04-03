@@ -43,9 +43,9 @@ public abstract record DungeonNode : GraphNode<DungeonNode>
       {
         return ValueTask.FromResult(new DungeonBlueprint
         {
-          Seed        = Seed.Randomized,
-          Width       = (int) element.Attribute("Width")!,
-          Height      = (int) element.Attribute("Height")!,
+          Seed = Seed.Randomized,
+          Width = (int) element.Attribute("Width")!,
+          Height = (int) element.Attribute("Height")!,
           Description = (string) element.Attribute("Description")!,
         });
       }

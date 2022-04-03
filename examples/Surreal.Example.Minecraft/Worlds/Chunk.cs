@@ -94,9 +94,9 @@ public readonly struct ChunkSlice
 
   public ChunkSlice(Chunk chunk, Point3 offset, Point3 size)
   {
-    this.chunk  = chunk;
+    this.chunk = chunk;
     this.offset = offset;
-    this.size   = size;
+    this.size = size;
   }
 
   public int Width  => size.X;

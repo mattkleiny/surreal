@@ -18,7 +18,7 @@ public sealed class Image : IDisposable
   public static async ValueTask<Image> LoadAsync(VirtualPath path)
   {
     await using var stream = await path.OpenInputStreamAsync();
-    var             temp   = await SixLabors.ImageSharp.Image.LoadAsync(stream);
+    var temp = await SixLabors.ImageSharp.Image.LoadAsync(stream);
 
     // we're already in the right format
     if (temp is Image<Rgba32> rgba)
@@ -48,9 +48,9 @@ public sealed class Image : IDisposable
 
   public int  Width  => image.Width;
   public int  Height => image.Height;
-  public Size Size   => Pixels.CalculateSize();
+  public Size Size   => Pixels.ToSpan().CalculateSize();
 
-  public Span<Color32> Pixels
+  public SpanGrid<Color32> Pixels
   {
     get
     {
@@ -59,7 +59,9 @@ public sealed class Image : IDisposable
         throw new InvalidOperationException("The image span is not contiguous, unable to access pixels!");
       }
 
-      return MemoryMarshal.Cast<Rgba32, Color32>(span);
+      var pixels = MemoryMarshal.Cast<Rgba32, Color32>(span);
+
+      return new SpanGrid<Color32>(pixels, Width);
     }
   }
 

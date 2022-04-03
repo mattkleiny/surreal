@@ -5,7 +5,7 @@ namespace Minecraft.Worlds;
 /// <summary>A single block with metadata.</summary>
 public sealed record Block(ushort Id) : Enumeration<Block>
 {
-  private static uint   nextId = 0;
+  private static uint nextId = 0;
   private static ushort NextId() => (ushort) Interlocked.Increment(ref nextId);
 
   public string Name    { get; init; } = string.Empty;

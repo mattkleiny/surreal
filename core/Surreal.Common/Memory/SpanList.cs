@@ -53,4 +53,5 @@ public ref struct SpanList<T>
   }
 
   public static implicit operator Span<T>(SpanList<T> list) => list.ToSpan();
+  public static implicit operator ReadOnlySpan<T>(SpanList<T> list) => list.ToSpan();
 }

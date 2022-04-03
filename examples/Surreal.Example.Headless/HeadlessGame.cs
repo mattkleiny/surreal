@@ -4,8 +4,8 @@ public sealed class HeadlessGame : PrototypeGame
 {
   private static readonly ILog Log = LogFactory.GetLog<HeadlessGame>();
 
-  private readonly FrameCounter  frameCounter = new();
-  private          IntervalTimer fpsTimer     = new(1.Seconds());
+  private readonly FrameCounter frameCounter = new();
+  private IntervalTimer fpsTimer = new(1.Seconds());
 
   public static Task Main() => StartAsync<HeadlessGame>(new Configuration
   {

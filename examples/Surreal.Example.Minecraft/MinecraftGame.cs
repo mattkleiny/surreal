@@ -5,19 +5,27 @@ namespace Minecraft;
 
 public sealed class MinecraftGame : PrototypeGame
 {
+  private static readonly ConcurrentQueue<Action> Actions = new();
+
   public static async Task Main() => await StartAsync<MinecraftGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
       Configuration =
       {
-        Title          = "Minecraft",
+        Title = "Minecraft",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
-        Icon           = await Image.LoadAsync("resx://Minecraft/Minecraft.png"),
+        Icon = await Image.LoadAsync("resx://Minecraft/Minecraft.png"),
       },
     },
   });
+
+  /// <summary>Schedules an action to be performed at the start of the next frame/</summary>
+  public static void Schedule(Action action)
+  {
+    Actions.Enqueue(action);
+  }
 
   protected override void Initialize()
   {
@@ -31,5 +39,15 @@ public sealed class MinecraftGame : PrototypeGame
     if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
 
     base.Input(time);
+  }
+
+  protected override void Update(GameTime time)
+  {
+    base.Update(time);
+
+    while (Actions.TryDequeue(out var action))
+    {
+      action.Invoke();
+    }
   }
 }

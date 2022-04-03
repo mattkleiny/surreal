@@ -10,7 +10,7 @@ public sealed class AsteroidsGame : PrototypeGame
     {
       Configuration =
       {
-        Title          = "Asteroids",
+        Title = "Asteroids",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
       },

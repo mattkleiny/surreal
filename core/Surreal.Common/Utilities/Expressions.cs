@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Surreal.Utilities;
 
 /// <summary>Helpers for working with C# expressions</summary>
-public static class ExpressionExtensions
+public static class Expressions
 {
   /// <summary>Resolves the given attribute, <see cref="TAttribute"/> from the given property expression.</summary>
   public static TAttribute ResolvePropertyAttribute<TAttribute>(this Expression property)

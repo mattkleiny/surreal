@@ -27,13 +27,13 @@ public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>
 
     public Image ToImage()
     {
-      var image  = new Image(Width, Height);
+      var image = new Image(Width, Height);
       var pixels = image.Pixels;
 
       for (var y = 0; y < Height; y++)
       for (var x = 0; x < Width; x++)
       {
-        pixels[x + y * Width] = Colors[x, y];
+        pixels[x, y] = Colors[x, y];
       }
 
       return image;
@@ -59,9 +59,9 @@ public abstract record SpriteBlueprintNode : GraphNode<SpriteBlueprintNode>
       {
         return new SpriteBlueprint
         {
-          Seed        = Seed.Randomized,
-          Width       = (int) element.Attribute("Width")!,
-          Height      = (int) element.Attribute("Height")!,
+          Seed = Seed.Randomized,
+          Width = (int) element.Attribute("Width")!,
+          Height = (int) element.Attribute("Height")!,
           Description = (string) element.Attribute("Description")!,
           Children = await element.Elements()
             .SelectAsync(async _ => (SpriteBlueprintNode) await context.DeserializeAsync(_, cancellationToken))

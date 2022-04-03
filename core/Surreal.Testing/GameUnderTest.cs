@@ -32,7 +32,7 @@ internal sealed class GameUnderTest<TGame> : IGameUnderTest<TGame>
   {
     Instance = Game.Create<TGame>(new Game.Configuration
     {
-      Platform         = platform,
+      Platform = platform,
       ServiceOverrides = serviceOverrides,
     });
   }

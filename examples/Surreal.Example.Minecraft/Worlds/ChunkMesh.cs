@@ -10,7 +10,7 @@ public sealed class ChunkMesh : IDisposable
 {
   private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<ChunkMesh>();
 
-  private readonly Chunk        chunk;
+  private readonly Chunk chunk;
   private readonly Mesh<Vertex> mesh;
 
   public ChunkMesh(IGraphicsServer server, Chunk chunk)
@@ -69,7 +69,7 @@ public sealed class ChunkMesh : IDisposable
       if (!chunk.GetBlock(x, y, z + 1).IsSolid) tessellator.AddFace(x, y, z, Face.Back, block.Color);
     }
 
-    Game.Schedule(() =>
+    MinecraftGame.Schedule(() =>
     {
       // upload vertices/indices to the GPU
       mesh.Vertices.Write(tessellator.Vertices);
@@ -128,9 +128,9 @@ public sealed class ChunkMesh : IDisposable
     public Vertex(Vector3 position, Vector3 normal, Color color, UV uv1)
     {
       Position = position;
-      Normal   = normal;
-      Color    = color;
-      UV1      = uv1;
+      Normal = normal;
+      Color = color;
+      UV1 = uv1;
     }
   }
 
@@ -150,7 +150,7 @@ public sealed class ChunkMesh : IDisposable
   private sealed class Tessellator
   {
     private readonly List<Vertex> vertices = new();
-    private readonly List<ushort> indices  = new();
+    private readonly List<ushort> indices = new();
 
     public Span<Vertex> Vertices => CollectionsMarshal.AsSpan(vertices);
     public Span<ushort> Indices  => CollectionsMarshal.AsSpan(indices);

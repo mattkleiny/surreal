@@ -46,9 +46,9 @@ internal class AutoFixtureAttribute : AutoDataAttribute
     {
       var random = Random.Shared;
 
-      var year  = random.Next(2017, 2024);
+      var year = random.Next(2017, 2024);
       var month = random.Next(1, 12);
-      var day   = random.Next(1, 28);
+      var day = random.Next(1, 28);
 
       return new DateOnly(year, month, day);
     }
@@ -60,7 +60,7 @@ internal class AutoFixtureAttribute : AutoDataAttribute
     {
       var random = Random.Shared;
 
-      var hour   = random.Next(0, 23);
+      var hour = random.Next(0, 23);
       var minute = random.Next(0, 59);
       var second = random.Next(0, 59);
 

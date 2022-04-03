@@ -86,4 +86,5 @@ public ref struct SpanStack<T>
   }
 
   public static implicit operator Span<T>(SpanStack<T> stack) => stack.ToSpan();
+  public static implicit operator ReadOnlySpan<T>(SpanStack<T> stack) => stack.ToSpan();
 }

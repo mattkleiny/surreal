@@ -4,7 +4,7 @@ var platform = new DesktopPlatform
 {
   Configuration =
   {
-    Title          = "Hello, Surreal!",
+    Title = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
   },
