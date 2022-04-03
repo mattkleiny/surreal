@@ -1,4 +1,6 @@
-﻿using Surreal.Graphics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using Surreal.Graphics;
 using Surreal.Mathematics;
 
 namespace Surreal.Terminals;
@@ -19,10 +21,10 @@ public abstract class Terminal
   public Color32 ForegroundColor { get; set; } = Color.White;
 
   /// <summary>Writes a single character to the terminal.</summary>
-  public void WriteAt(int x, int y, char character, Color32? foregroundColor = default, Color32? backgroundColor = default)
+  public void WriteAt(int x, int y, char symbol, Color32? foregroundColor = default, Color32? backgroundColor = default)
   {
     var glyph = new Glyph(
-      Character: character,
+      Symbol: symbol,
       ForegroundColor: foregroundColor.GetValueOrDefault(ForegroundColor),
       BackgroundColor: backgroundColor.GetValueOrDefault(BackgroundColor)
     );
@@ -38,7 +40,7 @@ public abstract class Terminal
       if (x + y >= Width) break; // we reached the end of the terminal
 
       var glyph = new Glyph(
-        Character: text[i],
+        Symbol: text[i],
         ForegroundColor: foregroundColor.GetValueOrDefault(ForegroundColor),
         BackgroundColor: backgroundColor.GetValueOrDefault(BackgroundColor)
       );
@@ -51,7 +53,7 @@ public abstract class Terminal
   public void Fill(int x, int y, int width, int height, Color32? color = null)
   {
     var glyph = new Glyph(
-      Character: ' ',
+      Symbol: ' ',
       ForegroundColor: ForegroundColor,
       BackgroundColor: color.GetValueOrDefault(BackgroundColor)
     );
@@ -82,17 +84,17 @@ public abstract class Terminal
 /// <summary>A <see cref="Terminal"/> constrained to a sub area of the parent <see cref="Terminal"/>.</summary>
 public sealed class TerminalSlice : Terminal
 {
-  private readonly int      offsetX;
-  private readonly int      offsetY;
+  private readonly int offsetX;
+  private readonly int offsetY;
   private readonly Terminal terminal;
 
   public TerminalSlice(int offsetX, int offsetY, int width, int height, Terminal terminal)
   {
-    this.offsetX  = offsetX;
-    this.offsetY  = offsetY;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
     this.terminal = terminal;
 
-    Width  = width;
+    Width = width;
     Height = height;
   }
 
@@ -114,36 +116,102 @@ public sealed class TerminalSlice : Terminal
   }
 }
 
+/// <summary>A <see cref="Terminal"/> that renders to the attached <see cref="Console"/>.</summary>
+public sealed class ConsoleTerminal : Terminal
+{
+  public ConsoleTerminal()
+  {
+    if (OperatingSystem.IsWindows())
+    {
+      Win32Interop.EnableVirtualTerminalProcessing();
+    }
+  }
+
+  public override int Width  => Console.BufferWidth;
+  public override int Height => Console.BufferHeight;
+
+  public override void DrawGlyph(int x, int y, in Glyph glyph)
+  {
+    Console.SetCursorPosition(x, y);
+    Console.Write(glyph.Symbol);
+  }
+
+  [SuppressMessage(
+    "ReSharper",
+    "InconsistentNaming",
+    Justification = "Win32 naming conventions"
+  )]
+  private static class Win32Interop
+  {
+    public static void EnableVirtualTerminalProcessing()
+    {
+      var handle = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (handle != IntPtr.Zero)
+      {
+        SetConsoleMode(handle, ConsoleModes.ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+      }
+    }
+
+    private const int STD_INPUT_HANDLE = -10;
+    private const int STD_OUTPUT_HANDLE = -11;
+    private const int STD_ERROR_HANDLE = -12;
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr GetStdHandle(int nStdHandle);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetConsoleMode(IntPtr hConsoleHandle, ConsoleModes dwMode);
+
+    [Flags]
+    private enum ConsoleModes : uint
+    {
+      ENABLE_PROCESSED_INPUT = 0x0001,
+      ENABLE_LINE_INPUT = 0x0002,
+      ENABLE_ECHO_INPUT = 0x0004,
+      ENABLE_WINDOW_INPUT = 0x0008,
+      ENABLE_MOUSE_INPUT = 0x0010,
+      ENABLE_INSERT_MODE = 0x0020,
+      ENABLE_QUICK_EDIT_MODE = 0x0040,
+      ENABLE_EXTENDED_FLAGS = 0x0080,
+      ENABLE_AUTO_POSITION = 0x0100,
+
+      ENABLE_PROCESSED_OUTPUT = 0x0001,
+      ENABLE_WRAP_AT_EOL_OUTPUT = 0x0002,
+      ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004,
+      DISABLE_NEWLINE_AUTO_RETURN = 0x0008,
+      ENABLE_LVB_GRID_WORLDWIDE = 0x0010
+    }
+  }
+}
+
 /// <summary>A <see cref="Terminal"/> that renders to a <see cref="IGraphicsServer"/>.</summary>
-public sealed class GraphicsTerminal : Terminal
+public sealed class GraphicsTerminal : Terminal, IGlyphRenderer
 {
   private readonly IGraphicsServer server;
-  private readonly GlyphCanvas     canvas;
+  private readonly GlyphCanvas canvas;
 
   public GraphicsTerminal(IGraphicsServer server, int width, int height)
   {
     this.server = server;
-    canvas      = new(width, height);
 
-    Width  = width;
-    Height = height;
+    canvas = new(width, height, this);
   }
 
-  public override int Width  { get; }
-  public override int Height { get; }
+  public override int Width  => canvas.Width;
+  public override int Height => canvas.Height;
 
   public override void DrawGlyph(int x, int y, in Glyph glyph)
   {
-    canvas.SetGlyph(x, y, in glyph);
+    canvas[x, y] = glyph;
   }
 
   /// <summary>Flush the terminal to the graphics device.</summary>
   public void Flush()
   {
-    canvas.Render(OnRenderGlyph);
+    canvas.Flush();
   }
 
-  private void OnRenderGlyph(int x, int y, in Glyph glyph)
+  void IGlyphRenderer.RenderGlyph(int x, int y, in Glyph glyph)
   {
     throw new NotImplementedException();
   }

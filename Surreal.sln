@@ -158,6 +158,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Crafting",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Toolkits.Crafting.Tests", "toolkits\Surreal.Toolkits.Crafting.Tests\Surreal.Toolkits.Crafting.Tests.csproj", "{227CA32B-4FAC-455C-B669-38D84DECDC00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Minimal.Console", "examples\Surreal.Example.Minimal.Console\Surreal.Example.Minimal.Console.csproj", "{89BE2C58-71A2-4583-A7B3-164B8AD45DDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -400,6 +402,10 @@ Global
 		{227CA32B-4FAC-455C-B669-38D84DECDC00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{227CA32B-4FAC-455C-B669-38D84DECDC00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{227CA32B-4FAC-455C-B669-38D84DECDC00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89BE2C58-71A2-4583-A7B3-164B8AD45DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89BE2C58-71A2-4583-A7B3-164B8AD45DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89BE2C58-71A2-4583-A7B3-164B8AD45DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89BE2C58-71A2-4583-A7B3-164B8AD45DDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -469,5 +475,6 @@ Global
 		{DB43756F-DDEA-4668-AB62-E73B4B9A212E} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{4E8E0DB5-868B-4EA6-8C23-61255BCE1B87} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
 		{227CA32B-4FAC-455C-B669-38D84DECDC00} = {476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}
+		{89BE2C58-71A2-4583-A7B3-164B8AD45DDE} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal

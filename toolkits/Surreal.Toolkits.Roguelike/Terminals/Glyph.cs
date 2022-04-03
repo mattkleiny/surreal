@@ -3,62 +3,77 @@
 namespace Surreal.Terminals;
 
 /// <summary>A coloured character that can be painted.</summary>
-public readonly record struct Glyph(
-  char Character,
-  Color32 ForegroundColor,
-  Color32 BackgroundColor
-);
+public readonly record struct Glyph(char Symbol, Color32 ForegroundColor, Color32 BackgroundColor);
+
+/// <summary>A renderer for the <see cref="GlyphCanvas"/>.</summary>
+public interface IGlyphRenderer
+{
+  /// <summary>Renders a particular glyph at the given X, Y position.</summary>
+  void RenderGlyph(int x, int y, in Glyph glyph);
+}
 
 /// <summary>A canvas of <see cref="Glyph"/>s that manages dirty glyph positions.</summary>
 public sealed class GlyphCanvas
 {
-  /// <summary>A callback for rendering individual glyphs to a terminal.</summary>
-  public delegate void RenderGlyphCallback(int x, int y, in Glyph glyph);
+  private readonly IGlyphRenderer renderer;
+  private readonly Grid<Glyph> glyphs;
+  private readonly Grid<Glyph?> dirtyGlyphs;
 
-  private readonly Grid<Glyph>  glyphs;
-  private readonly Grid<Glyph?> changedGlyphs;
-
-  public GlyphCanvas(int width, int height)
+  public GlyphCanvas(int width, int height, IGlyphRenderer renderer)
   {
-    glyphs        = new Grid<Glyph>(width, height);
-    changedGlyphs = new Grid<Glyph?>(width, height);
+    this.renderer = renderer;
 
-    Width  = width;
+    glyphs = new Grid<Glyph>(width, height);
+    dirtyGlyphs = new Grid<Glyph?>(width, height);
+
+    Width = width;
     Height = height;
   }
 
   public int Width  { get; }
   public int Height { get; }
 
-  public void SetGlyph(int x, int y, in Glyph glyph)
+  public Glyph this[int x, int y]
   {
-    if (x < 0 || x >= Width) return;
-    if (y < 0 || y >= Height) return;
+    get
+    {
+      if (x < 0 || x >= Width) return default;
+      if (y < 0 || y >= Height) return default;
 
-    if (glyphs[x, y] != glyph)
-    {
-      changedGlyphs[x, y] = glyph;
+      return glyphs[x, y];
     }
-    else
+    set
     {
-      changedGlyphs[x, y] = null;
+      if (x < 0 || x >= Width) return;
+      if (y < 0 || y >= Height) return;
+
+      if (glyphs[x, y] != value)
+      {
+        dirtyGlyphs[x, y] = value;
+      }
+      else
+      {
+        dirtyGlyphs[x, y] = null;
+      }
     }
   }
 
-  public void Render(RenderGlyphCallback callback)
+  /// <summary>Flushes changes to the canvas down to the underlying <see cref="IGlyphRenderer"/>.</summary>
+  public void Flush()
   {
     for (var y = 0; y < Height; y++)
     for (var x = 0; x < Width; x++)
     {
-      // Only draw glyphs that are different since the last call.
-      var glyph = changedGlyphs[x, y];
-      if (glyph == null) continue;
+      // Only draw glyphs that are dirty
+      var glyph = dirtyGlyphs[x, y];
+      if (glyph != null)
+      {
+        renderer.RenderGlyph(x, y, glyph.Value);
 
-      callback(x, y, glyph.Value);
-
-      // It's up to date now.
-      glyphs[x, y]        = glyph.Value;
-      changedGlyphs[x, y] = null;
+        // It's up to date now.
+        glyphs[x, y] = glyph.Value;
+        dirtyGlyphs[x, y] = null;
+      }
     }
   }
 }
