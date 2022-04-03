@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+    <Description>A toolkit for creating crafting systems and behaviours.</Description>
+	</PropertyGroup>
+</Project>
