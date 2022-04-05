@@ -14,17 +14,17 @@ public class InMemoryPersistentStoreTests
     var identifier = Guid.NewGuid();
     var store      = new InMemoryPersistenceStore();
 
-    Assert.IsFalse(store.CreateReader(identifier, out _));
+    store.CreateReader(identifier, out _).Should().BeFalse();
 
     var writer = store.CreateWriter(identifier);
 
     writer.Write(Health, 42);
     writer.Write(Depth, 25.05f);
 
-    Assert.IsTrue(store.CreateReader(identifier, out var reader));
+    store.CreateReader(identifier, out var reader).Should().BeTrue();
 
-    Assert.AreEqual(42, reader.Read(Health));
-    Assert.AreEqual(25.05f, reader.Read(Depth));
-    Assert.IsTrue(reader.Read(IsEnabled)); // should use default values
+    reader.Read(Health).Should().Be(42);
+    reader.Read(Depth).Should().Be(25.05f);
+    reader.Read(IsEnabled).Should().Be(true);
   }
 }

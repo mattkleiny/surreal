@@ -8,14 +8,14 @@ public class ObjectMetadataTests
     var instance = new TestObject();
     var metadata = ObjectMetadata.Create<TestObject>();
 
-    Assert.That(metadata.Events, Is.Not.Empty);
-    Assert.That(metadata.Methods, Is.Not.Empty);
-    Assert.That(metadata.Properties, Is.Not.Empty);
+    metadata.Events.Should().NotBeEmpty();
+    metadata.Methods.Should().NotBeEmpty();
+    metadata.Properties.Should().NotBeEmpty();
 
     metadata.Methods[0].Invoke(instance);
 
-    Assert.AreEqual("Test", instance.Name);
-    Assert.AreEqual(2, instance.Age);
+    instance.Name.Should().Be("Test");
+    instance.Age.Should().Be(2);
   }
 
   private sealed class TestObject

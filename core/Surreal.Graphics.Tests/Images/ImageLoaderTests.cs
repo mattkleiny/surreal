@@ -14,8 +14,8 @@ public class ImageLoaderTests
 
     var image = await manager.LoadAssetAsync<Image>(path);
 
-    Assert.That(image.Width, Is.GreaterThan(0));
-    Assert.That(image.Height, Is.GreaterThan(0));
-    Assert.That(image.Size.Bytes, Is.GreaterThan(0));
+    image.Width.Should().BeGreaterThan(0);
+    image.Height.Should().BeGreaterThan(0);
+    image.Size.Bytes.Should().BeGreaterThan(0);
   }
 }

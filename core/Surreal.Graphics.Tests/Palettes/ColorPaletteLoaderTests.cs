@@ -13,6 +13,6 @@ public class ColorPaletteLoaderTests
 
     var palette = await manager.LoadAssetAsync<ColorPalette>("Assets/palettes/low-8.pal");
 
-    Assert.AreEqual(8, palette.Count);
+    palette.Count.Should().Be(8);
   }
 }

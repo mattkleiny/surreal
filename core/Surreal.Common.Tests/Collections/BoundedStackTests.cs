@@ -7,8 +7,8 @@ public class BoundedStackTests
   {
     var queue = new BoundedStack<int>(maxCapacity: 2);
 
-    Assert.IsTrue(queue.TryPush(1));
-    Assert.IsTrue(queue.TryPush(2));
-    Assert.IsFalse(queue.TryPush(3));
+    queue.TryPush(1).Should().BeTrue();
+    queue.TryPush(2).Should().BeTrue();
+    queue.TryPush(3).Should().BeFalse();
   }
 }

@@ -11,6 +11,6 @@ public class LispScriptParserTests
     var parser      = new LispScriptParser();
     var declaration = await parser.ParseScriptAsync(path);
 
-    Assert.IsNotNull(declaration);
+    declaration.Should().NotBeNull();
   }
 }

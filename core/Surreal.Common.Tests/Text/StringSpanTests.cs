@@ -7,8 +7,8 @@ public class StringSpanTests
   {
     var span = "Test".AsStringSpan();
 
-    Assert.AreEqual('T', span[0]);
-    Assert.AreEqual('t', span[^1]);
+    span[0].Should().Be('T');
+    span[^1].Should().Be('t');
   }
 
   [Test]
@@ -16,6 +16,6 @@ public class StringSpanTests
   {
     var span = "Hello, World!".AsStringSpan();
 
-    Assert.AreEqual("World!", span[7..].ToString());
+    span[7..].ToString().Should().Be("World!");
   }
 }

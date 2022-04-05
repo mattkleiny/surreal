@@ -5,7 +5,7 @@ public class TemplateTests
   [Test]
   public void it_should_create_a_valid_template_instance_from_factory()
   {
-    Assert.IsNotNull(TemplateFactory.Create<TestObject>());
+    TemplateFactory.Create<TestObject>().Should().NotBeNull();
   }
 
   private sealed class TestObject

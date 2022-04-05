@@ -7,8 +7,8 @@ public class BoundedQueueTests
   {
     var queue = new BoundedQueue<int>(maxCapacity: 2);
 
-    Assert.IsTrue(queue.TryEnqueue(1));
-    Assert.IsTrue(queue.TryEnqueue(2));
-    Assert.IsFalse(queue.TryEnqueue(3));
+    queue.TryEnqueue(1).Should().BeTrue();
+    queue.TryEnqueue(2).Should().BeTrue();
+    queue.TryEnqueue(3).Should().BeFalse();
   }
 }

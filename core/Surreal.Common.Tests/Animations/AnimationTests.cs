@@ -35,13 +35,13 @@ public class AnimationTests
 
     animation.Advance(1.Seconds());
 
-    Assert.AreEqual(Color.White, instance.Color);
-    Assert.AreEqual(1f, instance.Depth);
+    instance.Color.Should().Be(Color.White);
+    instance.Depth.Should().Be(1f);
 
     animation.Rewind(1.Seconds());
 
-    Assert.AreEqual(Color.Black, instance.Color);
-    Assert.AreEqual(0f, instance.Depth);
+    instance.Color.Should().Be(Color.Black);
+    instance.Depth.Should().Be(0f);
   }
 
   private sealed record TestObject

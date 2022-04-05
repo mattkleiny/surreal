@@ -9,7 +9,7 @@ public class ChunkTests
   {
     var chunk = Chunk.Generate(ChunkGenerators.Solid(Block.Dirt));
 
-    Assert.IsNotNull(chunk);
+    chunk.Should().NotBeNull();
   }
 
   [Test]

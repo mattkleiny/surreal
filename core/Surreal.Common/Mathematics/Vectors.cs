@@ -4,36 +4,16 @@
 #pragma warning disable S2328
 
 /// <summary>An integral point in 2-space.</summary>
-public struct Point2 : IEquatable<Point2>
+public record struct Point2(int X, int Y)
 {
-  public static readonly Point2 Zero  = new(0, 0);
+  public static readonly Point2 Zero = new(0, 0);
   public static readonly Point2 UnitX = new(1, 0);
   public static readonly Point2 UnitY = new(0, 1);
 
-  public int X;
-  public int Y;
-
-  public Point2(int x, int y)
-  {
-    X = x;
-    Y = y;
-  }
-
-  public void Deconstruct(out int x, out int y)
-  {
-    x = X;
-    y = Y;
-  }
+  public int X = X;
+  public int Y = Y;
 
   public override string ToString() => $"<{X} {Y}>";
-
-  public bool Equals(Point2 other) => X == other.X && Y == other.Y;
-  public override bool Equals(object? obj) => obj is Point2 other && Equals(other);
-
-  public override int GetHashCode() => HashCode.Combine(X, Y);
-
-  public static bool operator ==(Point2 left, Point2 right) => left.Equals(right);
-  public static bool operator !=(Point2 left, Point2 right) => !left.Equals(right);
 
   // scalar operations
   public static Point2 operator +(Point2 a, int s) => new(a.X + s, a.Y + s);
@@ -56,40 +36,18 @@ public struct Point2 : IEquatable<Point2>
 }
 
 /// <summary>An integral point in 3-space.</summary>
-public struct Point3 : IEquatable<Point3>
+public record struct Point3(int X, int Y, int Z)
 {
-  public static readonly Point3 Zero  = new(0, 0, 0);
+  public static readonly Point3 Zero = new(0, 0, 0);
   public static readonly Point3 UnitX = new(1, 0, 0);
   public static readonly Point3 UnitY = new(0, 1, 0);
   public static readonly Point3 UnitZ = new(0, 0, 1);
 
-  public int X;
-  public int Y;
-  public int Z;
-
-  public Point3(int x, int y, int z)
-  {
-    X = x;
-    Y = y;
-    Z = z;
-  }
-
-  public void Deconstruct(out int x, out int y, out int z)
-  {
-    x = X;
-    y = Y;
-    z = Z;
-  }
+  public int X = X;
+  public int Y = Y;
+  public int Z = Z;
 
   public override string ToString() => $"<{X} {Y} {Z}>";
-
-  public bool Equals(Point3 other) => X == other.X && Y == other.Y && Z == other.Z;
-  public override bool Equals(object? obj) => obj is Point3 other && Equals(other);
-
-  public override int GetHashCode() => HashCode.Combine(X, Y, Z);
-
-  public static bool operator ==(Point3 left, Point3 right) => left.Equals(right);
-  public static bool operator !=(Point3 left, Point3 right) => !left.Equals(right);
 
   // scalar operations
   public static Point3 operator +(Point3 a, int s) => new(a.X + s, a.Y + s, a.Z + s);

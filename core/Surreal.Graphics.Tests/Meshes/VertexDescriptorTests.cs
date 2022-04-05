@@ -10,10 +10,10 @@ public sealed class VertexDescriptorTests
   {
     var attributes = VertexDescriptorSet.Create<Vertex>();
 
-    Assert.AreEqual(2, attributes.Length);
+    attributes.Length.Should().Be(2);
 
-    Assert.AreEqual("a_position", attributes[0].Alias);
-    Assert.AreEqual("a_color", attributes[1].Alias);
+    attributes[0].Alias.Should().Be("Position");
+    attributes[1].Alias.Should().Be("Color");
   }
 
   [Test]
@@ -21,9 +21,9 @@ public sealed class VertexDescriptorTests
   {
     var attributes = VertexDescriptorSet.Create<Vertex>();
 
-    Assert.AreEqual(12, attributes[0].Stride);
-    Assert.AreEqual(16, attributes[1].Stride);
-    Assert.AreEqual(28, attributes.Stride);
+    attributes[0].Stride.Should().Be(12);
+    attributes[1].Stride.Should().Be(16);
+    attributes.Stride.Should().Be(28);
   }
 
   [Test]
@@ -31,8 +31,8 @@ public sealed class VertexDescriptorTests
   {
     var attributes = VertexDescriptorSet.Create<Vertex>();
 
-    Assert.AreEqual(0, attributes[0].Offset);
-    Assert.AreEqual(12, attributes[1].Offset);
+    attributes[0].Offset.Should().Be(0);
+    attributes[1].Offset.Should().Be(12);
   }
 
   [StructLayout(LayoutKind.Sequential)]

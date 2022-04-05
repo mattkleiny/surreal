@@ -7,8 +7,8 @@ public class SpanGridTests
   {
     var grid = new SpanGrid<ushort>(stackalloc ushort[256], 16);
 
-    Assert.AreEqual(16, grid.Width);
-    Assert.AreEqual(16, grid.Height);
+    grid.Width.Should().Be(16);
+    grid.Height.Should().Be(16);
 
     for (int y = 0; y < grid.Height; y++)
     for (int x = 0; x < grid.Width; x++)

@@ -10,6 +10,6 @@ public class AudioBufferTests
   {
     using var buffer = new AudioBuffer(1.Seconds(), AudioSampleRate.Standard);
 
-    Assert.That(buffer.Size, Is.GreaterThan(1.Kilobytes()));
+    buffer.Size.Should().BeGreaterThan(1.Kilobytes());
   }
 }

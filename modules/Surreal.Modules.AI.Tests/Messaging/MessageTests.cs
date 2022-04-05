@@ -10,18 +10,18 @@ public class MessageTests
     var payload = new TestMessage();
     var message = Message.Create(ref payload);
 
-    Assert.IsTrue(message.Is<TestMessage>());
-    Assert.IsFalse(Unsafe.IsNullRef(ref message.Cast<TestMessage>()));
+    message.Is<TestMessage>().Should().BeTrue();
+    Unsafe.IsNullRef(ref message.Cast<TestMessage>()).Should().BeFalse();
   }
 
   [Test]
   public void it_should_packed_payload_to_listener()
   {
     var listener = new TestListener();
-    var result   = listener.SendMessage(new TestMessage());
+    var result = listener.SendMessage(new TestMessage());
 
-    Assert.AreEqual(8, result.Width);
-    Assert.AreEqual(7, result.Height);
+    result.Width.Should().Be(8);
+    result.Height.Should().Be(7);
   }
 
   private record struct TestMessage()

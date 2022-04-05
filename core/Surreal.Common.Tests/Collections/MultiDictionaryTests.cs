@@ -12,7 +12,7 @@ public class MultiDictionaryTests
     dictionary.Add(2, "Test 3");
     dictionary.Add(2, "Test 4");
 
-    Assert.AreEqual(2, dictionary.Count);
+    dictionary.Count.Should().Be(2);
   }
 
   [Test]
@@ -25,10 +25,10 @@ public class MultiDictionaryTests
     dictionary.Add(2, "Test 3");
     dictionary.Add(2, "Test 4");
 
-    Assert.AreEqual(2, dictionary.Count);
+    dictionary.Count.Should().Be(2);
 
     dictionary.Remove(1, "Test 2");
 
-    Assert.AreEqual(2, dictionary.Count);
+    dictionary.Count.Should().Be(2);
   }
 }

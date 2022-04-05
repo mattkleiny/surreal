@@ -7,15 +7,15 @@ public class RingBufferTests
   {
     var buffer = new RingBuffer<int>(capacity: 3);
 
-    Assert.AreEqual(0, buffer.Count);
+    buffer.Count.Should().Be(0);
     buffer.Add(1);
-    Assert.AreEqual(1, buffer.Count);
+    buffer.Count.Should().Be(1);
     buffer.Add(2);
-    Assert.AreEqual(2, buffer.Count);
+    buffer.Count.Should().Be(2);
     buffer.Add(3);
-    Assert.AreEqual(3, buffer.Count);
+    buffer.Count.Should().Be(3);
     buffer.Add(4);
-    Assert.AreEqual(3, buffer.Count);
+    buffer.Count.Should().Be(3);
   }
 
   [Test]
@@ -28,7 +28,7 @@ public class RingBufferTests
       buffer.Add(i);
     }
 
-    Assert.AreEqual(3, buffer.Count);
+    buffer.Count.Should().Be(3);
   }
 
   [Test]
@@ -41,9 +41,9 @@ public class RingBufferTests
       buffer.Add(i);
     }
 
-    Assert.AreEqual(3, buffer.Count);
+    buffer.Count.Should().Be(3);
     buffer.Clear();
-    Assert.AreEqual(0, buffer.Count);
+    buffer.Count.Should().Be(0);
   }
 
   [Test]
@@ -58,6 +58,6 @@ public class RingBufferTests
 
     var results = buffer.ToArray();
 
-    Assert.AreEqual(results, new[] { 999, 998, 997 });
+    results.Should().BeEquivalentTo(new[] { 999, 998, 997 });
   }
 }

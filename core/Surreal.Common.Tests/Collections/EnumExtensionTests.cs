@@ -7,27 +7,27 @@ public class EnumExtensionTests
   [Test]
   public void it_should_cast_to_int()
   {
-    Assert.AreEqual(0, TestEnum.Zero.AsInt());
-    Assert.AreEqual(1, TestEnum.One.AsInt());
-    Assert.AreEqual(2, TestEnum.Two.AsInt());
-    Assert.AreEqual(3, TestEnum.Three.AsInt());
-    Assert.AreEqual(4, TestEnum.Four.AsInt());
+    TestEnum.Zero.AsInt().Should().Be(0);
+    TestEnum.One.AsInt().Should().Be(1);
+    TestEnum.Two.AsInt().Should().Be(2);
+    TestEnum.Three.AsInt().Should().Be(3);
+    TestEnum.Four.AsInt().Should().Be(4);
   }
 
   [Test]
   public void it_should_cast_from_int()
   {
-    Assert.AreEqual(TestEnum.Zero, 0.AsEnum<TestEnum>());
-    Assert.AreEqual(TestEnum.One, 1.AsEnum<TestEnum>());
-    Assert.AreEqual(TestEnum.Two, 2.AsEnum<TestEnum>());
-    Assert.AreEqual(TestEnum.Three, 3.AsEnum<TestEnum>());
-    Assert.AreEqual(TestEnum.Four, 4.AsEnum<TestEnum>());
+    0.AsEnum<TestEnum>().Should().Be(TestEnum.Zero);
+    1.AsEnum<TestEnum>().Should().Be(TestEnum.One);
+    2.AsEnum<TestEnum>().Should().Be(TestEnum.Two);
+    3.AsEnum<TestEnum>().Should().Be(TestEnum.Three);
+    4.AsEnum<TestEnum>().Should().Be(TestEnum.Four);
   }
 
   [Test]
   public void it_should_compare_as_int()
   {
-    Assert.IsTrue(TestEnum.Four.EqualsFast(TestEnum.Four));
+    TestEnum.Four.EqualsFast(TestEnum.Four).Should().BeTrue();
   }
 
   private enum TestEnum

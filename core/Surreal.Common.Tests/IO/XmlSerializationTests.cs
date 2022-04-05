@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
+using Surreal.IO.Xml;
 
-namespace Surreal.IO.Xml;
+namespace Surreal.IO;
 
 public class XmlSerializationTests
 {
@@ -8,11 +9,11 @@ public class XmlSerializationTests
   public async Task it_should_deserialize_from_xml()
   {
     var element = XElement.Parse("<TestObject Id=\"1\" Name=\"Test\" />");
-    var result  = await XmlSerializer.DeserializeAsync<TestObject>(element);
+    var result = await XmlSerializer.DeserializeAsync<TestObject>(element);
 
-    Assert.IsNotNull(result);
-    Assert.AreEqual(1, result.Id);
-    Assert.AreEqual("Test", result.Name);
+    result.Should().NotBeNull();
+    result.Id.Should().Be(1);
+    result.Name.Should().Be("Test");
   }
 
   private sealed record TestObject(int Id, string Name);

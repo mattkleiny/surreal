@@ -12,6 +12,6 @@ public class BlueprintParserTests
     var parser      = new BlueprintParser();
     var declaration = await parser.ParseAsync(path);
 
-    Assert.IsNotNull(declaration);
+    declaration.Should().NotBeNull();
   }
 }

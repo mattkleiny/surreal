@@ -5,8 +5,13 @@ public class EnumerationTests
   [Test]
   public void it_should_build_a_valid_set_of_all_members()
   {
-    Assert.AreEqual(3, TestValue.All.Count);
-    Assert.That(TestValue.All, Is.EquivalentTo(new[] { TestValue.One, TestValue.Two, TestValue.Three }));
+    TestValue.All.Count.Should().Be(3);
+    TestValue.All.Should().BeEquivalentTo(new[]
+    {
+      TestValue.One,
+      TestValue.Two,
+      TestValue.Three,
+    });
   }
 
   private record TestValue(int Id) : Enumeration<TestValue>

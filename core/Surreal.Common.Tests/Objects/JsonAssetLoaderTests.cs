@@ -15,9 +15,9 @@ public class JsonAssetLoaderTests
     var template = await manager.LoadAssetAsync<TestTemplate>("Assets/templates/test.json");
     var instance = await manager.LoadAssetAsync<TestObject>("Assets/templates/test.json");
 
-    Assert.IsNotNull(template);
-    Assert.IsNotNull(template.Create());
-    Assert.IsNotNull(instance);
+    template.Should().NotBeNull();
+    template.Create().Should().NotBeNull();
+    instance.Should().NotBeNull();
   }
 
   private sealed record TestObject;

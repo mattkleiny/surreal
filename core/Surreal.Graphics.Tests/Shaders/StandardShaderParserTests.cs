@@ -12,9 +12,9 @@ public class StandardShaderParserTests
     var parser      = new StandardShaderParser();
     var declaration = await parser.ParseAsync(path);
 
-    Assert.IsNotNull(declaration);
-    Assert.IsTrue(declaration.CompilationUnit.ShaderType is { Type: "sprite" });
-    Assert.AreEqual(1, declaration.CompilationUnit.Includes.Count);
-    Assert.AreEqual(2, declaration.CompilationUnit.Stages.Length);
+    declaration.Should().NotBeNull();
+    declaration.CompilationUnit.ShaderType.Type.Should().Be("sprite");
+    declaration.CompilationUnit.Includes.Count.Should().Be(1);
+    declaration.CompilationUnit.Stages.Length.Should().Be(2);
   }
 }

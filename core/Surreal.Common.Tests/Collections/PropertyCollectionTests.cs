@@ -13,8 +13,8 @@ public class PropertyCollectionTests
     blackboard.Set(Message, "Hello, World!");
     blackboard.Set(Factor, MathF.PI);
 
-    Assert.AreEqual("Hello, World!", blackboard.Get(Message));
-    Assert.AreEqual(MathF.PI, blackboard.Get(Factor), 0.1f);
+    blackboard.Get(Message).Should().Be("Hello, World!");
+    blackboard.Get(Factor, 0.1f).Should().Be(MathF.PI);
   }
 
   [Test]
@@ -22,8 +22,8 @@ public class PropertyCollectionTests
   {
     var blackboard = new PropertyCollection();
 
-    Assert.AreEqual("Test", blackboard.Get(Message, "Test"));
-    Assert.AreEqual(1.14159f, blackboard.Get(Factor));
-    Assert.AreEqual(3.14159f, blackboard.Get(Factor, 3.14159f));
+    blackboard.Get(Message, "Test").Should().Be("Test");
+    blackboard.Get(Factor).Should().Be(1.14159f);
+    blackboard.Get(Factor, 3.14159f).Should().Be(3.14159f);
   }
 }

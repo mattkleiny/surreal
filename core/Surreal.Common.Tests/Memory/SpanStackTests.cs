@@ -9,17 +9,17 @@ public class SpanStackTests
 
     for (int i = 0; i < 256; i++)
     {
-      Assert.IsTrue(stack.TryPush(100));
+      stack.TryPush(100).Should().BeTrue();
     }
 
-    Assert.IsFalse(stack.TryPush(200));
+    stack.TryPush(200).Should().BeFalse();
 
     for (int i = 0; i < 256; i++)
     {
-      Assert.IsTrue(stack.TryPop(out _));
+      stack.TryPop(out _).Should().BeTrue();
     }
 
-    Assert.IsFalse(stack.TryPop(out _));
+    stack.TryPop(out _).Should().BeFalse();
   }
 
   [Test]
@@ -30,9 +30,9 @@ public class SpanStackTests
     stack.Push(1);
     stack.Push(2);
 
-    Assert.AreEqual(2, stack[..].Count);
-    Assert.AreEqual(1, stack[1..].Count);
-    Assert.AreEqual(0, stack[2..].Count);
-    Assert.AreEqual(0, stack[3..].Count);
+    stack[..].Count.Should().Be(2);
+    stack[1..].Count.Should().Be(1);
+    stack[2..].Count.Should().Be(0);
+    stack[3..].Count.Should().Be(0);
   }
 }

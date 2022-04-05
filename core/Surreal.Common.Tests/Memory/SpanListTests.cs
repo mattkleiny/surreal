@@ -11,6 +11,8 @@ public class SpanListTests
     {
       list.Add(100);
     }
+
+    list.Count.Should().Be(256);
   }
 
   [Test]
@@ -21,9 +23,9 @@ public class SpanListTests
     list.Add(1);
     list.Add(2);
 
-    Assert.AreEqual(2, list[..].Count);
-    Assert.AreEqual(1, list[1..].Count);
-    Assert.AreEqual(0, list[2..].Count);
-    Assert.AreEqual(0, list[3..].Count);
+    list[..].Count.Should().Be(2);
+    list[1..].Count.Should().Be(1);
+    list[2..].Count.Should().Be(0);
+    list[3..].Count.Should().Be(0);
   }
 }

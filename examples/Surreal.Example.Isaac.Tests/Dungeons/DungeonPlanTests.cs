@@ -13,6 +13,6 @@ public class DungeonPlanTests
       new DungeonNode.PlaceShop(),
     };
 
-    Assert.IsNotNull(blueprint.Create());
+    blueprint.Create().Should().NotBeNull();
   }
 }

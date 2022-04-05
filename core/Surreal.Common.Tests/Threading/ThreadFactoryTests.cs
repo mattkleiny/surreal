@@ -20,6 +20,6 @@ public class ThreadFactoryTests
   {
     var result = await ThreadFactory.Create(() => Task.FromResult(42));
 
-    Assert.AreEqual(42, result);
+    result.Should().Be(42);
   }
 }

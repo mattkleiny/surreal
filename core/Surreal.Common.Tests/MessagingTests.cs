@@ -28,15 +28,15 @@ public class MessagingTests
   [MessageSubscriber]
   private void OnMessageReceived(ref string value)
   {
-    Assert.AreEqual("This is a test!", value);
+    value.Should().Be("This is a test!");
   }
 
   private sealed class TestListener : IMessageListener
   {
     void IMessageListener.OnMessageReceived(Message message)
     {
-      Assert.IsTrue(message.Is<string>());
-      Assert.AreEqual("This is a test!", message.Cast<string>());
+      message.Is<string>().Should().BeTrue();
+      message.Cast<string>().Should().Be("This is a test!");
     }
   }
 }

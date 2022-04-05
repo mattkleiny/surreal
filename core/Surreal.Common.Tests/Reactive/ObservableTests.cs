@@ -6,7 +6,7 @@ public class ObservableTests
   public void it_should_notify_on_next()
   {
     var observable = new Observable<int>();
-    var sequence   = new List<int>();
+    var sequence = new List<int>();
 
     using var _ = observable.Subscribe(value => sequence.Add(value));
 
@@ -15,20 +15,20 @@ public class ObservableTests
     observable.NotifyNext(3);
     observable.NotifyNext(1);
 
-    Assert.That(sequence, Is.EquivalentTo(new[] { 4, 3, 2, 1 }));
+    sequence.Should().BeEquivalentTo(new[] { 4, 3, 2, 1 });
   }
 
   [Test]
   public void it_should_notify_on_error()
   {
     var observable = new Observable<int>();
-    var hasError   = false;
+    var hasError = false;
 
     using var _ = observable.Subscribe(onError: _ => hasError = true);
 
     observable.NotifyError(new InvalidOperationException());
 
-    Assert.IsTrue(hasError);
+    hasError.Should().BeTrue();
   }
 
   [Test]
@@ -41,6 +41,6 @@ public class ObservableTests
 
     observable.NotifyCompleted();
 
-    Assert.IsTrue(isComplete);
+    isComplete.Should().BeTrue();
   }
 }
