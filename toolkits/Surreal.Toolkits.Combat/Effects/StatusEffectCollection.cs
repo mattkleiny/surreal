@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Collections;
+using Surreal.Timing;
 
 namespace Surreal.Effects;
 
@@ -9,17 +10,28 @@ namespace Surreal.Effects;
 public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
 {
   private readonly LinkedList<StatusEffect> effects = new(); // linked list for fast insertion/removal
+  private readonly HierarchicalBitSet effectKinds = new();   // a bit set of which kinds are active in the collection
   private readonly object owner;
+
+  public event Action<StatusEffect>? EffectAdded;
+  public event Action<StatusEffect>? EffectRemoved;
 
   public StatusEffectCollection(object owner)
   {
     this.owner = owner;
   }
 
+  public bool Has(StatusEffectKind kind)
+  {
+    return effectKinds.Contains(kind.Mask);
+  }
+
   public bool Add(StatusEffect effect)
   {
     effects.AddLast(effect);
+
     effect.OnEffectAdded(owner);
+    EffectAdded?.Invoke(effect);
 
     return true;
   }
@@ -29,6 +41,8 @@ public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
     if (effects.Remove(effect))
     {
       effect.OnEffectRemoved(owner);
+      EffectRemoved?.Invoke(effect);
+
       return true;
     }
 
@@ -45,6 +59,7 @@ public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
         effects.Remove(effect);
 
         effect.Value.OnEffectRemoved(owner);
+        EffectRemoved?.Invoke(effect.Value);
       }
     }
   }

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Surreal.Collections;
+using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -136,27 +137,21 @@ public readonly ref struct Message
 
   private static SubscriberMethod[] GetOrCreateMethods(object target)
   {
-    const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-
     var type = target.GetType();
 
     if (!MethodCache.TryGetValue(type, out var methods))
     {
       var results =
-        from method in type.GetMethods(flags)
+        from method in type.GetFlattenedInstanceMethods()
         where method.GetCustomAttribute<MessageSubscriberAttribute>() != null
         let parameters = method.GetParameters()
         where parameters.Length == 1 && parameters[0].ParameterType.IsByRef
         let messageType = parameters[0].ParameterType.GetElementType()
-        let isAsync = method.ReturnType == typeof(ValueTask) ||
-                      method.ReturnType == typeof(Task) ||
-                      method.ReturnType == typeof(Task<>)
         select new SubscriberMethod
         {
           Method = method,
           MessageType = messageType,
           DelegateType = typeof(MessageSubscriber<>).MakeGenericType(messageType),
-          IsAsync = isAsync,
         };
 
       MethodCache[type] = methods = results.ToArray();
@@ -171,6 +166,5 @@ public readonly ref struct Message
     public MethodInfo Method       { get; set; }
     public Type       MessageType  { get; set; }
     public Type       DelegateType { get; set; }
-    public bool       IsAsync      { get; set; }
   }
 }

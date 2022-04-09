@@ -1,4 +1,5 @@
 ﻿using Surreal.Combat;
+using Surreal.Effects;
 using Surreal.Persistence;
 
 namespace Isaac.Core.Actors;
@@ -6,9 +7,8 @@ namespace Isaac.Core.Actors;
 public readonly record struct PlayerSpawned(Player Player);
 public readonly record struct PlayerDamaged(Player Player, Damage Damage);
 public readonly record struct PlayerDestroyed(Player Player);
-public readonly record struct PlayerAttacked(Player Player, Vector2 Position, Vector2 Direction);
-public readonly record struct PlayerUsedCoin(Player Player, Vector2 Position);
-public readonly record struct PlayerUsedBomb(Player Player, Vector2 Position);
+public readonly record struct PlayerGainedStatusEffect(Player Player, StatusEffect Effect);
+public readonly record struct PlayerLostStatusEffect(Player Player, StatusEffect Effect);
 
 /// <summary>The player <see cref="Character"/>.</summary>
 public sealed class Player : Character, IPersistentObject
@@ -39,6 +39,24 @@ public sealed class Player : Character, IPersistentObject
     if (message.Character == this)
     {
       Message.Publish(new PlayerDestroyed(this));
+    }
+  }
+
+  [MessageSubscriber]
+  private void OnCharacterGainedStatusEffect(ref CharacterGainedStatusEffect message)
+  {
+    if (message.Character == this)
+    {
+      Message.Publish(new PlayerGainedStatusEffect(this, message.Effect));
+    }
+  }
+
+  [MessageSubscriber]
+  private void OnCharacterLostStatusEffect(ref CharacterLostStatusEffect message)
+  {
+    if (message.Character == this)
+    {
+      Message.Publish(new PlayerLostStatusEffect(this, message.Effect));
     }
   }
 

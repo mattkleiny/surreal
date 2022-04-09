@@ -3,7 +3,11 @@ using Surreal.Utilities;
 
 namespace Isaac.Core.Actions;
 
-[Export(Name = "Add Bombs", Description = "Adds bombs to the owning object's inventory.")]
+[EditorDescription(
+  Name = "Add bombs",
+  Category = "Inventory",
+  Description = "Adds bombs to the owning object's inventory"
+)]
 public sealed record AddBombs(int Bombs) : IAction
 {
   public ValueTask ExecuteAsync(ActionContext context)

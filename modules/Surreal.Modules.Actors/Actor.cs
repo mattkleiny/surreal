@@ -70,11 +70,12 @@ public class Actor
   public ref T GetOrCreateComponent<T>(T prototype)
     where T : notnull, new()
   {
-    var storage = context?.GetStorage<T>();
-    if (storage == null)
+    if (context == null)
     {
-      return ref Unsafe.NullRef<T>();
+      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
     }
+
+    var storage = context.GetStorage<T>();
 
     return ref storage.GetOrCreateComponent(Id, prototype);
   }
@@ -82,11 +83,12 @@ public class Actor
   public ref T AddComponent<T>(T prototype)
     where T : notnull, new()
   {
-    var storage = context?.GetStorage<T>();
-    if (storage == null)
+    if (context == null)
     {
-      throw new ActorException($"The component '{typeof(T).Name}' is not registerable on the actor");
+      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
     }
+
+    var storage = context.GetStorage<T>();
 
     return ref storage.AddComponent(Id, prototype);
   }
@@ -94,16 +96,17 @@ public class Actor
   public ref T GetComponent<T>()
     where T : notnull, new()
   {
-    var storage = context?.GetStorage<T>();
-    if (storage == null)
+    if (context == null)
     {
-      throw new ActorException($"The component '{typeof(T).Name}' is not available on the actor");
+      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
     }
 
+    var storage = context.GetStorage<T>();
     ref var component = ref storage.GetComponent(Id);
+
     if (Unsafe.IsNullRef(ref component))
     {
-      throw new ActorException($"The given component '{typeof(T).Name}' is not available on the actor");
+      throw new ActorException($"The given component '{typeof(T).Name}' is not available on actor id {Id}");
     }
 
     return ref component;
@@ -112,11 +115,12 @@ public class Actor
   public bool RemoveComponent<T>()
     where T : notnull, new()
   {
-    var storage = context?.GetStorage<T>();
-    if (storage == null)
+    if (context == null)
     {
-      return false;
+      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
     }
+
+    var storage = context.GetStorage<T>();
 
     return storage.RemoveComponent(Id);
   }

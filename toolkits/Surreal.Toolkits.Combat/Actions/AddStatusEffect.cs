@@ -4,7 +4,8 @@ using Surreal.Utilities;
 
 namespace Surreal.Actions;
 
-[Export(
+[EditorDescription(
+  Name = "Add status effect",
   Category = "Status Effects",
   Description = "Adds a status effect to the owning object"
 )]

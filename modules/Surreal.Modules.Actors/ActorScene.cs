@@ -35,26 +35,19 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
 
     if (nodes.TryGetValue(actor.Id, out var node))
     {
-      node.Status = ActorStatus.Active;
+      node.ActorStatus = ActorStatus.Active;
     }
     else
     {
       nodes[actor.Id] = new Node<Actor>(actor)
       {
-        Status = ActorStatus.Active,
+        ActorStatus = ActorStatus.Active,
       };
 
+      // TODO: split these up, better FSM over actors
+      actor.OnEnable();
       actor.OnAwake();
-    }
-  }
-
-  public void Despawn(Actor actor)
-  {
-    if (nodes.TryGetValue(actor.Id, out var node) && node.Status != ActorStatus.Destroyed)
-    {
-      node.Status = ActorStatus.Destroyed;
-
-      destroyQueue.Enqueue(node.Data);
+      actor.OnStart();
     }
   }
 
@@ -67,7 +60,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
 
     foreach (var node in nodes.Values)
     {
-      if (node.Status == ActorStatus.Active)
+      if (node.ActorStatus == ActorStatus.Active)
       {
         node.Data.OnInput(time);
       }
@@ -83,7 +76,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
 
     foreach (var node in nodes.Values)
     {
-      if (node.Status == ActorStatus.Active)
+      if (node.ActorStatus == ActorStatus.Active)
       {
         node.Data.OnUpdate(time);
       }
@@ -101,7 +94,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
 
     foreach (var node in nodes.Values)
     {
-      if (node.Status == ActorStatus.Active)
+      if (node.ActorStatus == ActorStatus.Active)
       {
         node.Data.OnDraw(time);
       }
@@ -112,7 +105,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   {
     if (nodes.TryGetValue(id, out var node))
     {
-      return node.Status;
+      return node.ActorStatus;
     }
 
     return ActorStatus.Unknown;
@@ -125,25 +118,25 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
 
   void IActorContext.Enable(ActorId id)
   {
-    if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
+    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
     {
-      node.Status = ActorStatus.Active;
+      node.ActorStatus = ActorStatus.Active;
     }
   }
 
   void IActorContext.Disable(ActorId id)
   {
-    if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
+    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
     {
-      node.Status = ActorStatus.Inactive;
+      node.ActorStatus = ActorStatus.Inactive;
     }
   }
 
   void IActorContext.Destroy(ActorId id)
   {
-    if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
+    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
     {
-      node.Status = ActorStatus.Destroyed;
+      node.ActorStatus = ActorStatus.Destroyed;
 
       destroyQueue.Enqueue(node.Data);
     }
@@ -153,7 +146,10 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   {
     while (destroyQueue.TryDequeue(out var actor))
     {
+      // TODO: split these up, better FSM over actors
+      actor.OnDisable();
       actor.OnDestroy();
+
       actor.Disconnect(this);
 
       nodes.Remove(actor.Id);
@@ -175,9 +171,9 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   /// <summary>A single node in the scene.</summary>
   private sealed record Node<T>(T Data)
   {
-    public ActorStatus   Status   { get; set; }
-    public Node<T>?      Parent   { get; set; }
-    public List<Node<T>> Children { get; } = new();
+    public ActorStatus   ActorStatus { get; set; }
+    public Node<T>?      Parent      { get; set; }
+    public List<Node<T>> Children    { get; } = new();
   }
 
   /// <summary>A storage group for components, for use in scene actors.</summary>

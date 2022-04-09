@@ -8,6 +8,16 @@ namespace Isaac.Core.Actors;
 public readonly record struct CharacterSpawned(Character Character);
 public readonly record struct CharacterDamaged(Character Character, Damage Damage);
 public readonly record struct CharacterDestroyed(Character Character);
+public readonly record struct CharacterGainedStatusEffect(Character Character, StatusEffect Effect);
+public readonly record struct CharacterLostStatusEffect(Character Character, StatusEffect Effect);
+
+/// <summary>Different kinds of locomotion states for a <see cref="Character"/>.</summary>
+public enum LocomotionState
+{
+  Normal,
+  Flying,
+  Stuck,
+}
 
 /// <summary>A character <see cref="Actor"/> that can move about the game world and common components.</summary>
 public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectOwner
@@ -15,10 +25,17 @@ public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectO
   public Character()
   {
     StatusEffects = new(this);
+
+    StatusEffects.EffectAdded += OnStatusEffectAdded;
+    StatusEffects.EffectRemoved += OnStatusEffectRemoved;
   }
 
   public ref Transform Transform => ref GetComponent<Transform>();
   public ref Sprite    Sprite    => ref GetComponent<Sprite>();
+  public ref Vector2   Position  => ref Transform.Position;
+  public ref Vector2   Scale     => ref Transform.Scale;
+  public ref float     Rotation  => ref Transform.Rotation;
+  public ref Color     Tint      => ref Sprite.Tint;
 
   public IPropertyCollection    PropertyBag   { get; } = new PropertyBag();
   public StatusEffectCollection StatusEffects { get; }
@@ -65,6 +82,19 @@ public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectO
     set => PropertyBag.Set(Properties.Coins, value.Clamp(0, 99));
   }
 
+  public LocomotionState LocomotionState
+  {
+    get
+    {
+      if (StatusEffects.Has(StatusEffectKinds.Frozen))
+      {
+        return LocomotionState.Stuck;
+      }
+
+      return LocomotionState.Normal;
+    }
+  }
+
   protected override void OnAwake()
   {
     base.OnAwake();
@@ -99,6 +129,16 @@ public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectO
     base.OnUpdate(deltaTime);
 
     StatusEffects.Update(deltaTime);
+  }
+
+  private void OnStatusEffectAdded(StatusEffect effect)
+  {
+    Message.Publish(new CharacterGainedStatusEffect(this, effect));
+  }
+
+  private void OnStatusEffectRemoved(StatusEffect effect)
+  {
+    Message.Publish(new CharacterLostStatusEffect(this, effect));
   }
 
   void IDamageReceiver.OnDamageReceived(Damage damage)

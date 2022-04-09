@@ -3,7 +3,8 @@ using Surreal.Utilities;
 
 namespace Surreal.Actions;
 
-[Export(
+[EditorDescription(
+  Name = "Remove status effect",
   Category = "Status Effects",
   Description = "Removes a status effect from the owning object"
 )]

@@ -3,7 +3,11 @@ using Surreal.Utilities;
 
 namespace Isaac.Core.Actions;
 
-[Export(Name = "Remove Coins", Description = "Removes coins from the owning object's inventory.")]
+[EditorDescription(
+  Name = "Remove coins",
+  Category = "Inventory",
+  Description = "Removes coins from the owning object's inventory"
+)]
 public sealed record RemoveCoins(int Coins) : IAction
 {
   public ValueTask ExecuteAsync(ActionContext context)

@@ -3,9 +3,10 @@ using Surreal.Utilities;
 
 namespace Surreal.Actions;
 
-[Export(
+[EditorDescription(
+  Name = "Remove attribute",
   Category = "Attributes",
-  Description = "Removes an amount to the owning object's attribute."
+  Description = "Removes an amount to the owning object's attribute"
 )]
 public sealed record RemoveAttribute(AttributeType Attribute, int Amount) : IAction
 {

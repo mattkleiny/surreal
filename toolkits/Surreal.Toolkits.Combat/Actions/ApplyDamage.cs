@@ -3,7 +3,8 @@ using Surreal.Utilities;
 
 namespace Surreal.Actions;
 
-[Export(
+[EditorDescription(
+  Name = "Apply damage",
   Category = "Combat",
   Description = "Damages the associating object"
 )]

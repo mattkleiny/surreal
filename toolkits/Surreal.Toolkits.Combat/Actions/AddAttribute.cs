@@ -3,9 +3,10 @@ using Surreal.Utilities;
 
 namespace Surreal.Actions;
 
-[Export(
+[EditorDescription(
+  Name = "Add attribute",
   Category = "Attributes",
-  Description = "Adds an amount to the owning object's attribute."
+  Description = "Adds an amount to the owning object's attribute"
 )]
 public sealed record AddAttribute(AttributeType Attribute, int Amount) : IAction
 {

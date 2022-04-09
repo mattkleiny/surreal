@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Actions;
 
-/// <summary>A collection <see cref="IAction"/>s that can be operated on in bulk.</summary>
+/// <summary>A list <see cref="IAction"/>s that can be operated on in bulk.</summary>
 public sealed class ActionList : IEnumerable<IAction>, IAction
 {
   private readonly List<IAction> actions = new();

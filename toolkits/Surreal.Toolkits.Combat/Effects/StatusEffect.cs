@@ -7,12 +7,10 @@ public abstract class StatusEffect
 {
   public virtual void OnEffectAdded(object owner)
   {
-    Message.Publish(new StatusEffectAdded(owner, this));
   }
 
   public virtual void OnEffectRemoved(object owner)
   {
-    Message.Publish(new StatusEffectRemoved(owner, this));
   }
 
   public virtual Transition OnEffectUpdate(object owner, DeltaTime deltaTime)

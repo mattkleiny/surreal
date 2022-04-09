@@ -5,9 +5,10 @@ using Surreal.Utilities;
 namespace Isaac.Core.Effects;
 
 /// <summary>Freezes an object in place.</summary>
-[Export(
+[EditorDescription(
+  Name = "Frozen",
   Category = "Status Effects",
-  Description = "Freezes an object in-place"
+  Description = "Freezes an object in-place, preventing it's movement"
 )]
 public sealed class FrozenStatusEffect : StatusEffect
 {
@@ -29,8 +30,10 @@ public sealed class FrozenStatusEffect : StatusEffect
   }
 
   [Template(typeof(FrozenStatusEffect))]
-  public sealed record Template(TimeSpan Duration) : ITemplate<FrozenStatusEffect>
+  public sealed record Template : ITemplate<FrozenStatusEffect>
   {
+    public TimeSpan Duration { get; init; } = 4.Seconds();
+
     public FrozenStatusEffect Create()
     {
       return new FrozenStatusEffect(Duration);

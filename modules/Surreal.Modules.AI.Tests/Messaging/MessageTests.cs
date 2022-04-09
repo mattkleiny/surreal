@@ -24,7 +24,22 @@ public class MessageTests
     result.Height.Should().Be(7);
   }
 
-  private record struct TestMessage()
+  [Test]
+  public void it_should_notify_subscribers()
+  {
+    Message.SubscribeAll(this);
+    Message.Publish("Hello, World");
+
+    Assert.Fail();
+  }
+
+  [MessageSubscriber]
+  private void OnMessageReceived(ref string message)
+  {
+    Assert.Pass();
+  }
+
+  private record struct TestMessage
   {
     public int Width  { get; set; } = 16;
     public int Height { get; set; } = 9;
