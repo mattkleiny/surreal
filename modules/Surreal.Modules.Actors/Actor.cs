@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Runtime.CompilerServices;
-using Surreal.Collections;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -17,7 +16,7 @@ public enum ActorStatus
 /// <summary>Uniquely identifies a single <see cref="Actor"/>.</summary>
 public readonly record struct ActorId(ulong Id)
 {
-  private static ulong nextId = 1;
+  private static ulong nextId = 0;
 
   public static ActorId Invalid => default;
   public static ActorId Allocate() => new(Interlocked.Increment(ref nextId));
@@ -98,6 +97,10 @@ public class Actor
   {
   }
 
+  protected internal virtual void OnStart()
+  {
+  }
+
   protected internal virtual void OnEnable()
   {
   }
@@ -106,7 +109,7 @@ public class Actor
   {
   }
 
-  protected internal virtual void OnUpdate(DeltaTime time)
+  protected internal virtual void OnUpdate(DeltaTime deltaTime)
   {
   }
 

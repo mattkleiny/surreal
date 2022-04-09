@@ -1,41 +1,79 @@
 ﻿using Isaac.Core.Actors.Components;
+using Surreal.Attributes;
 using Surreal.Combat;
+using Surreal.Effects;
 
 namespace Isaac.Core.Actors;
 
+public readonly record struct CharacterSpawned(Character Character);
+public readonly record struct CharacterDamaged(Character Character, Damage Damage);
+public readonly record struct CharacterDestroyed(Character Character);
+
 /// <summary>A character <see cref="Actor"/> that can move about the game world and common components.</summary>
-public class Character : Actor, IDamageReceiver
+public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectOwner
 {
   public Character(IActorContext context)
     : base(context)
   {
+    StatusEffects = new(this);
+
     AddComponent(new Transform());
     AddComponent(new Sprite());
-    AddComponent(new Statistics());
   }
 
-  public ref Transform  Transform  => ref GetComponent<Transform>();
-  public ref Sprite     Sprite     => ref GetComponent<Sprite>();
-  public ref Statistics Statistics => ref GetComponent<Statistics>();
+  public ref Transform Transform => ref GetComponent<Transform>();
+  public ref Sprite    Sprite    => ref GetComponent<Sprite>();
 
-  public PropertyCollection Properties { get; } = new();
+  public IPropertyCollection    PropertyBag   { get; } = new PropertyBag();
+  public StatusEffectCollection StatusEffects { get; }
+
+  public int this[AttributeType attribute]
+  {
+    get => PropertyBag.Get(attribute.Property);
+    set => PropertyBag.Set(attribute.Property, value);
+  }
 
   public int Health
   {
-    get => Properties.Get(Core.Properties.Health);
-    set => Properties.Set(Core.Properties.Health, value.Clamp(0, 99));
+    get => PropertyBag.Get(Properties.Health);
+    set => PropertyBag.Set(Properties.Health, value.Clamp(0, 99));
+  }
+
+  public int MoveSpeed
+  {
+    get => PropertyBag.Get(Properties.MoveSpeed);
+    set => PropertyBag.Set(Properties.MoveSpeed, value.Clamp(0, 99));
+  }
+
+  public int AttackSpeed
+  {
+    get => PropertyBag.Get(Properties.AttackSpeed);
+    set => PropertyBag.Set(Properties.AttackSpeed, value.Clamp(0, 99));
+  }
+
+  public int Range
+  {
+    get => PropertyBag.Get(Properties.Range);
+    set => PropertyBag.Set(Properties.Range, value.Clamp(0, 99));
   }
 
   public int Bombs
   {
-    get => Properties.Get(Core.Properties.Bombs);
-    set => Properties.Set(Core.Properties.Bombs, value.Clamp(0, 99));
+    get => PropertyBag.Get(Properties.Bombs);
+    set => PropertyBag.Set(Properties.Bombs, value.Clamp(0, 99));
   }
 
   public int Coins
   {
-    get => Properties.Get(Core.Properties.Coins);
-    set => Properties.Set(Core.Properties.Coins, value.Clamp(0, 99));
+    get => PropertyBag.Get(Properties.Coins);
+    set => PropertyBag.Set(Properties.Coins, value.Clamp(0, 99));
+  }
+
+  protected override void OnStart()
+  {
+    base.OnStart();
+
+    Message.Publish(new CharacterSpawned(this));
   }
 
   protected override void OnEnable()
@@ -52,12 +90,25 @@ public class Character : Actor, IDamageReceiver
     Message.UnsubscribeAll(this);
   }
 
+  protected override void OnUpdate(DeltaTime deltaTime)
+  {
+    base.OnUpdate(deltaTime);
+
+    StatusEffects.Update(deltaTime);
+  }
+
   void IDamageReceiver.OnDamageReceived(Damage damage)
   {
     Health -= damage.Amount;
 
-    if (Health <= 0)
+    if (Health > 0)
     {
+      Message.Publish(new CharacterDamaged(this, damage));
+    }
+    else
+    {
+      Message.Publish(new CharacterDestroyed(this));
+
       Destroy();
     }
   }

@@ -1,6 +1,4 @@
-﻿using Isaac.Core.Blueprints;
-
-namespace Isaac.Dungeons;
+﻿namespace Isaac.Core.Blueprints;
 
 public class DungeonPlanTests
 {

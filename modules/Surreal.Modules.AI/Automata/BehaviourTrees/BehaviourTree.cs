@@ -29,7 +29,7 @@ public readonly record struct BehaviourContext(
 public sealed class BehaviourTree : IAutomata, IMessageListener
 {
   public BehaviourTree(object owner, BehaviourNode root)
-    : this(owner, new PropertyCollection(), root)
+    : this(owner, new PropertyBag(), root)
   {
   }
 

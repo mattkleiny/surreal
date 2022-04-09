@@ -11,7 +11,10 @@ public enum AutomataStatus
 }
 
 /// <summary>The context for <see cref="IAutomata"/> operations.</summary>
-public readonly record struct AutomataContext(LevelOfDetail LevelOfDetail, Priority Priority);
+public readonly record struct AutomataContext(
+  LevelOfDetail LevelOfDetail,
+  Priority Priority
+);
 
 /// <summary>Abstracts over all kinds of automata that are capable of receiving discrete lifecycle events.</summary>
 public interface IAutomata

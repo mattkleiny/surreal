@@ -30,4 +30,24 @@ public static class CollectionExtensions
 
     return default;
   }
+
+  public static async IAsyncEnumerable<TResult> SelectAsync<T, TResult>(this IEnumerable<T> enumerable, Func<T, ValueTask<TResult>> selector)
+  {
+    foreach (var element in enumerable)
+    {
+      yield return await selector(element);
+    }
+  }
+
+  public static async ValueTask<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> enumerable, CancellationToken cancellationToken = default)
+  {
+    var results = new List<T>();
+
+    await foreach (var element in enumerable.WithCancellation(cancellationToken))
+    {
+      results.Add(element);
+    }
+
+    return results;
+  }
 }

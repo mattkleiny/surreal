@@ -1,10 +1,15 @@
-﻿namespace Surreal.Attributes;
+﻿using Surreal.Collections;
+
+namespace Surreal.Attributes;
 
 /// <summary>Indicates a type of attribute.</summary>
-public readonly record struct AttributeType<T>(string Name)
+public readonly record struct AttributeType(string Name)
 {
-  public override string ToString()
+  public AttributeType(Property<int> property)
+    : this(property.Key)
   {
-    return Name;
+    Property = property;
   }
+
+  public Property<int> Property { get; } = new(Name);
 }

@@ -2,7 +2,10 @@
 
 namespace Surreal.Effects;
 
+// TODO: use a bitset to represent the presence of different 'kinds' of status effects
+
 /// <summary>A managed collection of <see cref="StatusEffect"/>s.</summary>
+[DebuggerDisplay("{effects.Count} status effects")]
 public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
 {
   private readonly LinkedList<StatusEffect> effects = new(); // linked list for fast insertion/removal
@@ -46,18 +49,7 @@ public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
     }
   }
 
-  public LinkedList<StatusEffect>.Enumerator GetEnumerator()
-  {
-    return effects.GetEnumerator();
-  }
-
-  IEnumerator<StatusEffect> IEnumerable<StatusEffect>.GetEnumerator()
-  {
-    return effects.GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
+  public LinkedList<StatusEffect>.Enumerator GetEnumerator() => effects.GetEnumerator();
+  IEnumerator<StatusEffect> IEnumerable<StatusEffect>.GetEnumerator() => effects.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

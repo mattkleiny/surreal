@@ -3,6 +3,9 @@
 /// <summary>Indicates damage to be applied to some other object.</summary>
 public record struct Damage(int Amount, DamageType Type, object? UserData = null)
 {
+  public static Damage MinValue(DamageType type) => new(int.MinValue, type);
+  public static Damage MaxValue(DamageType type) => new(int.MaxValue, type);
+
   /// <summary>A callback for performing damage calculations.</summary>
   public static DamageCalculation? Calculation { get; set; }
 

@@ -23,8 +23,8 @@ public interface IPropertyCollection
   void ClearAll();
 }
 
-/// <summary>The default <see cref="IPropertyCollection"/> implementation.</summary>
-public sealed class PropertyCollection : IPropertyCollection
+/// <summary>A bag of <see cref="Property{T}"/>s, and the default <see cref="IPropertyCollection"/> implementation.</summary>
+public sealed class PropertyBag : IPropertyCollection
 {
   private readonly Dictionary<Type, object> storagesByType = new();
 

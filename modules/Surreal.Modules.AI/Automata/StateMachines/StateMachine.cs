@@ -31,7 +31,7 @@ public readonly record struct StateContext(
 public sealed class StateMachine : IAutomata, IMessageListener
 {
   public StateMachine(object owner, State initialState)
-    : this(owner, new PropertyCollection(), initialState)
+    : this(owner, new PropertyBag(), initialState)
   {
   }
 

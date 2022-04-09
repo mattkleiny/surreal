@@ -45,6 +45,16 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     }
   }
 
+  public void Despawn(Actor actor)
+  {
+    if (nodes.TryGetValue(actor.Id, out var node) && node.Status != ActorStatus.Destroyed)
+    {
+      node.Status = ActorStatus.Destroyed;
+
+      destroyQueue.Enqueue(node.Data);
+    }
+  }
+
   public void Input(DeltaTime time)
   {
     foreach (var system in systems)

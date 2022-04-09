@@ -20,7 +20,10 @@ public sealed class IsaacGame : PrototypeGame
 
   protected override void Input(GameTime time)
   {
-    if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
+    if (Keyboard.IsKeyPressed(Key.Escape))
+    {
+      Exit();
+    }
 
     if (Keyboard.IsKeyPressed(Key.F8))
     {

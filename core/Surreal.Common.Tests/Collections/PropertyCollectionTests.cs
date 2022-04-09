@@ -8,7 +8,7 @@ public class PropertyCollectionTests
   [Test]
   public void it_should_read_and_write_keys()
   {
-    var blackboard = new PropertyCollection();
+    var blackboard = new PropertyBag();
 
     blackboard.Set(Message, "Hello, World!");
     blackboard.Set(Factor, MathF.PI);
@@ -20,7 +20,7 @@ public class PropertyCollectionTests
   [Test]
   public void it_should_favor_default_values_in_hierarchy()
   {
-    var blackboard = new PropertyCollection();
+    var blackboard = new PropertyBag();
 
     blackboard.Get(Message, "Test").Should().Be("Test");
     blackboard.Get(Factor).Should().Be(1.14159f);
