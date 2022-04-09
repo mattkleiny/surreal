@@ -4,7 +4,7 @@ using Surreal.IO;
 using Surreal.Memory;
 using Surreal.Objects;
 
-namespace Isaac.Core.Blueprints;
+namespace Isaac.Core.Sprites;
 
 /// <summary>An in-memory plan for a sprite.</summary>
 public sealed class SpritePlan

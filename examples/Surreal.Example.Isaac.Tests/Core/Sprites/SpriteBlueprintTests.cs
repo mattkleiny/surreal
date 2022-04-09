@@ -1,4 +1,4 @@
-﻿namespace Isaac.Core.Blueprints;
+﻿namespace Isaac.Core.Sprites;
 
 public class SpriteBlueprintTests
 {

@@ -20,7 +20,7 @@ public enum LocomotionState
 }
 
 /// <summary>A character <see cref="Actor"/> that can move about the game world and common components.</summary>
-public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectOwner
+public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageReceiver
 {
   public Character()
   {

@@ -1,7 +1,7 @@
 ﻿using Surreal.Graphs;
 using Surreal.Objects;
 
-namespace Isaac.Core.Blueprints;
+namespace Isaac.Core.Dungeons;
 
 /// <summary>A plan for a dungeon.</summary>
 public sealed record DungeonPlan(Random Random, int Width, int Height);

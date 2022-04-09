@@ -1,17 +1,17 @@
 ﻿using Surreal.Controls;
 using Surreal.Input.Keyboard;
 
-namespace Isaac;
+namespace Avventura;
 
-public sealed class IsaacGame : PrototypeGame
+public sealed class AvventuraGame : PrototypeGame
 {
-  public static Task Main() => GameEditor.StartAsync<IsaacGame>(new Configuration
+  public static Task Main() => GameEditor.StartAsync<AvventuraGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
       Configuration =
       {
-        Title = "The Binding of Isaac",
+        Title = "Avventura",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
       },

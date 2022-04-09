@@ -1,4 +1,4 @@
-﻿namespace Isaac.Core.Blueprints;
+﻿namespace Isaac.Core.Dungeons;
 
 public class DungeonBlueprintTests
 {
