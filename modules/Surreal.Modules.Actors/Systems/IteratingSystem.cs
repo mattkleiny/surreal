@@ -6,13 +6,8 @@ namespace Surreal.Systems;
 /// <summary>A simple <see cref="ComponentSystem"/> that iterates components linearly.</summary>
 public abstract class IteratingSystem : ComponentSystem
 {
-  protected IteratingSystem(IComponentSystemContext context)
-    : this(context, ComponentMask.Empty)
-  {
-  }
-
-  protected IteratingSystem(IComponentSystemContext context, ComponentMask mask)
-    : base(context, mask)
+  protected IteratingSystem(ComponentMask mask)
+    : base(mask)
   {
   }
 

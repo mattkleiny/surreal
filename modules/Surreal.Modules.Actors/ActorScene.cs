@@ -6,7 +6,7 @@ using Surreal.Timing;
 namespace Surreal;
 
 /// <summary>A scene of managed <see cref="Actor"/>s.</summary>
-public sealed class ActorScene : IActorContext, IComponentSystemContext, IDisposable
+public sealed class ActorScene : IActorContext, IDisposable
 {
   private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
   private readonly ComponentStorageGroup components = new();
@@ -14,10 +14,6 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   private readonly Queue<Actor> destroyQueue = new();
 
   private ulong nextActorId = 0;
-
-  // TODO: find a way to fire these?
-  public event ComponentChangeListener? ComponentAdded;
-  public event ComponentChangeListener? ComponentRemoved;
 
   public void AddSystem(ISceneSystem system)
   {

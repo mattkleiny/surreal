@@ -2,17 +2,17 @@
 using Surreal.Input.Keyboard;
 using Surreal.Systems;
 
-namespace Isaac.Core.Controllers;
+namespace Isaac.Core.Systems;
 
 /// <summary>Allows the <see cref="IKeyboardDevice"/> to control a <see cref="IPawn"/>.</summary>
-public sealed class KeyboardControlSystem : SceneSystem
+public sealed class KeyboardSystem : SceneSystem
 {
   private readonly IPawn pawn;
   private readonly IKeyboardDevice keyboard;
 
   private Vector2 direction;
 
-  public KeyboardControlSystem(IPawn pawn, IKeyboardDevice keyboard)
+  public KeyboardSystem(IPawn pawn, IKeyboardDevice keyboard)
   {
     this.pawn = pawn;
     this.keyboard = keyboard;

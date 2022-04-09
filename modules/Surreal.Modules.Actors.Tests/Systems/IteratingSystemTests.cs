@@ -12,7 +12,7 @@ public class IteratingSystemTests
     var scene = new ActorScene();
     var deltaTime = 16.Milliseconds();
 
-    scene.AddSystem(new TestSystem(scene));
+    scene.AddSystem(new TestSystem());
 
     scene.Input(deltaTime);
     scene.Update(deltaTime);
@@ -21,8 +21,8 @@ public class IteratingSystemTests
 
   private sealed class TestSystem : IteratingSystem
   {
-    public TestSystem(IComponentSystemContext context)
-      : base(context, ComponentMask.Of<Transform>())
+    public TestSystem()
+      : base(ComponentMask.Of<Transform>())
     {
     }
   }

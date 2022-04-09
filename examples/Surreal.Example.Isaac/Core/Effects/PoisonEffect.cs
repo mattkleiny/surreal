@@ -9,11 +9,11 @@ namespace Isaac.Core.Effects;
   Category = "Status Effects",
   Description = "Applies a damage-over-time effect to an object"
 )]
-public sealed class PoisonStatusEffect : TimedStatusEffect
+public sealed class PoisonEffect : TimedStatusEffect
 {
   private readonly Damage damage;
 
-  public PoisonStatusEffect(TimeSpan duration, TimeSpan frequency, Damage damage)
+  public PoisonEffect(TimeSpan duration, TimeSpan frequency, Damage damage)
     : base(duration, frequency)
   {
     this.damage = damage;
@@ -21,24 +21,24 @@ public sealed class PoisonStatusEffect : TimedStatusEffect
 
   public override StatusEffectType Type => StatusEffectTypes.Poison;
 
-  protected override void OnEffectTick(object owner, DeltaTime deltaTime)
+  protected override void OnEffectTick(object target, DeltaTime deltaTime)
   {
-    if (owner is IDamageReceiver receiver)
+    if (target is IDamageReceiver receiver)
     {
       damage.ApplyTo(receiver);
     }
   }
 
-  [Template(typeof(PoisonStatusEffect))]
-  public sealed record Template : ITemplate<PoisonStatusEffect>
+  [Template(typeof(PoisonEffect))]
+  public sealed record Template : ITemplate<PoisonEffect>
   {
     public TimeSpan Duration  { get; init; } = 10.Seconds();
     public TimeSpan Frequency { get; init; } = 1.Seconds();
     public Damage   Damage    { get; init; } = new(1, DamageTypes.Poison);
 
-    public PoisonStatusEffect Create()
+    public PoisonEffect Create()
     {
-      return new PoisonStatusEffect(Duration, Frequency, Damage);
+      return new PoisonEffect(Duration, Frequency, Damage);
     }
   }
 }

@@ -27,13 +27,19 @@ public class PlayerTests
     {
       new AddAttribute(AttributeTypes.Health, 1),
       new ApplyDamage(new Damage(10, DamageTypes.Standard)),
-      new AddStatusEffect(new FrozenStatusEffect.Template
+      new AddStatusEffect(new FrozenEffect.Template
       {
         Duration = 4.Seconds()
       }),
-      new AddStatusEffect(new PoisonStatusEffect.Template
+      new AddStatusEffect(new PoisonEffect.Template
       {
         Damage = new Damage(10, DamageTypes.Poison)
+      }),
+      new AddStatusEffect(new AttributeBoostEffect.Template
+      {
+        Duration = 3.Seconds(),
+        Attribute = AttributeTypes.MoveSpeed,
+        Amount = 4,
       }),
     };
 

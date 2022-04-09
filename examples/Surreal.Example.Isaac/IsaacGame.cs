@@ -1,13 +1,13 @@
 ﻿using Isaac.Core.Actors;
-using Isaac.Core.Controllers;
-using Surreal.Controls;
+using Isaac.Core.Systems;
+using Surreal.Graphics.Meshes;
 using Surreal.Input.Keyboard;
 
 namespace Isaac;
 
 public sealed class IsaacGame : PrototypeGame
 {
-  public static Task Main() => GameEditor.StartAsync<IsaacGame>(new Configuration
+  public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
@@ -27,8 +27,11 @@ public sealed class IsaacGame : PrototypeGame
     base.Initialize();
 
     var player = Scene.Spawn(new Player());
+    var batch = new SpriteBatch(GraphicsServer, spriteCount: (15 * 9) * 2 + 32);
 
-    Scene.AddSystem(new KeyboardControlSystem(new Pawn(player), Keyboard));
+    Scene.AddSystem(new KeyboardSystem(new Pawn(player), Keyboard));
+    Scene.AddSystem(new PhysicsSystem());
+    Scene.AddSystem(new SpriteSystem(batch));
   }
 
   protected override void BeginFrame(GameTime time)
@@ -40,34 +43,12 @@ public sealed class IsaacGame : PrototypeGame
 
   protected override void Input(GameTime time)
   {
-    base.Input(time);
-
     if (Keyboard.IsKeyPressed(Key.Escape))
     {
       Exit();
     }
 
-    if (Keyboard.IsKeyPressed(Key.F8))
-    {
-      GameEditor.ShowWindow(new GraphEditorWindow
-      {
-        ViewModel =
-        {
-          Nodes =
-          {
-            new GraphNodeViewModel { Location = new Vector2(100f, 200f) },
-            new GraphNodeViewModel { Location = new Vector2(200f, 200f) },
-            new GraphNodeViewModel { Location = new Vector2(300f, 200f) },
-            new GraphNodeViewModel { Location = new Vector2(400f, 200f) },
-          },
-        }
-      });
-    }
-
-    if (Keyboard.IsKeyPressed(Key.F9))
-    {
-      GameEditor.ShowWindow(new TileGridEditorWindow());
-    }
+    base.Input(time);
 
     Scene.Input(time.DeltaTime);
   }

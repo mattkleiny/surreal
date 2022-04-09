@@ -1,7 +1,7 @@
 ﻿namespace Isaac.Core.Actors.Components;
 
 /// <summary>A transformed position in 2-space.</summary>
-public record struct Transform
+public record struct Transform()
 {
   /// <summary>The object's position in 2-space.</summary>
   public Vector2 Position = Vector2.Zero;

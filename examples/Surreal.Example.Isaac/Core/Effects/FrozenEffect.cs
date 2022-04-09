@@ -9,23 +9,23 @@ namespace Isaac.Core.Effects;
   Category = "Status Effects",
   Description = "Freezes an object in-place, preventing it's movement"
 )]
-public sealed class FrozenStatusEffect : PermanentStatusEffect
+public sealed class FrozenEffect : PermanentStatusEffect
 {
-  public FrozenStatusEffect(TimeSpan duration)
+  public FrozenEffect(TimeSpan duration)
     : base(duration)
   {
   }
 
   public override StatusEffectType Type => StatusEffectTypes.Frozen;
 
-  [Template(typeof(FrozenStatusEffect))]
-  public sealed record Template : ITemplate<FrozenStatusEffect>
+  [Template(typeof(FrozenEffect))]
+  public sealed record Template : ITemplate<FrozenEffect>
   {
     public TimeSpan Duration { get; init; } = 4.Seconds();
 
-    public FrozenStatusEffect Create()
+    public FrozenEffect Create()
     {
-      return new FrozenStatusEffect(Duration);
+      return new FrozenEffect(Duration);
     }
   }
 }

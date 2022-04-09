@@ -2,7 +2,7 @@
 
 namespace Isaac.Core.Effects;
 
-public class PoisonStatusEffectTests
+public class PoisonEffectTests
 {
   [Test]
   public void it_should_damage_character_over_time()
@@ -12,7 +12,7 @@ public class PoisonStatusEffectTests
       Health = 99,
     };
 
-    character.StatusEffects.Add(new PoisonStatusEffect(
+    character.StatusEffects.Add(new PoisonEffect(
       duration: 4.Seconds(),
       frequency: 1.Seconds(),
       damage: new Damage(10, DamageTypes.Poison)

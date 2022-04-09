@@ -7,15 +7,15 @@ public abstract class StatusEffect
 {
   public virtual StatusEffectType Type { get; } = StatusEffectType.None;
 
-  public virtual void OnEffectAdded(object owner)
+  public virtual void OnEffectAdded(object target)
   {
   }
 
-  public virtual void OnEffectRemoved(object owner)
+  public virtual void OnEffectRemoved(object target)
   {
   }
 
-  public virtual Transition OnEffectUpdate(object owner, DeltaTime deltaTime)
+  public virtual Transition OnEffectUpdate(object target, DeltaTime deltaTime)
   {
     return Transition.Continue;
   }

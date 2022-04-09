@@ -39,7 +39,7 @@ public class MessageTests
     Assert.Pass();
   }
 
-  private record struct TestMessage
+  private record struct TestMessage()
   {
     public int Width  { get; set; } = 16;
     public int Height { get; set; } = 9;

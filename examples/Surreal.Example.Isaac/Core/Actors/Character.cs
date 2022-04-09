@@ -31,13 +31,16 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
 
     StatusEffects = new(this);
 
-    StatusEffects.EffectAdded += OnStatusEffectAdded;
-    StatusEffects.EffectRemoved += OnStatusEffectRemoved;
+    StatusEffects.EffectAdded += OnStatusAdded;
+    StatusEffects.EffectRemoved += OnStatusRemoved;
   }
 
   public ref Transform Transform => ref GetComponent<Transform>();
+  public ref RigidBody RigidBody => ref GetComponent<RigidBody>();
+  public ref Collider  Collider  => ref GetComponent<Collider>();
   public ref Sprite    Sprite    => ref GetComponent<Sprite>();
   public ref Vector2   Position  => ref Transform.Position;
+  public ref Vector2   Velocity  => ref RigidBody.Velocity;
   public ref Vector2   Scale     => ref Transform.Scale;
   public ref float     Rotation  => ref Transform.Rotation;
   public ref Color     Tint      => ref Sprite.Tint;
@@ -105,6 +108,8 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
     base.OnAwake();
 
     AddComponent(new Transform());
+    AddComponent(new RigidBody());
+    AddComponent(new Collider());
     AddComponent(new Sprite());
   }
 
@@ -136,12 +141,12 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
     StatusEffects.Update(deltaTime);
   }
 
-  private void OnStatusEffectAdded(StatusEffect effect)
+  private void OnStatusAdded(StatusEffect effect)
   {
     Message.Publish(new CharacterGainedStatus(this, effect));
   }
 
-  private void OnStatusEffectRemoved(StatusEffect effect)
+  private void OnStatusRemoved(StatusEffect effect)
   {
     Message.Publish(new CharacterLostStatus(this, effect));
   }

@@ -2,7 +2,7 @@
 
 namespace Isaac.Core.Effects;
 
-public class FrozenStatusEffectTests
+public class FrozenEffectTests
 {
   [Test]
   public void it_should_freeze_character()
@@ -10,7 +10,7 @@ public class FrozenStatusEffectTests
     var character = new Character();
     character.LocomotionState.Should().Be(LocomotionState.Normal);
 
-    character.StatusEffects.Add(new FrozenStatusEffect(1.Seconds()));
+    character.StatusEffects.Add(new FrozenEffect(1.Seconds()));
     character.LocomotionState.Should().Be(LocomotionState.Stuck);
 
     character.StatusEffects.Update(1.Seconds());
