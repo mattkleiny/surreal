@@ -1,6 +1,5 @@
 ﻿using Isaac.Core.Effects;
 using Surreal.Actions;
-using Surreal.Combat;
 using Surreal.Persistence;
 
 namespace Isaac.Core.Actors;
@@ -26,12 +25,12 @@ public class PlayerTests
 
     var actions = new ActionList
     {
-      new AddAttribute(Attributes.Health, 1),
-      new ApplyDamage(new Damage(10, DamageType.Standard)),
+      new AddAttribute(AttributeTypes.Health, 1),
+      new ApplyDamage(new Damage(10, DamageTypes.Standard)),
       new AddStatusEffect(new FrozenStatusEffect.Template()),
     };
 
-    await actions.ExecuteAsync(new ActionContext(player, player.PropertyBag));
+    await actions.ExecuteAsync(new ActionContext(player, player.Properties));
 
     scene.Update(1.Seconds());
     scene.Update(1.Seconds());

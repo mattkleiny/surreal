@@ -1,5 +1,4 @@
-﻿using Surreal.Combat;
-using Surreal.Utilities;
+﻿using Surreal.Utilities;
 
 namespace Surreal.Actions;
 

@@ -12,9 +12,9 @@ public sealed record RemoveCoins(int Coins) : IAction
 {
   public ValueTask ExecuteAsync(ActionContext context)
   {
-    if (context.Properties.Get(Properties.Coins) > 0)
+    if (context.Properties.Get(PropertyTypes.Coins) > 0)
     {
-      context.Properties.Decrement(Properties.Coins, Coins);
+      context.Properties.Decrement(PropertyTypes.Coins, Coins);
     }
 
     return ValueTask.CompletedTask;

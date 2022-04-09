@@ -12,9 +12,9 @@ public sealed record RemoveBombs(int Bombs) : IAction
 {
   public ValueTask ExecuteAsync(ActionContext context)
   {
-    if (context.Properties.Get(Properties.Bombs) > 0)
+    if (context.Properties.Get(PropertyTypes.Bombs) > 0)
     {
-      context.Properties.Decrement(Properties.Bombs, Bombs);
+      context.Properties.Decrement(PropertyTypes.Bombs, Bombs);
     }
 
     return ValueTask.CompletedTask;

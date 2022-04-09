@@ -1,10 +1,10 @@
 ﻿using Isaac.Core.Actors.Components;
 using Surreal.Attributes;
-using Surreal.Combat;
 using Surreal.Effects;
 
 namespace Isaac.Core.Actors;
 
+// character related messages
 public readonly record struct CharacterSpawned(Character Character);
 public readonly record struct CharacterDamaged(Character Character, Damage Damage);
 public readonly record struct CharacterDestroyed(Character Character);
@@ -37,56 +37,62 @@ public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectO
   public ref float     Rotation  => ref Transform.Rotation;
   public ref Color     Tint      => ref Sprite.Tint;
 
-  public IPropertyCollection    PropertyBag   { get; } = new PropertyBag();
+  public IPropertyCollection    Properties    { get; } = new PropertyBag();
   public StatusEffectCollection StatusEffects { get; }
 
   public int this[AttributeType attribute]
   {
-    get => PropertyBag.Get(attribute.Property);
-    set => PropertyBag.Set(attribute.Property, value);
+    get => Properties.Get(attribute.Property);
+    set => Properties.Set(attribute.Property, value);
   }
 
   public int Health
   {
-    get => PropertyBag.Get(Properties.Health);
-    set => PropertyBag.Set(Properties.Health, value.Clamp(0, 99));
+    get => Properties.Get(PropertyTypes.Health);
+    set => Properties.Set(PropertyTypes.Health, value.Clamp(0, 99));
   }
 
   public int MoveSpeed
   {
-    get => PropertyBag.Get(Properties.MoveSpeed);
-    set => PropertyBag.Set(Properties.MoveSpeed, value.Clamp(0, 99));
+    get => Properties.Get(PropertyTypes.MoveSpeed);
+    set => Properties.Set(PropertyTypes.MoveSpeed, value.Clamp(0, 99));
   }
 
   public int AttackSpeed
   {
-    get => PropertyBag.Get(Properties.AttackSpeed);
-    set => PropertyBag.Set(Properties.AttackSpeed, value.Clamp(0, 99));
+    get => Properties.Get(PropertyTypes.AttackSpeed);
+    set => Properties.Set(PropertyTypes.AttackSpeed, value.Clamp(0, 99));
   }
 
   public int Range
   {
-    get => PropertyBag.Get(Properties.Range);
-    set => PropertyBag.Set(Properties.Range, value.Clamp(0, 99));
+    get => Properties.Get(PropertyTypes.Range);
+    set => Properties.Set(PropertyTypes.Range, value.Clamp(0, 99));
+  }
+
+  public int Armor
+  {
+    get => Properties.Get(PropertyTypes.Armor);
+    set => Properties.Set(PropertyTypes.Armor, value.Clamp(0, 99));
   }
 
   public int Bombs
   {
-    get => PropertyBag.Get(Properties.Bombs);
-    set => PropertyBag.Set(Properties.Bombs, value.Clamp(0, 99));
+    get => Properties.Get(PropertyTypes.Bombs);
+    set => Properties.Set(PropertyTypes.Bombs, value.Clamp(0, 99));
   }
 
   public int Coins
   {
-    get => PropertyBag.Get(Properties.Coins);
-    set => PropertyBag.Set(Properties.Coins, value.Clamp(0, 99));
+    get => Properties.Get(PropertyTypes.Coins);
+    set => Properties.Set(PropertyTypes.Coins, value.Clamp(0, 99));
   }
 
   public LocomotionState LocomotionState
   {
     get
     {
-      if (StatusEffects.Has(StatusEffectKinds.Frozen))
+      if (StatusEffects.ContainsType(StatusEffectTypes.Frozen))
       {
         return LocomotionState.Stuck;
       }
@@ -143,6 +149,8 @@ public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectO
 
   void IDamageReceiver.OnDamageReceived(Damage damage)
   {
+    CalculateFinalDamage(ref damage);
+
     Health -= damage.Amount;
 
     if (Health > 0)
@@ -155,5 +163,12 @@ public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectO
 
       Destroy();
     }
+  }
+
+  private void CalculateFinalDamage(ref Damage damage)
+  {
+    var baseDamage = damage;
+
+    damage.Amount -= Armor;
   }
 }

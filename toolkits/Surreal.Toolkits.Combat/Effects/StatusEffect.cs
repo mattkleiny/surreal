@@ -5,6 +5,8 @@ namespace Surreal.Effects;
 /// <summary>A status effect that can be periodically updated.</summary>
 public abstract class StatusEffect
 {
+  public virtual StatusEffectType Type { get; } = StatusEffectType.None;
+
   public virtual void OnEffectAdded(object owner)
   {
   }

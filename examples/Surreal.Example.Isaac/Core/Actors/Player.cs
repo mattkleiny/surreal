@@ -1,9 +1,9 @@
-﻿using Surreal.Combat;
-using Surreal.Effects;
+﻿using Surreal.Effects;
 using Surreal.Persistence;
 
 namespace Isaac.Core.Actors;
 
+// player related messages
 public readonly record struct PlayerSpawned(Player Player);
 public readonly record struct PlayerDamaged(Player Player, Damage Damage);
 public readonly record struct PlayerDestroyed(Player Player);
@@ -62,12 +62,12 @@ public sealed class Player : Character, IPersistentObject
 
   void IPersistentObject.OnPersistState(PersistenceContext context, IPersistenceWriter writer)
   {
-    writer.Write(Properties.Health, Health);
-    writer.Write(Properties.MoveSpeed, MoveSpeed);
-    writer.Write(Properties.AttackSpeed, AttackSpeed);
-    writer.Write(Properties.Range, Range);
-    writer.Write(Properties.Bombs, Bombs);
-    writer.Write(Properties.Coins, Coins);
+    writer.Write(PropertyTypes.Health, Health);
+    writer.Write(PropertyTypes.MoveSpeed, MoveSpeed);
+    writer.Write(PropertyTypes.AttackSpeed, AttackSpeed);
+    writer.Write(PropertyTypes.Range, Range);
+    writer.Write(PropertyTypes.Bombs, Bombs);
+    writer.Write(PropertyTypes.Coins, Coins);
 
     if (context.Mode == PersistenceMode.Permanent)
     {
@@ -77,12 +77,12 @@ public sealed class Player : Character, IPersistentObject
 
   void IPersistentObject.OnResumeState(PersistenceContext context, IPersistenceReader reader)
   {
-    Health = reader.Read(Properties.Health, 100);
-    MoveSpeed = reader.Read(Properties.MoveSpeed);
-    AttackSpeed = reader.Read(Properties.AttackSpeed);
-    Range = reader.Read(Properties.Range);
-    Bombs = reader.Read(Properties.Bombs);
-    Coins = reader.Read(Properties.Coins);
+    Health = reader.Read(PropertyTypes.Health, 100);
+    MoveSpeed = reader.Read(PropertyTypes.MoveSpeed);
+    AttackSpeed = reader.Read(PropertyTypes.AttackSpeed);
+    Range = reader.Read(PropertyTypes.Range);
+    Bombs = reader.Read(PropertyTypes.Bombs);
+    Coins = reader.Read(PropertyTypes.Coins);
 
     if (context.Mode == PersistenceMode.Permanent)
     {

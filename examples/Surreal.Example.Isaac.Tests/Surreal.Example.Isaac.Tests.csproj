@@ -5,7 +5,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Example.Isaac\Surreal.Example.Isaac.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dungeons" />
-  </ItemGroup>
 </Project>

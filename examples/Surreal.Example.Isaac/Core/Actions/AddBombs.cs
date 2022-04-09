@@ -12,9 +12,9 @@ public sealed record AddBombs(int Bombs) : IAction
 {
   public ValueTask ExecuteAsync(ActionContext context)
   {
-    if (context.Properties.Get(Properties.Bombs) < 99)
+    if (context.Properties.Get(PropertyTypes.Bombs) < 99)
     {
-      context.Properties.Increment(Properties.Bombs, Bombs);
+      context.Properties.Increment(PropertyTypes.Bombs, Bombs);
     }
 
     return ValueTask.CompletedTask;

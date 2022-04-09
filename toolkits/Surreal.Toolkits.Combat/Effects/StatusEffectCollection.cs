@@ -1,5 +1,4 @@
-﻿using Surreal.Collections;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal.Effects;
 
@@ -10,7 +9,6 @@ namespace Surreal.Effects;
 public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
 {
   private readonly LinkedList<StatusEffect> effects = new(); // linked list for fast insertion/removal
-  private readonly HierarchicalBitSet effectKinds = new();   // a bit set of which kinds are active in the collection
   private readonly object owner;
 
   public event Action<StatusEffect>? EffectAdded;
@@ -21,9 +19,18 @@ public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
     this.owner = owner;
   }
 
-  public bool Has(StatusEffectKind kind)
+  public bool ContainsType(StatusEffectType type)
   {
-    return effectKinds.Contains(kind.Mask);
+    // TODO: use a hierarchical bit set?
+    foreach (var effect in effects)
+    {
+      if (effect.Type == type)
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public bool Add(StatusEffect effect)
