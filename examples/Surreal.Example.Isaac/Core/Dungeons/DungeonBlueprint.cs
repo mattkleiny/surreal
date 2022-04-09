@@ -1,5 +1,4 @@
 ﻿using Surreal.Graphs;
-using Surreal.Objects;
 
 namespace Isaac.Core.Dungeons;
 
@@ -27,7 +26,7 @@ public abstract record DungeonNode : GraphNode<DungeonNode>
 }
 
 /// <summary>A blueprint for a <see cref="DungeonPlan"/>.</summary>
-public sealed record DungeonBlueprint : DungeonNode, ITemplate<DungeonPlan>
+public sealed record DungeonBlueprint : DungeonNode
 {
   /// <summary>A very simple <see cref="DungeonBlueprint"/> for testing purposes.</summary>
   public static DungeonBlueprint Simple { get; } = new()
@@ -56,11 +55,9 @@ public sealed record DungeonBlueprint : DungeonNode, ITemplate<DungeonPlan>
     new ConnectPathways(0.05f),
   };
 
-  public Seed Seed { get; init; }
-
-  public DungeonPlan Create()
+  public DungeonPlan Create(Seed seed)
   {
-    return Plan(new DungeonPlan(Seed.ToRandom()));
+    return Plan(new DungeonPlan(seed.ToRandom()));
   }
 }
 

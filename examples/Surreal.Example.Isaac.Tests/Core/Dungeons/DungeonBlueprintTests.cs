@@ -7,6 +7,6 @@ public class DungeonBlueprintTests
   {
     var blueprint = DungeonBlueprint.Simple;
 
-    blueprint.Create().Should().NotBeNull();
+    blueprint.Create(Seed.Default).Should().NotBeNull();
   }
 }

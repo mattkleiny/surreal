@@ -1,4 +1,5 @@
 ﻿using Isaac.Core.Actors;
+using Isaac.Core.Dungeons;
 using Isaac.Core.Systems;
 using Surreal.Graphics.Meshes;
 using Surreal.Input.Keyboard;
@@ -7,6 +8,10 @@ namespace Isaac;
 
 public sealed class IsaacGame : PrototypeGame
 {
+  private Player? player;
+  private Dungeon? dungeon;
+  private SpriteBatch? batch;
+
   public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
     Platform = new DesktopPlatform
@@ -26,12 +31,15 @@ public sealed class IsaacGame : PrototypeGame
   {
     base.Initialize();
 
-    var player = Scene.Spawn(new Player());
-    var batch = new SpriteBatch(GraphicsServer, spriteCount: (15 * 9) * 2 + 32);
+    player = Scene.Spawn(new Player());
+    dungeon = Scene.Spawn(new Dungeon(DungeonBlueprint.Simple));
+
+    batch = new SpriteBatch(GraphicsServer, spriteCount: (15 * 9) * 2 + 32);
 
     Scene.AddSystem(new KeyboardSystem(new Pawn(player), Keyboard));
     Scene.AddSystem(new PhysicsSystem());
     Scene.AddSystem(new SpriteSystem(batch));
+    Scene.AddSystem(new TileMapSystem(batch));
   }
 
   protected override void BeginFrame(GameTime time)
@@ -77,6 +85,8 @@ public sealed class IsaacGame : PrototypeGame
   public override void Dispose()
   {
     Scene.Dispose();
+
+    batch?.Dispose();
 
     base.Dispose();
   }
