@@ -16,10 +16,7 @@ public enum ActorStatus
 /// <summary>Uniquely identifies a single <see cref="Actor"/>.</summary>
 public readonly record struct ActorId(ulong Id)
 {
-  private static ulong nextId = 0;
-
   public static ActorId Invalid => default;
-  public static ActorId Allocate() => new(Interlocked.Increment(ref nextId));
 
   public bool IsInvalid => Id == 0;
   public bool IsValid   => Id != 0;
@@ -37,28 +34,47 @@ public readonly record struct ActorId(ulong Id)
 /// </remarks>
 public class Actor
 {
-  private readonly IActorContext context;
+  private IActorContext? context;
 
-  public Actor(IActorContext context)
-  {
-    this.context = context;
-  }
-
-  public ActorId     Id     { get; } = ActorId.Allocate();
-  public ActorStatus Status => context.GetStatus(Id);
+  public ActorId     Id     { get; private set; } = ActorId.Invalid;
+  public ActorStatus Status => context?.GetStatus(Id) ?? ActorStatus.Unknown;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
   public bool IsActive    => Status == ActorStatus.Active;
   public bool IsInactive  => Status == ActorStatus.Inactive;
 
-  public void Enable() => context.Enable(Id);
-  public void Disable() => context.Disable(Id);
-  public void Destroy() => context.Destroy(Id);
+  public void Enable() => context?.Enable(Id);
+  public void Disable() => context?.Disable(Id);
+  public void Destroy() => context?.Destroy(Id);
+
+  internal void Connect(IActorContext context)
+  {
+    this.context = context;
+
+    Id = context.AllocateId();
+  }
+
+  internal void Disconnect(IActorContext context)
+  {
+    this.context = null;
+
+    Id = ActorId.Invalid;
+  }
+
+  public ref T GetOrCreateComponent<T>()
+    where T : notnull, new()
+  {
+    return ref GetOrCreateComponent(new T());
+  }
 
   public ref T GetOrCreateComponent<T>(T prototype)
     where T : notnull, new()
   {
-    var storage = context.GetStorage<T>();
+    var storage = context?.GetStorage<T>();
+    if (storage == null)
+    {
+      return ref Unsafe.NullRef<T>();
+    }
 
     return ref storage.GetOrCreateComponent(Id, prototype);
   }
@@ -66,7 +82,11 @@ public class Actor
   public ref T AddComponent<T>(T prototype)
     where T : notnull, new()
   {
-    var storage = context.GetStorage<T>();
+    var storage = context?.GetStorage<T>();
+    if (storage == null)
+    {
+      throw new ActorException($"The component '{typeof(T).Name}' is not registerable on the actor");
+    }
 
     return ref storage.AddComponent(Id, prototype);
   }
@@ -74,12 +94,16 @@ public class Actor
   public ref T GetComponent<T>()
     where T : notnull, new()
   {
-    var storage = context.GetStorage<T>();
-    ref var component = ref storage.GetComponent(Id);
+    var storage = context?.GetStorage<T>();
+    if (storage == null)
+    {
+      throw new ActorException($"The component '{typeof(T).Name}' is not available on the actor");
+    }
 
+    ref var component = ref storage.GetComponent(Id);
     if (Unsafe.IsNullRef(ref component))
     {
-      throw new ActorException($"The given component is not available on the actor {typeof(T).Name}");
+      throw new ActorException($"The given component '{typeof(T).Name}' is not available on the actor");
     }
 
     return ref component;
@@ -88,7 +112,11 @@ public class Actor
   public bool RemoveComponent<T>()
     where T : notnull, new()
   {
-    var storage = context.GetStorage<T>();
+    var storage = context?.GetStorage<T>();
+    if (storage == null)
+    {
+      return false;
+    }
 
     return storage.RemoveComponent(Id);
   }

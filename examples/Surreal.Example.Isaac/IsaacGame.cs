@@ -1,4 +1,5 @@
-﻿using Surreal.Controls;
+﻿using Isaac.Core.Actors;
+using Surreal.Controls;
 using Surreal.Input.Keyboard;
 
 namespace Isaac;
@@ -17,6 +18,15 @@ public sealed class IsaacGame : PrototypeGame
       },
     },
   });
+
+  public ActorScene Scene { get; } = new();
+
+  protected override void Initialize()
+  {
+    base.Initialize();
+
+    Scene.Spawn(new Player());
+  }
 
   protected override void Input(GameTime time)
   {

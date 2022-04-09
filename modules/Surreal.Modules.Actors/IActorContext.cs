@@ -3,9 +3,11 @@
 namespace Surreal;
 
 /// <summary>The context in which an <see cref="Actor"/> lives; hooked up after spawning into a scene.</summary>
-public interface IActorContext
+internal interface IActorContext
 {
   ActorStatus GetStatus(ActorId id);
+
+  ActorId AllocateId();
 
   void Enable(ActorId id);
   void Disable(ActorId id);

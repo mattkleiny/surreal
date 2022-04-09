@@ -12,13 +12,9 @@ public readonly record struct CharacterDestroyed(Character Character);
 /// <summary>A character <see cref="Actor"/> that can move about the game world and common components.</summary>
 public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectOwner
 {
-  public Character(IActorContext context)
-    : base(context)
+  public Character()
   {
     StatusEffects = new(this);
-
-    AddComponent(new Transform());
-    AddComponent(new Sprite());
   }
 
   public ref Transform Transform => ref GetComponent<Transform>();
@@ -67,6 +63,14 @@ public class Character : Actor, IAttributeOwner, IDamageReceiver, IStatusEffectO
   {
     get => PropertyBag.Get(Properties.Coins);
     set => PropertyBag.Set(Properties.Coins, value.Clamp(0, 99));
+  }
+
+  protected override void OnAwake()
+  {
+    base.OnAwake();
+
+    AddComponent(new Transform());
+    AddComponent(new Sprite());
   }
 
   protected override void OnStart()

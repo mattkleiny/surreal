@@ -11,7 +11,7 @@ public class CharacterTests
   {
     using var scene = new ActorScene();
 
-    var character = new Character(scene)
+    var character = new Character
     {
       Health = 100,
       Bombs = 99,

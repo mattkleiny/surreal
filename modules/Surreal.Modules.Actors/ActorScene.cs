@@ -11,8 +11,9 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
   private readonly ComponentStorageGroup components = new();
   private readonly LinkedList<IComponentSystem> systems = new();
-
   private readonly Queue<Actor> destroyQueue = new();
+
+  private ulong nextActorId = 0;
 
   // TODO: find a way to fire these?
   public event ComponentChangeListener? ComponentAdded;
@@ -30,6 +31,8 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
 
   public void Spawn(Actor actor)
   {
+    actor.Connect(this);
+
     if (nodes.TryGetValue(actor.Id, out var node))
     {
       node.Status = ActorStatus.Active;
@@ -115,6 +118,11 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     return ActorStatus.Unknown;
   }
 
+  ActorId IActorContext.AllocateId()
+  {
+    return new ActorId(Interlocked.Increment(ref nextActorId));
+  }
+
   void IActorContext.Enable(ActorId id)
   {
     if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
@@ -146,6 +154,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
     while (destroyQueue.TryDequeue(out var actor))
     {
       actor.OnDestroy();
+      actor.Disconnect(this);
 
       nodes.Remove(actor.Id);
       components.RemoveAll(actor.Id);

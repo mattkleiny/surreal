@@ -17,11 +17,6 @@ public sealed class Player : Character, IPersistentObject
 
   Guid IPersistentObject.Id { get; } = Guid.Parse("b539cfd7-f9b7-49e1-ab48-4c6d0103950f");
 
-  public Player(IActorContext context)
-    : base(context)
-  {
-  }
-
   protected override void OnStart()
   {
     base.OnStart();
