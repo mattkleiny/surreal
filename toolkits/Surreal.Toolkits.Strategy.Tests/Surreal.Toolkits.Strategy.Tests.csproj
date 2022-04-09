@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Strategy\Surreal.Toolkits.Strategy.csproj" />
-  </ItemGroup>
-</Project>

@@ -8,6 +8,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
     <ProjectReference Include="..\..\modules\Surreal.Modules.AI\Surreal.Modules.AI.csproj" />
-    <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Combat\Surreal.Toolkits.Combat.csproj" />
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Combat\Surreal.Modules.Combat.csproj" />
   </ItemGroup>
 </Project>

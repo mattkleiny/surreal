@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Toolkits.Combat\Surreal.Toolkits.Combat.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Combat" />
-  </ItemGroup>
-</Project>

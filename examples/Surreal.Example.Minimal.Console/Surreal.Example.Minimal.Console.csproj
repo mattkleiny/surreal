@@ -5,6 +5,6 @@
     <Description>An example of the minimal framework API for rapid game prototyping.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Roguelike\Surreal.Toolkits.Roguelike.csproj" />
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Roguelike\Surreal.Modules.Roguelike.csproj" />
   </ItemGroup>
 </Project>

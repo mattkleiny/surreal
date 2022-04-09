@@ -24,12 +24,14 @@ await Game.StartAsync(platform, async context =>
   var terminal = new GraphicsTerminal(graphics, 256, 256);
   var glyph = new Glyph('X', color1, color2);
 
-  await context.ExecuteAsync(_ =>
+  await context.ExecuteAsync(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       context.Exit();
     }
+
+    graphics.ClearColorBuffer(Color.Lerp(color1, color2, MathF.Sin((float) time.TotalTime.TotalSeconds)));
 
     for (int i = 0; i < 16; i++)
     {

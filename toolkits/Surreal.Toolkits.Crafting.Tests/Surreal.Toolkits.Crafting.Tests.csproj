@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Toolkits.Crafting\Surreal.Toolkits.Crafting.csproj" />
-  </ItemGroup>
-</Project>
