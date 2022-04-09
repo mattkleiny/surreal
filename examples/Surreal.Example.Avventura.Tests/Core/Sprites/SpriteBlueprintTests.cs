@@ -1,4 +1,4 @@
-﻿namespace Isaac.Core.Sprites;
+﻿namespace Avventura.Core.Sprites;
 
 public class SpriteBlueprintTests
 {
@@ -7,7 +7,7 @@ public class SpriteBlueprintTests
   {
     var blueprint = new SpriteBlueprint
     {
-      new FillRandomly(0.5f, Color.White),
+      new FillImage(Color.White, 0.5f),
     };
 
     var plan = blueprint.Create();

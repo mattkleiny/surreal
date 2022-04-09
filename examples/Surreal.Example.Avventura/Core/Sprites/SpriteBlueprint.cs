@@ -1,10 +1,9 @@
 ﻿using Surreal.Graphics.Images;
 using Surreal.Graphs;
-using Surreal.IO;
 using Surreal.Memory;
 using Surreal.Objects;
 
-namespace Isaac.Core.Sprites;
+namespace Avventura.Core.Sprites;
 
 /// <summary>An in-memory plan for a sprite.</summary>
 public sealed class SpritePlan
@@ -67,24 +66,7 @@ public sealed record SpriteBlueprint : SpriteNode, ITemplate<SpritePlan>
 }
 
 /// <summary>Fills the image with random colors</summary>
-public sealed record FillWithColor(Color32 Color) : SpriteNode
-{
-  protected override SpritePlan Plan(SpritePlan plan)
-  {
-    var pixels = plan.Pixels;
-
-    for (var y = 0; y < plan.Height; y++)
-    for (var x = 0; x < plan.Width; x++)
-    {
-      pixels[x, y] = Color;
-    }
-
-    return plan;
-  }
-}
-
-/// <summary>Fills the image with random colors</summary>
-public sealed record FillRandomly(float Chance, Color32 Color) : SpriteNode
+public sealed record FillImage(Color32 Color, float Chance) : SpriteNode
 {
   protected override SpritePlan Plan(SpritePlan plan)
   {
@@ -103,5 +85,23 @@ public sealed record FillRandomly(float Chance, Color32 Color) : SpriteNode
   }
 }
 
-/// <summary>Samples from the given image randomly.</summary>
-public sealed record SampleImage(VirtualPath Path) : SpriteNode;
+/// <summary>Samples from the given image's pixels.</summary>
+public sealed record SampleImage(Image Image, float Chance = 1f) : SpriteNode
+{
+  protected override SpritePlan Plan(SpritePlan plan)
+  {
+    var source = Image.Pixels;
+    var target = plan.Pixels;
+
+    for (var y = 0; y < plan.Height; y++)
+    for (var x = 0; x < plan.Width; x++)
+    {
+      if (plan.Random.NextChance(Chance))
+      {
+        target[x, y] = source[x % source.Width, y % source.Height];
+      }
+    }
+
+    return plan;
+  }
+}

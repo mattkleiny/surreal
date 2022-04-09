@@ -6,10 +6,8 @@
     <ApplicationIcon>./Avventura.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Editing\Surreal.Editing.csproj" />
     <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
     <ProjectReference Include="..\..\modules\Surreal.Modules.AI\Surreal.Modules.AI.csproj" />
     <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Combat\Surreal.Toolkits.Combat.csproj" />
-    <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Roguelike\Surreal.Toolkits.Roguelike.csproj" />
   </ItemGroup>
 </Project>
