@@ -1,7 +1,6 @@
-﻿using Surreal.Actions;
-using Surreal.Collections;
+﻿using Surreal.Collections;
 
-namespace Surreal.Scripting.Actions;
+namespace Surreal.Scripting;
 
 public class ActionListTests
 {
@@ -12,9 +11,9 @@ public class ActionListTests
 
     var list = new ActionList
     {
-      Surreal.Actions.Actions.Anonymous(() => counter++),
-      Surreal.Actions.Actions.Anonymous(() => counter++),
-      Surreal.Actions.Actions.Anonymous(() => counter++),
+      Actions.Anonymous(() => counter++),
+      Actions.Anonymous(() => counter++),
+      Actions.Anonymous(() => counter++),
     };
 
     var context = new ActionContext

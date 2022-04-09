@@ -1,4 +1,4 @@
-﻿using Surreal.Actions;
+﻿using Surreal.Scripting;
 using Surreal.Utilities;
 
 namespace Isaac.Core.Actions;

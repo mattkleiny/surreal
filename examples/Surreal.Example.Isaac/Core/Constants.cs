@@ -10,7 +10,6 @@ public static class PropertyTypes
   public static Property<int> MoveSpeed   { get; } = new(nameof(MoveSpeed));
   public static Property<int> AttackSpeed { get; } = new(nameof(AttackSpeed));
   public static Property<int> Range       { get; } = new(nameof(Range));
-  public static Property<int> Armor       { get; } = new(nameof(Armor));
   public static Property<int> Bombs       { get; } = new(nameof(Bombs));
   public static Property<int> Coins       { get; } = new(nameof(Coins));
 }
@@ -22,7 +21,6 @@ public static class AttributeTypes
   public static AttributeType MoveSpeed   { get; } = new(PropertyTypes.MoveSpeed);
   public static AttributeType AttackSpeed { get; } = new(PropertyTypes.AttackSpeed);
   public static AttributeType Range       { get; } = new(PropertyTypes.Range);
-  public static AttributeType Armor       { get; } = new(PropertyTypes.Armor);
 };
 
 /// <summary>Commonly used <see cref="DamageType"/>s across the project.</summary>

@@ -72,7 +72,7 @@ public class Actor
   {
     if (context == null)
     {
-      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
+      throw new ActorException("The actor is not currently part of a scene so components are not available");
     }
 
     var storage = context.GetStorage<T>();
@@ -85,7 +85,7 @@ public class Actor
   {
     if (context == null)
     {
-      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
+      throw new ActorException("The actor is not currently part of a scene so components are not available");
     }
 
     var storage = context.GetStorage<T>();
@@ -98,7 +98,7 @@ public class Actor
   {
     if (context == null)
     {
-      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
+      throw new ActorException("The actor is not currently part of a scene so components are not available");
     }
 
     var storage = context.GetStorage<T>();
@@ -117,7 +117,7 @@ public class Actor
   {
     if (context == null)
     {
-      throw new ActorException("The actor is not currently part of a scene, it's component APIs are not available");
+      throw new ActorException("The actor is not currently part of a scene so components are not available");
     }
 
     var storage = context.GetStorage<T>();
@@ -137,7 +137,11 @@ public class Actor
   {
   }
 
-  protected internal virtual void OnInput(DeltaTime time)
+  protected internal virtual void OnBeginFrame(DeltaTime deltaTime)
+  {
+  }
+
+  protected internal virtual void OnInput(DeltaTime deltaTime)
   {
   }
 
@@ -146,6 +150,10 @@ public class Actor
   }
 
   protected internal virtual void OnDraw(DeltaTime time)
+  {
+  }
+
+  protected internal virtual void OnEndFrame(DeltaTime deltaTime)
   {
   }
 

@@ -1,7 +1,6 @@
 ﻿using Surreal.Collections;
-using Surreal.Conditions;
 
-namespace Surreal.Scripting.Conditions;
+namespace Surreal.Scripting;
 
 public class ConditionListTests
 {
@@ -17,7 +16,7 @@ public class ConditionListTests
 
     list.Evaluate(context).Should().BeTrue();
 
-    list.Add(Surreal.Conditions.Conditions.False);
+    list.Add(Conditions.False);
 
     list.Evaluate(context).Should().BeFalse();
   }

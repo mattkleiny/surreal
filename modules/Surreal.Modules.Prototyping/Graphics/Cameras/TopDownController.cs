@@ -3,13 +3,13 @@ using Surreal.Timing;
 
 namespace Surreal.Graphics.Cameras;
 
-/// <summary>A top-down orthographic <see cref="ICameraController"/>.</summary>
-public sealed class TopDownCameraController : ICameraController
+/// <summary>A top-down orthographic <see cref="IController"/>.</summary>
+public sealed class TopDownController : IController
 {
   private readonly OrthographicCamera camera;
   private readonly IKeyboardDevice keyboard;
 
-  public TopDownCameraController(OrthographicCamera camera, IKeyboardDevice keyboard)
+  public TopDownController(OrthographicCamera camera, IKeyboardDevice keyboard)
   {
     this.camera = camera;
     this.keyboard = keyboard;
@@ -18,7 +18,7 @@ public sealed class TopDownCameraController : ICameraController
   public float Speed     { get; set; } = 100f;
   public float ZoomSpeed { get; set; } = 0.1f;
 
-  public void Input(DeltaTime deltaTime)
+  public void OnInput(DeltaTime deltaTime)
   {
     // transform camera position relative to world's cardinal axes
     if (keyboard.IsKeyDown(Key.W)) camera.Translate(Vector3.UnitY * Speed * deltaTime);

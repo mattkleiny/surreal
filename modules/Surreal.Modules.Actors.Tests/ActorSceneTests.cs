@@ -31,7 +31,7 @@ public class ActorSceneTests
   }
 
   [Test, AutoFixture]
-  public void it_should_apply_input_to_systems(IComponentSystem system)
+  public void it_should_apply_input_to_systems(ISceneSystem system)
   {
     var scene = new ActorScene();
     var deltaTime = 16.Milliseconds();
@@ -56,7 +56,7 @@ public class ActorSceneTests
   }
 
   [Test, AutoFixture]
-  public void it_should_apply_update_to_systems(IComponentSystem system)
+  public void it_should_apply_update_to_systems(ISceneSystem system)
   {
     var scene = new ActorScene();
     var deltaTime = 16.Milliseconds();
@@ -81,7 +81,7 @@ public class ActorSceneTests
   }
 
   [Test, AutoFixture]
-  public void it_should_apply_draw_to_systems(IComponentSystem system)
+  public void it_should_apply_draw_to_systems(ISceneSystem system)
   {
     var scene = new ActorScene();
     var deltaTime = 16.Milliseconds();

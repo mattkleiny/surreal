@@ -15,4 +15,6 @@ public sealed class SpriteSystem : IteratingSystem
   {
     this.batch = batch;
   }
+
+
 }

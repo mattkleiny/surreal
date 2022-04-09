@@ -1,20 +1,21 @@
 ﻿using Surreal.Effects;
+using Surreal.Objects;
 using Surreal.Utilities;
 
-namespace Surreal.Actions;
+namespace Surreal.Scripting;
 
 [EditorDescription(
-  Name = "Remove status effect",
+  Name = "Add status effect",
   Category = "Status Effects",
-  Description = "Removes a status effect from the owning object"
+  Description = "Adds a status effect to the owning object"
 )]
-public sealed record RemoveStatusEffect(StatusEffect Effect) : IAction
+public sealed record AddStatusEffect(ITemplate<StatusEffect> Effect) : IAction
 {
   public ValueTask ExecuteAsync(ActionContext context)
   {
     if (context.Owner is IStatusEffectOwner owner)
     {
-      owner.StatusEffects.Remove(Effect);
+      owner.StatusEffects.Add(Effect.Create());
     }
 
     return ValueTask.CompletedTask;

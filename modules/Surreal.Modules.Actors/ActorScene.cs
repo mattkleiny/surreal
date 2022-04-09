@@ -10,7 +10,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
 {
   private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
   private readonly ComponentStorageGroup components = new();
-  private readonly LinkedList<IComponentSystem> systems = new();
+  private readonly LinkedList<ISceneSystem> systems = new();
   private readonly Queue<Actor> destroyQueue = new();
 
   private ulong nextActorId = 0;
@@ -19,17 +19,18 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
   public event ComponentChangeListener? ComponentAdded;
   public event ComponentChangeListener? ComponentRemoved;
 
-  public void AddSystem(IComponentSystem system)
+  public void AddSystem(ISceneSystem system)
   {
     systems.AddLast(system);
   }
 
-  public void RemoveSystem(IComponentSystem system)
+  public void RemoveSystem(ISceneSystem system)
   {
     systems.Remove(system);
   }
 
-  public void Spawn(Actor actor)
+  public T Spawn<T>(T actor)
+    where T : Actor
   {
     actor.Connect(this);
 
@@ -49,54 +50,88 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
       actor.OnAwake();
       actor.OnStart();
     }
+
+    return actor;
   }
 
-  public void Input(DeltaTime time)
+  public void BeginFrame(DeltaTime deltaTime)
   {
     foreach (var system in systems)
     {
-      system.OnInput(time);
+      system.OnBeginFrame(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
       if (node.ActorStatus == ActorStatus.Active)
       {
-        node.Data.OnInput(time);
+        node.Data.OnBeginFrame(deltaTime);
       }
     }
   }
 
-  public void Update(DeltaTime time)
+  public void Input(DeltaTime deltaTime)
   {
     foreach (var system in systems)
     {
-      system.OnUpdate(time);
+      system.OnInput(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
       if (node.ActorStatus == ActorStatus.Active)
       {
-        node.Data.OnUpdate(time);
+        node.Data.OnInput(deltaTime);
+      }
+    }
+  }
+
+  public void Update(DeltaTime deltaTime)
+  {
+    foreach (var system in systems)
+    {
+      system.OnUpdate(deltaTime);
+    }
+
+    foreach (var node in nodes.Values)
+    {
+      if (node.ActorStatus == ActorStatus.Active)
+      {
+        node.Data.OnUpdate(deltaTime);
       }
     }
 
     ProcessDestroyQueue();
   }
 
-  public void Draw(DeltaTime time)
+  public void Draw(DeltaTime deltaTime)
   {
     foreach (var system in systems)
     {
-      system.OnDraw(time);
+      system.OnDraw(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
       if (node.ActorStatus == ActorStatus.Active)
       {
-        node.Data.OnDraw(time);
+        node.Data.OnDraw(deltaTime);
+      }
+    }
+  }
+
+  public void EndFrame(DeltaTime deltaTime)
+  {
+    foreach (var system in systems)
+    {
+      system.OnEndFrame(deltaTime);
+    }
+
+    foreach (var node in nodes.Values)
+    {
+      if (node.ActorStatus == ActorStatus.Active)
+      {
+        node.Data.OnEndFrame(deltaTime);
       }
     }
   }

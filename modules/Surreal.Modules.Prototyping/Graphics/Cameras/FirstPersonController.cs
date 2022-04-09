@@ -4,14 +4,14 @@ using Surreal.Timing;
 
 namespace Surreal.Graphics.Cameras;
 
-/// <summary>A first-person <see cref="ICameraController"/>.</summary>
-public sealed class FirstPersonCameraController : ICameraController
+/// <summary>A first-person <see cref="IController"/>.</summary>
+public sealed class FirstPersonController : IController
 {
   private readonly PerspectiveCamera camera;
   private readonly IKeyboardDevice keyboard;
   private readonly IMouseDevice mouse;
 
-  public FirstPersonCameraController(PerspectiveCamera camera, IKeyboardDevice keyboard, IMouseDevice mouse)
+  public FirstPersonController(PerspectiveCamera camera, IKeyboardDevice keyboard, IMouseDevice mouse)
   {
     this.camera = camera;
     this.keyboard = keyboard;
@@ -21,7 +21,7 @@ public sealed class FirstPersonCameraController : ICameraController
   public float Speed           { get; set; } = 5f;
   public float DegreesPerPixel { get; set; } = 0.5f;
 
-  public void Input(DeltaTime deltaTime)
+  public void OnInput(DeltaTime deltaTime)
   {
     var velocity = Speed * deltaTime;
 

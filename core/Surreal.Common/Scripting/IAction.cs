@@ -1,6 +1,6 @@
 ﻿using Surreal.Collections;
 
-namespace Surreal.Actions;
+namespace Surreal.Scripting;
 
 /// <summary>Actions are the steps taken once triggers are activated.</summary>
 public interface IAction

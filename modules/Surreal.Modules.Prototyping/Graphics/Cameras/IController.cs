@@ -3,7 +3,7 @@
 namespace Surreal.Graphics.Cameras;
 
 /// <summary>Provides control of a camera.</summary>
-public interface ICameraController
+public interface IController
 {
-  void Input(DeltaTime deltaTime);
+  void OnInput(DeltaTime deltaTime);
 }

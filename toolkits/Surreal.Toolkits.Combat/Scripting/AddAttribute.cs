@@ -1,7 +1,7 @@
 ﻿using Surreal.Attributes;
 using Surreal.Utilities;
 
-namespace Surreal.Actions;
+namespace Surreal.Scripting;
 
 [EditorDescription(
   Name = "Add attribute",

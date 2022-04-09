@@ -1,6 +1,6 @@
 ﻿using Surreal.Collections;
 
-namespace Surreal.Conditions;
+namespace Surreal.Scripting;
 
 /// <summary>Triggers are conditions that cause the script to execute.</summary>
 public interface ICondition

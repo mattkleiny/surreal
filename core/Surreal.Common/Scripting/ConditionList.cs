@@ -1,6 +1,7 @@
-﻿namespace Surreal.Conditions;
+﻿namespace Surreal.Scripting;
 
 /// <summary>A collection <see cref="ICondition"/>s that can be operated on in bulk.</summary>
+[DebuggerDisplay("{conditions.Count} conditions")]
 public sealed class ConditionList : IEnumerable<ICondition>, ICondition
 {
   private readonly List<ICondition> conditions = new();

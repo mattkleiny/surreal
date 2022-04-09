@@ -1,4 +1,4 @@
-﻿using Surreal.Conditions;
+﻿using Surreal.Scripting;
 using Surreal.Timing;
 
 namespace Surreal.Automata.BehaviourTrees.Decorators;

@@ -16,23 +16,23 @@ public abstract class IteratingSystem : ComponentSystem
   {
   }
 
-  public sealed override void OnInput(DeltaTime time)
+  public sealed override void OnInput(DeltaTime deltaTime)
   {
-    OnBeginInput(time);
+    OnBeginInput(deltaTime);
 
     foreach (var actor in ActorIds)
     {
-      OnInput(time, actor);
+      OnInput(deltaTime, actor);
     }
 
-    OnEndInput(time);
+    OnEndInput(deltaTime);
   }
 
   protected virtual void OnBeginInput(DeltaTime time)
   {
   }
 
-  protected virtual void OnInput(DeltaTime time, ActorId actor)
+  protected virtual void OnInput(DeltaTime deltaTime, ActorId actor)
   {
   }
 
@@ -40,23 +40,23 @@ public abstract class IteratingSystem : ComponentSystem
   {
   }
 
-  public sealed override void OnUpdate(DeltaTime time)
+  public sealed override void OnUpdate(DeltaTime deltaTime)
   {
-    OnBeginUpdate(time);
+    OnBeginUpdate(deltaTime);
 
     foreach (var actor in ActorIds)
     {
-      OnUpdate(time, actor);
+      OnUpdate(deltaTime, actor);
     }
 
-    OnEndUpdate(time);
+    OnEndUpdate(deltaTime);
   }
 
   protected virtual void OnBeginUpdate(DeltaTime time)
   {
   }
 
-  protected virtual void OnUpdate(DeltaTime time, ActorId actor)
+  protected virtual void OnUpdate(DeltaTime deltaTime, ActorId actor)
   {
   }
 
@@ -64,23 +64,23 @@ public abstract class IteratingSystem : ComponentSystem
   {
   }
 
-  public sealed override void OnDraw(DeltaTime time)
+  public sealed override void OnDraw(DeltaTime deltaTime)
   {
-    OnBeginDraw(time);
+    OnBeginDraw(deltaTime);
 
     foreach (var actor in ActorIds)
     {
-      OnDraw(time, actor);
+      OnDraw(deltaTime, actor);
     }
 
-    OnEndDraw(time);
+    OnEndDraw(deltaTime);
   }
 
   protected virtual void OnBeginDraw(DeltaTime time)
   {
   }
 
-  protected virtual void OnDraw(DeltaTime time, ActorId actor)
+  protected virtual void OnDraw(DeltaTime deltaTime, ActorId actor)
   {
   }
 

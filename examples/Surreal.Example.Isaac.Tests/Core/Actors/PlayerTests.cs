@@ -1,6 +1,6 @@
 ﻿using Isaac.Core.Effects;
-using Surreal.Actions;
 using Surreal.Persistence;
+using Surreal.Scripting;
 
 namespace Isaac.Core.Actors;
 
@@ -27,7 +27,14 @@ public class PlayerTests
     {
       new AddAttribute(AttributeTypes.Health, 1),
       new ApplyDamage(new Damage(10, DamageTypes.Standard)),
-      new AddStatusEffect(new FrozenStatusEffect.Template()),
+      new AddStatusEffect(new FrozenStatusEffect.Template
+      {
+        Duration = 4.Seconds()
+      }),
+      new AddStatusEffect(new PoisonStatusEffect.Template
+      {
+        Damage = new Damage(10, DamageTypes.Poison)
+      }),
     };
 
     await actions.ExecuteAsync(new ActionContext(player, player.Properties));
@@ -37,10 +44,14 @@ public class PlayerTests
     scene.Update(1.Seconds());
     scene.Update(1.Seconds());
 
-    var persistenceContext = new PersistenceContext(new InMemoryPersistenceStore());
+    var context = new PersistenceContext(new InMemoryPersistenceStore());
 
-    player.Persist(persistenceContext);
-    player.Resume(persistenceContext);
+    player.Persist(context);
+
+    player.Health = 0;
+    player.Bombs = 0;
+
+    player.Resume(context);
 
     player.Destroy();
 

@@ -7,8 +7,8 @@ namespace Avventura.Core.Actors;
 public readonly record struct PlayerSpawned(Player Player);
 public readonly record struct PlayerDamaged(Player Player, Damage Damage);
 public readonly record struct PlayerDestroyed(Player Player);
-public readonly record struct PlayerGainedStatusEffect(Player Player, StatusEffect Effect);
-public readonly record struct PlayerLostStatusEffect(Player Player, StatusEffect Effect);
+public readonly record struct PlayerGainedStatus(Player Player, StatusEffect Effect);
+public readonly record struct PlayerLostStatus(Player Player, StatusEffect Effect);
 
 /// <summary>The player <see cref="Character"/>.</summary>
 public sealed class Player : Character, IPersistentObject
@@ -43,20 +43,20 @@ public sealed class Player : Character, IPersistentObject
   }
 
   [MessageSubscriber]
-  private void OnCharacterGainedStatusEffect(ref CharacterGainedStatusEffect message)
+  private void OnCharacterGainedStatusEffect(ref CharacterGainedStatus message)
   {
     if (message.Character == this)
     {
-      Message.Publish(new PlayerGainedStatusEffect(this, message.Effect));
+      Message.Publish(new PlayerGainedStatus(this, message.Effect));
     }
   }
 
   [MessageSubscriber]
-  private void OnCharacterLostStatusEffect(ref CharacterLostStatusEffect message)
+  private void OnCharacterLostStatusEffect(ref CharacterLostStatus message)
   {
     if (message.Character == this)
     {
-      Message.Publish(new PlayerLostStatusEffect(this, message.Effect));
+      Message.Publish(new PlayerLostStatus(this, message.Effect));
     }
   }
 

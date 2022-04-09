@@ -1,18 +1,9 @@
 ﻿using Surreal.Components;
-using Surreal.Timing;
 
 namespace Surreal.Systems;
 
 /// <summary>A listener for changes in component composition.</summary>
 public delegate void ComponentChangeListener(ActorId id, ComponentType type);
-
-/// <summary>Represents a component system, capable of operating on components.</summary>
-public interface IComponentSystem
-{
-  void OnInput(DeltaTime time);
-  void OnUpdate(DeltaTime time);
-  void OnDraw(DeltaTime time);
-}
 
 /// <summary>Context for component system operations.</summary>
 public interface IComponentSystemContext
@@ -21,8 +12,8 @@ public interface IComponentSystemContext
   event ComponentChangeListener ComponentRemoved;
 }
 
-/// <summary>Base class for any <see cref="IComponentSystem"/> implementation.</summary>
-public abstract class ComponentSystem : IComponentSystem
+/// <summary>Base class for any <see cref="ISceneSystem"/> implementation that monitors components..</summary>
+public abstract class ComponentSystem : SceneSystem
 {
   protected ComponentSystem(IComponentSystemContext context)
     : this(context, ComponentMask.Empty)
@@ -45,19 +36,7 @@ public abstract class ComponentSystem : IComponentSystem
   public ComponentMask           Mask     { get; }
   public HashSet<ActorId>        ActorIds { get; } = new();
 
-  public virtual void OnInput(DeltaTime time)
-  {
-  }
-
-  public virtual void OnUpdate(DeltaTime time)
-  {
-  }
-
-  public virtual void OnDraw(DeltaTime time)
-  {
-  }
-
-  private void OnComponentAdded(ActorId id, ComponentType type)
+  protected virtual void OnComponentAdded(ActorId id, ComponentType type)
   {
     if (Mask.Contains(type))
     {
@@ -65,7 +44,7 @@ public abstract class ComponentSystem : IComponentSystem
     }
   }
 
-  private void OnComponentRemoved(ActorId id, ComponentType type)
+  protected virtual void OnComponentRemoved(ActorId id, ComponentType type)
   {
     if (Mask.Contains(type))
     {

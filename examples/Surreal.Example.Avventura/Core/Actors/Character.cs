@@ -8,8 +8,8 @@ namespace Avventura.Core.Actors;
 public readonly record struct CharacterSpawned(Character Character);
 public readonly record struct CharacterDamaged(Character Character, Damage Damage);
 public readonly record struct CharacterDestroyed(Character Character);
-public readonly record struct CharacterGainedStatusEffect(Character Character, StatusEffect Effect);
-public readonly record struct CharacterLostStatusEffect(Character Character, StatusEffect Effect);
+public readonly record struct CharacterGainedStatus(Character Character, StatusEffect Effect);
+public readonly record struct CharacterLostStatus(Character Character, StatusEffect Effect);
 
 /// <summary>Different kinds of locomotion states for a <see cref="Character"/>.</summary>
 public enum LocomotionState
@@ -106,12 +106,12 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
 
   private void OnStatusEffectAdded(StatusEffect effect)
   {
-    Message.Publish(new CharacterGainedStatusEffect(this, effect));
+    Message.Publish(new CharacterGainedStatus(this, effect));
   }
 
   private void OnStatusEffectRemoved(StatusEffect effect)
   {
-    Message.Publish(new CharacterLostStatusEffect(this, effect));
+    Message.Publish(new CharacterLostStatus(this, effect));
   }
 
   void IDamageReceiver.OnDamageReceived(Damage damage)
