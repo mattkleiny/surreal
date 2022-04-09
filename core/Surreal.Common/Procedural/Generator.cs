@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal;
+namespace Surreal.Procedural;
 
 /// <summary>A component capable of generating <see cref="TOutput"/>s procedurally.</summary>
 public abstract class Generator<TOutput>

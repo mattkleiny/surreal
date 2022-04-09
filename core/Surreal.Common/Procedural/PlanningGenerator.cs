@@ -1,6 +1,6 @@
 using Surreal.Mathematics;
 
-namespace Surreal;
+namespace Surreal.Procedural;
 
 /// <summary>A <see cref="Generator{TOutput}"/> which plans it's output first.</summary>
 public abstract class PlanningGenerator<TPlan, TOutput> : Generator<TOutput>

@@ -2,14 +2,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
 
-  <PropertyGroup>
-    <!-- still under active development -->
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference
-      Include="..\..\core\Surreal.Common\Surreal.Common.csproj"
-      Condition="!$(ProjectName.Contains('Generators'))" />
+    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
   </ItemGroup>
 </Project>

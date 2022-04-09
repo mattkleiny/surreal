@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
+  <PropertyGroup>
     <Description>A mechanism for converting blueprint files into usable data structures.</Description>
-	</PropertyGroup>
+    <IsPackable>false</IsPackable> <!-- still under development -->
+  </PropertyGroup>
 </Project>

@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
     <Description>A toolkit for real-time and turn-based strategy game mechanics.</Description>
-	</PropertyGroup>
+    <IsPackable>false</IsPackable> <!-- still under development -->
+  </PropertyGroup>
 </Project>

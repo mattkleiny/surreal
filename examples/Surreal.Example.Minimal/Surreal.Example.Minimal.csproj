@@ -4,4 +4,7 @@
     <RootNamespace>Minimal</RootNamespace>
     <Description>An example of the minimal framework API for rapid game prototyping.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\toolkits\Surreal.Toolkits.Roguelike\Surreal.Toolkits.Roguelike.csproj" />
+  </ItemGroup>
 </Project>

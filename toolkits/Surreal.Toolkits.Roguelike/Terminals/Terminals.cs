@@ -156,6 +156,6 @@ public sealed class GraphicsTerminal : Terminal, IGlyphRenderer
 
   void IGlyphRenderer.RenderGlyph(int x, int y, in Glyph glyph)
   {
-    throw new NotImplementedException();
+    // TODO: render glyphs using bitmap fonts
   }
 }

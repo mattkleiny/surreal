@@ -2,6 +2,7 @@
   <PropertyGroup>
     <Description>UI framework for Surreal.</Description>
     <RootNamespace>Surreal.UI</RootNamespace>
+    <IsPackable>false</IsPackable> <!-- still under development -->
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />

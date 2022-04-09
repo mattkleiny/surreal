@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
     <Description>A toolkit for creating rogue-like games.</Description>
-	</PropertyGroup>
+    <IsPackable>false</IsPackable> <!-- still under development -->
+  </PropertyGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" PrivateAssets="all" />
 	</ItemGroup>
