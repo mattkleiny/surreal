@@ -17,14 +17,14 @@ public sealed class GlyphCanvas
 {
   private readonly IGlyphRenderer renderer;
   private readonly Grid<Glyph> glyphs;
-  private readonly Grid<Glyph?> dirtyGlyphs;
+  private readonly SparseGrid<Glyph?> dirtyGlyphs;
 
   public GlyphCanvas(int width, int height, IGlyphRenderer renderer)
   {
     this.renderer = renderer;
 
     glyphs = new Grid<Glyph>(width, height);
-    dirtyGlyphs = new Grid<Glyph?>(width, height);
+    dirtyGlyphs = new SparseGrid<Glyph?>();
 
     Width = width;
     Height = height;

@@ -8,10 +8,8 @@ public sealed record ExecuteAction(IAction Action) : BehaviourTask
 {
   protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
-    var actionContext = new ActionContext(context.Owner, context.Properties);
+    // TODO: execute action asynchronously in the behaviour tree
 
-    Action.ExecuteAsync(actionContext);
-
-    return BehaviourStatus.Running;
+    throw new NotImplementedException();
   }
 }

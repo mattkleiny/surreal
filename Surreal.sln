@@ -57,8 +57,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Actors", "m
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.UI", "modules\Surreal.Modules.UI\Surreal.Modules.UI.csproj", "{6144D40B-E4BB-4BEB-B992-0D1E9327932C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Toolkits", "Toolkits", "{476BBC1C-3546-47CA-9AE4-C7E03DEBC2FF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Audio", "core\Surreal.Audio\Surreal.Audio.csproj", "{D3E70339-84C6-4CE0-A7EE-8C7E5BBB7CDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Audio.Tests", "core\Surreal.Audio.Tests\Surreal.Audio.Tests.csproj", "{E82F5C61-EF99-427E-9E35-D293D5D7D064}"

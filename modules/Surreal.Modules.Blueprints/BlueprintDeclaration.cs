@@ -118,7 +118,7 @@ public abstract record BlueprintSyntaxTree
     /// <example>3.14159</example>
     public sealed record Constant(object Literal) : Expression
     {
-      public override string? ToString() => Literal.ToString();
+      public override string ToString() => Literal.ToString() ?? string.Empty;
     }
 
     /// <summary>A unary operation</summary>

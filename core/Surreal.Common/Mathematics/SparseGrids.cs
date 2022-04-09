@@ -2,9 +2,14 @@
 
 /// <summary>A 2d grid of <see cref="T"/>.</summary>
 public sealed class SparseGrid<T> : IEnumerable<T>
-  where T : class
 {
   private readonly Dictionary<Point2, T> items = new();
+
+  public T? this[int x, int y]
+  {
+    get => this[new Point2(x, y)];
+    set => this[new Point2(x, y)] = value;
+  }
 
   public T? this[Point2 position]
   {
@@ -12,7 +17,7 @@ public sealed class SparseGrid<T> : IEnumerable<T>
     {
       if (!items.TryGetValue(position, out var item))
       {
-        return null;
+        return default;
       }
 
       return item;
