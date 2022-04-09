@@ -6,6 +6,8 @@ namespace Surreal.IO;
 /// <summary>A <see cref="FileSystem"/> that uses embed assembly resources.</summary>
 public sealed class ResourceFileSystem : FileSystem
 {
+  private const string Separator = ".";
+
   private static Assembly[] GetDefaultAssemblies()
   {
     return AppDomain.CurrentDomain
@@ -28,7 +30,8 @@ public sealed class ResourceFileSystem : FileSystem
     this.assemblies = assemblies;
   }
 
-  public override VirtualPath Resolve(string root, params string[] paths) => string.Join(root, ".", string.Join(".", paths));
+  public override VirtualPath Resolve(VirtualPath path, params string[] paths)
+    => new(path.Scheme, path.Target + Separator + string.Join(Separator, paths));
 
   public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard) => throw new NotSupportedException();
 

@@ -9,6 +9,7 @@ public static class ChunkGenerators
   public static ChunkGenerator Solid(Block block) => chunk =>
   {
     chunk.Voxels.Fill(block.Id);
+
     chunk.NotifyChanged();
   };
 

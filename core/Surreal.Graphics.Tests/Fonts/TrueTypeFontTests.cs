@@ -2,7 +2,7 @@
 
 namespace Surreal.Graphics.Fonts;
 
-public class TrueTypeFontLoaderTests
+public class TrueTypeFontTests
 {
   [Test]
   [TestCase("Assets/fonts/arial.ttf")]

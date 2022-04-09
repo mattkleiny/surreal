@@ -12,7 +12,6 @@ public sealed class SpriteBatch : IDisposable
 {
   private const int MaximumSpriteCount = 8000;
 
-  private readonly IGraphicsServer server;
   private readonly IDisposableBuffer<Vertex> vertices;
   private readonly Mesh<Vertex> mesh;
 
@@ -24,8 +23,6 @@ public sealed class SpriteBatch : IDisposable
   {
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
-
-    this.server = server;
 
     vertices = Buffers.AllocateNative<Vertex>(spriteCount * 4);
     mesh = new Mesh<Vertex>(server);

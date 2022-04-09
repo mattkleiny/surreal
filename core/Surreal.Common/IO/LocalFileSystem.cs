@@ -5,19 +5,17 @@ namespace Surreal.IO;
 /// <summary>A <see cref="FileSystem"/> for the host operating system.</summary>
 public sealed class LocalFileSystem : FileSystem
 {
-  private static readonly string PathSeparator = Path.PathSeparator.ToString();
+  private const string Separator = "/";
 
   public LocalFileSystem()
     : base("local")
   {
   }
 
-  public override VirtualPath Resolve(string root, params string[] paths)
-  {
-    return string.Join(root, PathSeparator, string.Join(PathSeparator, paths));
-  }
-
   public override bool SupportsWatcher => true;
+
+  public override VirtualPath Resolve(VirtualPath path, params string[] paths)
+    => new(path.Scheme, path.Target + Separator + string.Join(Separator, paths));
 
   public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard)
   {

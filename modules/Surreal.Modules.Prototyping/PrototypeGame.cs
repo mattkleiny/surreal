@@ -55,7 +55,7 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new AudioClipLoader(AudioServer));
 
     // graphics
-    manager.AddLoader(new BitmapFontLoader());
+    manager.AddLoader(new BitmapFontLoader(GraphicsServer));
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));

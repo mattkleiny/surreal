@@ -8,7 +8,7 @@ public interface IFileSystem
   ISet<string> Schemes         { get; }
   bool         SupportsWatcher { get; }
 
-  VirtualPath Resolve(string root, params string[] paths);
+  VirtualPath Resolve(VirtualPath path, params string[] paths);
 
   ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard);
 
@@ -66,7 +66,7 @@ public abstract class FileSystem : IFileSystem
 
   public virtual bool SupportsWatcher => false;
 
-  public abstract VirtualPath Resolve(string root, params string[] paths);
+  public abstract VirtualPath Resolve(VirtualPath path, params string[] paths);
 
   public abstract ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard);
 

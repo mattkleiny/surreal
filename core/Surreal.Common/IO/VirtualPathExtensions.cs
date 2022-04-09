@@ -15,7 +15,7 @@ public static class VirtualPathExtensions
     => FileSystem.GetForScheme(path.Scheme.ToString())!;
 
   public static VirtualPath Resolve(this VirtualPath path, params string[] name)
-    => path.GetFileSystem().Resolve(path.Target.ToString(), name);
+    => path.GetFileSystem().Resolve(path, name);
 
   public static ValueTask<bool> ExistsAsync(this VirtualPath path)
     => path.GetFileSystem().ExistsAsync(path.Target.ToString());
@@ -38,13 +38,14 @@ public static class VirtualPathExtensions
   public static IPathWatcher Watch(this VirtualPath path)
     => path.GetFileSystem().WatchPath(path);
 
-  public static VirtualPath ChangeExtension(this VirtualPath path, string newExtension)
-    => new VirtualPath(path.Scheme, Path.ChangeExtension(path.Target.ToString(), newExtension));
-
   public static ValueTask<VirtualPath[]> EnumerateAsync(this VirtualPath path, string wildcard)
-  {
-    return path.GetFileSystem().EnumerateAsync(path.Target.ToString()!, wildcard);
-  }
+    => path.GetFileSystem().EnumerateAsync(path.Target.ToString()!, wildcard);
+
+  public static VirtualPath ChangeExtension(this VirtualPath path, string newExtension)
+    => new(path.Scheme, Path.ChangeExtension(path.Target.ToString(), newExtension));
+
+  public static VirtualPath GetDirectoryName(this VirtualPath path)
+    => new(path.Scheme, Path.GetDirectoryName(path.Target.ToSpan()));
 
   public static async ValueTask CopyToAsync(this VirtualPath from, VirtualPath to, CancellationToken cancellationToken = default)
   {

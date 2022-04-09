@@ -26,7 +26,7 @@ public readonly record struct ColorPalette(Color[] colors, int offset, int count
     get => colors?[offset + index.GetOffset(Count)] ?? Color.Clear;
   }
 
-  /// <summary>Accesses a </summary>
+  /// <summary>Accesses a sub-range of the <see cref="ColorPalette"/>.</summary>
   public ColorPalette this[Range range]
   {
     get
