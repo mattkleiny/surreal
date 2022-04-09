@@ -9,7 +9,7 @@ public class StandardShaderParserTests
   [TestCase("Assets/shaders/test02.shade")]
   public async Task it_should_parse_shader_programs(VirtualPath path)
   {
-    var parser      = new StandardShaderParser();
+    var parser = new StandardShaderParser();
     var declaration = await parser.ParseAsync(path);
 
     declaration.Should().NotBeNull();

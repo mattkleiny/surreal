@@ -10,9 +10,9 @@ public sealed record ScriptDeclaration(string Path, CompilationUnit CompilationU
 /// <summary>The <see cref="AssetLoader{T}"/> for raw <see cref="ScriptDeclaration"/>s.</summary>
 public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
 {
-  private readonly IScriptParser            parser;
+  private readonly IScriptParser parser;
   private readonly ImmutableHashSet<string> extensions;
-  private readonly Encoding                 encoding;
+  private readonly Encoding encoding;
 
   public ScriptDeclarationLoader(IScriptParser parser, params string[] extensions)
     : this(parser, extensions.AsEnumerable())
@@ -26,9 +26,9 @@ public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
 
   public ScriptDeclarationLoader(IScriptParser parser, IEnumerable<string> extensions, Encoding encoding)
   {
-    this.parser     = parser;
+    this.parser = parser;
     this.extensions = extensions.ToImmutableHashSet();
-    this.encoding   = encoding;
+    this.encoding = encoding;
   }
 
   /// <summary>The <see cref="IScriptTransformer"/>s to apply to the loaded scripts.</summary>

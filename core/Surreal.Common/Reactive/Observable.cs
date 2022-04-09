@@ -45,12 +45,12 @@ public sealed class Observable<T> : IObservable<T>
   private sealed class SubscriptionToken : IDisposable
   {
     private readonly Observable<T> observable;
-    private readonly IObserver<T>  observer;
+    private readonly IObserver<T> observer;
 
     public SubscriptionToken(Observable<T> observable, IObserver<T> observer)
     {
       this.observable = observable;
-      this.observer   = observer;
+      this.observer = observer;
     }
 
     public void Dispose()

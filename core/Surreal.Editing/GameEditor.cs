@@ -23,8 +23,8 @@ public static class GameEditor
 
     return ThreadFactory.Create(options, async () =>
     {
-      using var game       = Game.Create<TGame>(configuration);
-      var       dispatcher = new WindowsDispatcher(Dispatcher.CurrentDispatcher);
+      using var game = Game.Create<TGame>(configuration);
+      var dispatcher = new WindowsDispatcher(Dispatcher.CurrentDispatcher);
 
       await game.InitializeAsync(cancellationToken);
 

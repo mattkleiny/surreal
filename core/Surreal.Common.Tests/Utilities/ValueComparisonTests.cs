@@ -7,9 +7,9 @@ public class ValueComparisonTests
   {
     var comparison = new ValueComparison<int>(ComparisonType.LessThan, 5);
 
-    Assert.IsTrue(comparison.Compare(3));
-    Assert.IsFalse(comparison.Compare(5));
-    Assert.IsFalse(comparison.Compare(7));
+    comparison.Compare(3).Should().BeTrue();
+    comparison.Compare(5).Should().BeFalse();
+    comparison.Compare(7).Should().BeFalse();
   }
 
   [Test]
@@ -17,9 +17,9 @@ public class ValueComparisonTests
   {
     var comparison = new ValueComparison<int>(ComparisonType.LessThanOrEqual, 5);
 
-    Assert.IsTrue(comparison.Compare(3));
-    Assert.IsTrue(comparison.Compare(5));
-    Assert.IsFalse(comparison.Compare(7));
+    comparison.Compare(3).Should().BeTrue();
+    comparison.Compare(5).Should().BeTrue();
+    comparison.Compare(7).Should().BeFalse();
   }
 
   [Test]
@@ -27,9 +27,9 @@ public class ValueComparisonTests
   {
     var comparison = new ValueComparison<int>(ComparisonType.EqualTo, 5);
 
-    Assert.IsFalse(comparison.Compare(3));
-    Assert.IsTrue(comparison.Compare(5));
-    Assert.IsFalse(comparison.Compare(7));
+    comparison.Compare(3).Should().BeFalse();
+    comparison.Compare(5).Should().BeTrue();
+    comparison.Compare(7).Should().BeFalse();
   }
 
   [Test]
@@ -37,9 +37,9 @@ public class ValueComparisonTests
   {
     var comparison = new ValueComparison<int>(ComparisonType.GreaterThan, 5);
 
-    Assert.IsFalse(comparison.Compare(3));
-    Assert.IsFalse(comparison.Compare(5));
-    Assert.IsTrue(comparison.Compare(7));
+    comparison.Compare(3).Should().BeFalse();
+    comparison.Compare(5).Should().BeFalse();
+    comparison.Compare(7).Should().BeTrue();
   }
 
   [Test]
@@ -47,8 +47,8 @@ public class ValueComparisonTests
   {
     var comparison = new ValueComparison<int>(ComparisonType.GreaterThanOrEqual, 5);
 
-    Assert.IsFalse(comparison.Compare(3));
-    Assert.IsTrue(comparison.Compare(5));
-    Assert.IsTrue(comparison.Compare(7));
+    comparison.Compare(3).Should().BeFalse();
+    comparison.Compare(5).Should().BeTrue();
+    comparison.Compare(7).Should().BeTrue();
   }
 }

@@ -9,7 +9,7 @@ public sealed class PerspectiveCameraTests
   {
     var (x, y) = camera.Project(Vector3.Zero);
 
-    Assert.AreEqual(320, x);
-    Assert.AreEqual(240, y);
+    x.Should().Be(320);
+    y.Should().Be(240);
   }
 }

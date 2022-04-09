@@ -8,7 +8,7 @@ public class LispScriptParserTests
   [TestCase("Assets/scripts/lisp/test01.lsp")]
   public async Task it_should_parse_lisp_programs(VirtualPath path)
   {
-    var parser      = new LispScriptParser();
+    var parser = new LispScriptParser();
     var declaration = await parser.ParseScriptAsync(path);
 
     declaration.Should().NotBeNull();

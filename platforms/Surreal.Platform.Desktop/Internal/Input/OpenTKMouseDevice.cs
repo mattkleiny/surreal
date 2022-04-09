@@ -7,7 +7,7 @@ namespace Surreal.Internal.Input;
 internal sealed class OpenTKMouseDevice : IMouseDevice
 {
   private readonly OpenTKWindow window;
-  private readonly MouseState   mouseState;
+  private readonly MouseState mouseState;
 
   public OpenTKMouseDevice(OpenTKWindow window)
   {
@@ -29,9 +29,9 @@ internal sealed class OpenTKMouseDevice : IMouseDevice
     set => window.IsCursorVisible = value;
   }
 
-  public bool IsButtonDown(MouseButton button)     => mouseState.IsButtonDown(Convert(button));
-  public bool IsButtonUp(MouseButton button)       => !mouseState.IsButtonDown(Convert(button));
-  public bool IsButtonPressed(MouseButton button)  => mouseState.IsButtonDown(Convert(button)) && !mouseState.WasButtonDown(Convert(button));
+  public bool IsButtonDown(MouseButton button) => mouseState.IsButtonDown(Convert(button));
+  public bool IsButtonUp(MouseButton button) => !mouseState.IsButtonDown(Convert(button));
+  public bool IsButtonPressed(MouseButton button) => mouseState.IsButtonDown(Convert(button)) && !mouseState.WasButtonDown(Convert(button));
   public bool IsButtonReleased(MouseButton button) => mouseState.WasButtonDown(Convert(button)) && !mouseState.IsButtonDown(Convert(button));
 
   public void Update()

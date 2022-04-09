@@ -9,9 +9,9 @@ internal sealed class HeadlessKeyboardDevice : IHeadlessKeyboardDevice
   public event Action<Key>? KeyPressed;
   public event Action<Key>? KeyReleased;
 
-  public bool IsKeyDown(Key key)     => pressedKeys.Contains(key);
-  public bool IsKeyUp(Key key)       => !pressedKeys.Contains(key);
-  public bool IsKeyPressed(Key key)  => pressedKeys.Contains(key);
+  public bool IsKeyDown(Key key) => pressedKeys.Contains(key);
+  public bool IsKeyUp(Key key) => !pressedKeys.Contains(key);
+  public bool IsKeyPressed(Key key) => pressedKeys.Contains(key);
   public bool IsKeyReleased(Key key) => !pressedKeys.Contains(key);
 
   public bool this[Key key]

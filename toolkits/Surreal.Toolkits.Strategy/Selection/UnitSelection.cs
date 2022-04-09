@@ -24,7 +24,7 @@ public sealed class UnitSelectionManager : IUnitSelectionProvider
 
   public IEnumerable<ISelectableUnit> SelectedUnits => selectedUnits;
 
-  public void AddToSelection(ISelectableUnit unit)      => selectedUnits.Add(unit);
+  public void AddToSelection(ISelectableUnit unit) => selectedUnits.Add(unit);
   public void RemoveFromSelection(ISelectableUnit unit) => selectedUnits.Remove(unit);
 
   private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs eventArgs)

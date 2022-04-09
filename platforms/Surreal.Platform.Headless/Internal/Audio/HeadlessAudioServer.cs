@@ -5,7 +5,7 @@ namespace Surreal.Internal.Audio;
 
 internal sealed class HeadlessAudioServer : IAudioServer
 {
-  private int nextClipId   = 0;
+  private int nextClipId = 0;
   private int nextSourceId = 0;
 
   public AudioHandle CreateAudioClip()

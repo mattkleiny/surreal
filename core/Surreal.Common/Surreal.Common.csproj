@@ -2,4 +2,8 @@
   <PropertyGroup>
     <Description>Common tools, collections, etc for Surreal.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Diagnostics\Profiling\NullProfilerFactory.cs" />
+    <Compile Remove="Diagnostics\Logging\NullLogFactory.cs" />
+  </ItemGroup>
 </Project>

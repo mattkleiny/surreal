@@ -26,7 +26,7 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
       var oldHead = Head;
 
       oldHead.Previous = newHead;
-      newHead.Next     = oldHead;
+      newHead.Next = oldHead;
 
       Head = newHead;
     }
@@ -64,20 +64,20 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
     Head = null;
   }
 
-  public Enumerator                     GetEnumerator() => new(this);
+  public Enumerator GetEnumerator() => new(this);
   IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
   /// <summary>Enumerates the <see cref="InterlinkedList{TNode}"/> from head to tail.</summary>
   public struct Enumerator : IEnumerator<TNode>
   {
     private readonly InterlinkedList<TNode> list;
-    private          TNode?                 current;
+    private TNode? current;
 
     public Enumerator(InterlinkedList<TNode> list)
     {
       this.list = list;
-      current   = default;
+      current = default;
     }
 
     public TNode       Current => current!;

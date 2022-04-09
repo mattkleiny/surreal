@@ -48,9 +48,9 @@ public sealed class AsepriteImporter : AssetImporter<FlipBook>
 
     public enum ColorDepth : ushort
     {
-      Rgba      = 32,
+      Rgba = 32,
       Grayscale = 16,
-      Indexed   = 8
+      Indexed = 8
     }
 
     internal sealed class FileHeader

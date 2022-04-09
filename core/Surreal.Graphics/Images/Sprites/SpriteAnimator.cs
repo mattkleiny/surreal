@@ -5,21 +5,21 @@ namespace Surreal.Graphics.Images.Sprites;
 /// <summary>Animates sprites over by delegating to a <see cref="ISpriteRenderer"/>.</summary>
 public sealed class SpriteAnimator
 {
-  private readonly ISpriteRenderer      renderer;
+  private readonly ISpriteRenderer renderer;
   private readonly SpriteAnimationSlice animation;
 
   private IntervalTimer frameTimer;
-  private int           frameIndex = 0;
+  private int frameIndex = 0;
 
   public SpriteAnimator(ISpriteRenderer renderer, SpriteAnimationSlice animation)
   {
-    this.renderer  = renderer;
+    this.renderer = renderer;
     this.animation = animation;
 
     if (animation.Length > 0)
     {
       renderer.Sprite = animation[0].Sprite;
-      frameTimer      = new IntervalTimer(animation[0].Duration);
+      frameTimer = new IntervalTimer(animation[0].Duration);
     }
   }
 
@@ -44,7 +44,7 @@ public sealed class SpriteAnimator
           IsPlaying = false;
 
           renderer.Sprite = animation[^1].Sprite;
-          frameIndex      = animation.Length - 1;
+          frameIndex = animation.Length - 1;
         }
       }
 
@@ -53,7 +53,7 @@ public sealed class SpriteAnimator
         var (sprite, duration) = animation[frameIndex];
 
         renderer.Sprite = sprite;
-        frameTimer      = new IntervalTimer(duration);
+        frameTimer = new IntervalTimer(duration);
       }
     }
   }

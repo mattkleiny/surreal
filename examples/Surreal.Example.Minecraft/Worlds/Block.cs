@@ -14,20 +14,20 @@ public sealed record Block(ushort Id) : Enumeration<Block>
 
   public static Block Air { get; } = new(NextId())
   {
-    Name    = "Air",
-    Color   = Color.Clear,
+    Name = "Air",
+    Color = Color.Clear,
     IsSolid = false,
   };
 
   public static Block Dirt { get; } = new(NextId())
   {
-    Name  = "Dirt",
+    Name = "Dirt",
     Color = Color.Yellow,
   };
 
   public static Block Grass { get; } = new(NextId())
   {
-    Name  = "Grass",
+    Name = "Grass",
     Color = Color.Green,
   };
 

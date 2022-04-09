@@ -19,7 +19,7 @@ public readonly record struct ActorId(ulong Id)
 {
   private static ulong nextId = 1;
 
-  public static ActorId Invalid    => default;
+  public static ActorId Invalid => default;
   public static ActorId Allocate() => new(Interlocked.Increment(ref nextId));
 
   public bool IsInvalid => Id == 0;
@@ -52,7 +52,7 @@ public class Actor
   public bool IsActive    => Status == ActorStatus.Active;
   public bool IsInactive  => Status == ActorStatus.Inactive;
 
-  public void Enable()  => context.Enable(Id);
+  public void Enable() => context.Enable(Id);
   public void Disable() => context.Disable(Id);
   public void Destroy() => context.Destroy(Id);
 
@@ -75,7 +75,7 @@ public class Actor
   public ref T GetComponent<T>()
     where T : notnull, new()
   {
-    var     storage   = context.GetStorage<T>();
+    var storage = context.GetStorage<T>();
     ref var component = ref storage.GetComponent(Id);
 
     if (Unsafe.IsNullRef(ref component))

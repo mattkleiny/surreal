@@ -112,7 +112,7 @@ public abstract class Parser<T>
       for (var column = 0; column < span.Length; column++)
       {
         var position = new LinePosition(line + 1, column + 1);
-        var token    = ScanToken(keywords, position, span[column..]);
+        var token = ScanToken(keywords, position, span[column..]);
 
         if (token != null)
         {
@@ -218,7 +218,7 @@ public abstract class Parser<T>
           if (char.IsLetter(character) || character is '_' or '#')
           {
             var identifier = span.ConsumeAlphaNumeric();
-            var literal    = identifier.ToString();
+            var literal = identifier.ToString();
 
             if (keywords.Contains(literal))
             {
@@ -246,7 +246,7 @@ public abstract class Parser<T>
       : base($"{message} (at {position} in {span})")
     {
       Position = position;
-      Span     = span;
+      Span = span;
     }
 
     public LinePosition Position { get; }
@@ -257,7 +257,7 @@ public abstract class Parser<T>
   protected abstract class ParserContext
   {
     private readonly Queue<Token> tokens;
-    private          Token        lastToken;
+    private Token lastToken;
 
     protected ParserContext(IEnumerable<Token> tokens)
     {
@@ -320,7 +320,7 @@ public abstract class Parser<T>
       if (TryPeek(out var token) && token.Type == type && token.Literal is TLiteral literal)
       {
         lastToken = tokens.Dequeue();
-        result    = literal;
+        result = literal;
 
         return true;
       }

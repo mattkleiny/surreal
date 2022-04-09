@@ -3,7 +3,7 @@
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Angle))]
-public sealed class AngleBinarySerializer : BinarySerializer<Angle>
+internal sealed class AngleBinarySerializer : BinarySerializer<Angle>
 {
   public override async ValueTask SerializeAsync(Angle value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

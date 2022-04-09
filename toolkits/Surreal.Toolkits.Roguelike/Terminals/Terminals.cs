@@ -88,11 +88,11 @@ public sealed class TerminalSlice : Terminal
 
   public TerminalSlice(int offsetX, int offsetY, int width, int height, Terminal terminal)
   {
-    this.offsetX  = offsetX;
-    this.offsetY  = offsetY;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
     this.terminal = terminal;
 
-    Width  = width;
+    Width = width;
     Height = height;
   }
 

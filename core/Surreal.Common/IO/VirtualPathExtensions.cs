@@ -18,11 +18,11 @@ public static class VirtualPathExtensions
 
   public static VirtualPath Resolve(this VirtualPath path, params string[] name) => path.GetFileSystem().Resolve(path.Target.ToString(), name);
 
-  public static ValueTask<bool>   ExistsAsync(this VirtualPath path)           => path.GetFileSystem().ExistsAsync(path.Target.ToString());
-  public static ValueTask<bool>   IsFileAsync(this VirtualPath path)           => path.GetFileSystem().IsFileAsync(path.Target.ToString());
-  public static ValueTask<bool>   IsDirectoryAsync(this VirtualPath path)      => path.GetFileSystem().IsDirectoryAsync(path.Target.ToString());
-  public static ValueTask<Size>   GetSizeAsync(this VirtualPath path)          => path.GetFileSystem().GetSizeAsync(path.Target.ToString());
-  public static ValueTask<Stream> OpenInputStreamAsync(this VirtualPath path)  => path.GetFileSystem().OpenInputStreamAsync(path.Target.ToString());
+  public static ValueTask<bool> ExistsAsync(this VirtualPath path) => path.GetFileSystem().ExistsAsync(path.Target.ToString());
+  public static ValueTask<bool> IsFileAsync(this VirtualPath path) => path.GetFileSystem().IsFileAsync(path.Target.ToString());
+  public static ValueTask<bool> IsDirectoryAsync(this VirtualPath path) => path.GetFileSystem().IsDirectoryAsync(path.Target.ToString());
+  public static ValueTask<Size> GetSizeAsync(this VirtualPath path) => path.GetFileSystem().GetSizeAsync(path.Target.ToString());
+  public static ValueTask<Stream> OpenInputStreamAsync(this VirtualPath path) => path.GetFileSystem().OpenInputStreamAsync(path.Target.ToString());
   public static ValueTask<Stream> OpenOutputStreamAsync(this VirtualPath path) => path.GetFileSystem().OpenOutputStreamAsync(path.Target.ToString());
 
   public static IPathWatcher Watch(this VirtualPath path) => path.GetFileSystem().WatchPath(path);
@@ -34,7 +34,7 @@ public static class VirtualPathExtensions
 
   public static async ValueTask CopyToAsync(this VirtualPath from, VirtualPath to, CancellationToken cancellationToken = default)
   {
-    await using var input  = await from.OpenInputStreamAsync();
+    await using var input = await from.OpenInputStreamAsync();
     await using var output = await to.OpenOutputStreamAsync();
 
     await input.CopyToAsync(output, cancellationToken);
@@ -61,7 +61,7 @@ public static class VirtualPathExtensions
   public static async ValueTask<string> ReadAllTextAsync(this VirtualPath path, Encoding? encoding = default, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
-    using var       reader = new StreamReader(stream, encoding ?? DefaultEncoding);
+    using var reader = new StreamReader(stream, encoding ?? DefaultEncoding);
 
     return await reader.ReadToEndAsync();
   }

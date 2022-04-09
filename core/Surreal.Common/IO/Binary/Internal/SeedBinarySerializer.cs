@@ -3,7 +3,7 @@
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Seed))]
-public sealed class SeedBinarySerializer : BinarySerializer<Seed>
+internal sealed class SeedBinarySerializer : BinarySerializer<Seed>
 {
   public override async ValueTask SerializeAsync(Seed value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

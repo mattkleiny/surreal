@@ -37,8 +37,8 @@ public sealed class StateMachine : IAutomata, IMessageListener
 
   public StateMachine(object owner, IPropertyCollection properties, State initialState)
   {
-    Owner        = owner;
-    Properties   = properties;
+    Owner = owner;
+    Properties = properties;
     CurrentState = initialState;
   }
 

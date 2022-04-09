@@ -7,7 +7,7 @@ public enum ComparisonType
   LessThanOrEqual,
   EqualTo,
   GreaterThan,
-  GreaterThanOrEqual
+  GreaterThanOrEqual,
 }
 
 /// <summary>A comparison between two values of <see cref="T"/>.</summary>

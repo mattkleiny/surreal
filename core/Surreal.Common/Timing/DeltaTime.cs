@@ -15,10 +15,10 @@ public readonly record struct DeltaTime(float Seconds)
     return $"{TimeSpan.TotalMilliseconds:F}ms";
   }
 
-  public static implicit operator DeltaTime(TimeSpan timeSpan)  => new(timeSpan);
-  public static implicit operator DeltaTime(float seconds)      => new(seconds);
-  public static implicit operator DeltaTime(double seconds)     => new((float) seconds);
+  public static implicit operator DeltaTime(TimeSpan timeSpan) => new(timeSpan);
+  public static implicit operator DeltaTime(float seconds) => new(seconds);
+  public static implicit operator DeltaTime(double seconds) => new((float) seconds);
   public static implicit operator TimeSpan(DeltaTime deltaTime) => deltaTime.TimeSpan;
-  public static implicit operator float(DeltaTime deltaTime)    => deltaTime.Seconds;
-  public static implicit operator double(DeltaTime deltaTime)   => deltaTime.Seconds;
+  public static implicit operator float(DeltaTime deltaTime) => deltaTime.Seconds;
+  public static implicit operator double(DeltaTime deltaTime) => deltaTime.Seconds;
 }

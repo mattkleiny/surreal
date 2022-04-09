@@ -10,7 +10,7 @@ public interface IScript
 /// <summary>The <see cref="AssetLoader{T}"/> for different <see cref="IScript"/> types.</summary>
 public sealed class ScriptLoader : AssetLoader<IScript>
 {
-  private readonly IScriptCompiler          compiler;
+  private readonly IScriptCompiler compiler;
   private readonly ImmutableHashSet<string> extensions;
 
   public ScriptLoader(IScriptCompiler compiler, params string[] extensions)
@@ -20,7 +20,7 @@ public sealed class ScriptLoader : AssetLoader<IScript>
 
   public ScriptLoader(IScriptCompiler compiler, IEnumerable<string> extensions)
   {
-    this.compiler   = compiler;
+    this.compiler = compiler;
     this.extensions = extensions.ToImmutableHashSet();
   }
 

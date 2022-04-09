@@ -52,11 +52,11 @@ public class OpenTKShaderCompilerTests
       ),
     };
 
-    var program = (OpenTKShaderSet) compiler.CompileShader(new ShaderDeclaration("test.shade", compilationUnit));
+    var program = compiler.CompileShader(new ShaderDeclaration("test.shade", compilationUnit));
 
-    Assert.IsNotNull(program);
-    Assert.AreEqual(2, program.Shaders.Length);
-    Assert.That(program.Shaders[0].Code, Is.Not.Empty);
-    Assert.That(program.Shaders[1].Code, Is.Not.Empty);
+    program.Should().NotBeNull();
+    program.Shaders.Length.Should().Be(2);
+    program.Shaders[0].Code.Should().NotBeEmpty();
+    program.Shaders[1].Code.Should().NotBeEmpty();
   }
 }

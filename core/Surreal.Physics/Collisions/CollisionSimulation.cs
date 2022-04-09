@@ -9,7 +9,7 @@ public class CollisionSimulation
 
   public event Action<CollisionDetails>? CollisionDetected;
 
-  public void Add(ICollisionObject value)    => objects.Add(value);
+  public void Add(ICollisionObject value) => objects.Add(value);
   public void Remove(ICollisionObject value) => objects.Remove(value);
 
   public void Update(DeltaTime deltaTime)

@@ -13,7 +13,7 @@ public enum PaintingStage
 /// <summary>Provider for <see cref="PaintingContext"/> control state operations.</summary>
 public interface IControlStateProvider
 {
-  uint       GetControlId();
+  uint GetControlId();
   ref TState GetControlState<TState>();
 }
 

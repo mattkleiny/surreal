@@ -7,11 +7,11 @@ namespace Surreal.Graphics.Cameras;
 public sealed class TopDownCameraController : ICameraController
 {
   private readonly OrthographicCamera camera;
-  private readonly IKeyboardDevice    keyboard;
+  private readonly IKeyboardDevice keyboard;
 
   public TopDownCameraController(OrthographicCamera camera, IKeyboardDevice keyboard)
   {
-    this.camera   = camera;
+    this.camera = camera;
     this.keyboard = keyboard;
   }
 

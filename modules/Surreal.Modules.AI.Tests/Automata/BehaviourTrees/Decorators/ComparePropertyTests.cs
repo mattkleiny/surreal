@@ -11,7 +11,7 @@ public class ComparePropertyTests
   [Test, AutoFixture]
   public void it_should_return_success_regardless_of_child(BehaviourNode childNode)
   {
-    var tree     = new BehaviourTree(this, new CompareProperty<int>(childNode, TestProperty, new ValueComparison<int>(ComparisonType.GreaterThanOrEqual, 5)));
+    var tree = new BehaviourTree(this, new CompareProperty<int>(childNode, TestProperty, new ValueComparison<int>(ComparisonType.GreaterThanOrEqual, 5)));
     var timeStep = 0.25f.Seconds();
 
     tree.Update(timeStep);

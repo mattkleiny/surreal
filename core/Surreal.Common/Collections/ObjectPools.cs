@@ -13,13 +13,13 @@ public sealed class Pool<T>
   /// <summary>A shared pool for instances of type, <see cref="T"/>.</summary>
   public static Pool<T> Shared { get; } = new(Activator.CreateInstance<T>);
 
-  private readonly Func<T>                   factory;
+  private readonly Func<T> factory;
   private readonly BoundedConcurrentQueue<T> instances;
 
   public Pool(Func<T> factory, int maxCapacity = 32)
   {
     this.factory = factory;
-    instances    = new BoundedConcurrentQueue<T>(maxCapacity);
+    instances = new BoundedConcurrentQueue<T>(maxCapacity);
   }
 
   public T CreateOrRent()
@@ -74,13 +74,13 @@ public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware
 
   private readonly List<T> list = new(capacity: 0);
 
-  public void Add(T element)    => list.Add(element);
+  public void Add(T element) => list.Add(element);
   public void Remove(T element) => list.Remove(element);
-  public void Clear()           => list.Clear();
-  public void Dispose()         => Pool.Return(this);
+  public void Clear() => list.Clear();
+  public void Dispose() => Pool.Return(this);
 
-  public List<T>.Enumerator     GetEnumerator() => list.GetEnumerator();
-  IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+  public List<T>.Enumerator GetEnumerator() => list.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
   void IPoolAware.OnRent()

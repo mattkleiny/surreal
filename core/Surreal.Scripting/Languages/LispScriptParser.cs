@@ -10,7 +10,7 @@ public sealed class LispScriptParser : IScriptParser
   public async ValueTask<ScriptDeclaration> ParseScriptAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var expressions = await SymbolicExpression.Parse(reader, cancellationToken);
-    var context     = new LispParserContext(expressions);
+    var context = new LispParserContext(expressions);
 
     var compilationUnit = context.ParseCompilationUnit();
 
@@ -38,7 +38,7 @@ public sealed class LispScriptParser : IScriptParser
 
       return new CompilationUnit
       {
-        Includes   = nodes.OfType<Include>().ToImmutableArray(),
+        Includes = nodes.OfType<Include>().ToImmutableArray(),
         Statements = nodes.OfType<Statement>().ToImmutableArray(),
       };
     }

@@ -29,16 +29,16 @@ public enum TextureWrapMode
 public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuffer<Color>, IDisposableBuffer<Color32>
 {
   private readonly IGraphicsServer server;
-  private readonly GraphicsHandle  handle;
+  private readonly GraphicsHandle handle;
 
   public Texture(IGraphicsServer server, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
     this.server = server;
-    handle      = server.CreateTexture();
+    handle = server.CreateTexture();
 
-    Format     = format;
+    Format = format;
     FilterMode = filterMode;
-    WrapMode   = wrapMode;
+    WrapMode = wrapMode;
   }
 
   public TextureFormat     Format     { get; }
@@ -63,9 +63,9 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuf
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    Width  = width;
+    Width = width;
     Height = height;
-    Size   = pixels.CalculateSize();
+    Size = pixels.CalculateSize();
 
     server.WriteTextureData(handle, width, height, pixels, Format);
   }
@@ -87,21 +87,21 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuf
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Texture"/>s.</summary>
 public sealed class TextureLoader : AssetLoader<Texture>
 {
-  private readonly IGraphicsServer   server;
+  private readonly IGraphicsServer server;
   private readonly TextureFilterMode defaultFilterMode;
-  private readonly TextureWrapMode   defaultWrapMode;
+  private readonly TextureWrapMode defaultWrapMode;
 
   public TextureLoader(IGraphicsServer server, TextureFilterMode defaultFilterMode, TextureWrapMode defaultWrapMode)
   {
-    this.server            = server;
+    this.server = server;
     this.defaultFilterMode = defaultFilterMode;
-    this.defaultWrapMode   = defaultWrapMode;
+    this.defaultWrapMode = defaultWrapMode;
   }
 
   public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     // TODO: support hot reloading?
-    var image   = await context.Manager.LoadAssetAsync<Image>(context.Path, progressToken);
+    var image = await context.Manager.LoadAssetAsync<Image>(context.Path, progressToken);
     var texture = new Texture(server, TextureFormat.Rgba8888, defaultFilterMode, defaultWrapMode);
 
     texture.WritePixels<Color32>(image.Width, image.Height, image.Pixels);

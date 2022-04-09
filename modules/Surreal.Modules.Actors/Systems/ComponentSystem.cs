@@ -32,11 +32,11 @@ public abstract class ComponentSystem : IComponentSystem
   protected ComponentSystem(IComponentSystemContext context, ComponentMask mask)
   {
     Context = context;
-    Mask    = mask;
+    Mask = mask;
 
     if (mask != ComponentMask.Empty)
     {
-      context.ComponentAdded   += OnComponentAdded;
+      context.ComponentAdded += OnComponentAdded;
       context.ComponentRemoved += OnComponentRemoved;
     }
   }

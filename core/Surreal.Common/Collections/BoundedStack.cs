@@ -6,7 +6,7 @@ namespace Surreal.Collections;
 public sealed class BoundedStack<T> : IEnumerable<T>
 {
   private readonly Stack<T> stack;
-  private readonly int      maxCapacity;
+  private readonly int maxCapacity;
 
   public BoundedStack(int capacity = 0, int maxCapacity = 32)
   {
@@ -47,8 +47,8 @@ public sealed class BoundedStack<T> : IEnumerable<T>
     stack.Clear();
   }
 
-  public Stack<T>.Enumerator    GetEnumerator() => stack.GetEnumerator();
-  IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+  public Stack<T>.Enumerator GetEnumerator() => stack.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }
 
@@ -56,7 +56,7 @@ public sealed class BoundedStack<T> : IEnumerable<T>
 public sealed class BoundedConcurrentStack<T>
 {
   private readonly ConcurrentStack<T> stack;
-  private readonly int                maxCapacity;
+  private readonly int maxCapacity;
 
   public BoundedConcurrentStack(int maxCapacity = 32)
   {

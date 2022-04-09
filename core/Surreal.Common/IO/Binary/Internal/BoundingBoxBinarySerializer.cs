@@ -3,7 +3,7 @@
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(BoundingBox))]
-public sealed class BoundingBoxBinarySerializer : BinarySerializer<BoundingBox>
+internal sealed class BoundingBoxBinarySerializer : BinarySerializer<BoundingBox>
 {
   public override async ValueTask SerializeAsync(BoundingBox value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

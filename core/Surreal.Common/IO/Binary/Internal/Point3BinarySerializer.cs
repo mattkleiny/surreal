@@ -3,7 +3,7 @@
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Point3))]
-public sealed class Point3BinarySerializer : BinarySerializer<Point3>
+internal sealed class Point3BinarySerializer : BinarySerializer<Point3>
 {
   public override async ValueTask SerializeAsync(Point3 value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

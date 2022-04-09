@@ -10,10 +10,10 @@ public class SequenceTests
     successfulNode.OnUpdate(Arg.Any<BehaviourContext>(), Arg.Any<DeltaTime>()).Returns(BehaviourStatus.Success);
     failingNode.OnUpdate(Arg.Any<BehaviourContext>(), Arg.Any<DeltaTime>()).Returns(BehaviourStatus.Failure);
 
-    var tree     = new BehaviourTree(this, new Sequence(successfulNode, failingNode));
+    var tree = new BehaviourTree(this, new Sequence(successfulNode, failingNode));
     var timeStep = 0.25f.Seconds();
 
-    Assert.AreEqual(BehaviourStatus.Failure, tree.Update(timeStep));
+    tree.Update(timeStep).Should().Be(BehaviourStatus.Failure);
 
     successfulNode.Received(1).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);
     failingNode.Received(1).OnUpdate(Arg.Any<BehaviourContext>(), timeStep);

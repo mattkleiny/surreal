@@ -3,7 +3,7 @@
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Color))]
-public sealed class ColorBinarySerializer : BinarySerializer<Color>
+internal sealed class ColorBinarySerializer : BinarySerializer<Color>
 {
   public override async ValueTask SerializeAsync(Color value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

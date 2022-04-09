@@ -17,7 +17,7 @@ public sealed class XmlAssetLoader : AssetLoader<object>
     if (!typeof(ITemplate).IsAssignableFrom(context.AssetType))
     {
       var templateType = TemplateFactory.GetTemplateType(context.AssetType);
-      var template     = (ITemplate) await context.Manager.LoadAssetAsync(templateType, context.Path);
+      var template = (ITemplate) await context.Manager.LoadAssetAsync(templateType, context.Path);
 
       return template.Create();
     }

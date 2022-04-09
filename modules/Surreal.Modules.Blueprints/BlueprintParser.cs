@@ -29,7 +29,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 
   public override async ValueTask<BlueprintDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
-    var tokens  = await TokenizeAsync(Keywords, reader, cancellationToken);
+    var tokens = await TokenizeAsync(Keywords, reader, cancellationToken);
     var context = new BlueprintParserContext(path, tokens);
 
     var declaration = context.ParseBlueprintDeclaration();
@@ -89,7 +89,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 
       return new BlueprintDeclaration(path)
       {
-        Includes   = nodes.OfType<IncludeStatement>().ToImmutableArray(),
+        Includes = nodes.OfType<IncludeStatement>().ToImmutableArray(),
         Archetypes = nodes.OfType<BlueprintArchetype>().ToImmutableArray(),
       };
     }
@@ -119,17 +119,17 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 
     private BlueprintArchetype ParseArchetypeDeclaration(ArchetypeKind kind)
     {
-      var name      = ConsumeLiteral<string>(TokenType.Identifier);
+      var name = ConsumeLiteral<string>(TokenType.Identifier);
       var baseTypes = ConsumeBaseTypeList();
-      var block     = ConsumeStatementBlock();
+      var block = ConsumeStatementBlock();
 
       return new BlueprintArchetype(kind, name)
       {
-        BaseTypes  = baseTypes,
-        Tags       = block.OfType<TagDeclaration>().ToImmutableArray(),
+        BaseTypes = baseTypes,
+        Tags = block.OfType<TagDeclaration>().ToImmutableArray(),
         Attributes = block.OfType<AttributeDeclaration>().ToImmutableArray(),
         Components = block.OfType<ComponentDeclaration>().ToImmutableArray(),
-        Events     = block.OfType<EventDeclaration>().ToImmutableArray(),
+        Events = block.OfType<EventDeclaration>().ToImmutableArray(),
       };
     }
 
@@ -224,7 +224,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 
     private EventDeclaration ParseEventDeclaration()
     {
-      var name       = ConsumeLiteral<string>(TokenType.Identifier);
+      var name = ConsumeLiteral<string>(TokenType.Identifier);
       var parameters = ParseParameterList();
 
       Consume(TokenType.SemiColon);

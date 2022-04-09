@@ -5,8 +5,8 @@ public readonly record struct MaterialSortingKey(ulong Key) : IComparable<Materi
 {
   public int CompareTo(MaterialSortingKey other) => Key.CompareTo(other.Key);
 
-  public static bool operator <(MaterialSortingKey left, MaterialSortingKey right)  => left.Key < right.Key;
-  public static bool operator >(MaterialSortingKey left, MaterialSortingKey right)  => left.Key > right.Key;
+  public static bool operator <(MaterialSortingKey left, MaterialSortingKey right) => left.Key < right.Key;
+  public static bool operator >(MaterialSortingKey left, MaterialSortingKey right) => left.Key > right.Key;
   public static bool operator <=(MaterialSortingKey left, MaterialSortingKey right) => left.Key <= right.Key;
   public static bool operator >=(MaterialSortingKey left, MaterialSortingKey right) => left.Key >= right.Key;
 }
@@ -16,8 +16,8 @@ public readonly record struct MaterialProperty<T>(string Name)
 {
   public int Hash { get; } = Name.GetHashCode(StringComparison.Ordinal);
 
-  public override string ToString()    => Name;
-  public override int    GetHashCode() => Hash;
+  public override string ToString() => Name;
+  public override int GetHashCode() => Hash;
 
   public bool Equals(MaterialProperty<T> other) => Hash == other.Hash;
 }

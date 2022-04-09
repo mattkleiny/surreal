@@ -45,8 +45,8 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
 
   public int CompareTo(Angle other) => Radians.CompareTo(other.Radians);
 
-  public static bool operator <(Angle left, Angle right)  => left.Radians < right.Radians;
-  public static bool operator >(Angle left, Angle right)  => left.Radians > right.Radians;
+  public static bool operator <(Angle left, Angle right) => left.Radians < right.Radians;
+  public static bool operator >(Angle left, Angle right) => left.Radians > right.Radians;
   public static bool operator <=(Angle left, Angle right) => left.Radians <= right.Radians;
   public static bool operator >=(Angle left, Angle right) => left.Radians >= right.Radians;
 }

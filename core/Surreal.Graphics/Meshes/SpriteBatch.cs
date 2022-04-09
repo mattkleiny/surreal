@@ -12,13 +12,13 @@ public sealed class SpriteBatch : IDisposable
 {
   private const int MaximumSpriteCount = 8000;
 
-  private readonly IGraphicsServer           server;
+  private readonly IGraphicsServer server;
   private readonly IDisposableBuffer<Vertex> vertices;
-  private readonly Mesh<Vertex>              mesh;
+  private readonly Mesh<Vertex> mesh;
 
   private Material? material;
-  private Texture?  lastTexture;
-  private int       vertexCount;
+  private Texture? lastTexture;
+  private int vertexCount;
 
   public SpriteBatch(IGraphicsServer server, int spriteCount)
   {
@@ -28,7 +28,7 @@ public sealed class SpriteBatch : IDisposable
     this.server = server;
 
     vertices = Buffers.AllocateNative<Vertex>(spriteCount * 4);
-    mesh     = new Mesh<Vertex>(server);
+    mesh = new Mesh<Vertex>(server);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
@@ -72,8 +72,8 @@ public sealed class SpriteBatch : IDisposable
     }
 
     // calculate u/v extents
-    var u  = regionOffset.X / region.Width;
-    var v  = (regionOffset.Y + regionSize.Y) / region.Height;
+    var u = regionOffset.X / region.Width;
+    var v = (regionOffset.Y + regionSize.Y) / region.Height;
     var u2 = (regionOffset.X + regionSize.X) / region.Width;
     var v2 = regionOffset.Y / region.Height;
 
@@ -93,30 +93,30 @@ public sealed class SpriteBatch : IDisposable
     ref var vertex0 = ref span[0];
     vertex0.Position.X = position.X;
     vertex0.Position.Y = position.Y;
-    vertex0.Color      = color;
-    vertex0.UV.X       = u;
-    vertex0.UV.Y       = v;
+    vertex0.Color = color;
+    vertex0.UV.X = u;
+    vertex0.UV.Y = v;
 
     ref var vertex1 = ref span[1];
     vertex1.Position.X = position.X;
     vertex1.Position.Y = extentY;
-    vertex1.Color      = color;
-    vertex1.UV.X       = u;
-    vertex1.UV.Y       = v2;
+    vertex1.Color = color;
+    vertex1.UV.X = u;
+    vertex1.UV.Y = v2;
 
     ref var vertex2 = ref span[2];
     vertex2.Position.X = extentX;
     vertex2.Position.Y = extentY;
-    vertex2.Color      = color;
-    vertex2.UV.X       = u2;
-    vertex2.UV.Y       = v2;
+    vertex2.Color = color;
+    vertex2.UV.X = u2;
+    vertex2.UV.Y = v2;
 
     ref var vertex3 = ref span[3];
     vertex3.Position.X = extentX;
     vertex3.Position.Y = position.Y;
-    vertex3.Color      = color;
-    vertex3.UV.X       = u2;
-    vertex3.UV.Y       = v;
+    vertex3.Color = color;
+    vertex3.UV.X = u2;
+    vertex3.UV.Y = v;
 
     vertexCount += 4;
   }
@@ -127,7 +127,7 @@ public sealed class SpriteBatch : IDisposable
     if (material == null) return;
 
     var spriteCount = vertexCount / 4;
-    var indexCount  = spriteCount * 6;
+    var indexCount = spriteCount * 6;
 
     mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
     mesh.DrawImmediate(material, vertexCount, indexCount);
@@ -184,8 +184,8 @@ public sealed class SpriteBatch : IDisposable
     public Vertex(Vector2 position, Color color, Vector2 uv)
     {
       Position = position;
-      Color    = color;
-      UV       = uv;
+      Color = color;
+      UV = uv;
     }
   }
 }

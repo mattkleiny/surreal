@@ -4,14 +4,14 @@ namespace Surreal.Timing;
 public struct IntervalTimer
 {
   private readonly TimeSpan interval;
-  private          float    accumulator;
+  private float accumulator;
 
   public IntervalTimer(TimeSpan interval)
   {
     Debug.Assert(interval.Ticks > 0, "frequency.Ticks > 0");
 
     this.interval = interval;
-    accumulator   = 0f;
+    accumulator = 0f;
   }
 
   public bool Tick(DeltaTime deltaTime)

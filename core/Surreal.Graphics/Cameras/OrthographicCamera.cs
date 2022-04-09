@@ -10,8 +10,8 @@ public sealed class OrthographicCamera : Camera
   public OrthographicCamera(int viewportWidth, int viewportHeight)
     : base(viewportWidth, viewportHeight)
   {
-    Near      = 0f;
-    Position  = new Vector3(0f, 0f, 0f);
+    Near = 0f;
+    Position = new Vector3(0f, 0f, 0f);
     Direction = new Vector3(0f, 0f, -1f);
   }
 

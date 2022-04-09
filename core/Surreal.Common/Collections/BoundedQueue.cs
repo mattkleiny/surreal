@@ -6,7 +6,7 @@ namespace Surreal.Collections;
 public sealed class BoundedQueue<T> : IEnumerable<T>
 {
   private readonly Queue<T> queue;
-  private readonly int      maxCapacity;
+  private readonly int maxCapacity;
 
   public BoundedQueue(int capacity = 0, int maxCapacity = 32)
   {
@@ -47,8 +47,8 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
     queue.Clear();
   }
 
-  public Queue<T>.Enumerator    GetEnumerator() => queue.GetEnumerator();
-  IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+  public Queue<T>.Enumerator GetEnumerator() => queue.GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }
 
@@ -56,7 +56,7 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
 public sealed class BoundedConcurrentQueue<T>
 {
   private readonly ConcurrentQueue<T> queue;
-  private readonly int                maxCapacity;
+  private readonly int maxCapacity;
 
   public BoundedConcurrentQueue(int maxCapacity = 32)
   {

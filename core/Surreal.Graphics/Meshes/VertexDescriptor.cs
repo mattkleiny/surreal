@@ -23,9 +23,9 @@ public enum VertexType
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute : Attribute
 {
-  public int Count { get; set; }
-  public VertexType Type { get; set; }
-  public bool Normalized { get; set; }
+  public int        Count      { get; set; }
+  public VertexType Type       { get; set; }
+  public bool       Normalized { get; set; }
 }
 
 /// <summary>Describes a single vertex.</summary>
@@ -36,14 +36,14 @@ public readonly record struct VertexDescriptor(string Alias, int Count, VertexTy
 
   private static int DetermineSize(VertexType type) => type switch
   {
-    VertexType.Byte => sizeof(byte),
-    VertexType.UnsignedByte => sizeof(byte),
-    VertexType.Short => sizeof(short),
+    VertexType.Byte          => sizeof(byte),
+    VertexType.UnsignedByte  => sizeof(byte),
+    VertexType.Short         => sizeof(short),
     VertexType.UnsignedShort => sizeof(ushort),
-    VertexType.Int => sizeof(int),
-    VertexType.UnsignedInt => sizeof(uint),
-    VertexType.Float => sizeof(float),
-    VertexType.Double => sizeof(double),
+    VertexType.Int           => sizeof(int),
+    VertexType.UnsignedInt   => sizeof(uint),
+    VertexType.Float         => sizeof(float),
+    VertexType.Double        => sizeof(double),
 
     _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
   };

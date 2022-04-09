@@ -1,7 +1,7 @@
 ﻿namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Quaternion))]
-public sealed class QuaternionBinarySerializer : BinarySerializer<Quaternion>
+internal sealed class QuaternionBinarySerializer : BinarySerializer<Quaternion>
 {
   public override async ValueTask SerializeAsync(Quaternion value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

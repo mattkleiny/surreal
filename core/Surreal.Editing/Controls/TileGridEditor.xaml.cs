@@ -7,8 +7,8 @@ namespace Surreal.Controls;
 /// <summary>An editor for discrete tile grids.</summary>
 public partial class TileGridEditor
 {
-  private float    gridSpacing = 48f;
-  private Point2 gridSize    = new(15, 9);
+  private float gridSpacing = 48f;
+  private Point2 gridSize = new(15, 9);
 
   public TileGridEditor()
   {

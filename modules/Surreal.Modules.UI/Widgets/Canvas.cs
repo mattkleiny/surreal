@@ -11,7 +11,7 @@ public abstract class Canvas : Widget
   {
     var context = new PaintingContext
     {
-      Stage         = PaintingStage.Layout,
+      Stage = PaintingStage.Layout,
       StateProvider = provider,
     };
 
@@ -22,7 +22,7 @@ public abstract class Canvas : Widget
   {
     var context = new PaintingContext
     {
-      Stage         = PaintingStage.Paint,
+      Stage = PaintingStage.Paint,
       StateProvider = provider,
     };
 

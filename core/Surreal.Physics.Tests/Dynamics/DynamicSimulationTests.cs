@@ -21,7 +21,7 @@ public class DynamicSimulationTests
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
 
-    Assert.AreNotEqual(Vector3.Zero, sphere.Position);
+    sphere.Position.Should().NotBe(Vector3.Zero);
   }
 
   [Test]
@@ -44,6 +44,6 @@ public class DynamicSimulationTests
     simulation.Update(16.Milliseconds());
     simulation.Update(16.Milliseconds());
 
-    Assert.AreNotEqual(Vector3.Zero, sphere.Position);
+    sphere.Position.Should().NotBe(Vector3.Zero);
   }
 }

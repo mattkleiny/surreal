@@ -3,7 +3,7 @@
 /// <summary>A <see cref="ILogFactory"/> that writes to the built-in .NET <see cref="Trace"/> console.</summary>
 public sealed class TraceLogFactory : ILogFactory
 {
-  private readonly LogLevel     minLevel;
+  private readonly LogLevel minLevel;
   private readonly LogFormatter formatter;
 
   public TraceLogFactory(LogLevel minLevel)
@@ -13,7 +13,7 @@ public sealed class TraceLogFactory : ILogFactory
 
   public TraceLogFactory(LogLevel minLevel, LogFormatter formatter)
   {
-    this.minLevel  = minLevel;
+    this.minLevel = minLevel;
     this.formatter = formatter;
   }
 
@@ -22,14 +22,14 @@ public sealed class TraceLogFactory : ILogFactory
   /// <summary>A <see cref="ILog"/> that writes to <see cref="Trace"/>.</summary>
   private sealed class TraceLog : ILog
   {
-    private readonly string       category;
-    private readonly LogLevel     minLevel;
+    private readonly string category;
+    private readonly LogLevel minLevel;
     private readonly LogFormatter formatter;
 
     public TraceLog(string category, LogLevel minLevel, LogFormatter formatter)
     {
-      this.category  = category;
-      this.minLevel  = minLevel;
+      this.category = category;
+      this.minLevel = minLevel;
       this.formatter = formatter;
     }
 

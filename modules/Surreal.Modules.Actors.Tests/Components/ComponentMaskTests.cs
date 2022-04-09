@@ -9,7 +9,7 @@ public class ComponentMaskTests
   {
     var aspect = ComponentMask.Of<Transform>();
 
-    Assert.IsTrue(aspect.Contains<Transform>());
-    Assert.IsFalse(aspect.Contains<ComponentMaskTests>());
+    aspect.Contains<Transform>().Should().BeTrue();
+    aspect.Contains<ComponentMaskTests>().Should().BeFalse();
   }
 }

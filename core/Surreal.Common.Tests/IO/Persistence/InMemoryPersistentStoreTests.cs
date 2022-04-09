@@ -1,4 +1,5 @@
 ﻿using Surreal.Collections;
+using Surreal.Persistence;
 
 namespace Surreal.IO.Persistence;
 
@@ -12,7 +13,7 @@ public class InMemoryPersistentStoreTests
   public void it_should_persist_and_restore_properties()
   {
     var identifier = Guid.NewGuid();
-    var store      = new InMemoryPersistenceStore();
+    var store = new InMemoryPersistenceStore();
 
     store.CreateReader(identifier, out _).Should().BeFalse();
 

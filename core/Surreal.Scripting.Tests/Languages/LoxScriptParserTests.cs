@@ -8,9 +8,9 @@ public class LoxScriptParserTests
   [TestCase("Assets/scripts/lox/test01.lox")]
   public async Task it_should_parse_lox_programs(VirtualPath path)
   {
-    var parser      = new LoxScriptParser();
+    var parser = new LoxScriptParser();
     var declaration = await parser.ParseScriptAsync(path);
 
-    Assert.IsNotNull(declaration);
+    declaration.Should().NotBeNull();
   }
 }

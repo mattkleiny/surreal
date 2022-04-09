@@ -1,6 +1,6 @@
 ﻿using Surreal.Collections;
 
-namespace Surreal.IO.Persistence;
+namespace Surreal.Persistence;
 
 /// <summary>In-memory storage of persistent data, for use in testing and in-process transitions.</summary>
 public sealed class InMemoryPersistenceStore : IPersistenceStore

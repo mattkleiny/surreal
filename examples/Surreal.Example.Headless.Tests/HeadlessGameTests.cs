@@ -21,7 +21,7 @@ public class HeadlessGameTests : GameTestCase<HeadlessGame>
     {
       var size = new Size(memory.GetTrafficFrom(checkpoint).AllocatedMemory.SizeInBytes);
 
-      Assert.That(size, Is.LessThan(1.Megabytes()));
+      size.Should().BeLessThan(1.Megabytes());
     });
   }
 }

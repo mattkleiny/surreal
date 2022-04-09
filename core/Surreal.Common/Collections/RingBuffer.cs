@@ -10,7 +10,7 @@ public sealed class RingBuffer<T> : IEnumerable<T>
   {
     elements = new T[capacity];
     writePos = 0;
-    Count    = 0;
+    Count = 0;
   }
 
   public int Count    { get; private set; }
@@ -35,7 +35,7 @@ public sealed class RingBuffer<T> : IEnumerable<T>
     }
 
     writePos = 0;
-    Count    = 0;
+    Count = 0;
   }
 
   public void Resize(int size)
@@ -48,15 +48,15 @@ public sealed class RingBuffer<T> : IEnumerable<T>
     Array.Resize(ref elements, size);
   }
 
-  public Enumerator             GetEnumerator() => new(this);
+  public Enumerator GetEnumerator() => new(this);
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
   public struct Enumerator : IEnumerator<T>
   {
     private readonly RingBuffer<T> buffer;
-    private          int           currentPos;
-    private          int           touched;
+    private int currentPos;
+    private int touched;
 
     public Enumerator(RingBuffer<T> buffer)
       : this()
@@ -78,7 +78,7 @@ public sealed class RingBuffer<T> : IEnumerable<T>
 
     public void Reset()
     {
-      touched    = 0;
+      touched = 0;
       currentPos = buffer.writePos;
     }
 

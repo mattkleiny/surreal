@@ -6,7 +6,7 @@ namespace Surreal;
 /// <summary>A plugin for a <see cref="Game"/>.</summary>
 public interface IGamePlugin : IDisposable
 {
-  void      Initialize();
+  void Initialize();
   ValueTask LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default);
 
   void Input(GameTime time);

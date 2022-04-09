@@ -25,8 +25,8 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
     var nativeWindowSettings = new NativeWindowSettings
     {
-      Title        = configuration.Title,
-      Size         = new Vector2i(configuration.Width, configuration.Height),
+      Title = configuration.Title,
+      Size = new Vector2i(configuration.Width, configuration.Height),
       WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
     };
 
@@ -42,7 +42,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
         throw new InvalidOperationException($"Expected an image in the {nameof(TextureFormat.Rgba8888)} format");
       }
 
-      var icon   = configuration.Icon;
+      var icon = configuration.Icon;
       var pixels = MemoryMarshal.Cast<Color32, byte>(icon.Pixels);
 
       window.Icon = new WindowIcon(new Image(icon.Width, icon.Height, pixels.ToArray()));

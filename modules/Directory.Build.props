@@ -10,7 +10,6 @@
   <ItemGroup>
     <ProjectReference
       Include="..\..\core\Surreal.Common\Surreal.Common.csproj"
-      Condition="!$(ProjectName.Contains('Generators'))"
-    />
+      Condition="!$(ProjectName.Contains('Generators'))" />
   </ItemGroup>
 </Project>

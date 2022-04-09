@@ -13,7 +13,7 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate, IDisposableBu
   public AudioBuffer(TimeSpan duration, AudioSampleRate rate)
   {
     Duration = duration;
-    Rate     = rate;
+    Rate = rate;
 
     buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
   }
@@ -53,7 +53,7 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
     var format = reader.WaveFormat;
 
     var sampleRate = new AudioSampleRate(format.SampleRate, format.Channels, format.BitsPerSample);
-    var buffer     = new AudioBuffer(reader.TotalTime, sampleRate);
+    var buffer = new AudioBuffer(reader.TotalTime, sampleRate);
 
     await reader.ReadAsync(buffer.Data, progressToken.CancellationToken);
 

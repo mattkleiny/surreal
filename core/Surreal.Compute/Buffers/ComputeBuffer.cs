@@ -13,7 +13,7 @@ public abstract class ComputeBuffer : ComputeResource, IHasSizeEstimate
 public sealed class ComputeBuffer<T> : ComputeBuffer, IDisposableBuffer<T>
   where T : unmanaged
 {
-  private readonly ComputeHandle  handle;
+  private readonly ComputeHandle handle;
   private readonly IComputeServer server;
 
   public ComputeBuffer(IComputeServer server)

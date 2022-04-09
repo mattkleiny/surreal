@@ -8,14 +8,14 @@ namespace Surreal.Graphics.Cameras;
 public sealed class FirstPersonCameraController : ICameraController
 {
   private readonly PerspectiveCamera camera;
-  private readonly IKeyboardDevice   keyboard;
-  private readonly IMouseDevice      mouse;
+  private readonly IKeyboardDevice keyboard;
+  private readonly IMouseDevice mouse;
 
   public FirstPersonCameraController(PerspectiveCamera camera, IKeyboardDevice keyboard, IMouseDevice mouse)
   {
-    this.camera   = camera;
+    this.camera = camera;
     this.keyboard = keyboard;
-    this.mouse    = mouse;
+    this.mouse = mouse;
   }
 
   public float Speed           { get; set; } = 5f;

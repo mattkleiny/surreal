@@ -1,7 +1,7 @@
 ﻿namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(TimeSpan))]
-public sealed class TimeSpanBinarySerializer : BinarySerializer<TimeSpan>
+internal sealed class TimeSpanBinarySerializer : BinarySerializer<TimeSpan>
 {
   public override async ValueTask SerializeAsync(TimeSpan value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

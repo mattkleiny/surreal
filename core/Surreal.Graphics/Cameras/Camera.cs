@@ -13,17 +13,17 @@ public interface ICamera
   void Update();
 
   Point2 Project(Vector3 worldPosition);
-  Vector3  UnProject(Point2 screenPosition);
+  Vector3 UnProject(Point2 screenPosition);
 }
 
 /// <summary>Base class for any <see cref="ICamera"/> implementation.</summary>
 public abstract class Camera : ICamera
 {
-  private float     near                  = 1f;
-  private float     far                   = 100.0f;
-  private Matrix4x4 view                  = Matrix4x4.Identity;
-  private Matrix4x4 projection            = Matrix4x4.Identity;
-  private Matrix4x4 projectionView        = Matrix4x4.Identity;
+  private float near = 1f;
+  private float far = 100.0f;
+  private Matrix4x4 view = Matrix4x4.Identity;
+  private Matrix4x4 projection = Matrix4x4.Identity;
+  private Matrix4x4 projectionView = Matrix4x4.Identity;
   private Matrix4x4 inverseProjectionView = Matrix4x4.Identity;
 
   protected Camera(int viewportWidth, int viewportHeight)
@@ -66,7 +66,7 @@ public abstract class Camera : ICamera
 
   public void Translate(Vector3 amount)
   {
-    Position  += amount;
+    Position += amount;
     Direction += amount;
   }
 

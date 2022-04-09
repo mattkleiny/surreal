@@ -1,7 +1,7 @@
 ﻿namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Vector4))]
-public sealed class Vector4BinarySerializer : BinarySerializer<Vector4>
+internal sealed class Vector4BinarySerializer : BinarySerializer<Vector4>
 {
   public override async ValueTask SerializeAsync(Vector4 value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

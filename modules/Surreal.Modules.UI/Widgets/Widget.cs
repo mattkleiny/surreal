@@ -6,7 +6,7 @@ namespace Surreal.UI.Widgets;
 public abstract class Widget
 {
   public void MarkDirtyLayout() => throw new NotImplementedException();
-  public void MarkDirtyPaint()  => throw new NotImplementedException();
+  public void MarkDirtyPaint() => throw new NotImplementedException();
 
   public void MarkDirty()
   {

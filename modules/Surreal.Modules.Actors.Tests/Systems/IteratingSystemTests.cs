@@ -9,7 +9,7 @@ public class IteratingSystemTests
   [Test]
   public void it_should_iterate_over_aspect()
   {
-    var scene     = new ActorScene();
+    var scene = new ActorScene();
     var deltaTime = 16.Milliseconds();
 
     scene.AddSystem(new TestSystem(scene));

@@ -42,14 +42,14 @@ public sealed class MessageSubscriberAttribute : Attribute
 /// <summary>Represents a single message in the framework with support for value types and reference passing.</summary>
 public readonly ref struct Message
 {
-  private static readonly LinkedList<IMessageListener>         Listeners   = new();
-  private static readonly MultiDictionary<Type, Delegate>      Subscribers = new();
+  private static readonly LinkedList<IMessageListener> Listeners = new();
+  private static readonly MultiDictionary<Type, Delegate> Subscribers = new();
   private static readonly Dictionary<Type, SubscriberMethod[]> MethodCache = new();
 
-  public static void AddListener(IMessageListener listener)    => Listeners.AddLast(listener);
+  public static void AddListener(IMessageListener listener) => Listeners.AddLast(listener);
   public static void RemoveListener(IMessageListener listener) => Listeners.Remove(listener);
 
-  public static void Subscribe<T>(MessageSubscriber<T> subscriber)   => Subscribers.Add(typeof(T), subscriber);
+  public static void Subscribe<T>(MessageSubscriber<T> subscriber) => Subscribers.Add(typeof(T), subscriber);
   public static void Unsubscribe<T>(MessageSubscriber<T> subscriber) => Subscribers.Remove(typeof(T), subscriber);
 
   public static void SubscribeAll(object target)
@@ -98,7 +98,7 @@ public readonly ref struct Message
       for (var i = subscribers.Length - 1; i >= 0; i--)
       {
         var subscriber = subscribers[i];
-        var callback   = Unsafe.As<MessageSubscriber<T>>(subscriber);
+        var callback = Unsafe.As<MessageSubscriber<T>>(subscriber);
 
         callback.Invoke(ref data);
       }
@@ -117,7 +117,7 @@ public readonly ref struct Message
   private unsafe Message(void* data, Type type)
   {
     this.data = data;
-    Type      = type;
+    Type = type;
   }
 
   public Type Type { get; }
@@ -153,10 +153,10 @@ public readonly ref struct Message
                       method.ReturnType == typeof(Task<>)
         select new SubscriberMethod
         {
-          Method       = method,
-          MessageType  = messageType,
+          Method = method,
+          MessageType = messageType,
           DelegateType = typeof(MessageSubscriber<>).MakeGenericType(messageType),
-          IsAsync      = isAsync,
+          IsAsync = isAsync,
         };
 
       MethodCache[type] = methods = results.ToArray();

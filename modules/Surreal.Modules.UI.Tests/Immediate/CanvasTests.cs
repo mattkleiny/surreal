@@ -28,8 +28,8 @@ public class CanvasTests
 
     protected override void OnPaintCanvas(in PaintingContext context)
     {
-      ref var state  = ref context.GetControlState<StatisticsState>();
-      var     layout = context.BeginFlowLayout();
+      ref var state = ref context.GetControlState<StatisticsState>();
+      var layout = context.BeginFlowLayout();
 
       isEnabled = layout.Toggle("Show statistics", isEnabled);
 

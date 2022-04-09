@@ -6,7 +6,7 @@ namespace Surreal;
 /// <summary>A strategy for the core game loop.</summary>
 public interface ILoopStrategy
 {
-  GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime);
+  void Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime);
 }
 
 /// <summary>A target for the <see cref="ILoopStrategy"/>.</summary>
@@ -33,7 +33,7 @@ public sealed class AveragingLoopStrategy : ILoopStrategy
 
   public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
 
-  public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
+  public void Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
   {
     samples.Add(deltaTime);
 
@@ -50,8 +50,6 @@ public sealed class AveragingLoopStrategy : ILoopStrategy
     target.Update(time);
     target.Draw(time);
     target.EndFrame(time);
-
-    return time;
   }
 }
 
@@ -60,7 +58,7 @@ public sealed class VariableStepLoopStrategy : ILoopStrategy
 {
   public TimeSpan TargetDeltaTime { get; set; } = 16.Milliseconds();
 
-  public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
+  public void Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
   {
     var time = new GameTime(
       DeltaTime: deltaTime,
@@ -73,8 +71,6 @@ public sealed class VariableStepLoopStrategy : ILoopStrategy
     target.Update(time);
     target.Draw(time);
     target.EndFrame(time);
-
-    return time;
   }
 }
 
@@ -86,7 +82,7 @@ public sealed class FixedStepLoopStrategy : ILoopStrategy
   public TimeSpan Step            { get; set; } = 16.Milliseconds();
   public TimeSpan TargetDeltaTime { get; set; } = 16.Milliseconds();
 
-  public GameTime Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
+  public void Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
   {
     var time = new GameTime(
       DeltaTime: deltaTime,
@@ -114,7 +110,5 @@ public sealed class FixedStepLoopStrategy : ILoopStrategy
 
     target.Draw(time);
     target.EndFrame(time);
-
-    return time;
   }
 }

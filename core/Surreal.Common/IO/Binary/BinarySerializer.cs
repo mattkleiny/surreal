@@ -81,6 +81,6 @@ public abstract class BinarySerializer
 /// <summary>A serializer for reading/writing <see cref="T"/>s.</summary>
 public abstract class BinarySerializer<T> : BinarySerializer
 {
-  public abstract ValueTask    SerializeAsync(T value, IBinaryWriter writer, CancellationToken cancellationToken = default);
+  public abstract ValueTask SerializeAsync(T value, IBinaryWriter writer, CancellationToken cancellationToken = default);
   public abstract ValueTask<T> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default);
 }

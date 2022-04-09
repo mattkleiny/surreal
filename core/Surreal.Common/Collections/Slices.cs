@@ -44,8 +44,8 @@ public readonly struct Slice<T> : IEnumerable<T>
     }
   }
 
-  public Enumerator             GetEnumerator() => new(this);
-  IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+  public Enumerator GetEnumerator() => new(this);
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
   public static implicit operator Slice<T>(List<T> list) => new(list);
@@ -55,7 +55,7 @@ public readonly struct Slice<T> : IEnumerable<T>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly Slice<T> slice;
-    private          int      index;
+    private int index;
 
     public Enumerator(Slice<T> slice)
       : this()
@@ -68,7 +68,7 @@ public readonly struct Slice<T> : IEnumerable<T>
     object IEnumerator.Current => Current!;
 
     public bool MoveNext() => ++index < slice.Length;
-    public void Reset()    => index = -1;
+    public void Reset() => index = -1;
 
     public void Dispose()
     {
@@ -115,17 +115,17 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
     }
   }
 
-  public Enumerator             GetEnumerator() => new(this);
-  IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+  public Enumerator GetEnumerator() => new(this);
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-  public static implicit operator ReadOnlySlice<T>(T[] array)    => new(array);
+  public static implicit operator ReadOnlySlice<T>(T[] array) => new(array);
   public static implicit operator ReadOnlySlice<T>(List<T> list) => new(list);
 
   public struct Enumerator : IEnumerator<T>
   {
     private readonly ReadOnlySlice<T> slice;
-    private          int              index;
+    private int index;
 
     public Enumerator(ReadOnlySlice<T> slice)
       : this()
@@ -138,11 +138,11 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
     object IEnumerator.Current => Current!;
 
     public bool MoveNext() => ++index < slice.Length;
-    public void Reset()    => index = -1;
+    public void Reset() => index = -1;
 
     public void Dispose()
     {
-       // no-op
+      // no-op
     }
   }
 }

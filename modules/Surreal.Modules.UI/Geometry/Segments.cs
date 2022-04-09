@@ -38,13 +38,13 @@ public readonly record struct PolyCubicBezierSegment(ImmutableArray<Vector2> Poi
 /// <summary>A builder for <see cref="VectorGeometry"/>.</summary>
 public sealed class VectorGeometryBuilder
 {
-  public void AddSegment(ArcSegment segment)                 => throw new NotImplementedException();
-  public void AddSegment(LineSegment segment)                => throw new NotImplementedException();
-  public void AddSegment(QuadraticBezierSegment segment)     => throw new NotImplementedException();
-  public void AddSegment(CubicBezierSegment segment)         => throw new NotImplementedException();
-  public void AddSegment(PolyLineSegment segment)            => throw new NotImplementedException();
+  public void AddSegment(ArcSegment segment) => throw new NotImplementedException();
+  public void AddSegment(LineSegment segment) => throw new NotImplementedException();
+  public void AddSegment(QuadraticBezierSegment segment) => throw new NotImplementedException();
+  public void AddSegment(CubicBezierSegment segment) => throw new NotImplementedException();
+  public void AddSegment(PolyLineSegment segment) => throw new NotImplementedException();
   public void AddSegment(PolyQuadraticBezierSegment segment) => throw new NotImplementedException();
-  public void AddSegment(PolyCubicBezierSegment segment)     => throw new NotImplementedException();
+  public void AddSegment(PolyCubicBezierSegment segment) => throw new NotImplementedException();
 }
 
 /// <summary>Represents built vector geometry, suitable for rendering.</summary>

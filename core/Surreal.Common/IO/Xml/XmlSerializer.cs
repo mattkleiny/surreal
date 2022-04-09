@@ -19,7 +19,7 @@ public sealed class XmlSerializerAttribute : Attribute
     Type = type;
   }
 
-  public Type    Type        { get; }
+  public Type    Type { get; }
   public string? Name { get; set; }
 }
 
@@ -75,7 +75,7 @@ public static class XmlSerializer
   [RequiresUnreferencedCode("Discovers serializers via reflection")]
   internal sealed class SerializationContext : IXmlSerializationContext
   {
-    private readonly Dictionary<Type, IXmlSerializer>   serializersByType = new();
+    private readonly Dictionary<Type, IXmlSerializer> serializersByType = new();
     private readonly Dictionary<string, IXmlSerializer> serializersByName = new();
 
     [ModuleInitializer]

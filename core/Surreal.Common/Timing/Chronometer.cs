@@ -10,7 +10,7 @@ public sealed class Chronometer
 
   public DeltaTime Tick()
   {
-    var now   = TimeStamp.Now;
+    var now = TimeStamp.Now;
     var delta = now - lastTime;
 
     if (delta > MaxDeltaTime)

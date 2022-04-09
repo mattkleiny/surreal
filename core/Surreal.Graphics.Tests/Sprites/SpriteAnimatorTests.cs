@@ -11,7 +11,7 @@ public class SpriteAnimatorTests
   {
     var animation = new SpriteAnimation
     {
-      Name  = "Test Animation",
+      Name = "Test Animation",
       Flags = SpriteAnimationFlags.Looping,
       Frames = new[]
       {

@@ -9,9 +9,9 @@ public class AlwaysSuccessTests
   {
     childNode.OnUpdate(Arg.Any<BehaviourContext>(), Arg.Any<DeltaTime>()).Returns(BehaviourStatus.Failure);
 
-    var tree     = new BehaviourTree(this, new AlwaysSuccess(childNode));
+    var tree = new BehaviourTree(this, new AlwaysSuccess(childNode));
     var timeStep = 0.25f.Seconds();
 
-    Assert.AreEqual(BehaviourStatus.Success, tree.Update(timeStep));
+    tree.Update(timeStep).Should().Be(BehaviourStatus.Success);
   }
 }

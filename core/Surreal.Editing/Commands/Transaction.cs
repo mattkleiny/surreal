@@ -34,7 +34,7 @@ public sealed class Transaction : IDisposable
   }
 
   private readonly List<ITransactionOperation> operations = new();
-  private          TransactionStatus           status;
+  private TransactionStatus status;
 
   public void Push(ITransactionOperation operation)
   {

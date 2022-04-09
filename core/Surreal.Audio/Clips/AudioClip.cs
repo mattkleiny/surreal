@@ -7,12 +7,12 @@ namespace Surreal.Audio.Clips;
 public sealed class AudioClip : AudioResource, IHasSizeEstimate
 {
   private readonly IAudioServer server;
-  private readonly AudioHandle  handle;
+  private readonly AudioHandle handle;
 
   public AudioClip(IAudioServer server)
   {
     this.server = server;
-    handle      = server.CreateAudioClip();
+    handle = server.CreateAudioClip();
   }
 
   public TimeSpan        Duration { get; private set; } = TimeSpan.Zero;
@@ -23,8 +23,8 @@ public sealed class AudioClip : AudioResource, IHasSizeEstimate
     where T : unmanaged
   {
     Duration = duration;
-    Rate     = rate;
-    Size     = buffer.CalculateSize();
+    Rate = rate;
+    Size = buffer.CalculateSize();
 
     server.WriteAudioClipData(handle, rate, buffer);
   }
@@ -53,7 +53,7 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
   public override async ValueTask<AudioClip> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     var buffer = await context.Manager.LoadAssetAsync<AudioBuffer>(context.Path);
-    var clip   = new AudioClip(server);
+    var clip = new AudioClip(server);
 
     clip.Write<byte>(buffer.Duration, buffer.Rate, buffer.Data.Span);
 

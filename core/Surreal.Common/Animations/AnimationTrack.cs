@@ -20,7 +20,7 @@ public interface IAnimationTrack
 /// <summary>A delegate for accessing a value, used by the <see cref="AnimationTrack{T}"/>.</summary>
 public interface IAnimationTrackDelegate<T>
 {
-  T    GetValue();
+  T GetValue();
   void SetValue(T value);
 }
 
@@ -54,7 +54,7 @@ public static class AnimationTrack
 
   private sealed record AnimationTrackDelegate<T>(Func<T> Getter, Action<T> Setter) : IAnimationTrackDelegate<T>
   {
-    public T    GetValue()        => Getter();
+    public T GetValue() => Getter();
     public void SetValue(T value) => Setter(value);
   }
 }

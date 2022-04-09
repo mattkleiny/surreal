@@ -1,4 +1,4 @@
-namespace Surreal.IO.Persistence;
+namespace Surreal.Persistence;
 
 /// <summary>Different modes of persistence.</summary>
 public enum PersistenceMode

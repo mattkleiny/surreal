@@ -13,7 +13,7 @@ public sealed class ShaderProgram : GraphicsResource
   public ShaderProgram(IGraphicsServer server, ShaderDeclaration declaration)
   {
     this.server = server;
-    handle      = server.CreateShader();
+    handle = server.CreateShader();
 
     server.CompileShader(handle, declaration);
   }
@@ -78,7 +78,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 
   public ShaderProgramLoader(IGraphicsServer server, IEnumerable<string> extensions)
   {
-    this.server     = server;
+    this.server = server;
     this.extensions = extensions.ToImmutableHashSet();
   }
 

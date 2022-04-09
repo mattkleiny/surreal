@@ -24,7 +24,7 @@ public static class EnumExtensions
   public static bool EqualsFast<TEnum>(this TEnum first, TEnum second)
     where TEnum : unmanaged, Enum
   {
-    var firstInt  = first.AsInt();
+    var firstInt = first.AsInt();
     var secondInt = second.AsInt();
 
     return firstInt == secondInt;
@@ -60,7 +60,7 @@ public static class EnumExtensions
   public static TEnum SelectMaskRandomly<TEnum>(this TEnum value, Random random)
     where TEnum : unmanaged, Enum
   {
-    var result     = default(TEnum);
+    var result = default(TEnum);
     var enumerator = GetMaskValues(value);
 
     while (enumerator.MoveNext())
@@ -104,14 +104,14 @@ public static class EnumExtensions
     where TEnum : unmanaged, Enum
   {
     private readonly TEnum flags;
-    private          int   flag;
-    private          int   index;
+    private int flag;
+    private int index;
 
     public MaskEnumerator(TEnum flags)
     {
       this.flags = flags;
-      flag       = 1;
-      index      = -1;
+      flag = 1;
+      index = -1;
     }
 
     public TEnum       Current => CachedEnumLookup<TEnum>.Values[index];
@@ -129,7 +129,7 @@ public static class EnumExtensions
         }
 
         var value = values[index];
-        var mask  = value.AsInt();
+        var mask = value.AsInt();
 
         while (flag < mask)
         {
@@ -145,7 +145,7 @@ public static class EnumExtensions
 
     public void Reset()
     {
-      flag  = 1;
+      flag = 1;
       index = -1;
     }
 
@@ -154,9 +154,9 @@ public static class EnumExtensions
       // no-op
     }
 
-    public MaskEnumerator<TEnum>          GetEnumerator() => this;
+    public MaskEnumerator<TEnum> GetEnumerator() => this;
     IEnumerator<TEnum> IEnumerable<TEnum>.GetEnumerator() => GetEnumerator();
-    IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   }
 
   private static class CachedEnumLookup<TEnum>

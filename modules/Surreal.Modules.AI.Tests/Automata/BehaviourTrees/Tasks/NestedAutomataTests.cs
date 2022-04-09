@@ -7,16 +7,16 @@ public class NestedAutomataTests
   [Test, AutoFixture]
   public void it_should_tick_nested_automata_and_yield_status(IAutomata automata)
   {
-    var tree     = new BehaviourTree(this, new NestedAutomata(automata));
+    var tree = new BehaviourTree(this, new NestedAutomata(automata));
     var timeStep = 0.25f.Seconds();
 
     automata.Tick(Arg.Any<AutomataContext>(), timeStep).Returns(AutomataStatus.Running);
-    Assert.AreEqual(BehaviourStatus.Running, tree.Update(timeStep));
+    tree.Update(timeStep).Should().Be(BehaviourStatus.Running);
 
     automata.Tick(Arg.Any<AutomataContext>(), timeStep).Returns(AutomataStatus.Success);
-    Assert.AreEqual(BehaviourStatus.Success, tree.Update(timeStep));
+    tree.Update(timeStep).Should().Be(BehaviourStatus.Success);
 
     automata.Tick(Arg.Any<AutomataContext>(), timeStep).Returns(AutomataStatus.Failure);
-    Assert.AreEqual(BehaviourStatus.Failure, tree.Update(timeStep));
+    tree.Update(timeStep).Should().Be(BehaviourStatus.Failure);
   }
 }

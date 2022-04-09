@@ -26,18 +26,18 @@ public class CraftingRecipeSetTests
       new CraftingStack<ItemKind>(1, ItemKind.Coal),
     };
 
-    Assert.IsTrue(recipes.TryGetRecipe(inputs, out var recipe));
-    Assert.AreEqual(ItemKind.Torch, recipe!.Output.Type);
+    recipes.TryGetRecipe(inputs, out var recipe).Should().BeTrue();
+    recipe!.Output.Type.Should().Be(ItemKind.Torch);
   }
 
   private readonly record struct ItemKind(string Name)
   {
     public static ItemKind Stick { get; } = new(nameof(Stick));
-    public static ItemKind Coal { get; } = new(nameof(Coal));
+    public static ItemKind Coal  { get; } = new(nameof(Coal));
     public static ItemKind Stone { get; } = new(nameof(Stone));
     public static ItemKind Torch { get; } = new(nameof(Torch));
     public static ItemKind Sword { get; } = new(nameof(Sword));
-    public static ItemKind Axe { get; } = new(nameof(Axe));
+    public static ItemKind Axe   { get; } = new(nameof(Axe));
 
     public override string ToString()
     {

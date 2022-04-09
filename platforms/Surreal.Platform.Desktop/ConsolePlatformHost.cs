@@ -16,8 +16,8 @@ internal sealed class ConsolePlatformHost : IPlatformHost, IServiceModule
   {
     this.configuration = configuration;
 
-    Keyboard   = new ConsoleKeyboardDevice();
-    Mouse      = new ConsoleMouseDevice();
+    Keyboard = new ConsoleKeyboardDevice();
+    Mouse = new ConsoleMouseDevice();
     Dispatcher = new ImmediateDispatcher();
   }
 

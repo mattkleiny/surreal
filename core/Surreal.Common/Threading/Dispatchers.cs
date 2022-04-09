@@ -62,7 +62,7 @@ public sealed class ImmediateDispatcher : IDispatcher
 public sealed class DeferredDispatcher : IDispatcher
 {
   private readonly ConcurrentQueue<Action> continuations = new();
-  private readonly DeferredAwaitable       awaitable;
+  private readonly DeferredAwaitable awaitable;
 
   public DeferredDispatcher()
   {

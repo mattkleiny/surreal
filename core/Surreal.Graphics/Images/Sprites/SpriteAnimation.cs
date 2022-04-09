@@ -6,8 +6,8 @@ namespace Surreal.Graphics.Images.Sprites;
 [Flags]
 public enum SpriteAnimationFlags
 {
-  None       = 0,
-  Looping    = 1 << 0,
+  None = 0,
+  Looping = 1 << 0,
   Everything = ~0
 }
 
@@ -57,9 +57,9 @@ public readonly record struct SpriteAnimationSlice(SpriteAnimation Animation, in
     }
   }
 
-  public Enumerator                                 GetEnumerator() => new(this);
+  public Enumerator GetEnumerator() => new(this);
   IEnumerator<SpriteFrame> IEnumerable<SpriteFrame>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.                          GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
   public static implicit operator SpriteAnimationSlice(SpriteAnimation animation) => animation[Range.All];
 
@@ -67,12 +67,12 @@ public readonly record struct SpriteAnimationSlice(SpriteAnimation Animation, in
   public struct Enumerator : IEnumerator<SpriteFrame>
   {
     private readonly SpriteAnimationSlice slice;
-    private          int                  index;
+    private int index;
 
     public Enumerator(SpriteAnimationSlice slice)
     {
       this.slice = slice;
-      index      = -1;
+      index = -1;
     }
 
     public SpriteFrame Current => slice[index];

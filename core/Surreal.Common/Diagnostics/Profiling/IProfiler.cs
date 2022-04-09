@@ -12,16 +12,16 @@ public interface IProfiler
 /// <summary>A scope for <see cref="IProfiler"/> operations.</summary>
 public readonly struct ProfilingScope : IDisposable
 {
-  private readonly string           category;
-  private readonly string           task;
+  private readonly string category;
+  private readonly string task;
   private readonly IProfileSampler? sampler;
-  private readonly TimeStamp        startTime;
+  private readonly TimeStamp startTime;
 
   public ProfilingScope(string category, string task, IProfileSampler? sampler)
   {
     this.category = category;
-    this.task     = task;
-    this.sampler  = sampler;
+    this.task = task;
+    this.sampler = sampler;
 
     startTime = TimeStamp.Now;
   }

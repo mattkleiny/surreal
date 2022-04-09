@@ -9,13 +9,13 @@ public interface IAssetManager : IDisposable
   void AddLoader(IAssetLoader loader);
 
   Task<object> LoadAssetAsync(Type type, VirtualPath path, ProgressToken progressToken = default);
-  Task<T>      LoadAssetAsync<T>(VirtualPath path, ProgressToken progressToken = default);
+  Task<T> LoadAssetAsync<T>(VirtualPath path, ProgressToken progressToken = default);
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
 public sealed class AssetManager : IAssetManager
 {
-  private readonly List<IAssetLoader>          loaders    = new();
+  private readonly List<IAssetLoader> loaders = new();
   private readonly Dictionary<AssetId, object> assetsById = new();
 
   public void AddLoader(IAssetLoader loader)
@@ -32,9 +32,9 @@ public sealed class AssetManager : IAssetManager
   {
     var context = new AssetLoaderContext
     {
-      Path      = path,
+      Path = path,
       AssetType = type,
-      Manager   = this,
+      Manager = this,
     };
 
     var assetId = new AssetId(context.AssetType, path);

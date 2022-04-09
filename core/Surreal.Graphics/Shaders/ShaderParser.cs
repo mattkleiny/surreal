@@ -117,12 +117,12 @@ public sealed class StandardShaderParser : ShaderParser
       return new CompilationUnit
       {
         ShaderType = nodes.OfType<ShaderTypeDeclaration>().FirstOrDefault(new ShaderTypeDeclaration("none")),
-        Includes   = nodes.OfType<Include>().ToImmutableHashSet(),
-        Uniforms   = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
-        Varyings   = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
-        Constants  = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
-        Functions  = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
-        Stages     = nodes.OfType<StageDeclaration>().ToImmutableArray(),
+        Includes = nodes.OfType<Include>().ToImmutableHashSet(),
+        Uniforms = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
+        Varyings = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
+        Constants = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
+        Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
+        Stages = nodes.OfType<StageDeclaration>().ToImmutableArray(),
       };
     }
 

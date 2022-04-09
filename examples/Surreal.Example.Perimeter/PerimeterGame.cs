@@ -10,7 +10,7 @@ public sealed class PerimeterGame : PrototypeGame
     {
       Configuration =
       {
-        Title          = "Perimeter",
+        Title = "Perimeter",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
       },

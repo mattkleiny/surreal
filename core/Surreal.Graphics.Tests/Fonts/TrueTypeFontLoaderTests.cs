@@ -14,6 +14,6 @@ public class TrueTypeFontLoaderTests
 
     var font = await manager.LoadAssetAsync<TrueTypeFont>(path);
 
-    Assert.IsNotNull(font);
+    font.Should().NotBeNull();
   }
 }

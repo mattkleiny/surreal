@@ -8,9 +8,9 @@ public class LuaScriptParserTests
   [TestCase("Assets/scripts/lua/test01.lua")]
   public async Task it_should_parse_lua_programs(VirtualPath path)
   {
-    var parser      = new LuaScriptParser();
+    var parser = new LuaScriptParser();
     var declaration = await parser.ParseScriptAsync(path);
 
-    Assert.IsNotNull(declaration);
+    declaration.Should().NotBeNull();
   }
 }

@@ -3,7 +3,7 @@
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(TimeSpanRange))]
-public sealed class TimeSpanRangeBinarySerializer : BinarySerializer<TimeSpanRange>
+internal sealed class TimeSpanRangeBinarySerializer : BinarySerializer<TimeSpanRange>
 {
   public override async ValueTask SerializeAsync(TimeSpanRange value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

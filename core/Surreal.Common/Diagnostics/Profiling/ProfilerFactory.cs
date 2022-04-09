@@ -1,4 +1,5 @@
-﻿using Surreal.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using Surreal.Text;
 
 namespace Surreal.Diagnostics.Profiling;
 
@@ -13,8 +14,8 @@ public static class ProfilerFactory
 {
   public static IProfilerFactory Current { get; set; } = NullProfilerFactory.Instance;
 
-  public static IProfiler GetProfiler<T>()             => GetProfiler(typeof(T));
-  public static IProfiler GetProfiler(Type type)       => GetProfiler(type.GetFullNameWithoutGenerics());
+  public static IProfiler GetProfiler<T>() => GetProfiler(typeof(T));
+  public static IProfiler GetProfiler(Type type) => GetProfiler(type.GetFullNameWithoutGenerics());
   public static IProfiler GetProfiler(string category) => new LazyProfiler(category);
 
   /// <summary>A <see cref="IProfiler"/> that lazily acquires the <see cref="IProfiler"/> target.</summary>
@@ -35,6 +36,25 @@ public static class ProfilerFactory
     public ProfilingScope Track(string category, string task)
     {
       return profiler.Value.Track(category, task);
+    }
+  }
+
+  /// <summary>A <see cref="IProfilerFactory"/> that does nothing.</summary>
+  [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
+  private sealed class NullProfilerFactory : IProfilerFactory
+  {
+    public static readonly NullProfilerFactory Instance = new();
+
+    public IProfiler GetProfiler(string category)
+    {
+      return new NullProfiler();
+    }
+
+    /// <summary>A no-op <see cref="IProfiler"/>.</summary>
+    private sealed class NullProfiler : IProfiler
+    {
+      public ProfilingScope Track(string task) => default;
+      public ProfilingScope Track(string category, string task) => default;
     }
   }
 }

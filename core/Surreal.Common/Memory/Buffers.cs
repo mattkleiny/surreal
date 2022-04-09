@@ -69,7 +69,7 @@ public static class Buffers
   private sealed unsafe class NativeBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
-    private readonly int   length;
+    private readonly int length;
     private readonly void* address;
 
     private bool isDisposed;
@@ -77,7 +77,7 @@ public static class Buffers
     public NativeBuffer(int length, bool zeroFill)
     {
       this.length = length;
-      address     = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
+      address = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
 
       if (zeroFill)
       {

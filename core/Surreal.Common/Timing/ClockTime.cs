@@ -7,7 +7,7 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
 {
   private const int TicksPerSecond = 1;
   private const int TicksPerMinute = TicksPerSecond * 60;
-  private const int TicksPerHour   = TicksPerMinute * 60;
+  private const int TicksPerHour = TicksPerMinute * 60;
 
   public static ClockTime MinValue => new(hour: 00, minute: 00, second: 00);
   public static ClockTime MaxValue => new(hour: 23, minute: 59, second: 59);
@@ -71,8 +71,8 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
 
   public int CompareTo(ClockTime other) => Ticks.CompareTo(other.Ticks);
 
-  public static bool operator <(ClockTime left, ClockTime right)  => left.Ticks < right.Ticks;
-  public static bool operator >(ClockTime left, ClockTime right)  => left.Ticks > right.Ticks;
+  public static bool operator <(ClockTime left, ClockTime right) => left.Ticks < right.Ticks;
+  public static bool operator >(ClockTime left, ClockTime right) => left.Ticks > right.Ticks;
   public static bool operator <=(ClockTime left, ClockTime right) => left.Ticks <= right.Ticks;
   public static bool operator >=(ClockTime left, ClockTime right) => left.Ticks >= right.Ticks;
 

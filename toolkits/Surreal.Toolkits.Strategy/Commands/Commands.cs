@@ -19,7 +19,7 @@ public readonly struct CommandContext
 public sealed class AnonymousCommand : ICommand
 {
   private readonly Func<CommandContext, bool> canExecute;
-  private readonly Action<CommandContext>     execute;
+  private readonly Action<CommandContext> execute;
 
   public AnonymousCommand(Action<CommandContext> execute)
     : this(_ => true, execute)
@@ -29,7 +29,7 @@ public sealed class AnonymousCommand : ICommand
   public AnonymousCommand(Func<CommandContext, bool> canExecute, Action<CommandContext> execute)
   {
     this.canExecute = canExecute;
-    this.execute    = execute;
+    this.execute = execute;
   }
 
   public bool CanExecute(CommandContext context)

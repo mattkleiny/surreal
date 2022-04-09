@@ -51,7 +51,7 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     public Sampler(string category, string task, int sampleCount)
     {
       Category = category;
-      Task     = task;
+      Task = task;
 
       samples = new RingBuffer<TimeSpan>(sampleCount);
     }
@@ -75,9 +75,9 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
       }
     }
 
-    public RingBuffer<TimeSpan>.Enumerator      GetEnumerator() => samples.GetEnumerator();
+    public RingBuffer<TimeSpan>.Enumerator GetEnumerator() => samples.GetEnumerator();
     IEnumerator<TimeSpan> IEnumerable<TimeSpan>.GetEnumerator() => GetEnumerator();
-    IEnumerator IEnumerable.                    GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   }
 
   /// <summary>A collection of <see cref="Sampler"/>s.</summary>
@@ -108,6 +108,6 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     }
 
     public IEnumerator<Sampler> GetEnumerator() => samplers.Values.GetEnumerator();
-    IEnumerator IEnumerable.    GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   }
 }

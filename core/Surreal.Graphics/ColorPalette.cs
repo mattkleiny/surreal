@@ -9,8 +9,8 @@ namespace Surreal.Graphics;
 public readonly record struct ColorPalette(Color[] colors, int offset, int count) : IEnumerable<Color>
 {
   private readonly Color[] colors = colors;
-  private readonly int     offset = offset;
-  private readonly int     count  = count;
+  private readonly int offset = offset;
+  private readonly int count = count;
 
   public ColorPalette(Color[] colors)
     : this(colors, 0, colors.Length)
@@ -23,7 +23,7 @@ public readonly record struct ColorPalette(Color[] colors, int offset, int count
   /// <summary>Accesses a single color in the palette.</summary>
   public Color this[Index index]
   {
-    get => colors[offset + index.GetOffset(Count)];
+    get => colors?[offset + index.GetOffset(Count)] ?? Color.Clear;
   }
 
   /// <summary>Accesses a </summary>
@@ -37,27 +37,27 @@ public readonly record struct ColorPalette(Color[] colors, int offset, int count
     }
   }
 
-  public Enumerator                     GetEnumerator() => new(this);
+  public Enumerator GetEnumerator() => new(this);
   IEnumerator<Color> IEnumerable<Color>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.              GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
   /// <summary>Enumerates the <see cref="ColorPalette"/>.</summary>
   public struct Enumerator : IEnumerator<Color>
   {
     private readonly ColorPalette palette;
-    private          int          index;
+    private int index;
 
     public Enumerator(ColorPalette palette)
     {
       this.palette = palette;
-      index        = -1;
+      index = -1;
     }
 
     public Color       Current => palette[index];
     object IEnumerator.Current => Current;
 
     public bool MoveNext() => ++index < palette.Count;
-    public void Reset()    => index = -1;
+    public void Reset() => index = -1;
 
     public void Dispose()
     {
@@ -72,7 +72,7 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
   public override async ValueTask<ColorPalette> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
-    using var       reader = new StreamReader(stream);
+    using var reader = new StreamReader(stream);
 
     if (await reader.ReadLineAsync() != "JASC-PAL")
       throw new FormatException($"Failed to recognize the palette file {context.Path}");
@@ -84,7 +84,7 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
     if (rawCount == null)
       throw new FormatException($"Expected a count row in palette file {context.Path}");
 
-    var count  = int.Parse(rawCount, CultureInfo.InvariantCulture);
+    var count = int.Parse(rawCount, CultureInfo.InvariantCulture);
     var colors = new Color[count];
 
     for (var i = 0; i < colors.Length; i++)

@@ -7,18 +7,18 @@ public class ChunkGeneratorTests
   [Test]
   public void it_should_generate_a_solid_chunk()
   {
-    Assert.IsNotNull(Chunk.Generate(ChunkGenerators.Solid(Block.Dirt)));
+    Chunk.Generate(ChunkGenerators.Solid(Block.Dirt)).Should().NotBeNull();
   }
 
   [Test]
   public void it_should_generate_a_flat_chunk()
   {
-    Assert.IsNotNull(Chunk.Generate(ChunkGenerators.Flat(Block.Dirt, height: Chunk.Size.Y / 2)));
+    Chunk.Generate(ChunkGenerators.Flat(Block.Dirt, height: Chunk.Size.Y / 2)).Should().NotBeNull();
   }
 
   [Test]
   public void it_should_generate_a_chaotic_chunk()
   {
-    Assert.IsNotNull(Chunk.Generate(ChunkGenerators.Chaotic()));
+    Chunk.Generate(ChunkGenerators.Chaotic()).Should().NotBeNull();
   }
 }

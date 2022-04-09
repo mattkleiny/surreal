@@ -25,11 +25,11 @@ public sealed class SamplingProfilerFactory : IProfilerFactory
   private sealed class SamplingProfiler : IProfiler
   {
     private readonly IProfileSampler sampler;
-    private readonly string          category;
+    private readonly string category;
 
     public SamplingProfiler(IProfileSampler sampler, string category)
     {
-      this.sampler  = sampler;
+      this.sampler = sampler;
       this.category = category;
     }
 

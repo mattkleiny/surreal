@@ -9,7 +9,7 @@ public class RandomDelayTests
   public void it_should_wait_a_random_amount_of_time()
   {
     var timeRange = new TimeSpanRange(1.Seconds(), 4.Seconds());
-    var timeStep  = timeRange.Max / 4f;
+    var timeStep = timeRange.Max / 4f;
 
     var tree = new BehaviourTree(this, new RandomDelay(timeRange));
 

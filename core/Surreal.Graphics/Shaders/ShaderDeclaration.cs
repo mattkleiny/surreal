@@ -64,9 +64,9 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 
   public ShaderDeclarationLoader(ShaderParser parser, IEnumerable<string> extensions, Encoding encoding)
   {
-    this.parser     = parser;
+    this.parser = parser;
     this.extensions = extensions.ToImmutableHashSet();
-    this.encoding   = encoding;
+    this.encoding = encoding;
   }
 
   public override bool CanHandle(AssetLoaderContext context)

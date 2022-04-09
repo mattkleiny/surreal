@@ -13,8 +13,8 @@ public class DamageTests
   {
     var damage = Damage.Calculate(amount, DamageType.Standard);
 
-    Assert.AreEqual(amount, damage.Amount);
-    Assert.AreEqual(DamageType.Standard, damage.Type);
+    damage.Amount.Should().Be(amount);
+    damage.Type.Should().Be(DamageType.Standard);
   }
 
   [Test, AutoFixture]
@@ -25,7 +25,7 @@ public class DamageTests
 
     var damage = Damage.Calculate(amount, type);
 
-    Assert.AreEqual(amount * 2, damage.Amount);
-    Assert.AreEqual(type, damage.Type);
+    damage.Amount.Should().Be(amount * 2);
+    damage.Type.Should().Be(type);
   }
 }

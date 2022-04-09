@@ -28,8 +28,8 @@ public class ObjectMetadataTests
 
     [Bind] public void DoSomeWork()
     {
-      Name =  "Test";
-      Age  += 2;
+      Name = "Test";
+      Age += 2;
     }
   }
 }

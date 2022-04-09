@@ -31,9 +31,9 @@ internal sealed class HeadlessMouseDevice : IHeadlessMouseDevice
 
   public bool IsCursorVisible { get; set; } = true;
 
-  public bool IsButtonDown(MouseButton button)     => false;
-  public bool IsButtonUp(MouseButton button)       => false;
-  public bool IsButtonPressed(MouseButton button)  => false;
+  public bool IsButtonDown(MouseButton button) => false;
+  public bool IsButtonUp(MouseButton button) => false;
+  public bool IsButtonPressed(MouseButton button) => false;
   public bool IsButtonReleased(MouseButton button) => false;
 
   public void Update()

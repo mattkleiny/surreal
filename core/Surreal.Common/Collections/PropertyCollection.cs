@@ -17,7 +17,7 @@ public readonly record struct Property<T>(string Key, T DefaultValue = default!)
 /// <summary>A collection of <see cref="Property{T}"/>; a dictionary of structured types.</summary>
 public interface IPropertyCollection
 {
-  T    Get<T>(Property<T> property, Optional<T> defaultValue = default);
+  T Get<T>(Property<T> property, Optional<T> defaultValue = default);
   void Set<T>(Property<T> property, T value);
   void Clear<T>(Property<T> property);
   void ClearAll();

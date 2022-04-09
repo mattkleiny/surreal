@@ -52,7 +52,7 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
 
   public override string ToString() => Source?.AsSpan(Offset, Length).ToString() ?? string.Empty;
 
-  public static implicit operator StringSpan(string value)            => new(value);
+  public static implicit operator StringSpan(string value) => new(value);
   public static implicit operator ReadOnlySpan<char>(StringSpan span) => span.ToSpan();
 }
 
@@ -95,7 +95,7 @@ public static class StringSpanExtensions
   /// <summary>Consumes all of the next contiguous digits, including decimal places in the span.</summary>
   public static StringSpan ConsumeNumericWithFractions(this StringSpan span)
   {
-    var offset      = 1;
+    var offset = 1;
     var hasFraction = false;
 
     for (var i = 1; i < span.Length; i++)

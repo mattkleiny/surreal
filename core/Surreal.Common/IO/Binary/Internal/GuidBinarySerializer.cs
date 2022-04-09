@@ -4,7 +4,7 @@ using Surreal.Utilities;
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(Guid))]
-public sealed class GuidBinarySerializer : BinarySerializer<Guid>
+internal sealed class GuidBinarySerializer : BinarySerializer<Guid>
 {
   public override async ValueTask SerializeAsync(Guid value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

@@ -16,7 +16,7 @@ public readonly struct ProgressToken
 
   public ProgressToken(IProgressReporter? progressReporter, CancellationToken cancellationToken)
   {
-    ProgressReporter  = progressReporter;
+    ProgressReporter = progressReporter;
     CancellationToken = cancellationToken;
   }
 

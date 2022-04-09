@@ -7,11 +7,11 @@ namespace Surreal.Internal;
 internal sealed class ServiceRegistry : IServiceRegistry
 {
   private readonly Dictionary<Type, object> resolutionCache = new();
-  private readonly ServiceCollection        collection      = new();
+  private readonly ServiceCollection collection = new();
 
   private ServiceProvider? provider;
-  private bool             isSealed;
-  private bool             isDirty;
+  private bool isSealed;
+  private bool isDirty;
 
   public void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType)
   {

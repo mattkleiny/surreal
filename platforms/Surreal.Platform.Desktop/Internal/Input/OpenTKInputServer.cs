@@ -9,7 +9,7 @@ internal sealed class OpenTKInputServer : IInputServer
   public OpenTKInputServer(OpenTKWindow window)
   {
     Keyboard = new OpenTKKeyboardDevice(window);
-    Mouse    = new OpenTKMouseDevice(window);
+    Mouse = new OpenTKMouseDevice(window);
 
     devices.Add(Keyboard);
     devices.Add(Mouse);

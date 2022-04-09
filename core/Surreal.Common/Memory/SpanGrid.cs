@@ -8,12 +8,12 @@ public readonly ref struct SpanGrid<T>
   public static SpanGrid<T> Empty => default;
 
   private readonly Span<T> storage;
-  private readonly int     stride;
+  private readonly int stride;
 
   public SpanGrid(Span<T> storage, int stride)
   {
     this.storage = storage;
-    this.stride  = stride;
+    this.stride = stride;
   }
 
   public int Width  => stride;

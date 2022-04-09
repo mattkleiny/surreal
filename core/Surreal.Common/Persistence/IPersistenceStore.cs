@@ -1,11 +1,11 @@
 using Surreal.Collections;
 
-namespace Surreal.IO.Persistence;
+namespace Surreal.Persistence;
 
 /// <summary>A store for persistent data.</summary>
 public interface IPersistenceStore
 {
-  bool               CreateReader(Guid identifier, out IPersistenceReader reader);
+  bool CreateReader(Guid identifier, out IPersistenceReader reader);
   IPersistenceWriter CreateWriter(Guid identifier);
 }
 

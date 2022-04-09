@@ -12,7 +12,7 @@ public sealed class Grid<T> : IEnumerable<T>
 
     elements = new T[width * height];
 
-    Width  = width;
+    Width = width;
     Height = height;
   }
 
@@ -45,15 +45,15 @@ public sealed class Grid<T> : IEnumerable<T>
     }
   }
 
-  public Enumerator             GetEnumerator() => new(this);
+  public Enumerator GetEnumerator() => new(this);
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.      GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
   /// <summary>Custom enumerator for <see cref="Grid{T}"/>s.</summary>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly Grid<T> grid;
-    private          int     index;
+    private int index;
 
     public Enumerator(Grid<T> grid)
       : this()
@@ -62,10 +62,10 @@ public sealed class Grid<T> : IEnumerable<T>
       Reset();
     }
 
-    public T           Current    => grid.elements[index]!;
-    object IEnumerator.Current    => Current!;
-    public bool        MoveNext() => ++index < grid.elements.Length;
-    public void        Reset()    => index = -1;
+    public T           Current => grid.elements[index]!;
+    object IEnumerator.Current => Current!;
+    public bool MoveNext() => ++index < grid.elements.Length;
+    public void Reset() => index = -1;
 
     public void Dispose()
     {

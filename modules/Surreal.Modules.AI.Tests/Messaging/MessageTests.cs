@@ -34,14 +34,14 @@ public class MessageTests
   {
     void IMessageListener.OnMessageReceived(Message message)
     {
-      Assert.IsTrue(message.Is<TestMessage>());
+      message.Is<TestMessage>().Should().BeTrue();
 
       ref var payload = ref message.Cast<TestMessage>();
 
-      Assert.AreEqual(16, payload.Width);
-      Assert.AreEqual(9, payload.Height);
+      payload.Width.Should().Be(16);
+      payload.Height.Should().Be(9);
 
-      payload.Width  = 8;
+      payload.Width = 8;
       payload.Height = 7;
     }
   }

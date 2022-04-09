@@ -15,11 +15,11 @@ public sealed class GeometryBatch : IDisposable
 
   private readonly IDisposableBuffer<Vertex> vertices;
   private readonly IDisposableBuffer<ushort> indices;
-  private readonly Mesh<Vertex>              mesh;
+  private readonly Mesh<Vertex> mesh;
 
   private Material? material;
-  private int       vertexCount;
-  private int       indexCount;
+  private int vertexCount;
+  private int indexCount;
 
   public GeometryBatch(
     IGraphicsServer server,
@@ -28,7 +28,7 @@ public sealed class GeometryBatch : IDisposable
   )
   {
     vertices = Buffers.AllocateNative<Vertex>(maximumVertexCount);
-    indices  = Buffers.AllocateNative<ushort>(maximumIndexCount);
+    indices = Buffers.AllocateNative<ushort>(maximumIndexCount);
 
     mesh = new Mesh<Vertex>(server);
   }
@@ -70,7 +70,7 @@ public sealed class GeometryBatch : IDisposable
 
   public void DrawCircle(Vector2 center, float radius, Color color, int segments = 16)
   {
-    var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
+    var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
     var increment = 360f / segments;
 
     for (var theta = 0f; theta < 360f; theta += increment)
@@ -86,8 +86,8 @@ public sealed class GeometryBatch : IDisposable
 
   public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16)
   {
-    var points    = new SpanList<Vector2>(stackalloc Vector2[segments]);
-    var length    = endAngle - startAngle;
+    var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
+    var length = endAngle - startAngle;
     var increment = length / segments;
 
     for (var theta = startAngle; theta < endAngle; theta += increment)
@@ -118,7 +118,7 @@ public sealed class GeometryBatch : IDisposable
 
   public void DrawQuad(Vector2 center, Vector2 size, Color color, MeshType type)
   {
-    var halfWidth  = size.X / 2f;
+    var halfWidth = size.X / 2f;
     var halfHeight = size.Y / 2f;
 
     DrawPrimitive(
@@ -159,7 +159,7 @@ public sealed class GeometryBatch : IDisposable
     mesh.DrawImmediate(material, vertexCount, indexCount, type);
 
     vertexCount = 0;
-    indexCount  = 0;
+    indexCount = 0;
   }
 
   public void Dispose()

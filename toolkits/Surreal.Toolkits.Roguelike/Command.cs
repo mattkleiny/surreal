@@ -24,7 +24,7 @@ public abstract record Command
 /// <summary>The result of a <see cref="Command"/>.</summary>
 public sealed record CommandResult
 {
-  public static CommandResult Success { get; } = new() { IsSuccessful = true, IsDone  = true };
+  public static CommandResult Success { get; } = new() { IsSuccessful = true, IsDone = true };
   public static CommandResult Failure { get; } = new() { IsSuccessful = false, IsDone = true };
   public static CommandResult NotDone { get; } = new() { IsSuccessful = false, IsDone = false };
 
@@ -33,8 +33,8 @@ public sealed record CommandResult
     return new()
     {
       IsSuccessful = false,
-      IsDone       = true,
-      Action       = command,
+      IsDone = true,
+      Action = command,
     };
   }
 

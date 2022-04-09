@@ -42,7 +42,7 @@ public sealed class Mesh<TVertex> : Mesh
   }
 
   public GraphicsBuffer<TVertex> Vertices { get; }
-  public GraphicsBuffer<ushort> Indices { get; }
+  public GraphicsBuffer<ushort>  Indices  { get; }
 
   public override VertexDescriptorSet Descriptors => VertexDescriptorSet;
 

@@ -3,7 +3,7 @@
 namespace Surreal.IO.Binary.Internal;
 
 [BinarySerializer(typeof(FloatRange))]
-public sealed class FloatRangeBinarySerializer : BinarySerializer<FloatRange>
+internal sealed class FloatRangeBinarySerializer : BinarySerializer<FloatRange>
 {
   public override async ValueTask SerializeAsync(FloatRange value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {

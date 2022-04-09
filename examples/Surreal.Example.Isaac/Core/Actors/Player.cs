@@ -1,4 +1,4 @@
-﻿using Surreal.IO.Persistence;
+﻿using Surreal.Persistence;
 
 namespace Isaac.Core.Actors;
 

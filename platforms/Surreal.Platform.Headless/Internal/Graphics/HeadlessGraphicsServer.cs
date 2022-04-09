@@ -8,9 +8,9 @@ namespace Surreal.Internal.Graphics;
 
 internal sealed class HeadlessGraphicsServer : IGraphicsServer
 {
-  private int nextBufferId  = 0;
+  private int nextBufferId = 0;
   private int nextTextureId = 0;
-  private int nextShaderId  = 0;
+  private int nextShaderId = 0;
 
   public void SetViewportSize(Viewport viewport)
   {

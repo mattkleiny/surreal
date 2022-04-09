@@ -47,9 +47,9 @@ public static class ThreadFactory
 
     var thread = new Thread(_ => Run(body, completionSource))
     {
-      Name         = options.Name,
+      Name = options.Name,
       IsBackground = options.IsBackground,
-      Priority     = options.Priority,
+      Priority = options.Priority,
     };
 
     if (OperatingSystem.IsWindows() && options.UseSingleThreadApartment)
@@ -91,9 +91,9 @@ public static class ThreadFactory
 
     var thread = new Thread(_ => Run(body, completionSource))
     {
-      Name         = options.Name,
+      Name = options.Name,
       IsBackground = options.IsBackground,
-      Priority     = options.Priority,
+      Priority = options.Priority,
     };
 
     if (OperatingSystem.IsWindows() && options.UseSingleThreadApartment)

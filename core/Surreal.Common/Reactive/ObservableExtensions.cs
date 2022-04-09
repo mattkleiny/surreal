@@ -15,8 +15,8 @@ public static class ObservableExtensions
   {
     return observable.Subscribe(new AnonymousObserver<T>
     {
-      NextDelegate      = onNext,
-      ErrorDelegate     = onError,
+      NextDelegate = onNext,
+      ErrorDelegate = onError,
       CompletedDelegate = onCompleted,
     });
   }

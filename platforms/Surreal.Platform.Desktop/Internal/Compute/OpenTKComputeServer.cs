@@ -33,7 +33,7 @@ internal sealed class OpenTKComputeServer : IComputeServer
     var (offset, length) = range.GetOffsetAndLength(sizeInBytes / stride);
 
     var byteOffset = offset * stride;
-    var result     = new T[length];
+    var result = new T[length];
 
     fixed (T* pointer = result)
     {
@@ -46,7 +46,7 @@ internal sealed class OpenTKComputeServer : IComputeServer
   public unsafe void WriteBufferData<T>(ComputeHandle handle, ReadOnlySpan<T> data) where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
-    var bytes  = data.Length * sizeof(T);
+    var bytes = data.Length * sizeof(T);
 
     fixed (T* pointer = data)
     {

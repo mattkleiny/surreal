@@ -65,11 +65,11 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new TrueTypeFontLoader());
     manager.AddLoader(new AsepriteImporter
     {
-      FilterMode       = TextureFilterMode.Point,
-      PixelsPerUnit    = 16,
-      FramesPerSecond  = 8,
+      FilterMode = TextureFilterMode.Point,
+      PixelsPerUnit = 16,
+      FramesPerSecond = 8,
       TransparencyMask = new Color32(255, 0, 255),
-      AnimationFlags   = SpriteAnimationFlags.Looping
+      AnimationFlags = SpriteAnimationFlags.Looping
     });
 
     // scripting

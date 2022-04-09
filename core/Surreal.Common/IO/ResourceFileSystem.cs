@@ -32,10 +32,10 @@ public sealed class ResourceFileSystem : FileSystem
 
   public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard) => throw new NotSupportedException();
 
-  public override ValueTask<Size> GetSizeAsync(string path)     => throw new NotSupportedException();
-  public override ValueTask<bool> IsFileAsync(string path)      => throw new NotSupportedException();
+  public override ValueTask<Size> GetSizeAsync(string path) => throw new NotSupportedException();
+  public override ValueTask<bool> IsFileAsync(string path) => throw new NotSupportedException();
   public override ValueTask<bool> IsDirectoryAsync(string path) => throw new NotSupportedException();
-  public override ValueTask<bool> ExistsAsync(string path)      => throw new NotSupportedException();
+  public override ValueTask<bool> ExistsAsync(string path) => throw new NotSupportedException();
 
   public override ValueTask<Stream> OpenInputStreamAsync(string path)
   {

@@ -19,10 +19,10 @@ public partial class GraphEditor
 /// <summary>A view model for the <see cref="GraphEditor"/>.</summary>
 public sealed record GraphEditorViewModel : ViewModel
 {
-  private ObservableCollection<GraphNodeViewModel>       nodes              = new();
-  private GraphNodeViewModel?                            selectedNode       = default;
-  private ObservableCollection<GraphNodeViewModel>       selectedNodes      = new();
-  private ObservableCollection<GraphConnectionViewModel> connections        = new();
+  private ObservableCollection<GraphNodeViewModel> nodes = new();
+  private GraphNodeViewModel? selectedNode = default;
+  private ObservableCollection<GraphNodeViewModel> selectedNodes = new();
+  private ObservableCollection<GraphConnectionViewModel> connections = new();
   private ObservableCollection<GraphConnectionViewModel> pendingConnections = new();
 
   public ObservableCollection<GraphNodeViewModel> Nodes
@@ -60,8 +60,8 @@ public sealed record GraphEditorViewModel : ViewModel
 public sealed record GraphNodeViewModel : ViewModel
 {
   private Vector2 location;
-  private Size    size;
-  private Point   anchor;
+  private Size size;
+  private Point anchor;
 
   public Vector2 Location
   {

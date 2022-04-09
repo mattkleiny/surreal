@@ -35,9 +35,9 @@ public sealed class BehaviourTree : IAutomata, IMessageListener
 
   public BehaviourTree(object owner, IPropertyCollection properties, BehaviourNode root)
   {
-    Owner      = owner;
+    Owner = owner;
     Properties = properties;
-    Root       = root;
+    Root = root;
   }
 
   public object              Owner      { get; }

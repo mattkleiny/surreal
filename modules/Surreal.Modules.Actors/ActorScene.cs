@@ -8,9 +8,9 @@ namespace Surreal;
 /// <summary>A scene of managed <see cref="Actor"/>s.</summary>
 public sealed class ActorScene : IActorContext, IComponentSystemContext, IDisposable
 {
-  private readonly Dictionary<ActorId, Node<Actor>> nodes      = new();
-  private readonly ComponentStorageGroup            components = new();
-  private readonly LinkedList<IComponentSystem>     systems    = new();
+  private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
+  private readonly ComponentStorageGroup components = new();
+  private readonly LinkedList<IComponentSystem> systems = new();
 
   private readonly Queue<Actor> destroyQueue = new();
 
@@ -202,7 +202,7 @@ public sealed class ActorScene : IActorContext, IComponentSystemContext, IDispos
       where T : notnull, new()
     {
       var storageType = typeof(SparseComponentStorage<>);
-      var attribute   = typeof(T).GetCustomAttribute<ComponentAttribute>();
+      var attribute = typeof(T).GetCustomAttribute<ComponentAttribute>();
 
       // check for per-component storage types
       if (attribute != null)

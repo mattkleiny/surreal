@@ -31,7 +31,7 @@ public sealed class SparseComponentStorage<T> : IComponentStorage<T>
   public ref T AddComponent(ActorId id, Optional<T> prototype)
   {
     var component = prototype.GetOrDefault(new());
-    var box       = new Box<T>(component);
+    var box = new Box<T>(component);
 
     boxes[id] = box;
 

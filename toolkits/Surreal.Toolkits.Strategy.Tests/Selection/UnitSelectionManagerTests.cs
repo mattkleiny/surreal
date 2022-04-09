@@ -6,9 +6,9 @@ public class UnitSelectionManagerTests
   public void it_should_notify_on_newly_selected_units()
   {
     var selectedUnits = new HashSet<ISelectableUnit>();
-    var manager       = new UnitSelectionManager();
+    var manager = new UnitSelectionManager();
 
-    manager.UnitSelected   += unit => selectedUnits.Add(unit);
+    manager.UnitSelected += unit => selectedUnits.Add(unit);
     manager.UnitDeselected += unit => selectedUnits.Remove(unit);
 
     var unit1 = Substitute.For<ISelectableUnit>();
@@ -20,6 +20,6 @@ public class UnitSelectionManagerTests
     manager.AddToSelection(unit3);
     manager.RemoveFromSelection(unit2);
 
-    Assert.That(selectedUnits, Is.EquivalentTo(new[] { unit1, unit3 }));
+    selectedUnits.Should().BeEquivalentTo(new[] { unit1, unit3 });
   }
 }

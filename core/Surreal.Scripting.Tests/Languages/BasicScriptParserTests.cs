@@ -8,9 +8,9 @@ public class BasicScriptParserTests
   [TestCase("Assets/scripts/basic/test01.bas")]
   public async Task it_should_parse_basic_programs(VirtualPath path)
   {
-    var parser      = new BasicScriptParser();
+    var parser = new BasicScriptParser();
     var declaration = await parser.ParseScriptAsync(path);
 
-    Assert.IsNotNull(declaration);
+    declaration.Should().NotBeNull();
   }
 }
