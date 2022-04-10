@@ -4,8 +4,7 @@ using Surreal.Timing;
 namespace Surreal.Automata.BehaviourTrees.Decorators;
 
 /// <summary>A <see cref="BehaviourDecorator"/> that executes the child node if the given <see cref="ICondition"/> evaluates to true.</summary>
-public sealed record CheckCondition<T>(BehaviourNode Child, ICondition Condition) : BehaviourDecorator(Child)
-  where T : IEquatable<T>
+public sealed record CheckCondition(BehaviourNode Child, ICondition Condition) : BehaviourDecorator(Child)
 {
   protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {

@@ -45,13 +45,10 @@ public sealed class AttributeBoostEffect : PermanentStatusEffect
   [Template(typeof(AttributeBoostEffect))]
   public sealed record Template : ITemplate<AttributeBoostEffect>
   {
-    public TimeSpan      Duration  { get; init; } = 30.Seconds();
-    public AttributeType Attribute { get; init; } = AttributeTypes.Health;
-    public int           Amount    { get; init; } = 10;
+    [Bind] public TimeSpan      Duration  { get; init; } = 30.Seconds();
+    [Bind] public AttributeType Attribute { get; init; } = AttributeTypes.Health;
+    [Bind] public int           Amount    { get; init; } = 10;
 
-    public AttributeBoostEffect Create()
-    {
-      return new AttributeBoostEffect(Duration, Attribute, Amount);
-    }
+    public AttributeBoostEffect Create() => new(Duration, Attribute, Amount);
   }
 }

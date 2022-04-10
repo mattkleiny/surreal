@@ -32,13 +32,10 @@ public sealed class PoisonEffect : TimedStatusEffect
   [Template(typeof(PoisonEffect))]
   public sealed record Template : ITemplate<PoisonEffect>
   {
-    public TimeSpan Duration  { get; init; } = 10.Seconds();
-    public TimeSpan Frequency { get; init; } = 1.Seconds();
-    public Damage   Damage    { get; init; } = new(1, DamageTypes.Poison);
+    [Bind] public TimeSpan Duration  { get; init; } = 10.Seconds();
+    [Bind] public TimeSpan Frequency { get; init; } = 1.Seconds();
+    [Bind] public Damage   Damage    { get; init; } = new(1, DamageTypes.Poison);
 
-    public PoisonEffect Create()
-    {
-      return new PoisonEffect(Duration, Frequency, Damage);
-    }
+    public PoisonEffect Create() => new(Duration, Frequency, Damage);
   }
 }

@@ -1,7 +1,7 @@
 ﻿using Surreal.Scripting;
 using Surreal.Utilities;
 
-namespace Isaac.Core.Actions;
+namespace Isaac.Core.Scripting;
 
 [EditorDescription(
   Name = "Remove coins",

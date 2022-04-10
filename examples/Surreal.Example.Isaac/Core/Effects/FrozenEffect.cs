@@ -21,11 +21,8 @@ public sealed class FrozenEffect : PermanentStatusEffect
   [Template(typeof(FrozenEffect))]
   public sealed record Template : ITemplate<FrozenEffect>
   {
-    public TimeSpan Duration { get; init; } = 4.Seconds();
+    [Bind] public TimeSpan Duration { get; init; } = 4.Seconds();
 
-    public FrozenEffect Create()
-    {
-      return new FrozenEffect(Duration);
-    }
+    public FrozenEffect Create() => new(Duration);
   }
 }
