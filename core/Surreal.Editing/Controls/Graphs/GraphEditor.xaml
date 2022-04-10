@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="Surreal.Controls.GraphEditor"
+﻿<UserControl x:Class="Surreal.Controls.Graphs.GraphEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:nodify="http://miroiu.github.io/winfx/xaml/nodify"
-             xmlns:local="clr-namespace:Surreal.Controls"
+             xmlns:graphs="clr-namespace:Surreal.Controls.Graphs"
              mc:Ignorable="d"
              d:DesignWidth="800" d:DesignHeight="600">
   <UserControl.DataContext>
-    <local:GraphEditorViewModel />
+    <graphs:GraphEditorViewModel />
   </UserControl.DataContext>
 
   <nodify:NodifyEditor
@@ -18,7 +18,7 @@
     Connections="{Binding Connections}"
     PendingConnection="{Binding PendingConnections}">
     <nodify:NodifyEditor.ItemTemplate>
-      <DataTemplate DataType="{x:Type local:GraphNodeViewModel}">
+      <DataTemplate DataType="{x:Type graphs:GraphNodeViewModel}">
         <nodify:StateNode Content="{Binding}"
                           IsConnected="True"
                           ActualSize="{Binding Size, Mode=OneWayToSource}"

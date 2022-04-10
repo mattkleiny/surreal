@@ -1,4 +1,4 @@
-﻿namespace Surreal.Controls;
+﻿namespace Surreal.Controls.Grids;
 
 /// <summary>A provider for tile details for use in the <see cref="TileGridEditorWindow"/>.</summary>
 public interface ITileGridProvider

@@ -1,8 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using Surreal.Graphs;
 using Surreal.Utilities;
 
-namespace Surreal.Controls;
+namespace Surreal.Controls.Graphs;
 
 /// <summary>An editor for graphs.</summary>
 public partial class GraphEditor
@@ -10,6 +11,7 @@ public partial class GraphEditor
   public GraphEditor()
   {
     InitializeComponent();
+
     DataContext = ViewModel;
   }
 
@@ -53,6 +55,11 @@ public sealed record GraphEditorViewModel : ViewModel
   {
     get => pendingConnections;
     set => SetProperty(ref pendingConnections, value);
+  }
+
+  public void ResetFrom(IGraph graph)
+  {
+    // TODO: implement me
   }
 }
 

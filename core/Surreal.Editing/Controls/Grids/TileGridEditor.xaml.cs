@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using Surreal.Mathematics;
 
-namespace Surreal.Controls;
+namespace Surreal.Controls.Grids;
 
 /// <summary>An editor for discrete tile grids.</summary>
 public partial class TileGridEditor

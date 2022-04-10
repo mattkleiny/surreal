@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphs;
+﻿using System.Runtime.CompilerServices;
+
+namespace Surreal.Graphs;
 
 /// <summary>Abstracts over all possible <see cref="Graph{T}"/> types.</summary>
 public interface IGraph
@@ -10,52 +12,79 @@ public interface IGraphNode
 {
 }
 
-/// <summary>A simple directed graph with nodes represented as an adjacency list.</summary>
-public abstract class Graph<TNode> : IGraph
+/// <summary>A provider for <see cref="IGraphNode"/>s.</summary>
+public interface IGraphNodeProvider
 {
-  private readonly HashSet<TNode> nodes = new();
-  private readonly HashSet<Connection> connections = new();
+}
 
-  public IEnumerable<TNode> Nodes => nodes;
+/// <summary>A simple directed graph.</summary>
+public abstract record Graph<TNode> : GraphNode<TNode>, IGraph
+  where TNode : GraphNode<TNode>
+{
+  public IEnumerable<TNode> Nodes
+  {
+    get
+    {
+      static IEnumerable<TNode> GetChildrenRecursively(TNode self, int depth = 0, int maxDepth = int.MaxValue)
+      {
+        if (depth > maxDepth)
+        {
+          throw new InvalidOperationException("Maximum depth exceeded.");
+        }
 
-  public bool ContainsNode(TNode node) => nodes.Contains(node);
-  public bool AddNode(TNode node) => nodes.Add(node);
-  public bool RemoveNode(TNode node) => nodes.Remove(node);
+        foreach (var child in self.Children)
+        {
+          yield return child;
 
-  public bool IsConnected(TNode from, TNode to) => connections.Contains(new Connection(from, to));
-  public bool Connect(TNode from, TNode to) => connections.Add(new Connection(from, to));
-  public bool Disconnect(TNode from, TNode to) => connections.Remove(new Connection(from, to));
+          foreach (var subChild in GetChildrenRecursively(child, depth + 1, maxDepth))
+          {
+            yield return subChild;
+          }
+        }
+      }
+
+      return GetChildrenRecursively(Unsafe.As<TNode>(this), maxDepth: 32);
+    }
+  }
+
+  public IEnumerable<Connection> Connections
+  {
+    get
+    {
+      static IEnumerable<Connection> GetConnectionsRecursively(TNode self, int depth = 0, int maxDepth = int.MaxValue)
+      {
+        if (depth > maxDepth)
+        {
+          throw new InvalidOperationException("Maximum depth exceeded.");
+        }
+
+        foreach (var child in self.Children)
+        {
+          yield return new Connection(self, child);
+
+          foreach (var subConnection in GetConnectionsRecursively(child, depth + 1, maxDepth))
+          {
+            yield return subConnection;
+          }
+        }
+      }
+
+      return GetConnectionsRecursively(Unsafe.As<TNode>(this), maxDepth: 32);
+    }
+  }
 
   /// <summary>A connection between two <see cref="TNode"/>s in the graph.</summary>
-  private readonly record struct Connection(TNode From, TNode To);
+  public readonly record struct Connection(TNode From, TNode To);
 }
 
 /// <summary>Base class for any graph node of <see cref="TSelf"/>.</summary>
 public abstract record GraphNode<TSelf> : IEnumerable<TSelf>, IGraphNode
   where TSelf : GraphNode<TSelf>
 {
-  protected List<TSelf> Children { get; init; } = new();
+  public List<TSelf> Children { get; init; } = new();
 
   public void Add(TSelf node) => Children.Add(node);
   public void Remove(TSelf node) => Children.Remove(node);
-
-  public IEnumerable<TSelf> GetChildrenRecursively(int depth = 0, int maxDepth = int.MaxValue)
-  {
-    if (depth > maxDepth)
-    {
-      throw new InvalidOperationException("Maximum depth exceeded.");
-    }
-
-    foreach (var child in Children)
-    {
-      yield return child;
-
-      foreach (var subChild in child.GetChildrenRecursively(depth + 1, maxDepth))
-      {
-        yield return subChild;
-      }
-    }
-  }
 
   public IEnumerator<TSelf> GetEnumerator()
   {
