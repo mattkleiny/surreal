@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Commands;
 
 /// <summary>Context for <see cref="Command"/> operations.</summary>
-public readonly record struct CommandContext(object UserData);
+public readonly record struct CommandContext(object? UserData = null);
 
 /// <summary>Base class for any command in the 'editor'.</summary>
 public abstract record Command

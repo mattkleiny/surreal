@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
-		<UseWPF>true</UseWPF>
-    <Description>Editing framework for Surreal, based on WPF.</Description>
-	</PropertyGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Include="Nodify" Version="1.7.0" PrivateAssets="compile" />
-	</ItemGroup>
+  <PropertyGroup>
+    <Description>Editing framework for Surreal, based on Avalonia</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+    <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.13" PrivateAssets="all" />
+  </ItemGroup>
 </Project>

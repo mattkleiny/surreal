@@ -155,6 +155,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Strategy", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Strategy.Tests", "modules\Surreal.Modules.Strategy.Tests\Surreal.Modules.Strategy.Tests.csproj", "{86C6525F-E0F5-4ECD-A832-E836383031E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Avventura.Editor", "examples\Surreal.Example.Avventura.Editor\Surreal.Example.Avventura.Editor.csproj", "{684E1091-5B9D-491F-9EEA-9B36E256B100}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -401,6 +403,10 @@ Global
 		{86C6525F-E0F5-4ECD-A832-E836383031E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86C6525F-E0F5-4ECD-A832-E836383031E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86C6525F-E0F5-4ECD-A832-E836383031E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684E1091-5B9D-491F-9EEA-9B36E256B100}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684E1091-5B9D-491F-9EEA-9B36E256B100}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684E1091-5B9D-491F-9EEA-9B36E256B100}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684E1091-5B9D-491F-9EEA-9B36E256B100}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -471,5 +477,6 @@ Global
 		{7F988A04-45D9-409C-83B4-56DC0663F9AD} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{42B9D2B3-6AF9-4766-B234-D78B8A6F4CA5} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{86C6525F-E0F5-4ECD-A832-E836383031E7} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
+		{684E1091-5B9D-491F-9EEA-9B36E256B100} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal

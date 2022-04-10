@@ -96,12 +96,12 @@ public sealed class Transaction : IDisposable
       Monitor.Exit(operations);
     }
 
-    status = TransactionStatus.RolledForward;
+    status = TransactionStatus.Committed;
   }
 
   public async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
   {
-    if (status != TransactionStatus.RolledForward)
+    if (status != TransactionStatus.Committed)
     {
       throw new TransactionException("The transaction has already been committed, cannot rollback");
     }
@@ -140,7 +140,7 @@ public sealed class Transaction : IDisposable
   private enum TransactionStatus
   {
     Uncommitted,
-    RolledForward,
+    Committed,
     RolledBack,
     Cancelled,
   }

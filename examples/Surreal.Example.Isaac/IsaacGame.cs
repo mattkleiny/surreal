@@ -12,7 +12,7 @@ public sealed class IsaacGame : PrototypeGame
   private Dungeon? dungeon;
   private SpriteBatch? batch;
 
-  public static Task Main() => GameEditor.StartAsync<IsaacGame>(new Configuration
+  public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
