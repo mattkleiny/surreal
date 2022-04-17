@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Civilization</AssemblyName>
+    <RootNamespace>Civilization</RootNamespace>
+    <Description>An example game based on Surreal; a simple Civilization clone.</Description>
+  </PropertyGroup>
+</Project>

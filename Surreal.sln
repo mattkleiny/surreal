@@ -157,6 +157,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Strategy.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Avventura.Editor", "examples\Surreal.Example.Avventura.Editor\Surreal.Example.Avventura.Editor.csproj", "{684E1091-5B9D-491F-9EEA-9B36E256B100}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Civilization", "examples\Surreal.Example.Civilization\Surreal.Example.Civilization.csproj", "{592DE6F9-E53F-4F84-B747-020D42EAA463}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Civilization.Tests", "examples\Surreal.Example.Civilization.Tests\Surreal.Example.Civilization.Tests.csproj", "{FD549B82-F62F-4526-960B-E152F7232E7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -407,6 +411,14 @@ Global
 		{684E1091-5B9D-491F-9EEA-9B36E256B100}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{684E1091-5B9D-491F-9EEA-9B36E256B100}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{684E1091-5B9D-491F-9EEA-9B36E256B100}.Release|Any CPU.Build.0 = Release|Any CPU
+		{592DE6F9-E53F-4F84-B747-020D42EAA463}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592DE6F9-E53F-4F84-B747-020D42EAA463}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{592DE6F9-E53F-4F84-B747-020D42EAA463}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{592DE6F9-E53F-4F84-B747-020D42EAA463}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD549B82-F62F-4526-960B-E152F7232E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD549B82-F62F-4526-960B-E152F7232E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD549B82-F62F-4526-960B-E152F7232E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD549B82-F62F-4526-960B-E152F7232E7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -478,5 +490,7 @@ Global
 		{42B9D2B3-6AF9-4766-B234-D78B8A6F4CA5} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{86C6525F-E0F5-4ECD-A832-E836383031E7} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{684E1091-5B9D-491F-9EEA-9B36E256B100} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{592DE6F9-E53F-4F84-B747-020D42EAA463} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{FD549B82-F62F-4526-960B-E152F7232E7E} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal
