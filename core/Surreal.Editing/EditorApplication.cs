@@ -21,6 +21,7 @@ public abstract class EditorApplication<TGame> : Application
     base.Initialize();
   }
 
+
   /// <summary>Builds the top-level <see cref="IServiceRegistry"/> for the editor.</summary>
   private IServiceRegistry CreateServiceRegistry()
   {

@@ -2,6 +2,13 @@
 
 namespace Surreal.Graphs;
 
+/// <summary>A provider for <see cref="IGraphNode"/>s.</summary>
+public interface IGraphNodeProvider
+{
+  /// <summary>Invoked when the node contents have changed.</summary>
+  event Action Dirtied;
+}
+
 /// <summary>Abstracts over all possible <see cref="Graph{T}"/> types.</summary>
 public interface IGraph
 {
@@ -9,11 +16,6 @@ public interface IGraph
 
 /// <summary>Abstracts over all possible <see cref="GraphNode{TSelf}"/> types.</summary>
 public interface IGraphNode
-{
-}
-
-/// <summary>A provider for <see cref="IGraphNode"/>s.</summary>
-public interface IGraphNodeProvider
 {
 }
 

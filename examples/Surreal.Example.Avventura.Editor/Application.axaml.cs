@@ -9,7 +9,7 @@ namespace Avventura
   {
     public override IEnumerable<EditorWorkload> Workloads
     {
-      get { yield return new GameViewWorkload(); }
+      get { yield return new GameViewWorkload(Game); }
     }
 
     public override void Initialize()
@@ -25,7 +25,7 @@ namespace Avventura
       {
         desktop.MainWindow = new MainWindow
         {
-          DataContext = Editor.ViewModel,
+          DataContext = Editor.GetWorkload<GameViewWorkload>().ViewModel,
         };
       }
 

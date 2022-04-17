@@ -10,37 +10,30 @@ public sealed class BindAttribute : Attribute
 {
 }
 
-/// <summary>Base class for all <see cref="ObjectMetadata{T}"/> types.</summary>
-public abstract record ObjectMetadata
-{
-  private static readonly ConcurrentDictionary<Type, ObjectMetadata> MetadataByType = new();
-
-  /// <summary>Creates <see cref="ObjectMetadata{T}"/> metadata for the given instance.</summary>
-  public static ObjectMetadata<T> Create<T>()
-    where T : notnull
-  {
-    var type = typeof(T);
-
-    if (!MetadataByType.TryGetValue(type, out var metadata))
-    {
-      MetadataByType[type] = metadata = new ObjectMetadata<T>();
-    }
-
-    return (ObjectMetadata<T>) metadata;
-  }
-}
-
 /// <summary>An object that can be introspected for editing/etc</summary>
-public sealed record ObjectMetadata<T> : ObjectMetadata
+public sealed record ObjectMetadata(Type Type)
 {
   private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
-  public ImmutableList<EventMetadata>    Events     { get; } = EventMetadata.DiscoverAll(typeof(T));
-  public ImmutableList<MethodMetadata>   Methods    { get; } = MethodMetadata.DiscoverAll(typeof(T));
-  public ImmutableList<PropertyMetadata> Properties { get; } = PropertyMetadata.DiscoverAll(typeof(T));
+  private static readonly ConcurrentDictionary<Type, ObjectMetadata> MetadataByType = new();
+
+  public ImmutableList<EventMetadata>    Events     { get; } = EventMetadata.DiscoverAll(Type);
+  public ImmutableList<MethodMetadata>   Methods    { get; } = MethodMetadata.DiscoverAll(Type);
+  public ImmutableList<PropertyMetadata> Properties { get; } = PropertyMetadata.DiscoverAll(Type);
+
+  /// <summary>Creates <see cref="ObjectMetadata"/> metadata for the given instance.</summary>
+  public static ObjectMetadata Create(Type type)
+  {
+    if (!MetadataByType.TryGetValue(type, out var metadata))
+    {
+      MetadataByType[type] = metadata = new ObjectMetadata(type);
+    }
+
+    return metadata;
+  }
 
   /// <summary>Contains metadata about a bound event.</summary>
-  public sealed class EventMetadata
+  public sealed record EventMetadata(EventInfo EventInfo)
   {
     public static ImmutableList<EventMetadata> DiscoverAll(Type type)
     {
@@ -57,23 +50,16 @@ public sealed record ObjectMetadata<T> : ObjectMetadata
       return results.ToImmutable();
     }
 
-    private readonly EventInfo eventInfo;
+    public string Name => EventInfo.Name;
 
-    public EventMetadata(EventInfo eventInfo)
-    {
-      this.eventInfo = eventInfo;
-    }
-
-    public string Name => eventInfo.Name;
-
-    public void Invoke(T instance)
+    public void Invoke(object instance)
     {
       throw new NotImplementedException();
     }
   }
 
   /// <summary>Contains metadata about a bound method.</summary>
-  public sealed class MethodMetadata
+  public sealed record MethodMetadata(MethodInfo MethodInfo)
   {
     public static ImmutableList<MethodMetadata> DiscoverAll(Type type)
     {
@@ -90,23 +76,16 @@ public sealed record ObjectMetadata<T> : ObjectMetadata
       return results.ToImmutable();
     }
 
-    private readonly MethodInfo methodInfo;
+    public string Name => MethodInfo.Name;
 
-    public MethodMetadata(MethodInfo methodInfo)
+    public object? Invoke(object instance, params object?[] arguments)
     {
-      this.methodInfo = methodInfo;
-    }
-
-    public string Name => methodInfo.Name;
-
-    public object? Invoke(T instance, params object?[] arguments)
-    {
-      return methodInfo.Invoke(instance, arguments);
+      return MethodInfo.Invoke(instance, arguments);
     }
   }
 
   /// <summary>Contains metadata about a bound property.</summary>
-  public sealed class PropertyMetadata
+  public sealed record PropertyMetadata(PropertyInfo PropertyInfo)
   {
     public static ImmutableList<PropertyMetadata> DiscoverAll(Type type)
     {
@@ -123,23 +102,16 @@ public sealed record ObjectMetadata<T> : ObjectMetadata
       return results.ToImmutable();
     }
 
-    private readonly PropertyInfo propertyInfo;
-
-    public PropertyMetadata(PropertyInfo propertyInfo)
-    {
-      this.propertyInfo = propertyInfo;
-    }
-
-    public string Name => propertyInfo.Name;
+    public string Name => PropertyInfo.Name;
 
     public object? GetValue(object instance)
     {
-      return propertyInfo.GetValue(instance);
+      return PropertyInfo.GetValue(instance);
     }
 
-    public void SetValue(T instance, object? value)
+    public void SetValue(object instance, object? value)
     {
-      propertyInfo.SetValue(instance, value);
+      PropertyInfo.SetValue(instance, value);
     }
   }
 }

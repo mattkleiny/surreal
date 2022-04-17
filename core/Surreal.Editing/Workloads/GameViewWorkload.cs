@@ -5,6 +5,11 @@ using Surreal.Utilities;
 
 namespace Surreal.Workloads;
 
+// Different commands for the game view workload
+public readonly record struct EnterPlayModeCommand;
+public readonly record struct ExitPlayModeCommand;
+public readonly record struct TogglePlayModeCommand;
+
 /// <summary>The <see cref="ViewModel"/> for the game view.</summary>
 public sealed record GameViewModel : ViewModel
 {
@@ -21,16 +26,7 @@ public sealed record GameViewModel : ViewModel
   public ICommand TogglePlayMode { get; } = CommandHandlers.ToCommand(new TogglePlayModeCommand());
 }
 
-/// <summary>Puts the editor into play mode.</summary>
-public readonly record struct EnterPlayModeCommand;
-
-/// <summary>Exits the editor out of play mode.</summary>
-public readonly record struct ExitPlayModeCommand;
-
-/// <summary>Toggles the editor into/out of of play mode.</summary>
-public readonly record struct TogglePlayModeCommand;
-
-/// <summary>A <see cref="Control"/> that hosts a view of the game.</summary>
+/// <summary>A <see cref="Control"/> that hosts a view of the game inside a window.</summary>
 public sealed class GameView : Control, IEditorHostControl
 {
   public event Action<int, int>? Resized;
@@ -59,15 +55,45 @@ public sealed class GameView : Control, IEditorHostControl
 /// <summary>The <see cref="EditorWorkload"/> that enables the <see cref="GameView"/>.</summary>
 public sealed class GameViewWorkload : EditorWorkload, IServiceModule
 {
+  public GameViewWorkload(Game game)
+  {
+    Game = game;
+  }
+
+  public Game          Game      { get; }
+  public GameViewModel ViewModel { get; } = new();
+
   public override IServiceModule Services => this;
+
+  public override void Tick()
+  {
+    Game.Tick(); // update the game
+
+    // TODO: blit the game to the game view bitmap?
+  }
 
   void IServiceModule.RegisterServices(IServiceRegistry services)
   {
-    var viewModel = new GameViewModel();
+    services.AddSingleton(Game);
+    services.AddSingleton(ViewModel);
 
-    services.AddSingleton(viewModel);
-    services.AddSingleton(CommandHandlers.Create<EnterPlayModeCommand>(() => viewModel.IsPlaying = true));
-    services.AddSingleton(CommandHandlers.Create<ExitPlayModeCommand>(() => viewModel.IsPlaying = false));
-    services.AddSingleton(CommandHandlers.Create<ToggleSwitch>(() => viewModel.IsPlaying = !viewModel.IsPlaying));
+    services.AddCommandHandler<EnterPlayModeCommand>(OnEnterPlayMode);
+    services.AddCommandHandler<ExitPlayModeCommand>(OnExitPlayMode);
+    services.AddCommandHandler<TogglePlayModeCommand>(OnTogglePlayMode);
+  }
+
+  private void OnEnterPlayMode()
+  {
+    ViewModel.IsPlaying = true;
+  }
+
+  private void OnExitPlayMode()
+  {
+    ViewModel.IsPlaying = false;
+  }
+
+  private void OnTogglePlayMode()
+  {
+    ViewModel.IsPlaying = !ViewModel.IsPlaying;
   }
 }

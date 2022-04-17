@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:surreal="clr-namespace:Surreal;assembly=Surreal.Editing"
         xmlns:workloads="clr-namespace:Surreal.Workloads;assembly=Surreal.Editing"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         x:Class="Avventura.Windows.MainWindow"
@@ -13,7 +12,7 @@
         ExtendClientAreaToDecorationsHint="True">
 
   <Design.DataContext>
-    <surreal:EditorViewModel />
+    <workloads:GameViewModel />
   </Design.DataContext>
 
   <Panel>
@@ -26,12 +25,12 @@
           MaterialOpacity="0.65" />
       </ExperimentalAcrylicBorder.Material>
       <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button IsVisible="{Binding !GameView.IsPlaying}"
-                Command="{Binding GameView.EnterPlayMode}">
+        <Button IsVisible="{Binding !IsPlaying}"
+                Command="{Binding EnterPlayMode}">
           Start Playing
         </Button>
-        <Button IsVisible="{Binding GameView.IsPlaying}"
-                Command="{Binding GameView.ExitPlayMode}">
+        <Button IsVisible="{Binding IsPlaying}"
+                Command="{Binding ExitPlayMode}">
           Stop Playing
         </Button>
         <workloads:GameView />
