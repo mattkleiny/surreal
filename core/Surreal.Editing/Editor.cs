@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Surreal.Commands;
-using Surreal.Internal;
+﻿using Surreal.Commands;
 using Surreal.Utilities;
 
 namespace Surreal;
@@ -8,8 +6,8 @@ namespace Surreal;
 /// <summary>Static facade for editor functionality.</summary>
 public static class Editor
 {
-  /// <summary>The editor services.</summary>
-  public static IServiceRegistry Services { get; } = CreateServiceRegistry();
+  /// <summary>The top-level editor services.</summary>
+  public static IServiceRegistry Services { get; internal set; } = null!;
 
   /// <summary>Top-level view model for the entire editor.</summary>
   public static EditorViewModel ViewModel { get; } = GetViewModel<EditorViewModel>();
@@ -27,21 +25,5 @@ public static class Editor
     var bus = Services.GetRequiredService<IEditorBus>();
 
     return bus.ExecuteCommandAsync(command, cancellationToken);
-  }
-
-  /// <summary>Builds the top-level <see cref="IServiceRegistry"/> for the editor.</summary>
-  private static IServiceRegistry CreateServiceRegistry()
-  {
-    IServiceRegistry registry = new ServiceRegistry();
-
-    registry.AddAssemblyServices(Assembly.GetExecutingAssembly());
-
-    var entryAssembly = Assembly.GetEntryAssembly();
-    if (entryAssembly != null)
-    {
-      registry.AddAssemblyServices(entryAssembly);
-    }
-
-    return registry;
   }
 }

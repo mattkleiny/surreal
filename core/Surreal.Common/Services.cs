@@ -89,6 +89,11 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
 /// <summary>Static extension methods for <see cref="IServiceProvider"/> and related.</summary>
 public static class ServicesExtensions
 {
+  public static T? GetService<T>(this IServiceProvider provider)
+  {
+    return (T?) provider.GetService(typeof(T));
+  }
+
   public static IEnumerable<T> GetServices<T>(this IServiceProvider provider)
   {
     if (!provider.TryGetService<IEnumerable<T>>(out var results))

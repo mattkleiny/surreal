@@ -1,10 +1,10 @@
-﻿using Surreal.Areas;
-using Surreal.Utilities;
+﻿using Surreal.Utilities;
+using Surreal.Workloads;
 
 namespace Surreal;
 
 /// <summary>Top-level <see cref="ViewModel"/> for the entire editor.</summary>
 public sealed record EditorViewModel : ViewModel
 {
-  public PlayModeViewModel PlayMode { get; } = new();
+  public GameViewModel? GameView => Editor.Services.GetService<GameViewModel>();
 }
