@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Surreal.Internal;
 
 /// <summary>A <see cref="IServiceRegistry"/> that wraps a <see cref="IServiceCollection"/>.</summary>
-internal sealed class ServiceRegistry : IServiceRegistry
+public sealed class ServiceRegistry : IServiceRegistry
 {
   private readonly Dictionary<Type, object> resolutionCache = new();
   private readonly ServiceCollection collection = new();

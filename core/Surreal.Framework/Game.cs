@@ -15,6 +15,7 @@ public abstract partial class Game : IDisposable, ITestableGame
   private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
 
   private readonly TimeStamp startTime = TimeStamp.Now;
+  private readonly Chronometer chronometer = new();
   private readonly ILoopTarget loopTarget;
 
   public static TGame Create<TGame>(Configuration configuration)
@@ -85,15 +86,13 @@ public abstract partial class Game : IDisposable, ITestableGame
 
       IsRunning = true;
 
-      var chronometer = new Chronometer();
-
       while (IsRunning && !Host.IsClosing && !cancellationToken.IsCancellationRequested)
       {
         var deltaTime = chronometer.Tick();
         var totalTime = TimeStamp.Now - startTime;
 
         Host.Tick(deltaTime);
-        LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
+        Tick(deltaTime, totalTime);
 
         await dispatcher.Yield();
       }
@@ -102,6 +101,20 @@ public abstract partial class Game : IDisposable, ITestableGame
     {
       IsRunning = false;
     }
+  }
+
+  /// <summary>Ticks the game a single frame.</summary>
+  public void Tick()
+  {
+    var deltaTime = chronometer.Tick();
+    var totalTime = TimeStamp.Now - startTime;
+
+    Tick(deltaTime, totalTime);
+  }
+
+  private void Tick(DeltaTime deltaTime, TimeSpan totalTime)
+  {
+    LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
   }
 
   protected virtual void Initialize()

@@ -1,10 +1,10 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avventura.Views;
+using Avventura.Windows;
 
 namespace Avventura
 {
-  public partial class Application : Avalonia.Application
+  public partial class Application : EditorApplication<AvventuraGame>
   {
     public override void Initialize()
     {
@@ -15,7 +15,10 @@ namespace Avventura
     {
       if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
       {
-        desktop.MainWindow = new MainWindow();
+        desktop.MainWindow = new MainWindow
+        {
+          DataContext = Editor.ViewModel,
+        };
       }
 
       base.OnFrameworkInitializationCompleted();

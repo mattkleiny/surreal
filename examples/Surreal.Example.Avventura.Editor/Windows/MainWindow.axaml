@@ -1,0 +1,44 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:surreal="clr-namespace:Surreal;assembly=Surreal.Editing"
+        xmlns:controls="clr-namespace:Surreal.Controls;assembly=Surreal.Editing"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="Avventura.Windows.MainWindow"
+        Icon="/Assets/Avventura.ico"
+        Title="Avventura Editor"
+        Background="Transparent"
+        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaToDecorationsHint="True">
+
+  <Design.DataContext>
+    <surreal:EditorViewModel />
+  </Design.DataContext>
+
+  <Panel>
+    <ExperimentalAcrylicBorder IsHitTestVisible="True">
+      <ExperimentalAcrylicBorder.Material>
+        <ExperimentalAcrylicMaterial
+          BackgroundSource="Digger"
+          TintColor="Black"
+          TintOpacity="1"
+          MaterialOpacity="0.65" />
+      </ExperimentalAcrylicBorder.Material>
+      <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Button IsVisible="{Binding !PlayMode.IsPlaying}"
+                Command="{Binding PlayMode.EnterPlayMode}">
+          Start Playing
+        </Button>
+        <Button IsVisible="{Binding PlayMode.IsPlaying}"
+                Command="{Binding PlayMode.ExitPlayMode}">
+          Stop Playing
+        </Button>
+        <controls:GameHost />
+        <controls:GameViewport />
+        <controls:FixedGraphCanvas />
+      </StackPanel>
+    </ExperimentalAcrylicBorder>
+  </Panel>
+
+</Window>

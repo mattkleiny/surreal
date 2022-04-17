@@ -7,6 +7,7 @@
     <ProjectReference Include="..\Surreal.Framework\Surreal.Framework.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.13" PrivateAssets="all" />
+    <PackageReference Include="Avalonia" Version="0.10.13" PrivateAssets="compile" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

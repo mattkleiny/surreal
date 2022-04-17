@@ -1,19 +1,36 @@
 ﻿using Surreal.Graphs;
 using Surreal.Mathematics;
+using Surreal.Memory;
 using Surreal.Objects;
 using Surreal.Utilities;
 
 namespace Surreal.Audio.Synthesis;
 
-public sealed record AudioSynthesisPlan(Random Random);
+public sealed record AudioSynthesisKernel
+{
+  private readonly List<Action<IBuffer<float>>> actions = new();
+
+  public void AddStep(Action<IBuffer<float>> action)
+  {
+    actions.Add(action);
+  }
+
+  public void Execute(IBuffer<float> buffer)
+  {
+    foreach (var action in actions)
+    {
+      action(buffer);
+    }
+  }
+}
 
 public abstract record AudioSynthesisNode : GraphNode<AudioSynthesisNode>
 {
-  public virtual void Plan(AudioSynthesisPlan plan)
+  public virtual void Plan(AudioSynthesisKernel kernel)
   {
     foreach (var child in Children)
     {
-      child.Plan(plan);
+      child.Plan(kernel);
     }
   }
 }
@@ -25,9 +42,9 @@ public abstract record AudioSynthesisNode : GraphNode<AudioSynthesisNode>
 )]
 public sealed record AudioSynthesisBlueprint : Graph<AudioSynthesisNode>
 {
-  public AudioSynthesisPlan Create(Seed seed)
+  public AudioSynthesisKernel Create(Seed seed)
   {
-    var plan = new AudioSynthesisPlan(seed.ToRandom());
+    var plan = new AudioSynthesisKernel();
 
     foreach (var child in Children)
     {
@@ -51,7 +68,7 @@ public sealed record AudioSynthesisBlueprint : Graph<AudioSynthesisNode>
 )]
 public sealed record SinWaveNode(float Frequency, float Amplitude) : AudioSynthesisNode
 {
-  public override void Plan(AudioSynthesisPlan plan)
+  public override void Plan(AudioSynthesisKernel kernel)
   {
     throw new NotImplementedException();
   }

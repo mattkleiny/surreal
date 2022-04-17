@@ -1,9 +1,9 @@
 ﻿using Avalonia.Controls;
 
-namespace Surreal;
+namespace Surreal.Controls;
 
 /// <summary>A <see cref="Control"/> which renders the output of a game.</summary>
-public sealed class GameHostControl : Control, IEditorHostControl
+public sealed class GameHost : Control, IEditorHostControl
 {
   public event Action<int, int>? Resized;
 
@@ -18,12 +18,12 @@ public sealed class GameHostControl : Control, IEditorHostControl
     LayoutUpdated += OnLayoutUpdated;
   }
 
-  public void Blit()
-  {
-  }
-
   private void OnLayoutUpdated(object? sender, EventArgs e)
   {
     Resized?.Invoke(Width, Height);
+  }
+
+  void IEditorHostControl.Blit()
+  {
   }
 }
