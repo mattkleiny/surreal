@@ -37,8 +37,7 @@ public sealed class GeometryBatch : IDisposable
   {
     this.material = material;
 
-    // TODO: set projection view?
-    // material.SetProperty(ProjectionView, in projectionView);
+    material.SetProperty(ProjectionView, in projectionView);
   }
 
   public void DrawPoint(Vector2 position, Color color)
@@ -81,7 +80,7 @@ public sealed class GeometryBatch : IDisposable
       points.Add(new Vector2(x, y));
     }
 
-    DrawLineLoop(points.ToSpan(), color);
+    DrawLineLoop(points, color);
   }
 
   public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16)
@@ -98,7 +97,7 @@ public sealed class GeometryBatch : IDisposable
       points.Add(new Vector2(x, y));
     }
 
-    DrawLineStrip(points.ToSpan(), color);
+    DrawLineStrip(points, color);
   }
 
   public void DrawCurve<TCurve>(TCurve curve, Color color, int resolution)
