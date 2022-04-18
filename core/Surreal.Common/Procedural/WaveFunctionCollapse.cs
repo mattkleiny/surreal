@@ -6,14 +6,16 @@ namespace Surreal.Procedural;
 /// <remarks>See https://github.com/mxgmn/WaveFunctionCollapse for more information</remarks>
 public sealed class WaveFunctionCollapse<T>
 {
-  public void Tick()
+  public List<Rule> Rules { get; } = new();
+
+  public void Seed(Point2 position, T value)
   {
     throw new NotImplementedException();
   }
 
-  public interface IOutputReceiver
+  public void Tick(int maxSteps = int.MaxValue)
   {
-    void SetOutput(Point2 position, T value);
+    throw new NotImplementedException();
   }
 
   public sealed record Rule(T Value)

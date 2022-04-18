@@ -149,6 +149,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Civilizatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Civilization.Tests", "examples\Surreal.Example.Civilization.Tests\Surreal.Example.Civilization.Tests.csproj", "{FD549B82-F62F-4526-960B-E152F7232E7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Build", "core\Surreal.Build\Surreal.Build.csproj", "{D459AC16-CA8F-416A-8180-D2CAFB0221AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Build.Tests", "core\Surreal.Build.Tests\Surreal.Build.Tests.csproj", "{ACC92917-3225-424C-A0CC-ADD28996648E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -383,6 +387,14 @@ Global
 		{FD549B82-F62F-4526-960B-E152F7232E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD549B82-F62F-4526-960B-E152F7232E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD549B82-F62F-4526-960B-E152F7232E7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D459AC16-CA8F-416A-8180-D2CAFB0221AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D459AC16-CA8F-416A-8180-D2CAFB0221AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D459AC16-CA8F-416A-8180-D2CAFB0221AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D459AC16-CA8F-416A-8180-D2CAFB0221AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACC92917-3225-424C-A0CC-ADD28996648E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACC92917-3225-424C-A0CC-ADD28996648E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACC92917-3225-424C-A0CC-ADD28996648E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACC92917-3225-424C-A0CC-ADD28996648E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -450,5 +462,7 @@ Global
 		{684E1091-5B9D-491F-9EEA-9B36E256B100} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{592DE6F9-E53F-4F84-B747-020D42EAA463} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{FD549B82-F62F-4526-960B-E152F7232E7E} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{D459AC16-CA8F-416A-8180-D2CAFB0221AD} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{ACC92917-3225-424C-A0CC-ADD28996648E} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 	EndGlobalSection
 EndGlobal

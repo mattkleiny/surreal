@@ -2,6 +2,12 @@
 <Project>
   <Import Project="../Directory.Build.props" />
 
+  <UsingTask TaskName="Surreal.CompileAssets" AssemblyFile="../core/Surreal.Build/bin/$(Configuration)/$(TargetFramework)/Surreal.Build.dll" />
+
+  <Target Name="Prepare Assets" BeforeTargets="Build">
+    <CompileAssets Path="Assets/**" />
+  </Target>
+
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>

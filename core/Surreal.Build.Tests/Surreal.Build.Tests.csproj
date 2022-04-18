@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Build\Surreal.Build.csproj" />
+  </ItemGroup>
+</Project>
