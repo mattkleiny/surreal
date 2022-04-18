@@ -2,6 +2,7 @@
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
+using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
@@ -52,4 +53,10 @@ public interface IGraphicsServer
   void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value);
   void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value);
   void DeleteShader(GraphicsHandle handle);
+}
+
+/// <summary>Represents a <see cref="IGraphicsServer"/> that allows direct access to native shader capabilities.</summary>
+public interface IHasNativeShaderSupport
+{
+  ValueTask CompileNativeShaderAsync(GraphicsHandle handle, VirtualPath path, CancellationToken cancellationToken = default);
 }

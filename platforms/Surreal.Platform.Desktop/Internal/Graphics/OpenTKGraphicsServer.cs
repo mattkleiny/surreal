@@ -6,13 +6,14 @@ using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
+using Surreal.IO;
 using Surreal.Mathematics;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 
 namespace Surreal.Internal.Graphics;
 
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
-internal sealed class OpenTKGraphicsServer : IGraphicsServer
+internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSupport
 {
   private readonly OpenTKShaderCompiler shaderCompiler = new();
 
@@ -190,9 +191,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
   {
-    var program = new ProgramHandle(handle);
-
     var shaderSet = shaderCompiler.CompileShader(declaration);
+
+    LinkShaderProgram(handle, shaderSet);
+  }
+
+  private static void LinkShaderProgram(GraphicsHandle handle, OpenTKShaderSet shaderSet)
+  {
+    var program = new ProgramHandle(handle);
     var shaderIds = new ShaderHandle[shaderSet.Shaders.Length];
 
     GL.UseProgram(program);
@@ -244,6 +250,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform1i(location, value);
   }
@@ -252,6 +259,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform1f(location, value);
   }
@@ -260,6 +268,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform2i(location, value.X, value.Y);
   }
@@ -268,6 +277,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform3i(location, value.X, value.Y, value.Z);
   }
@@ -276,6 +286,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform2f(location, value.X, value.Y);
   }
@@ -284,6 +295,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform3f(location, value.X, value.Y, value.Z);
   }
@@ -292,6 +304,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
@@ -300,6 +313,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
@@ -308,6 +322,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
 
@@ -318,6 +333,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
+    if (location == -1) return;
 
     var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
 
@@ -329,6 +345,22 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var program = new ProgramHandle(handle);
 
     GL.DeleteProgram(program);
+  }
+
+  async ValueTask IHasNativeShaderSupport.CompileNativeShaderAsync(GraphicsHandle handle, VirtualPath path, CancellationToken cancellationToken)
+  {
+    var vertexPath = path.ChangeExtension("vert.glsl");
+    var fragmentPath = path.ChangeExtension("frag.glsl");
+
+    var vertexCode = await vertexPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
+    var fragmentCode = await fragmentPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
+
+    var shaderSet = new OpenTKShaderSet(path.ToString(), ImmutableArray.Create(
+      new OpenTKShader(ShaderType.VertexShader, vertexCode),
+      new OpenTKShader(ShaderType.FragmentShader, fragmentCode)
+    ));
+
+    LinkShaderProgram(handle, shaderSet);
   }
 
   private static void BindVertexDescriptorSet(ProgramHandle program, VertexDescriptorSet descriptors)

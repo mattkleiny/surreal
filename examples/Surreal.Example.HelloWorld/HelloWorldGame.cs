@@ -29,7 +29,14 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    material = await assets.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/geometry.shade");
+    var shader = new ShaderProgram(GraphicsServer);
+
+    if (GraphicsServer is IHasNativeShaderSupport nativeShaderSupport)
+    {
+      await nativeShaderSupport.CompileNativeShaderAsync(shader.Handle, "Assets/shaders/geometry.glsl", cancellationToken);
+    }
+
+    material = new Material(shader);
   }
 
   protected override void Initialize()

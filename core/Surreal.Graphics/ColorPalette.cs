@@ -41,6 +41,8 @@ public readonly record struct ColorPalette(Color[] colors, int offset, int count
   IEnumerator<Color> IEnumerable<Color>.GetEnumerator() => GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+  public static implicit operator ColorPalette(Color[] colors) => new(colors, 0, colors.Length);
+
   /// <summary>Enumerates the <see cref="ColorPalette"/>.</summary>
   public struct Enumerator : IEnumerator<Color>
   {

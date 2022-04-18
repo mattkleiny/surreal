@@ -8,12 +8,16 @@ public sealed class ShaderProgram : GraphicsResource
 {
   private readonly IGraphicsServer server;
 
-  public ShaderProgram(IGraphicsServer server, ShaderDeclaration declaration)
+  public ShaderProgram(IGraphicsServer server)
   {
     this.server = server;
 
     Handle = server.CreateShader();
+  }
 
+  public ShaderProgram(IGraphicsServer server, ShaderDeclaration declaration)
+    : this(server)
+  {
     server.CompileShader(Handle, declaration);
   }
 
