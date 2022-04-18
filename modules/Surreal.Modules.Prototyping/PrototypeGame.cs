@@ -15,10 +15,6 @@ using Surreal.Input.Mouse;
 using Surreal.IO.Json;
 using Surreal.IO.Xml;
 using Surreal.Mathematics;
-using Surreal.Networking;
-using Surreal.Scripting;
-using Surreal.Scripting.Bytecode;
-using Surreal.Scripting.Languages;
 
 namespace Surreal;
 
@@ -30,7 +26,6 @@ public abstract class PrototypeGame : Game
   public IGraphicsServer GraphicsServer => Services.GetRequiredService<IGraphicsServer>();
   public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
   public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
-  public INetworkFactory NetworkFactory => Services.GetRequiredService<INetworkFactory>();
 
   public Color ClearColor { get; set; } = Color.Black;
 
@@ -72,15 +67,6 @@ public abstract class PrototypeGame : Game
       TransparencyMask = new Color32(255, 0, 255),
       AnimationFlags = SpriteAnimationFlags.Looping
     });
-
-    // scripting
-    manager.AddLoader(new BytecodeProgramLoader());
-    manager.AddLoader(new ScriptLoader(new BytecodeScriptCompiler(), ".basic", ".bas", ".lisp", ".lox", ".lua", ".wren"));
-    manager.AddLoader(new ScriptDeclarationLoader(new BasicScriptParser(), ".basic", ".bas"));
-    manager.AddLoader(new ScriptDeclarationLoader(new LispScriptParser(), ".lisp"));
-    manager.AddLoader(new ScriptDeclarationLoader(new LoxScriptParser(), ".lox"));
-    manager.AddLoader(new ScriptDeclarationLoader(new LuaScriptParser(), ".lua"));
-    manager.AddLoader(new ScriptDeclarationLoader(new WrenScriptParser(), ".wren"));
   }
 
   protected override void OnResized(int width, int height)

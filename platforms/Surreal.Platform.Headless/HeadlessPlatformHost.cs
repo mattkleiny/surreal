@@ -8,8 +8,6 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
-using Surreal.Internal.Networking;
-using Surreal.Networking;
 using Surreal.Threading;
 using Surreal.Timing;
 
@@ -23,7 +21,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public HeadlessComputeServer  ComputeServer  { get; } = new();
   public HeadlessGraphicsServer GraphicsServer { get; } = new();
   public HeadlessInputServer    InputServer    { get; } = new();
-  public HeadlessNetworkFactory NetworkFactory { get; } = new();
 
   public int  Width     => 1920;
   public int  Height    => 1080;
@@ -57,6 +54,5 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
     services.AddSingleton<IMouseDevice>(InputServer.Mouse);
     services.AddSingleton<IHeadlessKeyboardDevice>(InputServer.Keyboard);
     services.AddSingleton<IHeadlessMouseDevice>(InputServer.Mouse);
-    services.AddSingleton<INetworkFactory>(NetworkFactory);
   }
 }

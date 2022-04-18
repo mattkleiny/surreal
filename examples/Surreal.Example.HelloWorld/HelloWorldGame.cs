@@ -9,8 +9,8 @@ public sealed class HelloWorldGame : PrototypeGame
 {
   private static readonly Matrix4x4 ProjectionView = Matrix4x4.CreateOrthographic(256f, 144f, 0f, 100f);
 
-  private Material? geometryMaterial;
-  private GeometryBatch? geometryBatch;
+  private Material? material;
+  private GeometryBatch? batch;
 
   public static Task Main() => StartAsync<HelloWorldGame>(new Configuration
   {
@@ -29,14 +29,14 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    geometryMaterial = await assets.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/geometry.shade");
+    material = await assets.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/geometry.shade");
   }
 
   protected override void Initialize()
   {
     base.Initialize();
 
-    geometryBatch = new GeometryBatch(GraphicsServer);
+    batch = new GeometryBatch(GraphicsServer);
   }
 
   protected override void Input(GameTime time)
@@ -49,22 +49,17 @@ public sealed class HelloWorldGame : PrototypeGame
     base.Input(time);
   }
 
-  protected override void BeginFrame(GameTime time)
-  {
-    base.BeginFrame(time);
-
-    geometryBatch!.Begin(geometryMaterial!, in ProjectionView);
-  }
-
   protected override void Draw(GameTime time)
   {
-    geometryBatch!.DrawSolidQuad(Vector2.Zero, new Vector2(16f, 16f), Color.White);
-    geometryBatch!.DrawCircle(Vector2.Zero, 16f, Color.Red);
+    batch!.Begin(material!, in ProjectionView);
+
+    batch!.DrawSolidQuad(Vector2.Zero, new Vector2(16f, 16f), Color.White);
+    batch!.DrawCircle(Vector2.Zero, 16f, Color.Red);
   }
 
   public override void Dispose()
   {
-    geometryBatch?.Dispose();
+    batch?.Dispose();
 
     base.Dispose();
   }

@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Surreal.Networking</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Networking\Surreal.Networking.csproj" />
-  </ItemGroup>
-</Project>

@@ -10,8 +10,6 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
-using Surreal.Internal.Networking;
-using Surreal.Networking;
 using Surreal.Threading;
 using Surreal.Timing;
 
@@ -58,7 +56,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     ComputeServer = new OpenTKComputeServer();
     GraphicsServer = new OpenTKGraphicsServer();
     InputServer = new OpenTKInputServer(Window);
-    NetworkFactory = new DesktopNetworkFactory();
     Dispatcher = new ImmediateDispatcher();
   }
 
@@ -68,12 +65,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     remove => Window.Resized -= value;
   }
 
-  public OpenTKWindow          Window         { get; }
-  public OpenTKAudioServer     AudioServer    { get; }
-  public OpenTKComputeServer   ComputeServer  { get; }
-  public OpenTKGraphicsServer  GraphicsServer { get; }
-  public OpenTKInputServer     InputServer    { get; }
-  public DesktopNetworkFactory NetworkFactory { get; }
+  public OpenTKWindow         Window         { get; }
+  public OpenTKAudioServer    AudioServer    { get; }
+  public OpenTKComputeServer  ComputeServer  { get; }
+  public OpenTKGraphicsServer GraphicsServer { get; }
+  public OpenTKInputServer    InputServer    { get; }
 
   public IServiceModule Services   => this;
   public IDispatcher    Dispatcher { get; }
@@ -121,7 +117,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     services.AddSingleton<IInputServer>(InputServer);
     services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
     services.AddSingleton<IMouseDevice>(InputServer.Mouse);
-    services.AddSingleton<INetworkFactory>(NetworkFactory);
   }
 
   IDesktopWindow IDesktopPlatformHost.Window => Window;
