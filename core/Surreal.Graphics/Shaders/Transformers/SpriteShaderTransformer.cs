@@ -10,22 +10,22 @@ namespace Surreal.Graphics.Shaders.Transformers;
 /// </summary>
 public sealed class SpriteShaderTransformer : IShaderTransformer
 {
-  public bool CanTransform(CompilationUnit compilationUnit)
+  public bool CanTransform(ShaderCompilationUnit compilationUnit)
   {
     return compilationUnit.ShaderType is { Type: "sprite" };
   }
 
-  public ValueTask<CompilationUnit> TransformAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken = default)
+  public ShaderCompilationUnit Transform(ShaderCompilationUnit compilationUnit)
   {
     IncludeDefaultResources(ref compilationUnit);
 
     AttachDefaultVertexStage(ref compilationUnit);
     AttachDefaultFragmentStage(ref compilationUnit);
 
-    return ValueTask.FromResult(compilationUnit);
+    return compilationUnit;
   }
 
-  private static void IncludeDefaultResources(ref CompilationUnit compilationUnit)
+  private static void IncludeDefaultResources(ref ShaderCompilationUnit compilationUnit)
   {
     compilationUnit = compilationUnit with
     {
@@ -33,7 +33,7 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
     };
   }
 
-  private static void AttachDefaultVertexStage(ref CompilationUnit compilationUnit)
+  private static void AttachDefaultVertexStage(ref ShaderCompilationUnit compilationUnit)
   {
     if (compilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Vertex))
     {
@@ -55,7 +55,7 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
     };
   }
 
-  private static void AttachDefaultFragmentStage(ref CompilationUnit compilationUnit)
+  private static void AttachDefaultFragmentStage(ref ShaderCompilationUnit compilationUnit)
   {
     if (compilationUnit.Stages.Any(_ => _.Kind == ShaderKind.Fragment))
     {

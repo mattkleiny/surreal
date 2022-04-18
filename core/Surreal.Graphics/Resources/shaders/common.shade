@@ -1,4 +1,4 @@
-﻿// Common utilities used by all shader programs.
+﻿// Common utilities usable by all shader programs.
 
 // Standard RGB to Luma conversion, with variance for human eye sight
 float luminance(vec3 color) {

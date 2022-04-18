@@ -170,7 +170,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void CompileShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
   {
     var program = new ProgramHandle(handle);
-
     var shaderIds = new ShaderHandle[shaderSet.Shaders.Length];
 
     GL.UseProgram(program);
@@ -178,7 +177,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     for (var i = 0; i < shaderSet.Shaders.Length; i++)
     {
       var (stage, code) = shaderSet.Shaders[i];
-
       var shader = shaderIds[i] = GL.CreateShader(stage);
 
       GL.ShaderSource(shader, code);

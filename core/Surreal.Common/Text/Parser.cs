@@ -359,52 +359,35 @@ public abstract class Parser<T>
     }
   }
 
-  /// <summary>Contextual access for including <see cref="T"/>s recursively.</summary>
-  protected abstract class IncludeContext
+  /// <summary>A delegate which loads a value from some inclusion source.</summary>
+  protected delegate ValueTask<T> IncludeHandler(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default);
+
+  /// <summary>Commonly used <see cref="IncludeHandler"/>s.</summary>
+  protected static class IncludeHandlers
   {
-    public static IncludeContext Static()
+    /// <summary>A standard <see cref="IncludeHandler"/> that delegates back to the given <see cref="Parser{T}"/> and caches the result internally.</summary>
+    public static IncludeHandler Static()
     {
-      return new StaticIncludeContext();
-    }
+      var includesByPath = new ConcurrentDictionary<VirtualPath, T>();
 
-    public static IncludeContext FromAssets(IAssetManager manager)
-    {
-      return new AssetIncludeContext(manager);
-    }
-
-    /// <summary>Loads the given related shader back through the parsing pipeline pipeline.</summary>
-    public abstract ValueTask<T> LoadAsync(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default);
-
-    /// <summary>A standard <see cref="IncludeContext"/> that delegates back to the given <see cref="Parser{T}"/> and caches the result internally.</summary>
-    private sealed class StaticIncludeContext : IncludeContext
-    {
-      private readonly ConcurrentDictionary<VirtualPath, T> declarationsByPath = new();
-
-      public override async ValueTask<T> LoadAsync(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default)
+      return async (parser, path, cancellationToken) =>
       {
-        if (!declarationsByPath.TryGetValue(path, out var declaration))
+        if (!includesByPath.TryGetValue(path, out var declaration))
         {
-          declarationsByPath[path] = declaration = await parser.ParseAsync(path, cancellationToken);
+          includesByPath[path] = declaration = await parser.ParseAsync(path, cancellationToken);
         }
 
         return declaration;
-      }
+      };
     }
 
-    /// <summary>A <see cref="IncludeContext"/> implementation that delegates back to the asset system via the given <see cref="IAssetManager"/>.</summary>
-    private sealed class AssetIncludeContext : IncludeContext
+    /// <summary>A <see cref="IncludeHandler"/> implementation that delegates back to the asset system via the given <see cref="IAssetManager"/>.</summary>
+    public static IncludeHandler FromAssets(IAssetManager manager)
     {
-      private readonly IAssetManager manager;
-
-      public AssetIncludeContext(IAssetManager manager)
+      return async (_, path, cancellationToken) =>
       {
-        this.manager = manager;
-      }
-
-      public override async ValueTask<T> LoadAsync(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default)
-      {
-        return await manager.LoadAssetAsync<T>(path);
-      }
+        return await manager.LoadAssetAsync<T>(path, cancellationToken);
+      };
     }
   }
 }

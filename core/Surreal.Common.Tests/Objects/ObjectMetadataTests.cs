@@ -6,7 +6,7 @@ public class ObjectMetadataTests
   public void it_should_construct_from_arbitrary_object()
   {
     var instance = new TestObject();
-    var metadata = ObjectMetadata.Create<TestObject>();
+    var metadata = ObjectMetadata.Create(typeof(TestObject));
 
     metadata.Events.Should().NotBeEmpty();
     metadata.Methods.Should().NotBeEmpty();

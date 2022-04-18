@@ -10,21 +10,21 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 {
   private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "component", "attribute", "event", "#tag", "entity", "item", "override" }.ToImmutableHashSet();
 
-  private readonly IncludeContext includeContext;
+  private readonly IncludeHandler includeHandler;
 
   public BlueprintParser()
-    : this(IncludeContext.Static())
+    : this(IncludeHandlers.Static())
   {
   }
 
   public BlueprintParser(IAssetManager manager)
-    : this(IncludeContext.FromAssets(manager))
+    : this(IncludeHandlers.FromAssets(manager))
   {
   }
 
-  private BlueprintParser(IncludeContext includeContext)
+  private BlueprintParser(IncludeHandler includeHandler)
   {
-    this.includeContext = includeContext;
+    this.includeHandler = includeHandler;
   }
 
   public override async ValueTask<BlueprintDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
@@ -49,7 +49,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
     {
       if (includedPaths.Add(include.Path))
       {
-        var included = await includeContext.LoadAsync(this, include.Path, cancellationToken);
+        var included = await includeHandler(this, include.Path, cancellationToken);
 
         declaration = declaration.MergeWith(included);
       }

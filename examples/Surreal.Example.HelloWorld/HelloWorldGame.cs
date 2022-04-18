@@ -7,6 +7,8 @@ namespace HelloWorld;
 
 public sealed class HelloWorldGame : PrototypeGame
 {
+  private static readonly Matrix4x4 ProjectionView = Matrix4x4.CreateOrthographic(256f, 144f, 0f, 100f);
+
   private Material? geometryMaterial;
   private GeometryBatch? geometryBatch;
 
@@ -27,7 +29,7 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    geometryMaterial = await assets.LoadAssetAsync<Material>("resx://HelloWorld/Resources/shaders/geometry.shade");
+    geometryMaterial = await assets.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/geometry.shade");
   }
 
   protected override void Initialize()
@@ -51,14 +53,13 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     base.BeginFrame(time);
 
-    var projectionView = Matrix4x4.CreateOrthographic(256f, 144f, 0f, 100f);
-
-    geometryBatch!.Begin(geometryMaterial!, projectionView);
+    geometryBatch!.Begin(geometryMaterial!, in ProjectionView);
   }
 
   protected override void Draw(GameTime time)
   {
-    // TODO: draw something
+    geometryBatch!.DrawSolidQuad(Vector2.Zero, new Vector2(16f, 16f), Color.White);
+    geometryBatch!.DrawCircle(Vector2.Zero, 16f, Color.Red);
   }
 
   public override void Dispose()

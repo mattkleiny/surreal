@@ -1,10 +1,12 @@
-﻿// Our geometry batch shader.
-
-#include "resx://Surreal.Graphics/Resources/shaders/common.shade";
+﻿// Standard purpose geometry shader.
 
 #shader_type sprite;
 
 uniform vec4 _Tint;
+
+void vertex(vec3 position) {
+  POSITION = position;
+}
 
 void fragment() {
   COLOR = SAMPLE(TEXTURE, UV) * _Tint;

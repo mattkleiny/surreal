@@ -8,32 +8,27 @@ using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
 namespace Surreal.Graphics.Shaders;
 
-/// <summary>Base class for any parser front-end for shader programs.</summary>
-public abstract class ShaderParser : Parser<ShaderDeclaration>
+/// <summary>A <see cref="Parser{T}"/> that parses a simple shading language, similar to Godot's shader language.</summary>
+public sealed class ShaderParser : Parser<ShaderDeclaration>
 {
-}
+  private static ImmutableHashSet<string> Keywords { get; } = ImmutableHashSet.Create("#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE");
+  private static ImmutableHashSet<string> Stages   { get; } = ImmutableHashSet.Create("vertex", "fragment", "geometry");
 
-/// <summary>A <see cref="ShaderParser"/> that parses a simple shading language, similar to Godot's language.</summary>
-public sealed class StandardShaderParser : ShaderParser
-{
-  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> Stages   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
+  private readonly IncludeHandler includeHandler;
 
-  private readonly IncludeContext includeContext;
-
-  public StandardShaderParser()
-    : this(IncludeContext.Static())
+  public ShaderParser()
+    : this(IncludeHandlers.Static())
   {
   }
 
-  public StandardShaderParser(IAssetManager manager)
-    : this(IncludeContext.FromAssets(manager))
+  public ShaderParser(IAssetManager manager)
+    : this(IncludeHandlers.FromAssets(manager))
   {
   }
 
-  private StandardShaderParser(IncludeContext includeContext)
+  private ShaderParser(IncludeHandler includeHandler)
   {
-    this.includeContext = includeContext;
+    this.includeHandler = includeHandler;
   }
 
   /// <summary>The <see cref="IShaderTransformer"/>s to apply to the resultant parsed shader programs.</summary>
@@ -51,26 +46,26 @@ public sealed class StandardShaderParser : ShaderParser
     var compilationUnit = context.ParseCompilationUnit();
 
     // transform parsed shaders and merge in included results (n.b order is important)
-    compilationUnit = await ApplyTransformersAsync(compilationUnit, cancellationToken);
+    compilationUnit = ApplyTransformers(compilationUnit);
     compilationUnit = await MergeIncludedShadersAsync(compilationUnit, cancellationToken);
 
     return new ShaderDeclaration(path, compilationUnit);
   }
 
-  private async Task<CompilationUnit> ApplyTransformersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
+  private ShaderCompilationUnit ApplyTransformers(ShaderCompilationUnit compilationUnit)
   {
     foreach (var transformer in Transformers)
     {
       if (transformer.CanTransform(compilationUnit))
       {
-        compilationUnit = await transformer.TransformAsync(compilationUnit, cancellationToken);
+        compilationUnit = transformer.Transform(compilationUnit);
       }
     }
 
     return compilationUnit;
   }
 
-  private async Task<CompilationUnit> MergeIncludedShadersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
+  private async Task<ShaderCompilationUnit> MergeIncludedShadersAsync(ShaderCompilationUnit compilationUnit, CancellationToken cancellationToken)
   {
     var includedPaths = new HashSet<VirtualPath>();
 
@@ -78,7 +73,7 @@ public sealed class StandardShaderParser : ShaderParser
     {
       if (includedPaths.Add(include.Path))
       {
-        var included = await includeContext.LoadAsync(this, include.Path, cancellationToken);
+        var included = await includeHandler(this, include.Path, cancellationToken);
 
         compilationUnit = compilationUnit.MergeWith(included.CompilationUnit);
       }
@@ -95,7 +90,7 @@ public sealed class StandardShaderParser : ShaderParser
     {
     }
 
-    public CompilationUnit ParseCompilationUnit()
+    public ShaderCompilationUnit ParseCompilationUnit()
     {
       var nodes = new List<ShaderSyntaxTree>();
 
@@ -114,7 +109,7 @@ public sealed class StandardShaderParser : ShaderParser
         }
       }
 
-      return new CompilationUnit
+      return new ShaderCompilationUnit
       {
         ShaderType = nodes.OfType<ShaderTypeDeclaration>().FirstOrDefault(new ShaderTypeDeclaration("none")),
         Includes = nodes.OfType<Include>().ToImmutableHashSet(),

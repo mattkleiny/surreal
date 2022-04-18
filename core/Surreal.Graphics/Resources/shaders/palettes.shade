@@ -10,11 +10,7 @@ const int COLOR_CHANNEL_SHADOW    = 2;
 const int COLOR_CHANNEL_INTERFACE = 3;
 const int COLOR_CHANNEL_EFFECTS   = 4;
 
-// Samples the color palette texture and returns the
-// mapped color for the given input color.
-//
-// N.B: This requires a texture lookup, so try and minimize
-// the number of calls.
+// Samples the requested color palette texture and returns the mapped color for the given input color.
 vec3 sample_palette(vec3 color, int channel)
 {
   float normalized_y = channel * 0.25 - 0.125;
