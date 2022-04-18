@@ -29,7 +29,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 
   public override async ValueTask<BlueprintDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
-    var tokens = await TokenizeAsync(Keywords, reader, cancellationToken);
+    var tokens = await TokenizeAsync(Keywords, ImmutableHashSet<string>.Empty, reader, cancellationToken);
     var context = new BlueprintParserContext(path, tokens);
 
     var declaration = context.ParseBlueprintDeclaration();

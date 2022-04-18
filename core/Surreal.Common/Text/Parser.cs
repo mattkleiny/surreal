@@ -74,6 +74,7 @@ public abstract class Parser<T>
     // literals
     String,
     Number,
+    Primitive,
     Identifier,
     Keyword,
 
@@ -96,7 +97,12 @@ public abstract class Parser<T>
   }
 
   [SuppressMessage("ReSharper", "CognitiveComplexity")]
-  protected static async Task<IEnumerable<Token>> TokenizeAsync(ImmutableHashSet<string> keywords, TextReader reader, CancellationToken cancellationToken)
+  protected static async Task<IEnumerable<Token>> TokenizeAsync(
+    ImmutableHashSet<string> keywords,
+    ImmutableHashSet<string> primitives,
+    TextReader reader,
+    CancellationToken cancellationToken
+  )
   {
     var results = new List<Token>();
 
@@ -112,7 +118,7 @@ public abstract class Parser<T>
       for (var column = 0; column < span.Length; column++)
       {
         var position = new LinePosition(line + 1, column + 1);
-        var token = ScanToken(keywords, position, span[column..]);
+        var token = ScanToken(keywords, primitives, position, span[column..]);
 
         if (token != null)
         {
@@ -128,7 +134,8 @@ public abstract class Parser<T>
     return results;
 
     // Scans a single token from the given string span
-    static Token? ScanToken(ImmutableHashSet<string> keywords, LinePosition position, StringSpan span)
+    static Token? ScanToken(ImmutableHashSet<string> keywords, ImmutableHashSet<string> primitives, LinePosition position, StringSpan span
+    )
     {
       var character = span[0];
 
@@ -211,7 +218,7 @@ public abstract class Parser<T>
           {
             var number = span.ConsumeNumericWithFractions();
 
-            return new Token(TokenType.Number, position, number, decimal.Parse(number.ToString(), CultureInfo.InvariantCulture));
+            return new Token(TokenType.Number, position, number, decimal.Parse(number, NumberStyles.Any, CultureInfo.InvariantCulture));
           }
 
           // identifiers and keywords
@@ -220,10 +227,11 @@ public abstract class Parser<T>
             var identifier = span.ConsumeAlphaNumeric();
             var literal = identifier.ToString();
 
+            if (primitives.Contains(literal))
+              return new Token(TokenType.Primitive, position, identifier, literal);
+
             if (keywords.Contains(literal))
-            {
               return new Token(TokenType.Keyword, position, identifier, literal);
-            }
 
             return new Token(TokenType.Identifier, position, identifier, literal);
           }

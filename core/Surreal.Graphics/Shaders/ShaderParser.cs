@@ -11,8 +11,9 @@ namespace Surreal.Graphics.Shaders;
 /// <summary>A <see cref="Parser{T}"/> that parses a simple shading language, similar to Godot's shader language.</summary>
 public sealed class ShaderParser : Parser<ShaderDeclaration>
 {
-  private static ImmutableHashSet<string> Keywords { get; } = ImmutableHashSet.Create("#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE");
-  private static ImmutableHashSet<string> Stages   { get; } = ImmutableHashSet.Create("vertex", "fragment", "geometry");
+  private static ImmutableHashSet<string> Keywords   { get; } = ImmutableHashSet.Create("#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE");
+  private static ImmutableHashSet<string> Primitives { get; } = ImmutableHashSet.Create("void", "bool", "bool2", "bool3", "bool4", "int", "int2", "int3", "int4", "float", "float2", "float3", "float4", "vec2", "vec3", "vec4", "sampler1d", "sampler2d", "sampler3d", "lowp", "mediump", "highp");
+  private static ImmutableHashSet<string> Stages     { get; } = ImmutableHashSet.Create("vertex", "fragment", "geometry");
 
   private readonly IncludeHandler includeHandler;
 
@@ -39,7 +40,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
 
   public override async ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
-    var tokens = await TokenizeAsync(Keywords, reader, cancellationToken);
+    var tokens = await TokenizeAsync(Keywords, Primitives, reader, cancellationToken);
     var context = new ShaderParserContext(tokens);
 
     // parse the main compilation unit
@@ -98,9 +99,9 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
       {
         var node = token.Type switch
         {
-          TokenType.Keyword    => ParseKeyword(),
-          TokenType.Identifier => ParseFunction(),
-          _                    => ParseNull(),
+          TokenType.Keyword   => ParseKeyword(),
+          TokenType.Primitive => ParseFunction(),
+          _                   => ParseNull(),
         };
 
         if (node != null)
@@ -236,11 +237,40 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
         };
       }
 
-      var expression = ParseExpression();
+      if (TryConsumeLiteral(TokenType.Identifier, out string variable))
+      {
+        Consume(TokenType.Equal);
 
-      Consume(TokenType.SemiColon);
+        var value = ParseExpression();
+        var assignment = new Assignment(variable, value);
 
-      return new StatementExpression(expression);
+        Consume(TokenType.SemiColon);
+
+        return assignment;
+      }
+
+      if (TryPeek(TokenType.Primitive))
+      {
+        var declaration = ParseVariableDeclaration();
+
+        Consume(TokenType.SemiColon);
+
+        return declaration;
+      }
+
+      return new StatementExpression(ParseExpression());
+    }
+
+    private VariableDeclaration ParseVariableDeclaration()
+    {
+      var primitive = ParsePrimitive();
+      var name = ParseIdentifier();
+
+      Consume(TokenType.Equal);
+
+      var value = ParseExpression();
+
+      return new VariableDeclaration(primitive, name, value);
     }
 
     private Statement ParseIfStatement()
@@ -312,11 +342,23 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
       if (TryConsumeLiteral(TokenType.Number, out decimal number))
         return new Constant(number);
 
-      if (TryConsumeLiteral(TokenType.String, out string value))
-        return new Constant(value);
+      if (TryConsumeLiteral(TokenType.String, out string text))
+        return new Constant(text);
+
+      if (TryPeek(TokenType.Primitive))
+      {
+        var type = ParsePrimitive();
+        var value = ParseExpression(depth + 1, maxDepth);
+
+        return new TypeConstructor(type, value);
+      }
 
       if (TryParseUnaryOperator(out var unaryOperator))
-        return new UnaryOperation(unaryOperator, ParseExpression(depth + 1, maxDepth));
+      {
+        var value = ParseExpression(depth + 1, maxDepth);
+
+        return new UnaryOperation(unaryOperator, value);
+      }
 
       // TODO: clean this up
       var expression =
@@ -327,7 +369,11 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
             : ParseExpression(depth + 1, maxDepth);
 
       if (TryParseBinaryOperator(out var binaryOperator))
-        return new BinaryOperation(binaryOperator, expression, ParseExpression(depth + 1, maxDepth));
+      {
+        var value = ParseExpression(depth + 1, maxDepth);
+
+        return new BinaryOperation(binaryOperator, expression, value);
+      }
 
       return expression;
     }
@@ -335,7 +381,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
     private Primitive ParsePrimitive()
     {
       var precision = default(Precision?);
-      var literal = ConsumeLiteral<string>(TokenType.Identifier);
+      var literal = ConsumeLiteral<string>(TokenType.Primitive);
 
       if (literal is "lowp" or "medp" or "highp")
       {
@@ -348,7 +394,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
           _ => throw Error($"An unrecognized precision was specified {literal}"),
         };
 
-        literal = ConsumeLiteral<string>(TokenType.Identifier);
+        literal = ConsumeLiteral<string>(TokenType.Primitive);
       }
 
       var type = literal switch
@@ -379,24 +425,20 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
       return type;
     }
 
-    private string ParseIdentifier()
-    {
-      return ConsumeLiteral<string>(TokenType.Identifier);
-    }
-
     private SampleOperation ParseSampleOperation()
     {
       Consume(TokenType.LeftParenthesis);
-
       var name = ParseIdentifier();
-
       Consume(TokenType.Comma);
-
       var value = ParseExpression();
-
       Consume(TokenType.RightParenthesis);
 
       return new SampleOperation(name, value);
+    }
+
+    private string ParseIdentifier()
+    {
+      return ConsumeLiteral<string>(TokenType.Identifier);
     }
 
     private bool TryParseUnaryOperator(out UnaryOperator result)

@@ -1,4 +1,5 @@
 ﻿using Surreal.Graphics.Shaders;
+using Surreal.IO;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -59,5 +60,20 @@ public class OpenTKShaderCompilerTests
     program.Shaders.Length.Should().Be(2);
     program.Shaders[0].Code.Should().NotBeEmpty();
     program.Shaders[1].Code.Should().NotBeEmpty();
+  }
+
+  [Test]
+  [TestCase("resx://Surreal.Graphics/Resources/shaders/common.shade")]
+  [TestCase("resx://Surreal.Graphics/Resources/shaders/geometry.shade")]
+  [TestCase("resx://Surreal.Graphics/Resources/shaders/sprite.shade")]
+  public async Task it_should_compile_shader_programs(VirtualPath path)
+  {
+    var parser = new ShaderParser();
+    var compiler = new OpenTKShaderCompiler();
+
+    var declaration = await parser.ParseAsync(path);
+    var shaderSet = compiler.CompileShader(declaration);
+
+    shaderSet.Should().NotBeNull();
   }
 }

@@ -158,6 +158,13 @@ public abstract record ShaderSyntaxTree
       public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
     }
 
+    /// <summary>Declares a variable primitive.</summary>
+    /// <example>vec3 test = vec3(1,1,1);</example>
+    public sealed record VariableDeclaration(Primitive Type, string Name, Expression Value) : Statement
+    {
+      public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
+    }
+
     /// <summary>Declares a shader stage function.</summary>
     /// <example>void fragment() { ... }</example>
     public sealed record StageDeclaration(ShaderKind Kind) : Statement
@@ -214,7 +221,7 @@ public abstract record ShaderSyntaxTree
 
       /// <summary>Evaluates the given statements in a standard 'while' loop</summary>
       /// <example>while (test) { ... }</example>
-      public sealed record While(Expression Condition) : ControlFlow
+      public sealed record WhileLoop(Expression Condition) : ControlFlow
       {
         public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
 
@@ -223,7 +230,7 @@ public abstract record ShaderSyntaxTree
 
       /// <summary>Evaluates the given statements in a standard 'for' loop</summary>
       /// <example>if (test) { ... } else { ... }</example>
-      public sealed record For(Expression Condition) : ControlFlow
+      public sealed record ForLoop(Expression Condition) : ControlFlow
       {
         public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
 
@@ -381,6 +388,11 @@ public abstract class ShaderVisitor
     node.Value.Accept(this);
   }
 
+  public virtual void Visit(VariableDeclaration node)
+  {
+    node.Value.Accept(this);
+  }
+
   public virtual void Visit(StageDeclaration node)
   {
     foreach (var parameter in node.Parameters)
@@ -437,7 +449,7 @@ public abstract class ShaderVisitor
     }
   }
 
-  public virtual void Visit(ControlFlow.While node)
+  public virtual void Visit(ControlFlow.WhileLoop node)
   {
     node.Condition.Accept(this);
 
@@ -447,7 +459,7 @@ public abstract class ShaderVisitor
     }
   }
 
-  public virtual void Visit(ControlFlow.For node)
+  public virtual void Visit(ControlFlow.ForLoop node)
   {
     node.Condition.Accept(this);
 
