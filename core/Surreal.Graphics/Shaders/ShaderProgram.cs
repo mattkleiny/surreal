@@ -1,5 +1,4 @@
 using Surreal.Assets;
-using Surreal.Graphics.Meshes;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
@@ -8,76 +7,53 @@ namespace Surreal.Graphics.Shaders;
 public sealed class ShaderProgram : GraphicsResource
 {
   private readonly IGraphicsServer server;
-  private readonly GraphicsHandle handle;
 
   public ShaderProgram(IGraphicsServer server, ShaderDeclaration declaration)
   {
     this.server = server;
-    handle = server.CreateShader();
 
-    server.CompileShader(handle, declaration);
+    Handle = server.CreateShader();
+
+    server.CompileShader(Handle, declaration);
   }
 
-  public void Bind(VertexDescriptorSet descriptors)
-  {
-    // GL.UseProgram(Id);
-    //
-    // for (var i = 0; i < descriptors.Length; i++)
-    // {
-    //   var attribute = descriptors[i];
-    //   var location  = GL.GetAttribLocation(Id, attribute.Alias);
-    //
-    //   if (location == -1) continue; // attribute undefined in the shader? just move on
-    //
-    //   GL.VertexAttribPointer(
-    //     index: (uint) location,
-    //     size: attribute.Count,
-    //     type: ConvertVertexType(attribute.Type),
-    //     normalized: attribute.Normalized,
-    //     stride: descriptors.Stride,
-    //     offset: attribute.Offset
-    //   );
-    //   GL.EnableVertexAttribArray((uint) location);
-    // }
-
-    throw new NotImplementedException();
-  }
+  public GraphicsHandle Handle { get; }
 
   public void SetUniform(string name, int value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, float value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, Point2 value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, Point3 value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, Vector2 value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, Vector3 value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, Vector4 value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, Quaternion value)
-    => server.SetShaderUniform(handle, name, value);
+    => server.SetShaderUniform(Handle, name, value);
 
   public void SetUniform(string name, in Matrix3x2 value)
-    => server.SetShaderUniform(handle, name, in value);
+    => server.SetShaderUniform(Handle, name, in value);
 
   public void SetUniform(string name, in Matrix4x4 value)
-    => server.SetShaderUniform(handle, name, in value);
+    => server.SetShaderUniform(Handle, name, in value);
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteShader(handle);
+      server.DeleteShader(Handle);
     }
 
     base.Dispose(managed);

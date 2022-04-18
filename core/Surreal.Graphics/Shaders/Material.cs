@@ -16,6 +16,8 @@ public sealed class Material
     this.shader = shader;
   }
 
+  public ShaderProgram Shader => shader;
+
   public void SetProperty(MaterialProperty<int> property, int value)
     => shader.SetUniform(property.Name, value);
 

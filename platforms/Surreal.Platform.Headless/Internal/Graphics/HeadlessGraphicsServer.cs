@@ -1,5 +1,6 @@
 ﻿using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -68,6 +69,11 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
   }
 
   public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  {
+    // no-op
+  }
+
+  public void DrawMesh(GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
   {
     // no-op
   }

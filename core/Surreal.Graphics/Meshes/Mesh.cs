@@ -53,7 +53,16 @@ public sealed class Mesh<TVertex> : Mesh
 
   public void DrawImmediate(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
   {
-    throw new NotImplementedException();
+    server.DrawMesh(
+      shader: material.Shader.Handle,
+      vertices: Vertices.Handle,
+      indices: Indices.Handle,
+      descriptors: Descriptors,
+      vertexCount: vertexCount,
+      indexCount: indexCount,
+      meshType: type,
+      indexType: typeof(ushort)
+    );
   }
 
   public override void Dispose()

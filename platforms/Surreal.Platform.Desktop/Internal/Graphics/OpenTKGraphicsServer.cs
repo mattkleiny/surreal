@@ -3,16 +3,18 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
+using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 
 namespace Surreal.Internal.Graphics;
 
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
-  public OpenTKShaderCompiler ShaderCompiler { get; } = new();
+  private readonly OpenTKShaderCompiler shaderCompiler = new();
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -155,6 +157,30 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
+  public void DrawMesh(GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  {
+    var primitiveType = ConvertMeshType(meshType);
+    var elementType = ConvertElementType(indexType);
+
+    var program = new ProgramHandle(shader);
+
+    GL.UseProgram(program);
+
+    BindVertexDescriptorSet(program, descriptors);
+
+    GL.BindBuffer(BufferTargetARB.ArrayBuffer, new BufferHandle(vertices));
+    GL.BindBuffer(BufferTargetARB.ElementArrayBuffer, new BufferHandle(indices));
+
+    if (indexCount > 0)
+    {
+      GL.DrawElements(primitiveType, indexCount, elementType, 0);
+    }
+    else
+    {
+      GL.DrawArrays(primitiveType, 0, vertexCount);
+    }
+  }
+
   public GraphicsHandle CreateShader()
   {
     var shader = GL.CreateProgram();
@@ -164,12 +190,9 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
   {
-    CompileShader(handle, ShaderCompiler.CompileShader(declaration));
-  }
-
-  public void CompileShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
-  {
     var program = new ProgramHandle(handle);
+
+    var shaderSet = shaderCompiler.CompileShader(declaration);
     var shaderIds = new ShaderHandle[shaderSet.Shaders.Length];
 
     GL.UseProgram(program);
@@ -308,6 +331,30 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteProgram(program);
   }
 
+  private static void BindVertexDescriptorSet(ProgramHandle program, VertexDescriptorSet descriptors)
+  {
+    for (var i = 0; i < descriptors.Length; i++)
+    {
+      var attribute = descriptors[i];
+      var location = GL.GetAttribLocation(program, attribute.Alias);
+
+      if (location == -1)
+      {
+        continue; // no big deal
+      }
+
+      GL.VertexAttribPointer(
+        index: (uint) location,
+        size: attribute.Count,
+        type: ConvertVertexType(attribute.Type),
+        normalized: attribute.Normalized,
+        stride: descriptors.Stride,
+        offset: attribute.Offset
+      );
+      GL.EnableVertexAttribArray((uint) location);
+    }
+  }
+
   private static (PixelFormat Format, PixelType Type) GetPixelFormatAndType(Type type)
   {
     if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
@@ -318,6 +365,15 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     throw new InvalidOperationException($"An unrecognized pixel type was provided: {type}");
   }
 
+  private static DrawElementsType ConvertElementType(Type type)
+  {
+    if (type == typeof(byte)) return DrawElementsType.UnsignedByte;
+    if (type == typeof(uint)) return DrawElementsType.UnsignedInt;
+    if (type == typeof(ushort)) return DrawElementsType.UnsignedShort;
+
+    throw new InvalidOperationException($"An unrecognized index type was provided: {type}");
+  }
+
   private static int GetInternalFormat(TextureFormat format)
   {
     return format switch
@@ -325,6 +381,39 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       TextureFormat.Rgba8888 => (int) All.CompressedRgba,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
+    };
+  }
+
+  private static VertexAttribPointerType ConvertVertexType(VertexType attributeType)
+  {
+    return attributeType switch
+    {
+      VertexType.Byte          => VertexAttribPointerType.Byte,
+      VertexType.UnsignedByte  => VertexAttribPointerType.UnsignedByte,
+      VertexType.Short         => VertexAttribPointerType.Short,
+      VertexType.UnsignedShort => VertexAttribPointerType.UnsignedShort,
+      VertexType.Int           => VertexAttribPointerType.Int,
+      VertexType.UnsignedInt   => VertexAttribPointerType.UnsignedInt,
+      VertexType.Float         => VertexAttribPointerType.Float,
+      VertexType.Double        => VertexAttribPointerType.Double,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(attributeType), attributeType, null)
+    };
+  }
+
+  private static PrimitiveType ConvertMeshType(MeshType meshType)
+  {
+    return meshType switch
+    {
+      MeshType.Points    => PrimitiveType.Points,
+      MeshType.Lines     => PrimitiveType.Lines,
+      MeshType.LineStrip => PrimitiveType.LineStrip,
+      MeshType.LineLoop  => PrimitiveType.LineLoop,
+      MeshType.Triangles => PrimitiveType.Triangles,
+      MeshType.Quads     => PrimitiveType.Quads,
+      MeshType.QuadStrip => PrimitiveType.QuadStrip,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(meshType), meshType, null)
     };
   }
 }

@@ -13,31 +13,32 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
   where T : unmanaged
 {
-  private readonly GraphicsHandle handle;
   private readonly IGraphicsServer server;
 
   public GraphicsBuffer(IGraphicsServer server)
   {
     this.server = server;
 
-    handle = server.CreateBuffer();
+    Handle = server.CreateBuffer();
   }
+
+  public GraphicsHandle Handle { get; }
 
   public Memory<T> Read(Optional<Range> range = default)
   {
-    return server.ReadBufferData<T>(handle, range.GetOrDefault(Range.All));
+    return server.ReadBufferData<T>(Handle, range.GetOrDefault(Range.All));
   }
 
   public void Write(ReadOnlySpan<T> buffer)
   {
-    server.WriteBufferData(handle, buffer);
+    server.WriteBufferData(Handle, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteBuffer(handle);
+      server.DeleteBuffer(Handle);
     }
 
     base.Dispose(managed);

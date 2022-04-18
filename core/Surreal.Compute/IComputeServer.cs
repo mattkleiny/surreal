@@ -1,9 +1,10 @@
 namespace Surreal.Compute;
 
 /// <summary>An opaque handle to a resource in the underling <see cref="IComputeServer"/> implementation.</summary>
-public readonly record struct ComputeHandle(int Id)
+public readonly record struct ComputeHandle(nint Id)
 {
-  public static implicit operator int(ComputeHandle handle) => handle.Id;
+  public static implicit operator nint(ComputeHandle handle) => handle.Id;
+  public static implicit operator int(ComputeHandle handle) => (int) handle.Id;
   public static implicit operator uint(ComputeHandle handle) => (uint) handle.Id;
 }
 

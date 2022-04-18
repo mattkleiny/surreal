@@ -32,9 +32,18 @@ public sealed record BytecodeProgram(string Path) : ICompiledScript
   public ImmutableList<BytecodeInstruction> Instructions { get; init; } = ImmutableList<BytecodeInstruction>.Empty;
 }
 
+/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="BytecodeProgram"/>s.</summary>
+public sealed class BytecodeProgramLoader : AssetLoader<BytecodeProgram>
+{
+  public override async ValueTask<BytecodeProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  {
+    return await context.Path.DeserializeBinaryAsync<BytecodeProgram>(progressToken.CancellationToken);
+  }
+}
+
 /// <summary>The <see cref="BinarySerializer"/> for <see cref="BytecodeProgram"/>s.</summary>
 [BinarySerializer(typeof(BytecodeProgram))]
-public sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram>
+internal sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram>
 {
   public override async ValueTask SerializeAsync(BytecodeProgram value, IBinaryWriter writer, CancellationToken cancellationToken = default)
   {
@@ -46,14 +55,5 @@ public sealed class BytecodeProgramSerializer : BinarySerializer<BytecodeProgram
   public override ValueTask<BytecodeProgram> DeserializeAsync(IBinaryReader reader, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
-  }
-}
-
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="BytecodeProgram"/>s.</summary>
-public sealed class BytecodeProgramLoader : AssetLoader<BytecodeProgram>
-{
-  public override async ValueTask<BytecodeProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
-  {
-    return await context.Path.DeserializeBinaryAsync<BytecodeProgram>(progressToken.CancellationToken);
   }
 }

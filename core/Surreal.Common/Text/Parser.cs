@@ -243,7 +243,7 @@ public abstract class Parser<T>
     }
 
     public ParseException(LinePosition position, StringSpan span, string message)
-      : base($"{message} (at {position} in {span})")
+      : base($"{message} (at {position} in {span.Highlight("**", "**")})")
     {
       Position = position;
       Span = span;
@@ -359,9 +359,6 @@ public abstract class Parser<T>
     }
   }
 
-  /// <summary>A delegate which loads a value from some inclusion source.</summary>
-  protected delegate ValueTask<T> IncludeHandler(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default);
-
   /// <summary>Commonly used <see cref="IncludeHandler"/>s.</summary>
   protected static class IncludeHandlers
   {
@@ -390,4 +387,7 @@ public abstract class Parser<T>
       };
     }
   }
+
+  /// <summary>A delegate which loads a value from some inclusion source.</summary>
+  protected delegate ValueTask<T> IncludeHandler(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default);
 }

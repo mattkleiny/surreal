@@ -1,4 +1,5 @@
 ﻿using Surreal.Graphics.Cameras;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -6,9 +7,10 @@ using Surreal.Mathematics;
 namespace Surreal.Graphics;
 
 /// <summary>An opaque handle to a resource in the underling <see cref="IGraphicsServer"/> implementation.</summary>
-public readonly record struct GraphicsHandle(int Id)
+public readonly record struct GraphicsHandle(nint Id)
 {
-  public static implicit operator int(GraphicsHandle handle) => handle.Id;
+  public static implicit operator nint(GraphicsHandle handle) => handle.Id;
+  public static implicit operator int(GraphicsHandle handle) => (int) handle.Id;
   public static implicit operator uint(GraphicsHandle handle) => (uint) handle.Id;
 }
 
@@ -32,6 +34,9 @@ public interface IGraphicsServer
   Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged;
   void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
   void DeleteTexture(GraphicsHandle handle);
+
+  // meshes
+  void DrawMesh(GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType);
 
   // shaders
   GraphicsHandle CreateShader();

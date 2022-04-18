@@ -74,6 +74,8 @@ public sealed class GameViewWorkload : EditorWorkload, IServiceModule
 
   void IServiceModule.RegisterServices(IServiceRegistry services)
   {
+    services.AddSingleton(this);
+
     services.AddSingleton(Game);
     services.AddSingleton(ViewModel);
 

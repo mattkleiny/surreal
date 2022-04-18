@@ -190,4 +190,22 @@ public static class StringSpanExtensions
 
     return span[..offset];
   }
+
+  public static string Highlight(this StringSpan span, string leftTerminal, string rightTerminal)
+  {
+    if (span.Source == null)
+    {
+      return string.Empty;
+    }
+
+    var builder = new StringBuilder();
+
+    builder.Append(span.Source[..span.Offset]);
+    builder.Append(leftTerminal);
+    builder.Append(span.ToString());
+    builder.Append(rightTerminal);
+    builder.Append(span.Source[(span.Offset + span.Length)..]);
+
+    return builder.ToString();
+  }
 }

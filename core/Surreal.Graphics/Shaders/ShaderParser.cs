@@ -297,23 +297,39 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
     {
       var type = ParsePrimitive();
       var name = ParseIdentifier();
+
+      Consume(TokenType.Equal);
+
       var value = ParseExpression();
 
       return new ConstantDeclaration(type, name, value);
     }
 
-    private Expression ParseExpression()
+    private Expression ParseExpression(int depth = 0, int maxDepth = 32)
     {
+      if (depth > maxDepth) throw Error("Exceeded max depth");
+
       if (TryConsumeLiteral(TokenType.Number, out decimal number))
         return new Constant(number);
 
       if (TryConsumeLiteral(TokenType.String, out string value))
         return new Constant(value);
 
-      if (TryConsumeLiteral(TokenType.Identifier, out string symbol))
-        return new Symbol(symbol);
+      if (TryParseUnaryOperator(out var unaryOperator))
+        return new UnaryOperation(unaryOperator, ParseExpression(depth + 1, maxDepth));
 
-      throw new NotImplementedException();
+      // TODO: clean this up
+      var expression =
+        TryConsumeLiteralIf(TokenType.Keyword, "SAMPLE")
+          ? ParseSampleOperation()
+          : TryConsumeLiteral(TokenType.Identifier, out string identifier)
+            ? new Symbol(identifier)
+            : ParseExpression(depth + 1, maxDepth);
+
+      if (TryParseBinaryOperator(out var binaryOperator))
+        return new BinaryOperation(binaryOperator, expression, ParseExpression(depth + 1, maxDepth));
+
+      return expression;
     }
 
     private Primitive ParsePrimitive()
@@ -370,29 +386,71 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
 
     private SampleOperation ParseSampleOperation()
     {
+      Consume(TokenType.LeftParenthesis);
+
       var name = ParseIdentifier();
+
+      Consume(TokenType.Comma);
+
       var value = ParseExpression();
+
+      Consume(TokenType.RightParenthesis);
 
       return new SampleOperation(name, value);
     }
 
-    private UnaryOperator ParseUnaryOperator()
+    private bool TryParseUnaryOperator(out UnaryOperator result)
     {
-      if (TryConsume(TokenType.Minus)) return UnaryOperator.Negate;
+      if (TryConsume(TokenType.Minus))
+      {
+        result = UnaryOperator.Negate;
+        return true;
+      }
 
-      throw Error("An unrecognized token was encountered");
+      result = default;
+      return false;
     }
 
-    private BinaryOperator ParseBinaryOperator()
+    private bool TryParseBinaryOperator(out BinaryOperator result)
     {
-      if (TryConsume(TokenType.Plus)) return BinaryOperator.Add;
-      if (TryConsume(TokenType.Minus)) return BinaryOperator.Subtract;
-      if (TryConsume(TokenType.Star)) return BinaryOperator.Multiply;
-      if (TryConsume(TokenType.Slash)) return BinaryOperator.Divide;
-      if (TryConsume(TokenType.Equal)) return BinaryOperator.Equal;
-      if (TryConsume(TokenType.BangEqual)) return BinaryOperator.NotEqual;
+      if (TryConsume(TokenType.Plus))
+      {
+        result = BinaryOperator.Add;
+        return true;
+      }
 
-      throw Error("An unrecognized token was encountered");
+      if (TryConsume(TokenType.Minus))
+      {
+        result = BinaryOperator.Subtract;
+        return true;
+      }
+
+      if (TryConsume(TokenType.Star))
+      {
+        result = BinaryOperator.Multiply;
+        return true;
+      }
+
+      if (TryConsume(TokenType.Slash))
+      {
+        result = BinaryOperator.Divide;
+        return true;
+      }
+
+      if (TryConsume(TokenType.Equal))
+      {
+        result = BinaryOperator.Equal;
+        return true;
+      }
+
+      if (TryConsume(TokenType.BangEqual))
+      {
+        result = BinaryOperator.NotEqual;
+        return true;
+      }
+
+      result = default;
+      return false;
     }
 
     private ShaderSyntaxTree? ParseNull()
