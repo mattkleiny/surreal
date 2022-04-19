@@ -1,5 +1,4 @@
-﻿using Avventura.Core.Actors.Components;
-using Surreal.Attributes;
+﻿using Surreal.Attributes;
 using Surreal.Effects;
 
 namespace Avventura.Core.Actors;
@@ -31,10 +30,8 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
     StatusEffects.EffectRemoved += OnStatusEffectRemoved;
   }
 
-  public ref Transform Transform => ref GetComponent<Transform>();
-  public ref Sprite    Sprite    => ref GetComponent<Sprite>();
-  public ref Point2    Position  => ref Transform.Position;
-  public ref Glyph     Glyph     => ref Sprite.Glyph;
+  public Point2 Position { get; set; }
+  public Glyph  Glyph    { get; set; } = new('█', ConsoleColor.Red);
 
   public IPropertyCollection    Properties    { get; } = new PropertyBag();
   public StatusEffectCollection StatusEffects { get; }
@@ -72,9 +69,6 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
   {
     base.OnAwake();
 
-    AddComponent(new Transform());
-    AddComponent(new Sprite());
-
     display = Services?.GetService<IConsoleDisplay>();
   }
 
@@ -110,7 +104,11 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
   {
     base.OnDraw(time);
 
-    display?.Draw(Position.X, Position.Y, Glyph);
+    for (int x = -1; x <= 1; x++)
+    for (int y = -1; y <= 1; y++)
+    {
+      display?.Draw(Position.X + x, Position.Y + y, Glyph);
+    }
   }
 
   private void OnStatusEffectAdded(StatusEffect effect)

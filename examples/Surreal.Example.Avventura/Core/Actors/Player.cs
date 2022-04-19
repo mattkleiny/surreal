@@ -14,15 +14,18 @@ public readonly record struct PlayerLostStatus(Player Player, StatusEffect Effec
 /// <summary>The player <see cref="Character"/>.</summary>
 public sealed class Player : Character, IPersistentObject
 {
+  Guid IPersistentObject.Id { get; } = Guid.Parse("b539cfd7-f9b7-49e1-ab48-4c6d0103950f");
+
   private IKeyboardDevice? keyboard;
 
-  Guid IPersistentObject.Id { get; } = Guid.Parse("b539cfd7-f9b7-49e1-ab48-4c6d0103950f");
+  public Player()
+  {
+    Glyph = new Glyph('█', ConsoleColor.Yellow);
+  }
 
   protected override void OnAwake()
   {
     base.OnAwake();
-
-    Glyph = new Glyph('X', ConsoleColor.White, ConsoleColor.DarkBlue);
 
     keyboard = Services?.GetService<IKeyboardDevice>();
   }
@@ -41,9 +44,9 @@ public sealed class Player : Character, IPersistentObject
     var direction = Point2.Zero;
 
     if (keyboard!.IsKeyDown(Key.W)) direction.Y -= 1;
-    if (keyboard.IsKeyDown(Key.S)) direction.Y  += 1;
-    if (keyboard.IsKeyDown(Key.A)) direction.X  -= 1;
-    if (keyboard.IsKeyDown(Key.D)) direction.X  += 1;
+    if (keyboard!.IsKeyDown(Key.S)) direction.Y  += 1;
+    if (keyboard!.IsKeyDown(Key.A)) direction.X  -= 1;
+    if (keyboard!.IsKeyDown(Key.D)) direction.X  += 1;
 
     Position += direction;
   }

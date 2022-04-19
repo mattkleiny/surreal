@@ -28,7 +28,10 @@ public sealed class AvventuraGame : PrototypeGame
 
     Scene = new ActorScene(Services);
 
-    Scene.Spawn(new Player());
+    Scene.Spawn(new Player
+    {
+      Position = new Point2(16, 16),
+    });
   }
 
   protected override void BeginFrame(GameTime time)
