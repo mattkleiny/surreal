@@ -1,4 +1,4 @@
-﻿using Surreal.Components;
+﻿using Surreal.Aspects;
 using Surreal.Timing;
 
 namespace Surreal.Systems;
@@ -6,7 +6,7 @@ namespace Surreal.Systems;
 /// <summary>A simple <see cref="ComponentSystem"/> that iterates components linearly.</summary>
 public abstract class IteratingSystem : ComponentSystem
 {
-  protected IteratingSystem(ComponentMask mask)
+  protected IteratingSystem(Aspect mask)
     : base(mask)
   {
   }
@@ -15,10 +15,10 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginInput(deltaTime);
 
-    foreach (var actor in ActorIds)
-    {
-      OnInput(deltaTime, actor);
-    }
+    // foreach (var actor in ActorIds)
+    // {
+    //   OnInput(deltaTime, actor);
+    // }
 
     OnEndInput(deltaTime);
   }
@@ -39,10 +39,10 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginUpdate(deltaTime);
 
-    foreach (var actor in ActorIds)
-    {
-      OnUpdate(deltaTime, actor);
-    }
+    // foreach (var actor in ActorIds)
+    // {
+    //   OnUpdate(deltaTime, actor);
+    // }
 
     OnEndUpdate(deltaTime);
   }
@@ -63,10 +63,10 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginDraw(deltaTime);
 
-    foreach (var actor in ActorIds)
-    {
-      OnDraw(deltaTime, actor);
-    }
+    // foreach (var actor in ActorIds)
+    // {
+    //   OnDraw(deltaTime, actor);
+    // }
 
     OnEndDraw(deltaTime);
   }

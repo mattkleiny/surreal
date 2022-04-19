@@ -51,12 +51,12 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   {
     this.configuration = configuration;
 
-    Window = new OpenTKWindow(configuration);
-    AudioServer = new OpenTKAudioServer();
-    ComputeServer = new OpenTKComputeServer();
+    Window         = new OpenTKWindow(configuration);
+    AudioServer    = new OpenTKAudioServer();
+    ComputeServer  = new OpenTKComputeServer();
     GraphicsServer = new OpenTKGraphicsServer();
-    InputServer = new OpenTKInputServer(Window);
-    Dispatcher = new ImmediateDispatcher();
+    InputServer    = new OpenTKInputServer(Window);
+    Dispatcher     = new ImmediateDispatcher();
   }
 
   public event Action<int, int> Resized

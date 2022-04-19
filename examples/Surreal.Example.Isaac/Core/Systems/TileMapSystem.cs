@@ -1,4 +1,5 @@
 ﻿using Isaac.Core.Actors.Components;
+using Surreal.Aspects;
 using Surreal.Components;
 using Surreal.Systems;
 
@@ -10,7 +11,7 @@ public sealed class TileMapSystem : IteratingSystem
   private readonly IConsoleDisplay display;
 
   public TileMapSystem(IConsoleDisplay display)
-    : base(ComponentMask.Of<Transform, Sprite>())
+    : base(Aspect.Of<Transform, Sprite>())
   {
     this.display = display;
   }

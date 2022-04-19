@@ -57,13 +57,13 @@ internal sealed class OpenTKMouseDevice : IMouseDevice
     }
   }
 
-  private static OpenTK.Windowing.GraphicsLibraryFramework.MouseButton Convert(MouseButton button)
+  private static global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton Convert(MouseButton button)
   {
     switch (button)
     {
-      case MouseButton.Left:   return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Left;
-      case MouseButton.Middle: return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Middle;
-      case MouseButton.Right:  return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Right;
+      case MouseButton.Left:   return global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Left;
+      case MouseButton.Middle: return global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Middle;
+      case MouseButton.Right:  return global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Right;
 
       default:
         throw new ArgumentOutOfRangeException(nameof(button), button, "An unrecognized mouse button was requested.");

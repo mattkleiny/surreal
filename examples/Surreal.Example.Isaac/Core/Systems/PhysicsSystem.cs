@@ -1,4 +1,5 @@
 ﻿using Isaac.Core.Actors.Components;
+using Surreal.Aspects;
 using Surreal.Components;
 using Surreal.Systems;
 
@@ -8,7 +9,7 @@ namespace Isaac.Core.Systems;
 public sealed class PhysicsSystem : IteratingSystem
 {
   public PhysicsSystem()
-    : base(ComponentMask.Of<Transform, RigidBody>())
+    : base(Aspect.Of<Transform, RigidBody>())
   {
   }
 

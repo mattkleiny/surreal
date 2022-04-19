@@ -18,11 +18,16 @@ public sealed class ActorScene : IActorContext, IDisposable
   public void AddSystem(ISceneSystem system)
   {
     systems.AddLast(system);
+
+    system.Context = this;
   }
 
   public void RemoveSystem(ISceneSystem system)
   {
-    systems.Remove(system);
+    if (systems.Remove(system))
+    {
+      system.Context = null;
+    }
   }
 
   public T Spawn<T>(T actor)
