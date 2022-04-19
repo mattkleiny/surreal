@@ -1,9 +1,10 @@
-﻿using Surreal.Components;
+﻿using Surreal.Aspects;
+using Surreal.Components;
 
 namespace Surreal;
 
 /// <summary>The context in which an <see cref="Actor"/> lives; hooked up after spawning into a scene.</summary>
-public interface IActorContext
+internal interface IActorContext
 {
   ActorStatus GetStatus(ActorId id);
 
@@ -15,4 +16,6 @@ public interface IActorContext
 
   IComponentStorage<T> GetStorage<T>()
     where T : notnull, new();
+
+  void RemoveSubscription(AspectSubscription subscription);
 }

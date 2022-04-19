@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Surreal.Aspects;
 using Surreal.Components;
 using Surreal.Systems;
 using Surreal.Timing;
@@ -11,6 +12,7 @@ public sealed class ActorScene : IActorContext, IDisposable
   private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
   private readonly ComponentStorageGroup components = new();
   private readonly LinkedList<ISceneSystem> systems = new();
+  private readonly LinkedList<AspectSubscription> subscriptions = new();
   private readonly Queue<Actor> destroyQueue = new();
 
   private ulong nextActorId = 0;
@@ -19,15 +21,25 @@ public sealed class ActorScene : IActorContext, IDisposable
   {
     systems.AddLast(system);
 
-    system.Context = this;
+    system.OnAddedToScene(this);
   }
 
   public void RemoveSystem(ISceneSystem system)
   {
     if (systems.Remove(system))
     {
-      system.Context = null;
+      system.OnRemovedFromScene(this);
     }
+  }
+
+  public AspectSubscription SubscribeToAspect(Aspect aspect)
+  {
+    return new AspectSubscription(aspect, this);
+  }
+
+  public void RemoveSubscription(AspectSubscription subscription)
+  {
+    subscriptions.Remove(subscription);
   }
 
   public T Spawn<T>(T actor)
@@ -101,8 +113,6 @@ public sealed class ActorScene : IActorContext, IDisposable
         node.Data.OnUpdate(deltaTime);
       }
     }
-
-    ProcessDestroyQueue();
   }
 
   public void Draw(DeltaTime deltaTime)
@@ -134,6 +144,32 @@ public sealed class ActorScene : IActorContext, IDisposable
       {
         node.Data.OnEndFrame(deltaTime);
       }
+    }
+
+    ProcessDestroyQueue();
+    ProcessSubscriptions();
+  }
+
+  private void ProcessDestroyQueue()
+  {
+    while (destroyQueue.TryDequeue(out var actor))
+    {
+      // TODO: split these up, better FSM over internal actor states?
+      actor.OnDisable();
+      actor.OnDestroy();
+
+      actor.Disconnect(this);
+
+      nodes.Remove(actor.Id);
+      components.RemoveAll(actor.Id);
+    }
+  }
+
+  private void ProcessSubscriptions()
+  {
+    // TODO: make this work
+    foreach (var subscription in subscriptions)
+    {
     }
   }
 
@@ -175,21 +211,6 @@ public sealed class ActorScene : IActorContext, IDisposable
       node.ActorStatus = ActorStatus.Destroyed;
 
       destroyQueue.Enqueue(node.Data);
-    }
-  }
-
-  private void ProcessDestroyQueue()
-  {
-    while (destroyQueue.TryDequeue(out var actor))
-    {
-      // TODO: split these up, better FSM over actors
-      actor.OnDisable();
-      actor.OnDestroy();
-
-      actor.Disconnect(this);
-
-      nodes.Remove(actor.Id);
-      components.RemoveAll(actor.Id);
     }
   }
 
