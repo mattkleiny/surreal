@@ -104,11 +104,7 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
   {
     base.OnDraw(time);
 
-    for (int x = -1; x <= 1; x++)
-    for (int y = -1; y <= 1; y++)
-    {
-      display?.Draw(Position.X + x, Position.Y + y, Glyph);
-    }
+    display?.Draw(Position.X, Position.Y, Glyph);
   }
 
   private void OnStatusEffectAdded(StatusEffect effect)

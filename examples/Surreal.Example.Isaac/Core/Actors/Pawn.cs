@@ -49,7 +49,7 @@ public sealed class Pawn : IPawn
 
   public void Move(Vector2 direction)
   {
-    Character.Position += direction * Character.MoveSpeed;
+    throw new NotImplementedException();
   }
 
   public SteeringStatus Steer(Vector2 direction)

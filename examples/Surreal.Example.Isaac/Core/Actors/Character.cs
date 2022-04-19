@@ -39,10 +39,8 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
   public ref RigidBody RigidBody => ref GetComponent<RigidBody>();
   public ref Collider  Collider  => ref GetComponent<Collider>();
   public ref Sprite    Sprite    => ref GetComponent<Sprite>();
-  public ref Vector2   Position  => ref Transform.Position;
+  public ref Point2    Position  => ref Transform.Position;
   public ref Vector2   Velocity  => ref RigidBody.Velocity;
-  public ref Vector2   Scale     => ref Transform.Scale;
-  public ref float     Rotation  => ref Transform.Rotation;
   public ref Glyph     Glyph     => ref Sprite.Glyph;
 
   public IPropertyCollection    Properties    { get; } = new PropertyBag();

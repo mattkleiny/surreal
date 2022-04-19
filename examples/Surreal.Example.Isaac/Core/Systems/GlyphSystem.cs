@@ -38,6 +38,6 @@ public sealed class GlyphSystem : IteratingSystem
     var transform = transforms!.GetComponent(actor);
     var sprite = sprites!.GetComponent(actor);
 
-    display.Draw(16, 16, sprite.Glyph);
+    display.Draw(transform.Position.X, transform.Position.Y, sprite.Glyph);
   }
 }
