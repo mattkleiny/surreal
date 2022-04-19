@@ -10,8 +10,6 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-// TODO: move console terminal stuff here?
-
 /// <summary>Allows accessing console platform internals.</summary>
 public interface IConsolePlatformHost : IPlatformHost
 {
@@ -19,7 +17,7 @@ public interface IConsolePlatformHost : IPlatformHost
   new int Width  { get; set; }
   new int Height { get; set; }
 
-  void FillGlyph(
+  void Fill(
     char glyph,
     ConsoleColor foregroundColor = ConsoleColor.White,
     ConsoleColor backgroundColor = ConsoleColor.Black
@@ -42,6 +40,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
   private readonly SafeFileHandle consoleHandle;
   private readonly FrameCounter frameCounter = new();
 
+  private Interop.CharInfo[] backBuffer = Array.Empty<Interop.CharInfo>();
   private IntervalTimer frameDisplayTimer = new(1.Seconds());
 
   public ConsolePlatformHost(ConsoleConfiguration configuration)
@@ -113,6 +112,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
       Keyboard.Update();
       Mouse.Update();
 
+      UpdateDisplay();
+
       // show the game's FPS in the window title
       if (configuration.ShowFpsInTitle)
       {
@@ -132,18 +133,9 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     }
   }
 
-  public void FillGlyph(char glyph, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
+  private unsafe void UpdateDisplay()
   {
-    Span<Interop.CharInfo> characters = stackalloc Interop.CharInfo[Width * Height];
-
-    characters.Fill(new()
-    {
-      Attributes = ToColorAttribute(foregroundColor, backgroundColor),
-      Char = new()
-      {
-        UnicodeChar = glyph
-      },
-    });
+    EnsureBackBufferSize();
 
     var rect = new Interop.SmallRect
     {
@@ -153,53 +145,56 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
       Bottom = (short)Height
     };
 
-    var result = Interop.WriteConsoleOutputW(
-      hConsoleOutput: consoleHandle,
-      lpBuffer: ref characters[0],
-      dwBufferSize: new((short)Width, (short)Height),
-      dwBufferCoord: new(0, 0),
-      lpWriteRegion: ref rect
-    );
-
-    if (!result)
+    fixed (Interop.CharInfo* pointer = &backBuffer[0])
     {
-      throw new Win32Exception(Marshal.GetLastWin32Error());
+      var result = Interop.WriteConsoleOutputW(
+        hConsoleOutput: consoleHandle,
+        lpBuffer: pointer,
+        dwBufferSize: new((short)Width, (short)Height),
+        dwBufferCoord: new(0, 0),
+        lpWriteRegion: ref rect
+      );
+
+      if (!result)
+      {
+        throw new Win32Exception(Marshal.GetLastWin32Error());
+      }
     }
+  }
+
+  public void Fill(char glyph, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
+  {
+    EnsureBackBufferSize();
+
+    Array.Fill(backBuffer, new()
+    {
+      Attributes = ToColorAttribute(foregroundColor, backgroundColor),
+      Char = new()
+      {
+        UnicodeChar = glyph
+      },
+    });
   }
 
   public void DrawGlyph(int x, int y, char glyph, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
   {
-    Span<Interop.CharInfo> characters = stackalloc Interop.CharInfo[1]
+    EnsureBackBufferSize();
+
+    backBuffer[x + y * Width] = new()
     {
-      new()
+      Attributes = ToColorAttribute(foregroundColor, backgroundColor),
+      Char = new()
       {
-        Attributes = ToColorAttribute(foregroundColor, backgroundColor),
-        Char = new()
-        {
-          UnicodeChar = glyph
-        },
-      }
+        UnicodeChar = glyph
+      },
     };
+  }
 
-    var rect = new Interop.SmallRect
+  private void EnsureBackBufferSize()
+  {
+    if (backBuffer.Length != Width * Height)
     {
-      Left   = (short)x,
-      Top    = (short)y,
-      Right  = (short)x,
-      Bottom = (short)y
-    };
-
-    var result = Interop.WriteConsoleOutputW(
-      hConsoleOutput: consoleHandle,
-      lpBuffer: ref characters[0],
-      dwBufferSize: new(1, 1),
-      dwBufferCoord: new(0, 0),
-      lpWriteRegion: ref rect
-    );
-
-    if (!result)
-    {
-      throw new Win32Exception(Marshal.GetLastWin32Error());
+      Array.Resize(ref backBuffer, Width * Height);
     }
   }
 
@@ -385,10 +380,11 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     [DllImport("kernel32.dll", SetLastError = true)]
     public static extern unsafe bool WriteConsoleOutputW(
       SafeFileHandle hConsoleOutput,
-      ref CharInfo lpBuffer,
+      CharInfo* lpBuffer,
       Coord dwBufferSize,
       Coord dwBufferCoord,
-      ref SmallRect lpWriteRegion);
+      ref SmallRect lpWriteRegion
+    );
 
     [DllImport("Kernel32.dll", SetLastError = true)]
     public static extern bool CloseHandle(SafeFileHandle handle);

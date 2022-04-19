@@ -6,16 +6,18 @@ public sealed class AvventuraGame : PrototypeGame
 {
   public static Task Main() => StartAsync<AvventuraGame>(new Configuration
   {
-    Platform = new DesktopPlatform
+    Platform = new ConsolePlatform
     {
       Configuration =
       {
         Title          = "Avventura",
-        IsVsyncEnabled = true,
         ShowFpsInTitle = true,
+        FontSize       = 14
       },
     },
   });
+
+  public new IConsolePlatformHost Host => (IConsolePlatformHost)base.Host;
 
   protected override void Input(GameTime time)
   {
@@ -25,5 +27,13 @@ public sealed class AvventuraGame : PrototypeGame
     }
 
     base.Input(time);
+  }
+
+  protected override void Draw(GameTime time)
+  {
+    base.Draw(time);
+
+    Host.Fill(' ');
+    Host.DrawGlyph(16, 16, '█', ConsoleColor.Yellow);
   }
 }

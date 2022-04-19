@@ -27,7 +27,7 @@ await Game.StartAsync(platform, async context =>
 
     if (keyboard.IsKeyPressed(Key.Space))
     {
-      host.FillGlyph(' ');
+      host.Fill(' ');
     }
 
     for (int i = 0; i < 16; i++)
