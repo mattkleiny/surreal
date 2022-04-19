@@ -1,10 +1,12 @@
+using Surreal.Collections;
+
 namespace Surreal.Mathematics;
 
 /// <summary>Common used mathematical utilities.</summary>
 public static class Maths
 {
   public static float NextFloat(this Random random)
-    => (float) random.NextDouble();
+    => (float)random.NextDouble();
 
   public static float NextFloat(this Random random, float min, float max)
     => random.NextFloat() * (max - min) + min;
@@ -42,10 +44,21 @@ public static class Maths
   public static Vector2 NextUnitCircle(this Random random)
     => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f));
 
-  public static float DegreesToRadians(float degrees) => (float) (degrees * (Math.PI / 180));
-  public static float RadiansToDegrees(float radians) => (float) (radians * (180 / Math.PI));
+  public static TEnum NextEnum<TEnum>(this Random random)
+    where TEnum : unmanaged, Enum
+  {
+    var values = EnumExtensions.GetEnumValues<TEnum>();
 
-  public static int Lerp(int a, int b, float t) => (int) (a + t * (b - a));
+    var min = values[0].AsInt();
+    var max = values[^1].AsInt();
+
+    return random.Next(min, max).AsEnum<TEnum>();
+  }
+
+  public static float DegreesToRadians(float degrees) => (float)(degrees * (Math.PI / 180));
+  public static float RadiansToDegrees(float radians) => (float)(radians * (180 / Math.PI));
+
+  public static int Lerp(int a, int b, float t) => (int)(a + t * (b - a));
   public static float Lerp(float a, float b, float t) => a + t * (b - a);
 
   public static int Wrap(int value, int lower, int upper)

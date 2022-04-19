@@ -1,5 +1,4 @@
 ﻿using Surreal.Input.Keyboard;
-using Surreal.Terminals;
 
 var platform = new ConsolePlatform
 {
@@ -14,30 +13,30 @@ var platform = new ConsolePlatform
 
 await Game.StartAsync(platform, async context =>
 {
+  var host = context.Services.GetRequiredService<IConsolePlatformHost>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
-
-  using var terminal = new ConsoleTerminal();
 
   var random = Random.Shared;
 
-  var color1 = random.NextColor();
-  var color2 = random.NextColor();
-
-  var glyph = new Glyph('X', color1, color2);
-
   await context.ExecuteAsync(_ =>
   {
-    if (keyboard.IsKeyDown(Key.Escape))
+    if (keyboard.IsKeyPressed(Key.Escape))
     {
       context.Exit();
     }
 
+    if (keyboard.IsKeyPressed(Key.Space))
+    {
+      host.FillGlyph(' ');
+    }
+
     for (int i = 0; i < 16; i++)
     {
-      var x = random.Next(0, terminal.Width);
-      var y = random.Next(0, terminal.Height);
+      var x = random.Next(0, host.Width);
+      var y = random.Next(0, host.Height);
+      var color = random.NextEnum<ConsoleColor>();
 
-      terminal.DrawGlyph(x, y, glyph);
+      host.DrawGlyph(x, y, '█', color);
     }
   });
 });

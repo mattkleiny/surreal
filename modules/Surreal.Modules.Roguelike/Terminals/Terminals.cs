@@ -1,7 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-using Microsoft.Win32.SafeHandles;
-using Surreal.Graphics;
+﻿using Surreal.Graphics;
 using Surreal.Mathematics;
 
 namespace Surreal.Terminals;
@@ -91,11 +88,11 @@ public sealed class TerminalSlice : Terminal
 
   public TerminalSlice(int offsetX, int offsetY, int width, int height, Terminal terminal)
   {
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
+    this.offsetX  = offsetX;
+    this.offsetY  = offsetY;
     this.terminal = terminal;
 
-    Width = width;
+    Width  = width;
     Height = height;
   }
 
@@ -118,126 +115,15 @@ public sealed class TerminalSlice : Terminal
 }
 
 /// <summary>A <see cref="Terminal"/> that renders to the attached <see cref="Console"/>.</summary>
-[SupportedOSPlatform("windows")]
-public sealed class ConsoleTerminal : Terminal, IDisposable
+public sealed class ConsoleTerminal : Terminal
 {
-  private SafeFileHandle consoleHandle;
-  private bool isDisposed;
-
-  public ConsoleTerminal()
-  {
-    Initialize();
-  }
-
-  [STAThread]
-  private void Initialize()
-  {
-    consoleHandle = Interop.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, FileMode.Open, 0, IntPtr.Zero);
-
-    if (consoleHandle.IsInvalid)
-    {
-      throw new InvalidOperationException("Failed to acquire handle to attached console");
-    }
-  }
-
-  ~ConsoleTerminal()
-  {
-    Dispose(managed: false);
-  }
-
-  public override int Width  => 180;
-  public override int Height => 150;
+  public override int Width  => Console.BufferWidth;
+  public override int Height => Console.BufferHeight;
 
   public override void DrawGlyph(int x, int y, in Glyph glyph)
   {
-    var characters = new Interop.CharInfo[]
-    {
-      new()
-      {
-        Char = new Interop.CharUnion { AsciiChar = Convert.ToByte(glyph.Symbol) }
-      }
-    };
-
-    var rect = new Interop.SmallRect
-    {
-      Left = (short)x,
-      Top = (short)y,
-      Right = (short)(x + 1),
-      Bottom = (short)(y + 1)
-    };
-
-    Interop.WriteConsoleOutputW(consoleHandle, characters, new Interop.Coord { X = 1, Y = 1 }, new Interop.Coord { X = (short)x, Y = (short)y }, ref rect);
-  }
-
-  public void Dispose()
-  {
-    if (!isDisposed)
-    {
-      Dispose(true);
-
-      GC.SuppressFinalize(this);
-      isDisposed = true;
-    }
-  }
-
-  private void Dispose(bool managed)
-  {
-    Interop.CloseHandle(consoleHandle);
-  }
-
-  private static class Interop
-  {
-    [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    public static extern SafeFileHandle CreateFile(
-      string fileName,
-      [MarshalAs(UnmanagedType.U4)] uint fileAccess,
-      [MarshalAs(UnmanagedType.U4)] uint fileShare,
-      IntPtr securityAttributes,
-      [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition,
-      [MarshalAs(UnmanagedType.U4)] int flags,
-      IntPtr template
-    );
-
-    [DllImport("Kernel32.dll", SetLastError = true)]
-    public static extern bool CloseHandle(SafeFileHandle handle);
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern bool WriteConsoleOutputW(
-      SafeFileHandle hConsoleOutput,
-      CharInfo[] lpBuffer,
-      Coord dwBufferSize,
-      Coord dwBufferCoord,
-      ref SmallRect lpWriteRegion);
-
-    [StructLayout(LayoutKind.Sequential)]
-    public record struct Coord(short X, short Y)
-    {
-      public short X = X;
-      public short Y = Y;
-    };
-
-    [StructLayout(LayoutKind.Explicit)]
-    public struct CharUnion
-    {
-      [FieldOffset(0)] public ushort UnicodeChar;
-      [FieldOffset(0)] public byte AsciiChar;
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    public struct CharInfo
-    {
-      [FieldOffset(0)] public CharUnion Char;
-      [FieldOffset(2)] public short Attributes;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct SmallRect
-    {
-      public short Left;
-      public short Top;
-      public short Right;
-      public short Bottom;
-    }
+    Console.SetCursorPosition(x, y);
+    Console.Write(glyph.Symbol);
   }
 }
 

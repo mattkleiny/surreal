@@ -10,12 +10,28 @@ using Surreal.Timing;
 
 namespace Surreal;
 
+// TODO: move console terminal stuff here?
+
 /// <summary>Allows accessing console platform internals.</summary>
 public interface IConsolePlatformHost : IPlatformHost
 {
-  string Title  { get; set; }
-  int    Width  { get; set; }
-  int    Height { get; set; }
+  string  Title  { get; set; }
+  new int Width  { get; set; }
+  new int Height { get; set; }
+
+  void FillGlyph(
+    char glyph,
+    ConsoleColor foregroundColor = ConsoleColor.White,
+    ConsoleColor backgroundColor = ConsoleColor.Black
+  );
+
+  void DrawGlyph(
+    int x,
+    int y,
+    char glyph,
+    ConsoleColor foregroundColor = ConsoleColor.White,
+    ConsoleColor backgroundColor = ConsoleColor.Black
+  );
 }
 
 /// <summary>The <see cref="IPlatformHost"/> for <see cref="ConsolePlatform"/>.</summary>
@@ -23,8 +39,9 @@ public interface IConsolePlatformHost : IPlatformHost
 internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
 {
   private readonly ConsoleConfiguration configuration;
-
+  private readonly SafeFileHandle consoleHandle;
   private readonly FrameCounter frameCounter = new();
+
   private IntervalTimer frameDisplayTimer = new(1.Seconds());
 
   public ConsolePlatformHost(ConsoleConfiguration configuration)
@@ -41,12 +58,22 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
 
     Mouse.IsCursorVisible = false; // disable by default
 
+    var width = Math.Min(Console.LargestWindowWidth, configuration.Width);
+    var height = Math.Min(Console.LargestWindowHeight, configuration.Height);
+
     Interop.SetCurrentFont(configuration.Font, configuration.FontSize);
 
-    Console.SetWindowSize(configuration.Width + 1, configuration.Height + 2);
-    Console.SetBufferSize(configuration.Width + 1, configuration.Height + 2);
+    Console.SetWindowSize(width, height);
+    Console.SetBufferSize(width, height);
 
     Console.CancelKeyPress += (_, _) => IsClosing = true;
+
+    consoleHandle = Interop.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, FileMode.Open, 0, IntPtr.Zero);
+
+    if (consoleHandle.IsInvalid)
+    {
+      throw new InvalidOperationException("Failed to acquire handle to attached console");
+    }
   }
 
   public event Action<int, int>? Resized;
@@ -105,8 +132,97 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     }
   }
 
+  public void FillGlyph(char glyph, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
+  {
+    Span<Interop.CharInfo> characters = stackalloc Interop.CharInfo[Width * Height];
+
+    characters.Fill(new()
+    {
+      Attributes = ToColorAttribute(foregroundColor, backgroundColor),
+      Char = new()
+      {
+        UnicodeChar = glyph
+      },
+    });
+
+    var rect = new Interop.SmallRect
+    {
+      Left   = 0,
+      Top    = 0,
+      Right  = (short)Width,
+      Bottom = (short)Height
+    };
+
+    var result = Interop.WriteConsoleOutputW(
+      hConsoleOutput: consoleHandle,
+      lpBuffer: ref characters[0],
+      dwBufferSize: new((short)Width, (short)Height),
+      dwBufferCoord: new(0, 0),
+      lpWriteRegion: ref rect
+    );
+
+    if (!result)
+    {
+      throw new Win32Exception(Marshal.GetLastWin32Error());
+    }
+  }
+
+  public void DrawGlyph(int x, int y, char glyph, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
+  {
+    Span<Interop.CharInfo> characters = stackalloc Interop.CharInfo[1]
+    {
+      new()
+      {
+        Attributes = ToColorAttribute(foregroundColor, backgroundColor),
+        Char = new()
+        {
+          UnicodeChar = glyph
+        },
+      }
+    };
+
+    var rect = new Interop.SmallRect
+    {
+      Left   = (short)x,
+      Top    = (short)y,
+      Right  = (short)x,
+      Bottom = (short)y
+    };
+
+    var result = Interop.WriteConsoleOutputW(
+      hConsoleOutput: consoleHandle,
+      lpBuffer: ref characters[0],
+      dwBufferSize: new(1, 1),
+      dwBufferCoord: new(0, 0),
+      lpWriteRegion: ref rect
+    );
+
+    if (!result)
+    {
+      throw new Win32Exception(Marshal.GetLastWin32Error());
+    }
+  }
+
+  private static short ToColorAttribute(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+  {
+    static int Cast(ConsoleColor color, bool isBackground)
+    {
+      var colorAttribute = (color & ~ConsoleColor.White) == ConsoleColor.Black ? (short)color : throw new InvalidOperationException();
+
+      if (isBackground)
+      {
+        colorAttribute = (short)(colorAttribute << 4);
+      }
+
+      return colorAttribute;
+    }
+
+    return (short)(Cast(foregroundColor, false) | Cast(backgroundColor, true));
+  }
+
   public void Dispose()
   {
+    Interop.CloseHandle(consoleHandle);
   }
 
   void IServiceModule.RegisterServices(IServiceRegistry services)
@@ -119,6 +235,9 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
   /// <summary>A <see cref="IKeyboardDevice"/> for the Win32 console.</summary>
   private sealed class ConsoleKeyboardDevice : IKeyboardDevice
   {
+    private HashSet<Key> pressedLastFrame = new();
+    private HashSet<Key> pressedThisFrame = new();
+
     public event Action<Key>? KeyPressed;
     public event Action<Key>? KeyReleased;
 
@@ -134,16 +253,34 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
 
     public bool IsKeyPressed(Key key)
     {
-      return false;
+      return pressedThisFrame.Contains(key) && !pressedLastFrame.Contains(key);
     }
 
     public bool IsKeyReleased(Key key)
     {
-      return false;
+      return pressedLastFrame.Contains(key) && !pressedThisFrame.Contains(key);
     }
 
     public void Update()
     {
+      // clear the back buffer
+      pressedLastFrame.Clear();
+
+      foreach (var key in pressedThisFrame)
+      {
+        pressedLastFrame.Add(key);
+      }
+
+      pressedThisFrame.Clear();
+
+      // update manually by checking each mapped scan code
+      foreach (var key in ScanCodes.Keys)
+      {
+        if (IsKeyDown(key))
+        {
+          pressedThisFrame.Add(key);
+        }
+      }
     }
 
     /// <summary>A mapping of <see cref="Key"/> to Win32 scan codes.</summary>
@@ -151,6 +288,10 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     {
       [Key.Escape] = 0x1B,
       [Key.Space]  = 0x20,
+      [Key.W]      = 0x57,
+      [Key.S]      = 0x53,
+      [Key.A]      = 0x41,
+      [Key.D]      = 0x44,
     };
   }
 
@@ -217,10 +358,18 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     public static extern IntPtr GetStdHandle(int nStdHandle);
 
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    public static extern bool SetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool MaximumWindow, ref FontInfo ConsoleCurrentFontEx);
+    public static extern bool SetCurrentConsoleFontEx(
+      IntPtr hConsoleOutput,
+      bool MaximumWindow,
+      ref FontInfo ConsoleCurrentFontEx
+    );
 
     [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    public static extern bool GetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool MaximumWindow, ref FontInfo ConsoleCurrentFontEx);
+    public static extern bool GetCurrentConsoleFontEx(
+      IntPtr hConsoleOutput,
+      bool MaximumWindow,
+      ref FontInfo ConsoleCurrentFontEx
+    );
 
     [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern SafeFileHandle CreateFile(
@@ -234,9 +383,9 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     );
 
     [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern bool WriteConsoleOutputW(
+    public static extern unsafe bool WriteConsoleOutputW(
       SafeFileHandle hConsoleOutput,
-      CharInfo[] lpBuffer,
+      ref CharInfo lpBuffer,
       Coord dwBufferSize,
       Coord dwBufferCoord,
       ref SmallRect lpWriteRegion);
