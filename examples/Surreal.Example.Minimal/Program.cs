@@ -1,11 +1,10 @@
 ﻿using Surreal.Input.Keyboard;
-using Surreal.Terminals;
 
 var platform = new DesktopPlatform
 {
   Configuration =
   {
-    Title = "Hello, Surreal!",
+    Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
   },
@@ -21,9 +20,6 @@ await Game.StartAsync(platform, async context =>
   var color1 = random.NextColor();
   var color2 = random.NextColor();
 
-  var terminal = new GraphicsTerminal(graphics, 256, 256);
-  var glyph = new Glyph('X', color1, color2);
-
   await context.ExecuteAsync(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
@@ -31,16 +27,6 @@ await Game.StartAsync(platform, async context =>
       context.Exit();
     }
 
-    graphics.ClearColorBuffer(Color.Lerp(color1, color2, MathF.Sin((float) time.TotalTime.TotalSeconds)));
-
-    for (int i = 0; i < 16; i++)
-    {
-      var x = random.Next(0, terminal.Width);
-      var y = random.Next(0, terminal.Height);
-
-      terminal.DrawGlyph(x, y, glyph);
-    }
-
-    terminal.Flush();
+    graphics.ClearColorBuffer(Color.Lerp(color1, color2, MathF.Sin((float)time.TotalTime.TotalSeconds)));
   });
 });

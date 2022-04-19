@@ -14,16 +14,19 @@ public sealed class IsaacGame : PrototypeGame
 
   public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
-    Platform = new DesktopPlatform
+    Platform = new ConsolePlatform
     {
       Configuration =
       {
-        Title = "The Binding of Isaac",
-        IsVsyncEnabled = true,
+        Title          = "The Binding of Isaac",
         ShowFpsInTitle = true,
+        FontSize       = 14
       },
     },
   });
+
+  public new IConsolePlatformHost Host    => (IConsolePlatformHost)base.Host;
+  public     IConsoleDisplay      Display => Host.Display;
 
   public ActorScene Scene { get; } = new();
 
@@ -31,15 +34,13 @@ public sealed class IsaacGame : PrototypeGame
   {
     base.Initialize();
 
-    player = Scene.Spawn(new Player());
+    player  = Scene.Spawn(new Player());
     dungeon = Scene.Spawn(new Dungeon(DungeonBlueprint.Simple));
-
-    batch = new SpriteBatch(GraphicsServer, spriteCount: (15 * 9) * 2 + 32);
 
     Scene.AddSystem(new KeyboardSystem(new Pawn(player), Keyboard));
     Scene.AddSystem(new PhysicsSystem());
-    Scene.AddSystem(new SpriteSystem(batch));
-    Scene.AddSystem(new TileMapSystem(batch));
+    Scene.AddSystem(new GlyphSystem(Display));
+    Scene.AddSystem(new TileMapSystem(Display));
   }
 
   protected override void BeginFrame(GameTime time)
@@ -71,6 +72,8 @@ public sealed class IsaacGame : PrototypeGame
   protected override void Draw(GameTime time)
   {
     base.Draw(time);
+
+    Display.Fill(' ');
 
     Scene.Draw(time.DeltaTime);
   }

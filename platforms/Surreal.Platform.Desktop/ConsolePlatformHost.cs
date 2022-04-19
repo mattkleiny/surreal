@@ -10,6 +10,27 @@ using Surreal.Timing;
 
 namespace Surreal;
 
+/// <summary>A rune that can be painted to a <see cref="IConsoleDisplay"/>.</summary>
+public readonly record struct Glyph(
+  char Character,
+  ConsoleColor ForegroundColor = ConsoleColor.White,
+  ConsoleColor BackgroundColor = ConsoleColor.Black)
+{
+  public static implicit operator Glyph(char character) => new(character);
+}
+
+/// <summary>Allows managing the console display.</summary>
+public interface IConsoleDisplay
+{
+  int Width  { get; set; }
+  int Height { get; set; }
+
+  void Fill(Glyph glyph);
+  void Draw(int x, int y, Glyph glyph);
+
+  void Flush();
+}
+
 /// <summary>Allows accessing console platform internals.</summary>
 public interface IConsolePlatformHost : IPlatformHost
 {
@@ -17,24 +38,12 @@ public interface IConsolePlatformHost : IPlatformHost
   new int Width  { get; set; }
   new int Height { get; set; }
 
-  void Fill(
-    char glyph,
-    ConsoleColor foregroundColor = ConsoleColor.White,
-    ConsoleColor backgroundColor = ConsoleColor.Black
-  );
-
-  void DrawGlyph(
-    int x,
-    int y,
-    char glyph,
-    ConsoleColor foregroundColor = ConsoleColor.White,
-    ConsoleColor backgroundColor = ConsoleColor.Black
-  );
+  IConsoleDisplay Display { get; }
 }
 
 /// <summary>The <see cref="IPlatformHost"/> for <see cref="ConsolePlatform"/>.</summary>
 [SupportedOSPlatform("windows")]
-internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
+internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDisplay, IServiceModule
 {
   private readonly ConsoleConfiguration configuration;
   private readonly SafeFileHandle consoleHandle;
@@ -102,17 +111,18 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
   public bool IsFocused => true;
   public bool IsClosing { get; private set; }
 
-  public IServiceModule Services   => this;
-  public IDispatcher    Dispatcher { get; }
+  public IServiceModule  Services   => this;
+  public IConsoleDisplay Display    => this;
+  public IDispatcher     Dispatcher { get; }
 
   public void Tick(DeltaTime deltaTime)
   {
     if (!IsClosing)
     {
+      Display.Flush();
+
       Keyboard.Update();
       Mouse.Update();
-
-      UpdateDisplay();
 
       // show the game's FPS in the window title
       if (configuration.ShowFpsInTitle)
@@ -133,7 +143,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     }
   }
 
-  private unsafe void UpdateDisplay()
+  unsafe void IConsoleDisplay.Flush()
   {
     EnsureBackBufferSize();
 
@@ -162,30 +172,30 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     }
   }
 
-  public void Fill(char glyph, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
+  void IConsoleDisplay.Fill(Glyph glyph)
   {
     EnsureBackBufferSize();
 
     Array.Fill(backBuffer, new()
     {
-      Attributes = ToColorAttribute(foregroundColor, backgroundColor),
+      Attributes = ToColorAttribute(glyph.ForegroundColor, glyph.BackgroundColor),
       Char = new()
       {
-        UnicodeChar = glyph
+        UnicodeChar = glyph.Character
       },
     });
   }
 
-  public void DrawGlyph(int x, int y, char glyph, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
+  void IConsoleDisplay.Draw(int x, int y, Glyph glyph)
   {
     EnsureBackBufferSize();
 
     backBuffer[x + y * Width] = new()
     {
-      Attributes = ToColorAttribute(foregroundColor, backgroundColor),
+      Attributes = ToColorAttribute(glyph.ForegroundColor, glyph.BackgroundColor),
       Char = new()
       {
-        UnicodeChar = glyph
+        UnicodeChar = glyph.Character
       },
     };
   }
@@ -225,6 +235,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
     services.AddSingleton<IConsolePlatformHost>(this);
     services.AddSingleton<IKeyboardDevice>(Keyboard);
     services.AddSingleton<IMouseDevice>(Mouse);
+    services.AddSingleton(Display);
   }
 
   /// <summary>A <see cref="IKeyboardDevice"/> for the Win32 console.</summary>

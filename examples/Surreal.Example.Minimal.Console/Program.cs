@@ -13,7 +13,7 @@ var platform = new ConsolePlatform
 
 await Game.StartAsync(platform, async context =>
 {
-  var host = context.Services.GetRequiredService<IConsolePlatformHost>();
+  var display = context.Services.GetRequiredService<IConsoleDisplay>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
 
   var random = Random.Shared;
@@ -27,16 +27,16 @@ await Game.StartAsync(platform, async context =>
 
     if (keyboard.IsKeyPressed(Key.Space))
     {
-      host.Fill(' ');
+      display.Fill(' ');
     }
 
     for (int i = 0; i < 16; i++)
     {
-      var x = random.Next(0, host.Width);
-      var y = random.Next(0, host.Height);
+      var x = random.Next(0, display.Width);
+      var y = random.Next(0, display.Height);
       var color = random.NextEnum<ConsoleColor>();
 
-      host.DrawGlyph(x, y, '█', color);
+      display.Draw(x, y, new Glyph('█', color));
     }
   });
 });

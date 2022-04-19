@@ -17,7 +17,8 @@ public sealed class AvventuraGame : PrototypeGame
     },
   });
 
-  public new IConsolePlatformHost Host => (IConsolePlatformHost)base.Host;
+  public new IConsolePlatformHost Host    => (IConsolePlatformHost)base.Host;
+  public     IConsoleDisplay      Display => Host.Display;
 
   protected override void Input(GameTime time)
   {
@@ -33,7 +34,7 @@ public sealed class AvventuraGame : PrototypeGame
   {
     base.Draw(time);
 
-    Host.Fill(' ');
-    Host.DrawGlyph(16, 16, '█', ConsoleColor.Yellow);
+    Display.Fill(' ');
+    Display.Draw(16, 16, new Glyph('█', ConsoleColor.Yellow));
   }
 }

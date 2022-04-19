@@ -24,14 +24,14 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
 {
   public Character()
   {
-    Health = 10;
-    MoveSpeed = 4;
+    Health      = 10;
+    MoveSpeed   = 4;
     AttackSpeed = 4;
-    Range = 2;
+    Range       = 2;
 
     StatusEffects = new(this);
 
-    StatusEffects.EffectAdded += OnStatusAdded;
+    StatusEffects.EffectAdded   += OnStatusAdded;
     StatusEffects.EffectRemoved += OnStatusRemoved;
   }
 
@@ -43,7 +43,7 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
   public ref Vector2   Velocity  => ref RigidBody.Velocity;
   public ref Vector2   Scale     => ref Transform.Scale;
   public ref float     Rotation  => ref Transform.Rotation;
-  public ref Color     Tint      => ref Sprite.Tint;
+  public ref Glyph     Glyph     => ref Sprite.Glyph;
 
   public IPropertyCollection    Properties    { get; } = new PropertyBag();
   public StatusEffectCollection StatusEffects { get; }
