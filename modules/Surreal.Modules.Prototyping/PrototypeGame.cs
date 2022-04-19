@@ -46,39 +46,51 @@ public abstract class PrototypeGame : Game
     manager.AddLoader(new BlueprintDeclarationLoader());
 
     // audio
-    manager.AddLoader(new AudioBufferLoader());
-    manager.AddLoader(new AudioClipLoader(AudioServer));
+    if (Services.TryGetService(out IAudioServer audioServer))
+    {
+      manager.AddLoader(new AudioBufferLoader());
+      manager.AddLoader(new AudioClipLoader(audioServer));
+    }
 
     // graphics
-    manager.AddLoader(new BitmapFontLoader(GraphicsServer));
-    manager.AddLoader(new ColorPaletteLoader());
-    manager.AddLoader(new ImageLoader());
-    manager.AddLoader(new MaterialLoader());
-    manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));
-    manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(Assets), ".shade"));
-    manager.AddLoader(new TextureLoader(GraphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
-    manager.AddLoader(new TextureRegionLoader());
-    manager.AddLoader(new TrueTypeFontLoader());
-    manager.AddLoader(new AsepriteImporter
+    if (Services.TryGetService(out IGraphicsServer graphicsServer))
     {
-      FilterMode = TextureFilterMode.Point,
-      PixelsPerUnit = 16,
-      FramesPerSecond = 8,
-      TransparencyMask = new Color32(255, 0, 255),
-      AnimationFlags = SpriteAnimationFlags.Looping
-    });
+      manager.AddLoader(new BitmapFontLoader(graphicsServer));
+      manager.AddLoader(new ColorPaletteLoader());
+      manager.AddLoader(new ImageLoader());
+      manager.AddLoader(new MaterialLoader());
+      manager.AddLoader(new ShaderProgramLoader(graphicsServer, ".shade"));
+      manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(Assets), ".shade"));
+      manager.AddLoader(new TextureLoader(graphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
+      manager.AddLoader(new TextureRegionLoader());
+      manager.AddLoader(new TrueTypeFontLoader());
+      manager.AddLoader(new AsepriteImporter
+      {
+        FilterMode       = TextureFilterMode.Point,
+        PixelsPerUnit    = 16,
+        FramesPerSecond  = 8,
+        TransparencyMask = new Color32(255, 0, 255),
+        AnimationFlags   = SpriteAnimationFlags.Looping
+      });
+    }
   }
 
   protected override void OnResized(int width, int height)
   {
     base.OnResized(width, height);
 
-    GraphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
+    if (Services.TryGetService(out IGraphicsServer graphicsServer))
+    {
+      graphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
+    }
   }
 
   protected override void BeginFrame(GameTime time)
   {
-    GraphicsServer.ClearColorBuffer(ClearColor);
+    if (Services.TryGetService(out IGraphicsServer graphicsServer))
+    {
+      graphicsServer.ClearColorBuffer(ClearColor);
+    }
 
     base.BeginFrame(time);
   }
@@ -87,6 +99,9 @@ public abstract class PrototypeGame : Game
   {
     base.EndFrame(time);
 
-    GraphicsServer.FlushToDevice();
+    if (Services.TryGetService(out IGraphicsServer graphicsServer))
+    {
+      graphicsServer.FlushToDevice();
+    }
   }
 }

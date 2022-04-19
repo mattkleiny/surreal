@@ -96,6 +96,12 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
           Title = $"{configuration.Title} - {frameCounter.FramesPerSecond:F} FPS";
         }
       }
+
+      // sleep if we're running too quickly
+      if (deltaTime < configuration.TargetDeltaTime)
+      {
+        Thread.Sleep(configuration.TargetDeltaTime - deltaTime);
+      }
     }
   }
 

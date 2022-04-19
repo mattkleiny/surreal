@@ -1,4 +1,6 @@
-﻿namespace Surreal;
+﻿using Surreal.Timing;
+
+namespace Surreal;
 
 /// <summary>Configuration for the <see cref="ConsolePlatform"/>.</summary>
 public sealed record ConsoleConfiguration
@@ -11,6 +13,9 @@ public sealed record ConsoleConfiguration
 
   /// <summary>Periodically add the FPS to the console title?</summary>
   public bool ShowFpsInTitle { get; set; } = false;
+
+  /// <summary>A time limit on frames per second.</summary>
+  public TimeSpan TargetDeltaTime { get; set; } = 16.Milliseconds();
 }
 
 /// <summary>A <see cref="IPlatform"/> for console-only desktop environments.</summary>

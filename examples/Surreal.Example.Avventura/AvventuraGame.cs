@@ -6,12 +6,11 @@ public sealed class AvventuraGame : PrototypeGame
 {
   public static Task Main() => StartAsync<AvventuraGame>(new Configuration
   {
-    Platform = new DesktopPlatform
+    Platform = new ConsolePlatform
     {
       Configuration =
       {
-        Title = "Avventura",
-        IsVsyncEnabled = true,
+        Title          = "Avventura",
         ShowFpsInTitle = true,
       },
     },

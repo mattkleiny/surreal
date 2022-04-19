@@ -6,7 +6,6 @@ namespace Surreal;
 /// <summary>A <see cref="IServiceRegistry"/> that wraps a <see cref="IServiceCollection"/>.</summary>
 public sealed class ServiceRegistry : IServiceRegistry
 {
-  private readonly Dictionary<Type, object> resolutionCache = new();
   private readonly ServiceCollection collection = new();
 
   private ServiceProvider? provider;
@@ -61,24 +60,10 @@ public sealed class ServiceRegistry : IServiceRegistry
     if (isDirty || provider == null)
     {
       provider = collection.BuildServiceProvider();
-
-      resolutionCache.Clear();
-      isDirty = false;
+      isDirty  = false;
     }
 
-    if (resolutionCache.TryGetValue(serviceType, out var service))
-    {
-      return service;
-    }
-
-    service = provider.GetService(serviceType);
-
-    if (service != null)
-    {
-      resolutionCache[serviceType] = service;
-    }
-
-    return service;
+    return provider.GetService(serviceType);
   }
 
   public void Dispose()

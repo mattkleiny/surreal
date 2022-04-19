@@ -112,3 +112,28 @@ public sealed class FixedStepLoopStrategy : ILoopStrategy
     target.EndFrame(time);
   }
 }
+
+/// <summary>A <see cref="ILoopStrategy"/> that waits if we're running too quickly.</summary>
+public sealed class ChillLoopStrategy : ILoopStrategy
+{
+  private readonly ILoopStrategy innerStrategy;
+
+  public ChillLoopStrategy(ILoopStrategy innerStrategy)
+  {
+    this.innerStrategy = innerStrategy;
+  }
+
+  public TimeSpan DesiredDeltaTime { get; set; } = 16.Milliseconds();
+
+  public void Tick(ILoopTarget target, DeltaTime deltaTime, TimeSpan totalTime)
+  {
+    innerStrategy.Tick(target, deltaTime, totalTime);
+
+    if (deltaTime < DesiredDeltaTime)
+    {
+      var waitTime = DesiredDeltaTime - deltaTime;
+
+      Thread.Sleep(waitTime);
+    }
+  }
+}
