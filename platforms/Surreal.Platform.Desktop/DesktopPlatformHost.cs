@@ -110,6 +110,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
 
   void IServiceModule.RegisterServices(IServiceRegistry services)
   {
+    services.AddSingleton<IDesktopPlatformHost>(this);
     services.AddSingleton<IDesktopWindow>(Window);
     services.AddSingleton<IAudioServer>(AudioServer);
     services.AddSingleton<IComputeServer>(ComputeServer);

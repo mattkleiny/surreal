@@ -13,6 +13,13 @@ using Surreal.Timing;
 
 namespace Surreal;
 
+/// <summary>A specialization of <see cref="IPlatformHost"/> for headless environments.</summary>
+public interface IHeadlessPlatformHost : IPlatformHost
+{
+  IHeadlessKeyboardDevice Keyboard { get; }
+  IHeadlessMouseDevice    Mouse    { get; }
+}
+
 internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModule
 {
   public event Action<int, int> Resized = null!;
@@ -46,6 +53,7 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
 
   void IServiceModule.RegisterServices(IServiceRegistry services)
   {
+    services.AddSingleton<IHeadlessPlatformHost>(this);
     services.AddSingleton<IAudioServer>(AudioServer);
     services.AddSingleton<IComputeServer>(ComputeServer);
     services.AddSingleton<IGraphicsServer>(GraphicsServer);

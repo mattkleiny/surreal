@@ -1,5 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using Microsoft.Win32.SafeHandles;
+using Surreal.Diagnostics;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Threading;
@@ -7,18 +10,43 @@ using Surreal.Timing;
 
 namespace Surreal;
 
+/// <summary>Allows accessing console platform internals.</summary>
+public interface IConsolePlatformHost : IPlatformHost
+{
+  string Title  { get; set; }
+  int    Width  { get; set; }
+  int    Height { get; set; }
+}
+
 /// <summary>The <see cref="IPlatformHost"/> for <see cref="ConsolePlatform"/>.</summary>
-internal sealed class ConsolePlatformHost : IPlatformHost, IServiceModule
+[SupportedOSPlatform("windows")]
+internal sealed class ConsolePlatformHost : IConsolePlatformHost, IServiceModule
 {
   private readonly ConsoleConfiguration configuration;
+
+  private readonly FrameCounter frameCounter = new();
+  private IntervalTimer frameDisplayTimer = new(1.Seconds());
 
   public ConsolePlatformHost(ConsoleConfiguration configuration)
   {
     this.configuration = configuration;
 
-    Keyboard = new ConsoleKeyboardDevice();
-    Mouse = new ConsoleMouseDevice();
+    Keyboard   = new ConsoleKeyboardDevice();
+    Mouse      = new ConsoleMouseDevice();
     Dispatcher = new ImmediateDispatcher();
+
+    Title  = configuration.Title;
+    Width  = configuration.Width;
+    Height = configuration.Height;
+
+    Mouse.IsCursorVisible = false; // disable by default
+
+    Interop.SetCurrentFont(configuration.Font, configuration.FontSize);
+
+    Console.SetWindowSize(configuration.Width + 1, configuration.Height + 2);
+    Console.SetBufferSize(configuration.Width + 1, configuration.Height + 2);
+
+    Console.CancelKeyPress += (_, _) => IsClosing = true;
   }
 
   public event Action<int, int>? Resized;
@@ -26,19 +54,49 @@ internal sealed class ConsolePlatformHost : IPlatformHost, IServiceModule
   private ConsoleKeyboardDevice Keyboard { get; }
   private ConsoleMouseDevice    Mouse    { get; }
 
-  public int  Width     => Console.BufferWidth;
-  public int  Height    => Console.BufferHeight;
+  public string Title
+  {
+    get => Console.Title;
+    set => Console.Title = value;
+  }
+
+  public int Width
+  {
+    get => Console.BufferWidth;
+    set => Console.BufferWidth = value;
+  }
+
+  public int Height
+  {
+    get => Console.BufferHeight;
+    set => Console.BufferHeight = value;
+  }
+
   public bool IsVisible => true;
   public bool IsFocused => true;
-  public bool IsClosing => false;
+  public bool IsClosing { get; private set; }
 
   public IServiceModule Services   => this;
   public IDispatcher    Dispatcher { get; }
 
   public void Tick(DeltaTime deltaTime)
   {
-    Keyboard.Update();
-    Mouse.Update();
+    if (!IsClosing)
+    {
+      Keyboard.Update();
+      Mouse.Update();
+
+      // show the game's FPS in the window title
+      if (configuration.ShowFpsInTitle)
+      {
+        frameCounter.Tick(deltaTime);
+
+        if (frameDisplayTimer.Tick(deltaTime))
+        {
+          Title = $"{configuration.Title} - {frameCounter.FramesPerSecond:F} FPS";
+        }
+      }
+    }
   }
 
   public void Dispose()
@@ -47,10 +105,12 @@ internal sealed class ConsolePlatformHost : IPlatformHost, IServiceModule
 
   void IServiceModule.RegisterServices(IServiceRegistry services)
   {
+    services.AddSingleton<IConsolePlatformHost>(this);
     services.AddSingleton<IKeyboardDevice>(Keyboard);
     services.AddSingleton<IMouseDevice>(Mouse);
   }
 
+  /// <summary>A <see cref="IKeyboardDevice"/> for the Win32 console.</summary>
   private sealed class ConsoleKeyboardDevice : IKeyboardDevice
   {
     public event Action<Key>? KeyPressed;
@@ -58,12 +118,12 @@ internal sealed class ConsolePlatformHost : IPlatformHost, IServiceModule
 
     public bool IsKeyDown(Key key)
     {
-      return false;
+      return Interop.GetAsyncKeyState(ScanCodes[key]) > 1;
     }
 
     public bool IsKeyUp(Key key)
     {
-      return false;
+      return Interop.GetAsyncKeyState(ScanCodes[key]) == 0;
     }
 
     public bool IsKeyPressed(Key key)
@@ -79,18 +139,39 @@ internal sealed class ConsolePlatformHost : IPlatformHost, IServiceModule
     public void Update()
     {
     }
+
+    /// <summary>A mapping of <see cref="Key"/> to Win32 scan codes.</summary>
+    private static Dictionary<Key, int> ScanCodes { get; } = new()
+    {
+      [Key.Escape] = 0x1B,
+      [Key.Space]  = 0x20,
+    };
   }
 
+  /// <summary>A <see cref="IMouseDevice"/> for the Win32 console.</summary>
   private sealed class ConsoleMouseDevice : IMouseDevice
   {
     public event Action<MouseButton>? ButtonPressed;
     public event Action<MouseButton>? ButtonReleased;
     public event Action<Vector2>?     Moved;
 
-    public Vector2 Position      { get; private set; }
+    public Vector2 Position
+    {
+      get
+      {
+        var (x, y) = Console.GetCursorPosition();
+
+        return new Vector2(x, y);
+      }
+    }
+
     public Vector2 DeltaPosition { get; private set; }
 
-    public bool IsCursorVisible { get; set; }
+    public bool IsCursorVisible
+    {
+      get => Console.CursorVisible;
+      set => Console.CursorVisible = value;
+    }
 
     public bool IsButtonDown(MouseButton button)
     {
@@ -117,111 +198,114 @@ internal sealed class ConsolePlatformHost : IPlatformHost, IServiceModule
     }
   }
 
-  [SuppressMessage("ReSharper", "InconsistentNaming")]
-  [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
-  [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
+  /// <summary>Native interop for Win32 consoles</summary>
   private static class Interop
   {
-    public const nint INVALID_HANDLE_VALUE = -1;
-    public const nint STD_INPUT_HANDLE = -10;
-    public const nint STD_OUTPUT_HANDLE = -11;
-    public const nint STD_ERROR_HANDLE = -12;
+    private const int FixedWidthTrueType = 54;
+    private const int StandardOutputHandle = -11;
+
+    [DllImport("user32.dll")]
+    public static extern int GetAsyncKeyState(int vKeys);
 
     [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern IntPtr GetStdHandle(nint nStdHandle);
+    public static extern IntPtr GetStdHandle(int nStdHandle);
 
-    // http://pinvoke.net/default.aspx/kernel32/ReadConsoleInput.html
-    [DllImport("kernel32.dll", EntryPoint = "ReadConsoleInputW", CharSet = CharSet.Unicode)]
-    public static extern bool ReadConsoleInput(
-      IntPtr hConsoleInput,
-      [Out] INPUT_RECORD[] lpBuffer,
-      uint nLength,
-      out uint lpNumberOfEventsRead
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern bool SetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool MaximumWindow, ref FontInfo ConsoleCurrentFontEx);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern bool GetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool MaximumWindow, ref FontInfo ConsoleCurrentFontEx);
+
+    [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern SafeFileHandle CreateFile(
+      string fileName,
+      [MarshalAs(UnmanagedType.U4)] uint fileAccess,
+      [MarshalAs(UnmanagedType.U4)] uint fileShare,
+      IntPtr securityAttributes,
+      [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition,
+      [MarshalAs(UnmanagedType.U4)] int flags,
+      IntPtr template
     );
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct COORD
-    {
-      public short X;
-      public short Y;
-    }
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern bool WriteConsoleOutputW(
+      SafeFileHandle hConsoleOutput,
+      CharInfo[] lpBuffer,
+      Coord dwBufferSize,
+      Coord dwBufferCoord,
+      ref SmallRect lpWriteRegion);
 
-    public enum InputEventTypes : ushort
+    [DllImport("Kernel32.dll", SetLastError = true)]
+    public static extern bool CloseHandle(SafeFileHandle handle);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public record struct Coord(short X, short Y)
     {
-      KEY_EVENT = 0x1,
-      MOUSE_EVENT = 0x2,
-      WINDOW_BUFFER_SIZE_EVENT = 0x4,
-      MENU_EVENT = 0x8,
-      FOCUS_EVENT = 0x10,
+      public short X = X;
+      public short Y = Y;
+    };
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct CharUnion
+    {
+      [FieldOffset(0)] public ushort UnicodeChar;
+      [FieldOffset(0)] public byte AsciiChar;
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    public struct INPUT_RECORD
+    public struct CharInfo
     {
-      [FieldOffset(0)]
-      public ushort EventType;
-      [FieldOffset(4)]
-      public KEY_EVENT_RECORD KeyEvent;
-      [FieldOffset(4)]
-      public MOUSE_EVENT_RECORD MouseEvent;
-      [FieldOffset(4)]
-      public WINDOW_BUFFER_SIZE_RECORD WindowBufferSizeEvent;
-      [FieldOffset(4)]
-      public MENU_EVENT_RECORD MenuEvent;
-      [FieldOffset(4)]
-      public FOCUS_EVENT_RECORD FocusEvent;
-    };
-
-    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    public struct KEY_EVENT_RECORD
-    {
-      [FieldOffset(0), MarshalAs(UnmanagedType.Bool)]
-      public bool bKeyDown;
-      [FieldOffset(4), MarshalAs(UnmanagedType.U2)]
-      public ushort wRepeatCount;
-      [FieldOffset(6), MarshalAs(UnmanagedType.U2)]
-      public ushort wVirtualKeyCode;
-      [FieldOffset(8), MarshalAs(UnmanagedType.U2)]
-      public ushort wVirtualScanCode;
-      [FieldOffset(10)]
-      public char UnicodeChar;
-      [FieldOffset(12), MarshalAs(UnmanagedType.U4)]
-      public uint dwControlKeyState;
+      [FieldOffset(0)] public CharUnion Char;
+      [FieldOffset(2)] public short Attributes;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct MOUSE_EVENT_RECORD
+    public struct SmallRect
     {
-      public COORD dwMousePosition;
-      public uint dwButtonState;
-      public uint dwControlKeyState;
-      public uint dwEventFlags;
+      public short Left;
+      public short Top;
+      public short Right;
+      public short Bottom;
     }
 
-    public struct WINDOW_BUFFER_SIZE_RECORD
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct FontInfo
     {
-      public COORD dwSize;
+      public int cbSize;
+      public int FontIndex;
+      public short FontWidth;
+      public short FontSize;
+      public int FontFamily;
+      public int FontWeight;
 
-      public WINDOW_BUFFER_SIZE_RECORD(short x, short y)
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+      public string FontName;
+    }
+
+    public static void SetCurrentFont(string font, short fontSize = 0)
+    {
+      var handle = GetStdHandle(StandardOutputHandle);
+      var fontInfo = new FontInfo
       {
-        dwSize = new COORD
-        {
-          X = x,
-          Y = y,
-        };
+        cbSize = Marshal.SizeOf<FontInfo>()
+      };
+
+      if (!GetCurrentConsoleFontEx(handle, false, ref fontInfo))
+      {
+        throw new Win32Exception(Marshal.GetLastWin32Error());
       }
-    }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct MENU_EVENT_RECORD
-    {
-      public uint dwCommandId;
-    }
+      fontInfo.FontIndex  = 0;
+      fontInfo.FontFamily = FixedWidthTrueType;
+      fontInfo.FontName   = font;
+      fontInfo.FontWeight = 400;
+      fontInfo.FontSize   = fontSize > 0 ? fontSize : fontInfo.FontSize;
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct FOCUS_EVENT_RECORD
-    {
-      public uint bSetFocus;
+      // Get some settings from current font.
+      if (!SetCurrentConsoleFontEx(handle, false, ref fontInfo))
+      {
+        throw new Win32Exception(Marshal.GetLastWin32Error());
+      }
     }
   }
 }
