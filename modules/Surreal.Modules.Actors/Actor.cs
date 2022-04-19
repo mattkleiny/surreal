@@ -36,8 +36,10 @@ public class Actor
 {
   private IActorContext? context;
 
-  public ActorId     Id     { get; private set; } = ActorId.Invalid;
-  public ActorStatus Status => context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public ActorId Id { get; private set; } = ActorId.Invalid;
+
+  public ActorStatus       Status   => context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public IServiceProvider? Services => context?.Services;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
   public bool IsActive    => Status == ActorStatus.Active;

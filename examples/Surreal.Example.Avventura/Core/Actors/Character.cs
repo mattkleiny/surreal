@@ -21,20 +21,20 @@ public enum LocomotionState
 /// <summary>A character <see cref="Actor"/> that can move about the game world and common components.</summary>
 public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageReceiver
 {
+  private IConsoleDisplay? display;
+
   public Character()
   {
     StatusEffects = new(this);
 
-    StatusEffects.EffectAdded += OnStatusEffectAdded;
+    StatusEffects.EffectAdded   += OnStatusEffectAdded;
     StatusEffects.EffectRemoved += OnStatusEffectRemoved;
   }
 
   public ref Transform Transform => ref GetComponent<Transform>();
   public ref Sprite    Sprite    => ref GetComponent<Sprite>();
-  public ref Vector2   Position  => ref Transform.Position;
-  public ref Vector2   Scale     => ref Transform.Scale;
-  public ref float     Rotation  => ref Transform.Rotation;
-  public ref Color     Tint      => ref Sprite.Tint;
+  public ref Point2    Position  => ref Transform.Position;
+  public ref Glyph     Glyph     => ref Sprite.Glyph;
 
   public IPropertyCollection    Properties    { get; } = new PropertyBag();
   public StatusEffectCollection StatusEffects { get; }
@@ -74,6 +74,8 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
 
     AddComponent(new Transform());
     AddComponent(new Sprite());
+
+    display = Services?.GetService<IConsoleDisplay>();
   }
 
   protected override void OnStart()
@@ -102,6 +104,13 @@ public class Character : Actor, IAttributeOwner, IStatusEffectOwner, IDamageRece
     base.OnUpdate(deltaTime);
 
     StatusEffects.Update(deltaTime);
+  }
+
+  protected override void OnDraw(DeltaTime time)
+  {
+    base.OnDraw(time);
+
+    display?.Draw(Position.X, Position.Y, Glyph);
   }
 
   private void OnStatusEffectAdded(StatusEffect effect)

@@ -13,8 +13,9 @@ public sealed class SpritePlan
   public SpritePlan(Random random, int width, int height)
   {
     Random = random;
-    Width = width;
+    Width  = width;
     Height = height;
+
     pixels = new Color32[width * height];
   }
 

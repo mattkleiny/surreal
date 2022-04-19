@@ -1,17 +1,11 @@
 ﻿using Isaac.Core.Actors;
 using Isaac.Core.Dungeons;
 using Isaac.Core.Systems;
-using Surreal.Graphics.Meshes;
-using Surreal.Input.Keyboard;
 
 namespace Isaac;
 
 public sealed class IsaacGame : PrototypeGame
 {
-  private Player? player;
-  private Dungeon? dungeon;
-  private SpriteBatch? batch;
-
   public static Task Main() => StartAsync<IsaacGame>(new Configuration
   {
     Platform = new ConsolePlatform
@@ -20,24 +14,25 @@ public sealed class IsaacGame : PrototypeGame
       {
         Title          = "The Binding of Isaac",
         ShowFpsInTitle = true,
-        FontSize       = 14
+        FontSize       = 14,
       },
     },
   });
 
-  public new IConsolePlatformHost Host    => (IConsolePlatformHost)base.Host;
+  public new IConsolePlatformHost Host    => (IConsolePlatformHost) base.Host;
   public     IConsoleDisplay      Display => Host.Display;
 
-  public ActorScene Scene { get; } = new();
+  public ActorScene? Scene { get; private set; }
 
   protected override void Initialize()
   {
     base.Initialize();
 
-    player  = Scene.Spawn(new Player());
-    dungeon = Scene.Spawn(new Dungeon(DungeonBlueprint.Simple));
+    Scene = new ActorScene(Services);
 
-    Scene.AddSystem(new KeyboardSystem(new Pawn(player), Keyboard));
+    Scene.Spawn(new Player());
+    Scene.Spawn(new Dungeon(DungeonBlueprint.Simple));
+
     Scene.AddSystem(new PhysicsSystem());
     Scene.AddSystem(new GlyphSystem(Display));
     Scene.AddSystem(new TileMapSystem(Display));
@@ -47,26 +42,21 @@ public sealed class IsaacGame : PrototypeGame
   {
     base.BeginFrame(time);
 
-    Scene.BeginFrame(time.DeltaTime);
+    Scene?.BeginFrame(time.DeltaTime);
   }
 
   protected override void Input(GameTime time)
   {
-    if (Keyboard.IsKeyPressed(Key.Escape))
-    {
-      Exit();
-    }
-
     base.Input(time);
 
-    Scene.Input(time.DeltaTime);
+    Scene?.Input(time.DeltaTime);
   }
 
   protected override void Update(GameTime time)
   {
     base.Update(time);
 
-    Scene.Update(time.DeltaTime);
+    Scene?.Update(time.DeltaTime);
   }
 
   protected override void Draw(GameTime time)
@@ -75,21 +65,19 @@ public sealed class IsaacGame : PrototypeGame
 
     Display.Fill(' ');
 
-    Scene.Draw(time.DeltaTime);
+    Scene?.Draw(time.DeltaTime);
   }
 
   protected override void EndFrame(GameTime time)
   {
     base.EndFrame(time);
 
-    Scene.EndFrame(time.DeltaTime);
+    Scene?.EndFrame(time.DeltaTime);
   }
 
   public override void Dispose()
   {
-    Scene.Dispose();
-
-    batch?.Dispose();
+    Scene?.Dispose();
 
     base.Dispose();
   }

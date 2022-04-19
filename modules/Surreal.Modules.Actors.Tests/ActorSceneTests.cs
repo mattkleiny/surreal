@@ -1,5 +1,4 @@
-﻿using Surreal.Systems;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal;
 
@@ -30,18 +29,6 @@ public class ActorSceneTests
     actor.Received(1).OnInput(deltaTime);
   }
 
-  [Test, AutoFixture]
-  public void it_should_apply_input_to_systems(ISceneSystem system)
-  {
-    var scene = new ActorScene();
-    var deltaTime = 16.Milliseconds();
-
-    scene.AddSystem(system);
-    scene.Input(deltaTime);
-
-    system.Received(1).OnInput(deltaTime);
-  }
-
   [Test]
   public void it_should_apply_update_to_actors()
   {
@@ -55,18 +42,6 @@ public class ActorSceneTests
     actor.Received(1).OnUpdate(deltaTime);
   }
 
-  [Test, AutoFixture]
-  public void it_should_apply_update_to_systems(ISceneSystem system)
-  {
-    var scene = new ActorScene();
-    var deltaTime = 16.Milliseconds();
-
-    scene.AddSystem(system);
-    scene.Update(deltaTime);
-
-    system.Received(1).OnUpdate(deltaTime);
-  }
-
   [Test]
   public void it_should_apply_draw_to_actors()
   {
@@ -78,18 +53,6 @@ public class ActorSceneTests
     scene.Draw(deltaTime);
 
     actor.Received(1).OnDraw(deltaTime);
-  }
-
-  [Test, AutoFixture]
-  public void it_should_apply_draw_to_systems(ISceneSystem system)
-  {
-    var scene = new ActorScene();
-    var deltaTime = 16.Milliseconds();
-
-    scene.AddSystem(system);
-    scene.Draw(deltaTime);
-
-    system.Received(1).OnDraw(deltaTime);
   }
 
   [Test]

@@ -11,22 +11,43 @@ public sealed class ActorScene : IActorContext, IDisposable
 {
   private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
   private readonly ComponentStorageGroup components = new();
-  private readonly LinkedList<ISceneSystem> systems = new();
+  private readonly LinkedList<ActorSystem> actorSystems = new();
+  private readonly LinkedList<ComponentSystem> componentSystems = new();
   private readonly LinkedList<AspectSubscription> subscriptions = new();
   private readonly Queue<Actor> destroyQueue = new();
 
   private ulong nextActorId = 0;
 
-  public void AddSystem(ISceneSystem system)
+  public ActorScene(IServiceProvider? services = null)
   {
-    systems.AddLast(system);
+    Services = services;
+  }
 
+  public IServiceProvider? Services { get; }
+
+  public void AddSystem(ActorSystem system)
+  {
+    actorSystems.AddLast(system);
     system.OnAddedToScene(this);
   }
 
-  public void RemoveSystem(ISceneSystem system)
+  public void AddSystem(ComponentSystem system)
   {
-    if (systems.Remove(system))
+    componentSystems.AddLast(system);
+    system.OnAddedToScene(this);
+  }
+
+  public void RemoveSystem(ActorSystem system)
+  {
+    if (actorSystems.Remove(system))
+    {
+      system.OnRemovedFromScene(this);
+    }
+  }
+
+  public void RemoveSystem(ComponentSystem system)
+  {
+    if (componentSystems.Remove(system))
     {
       system.OnRemovedFromScene(this);
     }
@@ -49,13 +70,13 @@ public sealed class ActorScene : IActorContext, IDisposable
 
     if (nodes.TryGetValue(actor.Id, out var node))
     {
-      node.ActorStatus = ActorStatus.Active;
+      node.Status = ActorStatus.Active;
     }
     else
     {
       nodes[actor.Id] = new Node<Actor>(actor)
       {
-        ActorStatus = ActorStatus.Active,
+        Status = ActorStatus.Active,
       };
 
       // TODO: split these up, better FSM over actors
@@ -69,14 +90,19 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   public void BeginFrame(DeltaTime deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var system in actorSystems)
+    {
+      system.OnBeginFrame(deltaTime);
+    }
+
+    foreach (var system in componentSystems)
     {
       system.OnBeginFrame(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
-      if (node.ActorStatus == ActorStatus.Active)
+      if (node.Status == ActorStatus.Active)
       {
         node.Data.OnBeginFrame(deltaTime);
       }
@@ -85,14 +111,23 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   public void Input(DeltaTime deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var system in actorSystems)
+    foreach (var node in nodes.Values)
+    {
+      if (node.Status == ActorStatus.Active)
+      {
+        system.OnInput(deltaTime, node.Data);
+      }
+    }
+
+    foreach (var system in componentSystems)
     {
       system.OnInput(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
-      if (node.ActorStatus == ActorStatus.Active)
+      if (node.Status == ActorStatus.Active)
       {
         node.Data.OnInput(deltaTime);
       }
@@ -101,14 +136,23 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   public void Update(DeltaTime deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var system in actorSystems)
+    foreach (var node in nodes.Values)
+    {
+      if (node.Status == ActorStatus.Active)
+      {
+        system.OnUpdate(deltaTime, node.Data);
+      }
+    }
+
+    foreach (var system in componentSystems)
     {
       system.OnUpdate(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
-      if (node.ActorStatus == ActorStatus.Active)
+      if (node.Status == ActorStatus.Active)
       {
         node.Data.OnUpdate(deltaTime);
       }
@@ -117,14 +161,23 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   public void Draw(DeltaTime deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var system in actorSystems)
+    foreach (var node in nodes.Values)
+    {
+      if (node.Status == ActorStatus.Active)
+      {
+        system.OnDraw(deltaTime, node.Data);
+      }
+    }
+
+    foreach (var system in componentSystems)
     {
       system.OnDraw(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
-      if (node.ActorStatus == ActorStatus.Active)
+      if (node.Status == ActorStatus.Active)
       {
         node.Data.OnDraw(deltaTime);
       }
@@ -133,14 +186,19 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   public void EndFrame(DeltaTime deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var system in actorSystems)
+    {
+      system.OnEndFrame(deltaTime);
+    }
+
+    foreach (var system in componentSystems)
     {
       system.OnEndFrame(deltaTime);
     }
 
     foreach (var node in nodes.Values)
     {
-      if (node.ActorStatus == ActorStatus.Active)
+      if (node.Status == ActorStatus.Active)
       {
         node.Data.OnEndFrame(deltaTime);
       }
@@ -177,10 +235,16 @@ public sealed class ActorScene : IActorContext, IDisposable
   {
     if (nodes.TryGetValue(id, out var node))
     {
-      return node.ActorStatus;
+      return node.Status;
     }
 
     return ActorStatus.Unknown;
+  }
+
+  public IComponentStorage<T> GetStorage<T>()
+    where T : notnull, new()
+  {
+    return components.GetOrCreateStorage<T>();
   }
 
   ActorId IActorContext.AllocateId()
@@ -190,25 +254,25 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   void IActorContext.Enable(ActorId id)
   {
-    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
+    if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
     {
-      node.ActorStatus = ActorStatus.Active;
+      node.Status = ActorStatus.Active;
     }
   }
 
   void IActorContext.Disable(ActorId id)
   {
-    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
+    if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
     {
-      node.ActorStatus = ActorStatus.Inactive;
+      node.Status = ActorStatus.Inactive;
     }
   }
 
   void IActorContext.Destroy(ActorId id)
   {
-    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
+    if (nodes.TryGetValue(id, out var node) && node.Status != ActorStatus.Destroyed)
     {
-      node.ActorStatus = ActorStatus.Destroyed;
+      node.Status = ActorStatus.Destroyed;
 
       destroyQueue.Enqueue(node.Data);
     }
@@ -216,21 +280,26 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   public void Dispose()
   {
+    foreach (var system in actorSystems)
+    {
+      system.Dispose();
+    }
+
+    foreach (var system in componentSystems)
+    {
+      system.Dispose();
+    }
+
+    actorSystems.Clear();
+    componentSystems.Clear();
     components.Dispose();
     nodes.Clear();
-  }
-
-  IComponentStorage<T> IActorContext.GetStorage<T>()
-  {
-    return components.GetOrCreateStorage<T>();
   }
 
   /// <summary>A single node in the scene.</summary>
   private sealed record Node<T>(T Data)
   {
-    public ActorStatus   ActorStatus { get; set; }
-    public Node<T>?      Parent      { get; set; }
-    public List<Node<T>> Children    { get; } = new();
+    public ActorStatus Status { get; set; }
   }
 
   /// <summary>A storage group for components, for use in scene actors.</summary>

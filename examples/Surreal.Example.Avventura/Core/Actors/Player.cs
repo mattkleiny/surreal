@@ -1,4 +1,5 @@
 ﻿using Surreal.Effects;
+using Surreal.Input.Keyboard;
 using Surreal.Persistence;
 
 namespace Avventura.Core.Actors;
@@ -13,15 +14,38 @@ public readonly record struct PlayerLostStatus(Player Player, StatusEffect Effec
 /// <summary>The player <see cref="Character"/>.</summary>
 public sealed class Player : Character, IPersistentObject
 {
-  private static Property<Vector2> LastPosition { get; } = new(nameof(LastPosition));
+  private IKeyboardDevice? keyboard;
 
   Guid IPersistentObject.Id { get; } = Guid.Parse("b539cfd7-f9b7-49e1-ab48-4c6d0103950f");
+
+  protected override void OnAwake()
+  {
+    base.OnAwake();
+
+    Glyph = new Glyph('X', ConsoleColor.White, ConsoleColor.DarkBlue);
+
+    keyboard = Services?.GetService<IKeyboardDevice>();
+  }
 
   protected override void OnStart()
   {
     base.OnStart();
 
     Message.Publish(new PlayerSpawned(this));
+  }
+
+  protected override void OnInput(DeltaTime deltaTime)
+  {
+    base.OnInput(deltaTime);
+
+    var direction = Point2.Zero;
+
+    if (keyboard!.IsKeyDown(Key.W)) direction.Y -= 1;
+    if (keyboard.IsKeyDown(Key.S)) direction.Y  += 1;
+    if (keyboard.IsKeyDown(Key.A)) direction.X  -= 1;
+    if (keyboard.IsKeyDown(Key.D)) direction.X  += 1;
+
+    Position += direction;
   }
 
   [MessageSubscriber]
@@ -65,22 +89,12 @@ public sealed class Player : Character, IPersistentObject
     writer.Write(PropertyTypes.Health, Health);
     writer.Write(PropertyTypes.Toxin, Toxin);
     writer.Write(PropertyTypes.Coins, Coins);
-
-    if (context.Mode == PersistenceMode.Permanent)
-    {
-      writer.Write(LastPosition, Transform.Position);
-    }
   }
 
   void IPersistentObject.OnResumeState(PersistenceContext context, IPersistenceReader reader)
   {
     Health = reader.Read(PropertyTypes.Health, 100);
-    Toxin = reader.Read(PropertyTypes.Toxin);
-    Coins = reader.Read(PropertyTypes.Coins);
-
-    if (context.Mode == PersistenceMode.Permanent)
-    {
-      Transform.Position = reader.Read(LastPosition);
-    }
+    Toxin  = reader.Read(PropertyTypes.Toxin);
+    Coins  = reader.Read(PropertyTypes.Coins);
   }
 }

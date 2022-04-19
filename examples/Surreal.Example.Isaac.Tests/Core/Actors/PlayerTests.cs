@@ -13,11 +13,11 @@ public class PlayerTests
 
     var player = new Player
     {
-      Health = 100,
-      Bombs = 99,
-      Coins = 12,
-      Range = 4,
-      MoveSpeed = 2,
+      Health      = 100,
+      Bombs       = 99,
+      Coins       = 12,
+      Range       = 4,
+      MoveSpeed   = 2,
       AttackSpeed = 3,
     };
 
@@ -28,12 +28,12 @@ public class PlayerTests
       new AddAttribute(AttributeTypes.Health, 1),
       new ApplyDamage(new Damage(10, DamageTypes.Standard)),
       new AddStatusEffect(new FrozenEffect.Template { Duration = 4.Seconds() }),
-      new AddStatusEffect(new PoisonEffect.Template { Damage = new Damage(10, DamageTypes.Poison) }),
+      new AddStatusEffect(new PoisonEffect.Template { Damage   = new Damage(10, DamageTypes.Poison) }),
       new AddStatusEffect(new AttributeBoostEffect.Template
       {
-        Duration = 3.Seconds(),
+        Duration  = 3.Seconds(),
         Attribute = AttributeTypes.MoveSpeed,
-        Amount = 4,
+        Amount    = 4,
       }),
     };
 
@@ -49,7 +49,7 @@ public class PlayerTests
     player.Persist(context);
 
     player.Health = 0;
-    player.Bombs = 0;
+    player.Bombs  = 0;
 
     player.Resume(context);
 

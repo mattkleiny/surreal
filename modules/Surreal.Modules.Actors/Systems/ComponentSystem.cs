@@ -1,9 +1,10 @@
 ﻿using Surreal.Aspects;
+using Surreal.Timing;
 
 namespace Surreal.Systems;
 
-/// <summary>Base class for any <see cref="ISceneSystem"/> implementation that monitors components..</summary>
-public abstract class ComponentSystem : SceneSystem
+/// <summary>Base class for any <see cref="SceneSystem"/> implementation that monitors components..</summary>
+public abstract class ComponentSystem : IDisposable
 {
   private readonly Aspect aspect;
   private AspectSubscription? subscription;
@@ -13,17 +14,19 @@ public abstract class ComponentSystem : SceneSystem
     this.aspect = aspect;
   }
 
-  public override void OnAddedToScene(ActorScene scene)
-  {
-    base.OnAddedToScene(scene);
+  public HashSet<ActorId> ActorIds { get; } = new();
+  public ActorScene?      Scene    { get; private set; }
 
+  public virtual void OnAddedToScene(ActorScene scene)
+  {
+    Scene        = scene;
     subscription = scene.SubscribeToAspect(aspect);
 
     subscription.Added   += OnActorAdded;
     subscription.Removed += OnActorRemoved;
   }
 
-  public override void OnRemovedFromScene(ActorScene scene)
+  public virtual void OnRemovedFromScene(ActorScene scene)
   {
     if (subscription != null)
     {
@@ -33,14 +36,33 @@ public abstract class ComponentSystem : SceneSystem
       subscription.Dispose();
     }
 
-    base.OnRemovedFromScene(scene);
+    Scene = null;
   }
 
-  private void OnActorAdded(ActorId id)
+  public virtual void OnBeginFrame(DeltaTime deltaTime)
   {
   }
 
-  private void OnActorRemoved(ActorId id)
+  public virtual void OnInput(DeltaTime deltaTime)
   {
   }
+
+  public virtual void OnUpdate(DeltaTime deltaTime)
+  {
+  }
+
+  public virtual void OnDraw(DeltaTime deltaTime)
+  {
+  }
+
+  public virtual void OnEndFrame(DeltaTime deltaTime)
+  {
+  }
+
+  public virtual void Dispose()
+  {
+  }
+
+  private void OnActorAdded(ActorId id) => ActorIds.Add(id);
+  private void OnActorRemoved(ActorId id) => ActorIds.Remove(id);
 }

@@ -15,10 +15,10 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginInput(deltaTime);
 
-    // foreach (var actor in ActorIds)
-    // {
-    //   OnInput(deltaTime, actor);
-    // }
+    foreach (var actor in ActorIds)
+    {
+      OnInput(deltaTime, actor);
+    }
 
     OnEndInput(deltaTime);
   }
@@ -39,10 +39,10 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginUpdate(deltaTime);
 
-    // foreach (var actor in ActorIds)
-    // {
-    //   OnUpdate(deltaTime, actor);
-    // }
+    foreach (var actor in ActorIds)
+    {
+      OnUpdate(deltaTime, actor);
+    }
 
     OnEndUpdate(deltaTime);
   }
@@ -63,10 +63,10 @@ public abstract class IteratingSystem : ComponentSystem
   {
     OnBeginDraw(deltaTime);
 
-    // foreach (var actor in ActorIds)
-    // {
-    //   OnDraw(deltaTime, actor);
-    // }
+    foreach (var actor in ActorIds)
+    {
+      OnDraw(deltaTime, actor);
+    }
 
     OnEndDraw(deltaTime);
   }

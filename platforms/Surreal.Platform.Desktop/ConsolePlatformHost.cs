@@ -151,8 +151,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
     {
       Left   = 0,
       Top    = 0,
-      Right  = (short)Width,
-      Bottom = (short)Height
+      Right  = (short) Width,
+      Bottom = (short) Height
     };
 
     fixed (Interop.CharInfo* pointer = &backBuffer[0])
@@ -160,7 +160,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
       var result = Interop.WriteConsoleOutputW(
         hConsoleOutput: consoleHandle,
         lpBuffer: pointer,
-        dwBufferSize: new((short)Width, (short)Height),
+        dwBufferSize: new((short) Width, (short) Height),
         dwBufferCoord: new(0, 0),
         lpWriteRegion: ref rect
       );
@@ -188,6 +188,9 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
 
   void IConsoleDisplay.Draw(int x, int y, Glyph glyph)
   {
+    if (x < 0 || x > Width - 1) return;
+    if (y < 0 || y > Height - 1) return;
+
     EnsureBackBufferSize();
 
     backBuffer[x + y * Width] = new()
@@ -212,17 +215,17 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   {
     static int Cast(ConsoleColor color, bool isBackground)
     {
-      var colorAttribute = (color & ~ConsoleColor.White) == ConsoleColor.Black ? (short)color : throw new InvalidOperationException();
+      var colorAttribute = (color & ~ConsoleColor.White) == ConsoleColor.Black ? (short) color : throw new InvalidOperationException();
 
       if (isBackground)
       {
-        colorAttribute = (short)(colorAttribute << 4);
+        colorAttribute = (short) (colorAttribute << 4);
       }
 
       return colorAttribute;
     }
 
-    return (short)(Cast(foregroundColor, false) | Cast(backgroundColor, true));
+    return (short) (Cast(foregroundColor, false) | Cast(backgroundColor, true));
   }
 
   public void Dispose()
