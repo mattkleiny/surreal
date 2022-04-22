@@ -244,8 +244,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   /// <summary>A <see cref="IKeyboardDevice"/> for the Win32 console.</summary>
   private sealed class ConsoleKeyboardDevice : IKeyboardDevice
   {
-    private HashSet<Key> pressedLastFrame = new();
-    private HashSet<Key> pressedThisFrame = new();
+    private readonly HashSet<Key> pressedLastFrame = new();
+    private readonly HashSet<Key> pressedThisFrame = new();
 
     public event Action<Key>? KeyPressed;
     public event Action<Key>? KeyReleased;
