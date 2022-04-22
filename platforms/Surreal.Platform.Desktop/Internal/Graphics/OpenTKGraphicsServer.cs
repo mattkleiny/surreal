@@ -170,10 +170,10 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
     BindVertexDescriptorSet(program, descriptors);
 
     GL.BindBuffer(BufferTargetARB.ArrayBuffer, new BufferHandle(vertices));
-    GL.BindBuffer(BufferTargetARB.ElementArrayBuffer, new BufferHandle(indices));
 
     if (indexCount > 0)
     {
+      GL.BindBuffer(BufferTargetARB.ElementArrayBuffer, new BufferHandle(indices));
       GL.DrawElements(primitiveType, indexCount, elementType, 0);
     }
     else

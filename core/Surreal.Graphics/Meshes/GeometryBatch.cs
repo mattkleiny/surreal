@@ -11,13 +11,13 @@ public sealed class GeometryBatch : IDisposable
 {
   private const int DefaultVertexCount = 16_000;
 
-  private static readonly MaterialProperty<Matrix4x4> ProjectionView = new("_ProjectionView");
+  private static readonly ShaderUniform<Matrix4x4> ProjectionView = new("_ProjectionView");
 
   private readonly IDisposableBuffer<Vertex> vertices;
   private readonly IDisposableBuffer<ushort> indices;
   private readonly Mesh<Vertex> mesh;
 
-  private Material? material;
+  private ShaderProgram? shader;
   private int vertexCount;
   private int indexCount;
 
@@ -28,16 +28,16 @@ public sealed class GeometryBatch : IDisposable
   )
   {
     vertices = Buffers.AllocateNative<Vertex>(maximumVertexCount);
-    indices = Buffers.AllocateNative<ushort>(maximumIndexCount);
+    indices  = Buffers.AllocateNative<ushort>(maximumIndexCount);
 
     mesh = new Mesh<Vertex>(server);
   }
 
-  public void Begin(Material material, in Matrix4x4 projectionView)
+  public void Begin(ShaderProgram shader, in Matrix4x4 projectionView)
   {
-    this.material = material;
+    this.shader = shader;
 
-    material.SetProperty(ProjectionView, in projectionView);
+    shader.SetUniform(ProjectionView, in projectionView);
   }
 
   public void DrawPoint(Vector2 position, Color color)
@@ -150,15 +150,15 @@ public sealed class GeometryBatch : IDisposable
   private void Flush(MeshType type)
   {
     if (vertexCount == 0) return;
-    if (material == null) return;
+    if (shader == null) return;
 
     mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
     mesh.Indices.Write(indices.Data.Span[..indexCount]);
 
-    mesh.DrawImmediate(material, vertexCount, indexCount, type);
+    mesh.Draw(shader, vertexCount, indexCount, type);
 
     vertexCount = 0;
-    indexCount = 0;
+    indexCount  = 0;
   }
 
   public void Dispose()

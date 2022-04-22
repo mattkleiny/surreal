@@ -29,13 +29,6 @@ public abstract class PrototypeGame : Game
 
   public Color ClearColor { get; set; } = Color.Black;
 
-  protected override void Initialize()
-  {
-    base.Initialize();
-
-    OnResized(Host.Width, Host.Height); // initial resize
-  }
-
   protected override void RegisterAssetLoaders(IAssetManager manager)
   {
     base.RegisterAssetLoaders(manager);
@@ -58,7 +51,6 @@ public abstract class PrototypeGame : Game
       manager.AddLoader(new BitmapFontLoader(graphicsServer));
       manager.AddLoader(new ColorPaletteLoader());
       manager.AddLoader(new ImageLoader());
-      manager.AddLoader(new MaterialLoader());
       manager.AddLoader(new ShaderProgramLoader(graphicsServer, ".shade"));
       manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(Assets), ".shade"));
       manager.AddLoader(new TextureLoader(graphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
@@ -75,6 +67,13 @@ public abstract class PrototypeGame : Game
     }
   }
 
+  protected override void OnInitialize()
+  {
+    base.OnInitialize();
+
+    OnResized(Host.Width, Host.Height); // initial resize
+  }
+
   protected override void OnResized(int width, int height)
   {
     base.OnResized(width, height);
@@ -85,19 +84,19 @@ public abstract class PrototypeGame : Game
     }
   }
 
-  protected override void BeginFrame(GameTime time)
+  protected override void OnBeginFrame(GameTime time)
   {
     if (Services.TryGetService(out IGraphicsServer graphicsServer))
     {
       graphicsServer.ClearColorBuffer(ClearColor);
     }
 
-    base.BeginFrame(time);
+    base.OnBeginFrame(time);
   }
 
-  protected override void EndFrame(GameTime time)
+  protected override void OnEndFrame(GameTime time)
   {
-    base.EndFrame(time);
+    base.OnEndFrame(time);
 
     if (Services.TryGetService(out IGraphicsServer graphicsServer))
     {

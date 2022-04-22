@@ -4,7 +4,7 @@ namespace Asteroids;
 
 public sealed class AsteroidsGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<AsteroidsGame>(new Configuration
+  public static void Main() => Start<AsteroidsGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
@@ -17,10 +17,10 @@ public sealed class AsteroidsGame : PrototypeGame
     },
   });
 
-  protected override void Input(GameTime time)
+  protected override void OnInput(GameTime time)
   {
     if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
 
-    base.Input(time);
+    base.OnInput(time);
   }
 }

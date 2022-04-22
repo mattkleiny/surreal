@@ -6,7 +6,7 @@ namespace Isaac;
 
 public sealed class IsaacGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<IsaacGame>(new Configuration
+  public static void Main() => Start<IsaacGame>(new Configuration
   {
     Platform = new ConsolePlatform
     {
@@ -24,9 +24,9 @@ public sealed class IsaacGame : PrototypeGame
 
   public ActorScene? Scene { get; private set; }
 
-  protected override void Initialize()
+  protected override void OnInitialize()
   {
-    base.Initialize();
+    base.OnInitialize();
 
     Scene = new ActorScene(Services);
 
@@ -38,39 +38,39 @@ public sealed class IsaacGame : PrototypeGame
     Scene.AddSystem(new TileMapSystem(Display));
   }
 
-  protected override void BeginFrame(GameTime time)
+  protected override void OnBeginFrame(GameTime time)
   {
-    base.BeginFrame(time);
+    base.OnBeginFrame(time);
 
     Scene?.BeginFrame(time.DeltaTime);
   }
 
-  protected override void Input(GameTime time)
+  protected override void OnInput(GameTime time)
   {
-    base.Input(time);
+    base.OnInput(time);
 
     Scene?.Input(time.DeltaTime);
   }
 
-  protected override void Update(GameTime time)
+  protected override void OnUpdate(GameTime time)
   {
-    base.Update(time);
+    base.OnUpdate(time);
 
     Scene?.Update(time.DeltaTime);
   }
 
-  protected override void Draw(GameTime time)
+  protected override void OnDraw(GameTime time)
   {
-    base.Draw(time);
+    base.OnDraw(time);
 
     Display.Fill(' ');
 
     Scene?.Draw(time.DeltaTime);
   }
 
-  protected override void EndFrame(GameTime time)
+  protected override void OnEndFrame(GameTime time)
   {
-    base.EndFrame(time);
+    base.OnEndFrame(time);
 
     Scene?.EndFrame(time.DeltaTime);
   }

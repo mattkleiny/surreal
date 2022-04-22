@@ -36,7 +36,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public bool IsClosing => false;
 
   public IServiceModule Services   => this;
-  public IDispatcher    Dispatcher { get; } = new ImmediateDispatcher();
 
   public IHeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputServer.Mouse;

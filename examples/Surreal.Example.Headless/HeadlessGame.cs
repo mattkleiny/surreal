@@ -7,14 +7,14 @@ public sealed class HeadlessGame : PrototypeGame
   private readonly FrameCounter frameCounter = new();
   private IntervalTimer fpsTimer = new(1.Seconds());
 
-  public static Task Main() => StartAsync<HeadlessGame>(new Configuration
+  public static void Main() => Start<HeadlessGame>(new Configuration
   {
     Platform = new HeadlessPlatform(),
   });
 
-  protected override void Draw(GameTime time)
+  protected override void OnDraw(GameTime time)
   {
-    base.Draw(time);
+    base.OnDraw(time);
 
     if (fpsTimer.Tick(time.DeltaTime))
     {

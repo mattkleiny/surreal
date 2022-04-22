@@ -40,7 +40,6 @@ internal sealed class EditorPlatformHost : IPlatformHost, IServiceModule
   public bool IsClosing => hostControl.IsClosing;
 
   public IServiceModule Services   => this;
-  public IDispatcher    Dispatcher { get; } = new ImmediateDispatcher();
 
   public void Tick(DeltaTime deltaTime)
   {

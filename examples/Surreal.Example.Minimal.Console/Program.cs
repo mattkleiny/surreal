@@ -11,7 +11,7 @@ var platform = new ConsolePlatform
   }
 };
 
-await Game.StartAsync(platform, async context =>
+await Game.Start(platform, async context =>
 {
   var display = context.Services.GetRequiredService<IConsoleDisplay>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();

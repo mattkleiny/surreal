@@ -46,15 +46,15 @@ public sealed class Mesh<TVertex> : Mesh
 
   public override VertexDescriptorSet Descriptors => VertexDescriptorSet;
 
-  public void DrawImmediate(Material material, MeshType type = MeshType.Triangles)
+  public void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles)
   {
-    DrawImmediate(material, Vertices.Length, Indices.Length, type);
+    Draw(shader, Vertices.Length, Indices.Length, type);
   }
 
-  public void DrawImmediate(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
+  public void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
   {
     server.DrawMesh(
-      shader: material.Shader.Handle,
+      shader: shader.Handle,
       vertices: Vertices.Handle,
       indices: Indices.Handle,
       descriptors: Descriptors,

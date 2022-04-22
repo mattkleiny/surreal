@@ -15,7 +15,6 @@ public interface IPlatformHost : IDisposable
   bool IsClosing { get; }
 
   IServiceModule Services   { get; }
-  IDispatcher    Dispatcher { get; }
 
   void Tick(DeltaTime deltaTime);
 }

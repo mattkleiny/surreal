@@ -56,7 +56,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     ComputeServer  = new OpenTKComputeServer();
     GraphicsServer = new OpenTKGraphicsServer();
     InputServer    = new OpenTKInputServer(Window);
-    Dispatcher     = new ImmediateDispatcher();
   }
 
   public event Action<int, int> Resized
@@ -71,8 +70,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public OpenTKGraphicsServer GraphicsServer { get; }
   public OpenTKInputServer    InputServer    { get; }
 
-  public IServiceModule Services   => this;
-  public IDispatcher    Dispatcher { get; }
+  public IServiceModule Services => this;
 
   public int Width  => Window.Width;
   public int Height => Window.Height;

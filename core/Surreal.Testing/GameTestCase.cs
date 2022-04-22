@@ -10,11 +10,10 @@ public abstract class GameTestCase<TGame>
   public TGame                 Game          => GameUnderTest.Instance;
 
   [SetUp]
-  public async Task OnSetUp()
+  public void OnSetUp()
   {
     GameUnderTest = new GameUnderTest<TGame>(CreatePlatform(), ConfigureServices);
-
-    await GameUnderTest.InitializeAsync();
+    GameUnderTest.Initialize();
   }
 
   [TearDown]

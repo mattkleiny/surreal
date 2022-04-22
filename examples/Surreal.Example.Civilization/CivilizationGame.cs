@@ -6,7 +6,7 @@ namespace Civilization;
 
 public sealed class CivilizationGame : PrototypeGame
 {
-  public static Task Main() => StartAsync<CivilizationGame>(new Configuration
+  public static void Main() => Start<CivilizationGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
@@ -26,13 +26,13 @@ public sealed class CivilizationGame : PrototypeGame
     manager.AddLoader(new RuleSetLoader());
   }
 
-  protected override void Input(GameTime time)
+  protected override void OnInput(GameTime time)
   {
     if (Keyboard.IsKeyPressed(Key.Escape))
     {
       Exit();
     }
 
-    base.Input(time);
+    base.OnInput(time);
   }
 }

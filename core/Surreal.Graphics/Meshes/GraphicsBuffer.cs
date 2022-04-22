@@ -31,6 +31,9 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
 
   public void Write(ReadOnlySpan<T> buffer)
   {
+    Length = buffer.Length;
+    Size   = buffer.CalculateSize();
+
     server.WriteBufferData(Handle, buffer);
   }
 

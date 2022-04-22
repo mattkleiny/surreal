@@ -56,9 +56,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   {
     this.configuration = configuration;
 
-    Keyboard   = new ConsoleKeyboardDevice();
-    Mouse      = new ConsoleMouseDevice();
-    Dispatcher = new ImmediateDispatcher();
+    Keyboard = new ConsoleKeyboardDevice();
+    Mouse    = new ConsoleMouseDevice();
 
     Title  = configuration.Title;
     Width  = configuration.Width;
@@ -111,9 +110,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   public bool IsFocused => true;
   public bool IsClosing { get; private set; }
 
-  public IServiceModule  Services   => this;
-  public IConsoleDisplay Display    => this;
-  public IDispatcher     Dispatcher { get; }
+  public IServiceModule  Services => this;
+  public IConsoleDisplay Display  => this;
 
   public void Tick(DeltaTime deltaTime)
   {

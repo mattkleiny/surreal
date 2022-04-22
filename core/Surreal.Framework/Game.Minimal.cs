@@ -13,7 +13,7 @@ public abstract partial class Game
   public delegate void GameLoopDelegate(GameTime time);
 
   /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
-  public static async ValueTask StartAsync(IPlatform platform, GameSetupDelegate gameSetup, CancellationToken cancellationToken = default)
+  public static async ValueTask Start(IPlatform platform, GameSetupDelegate gameSetup, CancellationToken cancellationToken = default)
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
@@ -49,7 +49,7 @@ public abstract partial class Game
         Host.Tick(gameTime.DeltaTime);
         gameLoop(gameTime);
 
-        await Host.Dispatcher.Yield();
+        await Task.Yield(); // TODO: fix this up
       }
     }
 

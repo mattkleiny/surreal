@@ -4,7 +4,6 @@ using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Internal;
 using Surreal.IO;
-using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -16,6 +15,7 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   private readonly TimeStamp startTime = TimeStamp.Now;
   private readonly Chronometer chronometer = new();
+  private readonly ConcurrentQueue<Action> callbacks = new();
   private readonly ILoopTarget loopTarget;
 
   public static TGame Create<TGame>(Configuration configuration)
@@ -28,18 +28,18 @@ public abstract partial class Game : IDisposable, ITestableGame
 
     return new TGame
     {
-      Host = configuration.Platform.BuildHost(),
+      Host             = configuration.Platform.BuildHost(),
       ServiceOverrides = configuration.ServiceOverrides,
     };
   }
 
-  public static async Task StartAsync<TGame>(Configuration configuration, CancellationToken cancellationToken = default)
+  public static void Start<TGame>(Configuration configuration, CancellationToken cancellationToken = default)
     where TGame : Game, new()
   {
     using var game = Create<TGame>(configuration);
 
-    await game.InitializeAsync(cancellationToken);
-    await game.RunAsync(cancellationToken);
+    game.Initialize(cancellationToken);
+    game.Run(cancellationToken);
   }
 
   protected Game()
@@ -59,21 +59,31 @@ public abstract partial class Game : IDisposable, ITestableGame
   private Action<IServiceRegistry>? ServiceOverrides { get; set; }
 
   /// <summary>Initializes the game and all of it's systems.</summary>
-  public async ValueTask InitializeAsync(CancellationToken cancellationToken = default)
+  public void Initialize(CancellationToken cancellationToken = default)
   {
-    Initialize();
+    SynchronizationContext.SetSynchronizationContext(new GameSynchronizationContext(this));
 
-    await LoadContentAsync(Assets, cancellationToken);
+    LogFactory.Current = new CompositeLogFactory(
+      new TextWriterLogFactory(Console.Out, LogLevel.Trace),
+      new DebugLogFactory(LogLevel.Trace)
+    );
+
+    Host.Resized += OnResized;
+
+    RegisterServices(Services);
+    RegisterAssetLoaders(Assets);
+    RegisterFileSystems(FileSystem.Registry);
+    RegisterPlugins(Plugins);
+
+    Services.SealRegistry();
+
+    OnInitialize();
+
+    LoadContentAsync(Assets, cancellationToken);
   }
 
   /// <summary>Runs the main game loop.</summary>
-  public ValueTask RunAsync(CancellationToken cancellationToken = default)
-  {
-    return RunAsync(Host.Dispatcher, cancellationToken);
-  }
-
-  /// <summary>Runs the main game loop.</summary>
-  public async ValueTask RunAsync(IDispatcher dispatcher, CancellationToken cancellationToken = default)
+  public void Run(CancellationToken cancellationToken = default)
   {
     if (IsRunning)
     {
@@ -94,7 +104,10 @@ public abstract partial class Game : IDisposable, ITestableGame
         Host.Tick(deltaTime);
         Tick(deltaTime, totalTime);
 
-        await dispatcher.Yield();
+        while (callbacks.TryDequeue(out var callback))
+        {
+          callback.Invoke();
+        }
       }
     }
     finally
@@ -117,22 +130,8 @@ public abstract partial class Game : IDisposable, ITestableGame
     LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
   }
 
-  protected virtual void Initialize()
+  protected virtual void OnInitialize()
   {
-    LogFactory.Current = new CompositeLogFactory(
-      new TextWriterLogFactory(Console.Out, LogLevel.Trace),
-      new DebugLogFactory(LogLevel.Trace)
-    );
-
-    Host.Resized += OnResized;
-
-    RegisterServices(Services);
-    RegisterAssetLoaders(Assets);
-    RegisterFileSystems(FileSystem.Registry);
-    RegisterPlugins(Plugins);
-
-    Services.SealRegistry();
-
     foreach (var plugin in Plugins.ActivePlugins)
     {
       plugin.Initialize();
@@ -152,7 +151,6 @@ public abstract partial class Game : IDisposable, ITestableGame
     services.AddSingleton(this);
     services.AddSingleton(Assets);
     services.AddSingleton(Host);
-    services.AddSingleton(Host.Dispatcher);
     services.AddModule(Host.Services);
 
     ServiceOverrides?.Invoke(services);
@@ -170,11 +168,15 @@ public abstract partial class Game : IDisposable, ITestableGame
   {
   }
 
-  protected virtual void BeginFrame(GameTime time)
+  protected virtual void OnBeginFrame(GameTime time)
   {
+    foreach (var plugin in Plugins.ActivePlugins)
+    {
+      plugin.BeginFrame(time);
+    }
   }
 
-  protected virtual void Input(GameTime time)
+  protected virtual void OnInput(GameTime time)
   {
     foreach (var plugin in Plugins.ActivePlugins)
     {
@@ -182,7 +184,7 @@ public abstract partial class Game : IDisposable, ITestableGame
     }
   }
 
-  protected virtual void Update(GameTime time)
+  protected virtual void OnUpdate(GameTime time)
   {
     foreach (var plugin in Plugins.ActivePlugins)
     {
@@ -190,7 +192,7 @@ public abstract partial class Game : IDisposable, ITestableGame
     }
   }
 
-  protected virtual void Draw(GameTime time)
+  protected virtual void OnDraw(GameTime time)
   {
     foreach (var plugin in Plugins.ActivePlugins)
     {
@@ -198,8 +200,12 @@ public abstract partial class Game : IDisposable, ITestableGame
     }
   }
 
-  protected virtual void EndFrame(GameTime time)
+  protected virtual void OnEndFrame(GameTime time)
   {
+    foreach (var plugin in Plugins.ActivePlugins)
+    {
+      plugin.EndFrame(time);
+    }
   }
 
   protected virtual void OnResized(int width, int height)
@@ -225,9 +231,6 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   ILoopTarget ITestableGame.LoopTarget => loopTarget;
 
-  ValueTask ITestableGame.InitializeAsync(CancellationToken cancellationToken) => InitializeAsync(cancellationToken);
-  ValueTask ITestableGame.RunAsync(CancellationToken cancellationToken) => RunAsync(cancellationToken);
-
   /// <summary>Configuration for the <see cref="Game"/>.</summary>
   public sealed class Configuration
   {
@@ -235,6 +238,27 @@ public abstract partial class Game : IDisposable, ITestableGame
 
     /// <summary>Custom overrides for the <see cref="IServiceRegistry"/>, to allow testing/etc.</summary>
     internal Action<IServiceRegistry>? ServiceOverrides { get; set; }
+  }
+
+  /// <summary>A <see cref="SynchronizationContext"/> for the <see cref="Game"/>.</summary>
+  private sealed class GameSynchronizationContext : SynchronizationContext
+  {
+    private readonly Game game;
+
+    public GameSynchronizationContext(Game game)
+    {
+      this.game = game;
+    }
+
+    public override void Post(SendOrPostCallback callback, object? state)
+    {
+      game.callbacks.Enqueue(() => callback(state));
+    }
+
+    public override void Send(SendOrPostCallback callback, object? state)
+    {
+      game.callbacks.Enqueue(() => callback(state));
+    }
   }
 
   /// <summary>A <see cref="ILoopTarget"/> that profiles it's target operations.</summary>
@@ -251,35 +275,35 @@ public abstract partial class Game : IDisposable, ITestableGame
     {
       using var _ = Profiler.Track(nameof(BeginFrame));
 
-      game.BeginFrame(time);
+      game.OnBeginFrame(time);
     }
 
     public void Input(GameTime time)
     {
       using var _ = Profiler.Track(nameof(Input));
 
-      game.Input(time);
+      game.OnInput(time);
     }
 
     public void Update(GameTime time)
     {
       using var _ = Profiler.Track(nameof(Update));
 
-      game.Update(time);
+      game.OnUpdate(time);
     }
 
     public void Draw(GameTime time)
     {
       using var _ = Profiler.Track(nameof(Draw));
 
-      game.Draw(time);
+      game.OnDraw(time);
     }
 
     public void EndFrame(GameTime time)
     {
       using var _ = Profiler.Track(nameof(EndFrame));
 
-      game.EndFrame(time);
+      game.OnEndFrame(time);
     }
   }
 }

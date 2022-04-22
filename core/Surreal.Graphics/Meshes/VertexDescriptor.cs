@@ -23,6 +23,7 @@ public enum VertexType
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute : Attribute
 {
+  public string?    Alias      { get; set; }
   public int        Count      { get; set; }
   public VertexType Type       { get; set; }
   public bool       Normalized { get; set; }
@@ -70,7 +71,7 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
     foreach (var (name, attribute) in values)
     {
       var descriptor = new VertexDescriptor(
-        Alias: name,
+        Alias: attribute.Alias ?? name,
         Count: attribute.Count,
         Type: attribute.Type,
         Normalized: attribute.Normalized,

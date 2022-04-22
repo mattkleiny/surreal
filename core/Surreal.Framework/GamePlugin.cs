@@ -9,9 +9,11 @@ public interface IGamePlugin : IDisposable
   void Initialize();
   ValueTask LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default);
 
+  void BeginFrame(GameTime time);
   void Input(GameTime time);
   void Update(GameTime time);
   void Draw(GameTime time);
+  void EndFrame(GameTime time);
 }
 
 /// <summary>A registry for <see cref="IGamePlugin"/>s.</summary>
@@ -50,6 +52,10 @@ public abstract class GamePlugin<TGame> : IGamePlugin
     return ValueTask.CompletedTask;
   }
 
+  public virtual void BeginFrame(GameTime time)
+  {
+  }
+
   public virtual void Initialize()
   {
   }
@@ -63,6 +69,10 @@ public abstract class GamePlugin<TGame> : IGamePlugin
   }
 
   public virtual void Draw(GameTime time)
+  {
+  }
+
+  public virtual void EndFrame(GameTime time)
   {
   }
 

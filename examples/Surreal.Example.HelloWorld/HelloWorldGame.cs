@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -7,18 +8,16 @@ namespace HelloWorld;
 
 public sealed class HelloWorldGame : PrototypeGame
 {
-  private static readonly Matrix4x4 ProjectionView = Matrix4x4.CreateOrthographic(256f, 144f, 0f, 100f);
+  private ShaderProgram? shader;
+  private Mesh<Vertex>? mesh;
 
-  private Material? material;
-  private GeometryBatch? batch;
-
-  public static Task Main() => StartAsync<HelloWorldGame>(new Configuration
+  public static void Main() => Start<HelloWorldGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
       Configuration =
       {
-        Title = "Hello, Surreal!",
+        Title          = "Hello, Surreal!",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
       },
@@ -29,45 +28,72 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    var shader = new ShaderProgram(GraphicsServer);
+    shader = new ShaderProgram(GraphicsServer);
 
     if (GraphicsServer is IHasNativeShaderSupport nativeShaderSupport)
     {
       await nativeShaderSupport.CompileNativeShaderAsync(shader.Handle, "Assets/shaders/geometry.glsl", cancellationToken);
     }
 
-    material = new Material(shader);
+    mesh = new Mesh<Vertex>(GraphicsServer);
+
+    mesh.Vertices.Write(stackalloc Vertex[]
+    {
+      new Vertex(new(-0.25f, -0.25f), Color.Red),
+      new Vertex(new(0, 0.25f), Color.Green),
+      new Vertex(new(0.25f, -0.25f), Color.Blue),
+    });
   }
 
-  protected override void Initialize()
-  {
-    base.Initialize();
-
-    batch = new GeometryBatch(GraphicsServer);
-  }
-
-  protected override void Input(GameTime time)
+  protected override void OnInput(GameTime time)
   {
     if (Keyboard.IsKeyPressed(Key.Escape))
     {
       Exit();
     }
 
-    base.Input(time);
+    base.OnInput(time);
   }
 
-  protected override void Draw(GameTime time)
+  protected override void OnDraw(GameTime time)
   {
-    batch!.Begin(material!, in ProjectionView);
-
-    batch!.DrawSolidQuad(Vector2.Zero, new Vector2(16f, 16f), Color.White);
-    batch!.DrawCircle(Vector2.Zero, 16f, Color.Red);
+    if (mesh != null && shader != null)
+    {
+      mesh.Draw(shader);
+    }
   }
 
   public override void Dispose()
   {
-    batch?.Dispose();
+    mesh?.Dispose();
+    shader?.Dispose();
 
     base.Dispose();
+  }
+
+  [VisibleForTesting]
+  [StructLayout(LayoutKind.Sequential)]
+  private struct Vertex
+  {
+    [VertexDescriptor(
+      Alias = "in_position",
+      Count = 2,
+      Type = VertexType.Float
+    )]
+    public Vector2 Position;
+
+    [VertexDescriptor(
+      Alias = "in_color",
+      Count = 4,
+      Type = VertexType.UnsignedByte,
+      Normalized = true
+    )]
+    public Color Color;
+
+    public Vertex(Vector2 position, Color color)
+    {
+      Position = position;
+      Color    = color;
+    }
   }
 }

@@ -1,5 +1,4 @@
-﻿using Surreal.Graphics.Images;
-using Surreal.Input.Keyboard;
+﻿using Surreal.Input.Keyboard;
 
 namespace Minecraft;
 
@@ -7,16 +6,15 @@ public sealed class MinecraftGame : PrototypeGame
 {
   private static readonly ConcurrentQueue<Action> Actions = new();
 
-  public static async Task Main() => await StartAsync<MinecraftGame>(new Configuration
+  public static void Main() => Start<MinecraftGame>(new Configuration
   {
     Platform = new DesktopPlatform
     {
       Configuration =
       {
-        Title = "Minecraft",
+        Title          = "Minecraft",
         IsVsyncEnabled = true,
         ShowFpsInTitle = true,
-        Icon = await Image.LoadAsync("resx://Minecraft/Minecraft.png"),
       },
     },
   });
@@ -27,23 +25,23 @@ public sealed class MinecraftGame : PrototypeGame
     Actions.Enqueue(action);
   }
 
-  protected override void Initialize()
+  protected override void OnInitialize()
   {
-    base.Initialize();
+    base.OnInitialize();
 
     Mouse.IsCursorVisible = false;
   }
 
-  protected override void Input(GameTime time)
+  protected override void OnInput(GameTime time)
   {
     if (Keyboard.IsKeyPressed(Key.Escape)) Exit();
 
-    base.Input(time);
+    base.OnInput(time);
   }
 
-  protected override void Update(GameTime time)
+  protected override void OnUpdate(GameTime time)
   {
-    base.Update(time);
+    base.OnUpdate(time);
 
     while (Actions.TryDequeue(out var action))
     {

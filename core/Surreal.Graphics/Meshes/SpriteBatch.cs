@@ -12,10 +12,12 @@ public sealed class SpriteBatch : IDisposable
 {
   private const int MaximumSpriteCount = 8000;
 
+  private static readonly ShaderUniform<Matrix4x4> ProjectionView = new("_ProjectionView");
+
   private readonly IDisposableBuffer<Vertex> vertices;
   private readonly Mesh<Vertex> mesh;
 
-  private Material? material;
+  private ShaderProgram? shader;
   private Texture? lastTexture;
   private int vertexCount;
 
@@ -25,19 +27,18 @@ public sealed class SpriteBatch : IDisposable
     Debug.Assert(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
     vertices = Buffers.AllocateNative<Vertex>(spriteCount * 4);
-    mesh = new Mesh<Vertex>(server);
+    mesh     = new Mesh<Vertex>(server);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
   public Color Color { get; set; } = Color.White;
 
-  public void Begin(Material material, in Matrix4x4 projectionView)
+  public void Begin(ShaderProgram shader, in Matrix4x4 projectionView)
   {
-    this.material = material;
+    this.shader = shader;
 
-    // TODO: set projection view?
-    // material.SetProperty(ProjectionView, projectionView);
+    shader.SetUniform(ProjectionView, in projectionView);
   }
 
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Angle rotation = default)
@@ -90,30 +91,30 @@ public sealed class SpriteBatch : IDisposable
     ref var vertex0 = ref span[0];
     vertex0.Position.X = position.X;
     vertex0.Position.Y = position.Y;
-    vertex0.Color = color;
-    vertex0.UV.X = u;
-    vertex0.UV.Y = v;
+    vertex0.Color      = color;
+    vertex0.UV.X       = u;
+    vertex0.UV.Y       = v;
 
     ref var vertex1 = ref span[1];
     vertex1.Position.X = position.X;
     vertex1.Position.Y = extentY;
-    vertex1.Color = color;
-    vertex1.UV.X = u;
-    vertex1.UV.Y = v2;
+    vertex1.Color      = color;
+    vertex1.UV.X       = u;
+    vertex1.UV.Y       = v2;
 
     ref var vertex2 = ref span[2];
     vertex2.Position.X = extentX;
     vertex2.Position.Y = extentY;
-    vertex2.Color = color;
-    vertex2.UV.X = u2;
-    vertex2.UV.Y = v2;
+    vertex2.Color      = color;
+    vertex2.UV.X       = u2;
+    vertex2.UV.Y       = v2;
 
     ref var vertex3 = ref span[3];
     vertex3.Position.X = extentX;
     vertex3.Position.Y = position.Y;
-    vertex3.Color = color;
-    vertex3.UV.X = u2;
-    vertex3.UV.Y = v;
+    vertex3.Color      = color;
+    vertex3.UV.X       = u2;
+    vertex3.UV.Y       = v;
 
     vertexCount += 4;
   }
@@ -121,13 +122,13 @@ public sealed class SpriteBatch : IDisposable
   public void Flush()
   {
     if (vertexCount == 0) return;
-    if (material == null) return;
+    if (shader == null) return;
 
     var spriteCount = vertexCount / 4;
     var indexCount = spriteCount * 6;
 
     mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
-    mesh.DrawImmediate(material, vertexCount, indexCount);
+    mesh.Draw(shader, vertexCount, indexCount);
 
     vertexCount = 0;
   }
@@ -157,32 +158,25 @@ public sealed class SpriteBatch : IDisposable
 
   [VisibleForTesting]
   [StructLayout(LayoutKind.Sequential)]
-  internal struct Vertex
+  internal record struct Vertex(Vector2 Position, Color Color, Vector2 UV)
   {
     [VertexDescriptor(
       Count = 2,
       Type = VertexType.Float
     )]
-    public Vector2 Position;
+    public Vector2 Position = Position;
 
     [VertexDescriptor(
       Count = 4,
       Type = VertexType.UnsignedByte,
       Normalized = true
     )]
-    public Color Color;
+    public Color Color = Color;
 
     [VertexDescriptor(
       Count = 2,
       Type = VertexType.Float
     )]
-    public Vector2 UV;
-
-    public Vertex(Vector2 position, Color color, Vector2 uv)
-    {
-      Position = position;
-      Color = color;
-      UV = uv;
-    }
+    public Vector2 UV = UV;
   }
 }
