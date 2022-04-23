@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Avventura</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Example.Avventura\Surreal.Example.Avventura.csproj" />
-  </ItemGroup>
-</Project>

@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Civilization</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Example.Civilization\Surreal.Example.Civilization.csproj" />
-  </ItemGroup>
-</Project>

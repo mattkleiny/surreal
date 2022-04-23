@@ -1,42 +1,87 @@
-﻿namespace Surreal;
+﻿using System.Runtime.CompilerServices;
+
+namespace Surreal;
 
 public class MessagingTests
 {
   [Test]
-  public void it_should_send_message_to_listener()
+  public void it_should_create_a_valid_message()
   {
-    var listener = new TestListener();
+    var payload = new TestMessage();
+    var message = Message.Create(ref payload);
 
-    listener.SendMessage("This is a test!");
+    message.Is<TestMessage>().Should().BeTrue();
+    Unsafe.IsNullRef(ref message.Cast<TestMessage>()).Should().BeFalse();
   }
 
   [Test]
-  public void it_should_dispatch_to_registered_subscribers()
+  public void it_should_packed_payload_to_listener()
+  {
+    var listener = new TestListener();
+    var result = listener.SendMessage(new TestMessage());
+
+    result.Width.Should().Be(8);
+    result.Height.Should().Be(7);
+  }
+
+  [Test]
+  public void it_should_notify_subscribers()
   {
     Message.SubscribeAll(this);
-
     try
     {
-      Message.Publish("This is a test!");
+      Message.Publish("Hello, World");
     }
     finally
     {
       Message.UnsubscribeAll(this);
     }
+
+    Assert.Fail();
+  }
+
+  [Test]
+  public void it_should_send_message_to_listener()
+  {
+    var listener = new TestListener();
+
+    Message.AddListener(listener);
+
+    try
+    {
+      listener.SendMessage(new TestMessage());
+    }
+    finally
+    {
+      Message.RemoveListener(listener);
+    }
   }
 
   [MessageSubscriber]
-  private void OnMessageReceived(ref string value)
+  private void OnMessageReceived(ref string message)
   {
-    value.Should().Be("This is a test!");
+    Assert.Pass();
+  }
+
+  private record struct TestMessage()
+  {
+    public int Width  { get; set; } = 16;
+    public int Height { get; set; } = 9;
   }
 
   private sealed class TestListener : IMessageListener
   {
     void IMessageListener.OnMessageReceived(Message message)
     {
-      message.Is<string>().Should().BeTrue();
-      message.Cast<string>().Should().Be("This is a test!");
+      message.Is<TestMessage>().Should().BeTrue();
+
+      ref var payload = ref message.Cast<TestMessage>();
+
+      payload.Width.Should().Be(16);
+      payload.Height.Should().Be(9);
+
+      payload.Width  = 8;
+      payload.Height = 7;
     }
   }
 }

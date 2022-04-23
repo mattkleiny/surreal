@@ -1,13 +1,11 @@
 ﻿using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
-using Surreal.Compute;
+using Surreal.Blueprints;
 using Surreal.Graphics;
 using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
-using Surreal.Graphics.Images.FlipBooks;
-using Surreal.Graphics.Images.Sprites;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
@@ -22,7 +20,6 @@ namespace Surreal;
 public abstract class PrototypeGame : Game
 {
   public IAudioServer    AudioServer    => Services.GetRequiredService<IAudioServer>();
-  public IComputeServer  ComputeServer  => Services.GetRequiredService<IComputeServer>();
   public IGraphicsServer GraphicsServer => Services.GetRequiredService<IGraphicsServer>();
   public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
   public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
@@ -56,14 +53,6 @@ public abstract class PrototypeGame : Game
       manager.AddLoader(new TextureLoader(graphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
       manager.AddLoader(new TextureRegionLoader());
       manager.AddLoader(new TrueTypeFontLoader());
-      manager.AddLoader(new AsepriteImporter
-      {
-        FilterMode       = TextureFilterMode.Point,
-        PixelsPerUnit    = 16,
-        FramesPerSecond  = 8,
-        TransparencyMask = new Color32(255, 0, 255),
-        AnimationFlags   = SpriteAnimationFlags.Looping
-      });
     }
   }
 

@@ -1,5 +1,5 @@
-﻿using Surreal.Attributes;
-using Surreal.Effects;
+﻿using Surreal.Combat.Attributes;
+using Surreal.Combat.Effects;
 using Surreal.Objects;
 using Surreal.Utilities;
 

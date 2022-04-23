@@ -1,5 +1,4 @@
 using Surreal.Audio;
-using Surreal.Compute;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Input;
@@ -7,10 +6,8 @@ using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Internal;
 using Surreal.Internal.Audio;
-using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
-using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -53,7 +50,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
 
     Window         = new OpenTKWindow(configuration);
     AudioServer    = new OpenTKAudioServer();
-    ComputeServer  = new OpenTKComputeServer();
     GraphicsServer = new OpenTKGraphicsServer();
     InputServer    = new OpenTKInputServer(Window);
   }
@@ -66,7 +62,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
 
   public OpenTKWindow         Window         { get; }
   public OpenTKAudioServer    AudioServer    { get; }
-  public OpenTKComputeServer  ComputeServer  { get; }
   public OpenTKGraphicsServer GraphicsServer { get; }
   public OpenTKInputServer    InputServer    { get; }
 
@@ -111,7 +106,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     services.AddSingleton<IDesktopPlatformHost>(this);
     services.AddSingleton<IDesktopWindow>(Window);
     services.AddSingleton<IAudioServer>(AudioServer);
-    services.AddSingleton<IComputeServer>(ComputeServer);
     services.AddSingleton<IGraphicsServer>(GraphicsServer);
     services.AddSingleton<IInputServer>(InputServer);
     services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);

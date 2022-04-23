@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Perimeter</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Example.Perimeter\Surreal.Example.Perimeter.csproj" />
-  </ItemGroup>
-</Project>

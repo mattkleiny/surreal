@@ -1,6 +1,7 @@
 ﻿using Isaac.Core.Actors.Components;
-using Surreal.Attributes;
-using Surreal.Effects;
+using Surreal.Combat;
+using Surreal.Combat.Attributes;
+using Surreal.Combat.Effects;
 
 namespace Isaac.Core.Actors;
 

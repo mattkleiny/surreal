@@ -51,9 +51,8 @@ public abstract partial class Game : IDisposable, ITestableGame
   public IPlatformHost Host         { get; private init; } = null!;
   public ILoopStrategy LoopStrategy { get; set; }          = new AveragingLoopStrategy();
 
-  public IServiceRegistry    Services { get; } = new ServiceRegistry();
-  public IAssetManager       Assets   { get; } = new AssetManager();
-  public IGamePluginRegistry Plugins  { get; } = new GamePluginRegistry();
+  public IServiceRegistry Services { get; } = new ServiceRegistry();
+  public IAssetManager    Assets   { get; } = new AssetManager();
 
   [VisibleForTesting]
   private Action<IServiceRegistry>? ServiceOverrides { get; set; }
@@ -73,7 +72,6 @@ public abstract partial class Game : IDisposable, ITestableGame
     RegisterServices(Services);
     RegisterAssetLoaders(Assets);
     RegisterFileSystems(FileSystem.Registry);
-    RegisterPlugins(Plugins);
 
     Services.SealRegistry();
 
@@ -132,18 +130,11 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   protected virtual void OnInitialize()
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      plugin.Initialize();
-    }
   }
 
-  protected virtual async Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
+  protected virtual Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      await plugin.LoadContentAsync(assets, cancellationToken);
-    }
+    return Task.CompletedTask;
   }
 
   protected virtual void RegisterServices(IServiceRegistry services)
@@ -164,48 +155,24 @@ public abstract partial class Game : IDisposable, ITestableGame
   {
   }
 
-  protected virtual void RegisterPlugins(IGamePluginRegistry plugins)
-  {
-  }
-
   protected virtual void OnBeginFrame(GameTime time)
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      plugin.BeginFrame(time);
-    }
   }
 
   protected virtual void OnInput(GameTime time)
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      plugin.Input(time);
-    }
   }
 
   protected virtual void OnUpdate(GameTime time)
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      plugin.Update(time);
-    }
   }
 
   protected virtual void OnDraw(GameTime time)
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      plugin.Draw(time);
-    }
   }
 
   protected virtual void OnEndFrame(GameTime time)
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      plugin.EndFrame(time);
-    }
   }
 
   protected virtual void OnResized(int width, int height)
@@ -219,11 +186,6 @@ public abstract partial class Game : IDisposable, ITestableGame
 
   public virtual void Dispose()
   {
-    foreach (var plugin in Plugins.ActivePlugins)
-    {
-      plugin.Dispose();
-    }
-
     Assets.Dispose();
     Services.Dispose();
     Host.Dispose();

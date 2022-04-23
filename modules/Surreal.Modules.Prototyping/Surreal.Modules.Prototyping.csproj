@@ -5,10 +5,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Compute\Surreal.Compute.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Input\Surreal.Input.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" />
-    <ProjectReference Include="..\Surreal.Modules.Blueprints\Surreal.Modules.Blueprints.csproj" />
   </ItemGroup>
 </Project>

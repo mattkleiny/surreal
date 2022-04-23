@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" />
-  </ItemGroup>
-</Project>

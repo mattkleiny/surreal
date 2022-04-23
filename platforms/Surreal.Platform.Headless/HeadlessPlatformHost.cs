@@ -1,14 +1,11 @@
 using Surreal.Audio;
-using Surreal.Compute;
 using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Internal.Audio;
-using Surreal.Internal.Compute;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
-using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -25,7 +22,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public event Action<int, int> Resized = null!;
 
   public HeadlessAudioServer    AudioServer    { get; } = new();
-  public HeadlessComputeServer  ComputeServer  { get; } = new();
   public HeadlessGraphicsServer GraphicsServer { get; } = new();
   public HeadlessInputServer    InputServer    { get; } = new();
 
@@ -35,7 +31,7 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public bool IsFocused => true;
   public bool IsClosing => false;
 
-  public IServiceModule Services   => this;
+  public IServiceModule Services => this;
 
   public IHeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputServer.Mouse;
@@ -54,7 +50,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   {
     services.AddSingleton<IHeadlessPlatformHost>(this);
     services.AddSingleton<IAudioServer>(AudioServer);
-    services.AddSingleton<IComputeServer>(ComputeServer);
     services.AddSingleton<IGraphicsServer>(GraphicsServer);
     services.AddSingleton<IInputServer>(InputServer);
     services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);

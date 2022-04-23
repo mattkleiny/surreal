@@ -1,4 +1,5 @@
-﻿using Surreal.Effects;
+﻿using Surreal.Combat;
+using Surreal.Combat.Effects;
 using Surreal.Persistence;
 
 namespace Isaac.Core.Actors;

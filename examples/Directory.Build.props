@@ -2,7 +2,7 @@
 <Project>
   <Import Project="../Directory.Build.props" />
 
-<!-- TODO: work on compilatino pipeline
+<!-- TODO: work on build pipeline
   <UsingTask TaskName="Surreal.CompileAssets" AssemblyFile="../core/Surreal.Build/bin/$(Configuration)/$(TargetFramework)/Surreal.Build.dll" />
 
   <Target Name="Prepare Assets" BeforeTargets="Build">
@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\modules\Surreal.Modules.Prototyping\Surreal.Modules.Prototyping.csproj" />
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">

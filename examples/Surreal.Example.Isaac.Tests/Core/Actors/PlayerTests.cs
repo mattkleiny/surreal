@@ -1,4 +1,6 @@
 ﻿using Isaac.Core.Effects;
+using Surreal.Combat;
+using Surreal.Combat.Scripting;
 using Surreal.Persistence;
 using Surreal.Scripting;
 
