@@ -1,3 +1,4 @@
+using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Graphics;
 using Surreal.Input;
@@ -35,6 +36,11 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
 
   public IHeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputServer.Mouse;
+
+  public void RegisterAssetLoaders(IAssetManager manager)
+  {
+    // no-op
+  }
 
   public void BeginFrame(DeltaTime deltaTime)
   {

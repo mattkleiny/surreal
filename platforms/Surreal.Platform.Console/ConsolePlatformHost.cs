@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Microsoft.Win32.SafeHandles;
+using Surreal.Assets;
 using Surreal.Diagnostics;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
@@ -112,6 +113,11 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
 
   public IServiceModule  Services => this;
   public IConsoleDisplay Display  => this;
+
+  public void RegisterAssetLoaders(IAssetManager manager)
+  {
+    throw new NotImplementedException();
+  }
 
   public void BeginFrame(DeltaTime deltaTime)
   {

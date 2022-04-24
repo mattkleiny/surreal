@@ -1,7 +1,5 @@
 ﻿using System.Text.Json;
 using System.Xml.Linq;
-using Surreal.IO.Binary;
-using Surreal.IO.Xml;
 using Surreal.Memory;
 
 namespace Surreal.IO;
@@ -90,20 +88,14 @@ public static class VirtualPathExtensions
     await writer.FlushAsync();
   }
 
-  public static async ValueTask SerializeBinaryAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
+  public static ValueTask SerializeBinaryAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenOutputStreamAsync();
-    await using var writer = new StreamBinaryWriter(stream);
-
-    await BinarySerializer.SerializeAsync(value, writer, cancellationToken);
+    throw new NotImplementedException();
   }
 
-  public static async ValueTask<T> DeserializeBinaryAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
+  public static ValueTask<T> DeserializeBinaryAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenInputStreamAsync();
-    await using var reader = new StreamBinaryReader(stream);
-
-    return await BinarySerializer.DeserializeAsync<T>(reader, cancellationToken);
+    throw new NotImplementedException();
   }
 
   public static async ValueTask SerializeJsonAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
@@ -147,7 +139,7 @@ public static class VirtualPathExtensions
 
     var element = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
 
-    return await XmlSerializer.DeserializeAsync(type, element, cancellationToken);
+    throw new NotImplementedException();
   }
 
   public static async ValueTask<T> DeserializeXmlAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
@@ -157,6 +149,6 @@ public static class VirtualPathExtensions
 
     var element = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
 
-    return await XmlSerializer.DeserializeAsync<T>(element, cancellationToken);
+    throw new NotImplementedException();
   }
 }

@@ -1,16 +1,7 @@
-﻿using Surreal.Assets;
-using Surreal.Audio;
-using Surreal.Audio.Clips;
-using Surreal.Blueprints;
+﻿using Surreal.Audio;
 using Surreal.Graphics;
-using Surreal.Graphics.Fonts;
-using Surreal.Graphics.Images;
-using Surreal.Graphics.Shaders;
-using Surreal.Graphics.Textures;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
-using Surreal.IO.Json;
-using Surreal.IO.Xml;
 
 namespace Surreal;
 
@@ -36,40 +27,6 @@ public abstract class PrototypeGame : Game
     if (Services.TryGetService(out IGraphicsServer graphicsServer))
     {
       graphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
-    }
-  }
-
-  protected override void RegisterAssetLoaders(IAssetManager manager)
-  {
-    base.RegisterAssetLoaders(manager);
-
-    // common
-    manager.AddLoader(new JsonAssetLoader());
-    manager.AddLoader(new XmlAssetLoader());
-    manager.AddLoader(new BlueprintDeclarationLoader());
-
-    // audio
-    if (Services.TryGetService(out IAudioServer audioServer))
-    {
-      manager.AddLoader(new AudioBufferLoader());
-      manager.AddLoader(new AudioClipLoader(audioServer));
-    }
-
-    // graphics
-    if (Services.TryGetService(out IGraphicsServer graphicsServer))
-    {
-      manager.AddLoader(new BitmapFontLoader(graphicsServer));
-      manager.AddLoader(new ColorPaletteLoader());
-      manager.AddLoader(new ImageLoader());
-      manager.AddLoader(new ShaderProgramLoader(graphicsServer, ".shade"));
-      manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(Assets), ".shade"));
-      manager.AddLoader(new TextureLoader(graphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
-      manager.AddLoader(new TextureRegionLoader());
-
-      if (graphicsServer.NativeShaderLoader != null)
-      {
-        manager.AddLoader(graphicsServer.NativeShaderLoader);
-      }
     }
   }
 }

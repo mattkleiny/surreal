@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>AI systems for locomotion, scheduling and reasoning.</Description>
-  </PropertyGroup>
-</Project>

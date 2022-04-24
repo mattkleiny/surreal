@@ -1,6 +1,12 @@
+using Surreal.Assets;
 using Surreal.Audio;
+using Surreal.Audio.Clips;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
+using Surreal.Graphics.Fonts;
+using Surreal.Graphics.Images;
+using Surreal.Graphics.Shaders;
+using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
@@ -70,6 +76,21 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public bool IsFocused => Window.IsFocused;
   public bool IsClosing => Window.IsClosing;
   public bool IsVisible => Window.IsVisible;
+
+  public void RegisterAssetLoaders(IAssetManager manager)
+  {
+    manager.AddLoader(new AudioBufferLoader());
+    manager.AddLoader(new AudioClipLoader(AudioServer));
+
+    manager.AddLoader(new BitmapFontLoader(GraphicsServer));
+    manager.AddLoader(new ColorPaletteLoader());
+    manager.AddLoader(new ImageLoader());
+    manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));
+    manager.AddLoader(new OpenTKShaderProgramLoader(GraphicsServer));
+    manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(manager), ".shade"));
+    manager.AddLoader(new TextureLoader(GraphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
+    manager.AddLoader(new TextureRegionLoader());
+  }
 
   public void BeginFrame(DeltaTime deltaTime)
   {
