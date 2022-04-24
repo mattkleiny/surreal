@@ -1,5 +1,5 @@
 ﻿using AutoFixture.Kernel;
-using Surreal.Graphics.Cameras;
+using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
@@ -21,6 +21,8 @@ internal sealed class FakeGraphicsServer : IGraphicsServer
   private int nextBufferId = 0;
   private int nextTextureId = 0;
   private int nextShaderId = 0;
+
+  public AssetLoader<ShaderProgram>? NativeShaderLoader => null;
 
   public void SetViewportSize(Viewport viewport)
   {

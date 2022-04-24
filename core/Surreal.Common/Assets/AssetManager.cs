@@ -8,8 +8,8 @@ public interface IAssetManager : IDisposable
 {
   void AddLoader(IAssetLoader loader);
 
-  Task<object> LoadAssetAsync(Type type, VirtualPath path, ProgressToken progressToken = default);
-  Task<T> LoadAssetAsync<T>(VirtualPath path, ProgressToken progressToken = default);
+  Task<object> LoadAssetAsync(Type type, VirtualPath path, CancellationToken cancellationToken = default);
+  Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
@@ -23,12 +23,12 @@ public sealed class AssetManager : IAssetManager
     loaders.Add(loader);
   }
 
-  public async Task<T> LoadAssetAsync<T>(VirtualPath path, ProgressToken progressToken = default)
+  public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    return (T) await LoadAssetAsync(typeof(T), path, progressToken);
+    return (T) await LoadAssetAsync(typeof(T), path, cancellationToken);
   }
 
-  public async Task<object> LoadAssetAsync(Type type, VirtualPath path, ProgressToken progressToken = default)
+  public async Task<object> LoadAssetAsync(Type type, VirtualPath path, CancellationToken cancellationToken = default)
   {
     var context = new AssetLoaderContext
     {
@@ -46,7 +46,7 @@ public sealed class AssetManager : IAssetManager
 
     if (!assetsById.TryGetValue(assetId, out var asset))
     {
-      assetsById[assetId] = asset = await loader.LoadAsync(context, progressToken);
+      assetsById[assetId] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
     return asset;

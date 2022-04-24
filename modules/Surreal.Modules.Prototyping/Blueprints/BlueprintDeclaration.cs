@@ -39,9 +39,9 @@ public sealed class BlueprintDeclarationLoader : AssetLoader<BlueprintDeclaratio
     this.parser = parser;
   }
 
-  public override async ValueTask<BlueprintDeclaration> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<BlueprintDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    return await parser.ParseAsync(context.Path, progressToken.CancellationToken);
+    return await parser.ParseAsync(context.Path, cancellationToken);
   }
 }
 

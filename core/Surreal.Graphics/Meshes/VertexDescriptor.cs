@@ -3,12 +3,9 @@ using JetBrains.Annotations;
 
 namespace Surreal.Graphics.Meshes;
 
-#pragma warning disable CA1720
-
 /// <summary>Primitive types supported by <see cref="VertexDescriptor"/>s.</summary>
 public enum VertexType
 {
-  Byte,
   UnsignedByte,
   Short,
   UnsignedShort,
@@ -23,21 +20,22 @@ public enum VertexType
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute : Attribute
 {
-  public string?    Alias      { get; set; }
-  public int        Count      { get; set; }
-  public VertexType Type       { get; set; }
-  public bool       Normalized { get; set; }
+  public string?    Alias { get; set; }
+  public int        Count { get; set; } = 4;
+  public VertexType Type  { get; set; } = VertexType.Float;
+
+  /// <summary>True if the resultant components should be normalised to (0, 1) before submission to the GPU.</summary>
+  public bool ShouldNormalize { get; set; } = false;
 }
 
 /// <summary>Describes a single vertex.</summary>
 [DebuggerDisplay("{Alias}: {Count}")]
-public readonly record struct VertexDescriptor(string Alias, int Count, VertexType Type, bool Normalized, int Offset)
+public readonly record struct VertexDescriptor(int Offset, string Alias, int Count, VertexType Type, bool ShouldNormalize)
 {
   public int Stride => Count * DetermineSize(Type);
 
   private static int DetermineSize(VertexType type) => type switch
   {
-    VertexType.Byte          => sizeof(byte),
     VertexType.UnsignedByte  => sizeof(byte),
     VertexType.Short         => sizeof(short),
     VertexType.UnsignedShort => sizeof(ushort),
@@ -71,11 +69,11 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
     foreach (var (name, attribute) in values)
     {
       var descriptor = new VertexDescriptor(
+        Offset: stride,
         Alias: attribute.Alias ?? name,
         Count: attribute.Count,
         Type: attribute.Type,
-        Normalized: attribute.Normalized,
-        Offset: stride
+        ShouldNormalize: attribute.ShouldNormalize
       );
 
       stride += descriptor.Stride;

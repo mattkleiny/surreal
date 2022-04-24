@@ -28,14 +28,8 @@ public sealed class HelloWorldGame : PrototypeGame
   {
     await base.LoadContentAsync(assets, cancellationToken);
 
-    shader = new ShaderProgram(GraphicsServer);
-
-    if (GraphicsServer is IHasNativeShaderSupport nativeShaderSupport)
-    {
-      await nativeShaderSupport.CompileNativeShaderAsync(shader.Handle, "Assets/shaders/geometry.glsl", cancellationToken);
-    }
-
-    mesh = new Mesh<Vertex>(GraphicsServer);
+    shader = await assets.LoadAssetAsync<ShaderProgram>("Assets/shaders/helloworld.glsl", cancellationToken);
+    mesh   = new Mesh<Vertex>(GraphicsServer);
 
     mesh.Vertices.Write(stackalloc Vertex[]
     {
@@ -71,29 +65,21 @@ public sealed class HelloWorldGame : PrototypeGame
     base.Dispose();
   }
 
-  [VisibleForTesting]
   [StructLayout(LayoutKind.Sequential)]
-  private struct Vertex
+  private record struct Vertex(Vector2 Position, Color Color)
   {
     [VertexDescriptor(
       Alias = "in_position",
       Count = 2,
       Type = VertexType.Float
     )]
-    public Vector2 Position;
+    public Vector2 Position = Position;
 
     [VertexDescriptor(
       Alias = "in_color",
       Count = 4,
-      Type = VertexType.UnsignedByte,
-      Normalized = true
+      Type = VertexType.Float
     )]
-    public Color Color;
-
-    public Vertex(Vector2 position, Color color)
-    {
-      Position = position;
-      Color    = color;
-    }
+    public Color Color = Color;
   }
 }

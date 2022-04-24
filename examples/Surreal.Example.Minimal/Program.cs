@@ -10,7 +10,7 @@ var platform = new DesktopPlatform
   },
 };
 
-await Game.Start(platform, async context =>
+await Game.Start(platform, context =>
 {
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
@@ -20,13 +20,18 @@ await Game.Start(platform, async context =>
   var color1 = random.NextColor();
   var color2 = random.NextColor();
 
-  await context.ExecuteAsync(time =>
+  context.Execute(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       context.Exit();
     }
 
-    graphics.ClearColorBuffer(Color.Lerp(color1, color2, MathF.Sin((float)time.TotalTime.TotalSeconds)));
+    var t = MathF.Sin((float) time.TotalTime.TotalSeconds);
+    var lerp = Color.Lerp(color1, color2, t);
+
+    graphics.ClearColorBuffer(lerp);
   });
+
+  return ValueTask.CompletedTask;
 });

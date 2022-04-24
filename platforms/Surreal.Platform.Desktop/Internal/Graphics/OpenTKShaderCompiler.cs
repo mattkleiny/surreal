@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using OpenTK.Graphics.OpenGL;
-using Surreal.Assets;
 using Surreal.Graphics.Shaders;
-using Surreal.IO;
 using Surreal.Text;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
@@ -15,26 +13,6 @@ internal sealed record OpenTKShader(ShaderType Type, string Code);
 
 /// <summary>A set of <see cref="OpenTKShader"/>s.</summary>
 internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders);
-
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="OpenTKShaderSet"/>s.</summary>
-internal sealed class OpenTKShaderSetLoader : AssetLoader<OpenTKShaderSet>
-{
-  public override async ValueTask<OpenTKShaderSet> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
-  {
-    var vertexPath = context.Path.ChangeExtension("vert.glsl");
-    var fragmentPath = context.Path.ChangeExtension("frag.glsl");
-
-    var vertexCode = await vertexPath.ReadAllTextAsync(Encoding.UTF8, progressToken.CancellationToken);
-    var fragmentCode = await fragmentPath.ReadAllTextAsync(Encoding.UTF8, progressToken.CancellationToken);
-
-    var shaders = ImmutableArray.Create(
-      new OpenTKShader(ShaderType.VertexShader, vertexCode),
-      new OpenTKShader(ShaderType.FragmentShader, fragmentCode)
-    );
-
-    return new OpenTKShaderSet(context.Path.ToString(), shaders);
-  }
-}
 
 /// <summary>
 /// The shader compiler for OpenTK.

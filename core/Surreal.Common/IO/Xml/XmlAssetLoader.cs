@@ -11,7 +11,7 @@ public sealed class XmlAssetLoader : AssetLoader<object>
     return context.Path.Extension == ".xml";
   }
 
-  public override async ValueTask<object> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     // instantiate template
     if (!typeof(ITemplate).IsAssignableFrom(context.AssetType))
@@ -23,6 +23,6 @@ public sealed class XmlAssetLoader : AssetLoader<object>
     }
 
     // load template itself
-    return await context.Path.DeserializeXmlAsync(context.AssetType, progressToken.CancellationToken);
+    return await context.Path.DeserializeXmlAsync(context.AssetType, cancellationToken);
   }
 }

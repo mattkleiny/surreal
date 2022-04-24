@@ -45,7 +45,7 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
       Stages = compilationUnit.Stages.Add(new StageDeclaration(ShaderKind.Vertex)
       {
         Parameters = ImmutableArray.Create(
-          new Parameter(new Primitive(PrimitiveType.Float, 3), "position"),
+          new Parameter(new Primitive(PrimitiveType.Float, 2), "position"),
           new Parameter(new Primitive(PrimitiveType.Float, 4), "color")
         ),
         Statements = ImmutableArray.Create<Statement>(

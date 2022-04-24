@@ -71,7 +71,7 @@ public readonly record struct ColorPalette(Color[] colors, int offset, int count
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ColorPalette"/>s.s</summary>
 public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
-  public override async ValueTask<ColorPalette> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<ColorPalette> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream);

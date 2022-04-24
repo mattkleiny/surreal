@@ -32,9 +32,6 @@ public interface IDesktopWindow : IDisposable
   bool IsVsyncEnabled  { get; set; }
   bool IsCursorVisible { get; set; }
   bool IsClosing       { get; }
-
-  void Update();
-  void Present();
 }
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
@@ -74,13 +71,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public bool IsClosing => Window.IsClosing;
   public bool IsVisible => Window.IsVisible;
 
-  public void Tick(DeltaTime deltaTime)
+  public void BeginFrame(DeltaTime deltaTime)
   {
     if (!IsClosing)
     {
       Window.Update();
-      Window.Present();
-
       InputServer.Update();
 
       // show the game's FPS in the window title
@@ -90,9 +85,17 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
 
         if (frameDisplayTimer.Tick(deltaTime))
         {
-          Window.Title = $"{configuration.Title} - {frameCounter.FramesPerSecond:F} FPS";
+          Window.Title = $"{configuration.Title} - {frameCounter.TicksPerSecond:F} FPS";
         }
       }
+    }
+  }
+
+  public void EndFrame(DeltaTime deltaTime)
+  {
+    if (!IsClosing)
+    {
+      Window.Present();
     }
   }
 

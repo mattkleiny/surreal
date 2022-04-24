@@ -33,7 +33,7 @@ public abstract partial class Game
 
     public IPlatformHost Host => Services.GetRequiredService<IPlatformHost>();
 
-    public async ValueTask ExecuteAsync(GameLoopDelegate gameLoop)
+    public void Execute(GameLoopDelegate gameLoop)
     {
       var stopwatch = new Chronometer();
       var startTime = TimeStamp.Now;
@@ -46,10 +46,8 @@ public abstract partial class Game
           IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
         );
 
-        Host.Tick(gameTime.DeltaTime);
+        Host.BeginFrame(gameTime.DeltaTime);
         gameLoop(gameTime);
-
-        await Task.Yield(); // TODO: fix this up
       }
     }
 

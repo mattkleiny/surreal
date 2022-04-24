@@ -113,12 +113,10 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   public IServiceModule  Services => this;
   public IConsoleDisplay Display  => this;
 
-  public void Tick(DeltaTime deltaTime)
+  public void BeginFrame(DeltaTime deltaTime)
   {
     if (!IsClosing)
     {
-      Display.Flush();
-
       Keyboard.Update();
       Mouse.Update();
 
@@ -129,7 +127,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
 
         if (frameDisplayTimer.Tick(deltaTime))
         {
-          Title = $"{configuration.Title} - {frameCounter.FramesPerSecond:F} FPS";
+          Title = $"{configuration.Title} - {frameCounter.TicksPerSecond:F} FPS";
         }
       }
 
@@ -138,6 +136,14 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
       {
         Thread.Sleep(configuration.TargetDeltaTime - deltaTime);
       }
+    }
+  }
+
+  public void EndFrame(DeltaTime deltaTime)
+  {
+    if (!IsClosing)
+    {
+      Display.Flush();
     }
   }
 

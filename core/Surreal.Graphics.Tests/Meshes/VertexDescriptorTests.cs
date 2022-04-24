@@ -47,7 +47,7 @@ public sealed class VertexDescriptorTests
     [VertexDescriptor(
       Count = 4,
       Type = VertexType.Float,
-      Normalized = true
+      ShouldNormalize = true
     )]
     public Color Color;
   }

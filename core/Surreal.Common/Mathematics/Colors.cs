@@ -1,9 +1,12 @@
-﻿namespace Surreal.Mathematics;
+﻿using System.Runtime.InteropServices;
+
+namespace Surreal.Mathematics;
 
 #pragma warning disable S1104
 #pragma warning disable S2328
 
 /// <summary>A floating-point representation of color.</summary>
+[StructLayout(LayoutKind.Sequential)]
 public record struct Color(float R, float G, float B, float A = 1f)
 {
   public static readonly Color Black = new(0, 0, 0);
@@ -67,8 +70,25 @@ public record struct Color(float R, float G, float B, float A = 1f)
 }
 
 /// <summary>A 32-bit representation of color.</summary>
+[StructLayout(LayoutKind.Sequential)]
 public record struct Color32(byte R, byte G, byte B, byte A = 255)
 {
+  public static readonly Color32 Black = new(0, 0, 0);
+  public static readonly Color32 Red = new(255, 0, 0);
+  public static readonly Color32 Green = new(0, 255, 0);
+  public static readonly Color32 Blue = new(0, 0, 255);
+  public static readonly Color32 Yellow = new(255, 255, 0);
+  public static readonly Color32 Magenta = new(255, 0, 255);
+  public static readonly Color32 White = new(255, 255, 255);
+  public static readonly Color32 Clear = new(0, 0, 0, 0);
+
+  public static Color32 Lerp(Color32 a, Color32 b, float t) => new(
+    (byte) Maths.Lerp(a.R, b.R, t),
+    (byte) Maths.Lerp(a.G, b.G, t),
+    (byte) Maths.Lerp(a.B, b.B, t),
+    (byte) Maths.Lerp(a.A, b.A, t)
+  );
+
   public byte R = R;
   public byte G = G;
   public byte B = B;

@@ -36,9 +36,14 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public IHeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputServer.Mouse;
 
-  public void Tick(DeltaTime deltaTime)
+  public void BeginFrame(DeltaTime deltaTime)
   {
     InputServer.Update();
+  }
+
+  public void EndFrame(DeltaTime deltaTime)
+  {
+    // no-op
   }
 
   public void Dispose()

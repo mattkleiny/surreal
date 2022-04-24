@@ -6,7 +6,7 @@ namespace Surreal.IO.Binary;
 public sealed class BinaryAssetLoader<T> : AssetLoader<T>
   where T : notnull
 {
-  public override async ValueTask<T> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     return await context.Path.DeserializeBinaryAsync<T>();
   }

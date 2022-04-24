@@ -170,9 +170,8 @@ public sealed class GeometryBatch : IDisposable
   }
 
   /// <summary>A single vertex in the batch.</summary>
-  [VisibleForTesting]
   [StructLayout(LayoutKind.Sequential)]
-  internal record struct Vertex(Vector2 Position, Color Color)
+  private record struct Vertex(Vector2 Position, Color Color)
   {
     [VertexDescriptor(
       Count = 2,
@@ -183,7 +182,7 @@ public sealed class GeometryBatch : IDisposable
     [VertexDescriptor(
       Count = 4,
       Type = VertexType.UnsignedByte,
-      Normalized = true
+      ShouldNormalize = true
     )]
     public Color Color = Color;
   }

@@ -1,9 +1,12 @@
-﻿namespace Surreal.Mathematics;
+﻿using System.Runtime.InteropServices;
+
+namespace Surreal.Mathematics;
 
 #pragma warning disable S1104
 #pragma warning disable S2328
 
 /// <summary>An integral point in 2-space.</summary>
+[StructLayout(LayoutKind.Sequential)]
 public record struct Point2(int X, int Y)
 {
   public static readonly Point2 Zero = new(0, 0);
@@ -36,6 +39,7 @@ public record struct Point2(int X, int Y)
 }
 
 /// <summary>An integral point in 3-space.</summary>
+[StructLayout(LayoutKind.Sequential)]
 public record struct Point3(int X, int Y, int Z)
 {
   public static readonly Point3 Zero = new(0, 0, 0);

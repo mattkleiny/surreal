@@ -9,7 +9,7 @@ using Size = Surreal.Memory.Size;
 
 namespace Surreal.Graphics.Images;
 
-/// <summary>An image of manipulable pixels that can also be used for a texture.</summary>
+/// <summary>An image of colored pixels.</summary>
 [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
 public sealed class Image : IDisposable
 {
@@ -88,7 +88,7 @@ public sealed class ImageLoader : AssetLoader<Image>
     return base.CanHandle(context) && Extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<Image> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     return await Image.LoadAsync(context.Path);
   }

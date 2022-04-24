@@ -99,8 +99,9 @@ public abstract partial class Game : IDisposable, ITestableGame
         var deltaTime = chronometer.Tick();
         var totalTime = TimeStamp.Now - startTime;
 
-        Host.Tick(deltaTime);
+        Host.BeginFrame(deltaTime);
         Tick(deltaTime, totalTime);
+        Host.EndFrame(deltaTime);
 
         while (callbacks.TryDequeue(out var callback))
         {

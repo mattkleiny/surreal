@@ -50,7 +50,7 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
     this.server = server;
   }
 
-  public override async ValueTask<AudioClip> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<AudioClip> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     var buffer = await context.Manager.LoadAssetAsync<AudioBuffer>(context.Path);
     var clip = new AudioClip(server);

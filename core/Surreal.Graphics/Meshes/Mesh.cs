@@ -29,7 +29,8 @@ public abstract class Mesh : IDisposable
 public sealed class Mesh<TVertex> : Mesh
   where TVertex : unmanaged
 {
-  private static VertexDescriptorSet VertexDescriptorSet { get; } = VertexDescriptorSet.Create<TVertex>();
+  /// <summary>Descriptors are statically shared amongst all meshes.</summary>
+  private static VertexDescriptorSet SharedDescriptors { get; } = VertexDescriptorSet.Create<TVertex>();
 
   private readonly IGraphicsServer server;
 
@@ -44,7 +45,7 @@ public sealed class Mesh<TVertex> : Mesh
   public GraphicsBuffer<TVertex> Vertices { get; }
   public GraphicsBuffer<ushort>  Indices  { get; }
 
-  public override VertexDescriptorSet Descriptors => VertexDescriptorSet;
+  public override VertexDescriptorSet Descriptors => SharedDescriptors;
 
   public void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles)
   {

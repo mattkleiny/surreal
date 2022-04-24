@@ -13,8 +13,8 @@ public sealed class FrameCounter
     samples = new RingBuffer<TimeSpan>(sampleCount);
   }
 
-  public double TotalFrameTime  => samples.FastSum().TotalSeconds;
-  public double FramesPerSecond => samples.Count / TotalFrameTime;
+  public double TotalFrameTime => samples.FastSum().TotalSeconds;
+  public double TicksPerSecond => samples.Count / TotalFrameTime;
 
   public void Tick(DeltaTime deltaTime)
   {

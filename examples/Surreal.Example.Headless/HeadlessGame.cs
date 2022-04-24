@@ -12,13 +12,13 @@ public sealed class HeadlessGame : PrototypeGame
     Platform = new HeadlessPlatform(),
   });
 
-  protected override void OnDraw(GameTime time)
+  protected override void OnUpdate(GameTime time)
   {
-    base.OnDraw(time);
+    base.OnUpdate(time);
 
     if (fpsTimer.Tick(time.DeltaTime))
     {
-      Log.Trace($"Frames per second: {frameCounter.FramesPerSecond:F}");
+      Log.Trace($"Ticks per second: {frameCounter.TicksPerSecond:F}");
     }
 
     frameCounter.Tick(time.DeltaTime);

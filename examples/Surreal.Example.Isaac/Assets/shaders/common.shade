@@ -1,9 +1,0 @@
-﻿// Common shader code for the entire project.
-
-uniform sampler2d _CombinedPaletteTex;
-uniform int       _CombinedPaletteWidth;
-
-vec4 sample_palette(vec4 color) {
-  // TODO: sample the color palette texture
-  return color;
-}

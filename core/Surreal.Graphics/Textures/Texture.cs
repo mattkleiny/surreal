@@ -98,10 +98,10 @@ public sealed class TextureLoader : AssetLoader<Texture>
     this.defaultWrapMode = defaultWrapMode;
   }
 
-  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     // TODO: support hot reloading?
-    var image = await context.Manager.LoadAssetAsync<Image>(context.Path, progressToken);
+    var image = await context.Manager.LoadAssetAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(server, TextureFormat.Rgba8888, defaultFilterMode, defaultWrapMode);
 
     texture.WritePixels<Color32>(image.Width, image.Height, image.Pixels);

@@ -7,7 +7,9 @@ namespace Surreal.Diagnostics;
 /// <summary>Extensions to aid in visualization of data.</summary>
 public static class VisualizationExtensions
 {
-  public static string ToString<T>(this SpanGrid<T> grid, Func<int, int, T?, char> painter)
+  public delegate TOutput Painter<in T, out TOutput>(int x, int y, T value);
+
+  public static string ToString<T>(this SpanGrid<T> grid, Painter<T?, char> painter)
     where T : unmanaged
   {
     var builder = new StringBuilder();
@@ -28,11 +30,11 @@ public static class VisualizationExtensions
     return builder.ToString();
   }
 
-  public static Image ToImage<T>(this SpanGrid<T> grid, Func<int, int, T?, Color32> painter, int scale = 1)
+  public static Image ToImage<T>(this SpanGrid<T> grid, Painter<T?, Color32> painter, int scale = 1)
     where T : unmanaged
   {
     var image = new Image(grid.Width * scale, grid.Height * scale);
-    var output = image.Pixels;
+    var pixels = image.Pixels;
 
     for (var y = 0; y < grid.Height; y++)
     for (var x = 0; x < grid.Width; x++)
@@ -43,7 +45,7 @@ public static class VisualizationExtensions
       for (var yy = 0; yy < scale; yy++)
       for (var xx = 0; xx < scale; xx++)
       {
-        output[x * scale + xx, y * scale + yy] = color;
+        pixels[x * scale + xx, y * scale + yy] = color;
       }
     }
 

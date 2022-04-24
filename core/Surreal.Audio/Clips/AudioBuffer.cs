@@ -37,7 +37,7 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate, IDisposableBu
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioBuffer"/>s.</summary>
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
-  public override async ValueTask<AudioBuffer> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 
@@ -55,7 +55,15 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
     var sampleRate = new AudioSampleRate(format.SampleRate, format.Channels, format.BitsPerSample);
     var buffer = new AudioBuffer(reader.TotalTime, sampleRate);
 
-    await reader.ReadAsync(buffer.Data, progressToken.CancellationToken);
+    // TODO: clean this up?
+    while (reader.CanRead)
+    {
+      var bytesRead = await reader.ReadAsync(buffer.Data, cancellationToken);
+      if (bytesRead <= 0)
+      {
+        break;
+      }
+    }
 
     return buffer;
   }

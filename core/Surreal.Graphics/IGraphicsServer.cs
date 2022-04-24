@@ -1,11 +1,13 @@
-﻿using Surreal.Graphics.Cameras;
+﻿using Surreal.Assets;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
+
+/// <summary>A viewport size for camera rendering.</summary>
+public readonly record struct Viewport(int X, int Y, int Width, int Height);
 
 /// <summary>An opaque handle to a resource in the underling <see cref="IGraphicsServer"/> implementation.</summary>
 public readonly record struct GraphicsHandle(nint Id)
@@ -18,6 +20,8 @@ public readonly record struct GraphicsHandle(nint Id)
 /// <summary>An abstraction over the different types of graphics servers available.</summary>
 public interface IGraphicsServer
 {
+  AssetLoader<ShaderProgram>? NativeShaderLoader { get; }
+
   // intrinsics
   void SetViewportSize(Viewport viewport);
   void ClearColorBuffer(Color color);
@@ -53,10 +57,4 @@ public interface IGraphicsServer
   void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value);
   void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value);
   void DeleteShader(GraphicsHandle handle);
-}
-
-/// <summary>Represents a <see cref="IGraphicsServer"/> that allows direct access to native shader capabilities.</summary>
-public interface IHasNativeShaderSupport
-{
-  ValueTask CompileNativeShaderAsync(GraphicsHandle handle, VirtualPath path, CancellationToken cancellationToken = default);
 }

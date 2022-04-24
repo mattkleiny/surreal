@@ -3,7 +3,6 @@ using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Blueprints;
 using Surreal.Graphics;
-using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Shaders;
@@ -12,7 +11,6 @@ using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.IO.Json;
 using Surreal.IO.Xml;
-using Surreal.Mathematics;
 
 namespace Surreal;
 
@@ -24,7 +22,22 @@ public abstract class PrototypeGame : Game
   public IKeyboardDevice Keyboard       => Services.GetRequiredService<IKeyboardDevice>();
   public IMouseDevice    Mouse          => Services.GetRequiredService<IMouseDevice>();
 
-  public Color ClearColor { get; set; } = Color.Black;
+  protected override void OnInitialize()
+  {
+    base.OnInitialize();
+
+    OnResized(Host.Width, Host.Height); // initial resize
+  }
+
+  protected override void OnResized(int width, int height)
+  {
+    base.OnResized(width, height);
+
+    if (Services.TryGetService(out IGraphicsServer graphicsServer))
+    {
+      graphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
+    }
+  }
 
   protected override void RegisterAssetLoaders(IAssetManager manager)
   {
@@ -52,44 +65,11 @@ public abstract class PrototypeGame : Game
       manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(Assets), ".shade"));
       manager.AddLoader(new TextureLoader(graphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
       manager.AddLoader(new TextureRegionLoader());
-      manager.AddLoader(new TrueTypeFontLoader());
-    }
-  }
 
-  protected override void OnInitialize()
-  {
-    base.OnInitialize();
-
-    OnResized(Host.Width, Host.Height); // initial resize
-  }
-
-  protected override void OnResized(int width, int height)
-  {
-    base.OnResized(width, height);
-
-    if (Services.TryGetService(out IGraphicsServer graphicsServer))
-    {
-      graphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
-    }
-  }
-
-  protected override void OnBeginFrame(GameTime time)
-  {
-    if (Services.TryGetService(out IGraphicsServer graphicsServer))
-    {
-      graphicsServer.ClearColorBuffer(ClearColor);
-    }
-
-    base.OnBeginFrame(time);
-  }
-
-  protected override void OnEndFrame(GameTime time)
-  {
-    base.OnEndFrame(time);
-
-    if (Services.TryGetService(out IGraphicsServer graphicsServer))
-    {
-      graphicsServer.FlushToDevice();
+      if (graphicsServer.NativeShaderLoader != null)
+      {
+        manager.AddLoader(graphicsServer.NativeShaderLoader);
+      }
     }
   }
 }

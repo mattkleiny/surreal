@@ -11,14 +11,14 @@ var platform = new ConsolePlatform
   }
 };
 
-await Game.Start(platform, async context =>
+await Game.Start(platform, context =>
 {
   var display = context.Services.GetRequiredService<IConsoleDisplay>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
 
   var random = Random.Shared;
 
-  await context.ExecuteAsync(_ =>
+  context.Execute(_ =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
@@ -39,4 +39,6 @@ await Game.Start(platform, async context =>
       display.Draw(x, y, new Glyph('█', color));
     }
   });
+
+  return ValueTask.CompletedTask;
 });

@@ -1,21 +1,34 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
+using Surreal.Assets;
 using Surreal.Graphics;
-using Surreal.Graphics.Cameras;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.IO;
 using Surreal.Mathematics;
+using Matrix3x2 = System.Numerics.Matrix3x2;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
+using Quaternion = System.Numerics.Quaternion;
+using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
+using Vector4 = System.Numerics.Vector4;
 
 namespace Surreal.Internal.Graphics;
 
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
-internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSupport
+internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
   private readonly OpenTKShaderCompiler shaderCompiler = new();
+
+  public OpenTKGraphicsServer()
+  {
+    NativeShaderLoader = new OpenTKShaderProgramLoader(this);
+  }
+
+  public AssetLoader<ShaderProgram>? NativeShaderLoader { get; }
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -82,7 +95,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
     var buffer = new BufferHandle(handle);
     var bytes = data.Length * sizeof(T);
 
-    fixed (T* pointer = data)
+    fixed (byte* pointer = MemoryMarshal.AsBytes(data))
     {
       GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
       GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, BufferUsageARB.StaticDraw);
@@ -193,10 +206,10 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
   {
     var shaderSet = shaderCompiler.CompileShader(declaration);
 
-    LinkShaderProgram(handle, shaderSet);
+    LinkShader(handle, shaderSet);
   }
 
-  private static void LinkShaderProgram(GraphicsHandle handle, OpenTKShaderSet shaderSet)
+  public void LinkShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
   {
     var program = new ProgramHandle(handle);
     var shaderIds = new ShaderHandle[shaderSet.Shaders.Length];
@@ -318,15 +331,15 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
 
-  public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value)
+  public void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value)
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetAttribLocation(program, name);
     if (location == -1) return;
 
-    var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
+    var result = Unsafe.As<Matrix3x2, OpenTK.Mathematics.Matrix3x2>(ref Unsafe.AsRef(in value));
 
-    GL.UniformMatrix4f(location, 1, false, new ReadOnlySpan<float>(pointer, 3 * 2));
+    GL.UniformMatrix3x2f(location, 1, false, stackalloc[] { result });
   }
 
   public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value)
@@ -335,9 +348,9 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
     var location = GL.GetAttribLocation(program, name);
     if (location == -1) return;
 
-    var pointer = (float*) Unsafe.AsPointer(ref Unsafe.AsRef(in value));
+    var result = Unsafe.As<Matrix4x4, Matrix4>(ref Unsafe.AsRef(in value));
 
-    GL.UniformMatrix4f(location, 1, false, new ReadOnlySpan<float>(pointer, 4 * 4));
+    GL.UniformMatrix4f(location, 1, false, stackalloc[] { result });
   }
 
   public void DeleteShader(GraphicsHandle handle)
@@ -345,22 +358,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
     var program = new ProgramHandle(handle);
 
     GL.DeleteProgram(program);
-  }
-
-  async ValueTask IHasNativeShaderSupport.CompileNativeShaderAsync(GraphicsHandle handle, VirtualPath path, CancellationToken cancellationToken)
-  {
-    var vertexPath = path.ChangeExtension("vert.glsl");
-    var fragmentPath = path.ChangeExtension("frag.glsl");
-
-    var vertexCode = await vertexPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
-    var fragmentCode = await fragmentPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
-
-    var shaderSet = new OpenTKShaderSet(path.ToString(), ImmutableArray.Create(
-      new OpenTKShader(ShaderType.VertexShader, vertexCode),
-      new OpenTKShader(ShaderType.FragmentShader, fragmentCode)
-    ));
-
-    LinkShaderProgram(handle, shaderSet);
   }
 
   private static void BindVertexDescriptorSet(ProgramHandle program, VertexDescriptorSet descriptors)
@@ -379,7 +376,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
         index: (uint) location,
         size: attribute.Count,
         type: ConvertVertexType(attribute.Type),
-        normalized: attribute.Normalized,
+        normalized: attribute.ShouldNormalize,
         stride: descriptors.Stride,
         offset: attribute.Offset
       );
@@ -420,7 +417,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer, IHasNativeShaderSu
   {
     return attributeType switch
     {
-      VertexType.Byte          => VertexAttribPointerType.Byte,
       VertexType.UnsignedByte  => VertexAttribPointerType.UnsignedByte,
       VertexType.Short         => VertexAttribPointerType.Short,
       VertexType.UnsignedShort => VertexAttribPointerType.UnsignedShort,

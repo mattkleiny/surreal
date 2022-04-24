@@ -16,5 +16,6 @@ public interface IPlatformHost : IDisposable
 
   IServiceModule Services   { get; }
 
-  void Tick(DeltaTime deltaTime);
+  void BeginFrame(DeltaTime deltaTime);
+  void EndFrame(DeltaTime deltaTime);
 }

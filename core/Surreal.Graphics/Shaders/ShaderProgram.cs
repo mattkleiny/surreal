@@ -89,12 +89,13 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, ProgressToken progressToken = default)
+  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    // TODO: support hot reloading?
+    var program = new ShaderProgram(server);
+    var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path, cancellationToken);
 
-    var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path, progressToken);
+    server.CompileShader(program.Handle, declaration);
 
-    return new ShaderProgram(server, declaration);
+    return program;
   }
 }

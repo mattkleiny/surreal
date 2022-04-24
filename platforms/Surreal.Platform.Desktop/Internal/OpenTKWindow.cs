@@ -25,9 +25,13 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
     var nativeWindowSettings = new NativeWindowSettings
     {
-      Title = configuration.Title,
-      Size = new Vector2i(configuration.Width, configuration.Height),
-      WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
+      Title           = configuration.Title,
+      WindowBorder    = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
+      Size            = new Vector2i(configuration.Width, configuration.Height),
+      Flags           = ContextFlags.ForwardCompatible | ContextFlags.Debug,
+      Profile         = ContextProfile.Core,
+      NumberOfSamples = 0,
+      APIVersion      = new Version(3, 3, 0),
     };
 
     window = new GameWindow(gameWindowSettings, nativeWindowSettings)

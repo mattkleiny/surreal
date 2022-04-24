@@ -156,9 +156,8 @@ public sealed class SpriteBatch : IDisposable
     vertices.Dispose();
   }
 
-  [VisibleForTesting]
   [StructLayout(LayoutKind.Sequential)]
-  internal record struct Vertex(Vector2 Position, Color Color, Vector2 UV)
+  private record struct Vertex(Vector2 Position, Color Color, Vector2 UV)
   {
     [VertexDescriptor(
       Count = 2,
@@ -169,7 +168,7 @@ public sealed class SpriteBatch : IDisposable
     [VertexDescriptor(
       Count = 4,
       Type = VertexType.UnsignedByte,
-      Normalized = true
+      ShouldNormalize = true
     )]
     public Color Color = Color;
 
