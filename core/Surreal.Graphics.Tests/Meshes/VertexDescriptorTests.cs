@@ -6,17 +6,6 @@ namespace Surreal.Graphics.Meshes;
 public sealed class VertexDescriptorTests
 {
   [Test]
-  public void it_should_resolve_attributes_in_correct_order_from_metadata()
-  {
-    var attributes = VertexDescriptorSet.Create<Vertex>();
-
-    attributes.Length.Should().Be(2);
-
-    attributes[0].Alias.Should().Be("Position");
-    attributes[1].Alias.Should().Be("Color");
-  }
-
-  [Test]
   public void it_should_calculate_stride_correctly()
   {
     var attributes = VertexDescriptorSet.Create<Vertex>();

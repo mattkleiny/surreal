@@ -29,8 +29,8 @@ public sealed class VertexDescriptorAttribute : Attribute
 }
 
 /// <summary>Describes a single vertex.</summary>
-[DebuggerDisplay("{Alias}: {Count}")]
-public readonly record struct VertexDescriptor(int Offset, string Alias, int Count, VertexType Type, bool ShouldNormalize)
+[DebuggerDisplay("{Name}: {Count}")]
+public readonly record struct VertexDescriptor(string Name, int Offset, int Count, VertexType Type, bool ShouldNormalize)
 {
   public int Stride => Count * DetermineSize(Type);
 
@@ -69,8 +69,8 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
     foreach (var (name, attribute) in values)
     {
       var descriptor = new VertexDescriptor(
+        Name: name,
         Offset: stride,
-        Alias: attribute.Alias ?? name,
         Count: attribute.Count,
         Type: attribute.Type,
         ShouldNormalize: attribute.ShouldNormalize

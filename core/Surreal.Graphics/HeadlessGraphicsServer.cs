@@ -56,19 +56,9 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public GraphicsHandle CreateTexture()
+  public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
     return new GraphicsHandle(Interlocked.Increment(ref nextTextureId));
-  }
-
-  public void DeleteTexture(GraphicsHandle handle)
-  {
-    // no-op
-  }
-
-  public GraphicsHandle CreateMesh()
-  {
-    return new GraphicsHandle(Interlocked.Increment(ref nextMeshId));
   }
 
   public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
@@ -79,6 +69,16 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
   {
     // no-op
+  }
+
+  public void DeleteTexture(GraphicsHandle handle)
+  {
+    // no-op
+  }
+
+  public GraphicsHandle CreateMesh()
+  {
+    return new GraphicsHandle(Interlocked.Increment(ref nextMeshId));
   }
 
   public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
@@ -97,6 +97,11 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   }
 
   public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
+  {
+    // no-op
+  }
+
+  public void SetTextureUniform(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot)
   {
     // no-op
   }

@@ -10,8 +10,6 @@ public enum MeshType
   LineStrip,
   LineLoop,
   Triangles,
-  Quads,
-  QuadStrip,
 }
 
 /// <summary>Abstracts over all possible <see cref="Mesh{TVertex}"/> types.</summary>

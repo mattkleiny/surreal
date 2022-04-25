@@ -10,6 +10,7 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>A batched mesh of sprites for rendering to the GPU.</summary>
 public sealed class SpriteBatch : IDisposable
 {
+  private const int DefaultSpriteCount = 200;
   private const int MaximumSpriteCount = 8000;
 
   private readonly IDisposableBuffer<Vertex> vertices;
@@ -19,7 +20,7 @@ public sealed class SpriteBatch : IDisposable
   private Texture? lastTexture;
   private int vertexCount;
 
-  public SpriteBatch(IGraphicsServer server, int spriteCount)
+  public SpriteBatch(IGraphicsServer server, int spriteCount = DefaultSpriteCount)
   {
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
@@ -35,10 +36,8 @@ public sealed class SpriteBatch : IDisposable
   public void Begin(ShaderProgram shader)
     => this.shader = shader;
 
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Angle rotation = default)
-  {
-    DrawInternal(region, position, size, rotation, region.Offset, region.Size, Color);
-  }
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color, Angle rotation = default)
+    => DrawInternal(region, position, size, rotation, region.Offset, region.Size, Color);
 
   [SkipLocalsInit]
   private void DrawInternal(

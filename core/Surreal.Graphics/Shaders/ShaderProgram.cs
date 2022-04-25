@@ -53,6 +53,9 @@ public sealed class ShaderProgram : GraphicsResource
   public void SetUniform(string name, in Matrix4x4 value)
     => server.SetShaderUniform(Handle, name, in value);
 
+  public void SetTexture(string name, GraphicsHandle handle, int samplerSlot)
+    => server.SetTextureUniform(Handle, name, handle, samplerSlot);
+
   protected override void Dispose(bool managed)
   {
     if (managed)

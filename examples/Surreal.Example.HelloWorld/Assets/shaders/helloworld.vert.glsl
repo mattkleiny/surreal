@@ -1,14 +1,13 @@
 #version 330 core
 
-uniform mat4 u_projectionView;
+layout (location = 0) in vec2 position;
+layout (location = 1) in vec2 uv;
 
-in vec2 in_position;
-in vec4 in_color;
-
-out vec4 color;
+out vec2 o_uv;
 
 void main()
 {
-    gl_Position = vec4(in_position, 0.0, 1.0) * u_projectionView;
-    color = in_color;
+    o_uv = uv;
+
+    gl_Position = vec4(position, 0.0, 1.0);
 }

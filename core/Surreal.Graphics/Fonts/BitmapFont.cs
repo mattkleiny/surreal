@@ -25,7 +25,7 @@ public static class SpriteBatchExtensions
     {
       var glyph = font.GetGlyph(text[i]);
 
-      batch.Draw(glyph, position, glyph.Size);
+      batch.Draw(glyph, position, glyph.Size, Color.White);
 
       position.X += glyph.Size.X;
     }

@@ -13,7 +13,7 @@ public readonly ref struct SpanGrid<T>
   public SpanGrid(Span<T> storage, int stride)
   {
     this.storage = storage;
-    this.stride = stride;
+    this.stride  = stride;
   }
 
   public int Width  => stride;
@@ -31,7 +31,17 @@ public readonly ref struct SpanGrid<T>
     }
   }
 
+  public void Fill(T value)
+  {
+    storage.Fill(value);
+  }
+
   public Span<T> ToSpan()
+  {
+    return storage;
+  }
+
+  public ReadOnlySpan<T> ToReadOnlySpan()
   {
     return storage;
   }

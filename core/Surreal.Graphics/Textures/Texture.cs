@@ -29,17 +29,19 @@ public enum TextureWrapMode
 public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuffer<Color>, IDisposableBuffer<Color32>
 {
   private readonly IGraphicsServer server;
-  private readonly GraphicsHandle handle;
 
   public Texture(IGraphicsServer server, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
     this.server = server;
-    handle = server.CreateTexture();
 
-    Format = format;
+    Format     = format;
     FilterMode = filterMode;
-    WrapMode = wrapMode;
+    WrapMode   = wrapMode;
+
+    Handle = server.CreateTexture(filterMode, wrapMode);
   }
+
+  public GraphicsHandle Handle { get; }
 
   public TextureFormat     Format     { get; }
   public TextureFilterMode FilterMode { get; }
@@ -57,24 +59,31 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuf
   public Memory<T> ReadPixels<T>()
     where T : unmanaged
   {
-    return server.ReadTextureData<T>(handle);
+    return server.ReadTextureData<T>(Handle);
+  }
+
+  public void WritePixels(Image image)
+  {
+    var pixels = image.Pixels.ToReadOnlySpan();
+
+    WritePixels(image.Width, image.Height, pixels);
   }
 
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    Width = width;
+    Width  = width;
     Height = height;
-    Size = pixels.CalculateSize();
+    Size   = pixels.CalculateSize();
 
-    server.WriteTextureData(handle, width, height, pixels, Format);
+    server.WriteTextureData(Handle, width, height, pixels, Format);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteTexture(handle);
+      server.DeleteTexture(Handle);
     }
 
     base.Dispose(managed);
@@ -93,9 +102,9 @@ public sealed class TextureLoader : AssetLoader<Texture>
 
   public TextureLoader(IGraphicsServer server, TextureFilterMode defaultFilterMode, TextureWrapMode defaultWrapMode)
   {
-    this.server = server;
+    this.server            = server;
     this.defaultFilterMode = defaultFilterMode;
-    this.defaultWrapMode = defaultWrapMode;
+    this.defaultWrapMode   = defaultWrapMode;
   }
 
   public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
