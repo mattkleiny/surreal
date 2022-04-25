@@ -1,4 +1,5 @@
 ﻿using Surreal.Assets;
+using Surreal.IO;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -14,9 +15,9 @@ public interface IPlatformHost : IDisposable
   bool IsFocused { get; }
   bool IsClosing { get; }
 
-  IServiceModule Services { get; }
-
+  void RegisterServices(IServiceRegistry services);
   void RegisterAssetLoaders(IAssetManager manager);
+  void RegisterFileSystems(IFileSystemRegistry registry);
 
   void BeginFrame(DeltaTime deltaTime);
   void EndFrame(DeltaTime deltaTime);

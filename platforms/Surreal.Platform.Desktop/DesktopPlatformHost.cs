@@ -14,6 +14,7 @@ using Surreal.Internal;
 using Surreal.Internal.Audio;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
+using Surreal.IO;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -40,7 +41,7 @@ public interface IDesktopWindow : IDisposable
   bool IsClosing       { get; }
 }
 
-internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
+internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 {
   private readonly DesktopConfiguration configuration;
 
@@ -68,14 +69,24 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public OpenTKGraphicsServer GraphicsServer { get; }
   public OpenTKInputServer    InputServer    { get; }
 
-  public IServiceModule Services => this;
-
   public int Width  => Window.Width;
   public int Height => Window.Height;
 
   public bool IsFocused => Window.IsFocused;
   public bool IsClosing => Window.IsClosing;
   public bool IsVisible => Window.IsVisible;
+
+  public void RegisterServices(IServiceRegistry services)
+  {
+    services.AddSingleton<IPlatformHost>(this);
+    services.AddSingleton<IDesktopPlatformHost>(this);
+    services.AddSingleton<IDesktopWindow>(Window);
+    services.AddSingleton<IAudioServer>(AudioServer);
+    services.AddSingleton<IGraphicsServer>(GraphicsServer);
+    services.AddSingleton<IInputServer>(InputServer);
+    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
+    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
+  }
 
   public void RegisterAssetLoaders(IAssetManager manager)
   {
@@ -90,6 +101,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
     manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(manager), ".shade"));
     manager.AddLoader(new TextureLoader(GraphicsServer, TextureFilterMode.Point, TextureWrapMode.Clamp));
     manager.AddLoader(new TextureRegionLoader());
+  }
+
+  public void RegisterFileSystems(IFileSystemRegistry registry)
+  {
+    // no-op
   }
 
   public void BeginFrame(DeltaTime deltaTime)
@@ -123,17 +139,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost, IServiceModule
   public void Dispose()
   {
     Window.Dispose();
-  }
-
-  void IServiceModule.RegisterServices(IServiceRegistry services)
-  {
-    services.AddSingleton<IDesktopPlatformHost>(this);
-    services.AddSingleton<IDesktopWindow>(Window);
-    services.AddSingleton<IAudioServer>(AudioServer);
-    services.AddSingleton<IGraphicsServer>(GraphicsServer);
-    services.AddSingleton<IInputServer>(InputServer);
-    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
-    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
   }
 
   IDesktopWindow IDesktopPlatformHost.Window => Window;

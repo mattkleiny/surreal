@@ -1,15 +1,43 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Surreal.IO;
 
 namespace Surreal.Assets;
+
+/// <summary>Represents uniquely some asset type at a given path.</summary>
+public readonly record struct AssetId(Type Type, VirtualPath Path)
+{
+  public override string ToString() => Path.ToString();
+}
+
+/// <summary>An opaque handle to an asset in the asset system.</summary>
+public readonly record struct Asset<T>(AssetId Id, Task<T> Task) : IDisposable
+{
+  public T    Value   => Task.Result;
+  public bool IsReady => Task.IsCompleted;
+
+  public TaskAwaiter<T> GetAwaiter()
+  {
+    return Task.GetAwaiter();
+  }
+
+  public void Dispose()
+  {
+    if (Task.IsCompleted && Task.Result is IDisposable disposable)
+    {
+      disposable.Dispose();
+    }
+  }
+
+  public static implicit operator T(Asset<T> asset) => asset.Value;
+}
 
 /// <summary>Allows managing assets.</summary>
 public interface IAssetManager : IDisposable
 {
   void AddLoader(IAssetLoader loader);
 
-  Task<object> LoadAssetAsync(Type type, VirtualPath path, CancellationToken cancellationToken = default);
-  Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  Asset<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
@@ -23,33 +51,31 @@ public sealed class AssetManager : IAssetManager
     loaders.Add(loader);
   }
 
-  public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
+  public Asset<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    return (T) await LoadAssetAsync(typeof(T), path, cancellationToken);
-  }
-
-  public async Task<object> LoadAssetAsync(Type type, VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    var context = new AssetLoaderContext
+    async Task<T> StartLoadingAsset(IAssetLoader loader, AssetLoaderContext context)
     {
-      Path = path,
-      AssetType = type,
-      Manager = this,
-    };
+      var id = context.Id;
 
-    var assetId = new AssetId(context.AssetType, path);
+      if (!assetsById.TryGetValue(id, out var asset))
+      {
+        // we'll continue asynchronously on the main thread
+        assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
+      }
+
+      return (T) asset;
+    }
+
+    var id = new AssetId(typeof(T), path);
+    var context = new AssetLoaderContext(id, this);
 
     if (!TryGetLoader(context, out var loader))
     {
       throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.AssetType.Name}");
     }
 
-    if (!assetsById.TryGetValue(assetId, out var asset))
-    {
-      assetsById[assetId] = asset = await loader.LoadAsync(context, cancellationToken);
-    }
-
-    return asset;
+    return new(id, StartLoadingAsset(loader, context));
   }
 
   public void Dispose()
@@ -89,12 +115,6 @@ public sealed class AssetManager : IAssetManager
 
     result = default;
     return false;
-  }
-
-  /// <summary>Represents uniquely some asset type at a given path.</summary>
-  private readonly record struct AssetId(Type Type, VirtualPath Path)
-  {
-    public override string ToString() => Path.ToString();
   }
 }
 

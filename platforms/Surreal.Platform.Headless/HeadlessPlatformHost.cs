@@ -7,6 +7,7 @@ using Surreal.Input.Mouse;
 using Surreal.Internal.Audio;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
+using Surreal.IO;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -18,7 +19,7 @@ public interface IHeadlessPlatformHost : IPlatformHost
   IHeadlessMouseDevice    Mouse    { get; }
 }
 
-internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModule
+internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
 {
   public event Action<int, int> Resized = null!;
 
@@ -32,12 +33,28 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public bool IsFocused => true;
   public bool IsClosing => false;
 
-  public IServiceModule Services => this;
-
   public IHeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
   public IHeadlessMouseDevice    Mouse    => InputServer.Mouse;
 
+  public void RegisterServices(IServiceRegistry services)
+  {
+    services.AddSingleton<IPlatformHost>(this);
+    services.AddSingleton<IHeadlessPlatformHost>(this);
+    services.AddSingleton<IAudioServer>(AudioServer);
+    services.AddSingleton<IGraphicsServer>(GraphicsServer);
+    services.AddSingleton<IInputServer>(InputServer);
+    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
+    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
+    services.AddSingleton<IHeadlessKeyboardDevice>(InputServer.Keyboard);
+    services.AddSingleton<IHeadlessMouseDevice>(InputServer.Mouse);
+  }
+
   public void RegisterAssetLoaders(IAssetManager manager)
+  {
+    // no-op
+  }
+
+  public void RegisterFileSystems(IFileSystemRegistry registry)
   {
     // no-op
   }
@@ -55,17 +72,5 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost, IServiceModu
   public void Dispose()
   {
     // no-op
-  }
-
-  void IServiceModule.RegisterServices(IServiceRegistry services)
-  {
-    services.AddSingleton<IHeadlessPlatformHost>(this);
-    services.AddSingleton<IAudioServer>(AudioServer);
-    services.AddSingleton<IGraphicsServer>(GraphicsServer);
-    services.AddSingleton<IInputServer>(InputServer);
-    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
-    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
-    services.AddSingleton<IHeadlessKeyboardDevice>(InputServer.Keyboard);
-    services.AddSingleton<IHeadlessMouseDevice>(InputServer.Mouse);
   }
 }

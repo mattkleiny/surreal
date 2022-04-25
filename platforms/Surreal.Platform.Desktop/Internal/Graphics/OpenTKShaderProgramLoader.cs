@@ -2,6 +2,7 @@
 using Surreal.Assets;
 using Surreal.Graphics.Shaders;
 using Surreal.IO;
+using Surreal.Timing;
 
 namespace Surreal.Internal.Graphics;
 
@@ -27,6 +28,8 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 
     var vertexCode = await vertexPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
     var fragmentCode = await fragmentPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
+
+    await Task.Delay(1.Seconds());
 
     var shaders = ImmutableArray.Create(
       new OpenTKShader(ShaderType.VertexShader, vertexCode),

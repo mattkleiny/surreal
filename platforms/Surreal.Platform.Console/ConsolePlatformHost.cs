@@ -6,6 +6,7 @@ using Surreal.Assets;
 using Surreal.Diagnostics;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
+using Surreal.IO;
 using Surreal.Threading;
 using Surreal.Timing;
 
@@ -44,7 +45,7 @@ public interface IConsolePlatformHost : IPlatformHost
 
 /// <summary>The <see cref="IPlatformHost"/> for <see cref="ConsolePlatform"/>.</summary>
 [SupportedOSPlatform("windows")]
-internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDisplay, IServiceModule
+internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDisplay
 {
   private readonly ConsoleConfiguration configuration;
   private readonly SafeFileHandle consoleHandle;
@@ -111,12 +112,25 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   public bool IsFocused => true;
   public bool IsClosing { get; private set; }
 
-  public IServiceModule  Services => this;
-  public IConsoleDisplay Display  => this;
+  public IConsoleDisplay Display => this;
+
+  public void RegisterServices(IServiceRegistry services)
+  {
+    services.AddSingleton<IPlatformHost>(this);
+    services.AddSingleton<IConsolePlatformHost>(this);
+    services.AddSingleton<IKeyboardDevice>(Keyboard);
+    services.AddSingleton<IMouseDevice>(Mouse);
+    services.AddSingleton(Display);
+  }
 
   public void RegisterAssetLoaders(IAssetManager manager)
   {
-    throw new NotImplementedException();
+    // no-op
+  }
+
+  public void RegisterFileSystems(IFileSystemRegistry registry)
+  {
+    // no-op
   }
 
   public void BeginFrame(DeltaTime deltaTime)
@@ -241,14 +255,6 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   public void Dispose()
   {
     Interop.CloseHandle(consoleHandle);
-  }
-
-  void IServiceModule.RegisterServices(IServiceRegistry services)
-  {
-    services.AddSingleton<IConsolePlatformHost>(this);
-    services.AddSingleton<IKeyboardDevice>(Keyboard);
-    services.AddSingleton<IMouseDevice>(Mouse);
-    services.AddSingleton(Display);
   }
 
   /// <summary>A <see cref="IKeyboardDevice"/> for the Win32 console.</summary>

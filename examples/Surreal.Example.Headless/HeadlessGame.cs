@@ -1,26 +1,21 @@
-﻿namespace Headless;
+﻿var platform = new HeadlessPlatform();
 
-public sealed class HeadlessGame : PrototypeGame
+await Game.Start(platform, context =>
 {
-  private static readonly ILog Log = LogFactory.GetLog<HeadlessGame>();
+  var log = LogFactory.GetLog<HeadlessPlatform>();
 
-  private readonly FrameCounter frameCounter = new();
-  private IntervalTimer fpsTimer = new(1.Seconds());
+  var frameCounter = new FrameCounter();
+  var fpsTimer = new IntervalTimer(1.Seconds());
 
-  public static void Main() => Start<HeadlessGame>(new Configuration
+  context.Execute(time =>
   {
-    Platform = new HeadlessPlatform(),
-  });
-
-  protected override void OnUpdate(GameTime time)
-  {
-    base.OnUpdate(time);
-
     if (fpsTimer.Tick(time.DeltaTime))
     {
-      Log.Trace($"Ticks per second: {frameCounter.TicksPerSecond:F}");
+      log.Trace($"Ticks per second: {frameCounter.TicksPerSecond:F}");
     }
 
     frameCounter.Tick(time.DeltaTime);
-  }
-}
+  });
+
+  return ValueTask.CompletedTask;
+});

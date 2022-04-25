@@ -25,9 +25,6 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
   void ReplaceService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
   void ReplaceService(Type serviceType, object instance);
 
-  /// <summary>Prevents new services from being installed beyond this point.</summary>
-  void SealRegistry();
-
   void AddTransient<TService, TImplementation>()
     where TImplementation : TService
   {
@@ -82,6 +79,73 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
     foreach (var candidate in candidates)
     {
       candidate.Attribute.RegisterService(candidate.Type, this);
+    }
+  }
+}
+
+/// <summary>A simple default <see cref="IServiceRegistry"/> implementation.</summary>
+public sealed class ServiceRegistry : IServiceRegistry
+{
+  private readonly ConcurrentDictionary<Type, Func<object>> activatorsByType = new();
+  private readonly ConcurrentDictionary<Type, object> instancesByType = new();
+
+  public object? GetService(Type serviceType)
+  {
+    if (instancesByType.TryGetValue(serviceType, out var instance))
+    {
+      return instance;
+    }
+
+    if (activatorsByType.TryGetValue(serviceType, out var activator))
+    {
+      return activator();
+    }
+
+    return null;
+  }
+
+  public void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType)
+  {
+    switch (lifetime)
+    {
+      case ServiceLifetime.Singleton:
+        instancesByType[serviceType] = Activator.CreateInstance(implementationType)!;
+        break;
+
+      case ServiceLifetime.Transient:
+        activatorsByType[serviceType] = () => Activator.CreateInstance(implementationType)!;
+        break;
+
+      default:
+        throw new InvalidOperationException($"An unsupported lifetime was specified: {lifetime}");
+    }
+  }
+
+  public void RegisterService(Type serviceType, object instance)
+  {
+    instancesByType[serviceType] = instance!;
+  }
+
+  public void ReplaceService(ServiceLifetime lifetime, Type serviceType, Type implementationType)
+  {
+    instancesByType.TryRemove(serviceType, out _);
+
+    RegisterService(lifetime, serviceType, implementationType);
+  }
+
+  public void ReplaceService(Type serviceType, object instance)
+  {
+    instancesByType[serviceType] = instance!;
+  }
+
+  public void Dispose()
+  {
+    foreach (var instance in instancesByType.Values)
+    {
+      if (instance is IDisposable disposable)
+      {
+        disposable.Dispose();
+      }
     }
   }
 }

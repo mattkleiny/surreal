@@ -92,7 +92,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
   public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
     var program = new ShaderProgram(server);
-    var declaration = await context.Manager.LoadAssetAsync<ShaderDeclaration>(context.Path, cancellationToken);
+    var declaration = await context.Manager.LoadAsset<ShaderDeclaration>(context.Path, cancellationToken);
 
     server.CompileShader(program.Handle, declaration);
 

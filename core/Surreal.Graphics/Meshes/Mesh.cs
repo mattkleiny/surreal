@@ -39,7 +39,7 @@ public sealed class Mesh<TVertex> : Mesh
     this.server = server;
 
     Vertices = new GraphicsBuffer<TVertex>(server);
-    Indices = new GraphicsBuffer<ushort>(server);
+    Indices  = new GraphicsBuffer<ushort>(server);
   }
 
   public GraphicsBuffer<TVertex> Vertices { get; }
@@ -62,7 +62,7 @@ public sealed class Mesh<TVertex> : Mesh
       vertexCount: vertexCount,
       indexCount: indexCount,
       meshType: type,
-      indexType: typeof(ushort)
+      indexType: Indices.ElementType
     );
   }
 

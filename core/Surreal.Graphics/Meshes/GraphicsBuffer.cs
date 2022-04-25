@@ -5,6 +5,8 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>A buffer of data on the <see cref="IGraphicsServer"/>.</summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
+  public abstract Type ElementType { get; }
+
   public int  Length { get; protected set; }
   public Size Size   { get; protected set; }
 }
@@ -23,6 +25,8 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
   }
 
   public GraphicsHandle Handle { get; }
+
+  public override Type ElementType => typeof(T);
 
   public Memory<T> Read(Optional<Range> range = default)
   {

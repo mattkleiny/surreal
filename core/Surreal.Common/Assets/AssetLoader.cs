@@ -3,11 +3,10 @@
 namespace Surreal.Assets;
 
 /// <summary>Context for <see cref="IAssetLoader"/> operations.</summary>
-public readonly record struct AssetLoaderContext
+public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manager)
 {
-  public VirtualPath   Path      { get; init; }
-  public IAssetManager Manager   { get; init; }
-  public Type          AssetType { get; init; }
+  public Type        AssetType => Id.Type;
+  public VirtualPath Path      => Id.Path;
 }
 
 /// <summary>Allows loading assets from storage.</summary>

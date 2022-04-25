@@ -1,209 +1,110 @@
-﻿using System.Runtime;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime;
 using Surreal.Assets;
 using Surreal.Diagnostics.Logging;
-using Surreal.Diagnostics.Profiling;
-using Surreal.Internal;
 using Surreal.IO;
 using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>Base class for any game built with Surreal.</summary>
-public abstract partial class Game : IDisposable, ITestableGame
+/// <summary>Encapsulates the frame-by-frame timing information for a game.</summary>
+[DebuggerDisplay("{DeltaTime} since last frame")]
+public readonly record struct GameTime(DeltaTime DeltaTime, TimeSpan TotalTime, bool IsRunningSlowly);
+
+/// <summary>Invoked to prepare a game prior to it's main loop.</summary>
+public delegate ValueTask GameSetup(Game context);
+
+/// <summary>Invoked to execute a single frame of a game's main loop.</summary>
+public delegate void GameLoop(GameTime time);
+
+/// <summary>Entry point for the game.</summary>
+public sealed record Game : IDisposable
 {
-  private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<Game>();
-
-  private readonly TimeStamp startTime = TimeStamp.Now;
-  private readonly Chronometer chronometer = new();
   private readonly ConcurrentQueue<Action> callbacks = new();
-  private readonly ILoopTarget loopTarget;
 
-  public static TGame Create<TGame>(Configuration configuration)
-    where TGame : Game, new()
+  private Game(IServiceRegistry services, IPlatformHost host)
   {
-    if (configuration.Platform == null)
-    {
-      throw new InvalidOperationException("A valid platform was expected to be set in configuration.");
-    }
-
-    return new TGame
-    {
-      Host             = configuration.Platform.BuildHost(),
-      ServiceOverrides = configuration.ServiceOverrides,
-    };
+    Services = services;
+    Host     = host;
   }
 
-  public static void Start<TGame>(Configuration configuration, CancellationToken cancellationToken = default)
-    where TGame : Game, new()
+  /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
+  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+  public static async ValueTask Start(IPlatform platform, GameSetup gameSetup, CancellationToken cancellationToken = default)
   {
-    using var game = Create<TGame>(configuration);
-
-    game.Initialize(cancellationToken);
-    game.Run(cancellationToken);
-  }
-
-  protected Game()
-  {
-    loopTarget = new ProfiledLoopTarget(this);
-  }
-
-  public bool          IsRunning    { get; private set; }  = false;
-  public IPlatformHost Host         { get; private init; } = null!;
-  public ILoopStrategy LoopStrategy { get; set; }          = new AveragingLoopStrategy();
-
-  public IServiceRegistry Services { get; } = new ServiceRegistry();
-  public IAssetManager    Assets   { get; } = new AssetManager();
-
-  [VisibleForTesting]
-  private Action<IServiceRegistry>? ServiceOverrides { get; set; }
-
-  /// <summary>Initializes the game and all of it's systems.</summary>
-  public void Initialize(CancellationToken cancellationToken = default)
-  {
-    SynchronizationContext.SetSynchronizationContext(new GameSynchronizationContext(this));
+    GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
     LogFactory.Current = new CompositeLogFactory(
       new TextWriterLogFactory(Console.Out, LogLevel.Trace),
       new DebugLogFactory(LogLevel.Trace)
     );
 
-    Host.Resized += OnResized;
+    using var host = platform.BuildHost();
+    using var services = new ServiceRegistry();
+    using var game = new Game(services, host);
 
-    RegisterServices(Services);
-    RegisterAssetLoaders(Assets);
-    RegisterFileSystems(FileSystem.Registry);
+    SynchronizationContext.SetSynchronizationContext(new GameSynchronizationContext(game));
 
-    Services.SealRegistry();
+    cancellationToken.Register(() => game.IsClosing = true);
 
-    OnInitialize();
+    host.RegisterServices(services);
+    host.RegisterAssetLoaders(game.Assets);
+    host.RegisterFileSystems(FileSystem.Registry);
 
-    LoadContentAsync(Assets, cancellationToken);
+    await gameSetup(game);
   }
 
-  /// <summary>Runs the main game loop.</summary>
-  public void Run(CancellationToken cancellationToken = default)
+  public IServiceRegistry Services { get; init; }
+  public IPlatformHost    Host     { get; init; }
+  public IAssetManager    Assets   { get; } = new AssetManager();
+
+  public bool IsClosing { get; private set; } = false;
+
+  /// <summary>Schedules an action to be invoked at the start of the next frame.</summary>
+  public void Schedule(Action callback)
   {
-    if (IsRunning)
+    callbacks.Enqueue(callback);
+  }
+
+  /// <summary>Executes the given <see cref="gameLoop"/>.</summary>
+  public void Execute(GameLoop gameLoop)
+  {
+    var stopwatch = new Chronometer();
+    var startTime = TimeStamp.Now;
+
+    while (!Host.IsClosing && !IsClosing)
     {
-      throw new InvalidOperationException("The engine is already running, and cannot start again!");
-    }
+      var gameTime = new GameTime(
+        DeltaTime: stopwatch.Tick(),
+        TotalTime: TimeStamp.Now - startTime,
+        IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
+      );
 
-    try
-    {
-      GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+      Host.BeginFrame(gameTime.DeltaTime);
 
-      IsRunning = true;
-
-      while (IsRunning && !Host.IsClosing && !cancellationToken.IsCancellationRequested)
+      while (callbacks.TryDequeue(out var callback))
       {
-        var deltaTime = chronometer.Tick();
-        var totalTime = TimeStamp.Now - startTime;
-
-        Host.BeginFrame(deltaTime);
-        Tick(deltaTime, totalTime);
-        Host.EndFrame(deltaTime);
-
-        while (callbacks.TryDequeue(out var callback))
-        {
-          callback.Invoke();
-        }
+        callback.Invoke();
       }
+
+      gameLoop(gameTime);
+
+      Host.EndFrame(gameTime.DeltaTime);
     }
-    finally
-    {
-      IsRunning = false;
-    }
   }
 
-  /// <summary>Ticks the game a single frame.</summary>
-  public void Tick()
-  {
-    var deltaTime = chronometer.Tick();
-    var totalTime = TimeStamp.Now - startTime;
-
-    Tick(deltaTime, totalTime);
-  }
-
-  private void Tick(DeltaTime deltaTime, TimeSpan totalTime)
-  {
-    LoopStrategy.Tick(loopTarget, deltaTime, totalTime);
-  }
-
-  protected virtual void OnInitialize()
-  {
-  }
-
-  protected virtual Task LoadContentAsync(IAssetManager assets, CancellationToken cancellationToken = default)
-  {
-    return Task.CompletedTask;
-  }
-
-  protected virtual void RegisterServices(IServiceRegistry services)
-  {
-    services.AddSingleton(this);
-    services.AddSingleton(Assets);
-    services.AddSingleton(Host);
-    services.AddModule(Host.Services);
-
-    ServiceOverrides?.Invoke(services);
-  }
-
-  protected virtual void RegisterAssetLoaders(IAssetManager manager)
-  {
-  }
-
-  protected virtual void RegisterFileSystems(IFileSystemRegistry registry)
-  {
-  }
-
-  protected virtual void OnBeginFrame(GameTime time)
-  {
-  }
-
-  protected virtual void OnInput(GameTime time)
-  {
-  }
-
-  protected virtual void OnUpdate(GameTime time)
-  {
-  }
-
-  protected virtual void OnDraw(GameTime time)
-  {
-  }
-
-  protected virtual void OnEndFrame(GameTime time)
-  {
-  }
-
-  protected virtual void OnResized(int width, int height)
-  {
-  }
-
+  /// <summary>Exits the game at the end of the frame.</summary>
   public void Exit()
   {
-    IsRunning = false;
+    IsClosing = true;
   }
 
-  public virtual void Dispose()
+  public void Dispose()
   {
     Assets.Dispose();
-    Services.Dispose();
-    Host.Dispose();
   }
 
-  ILoopTarget ITestableGame.LoopTarget => loopTarget;
-
-  /// <summary>Configuration for the <see cref="Game"/>.</summary>
-  public sealed class Configuration
-  {
-    public IPlatform? Platform { get; init; }
-
-    /// <summary>Custom overrides for the <see cref="IServiceRegistry"/>, to allow testing/etc.</summary>
-    internal Action<IServiceRegistry>? ServiceOverrides { get; set; }
-  }
-
-  /// <summary>A <see cref="SynchronizationContext"/> for the <see cref="Game"/>.</summary>
+  /// <summary>Synchronizes back to the main <see cref="Game"/>.</summary>
   private sealed class GameSynchronizationContext : SynchronizationContext
   {
     private readonly Game game;
@@ -215,58 +116,12 @@ public abstract partial class Game : IDisposable, ITestableGame
 
     public override void Post(SendOrPostCallback callback, object? state)
     {
-      game.callbacks.Enqueue(() => callback(state));
+      game.Schedule(() => callback(state));
     }
 
     public override void Send(SendOrPostCallback callback, object? state)
     {
-      game.callbacks.Enqueue(() => callback(state));
-    }
-  }
-
-  /// <summary>A <see cref="ILoopTarget"/> that profiles it's target operations.</summary>
-  private sealed class ProfiledLoopTarget : ILoopTarget
-  {
-    private readonly Game game;
-
-    public ProfiledLoopTarget(Game game)
-    {
-      this.game = game;
-    }
-
-    public void BeginFrame(GameTime time)
-    {
-      using var _ = Profiler.Track(nameof(BeginFrame));
-
-      game.OnBeginFrame(time);
-    }
-
-    public void Input(GameTime time)
-    {
-      using var _ = Profiler.Track(nameof(Input));
-
-      game.OnInput(time);
-    }
-
-    public void Update(GameTime time)
-    {
-      using var _ = Profiler.Track(nameof(Update));
-
-      game.OnUpdate(time);
-    }
-
-    public void Draw(GameTime time)
-    {
-      using var _ = Profiler.Track(nameof(Draw));
-
-      game.OnDraw(time);
-    }
-
-    public void EndFrame(GameTime time)
-    {
-      using var _ = Profiler.Track(nameof(EndFrame));
-
-      game.OnEndFrame(time);
+      game.Schedule(() => callback(state));
     }
   }
 }

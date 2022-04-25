@@ -384,6 +384,16 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
+  private static int GetInternalFormat(TextureFormat format)
+  {
+    return format switch
+    {
+      TextureFormat.Rgba8888 => (int) All.CompressedRgba,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
+    };
+  }
+
   private static (PixelFormat Format, PixelType Type) GetPixelFormatAndType(Type type)
   {
     if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
@@ -401,16 +411,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     if (type == typeof(ushort)) return DrawElementsType.UnsignedShort;
 
     throw new InvalidOperationException($"An unrecognized index type was provided: {type}");
-  }
-
-  private static int GetInternalFormat(TextureFormat format)
-  {
-    return format switch
-    {
-      TextureFormat.Rgba8888 => (int) All.CompressedRgba,
-
-      _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
-    };
   }
 
   private static VertexAttribPointerType ConvertVertexType(VertexType attributeType)

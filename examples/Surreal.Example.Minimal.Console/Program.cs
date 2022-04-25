@@ -7,8 +7,8 @@ var platform = new ConsolePlatform
     Title          = "Hello, Surreal",
     Width          = 280,
     Height         = 120,
-    ShowFpsInTitle = true
-  }
+    ShowFpsInTitle = true,
+  },
 };
 
 await Game.Start(platform, context =>
