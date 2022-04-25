@@ -68,7 +68,7 @@ public class ActorSceneTests
     actor.Status.Should().Be(ActorStatus.Destroyed);
     actor.Received(0).OnDestroy();
 
-    scene.Update(deltaTime);
+    scene.EndFrame(deltaTime);
     actor.Received(1).OnDestroy();
   }
 }

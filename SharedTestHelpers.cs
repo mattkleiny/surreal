@@ -2,19 +2,57 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Kernel;
-using AutoFixture.NUnit3;
 using JetBrains.Annotations;
+using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
+using NUnit.Framework.Internal.Builders;
 using Surreal.Mathematics;
 
 namespace Surreal;
 
 /// <summary>Provides a customized AutoFixture for use in test method parameter injection.</summary>
+[MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Method)]
-internal class AutoFixtureAttribute : AutoDataAttribute
+internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
 {
-  public AutoFixtureAttribute()
-    : base(BuildFixture)
+  private readonly Lazy<IFixture> fixture = new(BuildFixture);
+
+  TestMethod ISimpleTestBuilder.BuildFrom(IMethodInfo method, Test? suite)
   {
+    var builder = new NUnitTestCaseBuilder();
+    var parameters = BuildParameters(method);
+
+    var result = builder.BuildTestMethod(method, suite, parameters);
+
+    result.Name = method.Name; // simplify method name
+
+    return result;
+  }
+
+  private TestCaseParameters BuildParameters(IMethodInfo method)
+  {
+    var fixture = this.fixture.Value;
+    var context = new SpecimenContext(fixture);
+
+    var parameters = method.GetParameters();
+    var result = new object[parameters.Length];
+
+    for (var i = 0; i < parameters.Length; i++)
+    {
+      var parameter = parameters[i];
+
+      if (parameter.GetType() == typeof(IFixture) ||
+          parameter.GetType() == typeof(Fixture))
+      {
+        result[i] = fixture;
+      }
+      else
+      {
+        result[i] = fixture.Create(parameter.ParameterType, context);
+      }
+    }
+
+    return new TestCaseParameters(result);
   }
 
   private static IFixture BuildFixture()

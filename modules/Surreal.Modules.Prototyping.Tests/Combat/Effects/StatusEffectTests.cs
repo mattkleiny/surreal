@@ -4,7 +4,7 @@ namespace Surreal.Combat.Effects;
 
 public class StatusEffectTests
 {
-  [Test, AutoFixture]
+  [AutoTest]
   public void it_should_invoke_callback_when_adding_effects(object owner, StatusEffect effect)
   {
     var effects = new StatusEffectCollection(owner);
@@ -14,7 +14,7 @@ public class StatusEffectTests
     effect.Received(1).OnEffectAdded(owner);
   }
 
-  [Test, AutoFixture]
+  [AutoTest]
   public void it_should_invoke_callback_when_removing_effects(object owner, StatusEffect effect)
   {
     var effects = new StatusEffectCollection(owner);
@@ -24,7 +24,7 @@ public class StatusEffectTests
     effect.Received(1).OnEffectAdded(owner);
   }
 
-  [Test, AutoFixture]
+  [AutoTest]
   public void it_should_tick_effects_and_remove_if_requested(object owner, StatusEffect effect)
   {
     var effects = new StatusEffectCollection(owner) { effect };

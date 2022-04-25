@@ -1,21 +1,19 @@
-﻿using System.Runtime.InteropServices;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
-using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
-using Image = OpenTK.Windowing.Common.Input.Image;
 
 namespace Surreal.Internal;
 
 internal sealed class OpenTKWindow : IDesktopWindow
 {
+  private readonly DesktopConfiguration configuration;
   private readonly GameWindow window;
+  private bool hasPassedFirstFrame;
 
   public OpenTKWindow(DesktopConfiguration configuration)
   {
+    this.configuration = configuration;
     var gameWindowSettings = new GameWindowSettings
     {
       RenderFrequency = 0,
@@ -27,6 +25,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
     {
       Title           = configuration.Title,
       WindowBorder    = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
+      StartVisible    = !configuration.WaitForFirstFrame,
       Size            = new Vector2i(configuration.Width, configuration.Height),
       Flags           = ContextFlags.ForwardCompatible | ContextFlags.Debug,
       Profile         = ContextProfile.Core,
@@ -36,21 +35,9 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
     window = new GameWindow(gameWindowSettings, nativeWindowSettings)
     {
-      VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
+      VSync     = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
+      IsVisible = !configuration.WaitForFirstFrame,
     };
-
-    if (configuration.Icon != null)
-    {
-      if (configuration.Icon is not { })
-      {
-        throw new InvalidOperationException($"Expected an image in the {nameof(TextureFormat.Rgba8888)} format");
-      }
-
-      var icon = configuration.Icon;
-      var pixels = MemoryMarshal.Cast<Color32, byte>(icon.Pixels);
-
-      window.Icon = new WindowIcon(new Image(icon.Width, icon.Height, pixels.ToArray()));
-    }
 
     window.Resize += _ => Resized?.Invoke(Width, Height);
 
@@ -133,6 +120,12 @@ internal sealed class OpenTKWindow : IDesktopWindow
   {
     if (!IsClosing)
     {
+      if (!hasPassedFirstFrame && configuration.WaitForFirstFrame)
+      {
+        window.IsVisible    = true;
+        hasPassedFirstFrame = true;
+      }
+
       window.SwapBuffers();
     }
   }

@@ -37,7 +37,6 @@ await Game.Start(platform, context =>
 
     if (shader.IsReady)
     {
-      // TODO: why aren't you visible on the screen? you are in the buffer
       mesh.Draw(shader);
     }
   });
