@@ -40,8 +40,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
     services.AddSingleton<IAudioServer>(AudioServer);
     services.AddSingleton<IGraphicsServer>(GraphicsServer);
     services.AddSingleton<IInputServer>(InputServer);
-    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
-    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
   }
 
   public void RegisterAssetLoaders(IAssetManager manager)

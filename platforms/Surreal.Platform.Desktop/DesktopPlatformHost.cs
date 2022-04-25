@@ -86,15 +86,12 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddSingleton<IAudioServer>(AudioServer);
     services.AddSingleton<IGraphicsServer>(GraphicsServer);
     services.AddSingleton<IInputServer>(InputServer);
-    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
-    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
   }
 
   public void RegisterAssetLoaders(IAssetManager manager)
   {
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioServer));
-
     manager.AddLoader(new BitmapFontLoader(GraphicsServer));
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
