@@ -8,11 +8,30 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Fonts;
 
-/// <summary>Utilities for working with <see cref="BitmapFont"/>s in a <see cref="SpriteBatch"/>.</summary>
-public static class SpriteBatchExtensions
+/// <summary>Alignments for text rendering.</summary>
+public enum TextAlignment
 {
-  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color)
+  Left,
+  Center,
+}
+
+/// <summary>Utilities for working with <see cref="BitmapFont"/>s in a <see cref="SpriteBatch"/>.</summary>
+public static class BitmapFontExtensions
+{
+  /// <summary>Loads the default system font from Surreal.</summary>
+  public static async ValueTask<BitmapFont> LoadDefaultFontAsync(this IAssetManager manager)
   {
+    return await manager.LoadAsset<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
+  }
+
+  /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given font.</summary>
+  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color, TextAlignment alignment = TextAlignment.Left)
+  {
+    if (alignment == TextAlignment.Center)
+    {
+      position.X -= font.MeasureWidth(text) / 2f;
+    }
+
     for (var i = 0; i < text.Length; i++)
     {
       var glyph = font.GetGlyph(text[i]);
@@ -27,10 +46,11 @@ public static class SpriteBatchExtensions
 /// <summary>Describes the structure of a <see cref="BitmapFont"/>.</summary>
 internal sealed record BitmapFontDescriptor
 {
-  public string? FilePath    { get; set; }
-  public int     GlyphWidth  { get; set; }
-  public int     GlyphHeight { get; set; }
-  public int     Columns     { get; set; }
+  public string? FilePath     { get; set; }
+  public int     GlyphWidth   { get; set; }
+  public int     GlyphHeight  { get; set; }
+  public int     GlyphPadding { get; set; }
+  public int     Columns      { get; set; }
 }
 
 /// <summary>A font represented as small bitmaps.</summary>
@@ -52,6 +72,12 @@ public sealed class BitmapFont : IDisposable
   public Image   Image   => image;
   public Texture Texture => texture;
 
+  /// <summary>Measures the width of the given piece of text in the underlying font.</summary>
+  public float MeasureWidth(string text)
+  {
+    return text.Length * (descriptor.GlyphWidth + descriptor.GlyphPadding);
+  }
+
   public TextureRegion GetGlyph(int index)
   {
     Debug.Assert(index >= 0, "index >= 0");
@@ -59,8 +85,8 @@ public sealed class BitmapFont : IDisposable
     return new(texture)
     {
       Offset = new Point2(
-        X: index % descriptor.Columns,
-        Y: index / descriptor.Columns
+        X: (index % descriptor.Columns) * (descriptor.GlyphWidth + descriptor.GlyphPadding),
+        Y: (index / descriptor.Columns) * (descriptor.GlyphHeight + descriptor.GlyphPadding)
       ),
       Size = new Point2(
         X: descriptor.GlyphWidth,

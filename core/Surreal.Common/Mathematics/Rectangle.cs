@@ -19,6 +19,11 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   public Vector2 Center => new(Left + Width / 2f, Bottom + Height / 2f);
   public Vector2 Size   => new(Width, Height);
 
+  public Vector2 TopLeft     => new(Left, Top);
+  public Vector2 TopRight    => new(Right, Top);
+  public Vector2 BottomLeft  => new(Left, Bottom);
+  public Vector2 BottomRight => new(Right, Bottom);
+
   public bool Contains(Point2 point)
   {
     return point.X >= Left &&

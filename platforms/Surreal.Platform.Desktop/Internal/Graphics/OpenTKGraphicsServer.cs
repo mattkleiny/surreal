@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using Surreal.Assets;
 using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -26,15 +25,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public OpenTKGraphicsServer(Version version)
   {
-    shaderCompiler     = new OpenTKShaderCompiler(version);
-    NativeShaderLoader = new OpenTKShaderProgramLoader(this);
+    shaderCompiler = new OpenTKShaderCompiler(version);
 
-    // TODO: clockwise ordering seems more natural?
+    // enable some sane defaults for the context.
     GL.FrontFace(FrontFaceDirection.Cw);
     GL.Disable(EnableCap.CullFace);
+    GL.Enable(EnableCap.Blend);
+    GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
   }
-
-  public AssetLoader<ShaderProgram>? NativeShaderLoader { get; }
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -109,7 +107,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       _ => throw new ArgumentOutOfRangeException(nameof(usage), usage, null)
     };
 
-    fixed (byte* pointer = MemoryMarshal.AsBytes(data))
+    fixed (T* pointer = data)
     {
       GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
       GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, bufferUsage);
@@ -416,7 +414,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       var result = Unsafe.As<Matrix3x2, OpenTK.Mathematics.Matrix3x2>(ref Unsafe.AsRef(in value));
 
-      GL.UniformMatrix3x2f(location, 1, false, stackalloc[] { result });
+      GL.UniformMatrix3x2f(location, 1, true, stackalloc[] { result });
     }
   }
 
@@ -428,7 +426,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       var result = Unsafe.As<Matrix4x4, Matrix4>(ref Unsafe.AsRef(in value));
 
-      GL.UniformMatrix4f(location, 1, false, stackalloc[] { result });
+      GL.UniformMatrix4f(location, 1, true, stackalloc[] { result });
     }
   }
 

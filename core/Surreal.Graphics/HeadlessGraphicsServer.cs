@@ -1,5 +1,4 @@
-﻿using Surreal.Assets;
-using Surreal.Graphics.Meshes;
+﻿using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -13,8 +12,6 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   private int nextTextureId = 0;
   private int nextMeshId = 0;
   private int nextShaderId = 0;
-
-  public AssetLoader<ShaderProgram>? NativeShaderLoader => null;
 
   public void SetViewportSize(Viewport viewport)
   {

@@ -9,4 +9,8 @@
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\fonts\IBM.font" />
+    <Content Include="Resources\fonts\IBM8x16.png" />
+  </ItemGroup>
 </Project>

@@ -64,7 +64,7 @@ public readonly record struct ColorPalette(Color[] colors, int offset, int count
   /// <summary>Accesses a single color in the palette.</summary>
   public Color this[Index index]
   {
-    get => colors?[offset + index.GetOffset(Count) % Count] ?? Color.Clear;
+    get => colors?[offset + index.GetOffset(Count)] ?? Color.Clear;
   }
 
   /// <summary>Accesses a sub-range of the <see cref="ColorPalette"/>.</summary>

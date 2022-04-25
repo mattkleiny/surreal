@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using Surreal.IO;
 
 namespace Surreal.Assets;
@@ -10,34 +9,12 @@ public readonly record struct AssetId(Type Type, VirtualPath Path)
   public override string ToString() => Path.ToString();
 }
 
-/// <summary>An opaque handle to an asset in the asset system.</summary>
-public readonly record struct Asset<T>(AssetId Id, Task<T> Task) : IDisposable
-{
-  public T    Value   => Task.Result;
-  public bool IsReady => Task.IsCompleted;
-
-  public TaskAwaiter<T> GetAwaiter()
-  {
-    return Task.GetAwaiter();
-  }
-
-  public void Dispose()
-  {
-    if (Task.IsCompleted && Task.Result is IDisposable disposable)
-    {
-      disposable.Dispose();
-    }
-  }
-
-  public static implicit operator T(Asset<T> asset) => asset.Value;
-}
-
 /// <summary>Allows managing assets.</summary>
 public interface IAssetManager : IDisposable
 {
   void AddLoader(IAssetLoader loader);
 
-  Asset<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  ValueTask<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
@@ -52,21 +29,8 @@ public sealed class AssetManager : IAssetManager
   }
 
   [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
-  public Asset<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  public async ValueTask<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    async Task<T> StartLoadingAsset(IAssetLoader loader, AssetLoaderContext context)
-    {
-      var id = context.Id;
-
-      if (!assetsById.TryGetValue(id, out var asset))
-      {
-        // we'll continue asynchronously on the main thread
-        assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
-      }
-
-      return (T) asset;
-    }
-
     var id = new AssetId(typeof(T), path);
     var context = new AssetLoaderContext(id, this);
 
@@ -75,7 +39,13 @@ public sealed class AssetManager : IAssetManager
       throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.AssetType.Name}");
     }
 
-    return new(id, StartLoadingAsset(loader, context));
+    if (!assetsById.TryGetValue(id, out var asset))
+    {
+      // we'll continue asynchronously on the main thread
+      assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
+    }
+
+    return (T) asset;
   }
 
   public void Dispose()

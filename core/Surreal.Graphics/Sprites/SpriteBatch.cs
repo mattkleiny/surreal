@@ -32,24 +32,14 @@ public sealed class SpriteBatch : IDisposable
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
-  public Color Color { get; set; } = Color.White;
-
   public void Begin(ShaderProgram shader)
     => this.shader = shader;
 
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color, Angle rotation = default)
-    => DrawInternal(region, position, size, rotation, region.Offset, region.Size, Color);
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
+    => DrawInternal(region, position, size, color);
 
   [SkipLocalsInit]
-  private void DrawInternal(
-    in TextureRegion region,
-    Vector2 position,
-    Vector2 size,
-    Angle rotation,
-    Point2 regionOffset,
-    Point2 regionSize,
-    Color color
-  )
+  private void DrawInternal(in TextureRegion region, Vector2 position, Vector2 size, Color color)
   {
     if (region.Texture != lastTexture)
     {
@@ -64,20 +54,11 @@ public sealed class SpriteBatch : IDisposable
     }
 
     // calculate u/v extents
-    var u = regionOffset.X / region.Width;
-    var v = (regionOffset.Y + regionSize.Y) / region.Height;
-    var u2 = (regionOffset.X + regionSize.X) / region.Width;
-    var v2 = regionOffset.Y / region.Height;
+    var uv = region.UV;
 
     // calculate shape extents
     var extentX = position.X + size.X;
     var extentY = position.Y + size.Y;
-
-    // rotate coordinates about the z axis
-    if (MathF.Abs(rotation.Radians) > float.Epsilon)
-    {
-      throw new NotImplementedException();
-    }
 
     // add vertex data to our batch
     var span = vertices.Data.Span[vertexCount..];
@@ -86,29 +67,29 @@ public sealed class SpriteBatch : IDisposable
     vertex0.Position.X = position.X;
     vertex0.Position.Y = position.Y;
     vertex0.Color      = color;
-    vertex0.UV.X       = u;
-    vertex0.UV.Y       = v;
+    vertex0.UV.X       = uv.Left;
+    vertex0.UV.Y       = uv.Bottom;
 
     ref var vertex1 = ref span[1];
     vertex1.Position.X = position.X;
     vertex1.Position.Y = extentY;
     vertex1.Color      = color;
-    vertex1.UV.X       = u;
-    vertex1.UV.Y       = v2;
+    vertex1.UV.X       = uv.Left;
+    vertex1.UV.Y       = uv.Top;
 
     ref var vertex2 = ref span[2];
     vertex2.Position.X = extentX;
     vertex2.Position.Y = extentY;
     vertex2.Color      = color;
-    vertex2.UV.X       = u2;
-    vertex2.UV.Y       = v2;
+    vertex2.UV.X       = uv.Right;
+    vertex2.UV.Y       = uv.Top;
 
     ref var vertex3 = ref span[3];
     vertex3.Position.X = extentX;
     vertex3.Position.Y = position.Y;
     vertex3.Color      = color;
-    vertex3.UV.X       = u2;
-    vertex3.UV.Y       = v;
+    vertex3.UV.X       = uv.Right;
+    vertex3.UV.Y       = uv.Bottom;
 
     vertexCount += 4;
   }

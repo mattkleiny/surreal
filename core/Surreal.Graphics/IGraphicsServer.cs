@@ -1,5 +1,4 @@
-﻿using Surreal.Assets;
-using Surreal.Graphics.Meshes;
+﻿using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -20,8 +19,6 @@ public readonly record struct GraphicsHandle(nint Id)
 /// <summary>An abstraction over the different types of graphics servers available.</summary>
 public interface IGraphicsServer
 {
-  AssetLoader<ShaderProgram>? NativeShaderLoader { get; }
-
   // intrinsics
   void SetViewportSize(Viewport viewport);
   void ClearColorBuffer(Color color);
