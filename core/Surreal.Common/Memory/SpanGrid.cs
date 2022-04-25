@@ -1,4 +1,6 @@
-﻿namespace Surreal.Memory;
+﻿using System.Runtime.CompilerServices;
+
+namespace Surreal.Memory;
 
 /// <summary>A <see cref="Span{T}"/> that is interpreted as a grid.</summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
@@ -48,4 +50,15 @@ public readonly ref struct SpanGrid<T>
 
   public static implicit operator Span<T>(SpanGrid<T> grid) => grid.ToSpan();
   public static implicit operator ReadOnlySpan<T>(SpanGrid<T> grid) => grid.ToSpan();
+}
+
+/// <summary>Static extensinos for dealing with <see cref="SpanGrid{T}"/>s.</summary>
+public static class SpanGridExtensions
+{
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static SpanGrid<T> ToGrid<T>(this Span<T> span, int stride)
+    where T : unmanaged
+  {
+    return new SpanGrid<T>(span, stride);
+  }
 }

@@ -9,6 +9,9 @@ public interface IBuffer<T>
 {
   /// <summary>The underlying <see cref="Memory{T}"/> representing the buffer data.</summary>
   Memory<T> Data { get; }
+
+  /// <summary>The underlying <see cref="Span{T}"/> representing the buffer data.</summary>
+  Span<T> Span => Data.Span;
 }
 
 /// <summary>A <see cref="IBuffer{T}"/> that can be deterministically disposed.</summary>
@@ -77,7 +80,7 @@ public static class Buffers
     public NativeBuffer(int length, bool zeroFill)
     {
       this.length = length;
-      address = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
+      address     = NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
 
       if (zeroFill)
       {

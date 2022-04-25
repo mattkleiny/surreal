@@ -1,4 +1,4 @@
-using HelloWorld;
+using HelloWorld.Graphics;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;

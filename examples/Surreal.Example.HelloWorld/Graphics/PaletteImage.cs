@@ -1,12 +1,12 @@
 ﻿using Surreal.Graphics.Images;
 using Surreal.Memory;
 
-namespace HelloWorld;
+namespace HelloWorld.Graphics;
 
 /// <summary>An image of palette indices.</summary>
 internal sealed class PaletteImage
 {
-  private IBuffer<uint> indices;
+  private readonly IBuffer<uint> indices;
 
   public PaletteImage(int width, int height)
   {
@@ -21,7 +21,7 @@ internal sealed class PaletteImage
 
   public void DrawCircle(Point2 center, int radius, uint index)
   {
-    var indices = this.indices.Data.Span;
+    var grid = indices.Span.ToGrid(Width);
 
     for (int y = 0; y < Height; y++)
     for (int x = 0; x < Width; x++)
@@ -31,14 +31,14 @@ internal sealed class PaletteImage
 
       if (distance.LengthSquared() <= radius)
       {
-        indices[x + y * Width] = index;
+        grid[x, y] = index;
       }
     }
   }
 
   public void DrawBox(Rectangle rectangle, uint index)
   {
-    var indices = this.indices.Data.Span;
+    var grid = indices.Span.ToGrid(Width);
 
     for (int y = 0; y < Height; y++)
     for (int x = 0; x < Width; x++)
@@ -47,7 +47,7 @@ internal sealed class PaletteImage
 
       if (rectangle.Contains(position))
       {
-        indices[x + y * Width] = index;
+        grid[x, y] = index;
       }
     }
   }
@@ -59,15 +59,15 @@ internal sealed class PaletteImage
 
   public void CopyTo(Image image, ColorPalette palette)
   {
-    var indices = this.indices.Data.Span;
-    var pixels = image.Pixels;
+    var input = indices.Span.ToGrid(Width);
+    var output = image.Pixels;
 
     for (int y = 0; y < Height; y++)
     for (int x = 0; x < Width; x++)
     {
-      var index = (int) indices[x + y * Width];
+      var index = (int) input[x, y];
 
-      pixels[x, y] = palette[index];
+      output[x, y] = palette[index];
     }
   }
 }
