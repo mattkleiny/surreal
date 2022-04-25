@@ -64,7 +64,7 @@ public sealed class Mesh<TVertex> : Mesh
       vertexCount: vertexCount,
       indexCount: indexCount,
       meshType: type,
-      indexType: Indices.ElementType
+      indexType: Indices.Type
     );
   }
 

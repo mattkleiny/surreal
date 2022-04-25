@@ -54,7 +54,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
     Window         = new OpenTKWindow(configuration);
     AudioServer    = new OpenTKAudioServer();
-    GraphicsServer = new OpenTKGraphicsServer();
+    GraphicsServer = new OpenTKGraphicsServer(configuration.OpenGlVersion);
     InputServer    = new OpenTKInputServer(Window);
 
     Resized += OnResized;

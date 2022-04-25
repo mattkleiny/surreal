@@ -2,10 +2,17 @@
 
 namespace Surreal.Graphics.Meshes;
 
+/// <summary>Different usage models for buffers.</summary>
+public enum BufferUsage
+{
+  Static,
+  Dynamic,
+}
+
 /// <summary>A buffer of data on the <see cref="IGraphicsServer"/>.</summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
-  public abstract Type ElementType { get; }
+  public abstract Type Type { get; }
 
   public int  Length { get; protected set; }
   public Size Size   { get; protected set; }
@@ -17,16 +24,18 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
 {
   private readonly IGraphicsServer server;
 
-  public GraphicsBuffer(IGraphicsServer server)
+  public GraphicsBuffer(IGraphicsServer server, BufferUsage usage = BufferUsage.Static)
   {
     this.server = server;
 
+    Usage  = usage;
     Handle = server.CreateBuffer();
   }
 
-  public GraphicsHandle Handle { get; }
+  public override Type Type => typeof(T);
 
-  public override Type ElementType => typeof(T);
+  public GraphicsHandle Handle { get; }
+  public BufferUsage    Usage  { get; }
 
   public Memory<T> Read(Optional<Range> range = default)
   {
@@ -38,7 +47,7 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
     Length = buffer.Length;
     Size   = buffer.CalculateSize();
 
-    server.WriteBufferData(Handle, buffer);
+    server.WriteBufferData(Handle, buffer, Usage);
   }
 
   protected override void Dispose(bool managed)

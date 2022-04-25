@@ -31,7 +31,7 @@ public interface IGraphicsServer
   // buffers
   GraphicsHandle CreateBuffer();
   Memory<T> ReadBufferData<T>(GraphicsHandle handle, Range range) where T : unmanaged;
-  void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data) where T : unmanaged;
+  void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged;
   void DeleteBuffer(GraphicsHandle handle);
 
   // textures

@@ -8,10 +8,12 @@ namespace Surreal.Internal.Graphics;
 
 public class OpenTKShaderCompilerTests
 {
+  private static readonly Version Version = new(3, 3, 0);
+
   [Test]
   public void it_should_compile_simple_instructions()
   {
-    var compiler = new OpenTKShaderCompiler();
+    var compiler = new OpenTKShaderCompiler(Version);
 
     var program = compiler.CompileShader(new ShaderDeclaration(
       Path: "test.shade",
@@ -69,11 +71,16 @@ public class OpenTKShaderCompilerTests
   public async Task it_should_compile_shader_programs(VirtualPath path)
   {
     var parser = new ShaderParser();
-    var compiler = new OpenTKShaderCompiler();
+    var compiler = new OpenTKShaderCompiler(Version);
 
     var declaration = await parser.ParseAsync(path);
     var shaderSet = compiler.CompileShader(declaration);
 
     shaderSet.Should().NotBeNull();
+
+    foreach (var shader in shaderSet.Shaders)
+    {
+      Console.WriteLine(shader.Code);
+    }
   }
 }

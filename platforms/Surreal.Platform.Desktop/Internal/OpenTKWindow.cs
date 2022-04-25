@@ -30,7 +30,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
       Flags           = ContextFlags.ForwardCompatible | ContextFlags.Debug,
       Profile         = ContextProfile.Core,
       NumberOfSamples = 0,
-      APIVersion      = new Version(3, 3, 0),
+      APIVersion      = configuration.OpenGlVersion,
     };
 
     window = new GameWindow(gameWindowSettings, nativeWindowSettings)

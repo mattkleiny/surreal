@@ -51,7 +51,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     return Memory<T>.Empty;
   }
 
-  public void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data) where T : unmanaged
+  public void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged
   {
     // no-op
   }

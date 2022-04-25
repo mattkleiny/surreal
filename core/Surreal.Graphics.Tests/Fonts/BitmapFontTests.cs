@@ -1,6 +1,7 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
-using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Sprites;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Fonts;
 
@@ -34,6 +35,6 @@ public class BitmapFontTests
 
     var font = await manager.LoadAsset<BitmapFont>("Assets/fonts/IBM.font");
 
-    batch.DrawText(font, "This is a test", Vector2.Zero);
+    batch.DrawText(font, "This is a test", Vector2.Zero, Color.White);
   }
 }

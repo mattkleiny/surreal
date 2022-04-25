@@ -24,9 +24,9 @@ internal sealed class OpenTKShaderCompiler
 {
   private readonly string version;
 
-  public OpenTKShaderCompiler(string version = "330")
+  public OpenTKShaderCompiler(Version version)
   {
-    this.version = version;
+    this.version = $"{version.Major}{version.Minor}{version.Build}";
   }
 
   public OpenTKShaderSet CompileShader(ShaderDeclaration declaration)
@@ -81,12 +81,30 @@ internal sealed class OpenTKShaderCompiler
       builder.AppendLine($"#version {version}");
       builder.AppendLine();
 
+      CompileBindings(stage.Parameters);
       CompileStatements(declaration.CompilationUnit.Uniforms);
       CompileStatements(declaration.CompilationUnit.Varyings);
       CompileStatements(declaration.CompilationUnit.Constants);
       CompileStatements(declaration.CompilationUnit.Functions);
-
       CompileStatement(stage);
+    }
+
+    private void CompileBindings(ImmutableArray<Expression.Parameter> parameters)
+    {
+      if (parameters.Length > 0)
+      {
+        // emit stage inputs as layout declarations
+        for (var i = 0; i < parameters.Length; i++)
+        {
+          var parameter = parameters[i];
+          var precision = ConvertPrecision(parameter.Type.Precision);
+          var type = ConvertType(parameter.Type);
+
+          builder.AppendBindingDeclaration(i, precision, type, parameter.Name);
+        }
+
+        builder.AppendLine();
+      }
     }
 
     private void CompileStatements<T>(ImmutableArray<T> statements)
@@ -236,7 +254,7 @@ internal sealed class OpenTKShaderCompiler
       PrimitiveType.Float when !type.Cardinality.HasValue  => "float",
       PrimitiveType.Float when type.Cardinality.HasValue   => $"vec{type.Cardinality}",
       PrimitiveType.Matrix when type.Cardinality.HasValue  => $"mat{type.Cardinality}",
-      PrimitiveType.Sampler when type.Cardinality.HasValue => $"sampler{type.Cardinality}d",
+      PrimitiveType.Sampler when type.Cardinality.HasValue => $"sampler{type.Cardinality}D",
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
     };
@@ -272,16 +290,19 @@ internal sealed class OpenTKShaderCompiler
     public void AppendLine(string raw) => StringBuilder.AppendLine(raw);
 
     public void AppendComment(string text)
-      => StartLine().AppendSpaced("/*").AppendSpaced(text).AppendLine("*/");
+      => StartLine().Append("/* ").AppendSpaced(text).AppendLine("*/");
 
     public void AppendUniformDeclaration(string? precision, string type, string name)
-      => StartLine().AppendSpaced("uniform").AppendSpaced(precision).AppendSpaced(type).Append(name).AppendLine(";");
+      => StartLine().Append("uniform ").AppendSpaced(precision).AppendSpaced(type).Append(name).AppendLine(";");
 
     public void AppendVaryingDeclaration(string? precision, string type, string name)
-      => StartLine().AppendSpaced("varying").AppendSpaced(precision).AppendSpaced(type).Append(name).AppendLine(";");
+      => StartLine().Append("varying ").AppendSpaced(precision).AppendSpaced(type).Append(name).AppendLine(";");
+
+    public void AppendBindingDeclaration(int location, string? precision, string type, string name)
+      => StartLine().Append("layout (location = ").Append(location).Append(") in ").AppendSpaced(precision).AppendSpaced(type).Append(name).AppendLine(";");
 
     public void AppendConstantDeclaration(string? precision, string type, string name, string value)
-      => StartLine().AppendSpaced("const").AppendSpaced(precision).AppendSpaced(type).Append(name).Append(" = ").Append(value).AppendLine(";");
+      => StartLine().Append("const ").AppendSpaced(precision).AppendSpaced(type).Append(name).Append(" = ").Append(value).AppendLine(";");
 
     public void AppendAssignment(string name, string value)
       => StartLine().Append(name).Append(" = ").Append(value).AppendLine(";");

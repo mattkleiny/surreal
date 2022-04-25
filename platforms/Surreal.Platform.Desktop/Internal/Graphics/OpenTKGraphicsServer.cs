@@ -22,11 +22,16 @@ namespace Surreal.Internal.Graphics;
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
-  private readonly OpenTKShaderCompiler shaderCompiler = new();
+  private readonly OpenTKShaderCompiler shaderCompiler;
 
-  public OpenTKGraphicsServer()
+  public OpenTKGraphicsServer(Version version)
   {
+    shaderCompiler     = new OpenTKShaderCompiler(version);
     NativeShaderLoader = new OpenTKShaderProgramLoader(this);
+
+    // TODO: clockwise ordering seems more natural?
+    GL.FrontFace(FrontFaceDirection.Cw);
+    GL.Disable(EnableCap.CullFace);
   }
 
   public AssetLoader<ShaderProgram>? NativeShaderLoader { get; }
@@ -90,16 +95,24 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return result;
   }
 
-  public unsafe void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data)
+  public unsafe void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data, BufferUsage usage)
     where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
     var bytes = data.Length * sizeof(T);
 
+    var bufferUsage = usage switch
+    {
+      BufferUsage.Static  => BufferUsageARB.StaticDraw,
+      BufferUsage.Dynamic => BufferUsageARB.DynamicDraw,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(usage), usage, null)
+    };
+
     fixed (byte* pointer = MemoryMarshal.AsBytes(data))
     {
       GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
-      GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, BufferUsageARB.StaticDraw);
+      GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, bufferUsage);
     }
   }
 
@@ -216,7 +229,21 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
     GL.UseProgram(program);
 
-    BindVertexDescriptorSet(descriptors);
+    // N.B: assumes ordered in the order they appear in location binding
+    for (var index = 0; index < descriptors.Length; index++)
+    {
+      var attribute = descriptors[index];
+
+      GL.VertexAttribPointer(
+        index: (uint) index,
+        size: attribute.Count,
+        type: ConvertVertexType(attribute.Type),
+        normalized: attribute.ShouldNormalize,
+        stride: descriptors.Stride,
+        offset: attribute.Offset
+      );
+      GL.EnableVertexAttribArray((uint) index);
+    }
 
     if (indexCount > 0)
     {
@@ -422,25 +449,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var program = new ProgramHandle(handle);
 
     GL.DeleteProgram(program);
-  }
-
-  private static void BindVertexDescriptorSet(VertexDescriptorSet descriptors)
-  {
-    // N.B: assumes ordered in the order they appear in location binding
-    for (var index = 0; index < descriptors.Length; index++)
-    {
-      var attribute = descriptors[index];
-
-      GL.VertexAttribPointer(
-        index: (uint) index,
-        size: attribute.Count,
-        type: ConvertVertexType(attribute.Type),
-        normalized: attribute.ShouldNormalize,
-        stride: descriptors.Stride,
-        offset: attribute.Offset
-      );
-      GL.EnableVertexAttribArray((uint) index);
-    }
   }
 
   private static int GetInternalFormat(TextureFormat format)

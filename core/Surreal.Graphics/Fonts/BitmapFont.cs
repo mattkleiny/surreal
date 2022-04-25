@@ -1,11 +1,28 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Fonts;
+
+/// <summary>Utilities for working with <see cref="BitmapFont"/>s in a <see cref="SpriteBatch"/>.</summary>
+public static class SpriteBatchExtensions
+{
+  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color)
+  {
+    for (var i = 0; i < text.Length; i++)
+    {
+      var glyph = font.GetGlyph(text[i]);
+
+      batch.Draw(glyph, position, glyph.Size, color);
+
+      position.X += glyph.Size.X;
+    }
+  }
+}
 
 /// <summary>Describes the structure of a <see cref="BitmapFont"/>.</summary>
 internal sealed record BitmapFontDescriptor
@@ -14,22 +31,6 @@ internal sealed record BitmapFontDescriptor
   public int     GlyphWidth  { get; set; }
   public int     GlyphHeight { get; set; }
   public int     Columns     { get; set; }
-}
-
-/// <summary>Utilities for working with <see cref="BitmapFont"/>s in a <see cref="SpriteBatch"/>.</summary>
-public static class SpriteBatchExtensions
-{
-  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position)
-  {
-    for (var i = 0; i < text.Length; i++)
-    {
-      var glyph = font.GetGlyph(text[i]);
-
-      batch.Draw(glyph, position, glyph.Size, Color.White);
-
-      position.X += glyph.Size.X;
-    }
-  }
 }
 
 /// <summary>A font represented as small bitmaps.</summary>
@@ -42,7 +43,7 @@ public sealed class BitmapFont : IDisposable
   internal BitmapFont(IGraphicsServer server, BitmapFontDescriptor descriptor, Image image)
   {
     this.descriptor = descriptor;
-    this.image = image;
+    this.image      = image;
 
     texture = new Texture(server, TextureFormat.Rgba8888, TextureFilterMode.Point, TextureWrapMode.Clamp);
     texture.WritePixels<Color32>(image.Width, image.Height, image.Pixels);

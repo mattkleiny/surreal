@@ -62,13 +62,6 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuf
     return server.ReadTextureData<T>(Handle);
   }
 
-  public void WritePixels(Image image)
-  {
-    var pixels = image.Pixels.ToReadOnlySpan();
-
-    WritePixels(image.Width, image.Height, pixels);
-  }
-
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
@@ -77,6 +70,13 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuf
     Size   = pixels.CalculateSize();
 
     server.WriteTextureData(Handle, width, height, pixels, Format);
+  }
+
+  public void WritePixels(Image image)
+  {
+    var pixels = image.Pixels.ToReadOnlySpan();
+
+    WritePixels(image.Width, image.Height, pixels);
   }
 
   protected override void Dispose(bool managed)
@@ -109,11 +109,10 @@ public sealed class TextureLoader : AssetLoader<Texture>
 
   public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    // TODO: support hot reloading?
     var image = await context.Manager.LoadAsset<Image>(context.Path, cancellationToken);
     var texture = new Texture(server, TextureFormat.Rgba8888, defaultFilterMode, defaultWrapMode);
 
-    texture.WritePixels<Color32>(image.Width, image.Height, image.Pixels);
+    texture.WritePixels(image);
 
     return texture;
   }

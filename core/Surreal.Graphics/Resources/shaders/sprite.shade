@@ -8,6 +8,6 @@ void vertex(vec3 position) {
   POSITION = position;
 }
 
-void fragment() {
-  COLOR = SAMPLE(TEXTURE, UV) * _Tint;
+void fragment(vec2 uv) {
+  COLOR = SAMPLE(TEXTURE0, uv) * _Tint;
 }

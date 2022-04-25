@@ -15,12 +15,6 @@ public sealed class ShaderProgram : GraphicsResource
     Handle = server.CreateShader();
   }
 
-  public ShaderProgram(IGraphicsServer server, ShaderDeclaration declaration)
-    : this(server)
-  {
-    server.CompileShader(Handle, declaration);
-  }
-
   public GraphicsHandle Handle { get; }
 
   public void SetUniform(string name, int value)

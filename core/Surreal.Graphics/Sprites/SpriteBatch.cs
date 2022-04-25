@@ -1,11 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Meshes;
+namespace Surreal.Graphics.Sprites;
 
 /// <summary>A batched mesh of sprites for rendering to the GPU.</summary>
 public sealed class SpriteBatch : IDisposable

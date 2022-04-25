@@ -18,18 +18,19 @@ public sealed class Image : IDisposable
   public static async ValueTask<Image> LoadAsync(VirtualPath path)
   {
     await using var stream = await path.OpenInputStreamAsync();
-    var temp = await SixLabors.ImageSharp.Image.LoadAsync(stream);
 
-    // we're already in the right format
-    if (temp is Image<Rgba32> rgba)
+    // load the image
+    var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
+    if (image is Image<Rgba32> rgba)
     {
+      // we're already in the right format
       return new Image(rgba);
     }
 
-    // we need to convert
-    using (temp)
+    // we need to convert to RGBA
+    using (image)
     {
-      return new Image(temp.CloneAs<Rgba32>());
+      return new Image(image.CloneAs<Rgba32>());
     }
   }
 
@@ -81,7 +82,7 @@ public sealed class Image : IDisposable
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>
 public sealed class ImageLoader : AssetLoader<Image>
 {
-  private static ImmutableHashSet<string> Extensions { get; } = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Extensions { get; } = ImmutableHashSet.Create(".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga");
 
   public override bool CanHandle(AssetLoaderContext context)
   {

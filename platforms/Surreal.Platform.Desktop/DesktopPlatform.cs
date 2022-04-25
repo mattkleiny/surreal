@@ -3,13 +3,14 @@
 /// <summary>Configuration for the <see cref="DesktopPlatform"/>.</summary>
 public sealed record DesktopConfiguration
 {
-  public string Title             { get; set; } = "Surreal";
-  public int    Width             { get; set; } = 1920;
-  public int    Height            { get; set; } = 1080;
-  public bool   IsResizable       { get; set; } = true;
-  public bool   IsVsyncEnabled    { get; set; } = true;
-  public bool   WaitForFirstFrame { get; set; } = true;
-  public bool   ShowFpsInTitle    { get; set; } = true;
+  public string  Title             { get; set; } = "Surreal";
+  public int     Width             { get; set; } = 1920;
+  public int     Height            { get; set; } = 1080;
+  public bool    IsResizable       { get; set; } = true;
+  public bool    IsVsyncEnabled    { get; set; } = true;
+  public bool    WaitForFirstFrame { get; set; } = true;
+  public bool    ShowFpsInTitle    { get; set; } = true;
+  public Version OpenGlVersion     { get; set; } = new(3, 3, 0);
 }
 
 /// <summary>A <see cref="IPlatform"/> for desktop environments.</summary>

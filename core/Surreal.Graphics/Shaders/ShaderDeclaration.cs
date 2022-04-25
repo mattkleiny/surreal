@@ -37,12 +37,7 @@ public enum ShaderKind
 public readonly record struct Primitive(PrimitiveType Type, int? Cardinality = null, Precision? Precision = null);
 
 /// <summary>Represents a parsed shader program, ready for interrogation and compilation.</summary>
-public sealed record ShaderDeclaration(string Path, ShaderCompilationUnit CompilationUnit)
-{
-  // TODO: implement these sorts of queries
-  public bool RequiresTransparentPass => throw new NotImplementedException();
-  public bool RequiresGrabPass        => throw new NotImplementedException();
-}
+public sealed record ShaderDeclaration(string Path, ShaderCompilationUnit CompilationUnit);
 
 /// <summary>An <see cref="AssetLoader{T}"/> for <see cref="ShaderDeclaration"/>s.</summary>
 public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>

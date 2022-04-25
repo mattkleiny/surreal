@@ -16,6 +16,8 @@ public record struct Point2(int X, int Y)
   public int X = X;
   public int Y = Y;
 
+  public int LengthSquared() => X * X + Y * Y;
+
   public override string ToString() => $"<{X} {Y}>";
 
   // scalar operations
@@ -36,6 +38,11 @@ public record struct Point2(int X, int Y)
   // implicit conversion
   public static implicit operator Vector2(Point2 self) => new(self.X, self.Y);
   public static implicit operator Point2((int X, int Y) value) => new(value.X, value.Y);
+
+  public static implicit operator Point2(Vector2 vector) => new(
+    (int) MathF.Floor(vector.X),
+    (int) MathF.Floor(vector.Y)
+  );
 }
 
 /// <summary>An integral point in 3-space.</summary>
@@ -71,4 +78,10 @@ public record struct Point3(int X, int Y, int Z)
   // implicit conversion
   public static implicit operator Vector3(Point3 self) => new(self.X, self.Y, self.Z);
   public static implicit operator Point3((int, int, int) value) => new(value.Item1, value.Item2, value.Item3);
+
+  public static implicit operator Point3(Vector3 vector) => new(
+    (int) MathF.Floor(vector.X),
+    (int) MathF.Floor(vector.Y),
+    (int) MathF.Floor(vector.Z)
+  );
 }
