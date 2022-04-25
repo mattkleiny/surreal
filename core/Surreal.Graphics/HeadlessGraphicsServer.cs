@@ -1,16 +1,17 @@
 ﻿using Surreal.Assets;
-using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
-namespace Surreal.Internal.Graphics;
+namespace Surreal.Graphics;
 
-internal sealed class HeadlessGraphicsServer : IGraphicsServer
+/// <summary>A no-op <see cref="IGraphicsServer"/> for headless environments and testing.</summary>
+public sealed class HeadlessGraphicsServer : IGraphicsServer
 {
   private int nextBufferId = 0;
   private int nextTextureId = 0;
+  private int nextMeshId = 0;
   private int nextShaderId = 0;
 
   public AssetLoader<ShaderProgram>? NativeShaderLoader => null;
@@ -65,6 +66,11 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
+  public GraphicsHandle CreateMesh()
+  {
+    return new GraphicsHandle(Interlocked.Increment(ref nextMeshId));
+  }
+
   public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
   {
     return Memory<T>.Empty;
@@ -75,7 +81,12 @@ internal sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public void DrawMesh(GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  {
+    // no-op
+  }
+
+  public void DeleteMesh(GraphicsHandle handle)
   {
     // no-op
   }

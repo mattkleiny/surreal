@@ -33,6 +33,7 @@ public sealed class Mesh<TVertex> : Mesh
   private static VertexDescriptorSet SharedDescriptors { get; } = VertexDescriptorSet.Create<TVertex>();
 
   private readonly IGraphicsServer server;
+  private readonly GraphicsHandle handle;
 
   public Mesh(IGraphicsServer server)
   {
@@ -40,6 +41,8 @@ public sealed class Mesh<TVertex> : Mesh
 
     Vertices = new GraphicsBuffer<TVertex>(server);
     Indices  = new GraphicsBuffer<ushort>(server);
+
+    handle = server.CreateMesh();
   }
 
   public GraphicsBuffer<TVertex> Vertices { get; }
@@ -55,6 +58,7 @@ public sealed class Mesh<TVertex> : Mesh
   public void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
   {
     server.DrawMesh(
+      mesh: handle,
       shader: shader.Handle,
       vertices: Vertices.Handle,
       indices: Indices.Handle,
@@ -70,5 +74,7 @@ public sealed class Mesh<TVertex> : Mesh
   {
     Vertices.Dispose();
     Indices.Dispose();
+
+    server.DeleteMesh(handle);
   }
 }

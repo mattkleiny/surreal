@@ -1,9 +1,9 @@
-using Surreal.Audio;
 using Surreal.Audio.Clips;
 
-namespace Surreal.Internal.Audio;
+namespace Surreal.Audio;
 
-internal sealed class HeadlessAudioServer : IAudioServer
+/// <summary>A no-op <see cref="IAudioServer"/> for headless environments and testing.</summary>
+public sealed class HeadlessAudioServer : IAudioServer
 {
   private int nextClipId = 0;
   private int nextSourceId = 0;

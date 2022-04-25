@@ -1,8 +1,7 @@
-using Surreal.Input.Keyboard;
+namespace Surreal.Input.Keyboard;
 
-namespace Surreal.Internal.Input;
-
-internal sealed class HeadlessKeyboardDevice : IHeadlessKeyboardDevice
+/// <summary>A headless <see cref="IKeyboardDevice"/>.</summary>
+public sealed class HeadlessKeyboardDevice : IKeyboardDevice
 {
   private readonly HashSet<Key> pressedKeys = new();
 

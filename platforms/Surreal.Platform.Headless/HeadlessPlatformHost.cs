@@ -4,9 +4,6 @@ using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
-using Surreal.Internal.Audio;
-using Surreal.Internal.Graphics;
-using Surreal.Internal.Input;
 using Surreal.IO;
 using Surreal.Timing;
 
@@ -15,8 +12,8 @@ namespace Surreal;
 /// <summary>A specialization of <see cref="IPlatformHost"/> for headless environments.</summary>
 public interface IHeadlessPlatformHost : IPlatformHost
 {
-  IHeadlessKeyboardDevice Keyboard { get; }
-  IHeadlessMouseDevice    Mouse    { get; }
+  HeadlessKeyboardDevice Keyboard { get; }
+  HeadlessMouseDevice    Mouse    { get; }
 }
 
 internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
@@ -33,8 +30,8 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
   public bool IsFocused => true;
   public bool IsClosing => false;
 
-  public IHeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
-  public IHeadlessMouseDevice    Mouse    => InputServer.Mouse;
+  public HeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
+  public HeadlessMouseDevice    Mouse    => InputServer.Mouse;
 
   public void RegisterServices(IServiceRegistry services)
   {
@@ -45,8 +42,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
     services.AddSingleton<IInputServer>(InputServer);
     services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
     services.AddSingleton<IMouseDevice>(InputServer.Mouse);
-    services.AddSingleton<IHeadlessKeyboardDevice>(InputServer.Keyboard);
-    services.AddSingleton<IHeadlessMouseDevice>(InputServer.Mouse);
   }
 
   public void RegisterAssetLoaders(IAssetManager manager)

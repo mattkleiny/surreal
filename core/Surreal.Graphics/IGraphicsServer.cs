@@ -41,7 +41,9 @@ public interface IGraphicsServer
   void DeleteTexture(GraphicsHandle handle);
 
   // meshes
-  void DrawMesh(GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType);
+  GraphicsHandle CreateMesh();
+  void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType);
+  void DeleteMesh(GraphicsHandle handle);
 
   // shaders
   GraphicsHandle CreateShader();

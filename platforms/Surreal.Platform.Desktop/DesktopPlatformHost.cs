@@ -56,6 +56,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     AudioServer    = new OpenTKAudioServer();
     GraphicsServer = new OpenTKGraphicsServer();
     InputServer    = new OpenTKInputServer(Window);
+
+    Resized += OnResized;
   }
 
   public event Action<int, int> Resized
@@ -139,6 +141,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public void Dispose()
   {
     Window.Dispose();
+  }
+
+  private void OnResized(int width, int height)
+  {
+    GraphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
   }
 
   IDesktopWindow IDesktopPlatformHost.Window => Window;

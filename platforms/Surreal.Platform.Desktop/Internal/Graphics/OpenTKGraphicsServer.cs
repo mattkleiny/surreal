@@ -171,28 +171,45 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
-  public void DrawMesh(GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public GraphicsHandle CreateMesh()
+  {
+    var array = GL.GenVertexArray();
+
+    return new GraphicsHandle(array.Handle);
+  }
+
+  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
   {
     var primitiveType = ConvertMeshType(meshType);
     var elementType = ConvertElementType(indexType);
 
+    var array = new VertexArrayHandle(mesh);
     var program = new ProgramHandle(shader);
+
+    GL.BindVertexArray(array);
+    GL.BindBuffer(BufferTargetARB.ArrayBuffer, new BufferHandle(vertices));
 
     GL.UseProgram(program);
 
     BindVertexDescriptorSet(program, descriptors);
 
-    GL.BindBuffer(BufferTargetARB.ArrayBuffer, new BufferHandle(vertices));
-
     if (indexCount > 0)
     {
       GL.BindBuffer(BufferTargetARB.ElementArrayBuffer, new BufferHandle(indices));
-      GL.DrawElements(primitiveType, indexCount, elementType, 0);
+
+      GL.DrawElements(primitiveType, indexCount, elementType, offset: 0);
     }
     else
     {
-      GL.DrawArrays(primitiveType, 0, vertexCount);
+      GL.DrawArrays(primitiveType, first: 0, vertexCount);
     }
+  }
+
+  public void DeleteMesh(GraphicsHandle handle)
+  {
+    var array = new VertexArrayHandle(handle);
+
+    GL.DeleteVertexArray(array);
   }
 
   public GraphicsHandle CreateShader()

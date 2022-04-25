@@ -1,8 +1,7 @@
-using Surreal.Input.Mouse;
+namespace Surreal.Input.Mouse;
 
-namespace Surreal.Internal.Input;
-
-internal sealed class HeadlessMouseDevice : IHeadlessMouseDevice
+/// <summary>A headless <see cref="IMouseDevice"/>.</summary>
+public sealed class HeadlessMouseDevice : IMouseDevice
 {
   private readonly HashSet<MouseButton> pressedButtons = new();
 

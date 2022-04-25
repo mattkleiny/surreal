@@ -1,8 +1,10 @@
-using Surreal.Input;
+﻿using Surreal.Input.Keyboard;
+using Surreal.Input.Mouse;
 
-namespace Surreal.Internal.Input;
+namespace Surreal.Input;
 
-internal sealed class HeadlessInputServer : IInputServer
+/// <summary>A no-op <see cref="IInputServer"/> for headless environments and testing.</summary>
+public sealed class HeadlessInputServer : IInputServer
 {
   private readonly List<IInputDevice> devices = new();
 
@@ -22,4 +24,5 @@ internal sealed class HeadlessInputServer : IInputServer
     Keyboard.Update();
     Mouse.Update();
   }
+
 }

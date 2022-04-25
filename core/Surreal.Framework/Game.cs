@@ -28,7 +28,7 @@ public sealed record Game : IDisposable
     Host     = host;
   }
 
-  /// <summary>Bootstraps a delegate-based game with the given <see cref="platform"/>.</summary>
+  /// <summary>Bootstraps a game game with the given <see cref="platform"/>.</summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   public static async ValueTask Start(IPlatform platform, GameSetup gameSetup, CancellationToken cancellationToken = default)
   {
