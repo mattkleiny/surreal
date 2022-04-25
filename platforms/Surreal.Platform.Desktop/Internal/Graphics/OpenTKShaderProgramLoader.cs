@@ -29,8 +29,6 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     var vertexCode = await vertexPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
     var fragmentCode = await fragmentPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
 
-    await Task.Delay(1.Seconds());
-
     var shaders = ImmutableArray.Create(
       new OpenTKShader(ShaderType.VertexShader, vertexCode),
       new OpenTKShader(ShaderType.FragmentShader, fragmentCode)

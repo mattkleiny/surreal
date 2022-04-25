@@ -391,7 +391,7 @@ public abstract class Parser<T>
     {
       return async (_, path, cancellationToken) =>
       {
-        return await manager.LoadAsset<T>(path, cancellationToken).Task;
+        return await manager.LoadAsset<T>(path, cancellationToken);
       };
     }
   }

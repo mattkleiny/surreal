@@ -27,10 +27,10 @@ await Game.Start(platform, context =>
       context.Exit();
     }
 
-    var t = MathF.Sin((float) time.TotalTime.TotalSeconds);
-    var lerp = Color.Lerp(color1, color2, t);
+    var blend = MathF.Sin((float) time.TotalTime.TotalSeconds);
+    var color = Color.Lerp(color1, color2, blend);
 
-    graphics.ClearColorBuffer(lerp);
+    graphics.ClearColorBuffer(color);
   });
 
   return ValueTask.CompletedTask;

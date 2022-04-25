@@ -11,14 +11,14 @@ namespace Surreal;
 [DebuggerDisplay("{DeltaTime} since last frame")]
 public readonly record struct GameTime(DeltaTime DeltaTime, TimeSpan TotalTime, bool IsRunningSlowly);
 
-/// <summary>Invoked to prepare a game prior to it's main loop.</summary>
+/// <summary>Entry point for configuring a game.</summary>
 public delegate ValueTask GameSetup(Game context);
 
 /// <summary>Invoked to execute a single frame of a game's main loop.</summary>
 public delegate void GameLoop(GameTime time);
 
 /// <summary>Entry point for the game.</summary>
-public sealed record Game : IDisposable
+public sealed class Game : IDisposable
 {
   private readonly ConcurrentQueue<Action> callbacks = new();
 
@@ -28,9 +28,8 @@ public sealed record Game : IDisposable
     Host     = host;
   }
 
-  /// <summary>Bootstraps a game game with the given <see cref="platform"/>.</summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  public static async ValueTask Start(IPlatform platform, GameSetup gameSetup, CancellationToken cancellationToken = default)
+  public static void Start(IPlatform platform, GameSetup gameSetup, CancellationToken cancellationToken = default)
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
@@ -51,13 +50,16 @@ public sealed record Game : IDisposable
     host.RegisterAssetLoaders(game.Assets);
     host.RegisterFileSystems(FileSystem.Registry);
 
-    await gameSetup(game);
+    game.Schedule(() => gameSetup(game));
+
+    game.Run();
   }
 
   public IServiceRegistry Services { get; init; }
   public IPlatformHost    Host     { get; init; }
   public IAssetManager    Assets   { get; } = new AssetManager();
 
+  /// <summary>True if the current <see cref="Execute"/> block is closing.</summary>
   public bool IsClosing { get; private set; } = false;
 
   /// <summary>Schedules an action to be invoked at the start of the next frame.</summary>
@@ -66,29 +68,38 @@ public sealed record Game : IDisposable
     callbacks.Enqueue(callback);
   }
 
+  /// <summary>Runs the main event loop for the game.</summary>
+  private void Run()
+  {
+    while (!Host.IsClosing && !IsClosing)
+    {
+      while (callbacks.TryDequeue(out var callback))
+      {
+        callback.Invoke();
+      }
+    }
+  }
+
   /// <summary>Executes the given <see cref="gameLoop"/>.</summary>
   public void Execute(GameLoop gameLoop)
   {
+    IsClosing = false;
+
     var stopwatch = new Chronometer();
     var startTime = TimeStamp.Now;
 
     while (!Host.IsClosing && !IsClosing)
     {
+      // calculate frame times
       var gameTime = new GameTime(
         DeltaTime: stopwatch.Tick(),
         TotalTime: TimeStamp.Now - startTime,
         IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
       );
 
+      // run the frame logic
       Host.BeginFrame(gameTime.DeltaTime);
-
-      while (callbacks.TryDequeue(out var callback))
-      {
-        callback.Invoke();
-      }
-
       gameLoop(gameTime);
-
       Host.EndFrame(gameTime.DeltaTime);
     }
   }

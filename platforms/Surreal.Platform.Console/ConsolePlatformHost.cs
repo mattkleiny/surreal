@@ -7,7 +7,6 @@ using Surreal.Diagnostics;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.IO;
-using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
