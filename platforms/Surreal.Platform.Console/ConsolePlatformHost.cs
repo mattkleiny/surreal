@@ -11,7 +11,7 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A rune that can be painted to a <see cref="IConsoleDisplay"/>.</summary>
+/// <summary>A rune that can be painted to a <see cref="IConsoleGraphics"/>.</summary>
 public readonly record struct Glyph(
   char Character,
   ConsoleColor ForegroundColor = ConsoleColor.White,
@@ -20,8 +20,8 @@ public readonly record struct Glyph(
   public static implicit operator Glyph(char character) => new(character);
 }
 
-/// <summary>Allows managing the console display.</summary>
-public interface IConsoleDisplay
+/// <summary>Allows managing the console display graphics.</summary>
+public interface IConsoleGraphics
 {
   int Width  { get; set; }
   int Height { get; set; }
@@ -39,12 +39,12 @@ public interface IConsolePlatformHost : IPlatformHost
   new int Width  { get; set; }
   new int Height { get; set; }
 
-  IConsoleDisplay Display { get; }
+  IConsoleGraphics Graphics { get; }
 }
 
 /// <summary>The <see cref="IPlatformHost"/> for <see cref="ConsolePlatform"/>.</summary>
 [SupportedOSPlatform("windows")]
-internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDisplay
+internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphics
 {
   private readonly ConsoleConfiguration configuration;
   private readonly SafeFileHandle consoleHandle;
@@ -111,7 +111,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
   public bool IsFocused => true;
   public bool IsClosing { get; private set; }
 
-  public IConsoleDisplay Display => this;
+  public IConsoleGraphics Graphics => this;
 
   public void RegisterServices(IServiceRegistry services)
   {
@@ -119,7 +119,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
     services.AddSingleton<IConsolePlatformHost>(this);
     services.AddSingleton<IKeyboardDevice>(Keyboard);
     services.AddSingleton<IMouseDevice>(Mouse);
-    services.AddSingleton(Display);
+    services.AddSingleton(Graphics);
   }
 
   public void RegisterAssetLoaders(IAssetManager manager)
@@ -132,7 +132,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
     // no-op
   }
 
-  public void BeginFrame(DeltaTime deltaTime)
+  public void BeginFrame(TimeDelta deltaTime)
   {
     if (!IsClosing)
     {
@@ -158,15 +158,15 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
     }
   }
 
-  public void EndFrame(DeltaTime deltaTime)
+  public void EndFrame(TimeDelta deltaTime)
   {
     if (!IsClosing)
     {
-      Display.Flush();
+      Graphics.Flush();
     }
   }
 
-  unsafe void IConsoleDisplay.Flush()
+  unsafe void IConsoleGraphics.Flush()
   {
     EnsureBackBufferSize();
 
@@ -195,7 +195,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
     }
   }
 
-  void IConsoleDisplay.Fill(Glyph glyph)
+  void IConsoleGraphics.Fill(Glyph glyph)
   {
     EnsureBackBufferSize();
 
@@ -209,7 +209,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleDispla
     });
   }
 
-  void IConsoleDisplay.Draw(int x, int y, Glyph glyph)
+  void IConsoleGraphics.Draw(int x, int y, Glyph glyph)
   {
     if (x < 0 || x > Width - 1) return;
     if (y < 0 || y > Height - 1) return;

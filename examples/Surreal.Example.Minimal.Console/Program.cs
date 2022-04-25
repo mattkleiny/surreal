@@ -1,6 +1,4 @@
-﻿using Surreal.Input.Keyboard;
-
-var platform = new ConsolePlatform
+﻿var platform = new ConsolePlatform
 {
   Configuration =
   {
@@ -13,30 +11,18 @@ var platform = new ConsolePlatform
 
 Game.Start(platform, context =>
 {
-  var display = context.Services.GetRequiredService<IConsoleDisplay>();
-  var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
-
   var random = Random.Shared;
+  var graphics = context.Services.GetRequiredService<IConsoleGraphics>();
 
   context.ExecuteVariableStep(_ =>
   {
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      context.Exit();
-    }
-
-    if (keyboard.IsKeyPressed(Key.Space))
-    {
-      display.Fill(' ');
-    }
-
     for (int i = 0; i < 16; i++)
     {
-      var x = random.Next(0, display.Width);
-      var y = random.Next(0, display.Height);
+      var x = random.Next(0, graphics.Width);
+      var y = random.Next(0, graphics.Height);
       var color = random.NextEnum<ConsoleColor>();
 
-      display.Draw(x, y, new Glyph('█', color));
+      graphics.Draw(x, y, new Glyph('█', color));
     }
   });
 

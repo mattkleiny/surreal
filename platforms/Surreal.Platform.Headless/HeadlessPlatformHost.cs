@@ -52,12 +52,12 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
     // no-op
   }
 
-  public void BeginFrame(DeltaTime deltaTime)
+  public void BeginFrame(TimeDelta deltaTime)
   {
     InputServer.Update();
   }
 
-  public void EndFrame(DeltaTime deltaTime)
+  public void EndFrame(TimeDelta deltaTime)
   {
     // no-op
   }

@@ -74,23 +74,23 @@ public class Actor
   {
   }
 
-  protected internal virtual void OnBeginFrame(DeltaTime deltaTime)
+  protected internal virtual void OnBeginFrame(TimeDelta deltaTime)
   {
   }
 
-  protected internal virtual void OnInput(DeltaTime deltaTime)
+  protected internal virtual void OnInput(TimeDelta deltaTime)
   {
   }
 
-  protected internal virtual void OnUpdate(DeltaTime deltaTime)
+  protected internal virtual void OnUpdate(TimeDelta deltaTime)
   {
   }
 
-  protected internal virtual void OnDraw(DeltaTime time)
+  protected internal virtual void OnDraw(TimeDelta time)
   {
   }
 
-  protected internal virtual void OnEndFrame(DeltaTime deltaTime)
+  protected internal virtual void OnEndFrame(TimeDelta deltaTime)
   {
   }
 

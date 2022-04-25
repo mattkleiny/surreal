@@ -1,6 +1,4 @@
-﻿using Surreal.Input.Keyboard;
-
-var platform = new DesktopPlatform
+﻿var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -13,7 +11,6 @@ var platform = new DesktopPlatform
 Game.Start(platform, context =>
 {
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
-  var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
 
   var random = Random.Shared;
 
@@ -22,12 +19,7 @@ Game.Start(platform, context =>
 
   context.ExecuteVariableStep(time =>
   {
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      context.Exit();
-    }
-
-    var blend = MathF.Sin((float) time.TotalTime.TotalSeconds);
+    var blend = MathF.Sin(time.TotalTime);
     var color = Color.Lerp(color1, color2, blend);
 
     graphics.ClearColorBuffer(color);

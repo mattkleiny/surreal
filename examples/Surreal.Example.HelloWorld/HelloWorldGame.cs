@@ -3,7 +3,6 @@ using Surreal.Graphics.Images;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Input;
 using Surreal.Input.Keyboard;
 
 var platform = new DesktopPlatform

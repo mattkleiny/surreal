@@ -9,17 +9,18 @@ namespace Surreal;
 
 /// <summary>Encapsulates the frame-by-frame timing information for a game.</summary>
 [DebuggerDisplay("{DeltaTime} since last frame")]
-public readonly record struct GameTime(DeltaTime DeltaTime, TimeSpan TotalTime, bool IsRunningSlowly);
-
-/// <summary>Entry point for configuring a game.</summary>
-public delegate Task GameSetup(Game context);
-
-/// <summary>Invoked to execute a single frame of a game's main loop.</summary>
-public delegate void GameLoop(GameTime time);
+public readonly record struct GameTime(
+  TimeDelta DeltaTime,
+  TimeDelta TotalTime,
+  bool IsRunningSlowly
+);
 
 /// <summary>Entry point for the game.</summary>
 public sealed class Game : IDisposable
 {
+  public delegate Task GameSetup(Game context);
+  public delegate void GameLoop(GameTime time);
+
   private static readonly ILog Log = LogFactory.GetLog<Game>();
 
   private readonly ConcurrentQueue<Action> callbacks = new();
@@ -59,21 +60,18 @@ public sealed class Game : IDisposable
     host.RegisterFileSystems(FileSystem.Registry);
 
     // prepare the game and loop
-    game.Schedule(() =>
+    game.Schedule(() => gameSetup(game).ContinueWith(task =>
     {
-      gameSetup(game).ContinueWith(task =>
+      if (task.IsFaulted)
       {
-        if (task.IsFaulted)
-        {
-          Log.Error($"An unhandled top-level exception occurred: {task.Exception}");
+        Log.Error((string) $"An unhandled top-level exception occurred: {task.Exception}");
 
-          game.Exit();
-        }
-      });
-    });
+        game.Exit();
+      }
+    }));
 
     // run the game
-    game.Run();
+    game.RunEventLoop();
   }
 
   public IServiceRegistry Services { get; init; }
@@ -83,14 +81,14 @@ public sealed class Game : IDisposable
   /// <summary>True if the game is getting ready to close.</summary>
   public bool IsClosing { get; private set; } = false;
 
-  /// <summary>Schedules an action to be invoked at the start of the next frame.</summary>
+  /// <summary>Schedules an action to be invoked on the event loop.</summary>
   public void Schedule(Action callback)
   {
     callbacks.Enqueue(callback);
   }
 
   /// <summary>Runs the main event loop for the game.</summary>
-  private void Run()
+  private void RunEventLoop()
   {
     while (!Host.IsClosing && !IsClosing)
     {

@@ -26,10 +26,12 @@
 
   <ItemGroup>
     <Using Include="Surreal" />
+    <Using Include="Surreal.Audio" />
     <Using Include="Surreal.Collections" />
     <Using Include="Surreal.Diagnostics" />
     <Using Include="Surreal.Diagnostics.Logging" />
     <Using Include="Surreal.Graphics" />
+    <Using Include="Surreal.Input" />
     <Using Include="Surreal.Mathematics" />
     <Using Include="Surreal.Timing" />
   </ItemGroup>

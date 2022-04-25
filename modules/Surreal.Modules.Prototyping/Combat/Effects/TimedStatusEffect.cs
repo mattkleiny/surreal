@@ -14,7 +14,7 @@ public abstract class TimedStatusEffect : StatusEffect
     frequencyTimer = new IntervalTimer(frequency);
   }
 
-  public sealed override Transition OnEffectUpdate(object target, DeltaTime deltaTime)
+  public sealed override Transition OnEffectUpdate(object target, TimeDelta deltaTime)
   {
     if (frequencyTimer.Tick(deltaTime))
     {
@@ -31,5 +31,5 @@ public abstract class TimedStatusEffect : StatusEffect
     return Transition.Continue;
   }
 
-  protected abstract void OnEffectTick(object target, DeltaTime deltaTime);
+  protected abstract void OnEffectTick(object target, TimeDelta deltaTime);
 }

@@ -19,6 +19,6 @@ public interface IPlatformHost : IDisposable
   void RegisterAssetLoaders(IAssetManager manager);
   void RegisterFileSystems(IFileSystemRegistry registry);
 
-  void BeginFrame(DeltaTime deltaTime);
-  void EndFrame(DeltaTime deltaTime);
+  void BeginFrame(TimeDelta deltaTime);
+  void EndFrame(TimeDelta deltaTime);
 }

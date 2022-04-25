@@ -12,7 +12,7 @@ public abstract class PermanentStatusEffect : StatusEffect
     durationTimer = new IntervalTimer(duration);
   }
 
-  public sealed override Transition OnEffectUpdate(object target, DeltaTime deltaTime)
+  public sealed override Transition OnEffectUpdate(object target, TimeDelta deltaTime)
   {
     if (durationTimer.Tick(deltaTime))
     {

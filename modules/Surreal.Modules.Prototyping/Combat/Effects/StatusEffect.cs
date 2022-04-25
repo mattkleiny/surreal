@@ -15,7 +15,7 @@ public abstract class StatusEffect
   {
   }
 
-  public virtual Transition OnEffectUpdate(object target, DeltaTime deltaTime)
+  public virtual Transition OnEffectUpdate(object target, TimeDelta deltaTime)
   {
     return Transition.Continue;
   }

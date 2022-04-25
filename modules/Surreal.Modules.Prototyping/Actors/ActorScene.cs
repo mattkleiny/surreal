@@ -42,7 +42,7 @@ public sealed class ActorScene : IActorContext, IDisposable
     return actor;
   }
 
-  public void BeginFrame(DeltaTime deltaTime)
+  public void BeginFrame(TimeDelta deltaTime)
   {
     foreach (var node in nodes.Values)
     {
@@ -53,7 +53,7 @@ public sealed class ActorScene : IActorContext, IDisposable
     }
   }
 
-  public void Input(DeltaTime deltaTime)
+  public void Input(TimeDelta deltaTime)
   {
     foreach (var node in nodes.Values)
     {
@@ -64,7 +64,7 @@ public sealed class ActorScene : IActorContext, IDisposable
     }
   }
 
-  public void Update(DeltaTime deltaTime)
+  public void Update(TimeDelta deltaTime)
   {
     foreach (var node in nodes.Values)
     {
@@ -75,7 +75,7 @@ public sealed class ActorScene : IActorContext, IDisposable
     }
   }
 
-  public void Draw(DeltaTime deltaTime)
+  public void Draw(TimeDelta deltaTime)
   {
     foreach (var node in nodes.Values)
     {
@@ -86,7 +86,7 @@ public sealed class ActorScene : IActorContext, IDisposable
     }
   }
 
-  public void EndFrame(DeltaTime deltaTime)
+  public void EndFrame(TimeDelta deltaTime)
   {
     foreach (var node in nodes.Values)
     {

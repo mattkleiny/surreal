@@ -34,7 +34,7 @@ public class StatusEffectTests
     effects.Update(16.Milliseconds());
     effects.Update(16.Milliseconds());
 
-    effect.OnEffectUpdate(owner, Arg.Any<DeltaTime>()).Returns(StatusEffect.Transition.Remove);
+    effect.OnEffectUpdate(owner, Arg.Any<TimeDelta>()).Returns(StatusEffect.Transition.Remove);
 
     effects.Update(16.Milliseconds());
 

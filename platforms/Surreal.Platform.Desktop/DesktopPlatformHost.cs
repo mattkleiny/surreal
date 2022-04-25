@@ -107,7 +107,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     // no-op
   }
 
-  public void BeginFrame(DeltaTime deltaTime)
+  public void BeginFrame(TimeDelta deltaTime)
   {
     if (!IsClosing)
     {
@@ -127,7 +127,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     }
   }
 
-  public void EndFrame(DeltaTime deltaTime)
+  public void EndFrame(TimeDelta deltaTime)
   {
     if (!IsClosing)
     {

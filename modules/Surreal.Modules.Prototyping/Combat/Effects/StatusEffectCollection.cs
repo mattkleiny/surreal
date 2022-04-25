@@ -56,7 +56,7 @@ public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
     return false;
   }
 
-  public void Update(DeltaTime deltaTime)
+  public void Update(TimeDelta deltaTime)
   {
     for (var effect = effects.First; effect != null; effect = effect.Next)
     {

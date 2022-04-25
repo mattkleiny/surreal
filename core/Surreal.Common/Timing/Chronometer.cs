@@ -8,7 +8,7 @@ public sealed class Chronometer
   public TimeSpan TargetDeltaTime { get; } = 16.Milliseconds();
   public TimeSpan MaxDeltaTime    { get; } = (16 * 10).Milliseconds();
 
-  public DeltaTime Tick()
+  public TimeDelta Tick()
   {
     var now = TimeStamp.Now;
     var delta = now - lastTime;
@@ -20,6 +20,6 @@ public sealed class Chronometer
 
     lastTime = now;
 
-    return new DeltaTime(delta);
+    return new TimeDelta(delta);
   }
 }

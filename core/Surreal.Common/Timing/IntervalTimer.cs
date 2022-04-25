@@ -14,7 +14,7 @@ public struct IntervalTimer
     accumulator = 0f;
   }
 
-  public bool Tick(DeltaTime deltaTime)
+  public bool Tick(TimeDelta deltaTime)
   {
     accumulator += deltaTime;
 
