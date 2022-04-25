@@ -20,7 +20,7 @@ await Game.Start(platform, context =>
   var color1 = random.NextColor();
   var color2 = random.NextColor();
 
-  context.Execute(time =>
+  context.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {

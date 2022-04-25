@@ -7,7 +7,7 @@ await Game.Start(platform, context =>
   var frameCounter = new FrameCounter();
   var fpsTimer = new IntervalTimer(1.Seconds());
 
-  context.Execute(time =>
+  context.ExecuteVariableStep(time =>
   {
     if (fpsTimer.Tick(time.DeltaTime))
     {

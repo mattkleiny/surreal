@@ -59,7 +59,7 @@ public sealed class Game : IDisposable
   public IPlatformHost    Host     { get; init; }
   public IAssetManager    Assets   { get; } = new AssetManager();
 
-  /// <summary>True if the current <see cref="Execute"/> block is closing.</summary>
+  /// <summary>True if the current <see cref="ExecuteVariableStep"/> block is closing.</summary>
   public bool IsClosing { get; private set; } = false;
 
   /// <summary>Schedules an action to be invoked at the start of the next frame.</summary>
@@ -80,8 +80,8 @@ public sealed class Game : IDisposable
     }
   }
 
-  /// <summary>Executes the given <see cref="gameLoop"/>.</summary>
-  public void Execute(GameLoop gameLoop)
+  /// <summary>Executes the given <see cref="gameLoop"/> with a variable step frequency.</summary>
+  public void ExecuteVariableStep(GameLoop gameLoop)
   {
     IsClosing = false;
 
@@ -100,6 +100,46 @@ public sealed class Game : IDisposable
       // run the frame logic
       Host.BeginFrame(gameTime.DeltaTime);
       gameLoop(gameTime);
+      Host.EndFrame(gameTime.DeltaTime);
+    }
+  }
+
+  /// <summary>Executes the given delegates with a fixed stepping interval on the <see cref="physics"/>.</summary>
+  public void ExecuteFixedStep(GameLoop physics, GameLoop render)
+  {
+    IsClosing = false;
+
+    var stopwatch = new Chronometer();
+    var startTime = TimeStamp.Now;
+    var accumulator = 0.0f;
+
+    while (!Host.IsClosing && !IsClosing)
+    {
+      // calculate frame times
+      var gameTime = new GameTime(
+        DeltaTime: stopwatch.Tick(),
+        TotalTime: TimeStamp.Now - startTime,
+        IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
+      );
+
+      accumulator += gameTime.DeltaTime;
+
+      Host.BeginFrame(gameTime.DeltaTime);
+
+      // run the physics steps
+      while (accumulator > 0f)
+      {
+        physics(gameTime with
+        {
+          TotalTime = TimeStamp.Now - startTime,
+        });
+
+        accumulator -= gameTime.DeltaTime;
+      }
+
+      // run the render steps
+      render(gameTime);
+
       Host.EndFrame(gameTime.DeltaTime);
     }
   }

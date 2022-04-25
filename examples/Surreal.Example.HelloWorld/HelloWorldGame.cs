@@ -35,30 +35,34 @@ Game.Start(platform, async context =>
   var canvas = new PaletteImage(256, 144);
   var position = new Vector2(image.Width / 2f, image.Height / 2f);
 
-  context.Execute(time =>
-  {
-    const float speed = 120f;
+  context.ExecuteFixedStep(
+    physics: time =>
+    {
+      const float speed = 120f;
 
-    // handle input
-    if (keyboard.IsKeyPressed(Key.Escape)) context.Exit();
-    if (keyboard.IsKeyDown(Key.W)) position.Y -= 1 * speed * time.DeltaTime;
-    if (keyboard.IsKeyDown(Key.S)) position.Y += 1 * speed * time.DeltaTime;
-    if (keyboard.IsKeyDown(Key.A)) position.X -= 1 * speed * time.DeltaTime;
-    if (keyboard.IsKeyDown(Key.D)) position.X += 1 * speed * time.DeltaTime;
+      // handle input
+      if (keyboard.IsKeyPressed(Key.Escape)) context.Exit();
+      if (keyboard.IsKeyDown(Key.W)) position.Y -= 1 * speed * time.DeltaTime;
+      if (keyboard.IsKeyDown(Key.S)) position.Y += 1 * speed * time.DeltaTime;
+      if (keyboard.IsKeyDown(Key.A)) position.X -= 1 * speed * time.DeltaTime;
+      if (keyboard.IsKeyDown(Key.D)) position.X += 1 * speed * time.DeltaTime;
+    },
+    render: _ =>
+    {
+      // mutate the image contents periodically
+      canvas.Fill(0);
+      canvas.DrawCircle(position, 32, 1);
+      canvas.DrawCircle(position, 16, 2);
+      canvas.DrawCircle(position, 8, 3);
+      canvas.CopyTo(image, palette);
 
-    // mutate the image contents periodically
-    canvas.Fill(0);
-    canvas.DrawCircle(position, 32, 1);
-    canvas.DrawCircle(position, 16, 2);
-    canvas.DrawCircle(position, 8, 3);
-    canvas.CopyTo(image, palette);
+      // upload image data to the GPU
+      texture.WritePixels(image);
 
-    // upload image data to the GPU
-    texture.WritePixels(image);
+      // set shader parameters and draw the mesh
+      shader.SetTexture("u_texture", texture.Handle, 0);
 
-    // set shader parameters and draw the mesh
-    shader.SetTexture("u_texture", texture.Handle, 0);
-
-    mesh.Draw(shader);
-  });
+      mesh.Draw(shader);
+    }
+  );
 });

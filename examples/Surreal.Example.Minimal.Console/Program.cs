@@ -18,7 +18,7 @@ await Game.Start(platform, context =>
 
   var random = Random.Shared;
 
-  context.Execute(_ =>
+  context.ExecuteVariableStep(_ =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
