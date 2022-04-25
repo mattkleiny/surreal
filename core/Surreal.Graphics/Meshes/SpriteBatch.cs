@@ -12,8 +12,6 @@ public sealed class SpriteBatch : IDisposable
 {
   private const int MaximumSpriteCount = 8000;
 
-  private static readonly ShaderUniform<Matrix4x4> ProjectionView = new("_ProjectionView");
-
   private readonly IDisposableBuffer<Vertex> vertices;
   private readonly Mesh<Vertex> mesh;
 
@@ -34,12 +32,8 @@ public sealed class SpriteBatch : IDisposable
 
   public Color Color { get; set; } = Color.White;
 
-  public void Begin(ShaderProgram shader, in Matrix4x4 projectionView)
-  {
-    this.shader = shader;
-
-    shader.SetUniform(ProjectionView, in projectionView);
-  }
+  public void Begin(ShaderProgram shader)
+    => this.shader = shader;
 
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Angle rotation = default)
   {
@@ -167,8 +161,7 @@ public sealed class SpriteBatch : IDisposable
 
     [VertexDescriptor(
       Count = 4,
-      Type = VertexType.UnsignedByte,
-      ShouldNormalize = true
+      Type = VertexType.Float
     )]
     public Color Color = Color;
 

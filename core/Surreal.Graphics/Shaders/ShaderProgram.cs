@@ -3,9 +3,6 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
-/// <summary>Describes a single uniform of a <see cref="ShaderProgram"/>.</summary>
-public readonly record struct ShaderUniform<T>(string Name);
-
 /// <summary>A low-level shader program on the GPU.</summary>
 public sealed class ShaderProgram : GraphicsResource
 {
@@ -26,35 +23,35 @@ public sealed class ShaderProgram : GraphicsResource
 
   public GraphicsHandle Handle { get; }
 
-  public void SetUniform(ShaderUniform<int> uniform, int value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, int value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<float> uniform, float value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, float value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<Point2> uniform, Point2 value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, Point2 value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<Point3> uniform, Point3 value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, Point3 value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<Vector2> uniform, Vector2 value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, Vector2 value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<Vector3> uniform, Vector3 value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, Vector3 value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<Vector4> uniform, Vector4 value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, Vector4 value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<Quaternion> uniform, Quaternion value)
-    => server.SetShaderUniform(Handle, uniform.Name, value);
+  public void SetUniform(string name, Quaternion value)
+    => server.SetShaderUniform(Handle, name, value);
 
-  public void SetUniform(ShaderUniform<Matrix3x2> uniform, in Matrix3x2 value)
-    => server.SetShaderUniform(Handle, uniform.Name, in value);
+  public void SetUniform(string name, in Matrix3x2 value)
+    => server.SetShaderUniform(Handle, name, in value);
 
-  public void SetUniform(ShaderUniform<Matrix4x4> uniform, in Matrix4x4 value)
-    => server.SetShaderUniform(Handle, uniform.Name, in value);
+  public void SetUniform(string name, in Matrix4x4 value)
+    => server.SetShaderUniform(Handle, name, in value);
 
   protected override void Dispose(bool managed)
   {

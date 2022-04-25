@@ -11,34 +11,20 @@ public sealed class GeometryBatch : IDisposable
 {
   private const int DefaultVertexCount = 16_000;
 
-  private static readonly ShaderUniform<Matrix4x4> ProjectionView = new("_ProjectionView");
-
   private readonly IDisposableBuffer<Vertex> vertices;
-  private readonly IDisposableBuffer<ushort> indices;
   private readonly Mesh<Vertex> mesh;
 
   private ShaderProgram? shader;
   private int vertexCount;
-  private int indexCount;
 
-  public GeometryBatch(
-    IGraphicsServer server,
-    int maximumVertexCount = DefaultVertexCount,
-    int maximumIndexCount = DefaultVertexCount * 6
-  )
+  public GeometryBatch(IGraphicsServer server, int maximumVertexCount = DefaultVertexCount)
   {
     vertices = Buffers.AllocateNative<Vertex>(maximumVertexCount);
-    indices  = Buffers.AllocateNative<ushort>(maximumIndexCount);
-
-    mesh = new Mesh<Vertex>(server);
+    mesh     = new Mesh<Vertex>(server);
   }
 
-  public void Begin(ShaderProgram shader, in Matrix4x4 projectionView)
-  {
-    this.shader = shader;
-
-    shader.SetUniform(ProjectionView, in projectionView);
-  }
+  public void Begin(ShaderProgram shader)
+    => this.shader = shader;
 
   public void DrawPoint(Vector2 position, Color color)
     => DrawPrimitive(stackalloc[] { position }, color, MeshType.Points);
@@ -62,7 +48,7 @@ public sealed class GeometryBatch : IDisposable
     => DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.LineLoop);
 
   public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
-    => DrawQuad(center, size, color, MeshType.Quads);
+    => DrawQuad(center, size, color, MeshType.Triangles);
 
   public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
     => DrawQuad(center, size, color, MeshType.LineLoop);
@@ -115,18 +101,28 @@ public sealed class GeometryBatch : IDisposable
     DrawLineStrip(points.ToSpan(), color);
   }
 
-  public void DrawQuad(Vector2 center, Vector2 size, Color color, MeshType type)
+  private void DrawQuad(Vector2 center, Vector2 size, Color color, MeshType type)
   {
     var halfWidth = size.X / 2f;
     var halfHeight = size.Y / 2f;
 
+    var bottomLeft = new Vector2(center.X - halfWidth, center.Y - halfHeight);
+    var topLeft = new Vector2(center.X - halfWidth, center.Y + halfHeight);
+    var topRight = new Vector2(center.X + halfWidth, center.Y + halfHeight);
+    var bottomRight = new Vector2(center.X + halfWidth, center.Y - halfHeight);
+
     DrawPrimitive(
       points: stackalloc Vector2[]
       {
-        new Vector2(center.X - halfWidth, center.Y - halfHeight),
-        new Vector2(center.X - halfWidth, center.Y + halfHeight),
-        new Vector2(center.X + halfWidth, center.Y + halfHeight),
-        new Vector2(center.X + halfWidth, center.Y - halfHeight),
+        // triangle 1
+        bottomLeft,
+        topLeft,
+        topRight,
+
+        // triangle 2
+        topRight,
+        bottomRight,
+        bottomLeft,
       },
       color: color,
       type: type
@@ -153,20 +149,15 @@ public sealed class GeometryBatch : IDisposable
     if (shader == null) return;
 
     mesh.Vertices.Write(vertices.Data.Span[..vertexCount]);
-    mesh.Indices.Write(indices.Data.Span[..indexCount]);
-
-    mesh.Draw(shader, vertexCount, indexCount, type);
+    mesh.Draw(shader, vertexCount, 0, type);
 
     vertexCount = 0;
-    indexCount  = 0;
   }
 
   public void Dispose()
   {
     mesh.Dispose();
-
     vertices.Dispose();
-    indices.Dispose();
   }
 
   /// <summary>A single vertex in the batch.</summary>
@@ -174,15 +165,16 @@ public sealed class GeometryBatch : IDisposable
   private record struct Vertex(Vector2 Position, Color Color)
   {
     [VertexDescriptor(
+      Alias = "in_position",
       Count = 2,
       Type = VertexType.Float
     )]
     public Vector2 Position = Position;
 
     [VertexDescriptor(
+      Alias = "in_color",
       Count = 4,
-      Type = VertexType.UnsignedByte,
-      ShouldNormalize = true
+      Type = VertexType.Float
     )]
     public Color Color = Color;
   }

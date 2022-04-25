@@ -279,7 +279,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, int value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform1i(location, value);
@@ -288,7 +288,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, float value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform1f(location, value);
@@ -297,7 +297,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, Point2 value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform2i(location, value.X, value.Y);
@@ -306,7 +306,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, Point3 value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform3i(location, value.X, value.Y, value.Z);
@@ -315,7 +315,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, Vector2 value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform2f(location, value.X, value.Y);
@@ -324,7 +324,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, Vector3 value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform3f(location, value.X, value.Y, value.Z);
@@ -333,7 +333,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, Vector4 value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
@@ -342,7 +342,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, Quaternion value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
@@ -351,7 +351,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     var result = Unsafe.As<Matrix3x2, OpenTK.Mathematics.Matrix3x2>(ref Unsafe.AsRef(in value));
@@ -362,7 +362,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value)
   {
     var program = new ProgramHandle(handle);
-    var location = GL.GetAttribLocation(program, name);
+    var location = GL.GetUniformLocation(program, name);
     if (location == -1) return;
 
     var result = Unsafe.As<Matrix4x4, Matrix4>(ref Unsafe.AsRef(in value));

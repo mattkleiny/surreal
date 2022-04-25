@@ -15,49 +15,38 @@ var platform = new DesktopPlatform
 
 await Game.Start(platform, context =>
 {
+  var projection = Matrix4x4.CreateOrthographic(256f, 144f, 0f, 100f);
+
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
 
   using var shader = context.Assets.LoadAsset<ShaderProgram>("Assets/shaders/helloworld.glsl");
-  using var mesh = new Mesh<Vertex>(graphics);
+  using var batch = new GeometryBatch(graphics);
 
-  mesh.Vertices.Write(stackalloc Vertex[]
-  {
-    new Vertex(new(-0.25f, -0.25f), Color.Red),
-    new Vertex(new(0, 0.25f), Color.Green),
-    new Vertex(new(0.25f, -0.25f), Color.Blue),
-  });
+  var position = Vector2.Zero;
 
-  context.Execute(_ =>
+  context.Execute(time =>
   {
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      context.Exit();
-    }
+    const float speed = 100f;
+
+    if (keyboard.IsKeyPressed(Key.Escape)) context.Exit();
+
+    if (keyboard.IsKeyDown(Key.W)) position.Y += 1 * speed * time.DeltaTime;
+    if (keyboard.IsKeyDown(Key.S)) position.Y -= 1 * speed * time.DeltaTime;
+    if (keyboard.IsKeyDown(Key.A)) position.X -= 1 * speed * time.DeltaTime;
+    if (keyboard.IsKeyDown(Key.D)) position.X += 1 * speed * time.DeltaTime;
+
+    graphics.ClearColorBuffer(Color.Black);
 
     if (shader.IsReady)
     {
-      mesh.Draw(shader);
+      shader.Value.SetUniform("u_projectionView", in projection);
+
+      batch.Begin(shader);
+
+      batch.DrawSolidQuad(position, new Vector2(20f, 20f), Color.Yellow);
     }
   });
 
   return ValueTask.CompletedTask;
 });
-
-[StructLayout(LayoutKind.Sequential)]
-internal record struct Vertex(Vector2 Position, Color Color)
-{
-  [VertexDescriptor(
-    Alias = "in_position",
-    Count = 2,
-    Type = VertexType.Float
-  )]
-  public Vector2 Position = Position;
-
-  [VertexDescriptor(
-    Alias = "in_color",
-    Count = 4,
-    Type = VertexType.Float
-  )]
-  public Color Color = Color;
-}
