@@ -1,6 +1,6 @@
 ﻿var platform = new HeadlessPlatform();
 
-await Game.Start(platform, context =>
+Game.Start(platform, context =>
 {
   var log = LogFactory.GetLog<HeadlessPlatform>();
 
@@ -17,5 +17,5 @@ await Game.Start(platform, context =>
     frameCounter.Tick(time.DeltaTime);
   });
 
-  return ValueTask.CompletedTask;
+  return Task.CompletedTask;
 });

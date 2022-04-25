@@ -10,7 +10,7 @@ var platform = new DesktopPlatform
   },
 };
 
-await Game.Start(platform, context =>
+Game.Start(platform, context =>
 {
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
@@ -33,5 +33,5 @@ await Game.Start(platform, context =>
     graphics.ClearColorBuffer(color);
   });
 
-  return ValueTask.CompletedTask;
+  return Task.CompletedTask;
 });

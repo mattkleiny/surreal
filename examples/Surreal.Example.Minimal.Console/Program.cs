@@ -11,7 +11,7 @@ var platform = new ConsolePlatform
   },
 };
 
-await Game.Start(platform, context =>
+Game.Start(platform, context =>
 {
   var display = context.Services.GetRequiredService<IConsoleDisplay>();
   var keyboard = context.Services.GetRequiredService<IKeyboardDevice>();
@@ -40,5 +40,5 @@ await Game.Start(platform, context =>
     }
   });
 
-  return ValueTask.CompletedTask;
+  return Task.CompletedTask;
 });
