@@ -1,4 +1,6 @@
+using System.Runtime.CompilerServices;
 using Surreal.Collections;
+using Surreal.Timing;
 
 namespace Surreal.Mathematics;
 
@@ -6,7 +8,7 @@ namespace Surreal.Mathematics;
 public static class Maths
 {
   public static float NextFloat(this Random random)
-    => (float)random.NextDouble();
+    => (float) random.NextDouble();
 
   public static float NextFloat(this Random random, float min, float max)
     => random.NextFloat() * (max - min) + min;
@@ -55,11 +57,13 @@ public static class Maths
     return random.Next(min, max).AsEnum<TEnum>();
   }
 
-  public static float DegreesToRadians(float degrees) => (float)(degrees * (Math.PI / 180));
-  public static float RadiansToDegrees(float radians) => (float)(radians * (180 / Math.PI));
+  public static float DegreesToRadians(float degrees) => (float) (degrees * (Math.PI / 180));
+  public static float RadiansToDegrees(float radians) => (float) (radians * (180 / Math.PI));
 
-  public static int Lerp(int a, int b, float t) => (int)(a + t * (b - a));
+  public static int Lerp(int a, int b, float t) => (int) (a + t * (b - a));
   public static float Lerp(float a, float b, float t) => a + t * (b - a);
+
+  public static float PingPong(float t) => (MathF.Sin(t)) + 1f / 2f;
 
   public static int Wrap(int value, int lower, int upper)
   {

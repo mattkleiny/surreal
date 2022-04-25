@@ -46,8 +46,7 @@ Game.Start(platform, async context =>
     }
 
     // render
-    var t = (MathF.Sin(time.TotalTime) + 1f) / 2f;
-    var color = Color.Lerp(palette[1], palette[4], t);
+    var color = Color.Lerp(palette[1], palette[4], Maths.PingPong(time.TotalTime));
 
     graphics.ClearColorBuffer(palette[0]);
 

@@ -149,12 +149,6 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
           Title = $"{configuration.Title} - {frameCounter.TicksPerSecond:F} FPS";
         }
       }
-
-      // sleep if we're running too quickly
-      if (deltaTime < configuration.TargetDeltaTime)
-      {
-        Thread.Sleep(configuration.TargetDeltaTime - deltaTime);
-      }
     }
   }
 

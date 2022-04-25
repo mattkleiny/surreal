@@ -12,15 +12,13 @@ namespace Surreal;
 public abstract class PrototypeGame<TSelf> : IDisposable
   where TSelf : PrototypeGame<TSelf>, new()
 {
+  /// <summary>The current instance of the game.</summary>
   public static TSelf Current { get; private set; } = null!;
 
   /// <summary>Starts the <see cref="TSelf"/>.</summary>
   public static void Start(IPlatform platform, CancellationToken cancellationToken = default)
   {
-    using var game = new TSelf();
-
-    // static back-reference for convenience
-    Current = game;
+    using var game = Current = new TSelf();
 
     Game.Start(platform, game.OnGameSetup, cancellationToken);
   }

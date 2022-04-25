@@ -25,11 +25,11 @@ public sealed class ConsolePlatform : IPlatform
 
   public IPlatformHost BuildHost()
   {
-    if (OperatingSystem.IsWindows())
+    if (!OperatingSystem.IsWindows())
     {
-      return new ConsolePlatformHost(Configuration);
+      throw new InvalidOperationException("The console platform is only supported on Windows, currently");
     }
 
-    throw new InvalidOperationException("The console platform is not supported on this operating system");
+    return new ConsolePlatformHost(Configuration);
   }
 }

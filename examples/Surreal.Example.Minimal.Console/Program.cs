@@ -11,19 +11,15 @@
 
 Game.Start(platform, context =>
 {
-  var random = Random.Shared;
   var graphics = context.Services.GetRequiredService<IConsoleGraphics>();
 
   context.ExecuteVariableStep(_ =>
   {
-    for (int i = 0; i < 16; i++)
-    {
-      var x = random.Next(0, graphics.Width);
-      var y = random.Next(0, graphics.Height);
-      var color = random.NextEnum<ConsoleColor>();
+    var x = Random.Shared.Next(0, graphics.Width);
+    var y = Random.Shared.Next(0, graphics.Height);
+    var color = Random.Shared.NextEnum<ConsoleColor>();
 
-      graphics.Draw(x, y, new Glyph('█', color));
-    }
+    graphics.Draw(x, y, new Glyph('█', color));
   });
 
   return Task.CompletedTask;
