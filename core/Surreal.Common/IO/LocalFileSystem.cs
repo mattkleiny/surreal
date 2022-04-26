@@ -94,17 +94,22 @@ public sealed class LocalFileSystem : FileSystem
         EnableRaisingEvents = true,
       };
 
-      var context = SynchronizationContext.Current;
-      if (context == null)
-      {
-        throw new InvalidOperationException("Expected a valid synchronization context");
-      }
-
       // adapt the event interface
-      watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(filePath), null);
-      watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
-      watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
-      watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(filePath), null);
+      var context = SynchronizationContext.Current;
+      if (context != null)
+      {
+        watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(filePath), null);
+        watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
+        watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
+        watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(filePath), null);
+      }
+      else
+      {
+        watcher.Created += (_, _) => Created?.Invoke(filePath);
+        watcher.Changed += (_, _) => Modified?.Invoke(filePath);
+        watcher.Renamed += (_, _) => Modified?.Invoke(filePath);
+        watcher.Deleted += (_, _) => Deleted?.Invoke(filePath);
+      }
 
       FilePath = filePath;
     }

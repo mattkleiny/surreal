@@ -5,6 +5,7 @@
     <Description>A super basic example of bootstrapping with Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,8 @@
 // ReSharper disable AccessToDisposedClosure
 
+using Surreal.Scripting;
+using Surreal.Scripting.Lua;
+
 var size = new Vector2(256f, 144f);
 
 var platform = new DesktopPlatform
@@ -26,15 +29,18 @@ Game.Start(platform, async context =>
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var input = context.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
+  var scripts = new LuaScriptServer();
+
+  context.Assets.AddLoader(new ScriptLoader(scripts));
 
   // load assets
+  var font = await context.Assets.LoadDefaultFontAsync();
   var clip = await context.Assets.LoadAsset<AudioClip>("Assets/audio/test.wav");
   var shader = await context.Assets.LoadAsset<ShaderProgram>("Assets/shaders/helloworld.glsl");
-  var font = await context.Assets.LoadDefaultFontAsync();
-
   var palette1 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/club-seoul-16.pal");
   var palette2 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/kule-16.pal");
   var palette3 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/urbex-16.pal");
+  var script = await context.Assets.LoadAsset<Script>("Assets/scripts/test.lua");
 
   using var source = new AudioSource(audio) { IsLooping = true };
   using var sprites = new SpriteBatch(graphics);
@@ -50,6 +56,9 @@ Game.Start(platform, async context =>
     if (keyboard.IsKeyPressed(Key.F1)) palette = palette1;
     if (keyboard.IsKeyPressed(Key.F2)) palette = palette2;
     if (keyboard.IsKeyPressed(Key.F3)) palette = palette3;
+
+    // update scripts
+    Console.WriteLine(script.ExecuteFunction("factorial", 6));
 
     // render
     graphics.ClearColorBuffer(palette[0]);
