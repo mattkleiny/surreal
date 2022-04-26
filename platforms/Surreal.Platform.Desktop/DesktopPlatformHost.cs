@@ -92,7 +92,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   {
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioServer));
-    manager.AddLoader(new BitmapFontLoader(GraphicsServer));
+    manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));

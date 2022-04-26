@@ -7,7 +7,7 @@ using Surreal.Mathematics;
 namespace Surreal.Graphics;
 
 /// <summary>A palette of <see cref="Color"/>s, with span and range support.</summary>
-public readonly record struct ColorPalette(Color[] colors, int offset, int count) : IEnumerable<Color>
+public sealed record ColorPalette(Color[] colors, int offset, int count) : IEnumerable<Color>
 {
   /// <summary>Loads a <see cref="ColorPalette"/> from the given <see cref="VirtualPath"/>.</summary>
   public static async ValueTask<ColorPalette> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
@@ -62,10 +62,7 @@ public readonly record struct ColorPalette(Color[] colors, int offset, int count
   public int Count => count;
 
   /// <summary>Accesses a single color in the palette.</summary>
-  public Color this[Index index]
-  {
-    get => colors?[offset + index.GetOffset(Count)] ?? Color.Clear;
-  }
+  public Color this[Index index] => colors[offset + index.GetOffset(Count)];
 
   /// <summary>Accesses a sub-range of the <see cref="ColorPalette"/>.</summary>
   public ColorPalette this[Range range]

@@ -9,7 +9,6 @@ namespace Surreal.Internal.Graphics;
 internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 {
   private readonly OpenTKGraphicsServer server;
-  private readonly object hotReloadLock = new();
 
   public OpenTKShaderProgramLoader(OpenTKGraphicsServer server)
   {
@@ -42,21 +41,13 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 
   private async ValueTask<ShaderProgram> ReloadAsync(AssetLoaderContext context, ShaderProgram program, CancellationToken cancellationToken = default)
   {
-    Monitor.Enter(hotReloadLock);
-    try
-    {
-      var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-      var handle = server.CreateShader();
+    var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
+    var handle = server.CreateShader();
 
-      server.LinkShader(handle, shaderSet);
-      program.ReplaceShader(handle);
+    server.LinkShader(handle, shaderSet);
+    program.ReplaceShader(handle);
 
-      return program;
-    }
-    finally
-    {
-      Monitor.Exit(hotReloadLock);
-    }
+    return program;
   }
 
   private static async ValueTask<OpenTKShaderSet> LoadShaderSetAsync(AssetLoaderContext context, CancellationToken cancellationToken)

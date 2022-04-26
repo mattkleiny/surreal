@@ -10,11 +10,9 @@ public class BitmapFontTests
   [Test]
   public async Task it_should_load_a_bitmap_font()
   {
-    var server = new HeadlessGraphicsServer();
-
     using var manager = new AssetManager();
 
-    manager.AddLoader(new BitmapFontLoader(server));
+    manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ImageLoader());
 
     var font = await manager.LoadAsset<BitmapFont>("Assets/fonts/IBM.font");
@@ -30,7 +28,7 @@ public class BitmapFontTests
     using var manager = new AssetManager();
     using var batch = new SpriteBatch(server, spriteCount: 128);
 
-    manager.AddLoader(new BitmapFontLoader(server));
+    manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ImageLoader());
 
     var font = await manager.LoadAsset<BitmapFont>("Assets/fonts/IBM.font");

@@ -109,8 +109,22 @@ public sealed class TextureLoader : AssetLoader<Texture>
 
   public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    var image = await context.Manager.LoadAsset<Image>(context.Path, cancellationToken);
+    var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(server, TextureFormat.Rgba8888, defaultFilterMode, defaultWrapMode);
+
+    texture.WritePixels(image);
+
+    if (context.IsHotReloadEnabled)
+    {
+      context.RegisterForChanges<Texture>(ReloadAsync);
+    }
+
+    return texture;
+  }
+
+  private static async ValueTask<Texture> ReloadAsync(AssetLoaderContext context, Texture texture, CancellationToken cancellationToken = default)
+  {
+    var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
 
     texture.WritePixels(image);
 

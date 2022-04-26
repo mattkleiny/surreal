@@ -13,7 +13,7 @@ namespace Surreal.Graphics.Images;
 [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
 public sealed class Image : IDisposable
 {
-  private readonly Image<Rgba32> image;
+  private Image<Rgba32> image;
 
   public static async ValueTask<Image> LoadAsync(VirtualPath path)
   {
@@ -73,6 +73,12 @@ public sealed class Image : IDisposable
     await image.SaveAsPngAsync(stream);
   }
 
+  /// <summary>Swaps the underlying image content, for hot-reloading.</summary>
+  internal void ReplaceImage(Image other)
+  {
+    image = other.image;
+  }
+
   public void Dispose()
   {
     image.Dispose();
@@ -91,6 +97,20 @@ public sealed class ImageLoader : AssetLoader<Image>
 
   public override async ValueTask<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    return await Image.LoadAsync(context.Path);
+    var image = await Image.LoadAsync(context.Path);
+
+    if (context.IsHotReloadEnabled)
+    {
+      context.RegisterForChanges<Image>(ReloadAsync);
+    }
+
+    return image;
+  }
+
+  private static async ValueTask<Image> ReloadAsync(AssetLoaderContext context, Image image, CancellationToken cancellationToken = default)
+  {
+    image.ReplaceImage(await Image.LoadAsync(context.Path));
+
+    return image;
   }
 }

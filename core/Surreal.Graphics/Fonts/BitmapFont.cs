@@ -1,5 +1,4 @@
 ﻿using Surreal.Assets;
-using Surreal.Graphics.Images;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
@@ -53,23 +52,18 @@ internal sealed record BitmapFontDescriptor
 }
 
 /// <summary>A font represented as small bitmaps.</summary>
-public sealed class BitmapFont : IDisposable
+public sealed class BitmapFont
 {
   private readonly BitmapFontDescriptor descriptor;
-  private readonly Image image;
-  private readonly Texture texture;
 
-  internal BitmapFont(IGraphicsServer server, BitmapFontDescriptor descriptor, Image image)
+  internal BitmapFont(BitmapFontDescriptor descriptor, Texture texture)
   {
     this.descriptor = descriptor;
-    this.image      = image;
 
-    texture = new Texture(server, TextureFormat.Rgba8888, TextureFilterMode.Point, TextureWrapMode.Clamp);
-    texture.WritePixels<Color32>(image.Width, image.Height, image.Pixels);
+    Texture = texture;
   }
 
-  public Image   Image   => image;
-  public Texture Texture => texture;
+  public Texture Texture { get; }
 
   /// <summary>Measures the width of the given piece of text in the underlying font.</summary>
   public float MeasureWidth(string text)
@@ -81,7 +75,7 @@ public sealed class BitmapFont : IDisposable
   {
     Debug.Assert(index >= 0, "index >= 0");
 
-    return new(texture)
+    return new TextureRegion(Texture)
     {
       Offset = new Point2(
         X: (index % descriptor.Columns) * (descriptor.GlyphWidth + descriptor.GlyphPadding),
@@ -93,29 +87,17 @@ public sealed class BitmapFont : IDisposable
       )
     };
   }
-
-  public void Dispose()
-  {
-    texture.Dispose();
-  }
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="BitmapFont"/>s.</summary>
 public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
 {
-  private readonly IGraphicsServer server;
-
-  public BitmapFontLoader(IGraphicsServer server)
-  {
-    this.server = server;
-  }
-
-  public override async ValueTask<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
-    var image = await context.Manager.LoadAsset<Image>(GetImagePath(context, descriptor), cancellationToken);
+    var texture = await context.LoadDependencyAsync<Texture>(GetImagePath(context, descriptor), cancellationToken);
 
-    return new BitmapFont(server, descriptor, image);
+    return new BitmapFont(descriptor, texture);
   }
 
   private static VirtualPath GetImagePath(AssetLoaderContext context, BitmapFontDescriptor descriptor)

@@ -60,6 +60,15 @@ public sealed class AssetManager : IAssetManager
 
   public IDisposable RegisterForChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
   {
+    // not all file systems support listening for changes
+    if (!path.SupportsWatching())
+    {
+      return Disposables.Null;
+    }
+
+    // we'll serialize top-level change notifications down to listeners
+    var modificationLock = new object();
+
     // dispatches path change events to particular handlers.
     async void OnPathModified(VirtualPath changedPath)
     {
@@ -68,6 +77,7 @@ public sealed class AssetManager : IAssetManager
         return; // there's a bit of multiplexing going on here
       }
 
+      Monitor.Enter(modificationLock);
       try
       {
         if (assetsById.TryGetValue(id, out var asset))
@@ -80,6 +90,10 @@ public sealed class AssetManager : IAssetManager
       catch (Exception)
       {
         // TODO: handle me? or ignore me?
+      }
+      finally
+      {
+        Monitor.Exit(modificationLock);
       }
     }
 

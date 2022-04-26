@@ -9,6 +9,8 @@ public readonly record struct TextureRegion(Texture Texture)
   public Point2 Offset { get; init; } = Point2.Zero;
   public Point2 Size   { get; init; } = new(Texture.Width, Texture.Height);
 
+  public int X      => Offset.X;
+  public int Y      => Offset.Y;
   public int Width  => Size.X;
   public int Height => Size.Y;
 
@@ -28,6 +30,6 @@ public sealed class TextureRegionLoader : AssetLoader<TextureRegion>
 {
   public override async ValueTask<TextureRegion> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
   {
-    return await context.Manager.LoadAsset<Texture>(context.Path, cancellationToken);
+    return await context.LoadDependencyAsync<Texture>(context.Path, cancellationToken);
   }
 }
