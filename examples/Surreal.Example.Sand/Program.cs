@@ -36,7 +36,7 @@ Game.Start(platform, async context =>
 
     if (mouse.IsButtonDown(MouseButton.Left))
     {
-      var color = palette[random.Next(2, 4)];
+      var color = palette[random.Next(2, 6)];
 
       canvas.AddSand(point, radius: 16, color);
     }

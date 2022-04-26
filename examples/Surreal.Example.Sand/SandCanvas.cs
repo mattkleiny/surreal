@@ -44,51 +44,50 @@ public sealed class SandCanvas : IDisposable
 
   private void Simulate()
   {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static bool CheckAndMove(SpanGrid<Cell> cells, int x, int y, ref Cell cell)
-    {
-      if (x < 0 || x > cells.Width - 1) return false;
-      if (y < 0 || y > cells.Height - 1) return false;
-
-      ref var target = ref cells[x, y];
-
-      if (cell.IsOccupied && !target.IsOccupied)
-      {
-        target.IsOccupied = true;
-        target.Color      = cell.Color;
-
-        cell.IsOccupied = false;
-        cell.Color      = Color32.Clear;
-
-        return true;
-      }
-
-      return false;
-    }
-
     var cells = this.cells.Span;
 
-    for (int y = cells.Height - 1 - 1; y >= 0; y--)
-    for (int x = 0; x < cells.Width - 1; x++)
+    for (int y = cells.Height - 1; y >= 0; y--)
+    for (int x = 0; x < cells.Width; x++)
     {
       ref var cell = ref cells[x, y];
 
       if (cell.IsOccupied)
       {
-        if (CheckAndMove(cells, x, y + 1, ref cell)) continue;
+        if (CheckAndMove(ref cell, x, y + 1)) continue;
 
         if (random.NextBool())
         {
-          if (CheckAndMove(cells, x - 1, y + 1, ref cell)) continue;
-          CheckAndMove(cells, x + 1, y + 1, ref cell);
+          if (CheckAndMove(ref cell, x - 1, y + 1)) continue;
+          CheckAndMove(ref cell, x + 1, y + 1);
         }
         else
         {
-          if (CheckAndMove(cells, x + 1, y + 1, ref cell)) continue;
-          CheckAndMove(cells, x - 1, y + 1, ref cell);
+          if (CheckAndMove(ref cell, x + 1, y + 1)) continue;
+          CheckAndMove(ref cell, x - 1, y + 1);
         }
       }
     }
+  }
+
+  private bool CheckAndMove(ref Cell cell, int x, int y)
+  {
+    if (x < 0 || x > cells.Width - 1) return false;
+    if (y < 0 || y > cells.Height - 1) return false;
+
+    ref var target = ref cells[x, y];
+
+    if (cell.IsOccupied && !target.IsOccupied)
+    {
+      target.IsOccupied = true;
+      target.Color      = cell.Color;
+
+      cell.IsOccupied = false;
+      cell.Color      = Color32.Clear;
+
+      return true;
+    }
+
+    return false;
   }
 
   public void Draw(ShaderProgram shader)
