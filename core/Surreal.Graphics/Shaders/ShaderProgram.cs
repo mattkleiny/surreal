@@ -16,7 +16,7 @@ public sealed class ShaderProgram : GraphicsResource
     Handle = server.CreateShader();
   }
 
-  public GraphicsHandle Handle { get; }
+  public GraphicsHandle Handle { get; private set; }
 
   public void SetUniform(string name, int value)
     => server.SetShaderUniform(Handle, name, value);
@@ -51,6 +51,13 @@ public sealed class ShaderProgram : GraphicsResource
   public void SetTexture(string name, Texture texture, int samplerSlot)
     => server.SetTextureUniform(Handle, name, texture.Handle, samplerSlot);
 
+  /// <summary>Deletes and replaces the old shader with a new one.</summary>
+  public void ReplaceShader(GraphicsHandle newHandle)
+  {
+    server.DeleteShader(Handle);
+    Handle = newHandle;
+  }
+
   protected override void Dispose(bool managed)
   {
     if (managed)
@@ -84,7 +91,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var program = new ShaderProgram(server);
     var declaration = await context.Manager.LoadAsset<ShaderDeclaration>(context.Path, cancellationToken);

@@ -13,14 +13,14 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate, IDisposableBu
   public AudioBuffer(TimeSpan duration, AudioSampleRate rate)
   {
     Duration = duration;
-    Rate = rate;
+    Rate     = rate;
 
     buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
   }
 
   public TimeSpan        Duration { get; }
   public AudioSampleRate Rate     { get; }
-  public Memory<byte>    Memory     => buffer.Memory;
+  public Memory<byte>    Memory   => buffer.Memory;
   public Size            Size     => buffer.Memory.Span.CalculateSize();
 
   protected override void Dispose(bool managed)

@@ -2,7 +2,6 @@
 using Surreal.Assets;
 using Surreal.Graphics.Shaders;
 using Surreal.IO;
-using Surreal.Timing;
 
 namespace Surreal.Internal.Graphics;
 
@@ -10,6 +9,7 @@ namespace Surreal.Internal.Graphics;
 internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 {
   private readonly OpenTKGraphicsServer server;
+  private readonly object hotReloadLock = new();
 
   public OpenTKShaderProgramLoader(OpenTKGraphicsServer server)
   {
@@ -26,6 +26,44 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     var vertexPath = context.Path.ChangeExtension("vert.glsl");
     var fragmentPath = context.Path.ChangeExtension("frag.glsl");
 
+    var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
+    var program = new ShaderProgram(server);
+
+    server.LinkShader(program.Handle, shaderSet);
+
+    if (context.IsHotReloadEnabled)
+    {
+      context.RegisterForChanges<ShaderProgram>(vertexPath, ReloadAsync);
+      context.RegisterForChanges<ShaderProgram>(fragmentPath, ReloadAsync);
+    }
+
+    return program;
+  }
+
+  private async ValueTask<ShaderProgram> ReloadAsync(AssetLoaderContext context, ShaderProgram program, CancellationToken cancellationToken = default)
+  {
+    Monitor.Enter(hotReloadLock);
+    try
+    {
+      var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
+      var handle = server.CreateShader();
+
+      server.LinkShader(handle, shaderSet);
+      program.ReplaceShader(handle);
+
+      return program;
+    }
+    finally
+    {
+      Monitor.Exit(hotReloadLock);
+    }
+  }
+
+  private static async ValueTask<OpenTKShaderSet> LoadShaderSetAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  {
+    var vertexPath = context.Path.ChangeExtension("vert.glsl");
+    var fragmentPath = context.Path.ChangeExtension("frag.glsl");
+
     var vertexCode = await vertexPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
     var fragmentCode = await fragmentPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
 
@@ -34,11 +72,6 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
       new OpenTKShader(ShaderType.FragmentShader, fragmentCode)
     );
 
-    var shaderSet = new OpenTKShaderSet(context.Path.ToString(), shaders);
-    var program = new ShaderProgram(server);
-
-    server.LinkShader(program.Handle, shaderSet);
-
-    return program;
+    return new OpenTKShaderSet(context.Path.ToString(), shaders);
   }
 }

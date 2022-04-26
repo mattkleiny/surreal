@@ -64,7 +64,7 @@ public sealed class Game : IDisposable
     {
       if (task.IsFaulted)
       {
-        Log.Error((string) $"An unhandled top-level exception occurred: {task.Exception}");
+        Log.Error((string)$"An unhandled top-level exception occurred: {task.Exception}");
 
         game.Exit();
       }
@@ -92,10 +92,17 @@ public sealed class Game : IDisposable
   {
     while (!Host.IsClosing && !IsClosing)
     {
-      while (callbacks.TryDequeue(out var callback))
-      {
-        callback.Invoke();
-      }
+      // eventually this will end up blocking when a main loop takes over
+      PumpEventLoop();
+    }
+  }
+
+  /// <summary>Pumps the main event loop a single frame.</summary>
+  private void PumpEventLoop()
+  {
+    while (callbacks.TryDequeue(out var callback))
+    {
+      callback.Invoke();
     }
   }
 
@@ -118,6 +125,8 @@ public sealed class Game : IDisposable
       Host.BeginFrame(gameTime.DeltaTime);
       gameLoop(gameTime);
       Host.EndFrame(gameTime.DeltaTime);
+
+      PumpEventLoop();
     }
   }
 
@@ -156,6 +165,8 @@ public sealed class Game : IDisposable
       render(gameTime);
 
       Host.EndFrame(gameTime.DeltaTime);
+
+      PumpEventLoop();
     }
   }
 

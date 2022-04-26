@@ -72,30 +72,43 @@ public sealed class LocalFileSystem : FileSystem
 
   public override IPathWatcher WatchPath(VirtualPath path)
   {
-    return new PathWatcher(path);
+    return new PathWatcher(path.GetDirectory(), path);
   }
 
   private sealed class PathWatcher : IPathWatcher
   {
     private readonly FileSystemWatcher watcher;
 
-    public VirtualPath Path { get; }
-
     public event Action<VirtualPath>? Created;
     public event Action<VirtualPath>? Modified;
     public event Action<VirtualPath>? Deleted;
 
-    public PathWatcher(VirtualPath path)
+    public VirtualPath Directory { get; }
+    public VirtualPath File      { get; }
+
+    public PathWatcher(VirtualPath directory, VirtualPath file)
     {
-      watcher = new FileSystemWatcher(path.Target.ToString()!);
+      watcher = new FileSystemWatcher(directory.Target.ToString())
+      {
+        Filter = Path.GetFileName(file.Target.ToString()),
+
+        EnableRaisingEvents = true,
+      };
+
+      var context = SynchronizationContext.Current;
+      if (context == null)
+      {
+        throw new InvalidOperationException("Expected a valid synchronization context");
+      }
 
       // adapt the event interface
-      watcher.Created += (_, _) => Created?.Invoke(path);
-      watcher.Changed += (_, _) => Modified?.Invoke(path);
-      watcher.Renamed += (_, _) => Modified?.Invoke(path);
-      watcher.Deleted += (_, _) => Deleted?.Invoke(path);
+      watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(file), null);
+      watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(file), null);
+      watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(file), null);
+      watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(file), null);
 
-      Path = path;
+      Directory = directory;
+      File      = file;
     }
 
     public void Dispose()

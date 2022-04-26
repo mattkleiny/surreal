@@ -1,6 +1,5 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
-using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
