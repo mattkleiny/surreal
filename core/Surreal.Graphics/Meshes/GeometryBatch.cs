@@ -131,7 +131,7 @@ public sealed class GeometryBatch : IDisposable
 
   public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, MeshType type)
   {
-    var destination = new SpanList<Vertex>(vertices.Memory.Span[vertexCount..points.Length]);
+    var destination = new SpanList<Vertex>(vertices.Span[vertexCount..points.Length]);
 
     for (var i = 0; i < points.Length; i++)
     {
@@ -148,7 +148,7 @@ public sealed class GeometryBatch : IDisposable
     if (vertexCount == 0) return;
     if (shader == null) return;
 
-    mesh.Vertices.Write(vertices.Memory.Span[..vertexCount]);
+    mesh.Vertices.Write(vertices.Span[..vertexCount]);
     mesh.Draw(shader, vertexCount, 0, type);
 
     vertexCount = 0;
@@ -164,16 +164,10 @@ public sealed class GeometryBatch : IDisposable
   [StructLayout(LayoutKind.Sequential)]
   private record struct Vertex(Vector2 Position, Color Color)
   {
-    [VertexDescriptor(
-      Count = 2,
-      Type = VertexType.Float
-    )]
+    [VertexDescriptor(VertexType.Float, 2)]
     public Vector2 Position = Position;
 
-    [VertexDescriptor(
-      Count = 4,
-      Type = VertexType.Float
-    )]
+    [VertexDescriptor(VertexType.Float, 4)]
     public Color Color = Color;
   }
 }

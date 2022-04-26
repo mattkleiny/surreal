@@ -32,6 +32,8 @@ public interface IGraphicsServer
   GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode);
   Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged;
   void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
+  void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode);
+  void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode);
   void DeleteTexture(GraphicsHandle handle);
 
   // meshes

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Surreal.Collections;
@@ -93,6 +94,7 @@ public static class Message
     }
   }
 
+  [RequiresUnreferencedCode("Discovers methods via reflection")]
   private static SubscriberMethod[] DiscoverSubscriberMethods(object target)
   {
     static IEnumerable<MethodInfo> DiscoverAllMethods(Type type)

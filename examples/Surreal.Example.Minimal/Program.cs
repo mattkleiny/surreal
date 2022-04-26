@@ -8,19 +8,37 @@
   },
 };
 
-Game.Start(platform, context =>
+Game.Start(platform, async context =>
 {
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
+  var input = context.Services.GetRequiredService<IInputServer>();
+  var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
-  var color1 = Random.Shared.NextColor();
-  var color2 = Random.Shared.NextColor();
+  using var shader = await context.Assets.LoadDefaultShaderAsync();
+  using var texture = new Texture(graphics, TextureFormat.Rgba8888);
+  using var mesh = Mesh.CreateQuad(graphics);
 
-  context.ExecuteVariableStep(time =>
+  var random = Random.Shared;
+  var colors = new Grid<Color>(256, 144);
+
+  context.ExecuteVariableStep(_ =>
   {
-    var color = Color.Lerp(color1, color2, Maths.PingPong(time.TotalTime));
+    if (keyboard.IsKeyPressed(Key.Escape))
+    {
+      context.Exit();
+    }
 
-    graphics.ClearColorBuffer(color);
+    graphics.ClearColorBuffer(Color.Black);
+
+    for (int y = 0; y < colors.Height; y++)
+    for (var x = 0; x < colors.Width; x++)
+    {
+      colors[x, y] = random.NextColor();
+    }
+
+    texture.WritePixels<Color>(256, 144, colors.Span);
+    shader.SetTexture("u_texture", texture, 0);
+
+    mesh.Draw(shader);
   });
-
-  return Task.CompletedTask;
 });

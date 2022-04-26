@@ -1,5 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using Surreal.Graphics.Shaders;
+﻿using Surreal.Graphics.Shaders;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Meshes;
 
@@ -17,16 +17,16 @@ public enum MeshType
 public abstract class Mesh : IDisposable
 {
   /// <summary>Builds a full-screen <see cref="Mesh"/> quad.</summary>
-  public static Mesh BuildFullscreenQuad(IGraphicsServer server)
+  public static Mesh CreateQuad(IGraphicsServer server, float size = 1f)
   {
-    var mesh = new Mesh<Vertex>(server);
+    var mesh = new Mesh<Vertex2>(server);
 
     mesh.Vertices.Write(stackalloc[]
     {
-      new Vertex(new(-1f, -1f), new(0f, 1f)),
-      new Vertex(new(-1f, 1f), new(0f, 0f)),
-      new Vertex(new(1f, 1f), new(1f, 0f)),
-      new Vertex(new(1f, -1f), new(1f, 1f)),
+      new Vertex2(new(-size, -size), Color.White, new(0f, 1f)),
+      new Vertex2(new(-size, size), Color.White, new(0f, 0f)),
+      new Vertex2(new(size, size), Color.White, new(1f, 0f)),
+      new Vertex2(new(size, -size), Color.White, new(1f, 1f)),
     });
 
     mesh.Indices.Write(stackalloc ushort[]
@@ -49,23 +49,6 @@ public abstract class Mesh : IDisposable
 
   /// <summary>Disposes of the mesh, freeing any of it's allocated resources.</summary>
   public abstract void Dispose();
-
-  /// <summary>A simple vertex type for primitive shapes.</summary>
-  [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex(Vector2 Position, Vector2 UV)
-  {
-    [VertexDescriptor(
-      Count = 2,
-      Type = VertexType.Float
-    )]
-    public Vector2 Position = Position;
-
-    [VertexDescriptor(
-      Count = 2,
-      Type = VertexType.Float
-    )]
-    public Vector2 UV = UV;
-  }
 }
 
 /// <summary>A mesh with a strongly-typed vertex type, <see cref="TVertex"/>.</summary>

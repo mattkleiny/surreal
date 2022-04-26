@@ -23,7 +23,7 @@ public enum VerticalAlignment
 /// <summary>Utilities for working with <see cref="BitmapFont"/>s in a <see cref="SpriteBatch"/>.</summary>
 public static class BitmapFontExtensions
 {
-  /// <summary>Loads the default system font from Surreal.</summary>
+  /// <summary>Loads the default <see cref="BitmapFont"/> from Surreal.</summary>
   public static async ValueTask<BitmapFont> LoadDefaultFontAsync(this IAssetManager manager)
   {
     return await manager.LoadAsset<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");

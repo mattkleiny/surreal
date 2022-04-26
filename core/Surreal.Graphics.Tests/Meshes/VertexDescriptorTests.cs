@@ -27,17 +27,10 @@ public sealed class VertexDescriptorTests
   [StructLayout(LayoutKind.Sequential)]
   private struct Vertex
   {
-    [VertexDescriptor(
-      Count = 3,
-      Type = VertexType.Float
-    )]
+    [VertexDescriptor(VertexType.Float, 3)]
     public Vector3 Position;
 
-    [VertexDescriptor(
-      Count = 4,
-      Type = VertexType.Float,
-      ShouldNormalize = true
-    )]
+    [VertexDescriptor(VertexType.Float, 4)]
     public Color Color;
   }
 }

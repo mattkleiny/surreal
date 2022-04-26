@@ -4,6 +4,16 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
+/// <summary>Utilities for <see cref="ShaderProgram"/>s.</summary>
+public static class ShaderProgramExtensions
+{
+  /// <summary>Loads the default <see cref="ShaderProgram"/> from Surreal.</summary>
+  public static ValueTask<ShaderProgram> LoadDefaultShaderAsync(this IAssetManager manager)
+  {
+    return manager.LoadAsset<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/default.glsl");
+  }
+}
+
 /// <summary>A low-level shader program on the GPU.</summary>
 public sealed class ShaderProgram : GraphicsResource
 {

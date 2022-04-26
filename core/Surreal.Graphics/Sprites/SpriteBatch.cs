@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
@@ -14,8 +13,8 @@ public sealed class SpriteBatch : IDisposable
   private const int DefaultSpriteCount = 200;
   private const int MaximumSpriteCount = 8000;
 
-  private readonly IDisposableBuffer<Vertex> vertices;
-  private readonly Mesh<Vertex> mesh;
+  private readonly IDisposableBuffer<Vertex2> vertices;
+  private readonly Mesh<Vertex2> mesh;
 
   private ShaderProgram? shader;
   private Texture? lastTexture;
@@ -26,20 +25,19 @@ public sealed class SpriteBatch : IDisposable
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount < MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-    vertices = Buffers.AllocateNative<Vertex>(spriteCount * 4);
-    mesh     = new Mesh<Vertex>(server);
+    vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
+    mesh     = new Mesh<Vertex2>(server);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
   public void Begin(ShaderProgram shader)
-    => this.shader = shader;
-
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
-    => DrawInternal(region, position, size, color);
+  {
+    this.shader = shader;
+  }
 
   [SkipLocalsInit]
-  private void DrawInternal(in TextureRegion region, Vector2 position, Vector2 size, Color color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
   {
     if (region.Texture != lastTexture)
     {
@@ -47,7 +45,7 @@ public sealed class SpriteBatch : IDisposable
       Flush();
       lastTexture = region.Texture;
     }
-    else if (vertexCount >= vertices.Memory.Length)
+    else if (vertexCount >= vertices.Span.Length)
     {
       // if we've exceeded the batch capacity, we'll need to flush and start again
       Flush();
@@ -61,7 +59,7 @@ public sealed class SpriteBatch : IDisposable
     var extentY = position.Y + size.Y;
 
     // add vertex data to our batch
-    var span = vertices.Memory.Span[vertexCount..];
+    var span = vertices.Span[vertexCount..];
 
     ref var vertex0 = ref span[0];
     vertex0.Position.X = position.X;
@@ -102,7 +100,7 @@ public sealed class SpriteBatch : IDisposable
     var spriteCount = vertexCount / 4;
     var indexCount = spriteCount * 6;
 
-    mesh.Vertices.Write(vertices.Memory.Span[..vertexCount]);
+    mesh.Vertices.Write(vertices.Span[..vertexCount]);
     mesh.Draw(shader, vertexCount, indexCount);
 
     vertexCount = 0;
@@ -129,27 +127,5 @@ public sealed class SpriteBatch : IDisposable
   {
     mesh.Dispose();
     vertices.Dispose();
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex(Vector2 Position, Color Color, Vector2 UV)
-  {
-    [VertexDescriptor(
-      Count = 2,
-      Type = VertexType.Float
-    )]
-    public Vector2 Position = Position;
-
-    [VertexDescriptor(
-      Count = 4,
-      Type = VertexType.Float
-    )]
-    public Color Color = Color;
-
-    [VertexDescriptor(
-      Count = 2,
-      Type = VertexType.Float
-    )]
-    public Vector2 UV = UV;
   }
 }

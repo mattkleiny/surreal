@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace Surreal.Graphics.Meshes;
@@ -20,9 +21,15 @@ public enum VertexType
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute : Attribute
 {
+  public VertexDescriptorAttribute(VertexType type, int count)
+  {
+    Type  = type;
+    Count = count;
+  }
+
   public string?    Alias { get; set; }
-  public int        Count { get; set; } = 4;
-  public VertexType Type  { get; set; } = VertexType.Float;
+  public VertexType Type  { get; set; }
+  public int        Count { get; set; }
 
   /// <summary>True if the resultant components should be normalised to (0, 1) before submission to the GPU.</summary>
   public bool ShouldNormalize { get; set; } = false;

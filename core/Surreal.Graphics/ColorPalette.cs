@@ -7,7 +7,7 @@ using Surreal.Mathematics;
 namespace Surreal.Graphics;
 
 /// <summary>A palette of <see cref="Color"/>s, with span and range support.</summary>
-public sealed record ColorPalette(Color[] colors, int offset, int count) : IEnumerable<Color>
+public sealed record ColorPalette(Color[] colors, int Offset, int Count) : IEnumerable<Color>
 {
   /// <summary>Loads a <see cref="ColorPalette"/> from the given <see cref="VirtualPath"/>.</summary>
   public static async ValueTask<ColorPalette> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
@@ -16,14 +16,20 @@ public sealed record ColorPalette(Color[] colors, int offset, int count) : IEnum
     using var reader = new StreamReader(stream);
 
     if (await reader.ReadLineAsync() != "JASC-PAL")
+    {
       throw new FormatException($"Failed to recognize the palette file {path}");
+    }
 
     if (await reader.ReadLineAsync() != "0100")
+    {
       throw new FormatException($"Failed to recognize the palette file {path}");
+    }
 
     var rawCount = await reader.ReadLineAsync();
     if (rawCount == null)
+    {
       throw new FormatException($"Expected a count row in palette file {path}");
+    }
 
     var count = int.Parse(rawCount, CultureInfo.InvariantCulture);
     var colors = new Color[count];
@@ -32,7 +38,9 @@ public sealed record ColorPalette(Color[] colors, int offset, int count) : IEnum
     {
       var line = await reader.ReadLineAsync();
       if (line == null)
+      {
         throw new FormatException($"Expected a palette entry in row {i} of palette file {path}");
+      }
 
       var raw = line.Split(' ')
         .Select(_ => _.Trim())
@@ -40,7 +48,9 @@ public sealed record ColorPalette(Color[] colors, int offset, int count) : IEnum
         .ToArray();
 
       if (raw.Length != 3)
-        throw new FormatException($"Expected 3 but received {raw.Length} color values!");
+      {
+        throw new FormatException($"Expected 3 but received {raw.Length} color values on row {i}");
+      }
 
       colors[i] = new Color32(raw[0], raw[1], raw[2]);
     }
@@ -49,20 +59,14 @@ public sealed record ColorPalette(Color[] colors, int offset, int count) : IEnum
   }
 
   private readonly Color[] colors = colors;
-  private readonly int offset = offset;
-  private readonly int count = count;
 
   public ColorPalette(Color[] colors)
     : this(colors, 0, colors.Length)
   {
   }
 
-  /// <summary>The number of colors in the palette.</summary>
-  [SuppressMessage("ReSharper", "ConvertToAutoProperty")]
-  public int Count => count;
-
   /// <summary>Accesses a single color in the palette.</summary>
-  public Color this[Index index] => colors[offset + index.GetOffset(Count)];
+  public Color this[Index index] => colors[Offset + index.GetOffset(Count)];
 
   /// <summary>Accesses a sub-range of the <see cref="ColorPalette"/>.</summary>
   public ColorPalette this[Range range]

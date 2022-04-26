@@ -68,6 +68,16 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
+  public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
+  {
+    // no-op
+  }
+
+  public void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode)
+  {
+    // no-op
+  }
+
   public void DeleteTexture(GraphicsHandle handle)
   {
     // no-op

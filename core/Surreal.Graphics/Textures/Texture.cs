@@ -1,5 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
+using Surreal.Mathematics;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
@@ -27,28 +28,54 @@ public enum TextureWrapMode
 /// <summary>A texture that can be uploaded to the GPU.</summary>
 public sealed class Texture : GraphicsResource, IHasSizeEstimate
 {
-  private readonly IGraphicsServer server;
+  /// <summary>Creates a colored 1x1 texture.</summary>
+  public static Texture CreateColored(IGraphicsServer server, Color color, TextureFormat format = TextureFormat.Rgba8888)
+  {
+    var texture = new Texture(server, format);
 
-  public Texture(IGraphicsServer server, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode)
+    texture.WritePixels<Color>(1, 1, stackalloc Color[] { color });
+
+    return texture;
+  }
+
+  private readonly IGraphicsServer server;
+  private TextureFilterMode filterMode = TextureFilterMode.Point;
+  private TextureWrapMode wrapMode = TextureWrapMode.Clamp;
+
+  public Texture(IGraphicsServer server, TextureFormat format)
   {
     this.server = server;
 
-    Format     = format;
-    FilterMode = filterMode;
-    WrapMode   = wrapMode;
-
+    Format = format;
     Handle = server.CreateTexture(filterMode, wrapMode);
   }
-
-  public GraphicsHandle Handle { get; }
-
-  public TextureFormat     Format     { get; }
-  public TextureFilterMode FilterMode { get; }
-  public TextureWrapMode   WrapMode   { get; }
 
   public int  Width  { get; private set; }
   public int  Height { get; private set; }
   public Size Size   { get; private set; }
+
+  public GraphicsHandle Handle { get; }
+  public TextureFormat  Format { get; set; }
+
+  public TextureFilterMode FilterMode
+  {
+    get => filterMode;
+    set
+    {
+      filterMode = value;
+      server.SetTextureFilterMode(Handle, value);
+    }
+  }
+
+  public TextureWrapMode WrapMode
+  {
+    get => wrapMode;
+    set
+    {
+      wrapMode = value;
+      server.SetTextureWrapMode(Handle, value);
+    }
+  }
 
   public TextureRegion ToRegion()
   {
@@ -109,7 +136,11 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
   public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
   {
     var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(server, TextureFormat.Rgba8888, settings.FilterMode, settings.WrapMode);
+    var texture = new Texture(server, TextureFormat.Rgba8888)
+    {
+      FilterMode = settings.FilterMode,
+      WrapMode   = settings.WrapMode
+    };
 
     texture.WritePixels(image);
 

@@ -120,21 +120,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
     GL.BindTexture(TextureTarget.Texture2d, texture);
 
-    var textureFilterMode = filterMode switch
-    {
-      TextureFilterMode.Point  => (int) All.Nearest,
-      TextureFilterMode.Linear => (int) All.Linear,
-
-      _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null),
-    };
-
-    var textureWrapMode = wrapMode switch
-    {
-      TextureWrapMode.Clamp  => (int) All.ClampToEdge,
-      TextureWrapMode.Repeat => (int) All.MirroredRepeat,
-
-      _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null),
-    };
+    var textureFilterMode = ConvertTextureFilterMode(filterMode);
+    var textureWrapMode = ConvertTextureWrapMode(wrapMode);
 
     GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.GenerateMipmap, 0);
     GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, textureFilterMode);
@@ -143,13 +130,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, textureWrapMode);
 
     return new GraphicsHandle(texture.Handle);
-  }
-
-  public void DeleteTexture(GraphicsHandle handle)
-  {
-    var texture = new TextureHandle(handle);
-
-    GL.DeleteTexture(texture);
   }
 
   public unsafe Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
@@ -205,6 +185,37 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
         pixels: pointer
       );
     }
+  }
+
+  public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
+  {
+    var texture = new TextureHandle(handle);
+
+    GL.BindTexture(TextureTarget.Texture2d, texture);
+
+    var textureFilterMode = ConvertTextureFilterMode(mode);
+
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, textureFilterMode);
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, textureFilterMode);
+  }
+
+  public void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode)
+  {
+    var texture = new TextureHandle(handle);
+
+    GL.BindTexture(TextureTarget.Texture2d, texture);
+
+    var textureWrapMode = ConvertTextureWrapMode(mode);
+
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, textureWrapMode);
+    GL.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureWrapT, textureWrapMode);
+  }
+
+  public void DeleteTexture(GraphicsHandle handle)
+  {
+    var texture = new TextureHandle(handle);
+
+    GL.DeleteTexture(texture);
   }
 
   public GraphicsHandle CreateMesh()
@@ -505,6 +516,28 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       MeshType.Triangles => PrimitiveType.Triangles,
 
       _ => throw new ArgumentOutOfRangeException(nameof(meshType), meshType, null)
+    };
+  }
+
+  private static int ConvertTextureFilterMode(TextureFilterMode filterMode)
+  {
+    return filterMode switch
+    {
+      TextureFilterMode.Point  => (int) All.Nearest,
+      TextureFilterMode.Linear => (int) All.Linear,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null),
+    };
+  }
+
+  private static int ConvertTextureWrapMode(TextureWrapMode wrapMode)
+  {
+    return wrapMode switch
+    {
+      TextureWrapMode.Clamp  => (int) All.ClampToEdge,
+      TextureWrapMode.Repeat => (int) All.MirroredRepeat,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null),
     };
   }
 }
