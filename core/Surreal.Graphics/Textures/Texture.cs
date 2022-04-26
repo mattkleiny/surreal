@@ -89,8 +89,8 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuf
     base.Dispose(managed);
   }
 
-  Memory<Color> IBuffer<Color>.    Data => ReadPixels<Color>();
-  Memory<Color32> IBuffer<Color32>.Data => ReadPixels<Color32>();
+  Memory<Color> IBuffer<Color>.    Memory => ReadPixels<Color>();
+  Memory<Color32> IBuffer<Color32>.Memory => ReadPixels<Color32>();
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Texture"/>s.</summary>

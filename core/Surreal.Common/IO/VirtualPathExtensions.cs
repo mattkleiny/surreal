@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.IO.MemoryMappedFiles;
+using System.Text.Json;
 using System.Xml.Linq;
 using Surreal.Memory;
 
@@ -8,6 +9,12 @@ namespace Surreal.IO;
 public static class VirtualPathExtensions
 {
   private static readonly Encoding DefaultEncoding = Encoding.UTF8;
+
+  public static bool SupportsWatching(this VirtualPath path)
+    => path.GetFileSystem().SupportsWatcher;
+
+  public static bool SupportsMemoryMapping(this VirtualPath path)
+    => path.GetFileSystem().SupportsMemoryMapping;
 
   public static IFileSystem GetFileSystem(this VirtualPath path)
     => FileSystem.GetForScheme(path.Scheme.ToString())!;
@@ -33,6 +40,9 @@ public static class VirtualPathExtensions
   public static ValueTask<Stream> OpenOutputStreamAsync(this VirtualPath path)
     => path.GetFileSystem().OpenOutputStreamAsync(path.Target.ToString());
 
+  public static MemoryMappedFile OpenMemoryMappedFile(this VirtualPath path, int offset, int length)
+    => path.GetFileSystem().OpenMemoryMappedFile(path.Target.ToString(), offset, length);
+
   public static IPathWatcher Watch(this VirtualPath path)
     => path.GetFileSystem().WatchPath(path);
 
@@ -40,10 +50,10 @@ public static class VirtualPathExtensions
     => path.GetFileSystem().EnumerateAsync(path.Target.ToString()!, wildcard);
 
   public static VirtualPath ChangeExtension(this VirtualPath path, string newExtension)
-    => new(path.Scheme, Path.ChangeExtension(path.Target.ToString(), newExtension));
+    => path with { Target = Path.ChangeExtension(path.Target.ToString(), newExtension) };
 
-  public static VirtualPath GetDirectoryName(this VirtualPath path)
-    => new(path.Scheme, Path.GetDirectoryName(path.Target.ToSpan()));
+  public static VirtualPath GetDirectory(this VirtualPath path)
+    => path with { Target = Path.GetDirectoryName(path.Target.ToSpan()) };
 
   public static async ValueTask CopyToAsync(this VirtualPath from, VirtualPath to, CancellationToken cancellationToken = default)
   {

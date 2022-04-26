@@ -7,7 +7,7 @@ public class BufferTests
   {
     var buffer = Buffers.Allocate<uint>(100);
 
-    FillBuffer(buffer.Data.Span);
+    FillBuffer(buffer.Span);
   }
 
   [Test]
@@ -15,7 +15,7 @@ public class BufferTests
   {
     var buffer = Buffers.AllocatePinned<uint>(100);
 
-    FillBuffer(buffer.Data.Span);
+    FillBuffer(buffer.Span);
   }
 
   [Test]
@@ -23,14 +23,22 @@ public class BufferTests
   {
     using var buffer = Buffers.AllocateNative<uint>(100);
 
-    FillBuffer(buffer.Data.Span);
+    FillBuffer(buffer.Span);
+  }
+
+  [Test]
+  public void it_should_allocate_and_free_a_mapped_buffer()
+  {
+    using var buffer = Buffers.AllocateMapped<uint>("test.bin", 0, 1024);
+
+    FillBuffer(buffer.Span);
   }
 
   private static void FillBuffer(Span<uint> span)
   {
     for (var i = 0; i < span.Length; i++)
     {
-      span[i] = (uint) i;
+      span[i] = (uint)i;
     }
   }
 }

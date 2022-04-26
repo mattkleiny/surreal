@@ -15,6 +15,6 @@ public class AudioBufferLoaderTests
     var buffer = await manager.LoadAsset<AudioBuffer>(path);
 
     buffer.Rate.Frequency.Should().BeGreaterThan(0);
-    buffer.Data.Length.Should().BeGreaterThan(0);
+    buffer.Memory.Length.Should().BeGreaterThan(0);
   }
 }

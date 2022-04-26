@@ -128,7 +128,7 @@ public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
         return descriptor.FilePath;
       }
 
-      return context.Path.GetDirectoryName().Resolve(descriptor.FilePath);
+      return context.Path.GetDirectory().Resolve(descriptor.FilePath);
     }
 
     return descriptor.FilePath ?? context.Path.ChangeExtension("png");

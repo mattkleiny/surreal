@@ -55,7 +55,7 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
     var buffer = await context.Manager.LoadAsset<AudioBuffer>(context.Path, cancellationToken);
     var clip = new AudioClip(server);
 
-    clip.Write<byte>(buffer.Duration, buffer.Rate, buffer.Data.Span);
+    clip.Write<byte>(buffer.Duration, buffer.Rate, buffer.Memory.Span);
 
     return clip;
   }

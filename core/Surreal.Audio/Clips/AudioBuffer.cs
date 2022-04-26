@@ -20,8 +20,8 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate, IDisposableBu
 
   public TimeSpan        Duration { get; }
   public AudioSampleRate Rate     { get; }
-  public Memory<byte>    Data     => buffer.Data;
-  public Size            Size     => buffer.Data.Span.CalculateSize();
+  public Memory<byte>    Memory     => buffer.Memory;
+  public Size            Size     => buffer.Memory.Span.CalculateSize();
 
   protected override void Dispose(bool managed)
   {
@@ -58,7 +58,7 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
     // TODO: clean this up?
     while (reader.CanRead)
     {
-      var bytesRead = await reader.ReadAsync(buffer.Data, cancellationToken);
+      var bytesRead = await reader.ReadAsync(buffer.Memory, cancellationToken);
       if (bytesRead <= 0)
       {
         break;

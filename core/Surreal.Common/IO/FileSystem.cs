@@ -1,3 +1,4 @@
+using System.IO.MemoryMappedFiles;
 using Surreal.Memory;
 
 namespace Surreal.IO;
@@ -5,8 +6,10 @@ namespace Surreal.IO;
 /// <summary>Represents some virtual file system.</summary>
 public interface IFileSystem
 {
-  ISet<string> Schemes         { get; }
-  bool         SupportsWatcher { get; }
+  ISet<string> Schemes { get; }
+
+  bool SupportsWatcher       { get; }
+  bool SupportsMemoryMapping { get; }
 
   VirtualPath Resolve(VirtualPath path, params string[] paths);
 
@@ -19,6 +22,7 @@ public interface IFileSystem
 
   ValueTask<Stream> OpenInputStreamAsync(string path);
   ValueTask<Stream> OpenOutputStreamAsync(string path);
+  MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length);
 
   IPathWatcher WatchPath(VirtualPath path);
 }
@@ -64,7 +68,8 @@ public abstract class FileSystem : IFileSystem
 
   public ISet<string> Schemes { get; }
 
-  public virtual bool SupportsWatcher => false;
+  public virtual bool SupportsWatcher       => false;
+  public virtual bool SupportsMemoryMapping => false;
 
   public abstract VirtualPath Resolve(VirtualPath path, params string[] paths);
 
@@ -77,6 +82,11 @@ public abstract class FileSystem : IFileSystem
 
   public abstract ValueTask<Stream> OpenInputStreamAsync(string path);
   public abstract ValueTask<Stream> OpenOutputStreamAsync(string path);
+
+  public virtual MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
+  {
+    throw new NotSupportedException("This file system does not support memory mapping.");
+  }
 
   public virtual IPathWatcher WatchPath(VirtualPath path)
   {

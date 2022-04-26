@@ -60,5 +60,5 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
     base.Dispose(managed);
   }
 
-  Memory<T> IBuffer<T>.Data => Read();
+  Memory<T> IBuffer<T>.Memory => Read();
 }

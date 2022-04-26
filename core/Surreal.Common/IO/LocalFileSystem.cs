@@ -1,4 +1,5 @@
-﻿using Surreal.Memory;
+﻿using System.IO.MemoryMappedFiles;
+using Surreal.Memory;
 
 namespace Surreal.IO;
 
@@ -12,10 +13,11 @@ public sealed class LocalFileSystem : FileSystem
   {
   }
 
-  public override bool SupportsWatcher => true;
+  public override bool SupportsWatcher       => true;
+  public override bool SupportsMemoryMapping => true;
 
   public override VirtualPath Resolve(VirtualPath path, params string[] paths)
-    => new(path.Scheme, path.Target + Separator + string.Join(Separator, paths));
+    => path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
 
   public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard)
   {
@@ -55,6 +57,17 @@ public sealed class LocalFileSystem : FileSystem
   public override ValueTask<Stream> OpenOutputStreamAsync(string path)
   {
     return ValueTask.FromResult<Stream>(File.Open(path, FileMode.OpenOrCreate));
+  }
+
+  public override MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
+  {
+    return MemoryMappedFile.CreateFromFile(
+      path: path,
+      mode: FileMode.OpenOrCreate,
+      mapName: Guid.NewGuid().ToString(), // needs to be unique
+      capacity: length,
+      access: MemoryMappedFileAccess.ReadWrite
+    );
   }
 
   public override IPathWatcher WatchPath(VirtualPath path)
