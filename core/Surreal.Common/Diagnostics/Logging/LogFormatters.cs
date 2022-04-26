@@ -3,7 +3,7 @@
 namespace Surreal.Diagnostics.Logging;
 
 /// <summary>Formats log messages with the given details.</summary>
-public delegate string LogFormatter(string category, LogLevel level, string message);
+public delegate string LogFormatter(string category, LogLevel level, string message, Exception? exception);
 
 /// <summary>Standard purpose <see cref="LogFormatter"/>s.</summary>
 public static class LogFormatters
@@ -15,7 +15,7 @@ public static class LogFormatters
     bool includeCategory = true,
     bool includeLevel = true)
   {
-    return (category, level, message) =>
+    return (category, level, message, exception) =>
     {
       var builder = new StringBuilder();
 
@@ -49,6 +49,13 @@ public static class LogFormatters
       }
 
       builder.Append(message);
+
+      if (exception != null)
+      {
+        builder.AppendLine();
+
+        builder.Append(exception);
+      }
 
       return builder.ToString();
     };

@@ -33,14 +33,14 @@ public static class LogFactory
       return log.Value.IsLevelEnabled(level);
     }
 
-    public void WriteMessage(LogLevel level, string message)
+    public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
-      log.Value.WriteMessage(level, message);
+      log.Value.WriteMessage(level, message, exception);
     }
 
-    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
     {
-      log.Value.WriteMessage(level, ref handler);
+      log.Value.WriteMessage(level, ref handler, exception);
     }
   }
 
@@ -57,12 +57,12 @@ public static class LogFactory
     {
       public bool IsLevelEnabled(LogLevel level) => false;
 
-      public void WriteMessage(LogLevel level, string message)
+      public void WriteMessage(LogLevel level, string message, Exception? exception = null)
       {
         // no-op
       }
 
-      public void WriteMessage(LogLevel level, ref LogInterpolator handler)
+      public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
       {
         // no-op
       }

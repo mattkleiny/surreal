@@ -15,8 +15,8 @@ public interface ILog
 {
   bool IsLevelEnabled(LogLevel level);
 
-  void WriteMessage(LogLevel level, string message);
-  void WriteMessage(LogLevel level, ref LogInterpolator handler);
+  void WriteMessage(LogLevel level, string message, Exception? exception = null);
+  void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null);
 
   void Trace(string message)
   {
@@ -74,11 +74,27 @@ public interface ILog
     }
   }
 
+  void Error(Exception exception, string message)
+  {
+    if (IsLevelEnabled(LogLevel.Error))
+    {
+      WriteMessage(LogLevel.Error, message, exception);
+    }
+  }
+
   void Error(ref LogInterpolator handler)
   {
     if (IsLevelEnabled(LogLevel.Error))
     {
       WriteMessage(LogLevel.Error, ref handler);
+    }
+  }
+
+  void Error(Exception exception, ref LogInterpolator handler)
+  {
+    if (IsLevelEnabled(LogLevel.Error))
+    {
+      WriteMessage(LogLevel.Error, ref handler, exception);
     }
   }
 
@@ -90,11 +106,27 @@ public interface ILog
     }
   }
 
+  void Fatal(Exception exception, string message)
+  {
+    if (IsLevelEnabled(LogLevel.Fatal))
+    {
+      WriteMessage(LogLevel.Fatal, message, exception);
+    }
+  }
+
   void Fatal(ref LogInterpolator handler)
   {
     if (IsLevelEnabled(LogLevel.Fatal))
     {
       WriteMessage(LogLevel.Fatal, ref handler);
+    }
+  }
+
+  void Fatal(Exception exception, ref LogInterpolator handler)
+  {
+    if (IsLevelEnabled(LogLevel.Fatal))
+    {
+      WriteMessage(LogLevel.Fatal, ref handler, exception);
     }
   }
 

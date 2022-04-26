@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 
 namespace Surreal.Assets;
@@ -19,10 +20,10 @@ public interface IAssetManager : IDisposable
 
   void AddLoader(IAssetLoader loader);
 
-  bool TryGetSettings<TAsset>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<TAsset>? settings);
-  void SetSettings<TAsset>(VirtualPath path, AssetSettings<TAsset> settings);
+  bool TryGetSettings<T>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<T>? settings);
+  void ConfigureAsset<T>(VirtualPath path, AssetSettings<T> settings);
 
-  ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default);
+  ValueTask<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
 
   IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
 }
@@ -30,9 +31,12 @@ public interface IAssetManager : IDisposable
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
 public sealed class AssetManager : IAssetManager
 {
+  private static readonly ILog Log = LogFactory.GetLog<AssetManager>();
+
   private readonly List<IAssetLoader> loaders = new();
   private readonly Dictionary<AssetId, object> assetsById = new();
   private readonly Dictionary<AssetId, object> settingsById = new();
+  private readonly List<IPathWatcher> watchers = new();
 
   public bool IsHotReloadEnabled { get; set; } = true;
 
@@ -55,7 +59,7 @@ public sealed class AssetManager : IAssetManager
     return false;
   }
 
-  public void SetSettings<T>(VirtualPath path, AssetSettings<T> settings)
+  public void ConfigureAsset<T>(VirtualPath path, AssetSettings<T> settings)
   {
     var id = new AssetId(typeof(T), path);
 
@@ -100,6 +104,8 @@ public sealed class AssetManager : IAssetManager
         return; // there's a bit of multiplexing going on here
       }
 
+      Log.Trace($"{changedPath} was modified, notifying subscribers");
+
       Monitor.Enter(modificationLock);
       try
       {
@@ -110,9 +116,9 @@ public sealed class AssetManager : IAssetManager
           assetsById[id] = await handler(context, asset, CancellationToken.None);
         }
       }
-      catch (Exception)
+      catch (Exception exception)
       {
-        // TODO: handle me? or ignore me?
+        Log.Error(exception, $"An occurred whilst processing a hot loaded asset {id}");
       }
       finally
       {
@@ -128,6 +134,8 @@ public sealed class AssetManager : IAssetManager
     watcher.Created  += OnPathModified;
     watcher.Modified += OnPathModified;
     watcher.Deleted  += OnPathModified;
+
+    watchers.Add(watcher);
 
     return Disposables.Anonymous(() =>
     {
@@ -157,8 +165,14 @@ public sealed class AssetManager : IAssetManager
       }
     }
 
+    foreach (var watcher in watchers)
+    {
+      watcher.Dispose();
+    }
+
     assetsById.Clear();
     loaders.Clear();
+    watchers.Clear();
   }
 
   /// <summary>Attempts to locate a valid loader for the given type.</summary>

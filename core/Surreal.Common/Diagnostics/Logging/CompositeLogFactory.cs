@@ -37,26 +37,30 @@ public sealed class CompositeLogFactory : ILogFactory
       return false;
     }
 
-    public void WriteMessage(LogLevel level, string message)
+    public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
       for (var i = 0; i < logs.Length; i++)
       {
         var log = logs[i];
         if (log.IsLevelEnabled(level))
         {
-          log.WriteMessage(level, message);
+          log.WriteMessage(level, message, exception);
         }
       }
     }
 
-    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
     {
+      string? cachedMessage = null;
+
       for (var i = 0; i < logs.Length; i++)
       {
         var log = logs[i];
         if (log.IsLevelEnabled(level))
         {
-          log.WriteMessage(level, ref handler);
+          cachedMessage ??= handler.GetFormattedTextAndReturnToPool();
+
+          log.WriteMessage(level, cachedMessage, exception);
         }
       }
     }

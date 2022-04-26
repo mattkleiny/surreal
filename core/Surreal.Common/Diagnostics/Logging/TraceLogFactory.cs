@@ -38,14 +38,14 @@ public sealed class TraceLogFactory : ILogFactory
       return level >= minLevel;
     }
 
-    public void WriteMessage(LogLevel level, string message)
+    public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
-      Trace.WriteLine(formatter(category, level, message));
+      Trace.WriteLine(formatter(category, level, message, exception));
     }
 
-    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
     {
-      Trace.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
+      Trace.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool(), exception));
     }
   }
 }

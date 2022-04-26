@@ -15,11 +15,11 @@ public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manag
   public bool IsHotReloadEnabled => Manager.IsHotReloadEnabled;
 
   /// <summary>Listens for changes in the associated asset.</summary>
-  public IDisposable RegisterForChanges<T>(AssetChangedHandler<T> handler)
-    where T : notnull => RegisterForChanges(Path, handler);
+  public IDisposable SubscribeToChanges<T>(AssetChangedHandler<T> handler)
+    where T : notnull => SubscribeToChanges(Path, handler);
 
   /// <summary>Listens for changes in the associated asset, sub-delineated by the given path.</summary>
-  public IDisposable RegisterForChanges<T>(VirtualPath path, AssetChangedHandler<T> handler)
+  public IDisposable SubscribeToChanges<T>(VirtualPath path, AssetChangedHandler<T> handler)
     where T : notnull => Manager.SubscribeToChanges(Id, path, async (context, existingAsset, cancellationToken) =>
   {
     return await handler(context, (T) existingAsset, cancellationToken);

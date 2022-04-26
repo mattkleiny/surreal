@@ -101,7 +101,7 @@ public sealed class ImageLoader : AssetLoader<Image>
 
     if (context.IsHotReloadEnabled)
     {
-      context.RegisterForChanges<Image>(ReloadAsync);
+      context.SubscribeToChanges<Image>(ReloadAsync);
     }
 
     return image;

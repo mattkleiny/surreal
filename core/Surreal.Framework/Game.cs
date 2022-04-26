@@ -40,7 +40,7 @@ public sealed class Game : IDisposable
 
     LogFactory.Current = new CompositeLogFactory(
       new TextWriterLogFactory(Console.Out, LogLevel.Trace),
-      new DebugLogFactory(LogLevel.Trace)
+      new TraceLogFactory(LogLevel.Trace)
     );
 
     // prepare core services

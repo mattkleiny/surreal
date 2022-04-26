@@ -13,7 +13,7 @@ public sealed class DebugLogFactory : ILogFactory
 
   public DebugLogFactory(LogLevel minLevel, LogFormatter formatter)
   {
-    this.minLevel = minLevel;
+    this.minLevel  = minLevel;
     this.formatter = formatter;
   }
 
@@ -28,8 +28,8 @@ public sealed class DebugLogFactory : ILogFactory
 
     public DebugLog(string category, LogLevel minLevel, LogFormatter formatter)
     {
-      this.category = category;
-      this.minLevel = minLevel;
+      this.category  = category;
+      this.minLevel  = minLevel;
       this.formatter = formatter;
     }
 
@@ -38,14 +38,14 @@ public sealed class DebugLogFactory : ILogFactory
       return level >= minLevel;
     }
 
-    public void WriteMessage(LogLevel level, string message)
+    public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
-      Debug.WriteLine(formatter(category, level, message));
+      Debug.WriteLine(formatter(category, level, message, exception));
     }
 
-    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
     {
-      Debug.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
+      Debug.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool(), exception));
     }
   }
 }

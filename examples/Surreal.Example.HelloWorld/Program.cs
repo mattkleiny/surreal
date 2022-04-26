@@ -25,12 +25,6 @@ Game.Start(platform, async context =>
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
   // load assets
-  context.Assets.SetSettings("resx://Surreal.Graphics/Resources/fonts/IBM8x16.png", new TextureSettings
-  {
-    FilterMode = TextureFilterMode.Linear,
-    WrapMode   = TextureWrapMode.Repeat,
-  });
-
   var shader = await context.Assets.LoadAsset<ShaderProgram>("Assets/shaders/helloworld.glsl");
   var palette = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/club-seoul-16.pal");
   var font = await context.Assets.LoadDefaultFontAsync();

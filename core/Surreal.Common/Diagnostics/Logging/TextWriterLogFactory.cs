@@ -45,14 +45,14 @@ public sealed class TextWriterLogFactory : ILogFactory
       return level >= minLevel;
     }
 
-    public void WriteMessage(LogLevel level, string message)
+    public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
-      writer.WriteLine(formatter(category, level, message));
+      writer.WriteLine(formatter(category, level, message, exception));
     }
 
-    public void WriteMessage(LogLevel level, ref LogInterpolator handler)
+    public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
     {
-      writer.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool()));
+      writer.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool(), exception));
     }
   }
 }

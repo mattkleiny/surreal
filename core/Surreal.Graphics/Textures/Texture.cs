@@ -115,7 +115,7 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
 
     if (context.IsHotReloadEnabled)
     {
-      context.RegisterForChanges<Texture>(ReloadAsync);
+      context.SubscribeToChanges<Texture>(ReloadAsync);
     }
 
     return texture;

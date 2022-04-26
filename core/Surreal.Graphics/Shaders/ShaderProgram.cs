@@ -100,7 +100,7 @@ public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 
     if (context.IsHotReloadEnabled)
     {
-      context.RegisterForChanges<ShaderProgram>(ReloadAsync);
+      context.SubscribeToChanges<ShaderProgram>(ReloadAsync);
     }
 
     return program;

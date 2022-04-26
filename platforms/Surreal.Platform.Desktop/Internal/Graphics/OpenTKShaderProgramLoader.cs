@@ -32,8 +32,8 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 
     if (context.IsHotReloadEnabled)
     {
-      context.RegisterForChanges<ShaderProgram>(vertexPath, ReloadAsync);
-      context.RegisterForChanges<ShaderProgram>(fragmentPath, ReloadAsync);
+      context.SubscribeToChanges<ShaderProgram>(vertexPath, ReloadAsync);
+      context.SubscribeToChanges<ShaderProgram>(fragmentPath, ReloadAsync);
     }
 
     return program;

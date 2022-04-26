@@ -51,12 +51,12 @@ public sealed class LocalFileSystem : FileSystem
 
   public override ValueTask<Stream> OpenInputStreamAsync(string path)
   {
-    return ValueTask.FromResult<Stream>(File.Open(path, FileMode.Open));
+    return ValueTask.FromResult<Stream>(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read));
   }
 
   public override ValueTask<Stream> OpenOutputStreamAsync(string path)
   {
-    return ValueTask.FromResult<Stream>(File.Open(path, FileMode.OpenOrCreate));
+    return ValueTask.FromResult<Stream>(File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None));
   }
 
   public override MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
