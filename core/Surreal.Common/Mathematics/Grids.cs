@@ -1,4 +1,6 @@
-﻿namespace Surreal.Mathematics;
+﻿using Surreal.Memory;
+
+namespace Surreal.Mathematics;
 
 /// <summary>A dense 2d grid of <see cref="T"/>.</summary>
 public sealed class Grid<T> : IEnumerable<T>
@@ -12,7 +14,7 @@ public sealed class Grid<T> : IEnumerable<T>
 
     elements = new T[width * height];
 
-    Width = width;
+    Width  = width;
     Height = height;
   }
 
@@ -22,9 +24,10 @@ public sealed class Grid<T> : IEnumerable<T>
     Fill(defaultValue);
   }
 
-  public int     Width  { get; }
-  public int     Height { get; }
-  public Span<T> Span   => elements;
+  public int Width  { get; }
+  public int Height { get; }
+
+  public SpanGrid<T> Span => new(elements, Width);
 
   public ref T this[int x, int y]
   {

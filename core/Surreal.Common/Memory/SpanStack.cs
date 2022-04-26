@@ -3,7 +3,6 @@
 /// <summary>A <see cref="Span{T}"/> that is operated like a <see cref="Stack{T}"/>.</summary>
 [DebuggerDisplay("SpanStack {Count}/{Capacity}")]
 public ref struct SpanStack<T>
-  where T : unmanaged
 {
   private readonly Span<T> storage;
 

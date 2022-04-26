@@ -1,4 +1,7 @@
-﻿var platform = new DesktopPlatform
+﻿using Surreal.Memory;
+using Surreal.Pixels;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -15,30 +18,31 @@ Game.Start(platform, async context =>
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
   using var shader = await context.Assets.LoadDefaultShaderAsync();
-  using var texture = new Texture(graphics, TextureFormat.Rgba8888);
-  using var mesh = Mesh.CreateQuad(graphics);
+  using var canvas = new PixelCanvas(graphics, 256, 144);
 
-  var random = Random.Shared;
-  var colors = new Grid<Color>(256, 144);
+  var position = new Vector2(canvas.Width / 2, canvas.Height / 2);
 
-  context.ExecuteVariableStep(_ =>
+  context.ExecuteVariableStep(time =>
   {
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      context.Exit();
-    }
+    const int speed = 100;
+    const int scale = 32;
+
+    if (keyboard.IsKeyPressed(Key.Escape)) context.Exit();
+    if (keyboard.IsKeyDown(Key.W)) position.Y -= speed * time.DeltaTime;
+    if (keyboard.IsKeyDown(Key.S)) position.Y += speed * time.DeltaTime;
+    if (keyboard.IsKeyDown(Key.A)) position.X -= speed * time.DeltaTime;
+    if (keyboard.IsKeyDown(Key.D)) position.X += speed * time.DeltaTime;
 
     graphics.ClearColorBuffer(Color.Black);
 
-    for (int y = 0; y < colors.Height; y++)
-    for (var x = 0; x < colors.Width; x++)
-    {
-      colors[x, y] = random.NextColor();
-    }
+    var pixels = canvas.Span;
 
-    texture.WritePixels<Color>(256, 144, colors.Span);
-    shader.SetTexture("u_texture", texture, 0);
+    pixels.Fill(Color.White * 0.2f);
+    pixels.DrawCircle(position, 32 * scale , Color.Blue);
+    pixels.DrawCircle(position, 16 * scale, Color.Green);
+    pixels.DrawCircle(position, 8 * scale, Color.Red);
+    pixels.DrawCircle(position, 2 * scale, Color.White);
 
-    mesh.Draw(shader);
+    canvas.Draw(shader);
   });
 });

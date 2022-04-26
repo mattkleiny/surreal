@@ -69,13 +69,11 @@ public static class SizeExtensions
   }
 
   public static Size CalculateSize<T>(this Span<T> span)
-    where T : unmanaged
   {
     return Bytes(span.Length * Unsafe.SizeOf<T>());
   }
 
   public static Size CalculateSize<T>(this ReadOnlySpan<T> span)
-    where T : unmanaged
   {
     return Bytes(span.Length * Unsafe.SizeOf<T>());
   }
