@@ -29,6 +29,8 @@ public sealed class Grid<T> : IEnumerable<T>
 
   public SpanGrid<T> Span => new(elements, Width);
 
+  public ref T this[Point2 position] => ref this[position.X, position.Y];
+
   public ref T this[int x, int y]
   {
     get

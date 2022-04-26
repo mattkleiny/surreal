@@ -63,7 +63,7 @@ public static class Maths
   public static int Lerp(int a, int b, float t) => (int) (a + t * (b - a));
   public static float Lerp(float a, float b, float t) => a + t * (b - a);
 
-  public static float PingPong(float t) => (MathF.Sin(t)) + 1f / 2f;
+  public static float PingPong(float t) => (MathF.Sin(t) + 1f) / 2f;
 
   public static int Wrap(int value, int lower, int upper)
   {

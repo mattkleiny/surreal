@@ -22,6 +22,8 @@ public readonly ref struct SpanGrid<T>
   public int Height => storage.Length / stride;
   public int Length => storage.Length;
 
+  public ref T this[Point2 position] => ref this[position.X, position.Y];
+
   public ref T this[int x, int y]
   {
     get
@@ -55,7 +57,7 @@ public readonly ref struct SpanGrid<T>
 /// <summary>Static extensions for dealing with <see cref="SpanGrid{T}"/>s.</summary>
 public static class SpanGridExtensions
 {
-  public delegate TOutput Painter<in T, out TOutput>(int x, int y, T value);
+  public delegate TOut Painter<in TIn, out TOut>(int x, int y, TIn value);
 
   /// <summary>Converts a <see cref="Span{T}"/> to a <see cref="SpanGrid{T}"/> with the given stride between rows.</summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -99,22 +101,6 @@ public static class SpanGridExtensions
     }
   }
 
-  /// <summary>Blits one grid to another.</summary>
-  public static void Blit<T>(this SpanGrid<T> from, SpanGrid<T> to, int scale = 1)
-  {
-    for (var y = 0; y < from.Height; y++)
-    for (var x = 0; x < from.Width; x++)
-    {
-      var value = from[x, y];
-
-      for (var yy = 0; yy < scale; yy++)
-      for (var xx = 0; xx < scale; xx++)
-      {
-        to[x * scale + xx, y * scale + yy] = value;
-      }
-    }
-  }
-
   /// <summary>Converts a grid to a string, using the given painting function.</summary>
   public static string ToString<T>(this SpanGrid<T> grid, Painter<T?, char> painter)
   {
@@ -134,5 +120,15 @@ public static class SpanGridExtensions
     }
 
     return builder.ToString();
+  }
+
+  /// <summary>Blits one grid to another.</summary>
+  public static void Blit<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
+  {
+    for (var y = 0; y < from.Height; y++)
+    for (var x = 0; x < from.Width; x++)
+    {
+      to[x, y] = painter(x, y, from[x, y]);
+    }
   }
 }
