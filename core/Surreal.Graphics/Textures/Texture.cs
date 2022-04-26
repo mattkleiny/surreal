@@ -26,7 +26,7 @@ public enum TextureWrapMode
 }
 
 /// <summary>A texture that can be uploaded to the GPU.</summary>
-public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuffer<Color>, IDisposableBuffer<Color32>
+public sealed class Texture : GraphicsResource, IHasSizeEstimate
 {
   private readonly IGraphicsServer server;
 
@@ -88,29 +88,29 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate, IDisposableBuf
 
     base.Dispose(managed);
   }
+}
 
-  Memory<Color> IBuffer<Color>.    Memory => ReadPixels<Color>();
-  Memory<Color32> IBuffer<Color32>.Memory => ReadPixels<Color32>();
+/// <summary>Parameters for loading <see cref="Texture"/>s.</summary>
+public sealed record TextureParameters
+{
+  public TextureFilterMode FilterMode { get; init; } = TextureFilterMode.Point;
+  public TextureWrapMode   WrapMode   { get; init; } = TextureWrapMode.Clamp;
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Texture"/>s.</summary>
-public sealed class TextureLoader : AssetLoader<Texture>
+public sealed class TextureLoader : AssetLoader<Texture, TextureParameters>
 {
   private readonly IGraphicsServer server;
-  private readonly TextureFilterMode defaultFilterMode;
-  private readonly TextureWrapMode defaultWrapMode;
 
-  public TextureLoader(IGraphicsServer server, TextureFilterMode defaultFilterMode, TextureWrapMode defaultWrapMode)
+  public TextureLoader(IGraphicsServer server)
   {
-    this.server            = server;
-    this.defaultFilterMode = defaultFilterMode;
-    this.defaultWrapMode   = defaultWrapMode;
+    this.server = server;
   }
 
-  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, TextureParameters parameters, CancellationToken cancellationToken)
   {
     var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(server, TextureFormat.Rgba8888, defaultFilterMode, defaultWrapMode);
+    var texture = new Texture(server, TextureFormat.Rgba8888, parameters.FilterMode, parameters.WrapMode);
 
     texture.WritePixels(image);
 

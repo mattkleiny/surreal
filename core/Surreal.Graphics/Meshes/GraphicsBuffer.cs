@@ -19,7 +19,7 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 }
 
 /// <summary>A strongly-typed <see cref="GraphicsBuffer"/> of <see cref="T"/>.</summary>
-public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
+public sealed class GraphicsBuffer<T> : GraphicsBuffer
   where T : unmanaged
 {
   private readonly IGraphicsServer server;
@@ -59,6 +59,4 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer, IDisposableBuffer<T>
 
     base.Dispose(managed);
   }
-
-  Memory<T> IBuffer<T>.Memory => Read();
 }

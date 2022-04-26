@@ -7,8 +7,8 @@ var platform = new DesktopPlatform
     Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    Width          = (int)(size.X * 6),
-    Height         = (int)(size.Y * 6),
+    Width          = (int) (size.X * 6),
+    Height         = (int) (size.Y * 6),
   },
 };
 
@@ -17,7 +17,7 @@ Game.Start(platform, async context =>
   // set-up a basic camera perspective
   var projectionView =
     Matrix4x4.CreateTranslation(-size.X / 2f, -size.Y / 2f, 0f) * // view
-    Matrix4x4.CreateOrthographic(size.X, size.Y, 0f, 100f); // projection
+    Matrix4x4.CreateOrthographic(size.X, size.Y, 0f, 100f);       // projection
 
   // grab services
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();

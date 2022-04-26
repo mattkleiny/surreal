@@ -19,7 +19,12 @@ public interface IAssetManager : IDisposable
   void AddLoader(IAssetLoader loader);
 
   /// <summary>Loads the given asset from the virtual file system. Returns it if it's already cached.</summary>
-  ValueTask<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default)
+    where TAsset : notnull;
+
+  /// <summary>Loads the given asset from the virtual file system with the given parameters. Returns it if it's already cached.</summary>
+  ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, Optional<object> parameters, CancellationToken cancellationToken = default)
+    where TAsset : notnull;
 
   /// <summary>Registers a listener for changes to the given asset, invoking the given handler when they are detected.</summary>
   IDisposable RegisterForChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
@@ -38,10 +43,16 @@ public sealed class AssetManager : IAssetManager
 
   public bool IsHotReloadEnabled { get; set; } = true;
 
-  [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
-  public async ValueTask<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  public async ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default)
+    where TAsset : notnull
   {
-    var id = new AssetId(typeof(T), path);
+    return await LoadAsset<TAsset>(path, default, cancellationToken);
+  }
+
+  public async ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, Optional<object> parameters, CancellationToken cancellationToken = default)
+    where TAsset : notnull
+  {
+    var id = new AssetId(typeof(TAsset), path);
     var context = new AssetLoaderContext(id, this);
 
     if (!TryGetLoader(context, out var loader))
@@ -52,10 +63,10 @@ public sealed class AssetManager : IAssetManager
     if (!assetsById.TryGetValue(id, out var asset))
     {
       // we'll continue asynchronously on the main thread
-      assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
+      assetsById[id] = asset = await loader.LoadAsync(context, parameters, cancellationToken);
     }
 
-    return (T)asset;
+    return (TAsset) asset;
   }
 
   public IDisposable RegisterForChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
