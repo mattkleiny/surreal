@@ -48,6 +48,16 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public char Peek() => Length > 1 ? this[1] : '\0';
 
+  public bool Equals(StringSpan other)
+  {
+    return ToSpan().SequenceEqual(other.ToSpan());
+  }
+
+  public override int GetHashCode()
+  {
+    return string.GetHashCode(ToSpan());
+  }
+
   public ReadOnlySpan<char> ToSpan() => Source != null ? Source.AsSpan(Offset, Length) : default;
 
   public override string ToString() => Source?.AsSpan(Offset, Length).ToString() ?? string.Empty;

@@ -1,6 +1,5 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
-using Surreal.Mathematics;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
@@ -90,15 +89,15 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   }
 }
 
-/// <summary>Parameters for loading <see cref="Texture"/>s.</summary>
-public sealed record TextureParameters
+/// <summary>Settings for <see cref="Texture"/>s.</summary>
+public sealed record TextureSettings : AssetSettings<Texture>
 {
   public TextureFilterMode FilterMode { get; init; } = TextureFilterMode.Point;
   public TextureWrapMode   WrapMode   { get; init; } = TextureWrapMode.Clamp;
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Texture"/>s.</summary>
-public sealed class TextureLoader : AssetLoader<Texture, TextureParameters>
+public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
 {
   private readonly IGraphicsServer server;
 
@@ -107,10 +106,10 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureParameters>
     this.server = server;
   }
 
-  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, TextureParameters parameters, CancellationToken cancellationToken)
+  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
   {
     var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(server, TextureFormat.Rgba8888, parameters.FilterMode, parameters.WrapMode);
+    var texture = new Texture(server, TextureFormat.Rgba8888, settings.FilterMode, settings.WrapMode);
 
     texture.WritePixels(image);
 

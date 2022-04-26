@@ -9,8 +9,8 @@ public delegate ValueTask<T> AssetChangedHandler<T>(AssetLoaderContext context, 
 /// <summary>Context for <see cref="IAssetLoader"/> operations.</summary>
 public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manager)
 {
-  public Type        AssetType => Id.Type;
-  public VirtualPath Path      => Id.Path;
+  public Type        Type => Id.Type;
+  public VirtualPath Path => Id.Path;
 
   public bool IsHotReloadEnabled => Manager.IsHotReloadEnabled;
 
@@ -20,23 +20,14 @@ public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manag
 
   /// <summary>Listens for changes in the associated asset, sub-delineated by the given path.</summary>
   public IDisposable RegisterForChanges<T>(VirtualPath path, AssetChangedHandler<T> handler)
-    where T : notnull => Manager.RegisterForChanges(Id, path, async (context, existingAsset, cancellationToken) =>
+    where T : notnull => Manager.SubscribeToChanges(Id, path, async (context, existingAsset, cancellationToken) =>
   {
     return await handler(context, (T) existingAsset, cancellationToken);
   });
 
   /// <summary>Loads a dependent asset from the associated manager.</summary>
   public ValueTask<T> LoadDependencyAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    // TODO: wire up the dependency graph in here
-    return Manager.LoadAsset<T>(path, cancellationToken);
-  }
-
-  /// <summary>Loads a dependent asset from the associated manager.</summary>
-  public ValueTask<T> LoadDependencyAsync<T>(VirtualPath path, Optional<object> parameters, CancellationToken cancellationToken = default)
-  {
-    return Manager.LoadAsset<T>(path, parameters, cancellationToken);
-  }
+    => Manager.LoadAsset<T>(path, cancellationToken); // TODO: wire up the dependency graph in here
 }
 
 /// <summary>Allows loading assets from storage.</summary>
@@ -44,42 +35,55 @@ public interface IAssetLoader
 {
   bool CanHandle(AssetLoaderContext context);
 
-  ValueTask<object> LoadAsync(AssetLoaderContext context, Optional<object> parameters, CancellationToken cancellationToken);
+  ValueTask<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
 }
 
 /// <summary>Base class for any <see cref="IAssetLoader"/> implementation.</summary>
-public abstract class AssetLoader<TAsset> : IAssetLoader
-  where TAsset : notnull
+public abstract class AssetLoader<T> : IAssetLoader
+  where T : notnull
 {
   public virtual bool CanHandle(AssetLoaderContext context)
   {
-    return context.AssetType == typeof(TAsset);
+    return context.Type == typeof(T);
   }
 
-  public abstract ValueTask<TAsset> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
+  public abstract ValueTask<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
 
-  async ValueTask<object> IAssetLoader.LoadAsync(AssetLoaderContext context, Optional<object> parameters, CancellationToken cancellationToken)
+  async ValueTask<object> IAssetLoader.LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     return await LoadAsync(context, cancellationToken);
   }
 }
 
-/// <summary>Base class for any <see cref="IAssetLoader"/> implementation that accepts parameters.</summary>
-public abstract class AssetLoader<TAsset, TParameters> : IAssetLoader
-  where TAsset : notnull
-  where TParameters : class, new()
+/// <summary>Base class for any <see cref="IAssetLoader"/> implementation.</summary>
+public abstract class AssetLoader<T, TSettings> : IAssetLoader
+  where T : notnull
+  where TSettings : AssetSettings<T>, new()
 {
-  public TParameters DefaultParameters { get; set; } = new();
+  public TSettings Settings { get; set; } = new();
+
+  /// <summary>Gets the <see cref="TSettings"/> for the given asset context.</summary>
+  public TSettings GetAssetParameters(AssetLoaderContext context)
+  {
+    if (context.Manager.TryGetSettings<T>(context.Path, out var settings))
+    {
+      return (TSettings) settings;
+    }
+
+    return Settings;
+  }
 
   public virtual bool CanHandle(AssetLoaderContext context)
   {
-    return context.AssetType == typeof(TAsset);
+    return context.Type == typeof(T);
   }
 
-  public abstract ValueTask<TAsset> LoadAsync(AssetLoaderContext context, TParameters parameters, CancellationToken cancellationToken);
+  public abstract ValueTask<T> LoadAsync(AssetLoaderContext context, TSettings settings, CancellationToken cancellationToken);
 
-  async ValueTask<object> IAssetLoader.LoadAsync(AssetLoaderContext context, Optional<object> parameters, CancellationToken cancellationToken)
+  async ValueTask<object> IAssetLoader.LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
-    return await LoadAsync(context, (TParameters) parameters.GetOrDefault(DefaultParameters), cancellationToken);
+    var settings = GetAssetParameters(context);
+
+    return await LoadAsync(context, settings, cancellationToken);
   }
 }

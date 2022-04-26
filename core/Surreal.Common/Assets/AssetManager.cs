@@ -3,6 +3,9 @@ using Surreal.IO;
 
 namespace Surreal.Assets;
 
+/// <summary>Base class for settings for a particular type of asset.</summary>
+public abstract record AssetSettings<T>;
+
 /// <summary>Represents uniquely some asset type at a given path.</summary>
 public readonly record struct AssetId(Type Type, VirtualPath Path)
 {
@@ -12,22 +15,16 @@ public readonly record struct AssetId(Type Type, VirtualPath Path)
 /// <summary>Allows managing assets.</summary>
 public interface IAssetManager : IDisposable
 {
-  /// <summary>True if hot reloading is enabled across the manager.</summary>
   bool IsHotReloadEnabled { get; }
 
-  /// <summary>Registers a new <see cref="IAssetLoader"/> with the manager.</summary>
   void AddLoader(IAssetLoader loader);
 
-  /// <summary>Loads the given asset from the virtual file system. Returns it if it's already cached.</summary>
-  ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default)
-    where TAsset : notnull;
+  bool TryGetSettings<TAsset>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<TAsset>? settings);
+  void SetSettings<TAsset>(VirtualPath path, AssetSettings<TAsset> settings);
 
-  /// <summary>Loads the given asset from the virtual file system with the given parameters. Returns it if it's already cached.</summary>
-  ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, Optional<object> parameters, CancellationToken cancellationToken = default)
-    where TAsset : notnull;
+  ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default);
 
-  /// <summary>Registers a listener for changes to the given asset, invoking the given handler when they are detected.</summary>
-  IDisposable RegisterForChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
+  IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
 }
 
 /// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
@@ -35,41 +32,56 @@ public sealed class AssetManager : IAssetManager
 {
   private readonly List<IAssetLoader> loaders = new();
   private readonly Dictionary<AssetId, object> assetsById = new();
+  private readonly Dictionary<AssetId, object> settingsById = new();
+
+  public bool IsHotReloadEnabled { get; set; } = true;
 
   public void AddLoader(IAssetLoader loader)
   {
     loaders.Add(loader);
   }
 
-  public bool IsHotReloadEnabled { get; set; } = true;
-
-  public async ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default)
-    where TAsset : notnull
+  public bool TryGetSettings<T>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<T>? result)
   {
-    return await LoadAsset<TAsset>(path, default, cancellationToken);
+    var id = new AssetId(typeof(T), path);
+
+    if (settingsById.TryGetValue(id, out var settings))
+    {
+      result = (AssetSettings<T>) settings;
+      return true;
+    }
+
+    result = default;
+    return false;
   }
 
-  public async ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, Optional<object> parameters, CancellationToken cancellationToken = default)
-    where TAsset : notnull
+  public void SetSettings<T>(VirtualPath path, AssetSettings<T> settings)
+  {
+    var id = new AssetId(typeof(T), path);
+
+    settingsById[id] = settings;
+  }
+
+  public async ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default)
   {
     var id = new AssetId(typeof(TAsset), path);
     var context = new AssetLoaderContext(id, this);
 
     if (!TryGetLoader(context, out var loader))
     {
-      throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.AssetType.Name}");
+      throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.Type.Name}");
     }
 
     if (!assetsById.TryGetValue(id, out var asset))
     {
       // we'll continue asynchronously on the main thread
-      assetsById[id] = asset = await loader.LoadAsync(context, parameters, cancellationToken);
+      assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
     return (TAsset) asset;
   }
 
-  public IDisposable RegisterForChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
+  public IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
   {
     // not all file systems support listening for changes
     if (!path.SupportsWatching())
