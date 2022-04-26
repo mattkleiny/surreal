@@ -5,9 +5,6 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>A viewport size for camera rendering.</summary>
-public readonly record struct Viewport(int X, int Y, int Width, int Height);
-
 /// <summary>An opaque handle to a resource in the underling <see cref="IGraphicsServer"/> implementation.</summary>
 public readonly record struct GraphicsHandle(nint Id)
 {
