@@ -126,6 +126,7 @@ public sealed class Game : IDisposable
       gameLoop(gameTime);
       Host.EndFrame(gameTime.DeltaTime);
 
+      // we need to take over the event loop from here
       PumpEventLoop();
     }
   }
@@ -166,6 +167,7 @@ public sealed class Game : IDisposable
 
       Host.EndFrame(gameTime.DeltaTime);
 
+      // we need to take over the event loop from here
       PumpEventLoop();
     }
   }

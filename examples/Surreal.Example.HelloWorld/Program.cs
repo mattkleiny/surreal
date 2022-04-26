@@ -51,7 +51,8 @@ Game.Start(platform, async context =>
       text: "HELLO, SURREAL!",
       position: size / 2f,
       color: Color.Lerp(palette[1], palette[4], Maths.PingPong(time.TotalTime)),
-      alignment: TextAlignment.Center
+      horizontalAlignment: HorizontalAlignment.Center,
+      verticalAlignment: VerticalAlignment.Center
     );
     sprites.Flush();
   });

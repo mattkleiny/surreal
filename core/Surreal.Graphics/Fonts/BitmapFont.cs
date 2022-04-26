@@ -6,10 +6,17 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Fonts;
 
-/// <summary>Alignments for text rendering.</summary>
-public enum TextAlignment
+/// <summary>Horizontal alignments for text rendering.</summary>
+public enum HorizontalAlignment
 {
   Left,
+  Center,
+}
+
+/// <summary>Vertical alignments for text rendering.</summary>
+public enum VerticalAlignment
+{
+  Top,
   Center,
 }
 
@@ -23,20 +30,45 @@ public static class BitmapFontExtensions
   }
 
   /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given font.</summary>
-  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color, TextAlignment alignment = TextAlignment.Left)
+  public static void DrawText(
+    this SpriteBatch batch,
+    BitmapFont font,
+    string text,
+    Vector2 position,
+    Color color,
+    HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left,
+    VerticalAlignment verticalAlignment = VerticalAlignment.Top
+  )
   {
-    if (alignment == TextAlignment.Center)
+    var size = font.MeasureSize(text);
+
+    if (horizontalAlignment == HorizontalAlignment.Center)
     {
-      position.X -= font.MeasureWidth(text) / 2f;
+      position.X -= size.X / 2f;
     }
+
+    if (verticalAlignment == VerticalAlignment.Center)
+    {
+      position.Y += size.Y / 2f;
+    }
+
+    var startPosition = position;
 
     for (var i = 0; i < text.Length; i++)
     {
       var glyph = font.GetGlyph(text[i]);
 
-      batch.Draw(glyph, position, glyph.Size, color);
+      if (text[i] == '\n')
+      {
+        position.Y -= glyph.Size.Y;
+        position.X =  startPosition.X;
+      }
+      else
+      {
+        batch.Draw(glyph, position, glyph.Size, color);
 
-      position.X += glyph.Size.X;
+        position.X += glyph.Size.X;
+      }
     }
   }
 }
@@ -66,9 +98,32 @@ public sealed class BitmapFont
   public Texture Texture { get; }
 
   /// <summary>Measures the width of the given piece of text in the underlying font.</summary>
-  public float MeasureWidth(string text)
+  public Point2 MeasureSize(string text)
   {
-    return text.Length * (descriptor.GlyphWidth + descriptor.GlyphPadding);
+    var lineCount = 0;
+    var longestLine = 0;
+    var currentLine = 0;
+
+    for (var i = 0; i < text.Length; i++)
+    {
+      currentLine += 1;
+
+      if (currentLine > longestLine)
+      {
+        longestLine = currentLine;
+      }
+
+      if (text[i] == '\n')
+      {
+        lineCount++;
+        currentLine = 0;
+      }
+    }
+
+    return new(
+      X: longestLine * (descriptor.GlyphWidth + descriptor.GlyphPadding),
+      Y: lineCount * (descriptor.GlyphHeight + descriptor.GlyphPadding)
+    );
   }
 
   public TextureRegion GetGlyph(int index)
