@@ -61,18 +61,17 @@ public static class SpanGridExtensions
 
   /// <summary>Converts a <see cref="Span{T}"/> to a <see cref="SpanGrid{T}"/> with the given stride between rows.</summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static SpanGrid<T> ToGrid<T>(this Span<T> span, int stride)
-  {
-    return new SpanGrid<T>(span, stride);
-  }
+  public static SpanGrid<T> ToGrid<T>(this Span<T> span, int stride) => new(span, stride);
 
   /// <summary>Draws a circle in the grid.</summary>
   public static void DrawCircle<T>(this SpanGrid<T> grid, Point2 center, int radius, T value)
   {
-    var box = Box.Create(center, new Point2(radius, radius)).Clamp(0, 0, grid.Width - 1, grid.Height - 1);
+    var rectangle = Rectangle
+      .Create(center, new Point2(radius, radius))
+      .Clamp(0, 0, grid.Width - 1, grid.Height - 1);
 
-    for (int y = box.Bottom; y < box.Top; y++)
-    for (int x = box.Left; x < box.Right; x++)
+    for (int y = rectangle.Bottom; y < rectangle.Top; y++)
+    for (int x = rectangle.Left; x < rectangle.Right; x++)
     {
       var point = new Point2(x, y);
       var distance = point - center;
@@ -87,14 +86,16 @@ public static class SpanGridExtensions
   /// <summary>Draws a rectangle in the grid.</summary>
   public static void DrawRectangle<T>(this SpanGrid<T> grid, Point2 center, Point2 size, T value)
   {
-    var box = Box.Create(center, size).Clamp(0, 0, grid.Width - 1, grid.Height - 1);
+    var rectangle = Rectangle
+      .Create(center, size)
+      .Clamp(0, 0, grid.Width - 1, grid.Height - 1);
 
-    for (int y = box.Bottom; y < box.Top; y++)
-    for (int x = box.Left; x < box.Right; x++)
+    for (int y = rectangle.Bottom; y < rectangle.Top; y++)
+    for (int x = rectangle.Left; x < rectangle.Right; x++)
     {
       var point = new Point2(x, y);
 
-      if (box.Contains(point))
+      if (rectangle.Contains(point))
       {
         grid[x, y] = value;
       }

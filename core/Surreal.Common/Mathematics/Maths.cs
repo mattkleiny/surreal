@@ -5,8 +5,14 @@ namespace Surreal.Mathematics;
 /// <summary>Common used mathematical utilities.</summary>
 public static class Maths
 {
+  public static int NextInt(this Random random)
+    => random.Next();
+
   public static float NextFloat(this Random random)
     => (float) random.NextDouble();
+
+  public static int NextInt(this Random random, int min, int max)
+    => random.Next(min, max + 1);
 
   public static float NextFloat(this Random random, float min, float max)
     => random.NextFloat() * (max - min) + min;

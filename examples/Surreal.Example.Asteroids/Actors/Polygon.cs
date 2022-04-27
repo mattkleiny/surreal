@@ -5,50 +5,36 @@ namespace Asteroids.Actors;
 /// <summary>A simple polygon in 2-space that can be transformed and translated.</summary>
 public sealed class Polygon
 {
-  private readonly Vector2[] vertices;
+  private Vector2[] vertices;
 
   /// <summary>Creates a new randomly shaped <see cref="Polygon"/>.</summary>
   public static Polygon Create()
   {
     // TODO: randomly generate me
-
     return new Polygon(
-      new Vector2(8, 3),
-      new Vector2(11, 5),
-      new Vector2(15, 10),
-      new Vector2(17, 13),
-      new Vector2(15, 16),
-      new Vector2(11, 18),
-      new Vector2(7, 18),
-      new Vector2(0, 12)
+      new Vector2(0, -4),
+      new Vector2(3, -2),
+      new Vector2(7, 3),
+      new Vector2(9, 6),
+      new Vector2(7, 9),
+      new Vector2(3, 11),
+      new Vector2(-1, 11),
+      new Vector2(-8, 5)
     );
   }
 
-  private Polygon(params Vector2[] vertices)
+  public Polygon(params Vector2[] vertices)
   {
     this.vertices = vertices;
   }
 
-  /// <summary>The center of the polygon in 2-space.</summary>
-  public Vector2 Center
-  {
-    get
-    {
-      var maxX = 0f;
-      var maxY = 0f;
+  public int Length => vertices.Length;
 
-      foreach (var vertex in vertices)
-      {
-        if (vertex.X > maxX) maxX = vertex.X;
-        if (vertex.Y > maxY) maxY = vertex.Y;
-      }
+  public Vector2 Center => Bounds.Center;
+  public Vector2 Size   => Bounds.Size;
 
-      return new Vector2(maxX, maxY) / 2f;
-    }
-  }
-
-  /// <summary>The size of the polygon in 2-space.</summary>
-  public Vector2 Size
+  /// <summary>The bounds of the polygon in 2-space.</summary>
+  public BoundingRect Bounds
   {
     get
     {
@@ -65,7 +51,7 @@ public sealed class Polygon
         if (vertex.Y > maxY) maxY = vertex.Y;
       }
 
-      return new Vector2(maxX - minX, maxY - minY);
+      return new BoundingRect(minX, maxY, maxX, minY);
     }
   }
 
@@ -93,29 +79,17 @@ public sealed class Polygon
     return intersectionCount % 2 == 1; // if there where an odd amount of intersection, the point lies within the polygon
   }
 
-  /// <summary>Translates a polygon by the given amount.</summary>
-  public void Translate(Vector2 amount)
+  /// <summary>Transforms the given other polygon by the given matrix and writes the results to this polygon.</summary>
+  public void TransformFrom(Polygon other, in Matrix4x4 transform)
   {
-    var matrix = Matrix3x2.CreateTranslation(amount);
-
-    for (var i = 0; i < vertices.Length; i++)
+    if (Length != other.Length)
     {
-      ref var vertex = ref vertices[i];
-
-      vertex = Vector2.Transform(vertex, matrix);
+      Array.Resize(ref vertices, other.Length);
     }
-  }
 
-  /// <summary>Rotates a polygon by the given amount.</summary>
-  public void Rotate(float angle)
-  {
-    var quaternion = Quaternion.CreateFromYawPitchRoll(0f, 0f, angle);
-
-    for (var i = 0; i < vertices.Length; i++)
+    for (var i = 0; i < Length; i++)
     {
-      ref var vertex = ref vertices[i];
-
-      vertex = Vector2.Transform(vertex, quaternion);
+      vertices[i] = Vector2.Transform(other.vertices[i], transform);
     }
   }
 

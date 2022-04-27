@@ -7,29 +7,35 @@ namespace Asteroids.Actors;
 public sealed class Asteroid : Actor
 {
   private readonly PixelCanvas canvas;
+  private readonly Polygon transformedPolygon;
 
   public Asteroid(PixelCanvas canvas)
   {
     this.canvas = canvas;
+
+    transformedPolygon = new Polygon(new Vector2[Polygon.Length]);
   }
 
-  public Polygon Polygon  { get; set; } = Polygon.Create();
-  public Vector2 Velocity { get; set; } = Vector2.Zero;
-  public float   Rotation { get; set; } = 0f;
-  public Color   Color    { get; set; } = Color.White;
-
-  public Vector2 Position
-  {
-    get => Polygon.Center;
-    set => Polygon.Translate(value);
-  }
+  public Polygon Polygon  { get; init; } = Polygon.Create();
+  public Vector2 Position { get; set; }  = Vector2.Zero;
+  public Vector2 Velocity { get; set; }  = Vector2.Zero;
+  public float   Rotation { get; set; }  = 0f;
+  public float   Spin     { get; set; }  = 0f;
+  public Color   Color    { get; set; }  = Color.White;
 
   protected override void OnUpdate(TimeDelta deltaTime)
   {
     base.OnUpdate(deltaTime);
 
-    // Polygon.Rotate(Rotation * deltaTime);
-    Polygon.Translate(Velocity * deltaTime);
+    Position += Velocity * deltaTime;
+    Rotation += Spin * deltaTime;
+
+    var rotation = Matrix4x4.CreateRotationZ(Rotation);
+    var translation = Matrix4x4.CreateTranslation(Position.X, Position.Y, 0f);
+
+    var transform = rotation * translation;
+
+    transformedPolygon.TransformFrom(Polygon, in transform);
   }
 
   protected override void OnDraw(TimeDelta time)
@@ -37,20 +43,16 @@ public sealed class Asteroid : Actor
     base.OnDraw(time);
 
     var pixels = canvas.Span;
-    var box = Box.Create(Polygon.Center, Polygon.Size).Clamp(0, 0, pixels.Width - 1, pixels.Height - 1);
+    var rectangle = transformedPolygon.Bounds.Clamp(0, 0, pixels.Width - 1, pixels.Height - 1);
 
-    for (int y = box.Bottom; y < box.Top; y++)
-    for (int x = box.Left; x < box.Right; x++)
+    for (int y = (int) rectangle.Bottom; y < (int) rectangle.Top; y++)
+    for (int x = (int) rectangle.Left; x < (int) rectangle.Right; x++)
     {
       var point = new Vector2(x, y);
 
-      if (Polygon.ContainsPoint(point))
+      if (transformedPolygon.ContainsPoint(point))
       {
         pixels[x, y] = Color;
-      }
-      else
-      {
-        pixels[x, y] = Color.Magenta with { A = 0.2f };
       }
     }
   }

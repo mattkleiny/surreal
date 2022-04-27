@@ -15,7 +15,7 @@ public readonly record struct TextureRegion(Texture Texture)
   public int Height => Size.Y;
 
   /// <summary>Computes the UV rectangle for the texture region.</summary>
-  public Rectangle UV => new(
+  public BoundingRect UV => new(
     (float) Offset.X / Texture.Width,
     (float) Offset.Y / Texture.Height,
     (float) (Offset.X + Size.X) / Texture.Width,

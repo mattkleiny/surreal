@@ -41,6 +41,6 @@ public sealed class Player : Actor
   {
     base.OnDraw(time);
 
-    canvas.Span.DrawCircle(Position, 6, Color with { A = 0.2f });
+    canvas.Span.DrawCircle(Position, 6, Color);
   }
 }

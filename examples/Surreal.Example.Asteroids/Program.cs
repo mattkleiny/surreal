@@ -21,19 +21,19 @@ Game.Start(platform, async context =>
 
   // load some resources
   using var shader = await context.Assets.LoadDefaultShaderAsync();
-  using var canvas = new PixelCanvas(graphics, 150, 80);
+  using var canvas = new PixelCanvas(graphics, 256, 144);
   using var scene = new ActorScene();
 
-  var palette = await context.Assets.LoadAsset<ColorPalette>("resx://Asteroids/Resources/palettes/kule-16.pal");
+  var palette = await context.Assets.LoadAsset<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");
 
   var random = Random.Shared;
-  var center = new Vector2(150 / 2f, 80 / 2f);
+  var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);
 
   // spawn the player
   scene.Spawn(new Player(canvas, keyboard)
   {
     Position = center,
-    Color    = Color.White,
+    Color    = palette[3],
     Speed    = 100f
   });
 
@@ -42,10 +42,11 @@ Game.Start(platform, async context =>
   {
     scene.Spawn(new Asteroid(canvas)
     {
-      Position = center + random.NextUnitCircle() * 20f,
-      Velocity = random.NextUnitCircle() * random.NextFloat(2f, 4f),
-      Rotation = random.NextFloat(0f, 4f),
-      Color    = palette[random.Next(1, 4)]
+      Position = center + random.NextUnitCircle() * 84f,
+      Velocity = random.NextUnitCircle() * random.NextFloat(4f, 10f),
+      Rotation = random.NextFloat(0f, MathF.PI),
+      Spin     = random.NextFloat(0f, 0.5f),
+      Color    = palette[random.NextInt(1, 2)]
     });
   }
 
