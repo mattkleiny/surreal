@@ -1,7 +1,4 @@
-﻿using Surreal.Memory;
-using Surreal.Pixels;
-
-namespace Sand;
+﻿namespace Sand;
 
 /// <summary>A simple canvas of 'sand' pixels that can be simulated.</summary>
 public sealed class SandCanvas : IDisposable

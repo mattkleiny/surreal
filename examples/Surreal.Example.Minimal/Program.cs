@@ -1,8 +1,5 @@
 ﻿// ReSharper disable AccessToDisposedClosure
 
-using Surreal.Memory;
-using Surreal.Pixels;
-
 var platform = new DesktopPlatform
 {
   Configuration =

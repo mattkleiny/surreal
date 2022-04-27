@@ -1,7 +1,4 @@
-﻿using Surreal.Actors;
-using Surreal.Pixels;
-
-namespace Asteroids.Actors;
+﻿namespace Asteroids.Actors;
 
 /// <summary>An <see cref="Actor"/> that maintains a polygonal shape.</summary>
 public abstract class PolygonActor : Actor

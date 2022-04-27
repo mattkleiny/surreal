@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Using Include="Surreal" />
+    <Using Include="Surreal.Actors" />
     <Using Include="Surreal.Audio" />
     <Using Include="Surreal.Audio.Clips" />
     <Using Include="Surreal.Collections" />
@@ -34,7 +35,9 @@
     <Using Include="Surreal.Input.Mouse" />
     <Using Include="Surreal.Input.Touch" />
     <Using Include="Surreal.Mathematics" />
+    <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Timing" />
+    <Using Include="Surreal.Pixels" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,4 @@
-﻿using Surreal.Pixels;
-
-namespace Asteroids.Actors;
+﻿namespace Asteroids.Actors;
 
 /// <summary>A <see cref="PixelCanvas"/> for the asteroids example.</summary>
 public sealed class AsteroidsCanvas : PixelCanvas

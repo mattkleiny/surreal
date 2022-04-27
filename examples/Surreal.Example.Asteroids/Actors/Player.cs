@@ -1,6 +1,4 @@
-﻿using Surreal.Actors;
-
-namespace Asteroids.Actors;
+﻿namespace Asteroids.Actors;
 
 /// <summary>The player ship.</summary>
 public sealed class Player : PolygonActor

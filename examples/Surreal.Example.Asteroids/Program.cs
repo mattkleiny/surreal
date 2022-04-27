@@ -1,5 +1,4 @@
 ﻿using Asteroids.Actors;
-using Surreal.Actors;
 
 var platform = new DesktopPlatform
 {
