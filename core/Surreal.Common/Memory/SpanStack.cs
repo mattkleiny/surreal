@@ -70,7 +70,7 @@ public ref struct SpanStack<T>
       return true;
     }
 
-    element = default;
+    element = default!;
     return false;
   }
 

@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Game framework and bootstrapping for Surreal.</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj" />
-  </ItemGroup>
-</Project>

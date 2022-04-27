@@ -7,6 +7,5 @@
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Input\Surreal.Input.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" />
   </ItemGroup>
 </Project>
