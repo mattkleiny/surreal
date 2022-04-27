@@ -1,46 +1,53 @@
-﻿using Surreal.Actors;
-using Surreal.Memory;
-using Surreal.Pixels;
+﻿using Surreal.Pixels;
 
 namespace Asteroids.Actors;
 
 /// <summary>The player ship.</summary>
-public sealed class Player : Actor
+public sealed class Player : PolygonActor
 {
-  private readonly PixelCanvas canvas;
   private readonly IKeyboardDevice keyboard;
 
   public Player(PixelCanvas canvas, IKeyboardDevice keyboard)
+    : base(canvas, CreatePlayerPolygon(4f))
   {
-    this.canvas   = canvas;
     this.keyboard = keyboard;
   }
 
-  public Vector2 Position { get; set; } = Vector2.Zero;
-  public Color   Color    { get; set; } = Color.White;
-  public float   Speed    { get; set; } = 100f;
+  public float Speed { get; set; } = 50f;
 
   protected override void OnInput(TimeDelta deltaTime)
   {
     base.OnInput(deltaTime);
 
     var movement = Vector2.Zero;
+    var spin = 0f;
 
     if (keyboard.IsKeyDown(Key.W)) movement.Y -= Speed;
     if (keyboard.IsKeyDown(Key.S)) movement.Y += Speed;
-    if (keyboard.IsKeyDown(Key.A)) movement.X -= Speed;
-    if (keyboard.IsKeyDown(Key.D)) movement.X += Speed;
+    if (keyboard.IsKeyDown(Key.A)) spin       -= 5.0f;
+    if (keyboard.IsKeyDown(Key.D)) spin       += 5.0f;
 
-    if (movement.LengthSquared() > 0f)
-    {
-      Position += movement * deltaTime;
-    }
+    var rotation = Matrix3x2.CreateRotation(Rotation);
+
+    Velocity = Vector2.Transform(movement, rotation);
+    Spin     = spin;
   }
 
-  protected override void OnDraw(TimeDelta time)
+  public void OnHitAsteroid(Asteroid asteroid)
   {
-    base.OnDraw(time);
+    // TODO: do something interesting
+    Destroy();
+  }
 
-    canvas.Span.DrawCircle(Position, 6, Color);
+  /// <summary>Creates a new randomly shaped <see cref="Polygon"/> to represent a player.</summary>
+  private static Polygon CreatePlayerPolygon(float scale)
+  {
+    var vertices = new Vector2[3];
+
+    vertices[0] = new Vector2(-scale, scale);
+    vertices[1] = new Vector2(0f, -scale);
+    vertices[2] = new Vector2(scale, scale);
+
+    return new Polygon(vertices);
   }
 }

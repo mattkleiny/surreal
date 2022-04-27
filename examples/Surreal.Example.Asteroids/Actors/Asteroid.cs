@@ -1,59 +1,51 @@
-﻿using Surreal.Actors;
+﻿using Surreal.Memory;
 using Surreal.Pixels;
 
 namespace Asteroids.Actors;
 
 /// <summary>An asteroid that floats about and can impact the player.</summary>
-public sealed class Asteroid : Actor
+public sealed class Asteroid : PolygonActor
 {
-  private readonly PixelCanvas canvas;
-  private readonly Polygon transformedPolygon;
+  private readonly Player player;
 
-  public Asteroid(PixelCanvas canvas)
+  public Asteroid(PixelCanvas canvas, Player player)
+    : base(canvas, CreateAsteroidPolygon(new FloatRange(4f, 12f)))
   {
-    this.canvas = canvas;
-
-    transformedPolygon = new Polygon(new Vector2[Polygon.Length]);
+    this.player = player;
   }
-
-  public Polygon Polygon  { get; init; } = Polygon.Create();
-  public Vector2 Position { get; set; }  = Vector2.Zero;
-  public Vector2 Velocity { get; set; }  = Vector2.Zero;
-  public float   Rotation { get; set; }  = 0f;
-  public float   Spin     { get; set; }  = 0f;
-  public Color   Color    { get; set; }  = Color.White;
 
   protected override void OnUpdate(TimeDelta deltaTime)
   {
     base.OnUpdate(deltaTime);
 
-    Position += Velocity * deltaTime;
-    Rotation += Spin * deltaTime;
-
-    var rotation = Matrix4x4.CreateRotationZ(Rotation);
-    var translation = Matrix4x4.CreateTranslation(Position.X, Position.Y, 0f);
-
-    var transform = rotation * translation;
-
-    transformedPolygon.TransformFrom(Polygon, in transform);
+    if (Bounds.Contains(player.Position) && Polygon.ContainsPoint(player.Position))
+    {
+      player.OnHitAsteroid(this);
+    }
   }
 
-  protected override void OnDraw(TimeDelta time)
+  /// <summary>Creates a new randomly shaped <see cref="Polygon"/> to represent an asteroid.</summary>
+  private static Polygon CreateAsteroidPolygon(FloatRange radiusRange)
   {
-    base.OnDraw(time);
+    var random = Random.Shared;
 
-    var pixels = canvas.Span;
-    var rectangle = transformedPolygon.Bounds.Clamp(0, 0, pixels.Width - 1, pixels.Height - 1);
+    var vertices = new Vector2[random.NextInt(5, 12)];
+    var list = new SpanList<Vector2>(vertices);
 
-    for (int y = (int) rectangle.Bottom; y < (int) rectangle.Top; y++)
-    for (int x = (int) rectangle.Left; x < (int) rectangle.Right; x++)
+    var theta = 0f;
+
+    for (var i = 0; i < list.Capacity; i++)
     {
-      var point = new Vector2(x, y);
+      theta += 2 * MathF.PI / list.Capacity;
 
-      if (transformedPolygon.ContainsPoint(point))
-      {
-        pixels[x, y] = Color;
-      }
+      var radius = random.NextRange(radiusRange);
+
+      var x = radius * MathF.Cos(theta);
+      var y = radius * MathF.Sin(theta);
+
+      list.Add(new Vector2(x, y));
     }
+
+    return new Polygon(vertices);
   }
 }

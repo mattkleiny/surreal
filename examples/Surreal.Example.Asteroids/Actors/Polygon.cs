@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Surreal.Memory;
 
 namespace Asteroids.Actors;
 
@@ -7,22 +8,13 @@ public sealed class Polygon
 {
   private Vector2[] vertices;
 
-  /// <summary>Creates a new randomly shaped <see cref="Polygon"/>.</summary>
-  public static Polygon Create()
+  /// <summary>Creates an empty polygon.</summary>
+  public Polygon()
+    : this(Array.Empty<Vector2>())
   {
-    // TODO: randomly generate me
-    return new Polygon(
-      new Vector2(0, -4),
-      new Vector2(3, -2),
-      new Vector2(7, 3),
-      new Vector2(9, 6),
-      new Vector2(7, 9),
-      new Vector2(3, 11),
-      new Vector2(-1, 11),
-      new Vector2(-8, 5)
-    );
   }
 
+  /// <summary>Creates a polygon with the given vertices.</summary>
   public Polygon(params Vector2[] vertices)
   {
     this.vertices = vertices;

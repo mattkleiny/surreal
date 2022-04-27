@@ -84,6 +84,17 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     ProcessDestroyQueue();
   }
 
+  public void Clear()
+  {
+    // clears the scene of nodes
+    foreach (var node in nodes.Values)
+    {
+      node.Data.Destroy();
+    }
+
+    ProcessDestroyQueue();
+  }
+
   private void ProcessDestroyQueue()
   {
     while (destroyQueue.TryDequeue(out var actor))

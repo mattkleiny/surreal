@@ -33,7 +33,7 @@ public ref struct SpanList<T>
 
   public void Add(T element)
   {
-    if (Count > Capacity)
+    if (Count >= Capacity)
     {
       throw new InvalidOperationException("Cannot add any more elements, it will overflow the buffer!");
     }

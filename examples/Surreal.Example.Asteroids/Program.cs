@@ -29,32 +29,43 @@ Game.Start(platform, async context =>
   var random = Random.Shared;
   var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);
 
-  // spawn the player
-  scene.Spawn(new Player(canvas, keyboard)
+  var respawn = () =>
   {
-    Position = center,
-    Color    = palette[3],
-    Speed    = 100f
-  });
+    scene.Clear();
 
-  // spawn a few asteroids
-  for (int i = 0; i < 16; i++)
-  {
-    scene.Spawn(new Asteroid(canvas)
+    // spawn the player
+    var player = scene.Spawn(new Player(canvas, keyboard)
     {
-      Position = center + random.NextUnitCircle() * 84f,
-      Velocity = random.NextUnitCircle() * random.NextFloat(4f, 10f),
-      Rotation = random.NextFloat(0f, MathF.PI),
-      Spin     = random.NextFloat(0f, 0.5f),
-      Color    = palette[random.NextInt(1, 2)]
+      Position = center,
+      Color    = palette[3]
     });
-  }
+
+    // spawn a few asteroids
+    for (int i = 0; i < 16; i++)
+    {
+      scene.Spawn(new Asteroid(canvas, player)
+      {
+        Position = center + random.NextUnitCircle() * 50f,
+        Velocity = random.NextUnitCircle() * random.NextFloat(2f, 12f),
+        Rotation = random.NextFloat(0f, MathF.PI),
+        Spin     = random.NextFloat(0f, 0.5f),
+        Color    = palette[random.NextInt(1, 2)]
+      });
+    }
+  };
+
+  respawn();
 
   context.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       context.Exit();
+    }
+
+    if (keyboard.IsKeyPressed(Key.Space))
+    {
+      respawn();
     }
 
     canvas.Span.Fill(Color.Black);

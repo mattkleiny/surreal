@@ -47,6 +47,18 @@ public static class Maths
   public static Color NextColor(this Random random)
     => new(random.NextFloat(), random.NextFloat(), random.NextFloat());
 
+  public static Point2 NextPoint2(this Random random, int min, int max)
+    => new(random.NextInt(min, max), random.NextInt(min, max));
+
+  public static Point3 NextPoint3(this Random random, int min, int max)
+    => new(random.NextInt(min, max), random.NextInt(min, max), random.NextInt(min, max));
+
+  public static Vector2 NextVector2(this Random random, float min, float max)
+    => new(random.NextFloat(min, max), random.NextFloat(min, max));
+
+  public static Vector3 NextVector3(this Random random, float min, float max)
+    => new(random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max));
+
   public static Vector2 NextUnitCircle(this Random random)
     => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f));
 
