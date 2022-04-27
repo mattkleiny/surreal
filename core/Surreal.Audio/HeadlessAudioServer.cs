@@ -18,7 +18,7 @@ public sealed class HeadlessAudioServer : IAudioServer
     // no-op
   }
 
-  public void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> buffer) where T : unmanaged
+  public void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged
   {
     // no-op
   }

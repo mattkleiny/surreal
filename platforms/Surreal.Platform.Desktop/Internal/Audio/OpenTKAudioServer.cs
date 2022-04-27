@@ -16,15 +16,17 @@ internal sealed class OpenTKAudioServer : IAudioServer
     AL.DeleteBuffer(handle);
   }
 
-  public unsafe void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> buffer)
+  public unsafe void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
     where T : unmanaged
   {
     var (frequency, channels, bitsPerSample) = sampleRate;
-    var format = GetSoundFormat(channels, bitsPerSample);
 
-    fixed (T* pointer = buffer)
+    var format = GetSoundFormat(channels, bitsPerSample);
+    var bytes = data.Length * sizeof(T);
+
+    fixed (T* pointer = data)
     {
-      AL.BufferData(handle, format, pointer, buffer.Length, frequency);
+      AL.BufferData(handle, format, pointer, bytes, frequency);
     }
   }
 
@@ -38,11 +40,14 @@ internal sealed class OpenTKAudioServer : IAudioServer
     AL.DeleteSource(handle);
   }
 
-  private static ALFormat GetSoundFormat(int channels, int bits) => channels switch
+  private static ALFormat GetSoundFormat(int channels, int bits)
   {
-    1 => bits == 8 ? ALFormat.Mono8 : ALFormat.Mono16,
-    2 => bits == 8 ? ALFormat.Stereo8 : ALFormat.Stereo16,
+    return channels switch
+    {
+      1 => bits == 8 ? ALFormat.Mono8 : ALFormat.Mono16,
+      2 => bits == 8 ? ALFormat.Stereo8 : ALFormat.Stereo16,
 
-    _ => throw new NotSupportedException("The specified sound format is not supported."),
-  };
+      _ => throw new NotSupportedException("The specified sound format is not supported."),
+    };
+  }
 }
