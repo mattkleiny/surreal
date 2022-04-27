@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Microsoft.Win32.SafeHandles;
@@ -228,6 +229,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     }
   }
 
+  [SuppressMessage("ReSharper", "BitwiseOperatorOnEnumWithoutFlags")]
   private static short ToColorAttribute(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
   {
     static int Cast(ConsoleColor color, bool isBackground)
@@ -320,6 +322,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     public event Action<MouseButton>? ButtonReleased;
     public event Action<Vector2>?     Moved;
 
+    private Vector2 lastPosition;
+
     public Vector2 Position
     {
       get
@@ -360,10 +364,13 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
 
     public void Update()
     {
+      DeltaPosition = Position - lastPosition;
+      lastPosition  = Position;
     }
   }
 
   /// <summary>Native interop for Win32 consoles</summary>
+  [SuppressMessage("ReSharper", "InconsistentNaming")]
   private static class Interop
   {
     private const int FixedWidthTrueType = 54;

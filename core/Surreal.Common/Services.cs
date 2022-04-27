@@ -123,7 +123,7 @@ public sealed class ServiceRegistry : IServiceRegistry
 
   public void RegisterService(Type serviceType, object instance)
   {
-    instancesByType[serviceType] = instance!;
+    instancesByType[serviceType] = instance;
   }
 
   public void ReplaceService(ServiceLifetime lifetime, Type serviceType, Type implementationType)

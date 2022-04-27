@@ -20,7 +20,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return base.CanHandle(context) && context.Path.Extension == ".glsl";
   }
 
-  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var vertexPath = context.Path.ChangeExtension("vert.glsl");
     var fragmentPath = context.Path.ChangeExtension("frag.glsl");

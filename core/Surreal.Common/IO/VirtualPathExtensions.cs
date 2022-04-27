@@ -47,7 +47,7 @@ public static class VirtualPathExtensions
     => path.GetFileSystem().WatchPath(path);
 
   public static ValueTask<VirtualPath[]> EnumerateAsync(this VirtualPath path, string wildcard)
-    => path.GetFileSystem().EnumerateAsync(path.Target.ToString()!, wildcard);
+    => path.GetFileSystem().EnumerateAsync(path.Target.ToString(), wildcard);
 
   public static VirtualPath ChangeExtension(this VirtualPath path, string newExtension)
     => path with { Target = Path.ChangeExtension(path.Target.ToString(), newExtension) };
@@ -147,7 +147,7 @@ public static class VirtualPathExtensions
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    var element = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
+    await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
 
     throw new NotImplementedException();
   }
@@ -157,7 +157,7 @@ public static class VirtualPathExtensions
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    var element = await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
+    await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
 
     throw new NotImplementedException();
   }

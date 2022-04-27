@@ -68,7 +68,7 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
     return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     return await parser.ParseAsync(context.Path, encoding, cancellationToken);
   }

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Surreal.Collections;
 
@@ -10,6 +11,8 @@ public readonly ref struct LogInterpolator
 {
   private readonly StringBuilder builder;
 
+  [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+  [SuppressMessage("Style", "IDE0060:Remove unused parameter")]
   public LogInterpolator(int literalLength, int formattedCount)
   {
     builder = Pool<StringBuilder>.Shared.CreateOrRent();

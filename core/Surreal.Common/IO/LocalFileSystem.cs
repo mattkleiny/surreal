@@ -83,14 +83,13 @@ public sealed class LocalFileSystem : FileSystem
     public event Action<VirtualPath>? Modified;
     public event Action<VirtualPath>? Deleted;
 
-    public VirtualPath Directory { get; }
-    public VirtualPath File      { get; }
+    public VirtualPath FilePath { get; }
 
-    public PathWatcher(VirtualPath directory, VirtualPath file)
+    public PathWatcher(VirtualPath directoryPath, VirtualPath filePath)
     {
-      watcher = new FileSystemWatcher(directory.Target.ToString())
+      watcher = new FileSystemWatcher(directoryPath.Target.ToString())
       {
-        Filter = Path.GetFileName(file.Target.ToString()),
+        Filter = Path.GetFileName(filePath.Target.ToString()),
 
         EnableRaisingEvents = true,
       };
@@ -102,13 +101,12 @@ public sealed class LocalFileSystem : FileSystem
       }
 
       // adapt the event interface
-      watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(file), null);
-      watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(file), null);
-      watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(file), null);
-      watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(file), null);
+      watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(filePath), null);
+      watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
+      watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
+      watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(filePath), null);
 
-      Directory = directory;
-      File      = file;
+      FilePath = filePath;
     }
 
     public void Dispose()

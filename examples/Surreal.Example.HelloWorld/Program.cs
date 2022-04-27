@@ -1,3 +1,5 @@
+// ReSharper disable AccessToDisposedClosure
+
 var size = new Vector2(256f, 144f);
 
 var platform = new DesktopPlatform

@@ -112,7 +112,7 @@ public sealed record ColorPalette(Color[] colors, int Offset, int Count) : IEnum
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ColorPalette"/>s.s</summary>
 public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
-  public override ValueTask<ColorPalette> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override ValueTask<ColorPalette> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     return ColorPalette.LoadAsync(context.Path, cancellationToken);
   }

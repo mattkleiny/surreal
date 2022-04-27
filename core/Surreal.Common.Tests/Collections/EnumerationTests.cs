@@ -1,4 +1,6 @@
-﻿namespace Surreal.Collections;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Surreal.Collections;
 
 public class EnumerationTests
 {
@@ -14,7 +16,8 @@ public class EnumerationTests
     });
   }
 
-  private record TestValue(int Id) : Enumeration<TestValue>
+  [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
+  private sealed record TestValue(int Id) : Enumeration<TestValue>
   {
     public static TestValue One   { get; } = new(1);
     public static TestValue Two   { get; } = new(2);

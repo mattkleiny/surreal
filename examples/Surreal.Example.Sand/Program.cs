@@ -1,4 +1,6 @@
-﻿using Sand;
+﻿// ReSharper disable AccessToDisposedClosure
+
+using Sand;
 
 var platform = new DesktopPlatform
 {
@@ -33,7 +35,7 @@ Game.Start(platform, async context =>
     var targetX = normalizedX * canvas.Width - 1;
     var targetY = normalizedY * canvas.Height - 1;
 
-    var point = new Point2((int) targetX, (int) targetY);
+    var point = new Point2((int)targetX, (int)targetY);
 
     if (keyboard.IsKeyPressed(Key.Space))
     {

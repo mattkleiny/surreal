@@ -56,7 +56,7 @@ public ref struct SpanStack<T>
   {
     if (Count < 0)
     {
-      throw new InvalidOperationException("Can't pop any more elements, it will underflow the buffer"!);
+      throw new InvalidOperationException("Can't pop any more elements, it will underflow the buffer");
     }
 
     return storage[Count-- - 1];

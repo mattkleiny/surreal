@@ -42,7 +42,7 @@ public interface IFileSystemRegistry
 public interface IPathWatcher : IDisposable
 {
   /// <summary>The <see cref="VirtualPath"/> being watched.</summary>
-  VirtualPath File { get; }
+  VirtualPath FilePath { get; }
 
   event Action<VirtualPath> Created;
   event Action<VirtualPath> Modified;

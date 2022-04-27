@@ -1,4 +1,5 @@
-﻿using Surreal.Assets;
+﻿using System.Diagnostics.CodeAnalysis;
+using Surreal.Assets;
 using Surreal.Graphics.Shaders.Transformers;
 using Surreal.IO;
 using Surreal.Text;
@@ -335,6 +336,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
       return new ConstantDeclaration(type, name, value);
     }
 
+    [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
     private Expression ParseExpression(int depth = 0, int maxDepth = 32)
     {
       if (depth > maxDepth) throw Error("Exceeded max depth");

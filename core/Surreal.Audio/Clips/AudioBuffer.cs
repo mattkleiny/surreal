@@ -37,7 +37,7 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate, IDisposableBu
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioBuffer"/>s.</summary>
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
-  public override async ValueTask<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async ValueTask<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 

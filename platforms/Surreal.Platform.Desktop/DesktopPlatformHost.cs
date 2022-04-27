@@ -8,8 +8,6 @@ using Surreal.Graphics.Images;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
-using Surreal.Input.Keyboard;
-using Surreal.Input.Mouse;
 using Surreal.Internal;
 using Surreal.Internal.Audio;
 using Surreal.Internal.Graphics;

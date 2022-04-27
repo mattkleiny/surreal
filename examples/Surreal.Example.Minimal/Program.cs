@@ -1,4 +1,6 @@
-﻿using Surreal.Memory;
+﻿// ReSharper disable AccessToDisposedClosure
+
+using Surreal.Memory;
 using Surreal.Pixels;
 
 var platform = new DesktopPlatform
@@ -20,7 +22,7 @@ Game.Start(platform, async context =>
   using var shader = await context.Assets.LoadDefaultShaderAsync();
   using var canvas = new PixelCanvas(graphics, 256, 144);
 
-  var position = new Vector2(canvas.Width / 2, canvas.Height / 2);
+  var position = new Vector2(canvas.Width / 2f, canvas.Height / 2f);
 
   context.ExecuteVariableStep(time =>
   {
