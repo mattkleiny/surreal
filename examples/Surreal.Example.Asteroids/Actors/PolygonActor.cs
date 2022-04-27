@@ -10,8 +10,7 @@ public abstract class PolygonActor : Actor
 
   protected PolygonActor(PixelCanvas canvas, Polygon polygon)
   {
-    this.canvas = canvas;
-
+    this.canvas   = canvas;
     SourcePolygon = polygon;
   }
 
@@ -22,9 +21,7 @@ public abstract class PolygonActor : Actor
   public Color Color = Color.White;
 
   public Polygon SourcePolygon { get; }
-
-  /// <summary>The final <see cref="FinalPolygon"/> shape of this actor.</summary>
-  public Polygon FinalPolygon { get; } = new();
+  public Polygon FinalPolygon  { get; } = new();
 
   /// <summary>The final bounds of the actor's polygon, constrained to the canvas.</summary>
   public BoundingRect Bounds => FinalPolygon.Bounds.Clamp(0, 0, canvas.Width - 1, canvas.Height - 1);

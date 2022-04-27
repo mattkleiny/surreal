@@ -39,7 +39,7 @@ public sealed class Player : PolygonActor
 
   public void OnHitAsteroid(Asteroid asteroid)
   {
-    canvas.IsExploding = true;
+    canvas.IsGameOver = true;
 
     scene.Clear();
   }

@@ -30,7 +30,7 @@ Game.Start(platform, async context =>
 
   void Respawn()
   {
-    canvas.IsExploding = false;
+    canvas.IsGameOver = false;
 
     scene.Clear();
 
@@ -59,6 +59,8 @@ Game.Start(platform, async context =>
 
   context.ExecuteVariableStep(time =>
   {
+    if (!context.Host.IsFocused) return;
+
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       context.Exit();

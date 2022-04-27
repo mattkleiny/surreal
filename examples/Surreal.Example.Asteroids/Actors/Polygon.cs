@@ -2,7 +2,7 @@
 
 namespace Asteroids.Actors;
 
-/// <summary>A simple polygon in 2-space that can be transformed and translated.</summary>
+/// <summary>A simple polygon in 2-space that can be transformed and queried.</summary>
 public sealed class Polygon
 {
   private Vector2[] vertices;
@@ -14,7 +14,7 @@ public sealed class Polygon
   }
 
   /// <summary>Creates a polygon with the given vertices.</summary>
-  public Polygon(params Vector2[] vertices)
+  public Polygon(Vector2[] vertices)
   {
     this.vertices = vertices;
   }
@@ -70,7 +70,7 @@ public sealed class Polygon
     return intersectionCount % 2 == 1; // if there where an odd amount of intersection, the point lies within the polygon
   }
 
-  /// <summary>Transforms the given other polygon by the given matrix and writes the results to this polygon.</summary>
+  /// <summary>Transforms this polygon from the given other polygon by the given matrix.</summary>
   public void TransformFrom(Polygon other, in Matrix4x4 transform)
   {
     if (Length != other.Length)

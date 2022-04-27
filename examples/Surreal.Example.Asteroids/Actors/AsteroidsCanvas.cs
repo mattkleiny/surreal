@@ -12,13 +12,13 @@ public sealed class AsteroidsCanvas : PixelCanvas
   {
   }
 
-  public bool IsExploding { get; set; }
+  public bool IsGameOver { get; set; }
 
   public void Update(TimeDelta deltaTime)
   {
     var pixels = Span;
 
-    if (!IsExploding)
+    if (!IsGameOver)
     {
       pixels.Fill(Color32.Black);
       return;

@@ -27,6 +27,8 @@ Game.Start(platform, async context =>
 
   context.ExecuteVariableStep(time =>
   {
+    if (!context.Host.IsFocused) return;
+
     graphics.ClearColorBuffer(Color.Black);
 
     var normalizedX = mouse.Position.X / context.Host.Width;
