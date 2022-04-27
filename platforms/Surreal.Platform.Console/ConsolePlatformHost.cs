@@ -334,6 +334,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
       }
     }
 
+    public Vector2 NormalisedPosition { get; }
+
     public Vector2 DeltaPosition { get; private set; }
 
     public bool IsCursorVisible

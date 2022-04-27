@@ -2,12 +2,17 @@
 
 #shader_type sprite;
 
-uniform vec4 _Tint;
+attribute(0) vec2 _Position;
+attribute(1) vec4 _Color;
+attribute(2) vec2 _UV;
 
-void vertex(vec3 position) {
-  POSITION = position;
+uniform sampler2d _Texture;
+uniform vec4      _Tint;
+
+void vertex() {
+  POSITION = _Position;
 }
 
-void fragment(vec2 uv) {
-  COLOR = SAMPLE(TEXTURE0, uv) * _Tint;
+void fragment() {
+  COLOR = SAMPLE(_Texture, _UV) _Color * _Tint;
 }

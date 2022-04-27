@@ -8,8 +8,9 @@ public interface IMouseDevice : IInputDevice
 
   event Action<Vector2> Moved;
 
-  Vector2 Position      { get; }
-  Vector2 DeltaPosition { get; }
+  Vector2 Position           { get; }
+  Vector2 NormalisedPosition { get; }
+  Vector2 DeltaPosition      { get; }
 
   bool IsCursorVisible { get; set; }
 

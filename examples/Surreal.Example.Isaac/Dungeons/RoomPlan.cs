@@ -13,7 +13,7 @@ public sealed record RoomPlan
   public RoomPlan?      Parent   { get; init; } = null;
   public List<RoomPlan> Children { get; init; } = new();
   public Point2         Position { get; set; }  = Point2.Zero;
-  public Point2         Size     { get; set; }  = new(256 / 16, 144 / 16);
+  public Point2         Size     { get; set; }  = new(15, 9);
   public RoomType       Type     { get; set; }  = RoomType.Standard;
 
   public bool IsConnected => Parent != null || Children.Count > 0;

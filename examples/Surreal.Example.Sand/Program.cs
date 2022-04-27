@@ -29,11 +29,10 @@ Game.Start(platform, async context =>
 
     graphics.ClearColorBuffer(Color.Black);
 
-    var normalizedX = mouse.Position.X / context.Host.Width;
-    var normalizedY = mouse.Position.Y / context.Host.Height;
+    var mousePos = mouse.NormalisedPosition;
 
-    var targetX = normalizedX * canvas.Width - 1;
-    var targetY = normalizedY * canvas.Height - 1;
+    var targetX = mousePos.X * canvas.Width - 1;
+    var targetY = mousePos.Y * canvas.Height - 1;
 
     var point = new Point2((int)targetX, (int)targetY);
 

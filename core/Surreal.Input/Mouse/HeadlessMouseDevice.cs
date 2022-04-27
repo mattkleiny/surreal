@@ -25,8 +25,9 @@ public sealed class HeadlessMouseDevice : IMouseDevice
     }
   }
 
-  public Vector2 Position      { get; set; } = new(0, 0);
-  public Vector2 DeltaPosition => new(0, 0);
+  public Vector2 Position           { get; set; } = new(0, 0);
+  public Vector2 NormalisedPosition => Position;
+  public Vector2 DeltaPosition      => new(0, 0);
 
   public bool IsCursorVisible { get; set; } = true;
 

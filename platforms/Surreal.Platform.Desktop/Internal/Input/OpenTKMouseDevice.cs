@@ -20,8 +20,9 @@ internal sealed class OpenTKMouseDevice : IMouseDevice
   public event Action<MouseButton>? ButtonReleased;
   public event Action<Vector2>?     Moved;
 
-  public Vector2 Position      => new(mouseState.X, mouseState.Y);
-  public Vector2 DeltaPosition => new(mouseState.X - mouseState.PreviousX, mouseState.Y - mouseState.PreviousY);
+  public Vector2 Position           => new(mouseState.X, mouseState.Y);
+  public Vector2 NormalisedPosition => new(mouseState.X / window.Width, mouseState.Y / window.Height);
+  public Vector2 DeltaPosition      => new(mouseState.X - mouseState.PreviousX, mouseState.Y - mouseState.PreviousY);
 
   public bool IsCursorVisible
   {

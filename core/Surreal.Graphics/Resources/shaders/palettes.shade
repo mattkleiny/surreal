@@ -11,8 +11,7 @@ const int COLOR_CHANNEL_INTERFACE = 3;
 const int COLOR_CHANNEL_EFFECTS   = 4;
 
 // Samples the requested color palette texture and returns the mapped color for the given input color.
-vec3 sample_palette(vec3 color, int channel)
-{
+vec3 sample_palette(vec3 color, int channel) {
   float normalized_y = channel * 0.25 - 0.125;
 
   // sample the palette texture, discretizing source colors into N equal quadrants across each of the palettes.
