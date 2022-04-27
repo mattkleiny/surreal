@@ -21,7 +21,6 @@ public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
 
   public bool ContainsType(StatusEffectType type)
   {
-    // TODO: use a hierarchical bit set?
     foreach (var effect in effects)
     {
       if (effect.Type == type)

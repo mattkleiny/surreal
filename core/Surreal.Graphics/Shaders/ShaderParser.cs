@@ -9,6 +9,8 @@ using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
 namespace Surreal.Graphics.Shaders;
 
+// TODO: remove self-recursive tree evaluations (depth + 1, maxDepth, etc).
+
 /// <summary>A <see cref="Parser{T}"/> that parses a simple shading language, similar to Godot's shader language.</summary>
 public sealed class ShaderParser : Parser<ShaderDeclaration>
 {
@@ -362,7 +364,6 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
         return new UnaryOperation(unaryOperator, value);
       }
 
-      // TODO: clean this up
       var expression =
         TryConsumeLiteralIf(TokenType.Keyword, "SAMPLE")
           ? ParseSampleOperation()

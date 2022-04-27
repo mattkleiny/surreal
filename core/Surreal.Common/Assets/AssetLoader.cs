@@ -27,7 +27,7 @@ public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manag
 
   /// <summary>Loads a dependent asset from the associated manager.</summary>
   public ValueTask<T> LoadDependencyAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
-    => Manager.LoadAsset<T>(path, cancellationToken); // TODO: wire up the dependency graph in here
+    => Manager.LoadAsset<T>(path, cancellationToken);
 }
 
 /// <summary>Allows loading assets from storage.</summary>

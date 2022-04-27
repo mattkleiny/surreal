@@ -55,7 +55,6 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
     var sampleRate = new AudioSampleRate(format.SampleRate, format.Channels, format.BitsPerSample);
     var buffer = new AudioBuffer(reader.TotalTime, sampleRate);
 
-    // TODO: clean this up?
     while (reader.CanRead)
     {
       var bytesRead = await reader.ReadAsync(buffer.Memory, cancellationToken);
