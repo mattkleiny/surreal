@@ -14,6 +14,7 @@ Game.Start(platform, async context =>
 {
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var input = context.Services.GetRequiredService<IInputServer>();
+  var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
   var mouse = input.GetRequiredDevice<IMouseDevice>();
 
   using var shader = await context.Assets.LoadDefaultShaderAsync();
@@ -34,11 +35,16 @@ Game.Start(platform, async context =>
 
     var point = new Point2((int) targetX, (int) targetY);
 
+    if (keyboard.IsKeyPressed(Key.Space))
+    {
+      canvas.Clear();
+    }
+
     if (mouse.IsButtonDown(MouseButton.Left))
     {
       var color = palette[random.Next(2, 6)];
 
-      canvas.AddSand(point, radius: 16, color);
+      canvas.AddSand(point, radius: 4, color);
     }
 
     if (mouse.IsButtonDown(MouseButton.Right))

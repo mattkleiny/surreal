@@ -1,4 +1,5 @@
-﻿using Surreal.Assets;
+﻿using System.Buffers;
+using Surreal.Assets;
 using Surreal.Graphics.Images;
 using Surreal.Mathematics;
 using Surreal.Memory;
@@ -82,6 +83,12 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     return new TextureRegion(this);
   }
 
+  public TextureDataLease<T> RentPixels<T>()
+    where T : unmanaged
+  {
+    return new TextureDataLease<T>(this);
+  }
+
   public Memory<T> ReadPixels<T>()
     where T : unmanaged
   {
@@ -113,6 +120,27 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     }
 
     base.Dispose(managed);
+  }
+
+  /// <summary>Allows borrowing the texture's data.</summary>
+  public readonly struct TextureDataLease<T> : IMemoryOwner<T>
+    where T : unmanaged
+  {
+    private readonly Texture texture;
+
+    public TextureDataLease(Texture texture)
+    {
+      this.texture = texture;
+      Memory       = texture.ReadPixels<T>();
+    }
+
+    public Memory<T> Memory { get; }
+    public Span<T>   Span   => Memory.Span;
+
+    public void Dispose()
+    {
+      texture.WritePixels<T>(texture.Width, texture.Height, Memory.Span);
+    }
   }
 }
 

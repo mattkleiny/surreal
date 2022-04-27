@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Surreal.Memory;
+﻿using Surreal.Memory;
 using Surreal.Pixels;
 
 namespace Sand;
@@ -9,7 +8,6 @@ public sealed class SandCanvas : IDisposable
 {
   private readonly Grid<Cell> cells;
   private readonly PixelCanvas pixels;
-  private readonly Random random = new();
 
   private IntervalTimer updateTimer = new(16.Milliseconds());
 
@@ -54,17 +52,8 @@ public sealed class SandCanvas : IDisposable
       if (cell.IsOccupied)
       {
         if (CheckAndMove(ref cell, x, y + 1)) continue;
-
-        if (random.NextBool())
-        {
-          if (CheckAndMove(ref cell, x - 1, y + 1)) continue;
-          CheckAndMove(ref cell, x + 1, y + 1);
-        }
-        else
-        {
-          if (CheckAndMove(ref cell, x + 1, y + 1)) continue;
-          CheckAndMove(ref cell, x - 1, y + 1);
-        }
+        if (CheckAndMove(ref cell, x - 1, y + 1)) continue;
+        CheckAndMove(ref cell, x + 1, y + 1);
       }
     }
   }
@@ -94,11 +83,16 @@ public sealed class SandCanvas : IDisposable
   {
     static Color Painter(int x, int y, Cell cell)
     {
-      return cell.IsOccupied ? cell.Color : Color.Black;
+      return cell.IsOccupied ? cell.Color : Color.White;
     }
 
     cells.Span.Blit(pixels.Span, Painter);
     pixels.Draw(shader);
+  }
+
+  public void Clear()
+  {
+    cells.Span.Fill(default);
   }
 
   public void Dispose()
