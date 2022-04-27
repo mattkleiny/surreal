@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using Surreal.Mathematics;
 using Surreal.Text;
 
 namespace Surreal.Collections;
@@ -57,25 +56,6 @@ public static class EnumExtensions
     return new MaskEnumerator<TEnum>(flags);
   }
 
-  public static TEnum SelectMaskRandomly<TEnum>(this TEnum value, Random random)
-    where TEnum : unmanaged, Enum
-  {
-    var result = default(TEnum);
-    var enumerator = GetMaskValues(value);
-
-    while (enumerator.MoveNext())
-    {
-      result = enumerator.Current;
-
-      if (result.AsInt() != 0 && random.NextBool())
-      {
-        break;
-      }
-    }
-
-    return result;
-  }
-
   public static string ToStringFast<TEnum>(this TEnum value)
     where TEnum : unmanaged, Enum
   {
@@ -110,8 +90,8 @@ public static class EnumExtensions
     public MaskEnumerator(TEnum flags)
     {
       this.flags = flags;
-      flag = 1;
-      index = -1;
+      flag       = 1;
+      index      = -1;
     }
 
     public TEnum       Current => CachedEnumLookup<TEnum>.Values[index];
@@ -145,7 +125,7 @@ public static class EnumExtensions
 
     public void Reset()
     {
-      flag = 1;
+      flag  = 1;
       index = -1;
     }
 

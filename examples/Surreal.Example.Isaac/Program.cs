@@ -1,4 +1,6 @@
-﻿var platform = new DesktopPlatform
+﻿using Isaac.Dungeons;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -23,6 +25,15 @@ Game.Start(platform, async context =>
     Matrix4x4.CreateTranslation(-256f / 2f, -144f / 2f, 0f) * // view
     Matrix4x4.CreateOrthographic(256f, 144f, 0f, 100f);       // projection
 
+  var random = Random.Shared;
+  var plan = new RoomPlanGrid();
+
+  plan.Add(new RoomPlan
+  {
+    Position = new Point2(256 / 2, 144 / 2),
+    Type     = RoomType.Spawn
+  });
+
   context.ExecuteVariableStep(_ =>
   {
     if (!context.Host.IsFocused)
@@ -35,10 +46,18 @@ Game.Start(platform, async context =>
       context.Exit();
     }
 
+    if (keyboard.IsKeyPressed(Key.Space))
+    {
+      var last = plan.Last!;
+      var direction = random.NextEnumMask(Direction.All);
+
+      plan.Add(last.AddChild(direction));
+    }
+
     shader.SetUniform("u_projectionView", in projectionView);
     shader.SetUniform("u_texture", texture, 0);
 
     batch.Begin(shader);
-    batch.DrawCircle(new(256f / 2f, 144f / 2f), 32, Color.Red);
+    plan.First!.DrawGizmos(batch);
   });
 });

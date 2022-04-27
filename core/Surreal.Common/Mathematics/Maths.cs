@@ -5,6 +5,28 @@ namespace Surreal.Mathematics;
 /// <summary>Common used mathematical utilities.</summary>
 public static class Maths
 {
+  public static float DegreesToRadians(float degrees) => (float) (degrees * (Math.PI / 180));
+  public static float RadiansToDegrees(float radians) => (float) (radians * (180 / Math.PI));
+
+  public static int Lerp(int a, int b, float t) => (int) (a + t * (b - a));
+  public static float Lerp(float a, float b, float t) => a + t * (b - a);
+
+  public static float PingPong(float t) => (MathF.Sin(t) + 1f) / 2f;
+
+  public static int Wrap(int value, int lower, int upper)
+  {
+    if (value < lower)
+    {
+      return upper - (lower - value) % (upper - lower);
+    }
+
+    return lower + (value - lower) % (upper - lower);
+  }
+}
+
+/// <summary>Extensions for <see cref="Random"/>.</summary>
+public static class RandomExtensions
+{
   public static int NextInt(this Random random)
     => random.Next();
 
@@ -73,21 +95,22 @@ public static class Maths
     return random.Next(min, max).AsEnum<TEnum>();
   }
 
-  public static float DegreesToRadians(float degrees) => (float) (degrees * (Math.PI / 180));
-  public static float RadiansToDegrees(float radians) => (float) (radians * (180 / Math.PI));
-
-  public static int Lerp(int a, int b, float t) => (int) (a + t * (b - a));
-  public static float Lerp(float a, float b, float t) => a + t * (b - a);
-
-  public static float PingPong(float t) => (MathF.Sin(t) + 1f) / 2f;
-
-  public static int Wrap(int value, int lower, int upper)
+  public static TEnum NextEnumMask<TEnum>(this Random random, TEnum mask)
+    where TEnum : unmanaged, Enum
   {
-    if (value < lower)
+    var result = default(TEnum);
+    var enumerator = mask.GetMaskValues();
+
+    while (enumerator.MoveNext())
     {
-      return upper - (lower - value) % (upper - lower);
+      result = enumerator.Current;
+
+      if (result.AsInt() != 0 && random.NextBool())
+      {
+        break;
+      }
     }
 
-    return lower + (value - lower) % (upper - lower);
+    return result;
   }
 }
