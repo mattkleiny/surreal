@@ -44,7 +44,7 @@ public static class LogFormatters
           LogLevel.Error => " [ERROR]: ",
           LogLevel.Fatal => " [FATAL]: ",
 
-          _ => throw new ArgumentOutOfRangeException(nameof(level), level, $"An unrecognized log level was supplied: {level}"),
+          _ => throw new ArgumentOutOfRangeException(nameof(level), level, $"An unrecognized log level was supplied: {level}")
         });
       }
 

@@ -7,7 +7,7 @@ namespace Surreal.Graphics.Meshes;
 public enum BufferUsage
 {
   Static,
-  Dynamic,
+  Dynamic
 }
 
 /// <summary>A buffer of data on the <see cref="IGraphicsServer"/>.</summary>

@@ -91,7 +91,7 @@ public sealed class LocalFileSystem : FileSystem
       {
         Filter = Path.GetFileName(filePath.Target.ToString()),
 
-        EnableRaisingEvents = true,
+        EnableRaisingEvents = true
       };
 
       // adapt the event interface

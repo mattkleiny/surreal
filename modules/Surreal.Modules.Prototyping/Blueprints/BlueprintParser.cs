@@ -78,7 +78,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
         var node = token.Type switch
         {
           TokenType.Keyword => ParseGlobalKeyword(),
-          _                 => ParseNull(),
+          _                 => ParseNull()
         };
 
         if (node != null)
@@ -90,7 +90,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
       return new BlueprintDeclaration(path)
       {
         Includes = nodes.OfType<IncludeStatement>().ToImmutableArray(),
-        Archetypes = nodes.OfType<BlueprintArchetype>().ToImmutableArray(),
+        Archetypes = nodes.OfType<BlueprintArchetype>().ToImmutableArray()
       };
     }
 
@@ -104,7 +104,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
         "item"     => ParseArchetypeDeclaration(ArchetypeKind.Item),
         "entity"   => ParseArchetypeDeclaration(ArchetypeKind.Entity),
 
-        _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
+        _ => throw Error($"An unrecognized keyword was encountered: {literal}")
       };
     }
 
@@ -129,7 +129,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
         Tags = block.OfType<TagDeclaration>().ToImmutableArray(),
         Attributes = block.OfType<AttributeDeclaration>().ToImmutableArray(),
         Components = block.OfType<ComponentDeclaration>().ToImmutableArray(),
-        Events = block.OfType<EventDeclaration>().ToImmutableArray(),
+        Events = block.OfType<EventDeclaration>().ToImmutableArray()
       };
     }
 
@@ -179,7 +179,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
         "component" => ParseComponentDeclaration(),
         "event"     => ParseEventDeclaration(),
 
-        _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
+        _ => throw Error($"An unrecognized keyword was encountered: {literal}")
       };
     }
 
@@ -202,7 +202,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
       return new AttributeDeclaration(name)
       {
         IsOverride = isOverride,
-        Parameters = parameters,
+        Parameters = parameters
       };
     }
 
@@ -218,7 +218,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
       return new ComponentDeclaration(name)
       {
         IsOverride = isOverride,
-        Parameters = parameters,
+        Parameters = parameters
       };
     }
 
@@ -231,7 +231,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
 
       return new EventDeclaration(name)
       {
-        Parameters = parameters,
+        Parameters = parameters
       };
     }
 

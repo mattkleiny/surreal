@@ -29,7 +29,7 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
   {
     compilationUnit = compilationUnit with
     {
-      Includes = compilationUnit.Includes.Add(new Include("resx://Surreal.Graphics/Resources/shaders/common.shade")),
+      Includes = compilationUnit.Includes.Add(new Include("resx://Surreal.Graphics/Resources/shaders/common.shade"))
     };
   }
 
@@ -50,8 +50,8 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
         ),
         Statements = ImmutableArray.Create<Statement>(
           new Assignment("POSITION", new Symbol("position"))
-        ),
-      }),
+        )
+      })
     };
   }
 
@@ -68,8 +68,8 @@ public sealed class SpriteShaderTransformer : IShaderTransformer
       {
         Statements = ImmutableArray.Create<Statement>(
           new Assignment("COLOR", new Symbol("_Color"))
-        ),
-      }),
+        )
+      })
     };
   }
 }

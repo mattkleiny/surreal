@@ -8,8 +8,8 @@ var platform = new DesktopPlatform
   {
     Title          = "Falling Sand",
     IsVsyncEnabled = true,
-    ShowFpsInTitle = true,
-  },
+    ShowFpsInTitle = true
+  }
 };
 
 Game.Start(platform, async context =>

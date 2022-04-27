@@ -9,8 +9,8 @@ var platform = new DesktopPlatform
   {
     Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
-    ShowFpsInTitle = true,
-  },
+    ShowFpsInTitle = true
+  }
 };
 
 Game.Start(platform, async context =>

@@ -10,7 +10,7 @@ public enum Precision
 {
   Low,
   Medium,
-  High,
+  High
 }
 
 /// <summary>Different kinds of <see cref="Primitive"/>s used in shaders.</summary>
@@ -22,7 +22,7 @@ public enum PrimitiveType
   UInt,
   Float,
   Matrix,
-  Sampler,
+  Sampler
 }
 
 /// <summary>Different types of shader programs.</summary>
@@ -30,7 +30,7 @@ public enum ShaderKind
 {
   Vertex,
   Geometry,
-  Fragment,
+  Fragment
 }
 
 /// <summary>A primitive type declaration with optional cardinality for vector representations.</summary>
@@ -96,7 +96,7 @@ public sealed record ShaderCompilationUnit : ShaderSyntaxTree
     Varyings = Varyings.AddRange(other.Varyings),
     Constants = Constants.AddRange(other.Constants),
     Functions = Functions.AddRange(other.Functions),
-    Stages = Stages.AddRange(other.Stages),
+    Stages = Stages.AddRange(other.Stages)
   };
 
   public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
@@ -312,13 +312,13 @@ public abstract record ShaderSyntaxTree
     Divide,
 
     Equal,
-    NotEqual,
+    NotEqual
   }
 
   /// <summary>Unary operators used in unary expressions.</summary>
   public enum UnaryOperator
   {
-    Negate,
+    Negate
   }
 }
 

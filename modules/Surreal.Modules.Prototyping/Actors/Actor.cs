@@ -9,7 +9,7 @@ public enum ActorStatus
   Unknown,
   Active,
   Inactive,
-  Destroyed,
+  Destroyed
 }
 
 /// <summary>Uniquely identifies a single <see cref="Actor"/>.</summary>

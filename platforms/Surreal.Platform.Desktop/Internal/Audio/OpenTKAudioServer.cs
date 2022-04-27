@@ -95,7 +95,7 @@ internal sealed class OpenTKAudioServer : IAudioServer, IDisposable
       1 => bits == 8 ? ALFormat.Mono8 : ALFormat.Mono16,
       2 => bits == 8 ? ALFormat.Stereo8 : ALFormat.Stereo16,
 
-      _ => throw new NotSupportedException("The specified sound format is not supported."),
+      _ => throw new NotSupportedException("The specified sound format is not supported.")
     };
   }
 }

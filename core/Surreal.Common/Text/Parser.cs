@@ -79,7 +79,7 @@ public abstract class Parser<T>
     Keyword,
 
     // miscellaneous
-    Comment,
+    Comment
   }
 
   /// <summary>Encodes a single token in the parser.</summary>

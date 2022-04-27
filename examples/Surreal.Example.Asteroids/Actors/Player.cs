@@ -4,6 +4,7 @@ using Surreal.Pixels;
 
 namespace Asteroids.Actors;
 
+/// <summary>The player ship.</summary>
 public sealed class Player : Actor
 {
   private readonly PixelCanvas canvas;
@@ -23,22 +24,23 @@ public sealed class Player : Actor
   {
     base.OnInput(deltaTime);
 
-    var direction = Vector2.Zero;
+    var movement = Vector2.Zero;
 
-    if (keyboard.IsKeyDown(Key.W)) direction.Y -= Speed * deltaTime;
-    if (keyboard.IsKeyDown(Key.S)) direction.Y += Speed * deltaTime;
-    if (keyboard.IsKeyDown(Key.A)) direction.X -= Speed * deltaTime;
-    if (keyboard.IsKeyDown(Key.D)) direction.X += Speed * deltaTime;
+    if (keyboard.IsKeyDown(Key.W)) movement.Y -= Speed;
+    if (keyboard.IsKeyDown(Key.S)) movement.Y += Speed;
+    if (keyboard.IsKeyDown(Key.A)) movement.X -= Speed;
+    if (keyboard.IsKeyDown(Key.D)) movement.X += Speed;
 
-    Position += direction;
+    if (movement.LengthSquared() > 0f)
+    {
+      Position += movement * deltaTime;
+    }
   }
 
   protected override void OnDraw(TimeDelta time)
   {
     base.OnDraw(time);
 
-    var size = new Point2(4, 4);
-
-    canvas.Span.DrawRectangle(Position, size, Color);
+    canvas.Span.DrawCircle(Position, 6, Color with { A = 0.2f });
   }
 }

@@ -47,7 +47,7 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
       ".mp3"  => new Mp3FileReader(stream),
       ".aiff" => new AiffFileReader(stream),
 
-      _ => throw new UnsupportedAudioFormatException($"An unrecognized audio file format was requested: {context.Path}"),
+      _ => throw new UnsupportedAudioFormatException($"An unrecognized audio file format was requested: {context.Path}")
     };
 
     var format = reader.WaveFormat;

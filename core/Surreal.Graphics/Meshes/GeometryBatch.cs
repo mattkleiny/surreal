@@ -122,7 +122,7 @@ public sealed class GeometryBatch : IDisposable
         // triangle 2
         topRight,
         bottomRight,
-        bottomLeft,
+        bottomLeft
       },
       color: color,
       type: type

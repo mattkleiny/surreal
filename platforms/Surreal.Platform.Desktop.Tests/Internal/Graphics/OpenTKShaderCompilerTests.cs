@@ -44,7 +44,7 @@ public class OpenTKShaderCompilerTests
                   )
                 )
               )
-            ),
+            )
           },
 
           // fragment program
@@ -52,9 +52,9 @@ public class OpenTKShaderCompilerTests
           {
             Statements = ImmutableArray.Create<Statement>(
               new Assignment("COLOR", new SampleOperation("_Texture", new Constant("input.xy")))
-            ),
+            )
           }
-        ),
+        )
       }
     ));
 

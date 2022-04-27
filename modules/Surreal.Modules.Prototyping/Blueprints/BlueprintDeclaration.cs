@@ -8,7 +8,7 @@ namespace Surreal.Blueprints;
 public enum ArchetypeKind
 {
   Item,
-  Entity,
+  Entity
 }
 
 /// <summary>Represents a parsed blueprint, ready for interrogation and compilation.</summary>
@@ -132,7 +132,7 @@ public abstract record BlueprintSyntaxTree
 
   public enum UnaryOperator
   {
-    Negate,
+    Negate
   }
 
   public enum BinaryOperator
@@ -140,6 +140,6 @@ public abstract record BlueprintSyntaxTree
     Plus,
     Minus,
     Times,
-    Divide,
+    Divide
   }
 }

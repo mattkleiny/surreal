@@ -1,6 +1,4 @@
-﻿// ReSharper disable AccessToDisposedClosure
-
-using Asteroids.Actors;
+﻿using Asteroids.Actors;
 using Surreal.Actors;
 using Surreal.Pixels;
 
@@ -10,16 +8,18 @@ var platform = new DesktopPlatform
   {
     Title          = "Asteroids",
     IsVsyncEnabled = true,
-    ShowFpsInTitle = true,
-  },
+    ShowFpsInTitle = true
+  }
 };
 
 Game.Start(platform, async context =>
 {
+  // prepare core services
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var input = context.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
+  // load some resources
   using var shader = await context.Assets.LoadDefaultShaderAsync();
   using var canvas = new PixelCanvas(graphics, 150, 80);
   using var scene = new ActorScene();
@@ -29,6 +29,15 @@ Game.Start(platform, async context =>
   var random = Random.Shared;
   var center = new Vector2(150 / 2f, 80 / 2f);
 
+  // spawn the player
+  scene.Spawn(new Player(canvas, keyboard)
+  {
+    Position = center,
+    Color    = Color.White,
+    Speed    = 100f
+  });
+
+  // spawn a few asteroids
   for (int i = 0; i < 16; i++)
   {
     scene.Spawn(new Asteroid(canvas)
@@ -47,7 +56,7 @@ Game.Start(platform, async context =>
       context.Exit();
     }
 
-    canvas.Span.Fill(Color.White);
+    canvas.Span.Fill(Color.Black);
 
     scene.Input(time.DeltaTime);
     scene.Update(time.DeltaTime);

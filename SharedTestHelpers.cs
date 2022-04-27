@@ -61,7 +61,7 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
 
     fixture.Customize(new AutoNSubstituteCustomization
     {
-      GenerateDelegates = true,
+      GenerateDelegates = true
     });
 
     fixture.Customizations.Add(new DateOnlyGenerator());
@@ -185,7 +185,7 @@ internal abstract class SpecimenBuilder<T> : ISpecimenBuilder
       PropertyInfo { Name: var name, PropertyType: var type } when type == typeof(T)   => Create(context, name),
       SeededRequest { Request: Type type } when type == typeof(T)                      => Create(context),
 
-      _ => new NoSpecimen(),
+      _ => new NoSpecimen()
     };
   }
 }

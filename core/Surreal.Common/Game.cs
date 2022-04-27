@@ -156,7 +156,7 @@ public sealed class Game : IDisposable
       {
         physics(gameTime with
         {
-          TotalTime = TimeStamp.Now - startTime,
+          TotalTime = TimeStamp.Now - startTime
         });
 
         accumulator -= gameTime.DeltaTime;

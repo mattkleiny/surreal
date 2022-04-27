@@ -5,8 +5,8 @@
     Title          = "Hello, Surreal",
     Width          = 280,
     Height         = 120,
-    ShowFpsInTitle = true,
-  },
+    ShowFpsInTitle = true
+  }
 };
 
 Game.Start(platform, context =>

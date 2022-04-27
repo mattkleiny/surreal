@@ -3,6 +3,7 @@ using Surreal.Pixels;
 
 namespace Asteroids.Actors;
 
+/// <summary>An asteroid that floats about and can impact the player.</summary>
 public sealed class Asteroid : Actor
 {
   private readonly PixelCanvas canvas;

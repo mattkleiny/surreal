@@ -12,7 +12,7 @@ public class EnumerationTests
     {
       TestValue.One,
       TestValue.Two,
-      TestValue.Three,
+      TestValue.Three
     });
   }
 

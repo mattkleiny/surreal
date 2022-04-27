@@ -60,6 +60,6 @@ internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
     [Key.Escape] = Keys.Escape,
     [Key.Space] = Keys.Space,
     [Key.Tilde] = Keys.GraveAccent,
-    [Key.Tab] = Keys.Tab,
+    [Key.Tab] = Keys.Tab
   };
 }

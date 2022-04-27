@@ -12,8 +12,8 @@ var platform = new DesktopPlatform
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
     Width          = (int)(size.X * 6),
-    Height         = (int)(size.Y * 6),
-  },
+    Height         = (int)(size.Y * 6)
+  }
 };
 
 Game.Start(platform, async context =>

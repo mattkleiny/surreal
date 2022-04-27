@@ -12,7 +12,7 @@ public enum VertexType
   Int,
   UnsignedInt,
   Float,
-  Double,
+  Double
 }
 
 /// <summary>Associates a <see cref="VertexDescriptor"/> with a vertex field.</summary>

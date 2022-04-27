@@ -10,7 +10,7 @@ public enum MeshType
   Lines,
   LineStrip,
   LineLoop,
-  Triangles,
+  Triangles
 }
 
 /// <summary>Abstracts over all possible <see cref="Mesh{TVertex}"/> types.</summary>
@@ -26,13 +26,13 @@ public abstract class Mesh : IDisposable
       new Vertex2(new(-size, -size), Color.White, new(0f, 1f)),
       new Vertex2(new(-size, size), Color.White, new(0f, 0f)),
       new Vertex2(new(size, size), Color.White, new(1f, 0f)),
-      new Vertex2(new(size, -size), Color.White, new(1f, 1f)),
+      new Vertex2(new(size, -size), Color.White, new(1f, 1f))
     });
 
     mesh.Indices.Write(stackalloc ushort[]
     {
       0, 1, 2,
-      0, 2, 3,
+      0, 2, 3
     });
 
     return mesh;

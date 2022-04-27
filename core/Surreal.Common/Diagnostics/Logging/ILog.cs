@@ -7,7 +7,7 @@ public enum LogLevel
   Debug = 1,
   Warn = 2,
   Error = 3,
-  Fatal = 4,
+  Fatal = 4
 }
 
 /// <summary>A component capable of logging messages to some target.</summary>

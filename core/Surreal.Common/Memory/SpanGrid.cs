@@ -123,7 +123,7 @@ public static class SpanGridExtensions
   }
 
   /// <summary>Blits one grid to another.</summary>
-  public static void Blit<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
+  public static void BlitTo<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
   {
     for (var y = 0; y < from.Height; y++)
     for (var x = 0; x < from.Width; x++)

@@ -10,20 +10,20 @@ namespace Surreal.Graphics.Textures;
 public enum TextureFilterMode
 {
   Point,
-  Linear,
+  Linear
 }
 
 /// <summary>Formats for a <see cref="Texture"/>.</summary>
 public enum TextureFormat
 {
-  Rgba8888,
+  Rgba8888
 }
 
 /// <summary>Wrapping modes for a <see cref="Texture"/>.</summary>
 public enum TextureWrapMode
 {
   Clamp,
-  Repeat,
+  Repeat
 }
 
 /// <summary>A texture that can be uploaded to the GPU.</summary>

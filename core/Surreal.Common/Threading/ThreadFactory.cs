@@ -49,7 +49,7 @@ public static class ThreadFactory
     {
       Name = options.Name,
       IsBackground = options.IsBackground,
-      Priority = options.Priority,
+      Priority = options.Priority
     };
 
     if (OperatingSystem.IsWindows() && options.UseSingleThreadApartment)
@@ -93,7 +93,7 @@ public static class ThreadFactory
     {
       Name = options.Name,
       IsBackground = options.IsBackground,
-      Priority = options.Priority,
+      Priority = options.Priority
     };
 
     if (OperatingSystem.IsWindows() && options.UseSingleThreadApartment)

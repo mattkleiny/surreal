@@ -121,7 +121,7 @@ public static class Message
         {
           Method       = method,
           MessageType  = messageType,
-          DelegateType = typeof(MessageSubscriber<>).MakeGenericType(messageType),
+          DelegateType = typeof(MessageSubscriber<>).MakeGenericType(messageType)
         };
 
       return results.ToArray();

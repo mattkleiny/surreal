@@ -24,6 +24,6 @@ public abstract class StatusEffect
   public enum Transition
   {
     Continue,
-    Remove,
+    Remove
   }
 }

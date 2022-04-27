@@ -5,5 +5,5 @@ public enum MouseButton : byte
 {
   Left,
   Middle,
-  Right,
+  Right
 }

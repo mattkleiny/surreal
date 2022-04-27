@@ -10,14 +10,14 @@ namespace Surreal.Graphics.Fonts;
 public enum HorizontalAlignment
 {
   Left,
-  Center,
+  Center
 }
 
 /// <summary>Vertical alignments for text rendering.</summary>
 public enum VerticalAlignment
 {
   Top,
-  Center,
+  Center
 }
 
 /// <summary>Utilities for working with <see cref="BitmapFont"/>s in a <see cref="SpriteBatch"/>.</summary>

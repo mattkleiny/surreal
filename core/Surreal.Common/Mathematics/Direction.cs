@@ -9,5 +9,5 @@ public enum Direction : byte
   East = 1 << 2,
   South = 1 << 3,
   West = 1 << 4,
-  All = North | East | South | West,
+  All = North | East | South | West
 }

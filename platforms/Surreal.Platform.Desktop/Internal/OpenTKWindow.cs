@@ -18,7 +18,7 @@ internal sealed class OpenTKWindow : IDesktopWindow
     {
       RenderFrequency = 0,
       UpdateFrequency = 0,
-      IsMultiThreaded = false,
+      IsMultiThreaded = false
     };
 
     var nativeWindowSettings = new NativeWindowSettings
@@ -30,13 +30,13 @@ internal sealed class OpenTKWindow : IDesktopWindow
       Flags           = ContextFlags.ForwardCompatible | ContextFlags.Debug,
       Profile         = ContextProfile.Core,
       NumberOfSamples = 0,
-      APIVersion      = configuration.OpenGlVersion,
+      APIVersion      = configuration.OpenGlVersion
     };
 
     window = new GameWindow(gameWindowSettings, nativeWindowSettings)
     {
       VSync     = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
-      IsVisible = !configuration.WaitForFirstFrame,
+      IsVisible = !configuration.WaitForFirstFrame
     };
 
     window.Resize += _ => Resized?.Invoke(Width, Height);

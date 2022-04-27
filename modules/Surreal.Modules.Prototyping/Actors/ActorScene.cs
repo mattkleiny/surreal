@@ -30,7 +30,7 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     {
       nodes[actor.Id] = new Node<Actor>(actor)
       {
-        Status = ActorStatus.Active,
+        Status = ActorStatus.Active
       };
 
       // TODO: split these up, better FSM over actors

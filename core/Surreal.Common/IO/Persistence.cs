@@ -9,7 +9,7 @@ public enum PersistenceMode
   Transient,
 
   /// <summary>Permanent storage (for persistence to disk for later reload).</summary>
-  Permanent,
+  Permanent
 }
 
 /// <summary>Context for a persistence operation.</summary>

@@ -465,7 +465,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       TextureFormat.Rgba8888 => (int) All.Rgba8,
 
-      _ => throw new ArgumentOutOfRangeException(nameof(format), format, null),
+      _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
   }
 
@@ -525,7 +525,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       TextureFilterMode.Point  => (int) All.Nearest,
       TextureFilterMode.Linear => (int) All.Linear,
 
-      _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null),
+      _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
     };
   }
 
@@ -536,7 +536,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       TextureWrapMode.Clamp  => (int) All.ClampToEdge,
       TextureWrapMode.Repeat => (int) All.MirroredRepeat,
 
-      _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null),
+      _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };
   }
 }

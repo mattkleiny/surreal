@@ -54,7 +54,7 @@ internal sealed class OpenTKShaderCompiler
     ShaderKind.Geometry => ShaderType.GeometryShader,
     ShaderKind.Fragment => ShaderType.FragmentShader,
 
-    _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
+    _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
   };
 
   /// <summary>Context for compiling a single shader program.</summary>
@@ -232,14 +232,14 @@ internal sealed class OpenTKShaderCompiler
       Precision.Medium => "mediump",
       Precision.High   => "highp",
 
-      _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, null),
+      _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, null)
     };
 
     private static string ConvertIdentifier(string identifier) => identifier switch
     {
       "POSITION" => "gl_Position",
       "COLOR"    => "FragColor",
-      _          => identifier,
+      _          => identifier
     };
 
     private static string ConvertType(Primitive type) => type.Type switch
@@ -256,7 +256,7 @@ internal sealed class OpenTKShaderCompiler
       PrimitiveType.Matrix when type.Cardinality.HasValue  => $"mat{type.Cardinality}",
       PrimitiveType.Sampler when type.Cardinality.HasValue => $"sampler{type.Cardinality}D",
 
-      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
 
     private static string ConvertOperator(BinaryOperator type) => type switch
@@ -268,14 +268,14 @@ internal sealed class OpenTKShaderCompiler
       BinaryOperator.Equal    => "==",
       BinaryOperator.NotEqual => "!=",
 
-      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
 
     private static string ConvertOperator(UnaryOperator type) => type switch
     {
       UnaryOperator.Negate => "-",
 
-      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
   }
 

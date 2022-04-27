@@ -36,7 +36,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
   /// <summary>The <see cref="IShaderTransformer"/>s to apply to the resultant parsed shader programs.</summary>
   public List<IShaderTransformer> Transformers { get; } = new()
   {
-    new SpriteShaderTransformer(),
+    new SpriteShaderTransformer()
   };
 
   public override async ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
@@ -102,7 +102,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
         {
           TokenType.Keyword   => ParseKeyword(),
           TokenType.Primitive => ParseFunction(),
-          _                   => ParseNull(),
+          _                   => ParseNull()
         };
 
         if (node != null)
@@ -119,7 +119,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
         Varyings = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
         Constants = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
         Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
-        Stages = nodes.OfType<StageDeclaration>().ToImmutableArray(),
+        Stages = nodes.OfType<StageDeclaration>().ToImmutableArray()
       };
     }
 
@@ -136,7 +136,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
         "const"        => ParseConstantDeclaration(),
         "SAMPLE"       => ParseSampleOperation(),
 
-        _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
+        _ => throw Error($"An unrecognized keyword was encountered: {literal}")
       };
     }
 
@@ -158,20 +158,20 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
           "fragment" => ShaderKind.Fragment,
           "geometry" => ShaderKind.Geometry,
 
-          _ => throw Error($"An unrecognized shader kind was specified {name}"),
+          _ => throw Error($"An unrecognized shader kind was specified {name}")
         };
 
         return new StageDeclaration(shaderKind)
         {
           Parameters = parameters,
-          Statements = statements,
+          Statements = statements
         };
       }
 
       return new FunctionDeclaration(returnType, name)
       {
         Parameters = parameters,
-        Statements = statements,
+        Statements = statements
       };
     }
 
@@ -234,7 +234,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
           "for"    => ParseForStatement(),
           "return" => ParseReturnStatement(),
 
-          _ => throw Error($"An unrecognized keyword was encountered: {keyword}"),
+          _ => throw Error($"An unrecognized keyword was encountered: {keyword}")
         };
       }
 
@@ -393,7 +393,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
           "medp"  => Precision.Medium,
           "highp" => Precision.High,
 
-          _ => throw Error($"An unrecognized precision was specified {literal}"),
+          _ => throw Error($"An unrecognized precision was specified {literal}")
         };
 
         literal = ConsumeLiteral<string>(TokenType.Primitive);
@@ -421,7 +421,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
         "sampler2d" => new Primitive(PrimitiveType.Sampler, 2),
         "sampler3d" => new Primitive(PrimitiveType.Sampler, 3),
 
-        _ => throw Error($"An unrecognized primitive type was specified {literal}"),
+        _ => throw Error($"An unrecognized primitive type was specified {literal}")
       };
 
       return type;

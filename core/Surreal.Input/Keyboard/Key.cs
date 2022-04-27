@@ -25,5 +25,5 @@ public enum Key : ushort
   Space,
   Tilde,
   LeftShift,
-  Tab,
+  Tab
 }

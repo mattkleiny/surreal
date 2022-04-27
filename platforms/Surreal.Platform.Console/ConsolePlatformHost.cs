@@ -200,7 +200,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
       Char = new()
       {
         UnicodeChar = glyph.Character
-      },
+      }
     });
   }
 
@@ -217,7 +217,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
       Char = new()
       {
         UnicodeChar = glyph.Character
-      },
+      }
     };
   }
 
@@ -311,7 +311,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
       [Key.W]      = 0x57,
       [Key.S]      = 0x53,
       [Key.A]      = 0x41,
-      [Key.D]      = 0x44,
+      [Key.D]      = 0x44
     };
   }
 

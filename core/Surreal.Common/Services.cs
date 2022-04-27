@@ -8,7 +8,7 @@ namespace Surreal;
 public enum ServiceLifetime
 {
   Transient,
-  Singleton,
+  Singleton
 }
 
 /// <summary>A module for service registrations.</summary>
