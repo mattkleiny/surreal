@@ -7,6 +7,6 @@
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MoonSharp" Version="2.0.0" PrivateAssets="compile" />
+    <PackageReference Include="NLua" Version="1.6.0" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

@@ -22,12 +22,17 @@ public sealed class Script : ScriptResource
     server.CompileScriptCode(Handle, code);
   }
 
-  public dynamic? Execute()
+  public object? Execute()
   {
     return server.ExecuteScript(Handle);
   }
 
-  public dynamic? ExecuteFunction(string functionName, params dynamic[] parameters)
+  public object? ExecuteFunction(string functionName)
+  {
+    return server.ExecuteScriptFunction(Handle, functionName);
+  }
+
+  public object? ExecuteFunction(string functionName, params object[] parameters)
   {
     return server.ExecuteScriptFunction(Handle, functionName, parameters);
   }

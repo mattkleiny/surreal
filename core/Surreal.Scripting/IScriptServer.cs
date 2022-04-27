@@ -13,7 +13,8 @@ public interface IScriptServer
 {
   ScriptHandle CreateScript();
   void CompileScriptCode(ScriptHandle handle, string code);
-  dynamic? ExecuteScript(ScriptHandle handle);
-  dynamic? ExecuteScriptFunction(ScriptHandle handle, string functionName, dynamic[] parameters);
+  object? ExecuteScript(ScriptHandle handle);
+  object? ExecuteScriptFunction(ScriptHandle handle, string functionName);
+  object? ExecuteScriptFunction(ScriptHandle handle, string functionName, object[] parameters);
   void DeleteScript(ScriptHandle handle);
 }

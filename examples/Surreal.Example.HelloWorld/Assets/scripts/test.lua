@@ -1,8 +1,4 @@
-﻿-- defines a factorial function
-function factorial (n)
-  if n == 0 then
-    return 1
-  else
-    return n * factorial(n - 1)
-  end
+﻿-- prints a simple message to the console
+function say_hello (message)
+  print("Hello, " .. message .. "!")
 end

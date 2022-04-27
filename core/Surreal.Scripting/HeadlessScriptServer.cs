@@ -20,6 +20,11 @@ public sealed class HeadlessScriptServer : IScriptServer
     return null;
   }
 
+  public object? ExecuteScriptFunction(ScriptHandle handle, string functionName)
+  {
+    return null;
+  }
+
   public dynamic? ExecuteScriptFunction(ScriptHandle handle, string functionName, dynamic[] parameters)
   {
     return null;

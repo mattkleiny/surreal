@@ -1,9 +1,8 @@
 ﻿using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Scripting;
-using Surreal.Scripting.Lua;
 
-namespace Surreal.Lua;
+namespace Surreal;
 
 public class LuaScriptServerTests
 {
@@ -17,8 +16,8 @@ public class LuaScriptServerTests
     manager.AddLoader(new ScriptLoader(server));
 
     var script = await manager.LoadAsset<Script>(path);
-    int result = script.ExecuteFunction("test");
+    var result = script.ExecuteFunction("factorial", 4);
 
-    result.Should().Be(42);
+    result.Should().Be(24);
   }
 }

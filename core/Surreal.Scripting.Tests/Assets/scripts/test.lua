@@ -1,3 +1,8 @@
-﻿function test()
-  return 42 * 2 / 2
+﻿-- compute factorial value for n
+function factorial (n)
+  if n == 0 then
+    return 1
+  else
+    return n * factorial(n - 1)
+  end
 end

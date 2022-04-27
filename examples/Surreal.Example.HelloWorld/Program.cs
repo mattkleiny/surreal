@@ -1,7 +1,6 @@
 // ReSharper disable AccessToDisposedClosure
 
 using Surreal.Scripting;
-using Surreal.Scripting.Lua;
 
 var size = new Vector2(256f, 144f);
 
@@ -29,7 +28,9 @@ Game.Start(platform, async context =>
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var input = context.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
-  var scripts = new LuaScriptServer();
+
+  // configure lua
+  using var scripts = new LuaScriptServer();
 
   context.Assets.AddLoader(new ScriptLoader(scripts));
 
@@ -58,7 +59,7 @@ Game.Start(platform, async context =>
     if (keyboard.IsKeyPressed(Key.F3)) palette = palette3;
 
     // update scripts
-    Console.WriteLine(script.ExecuteFunction("factorial", 6));
+    script.ExecuteFunction("say_hello", "World");
 
     // render
     graphics.ClearColorBuffer(palette[0]);
