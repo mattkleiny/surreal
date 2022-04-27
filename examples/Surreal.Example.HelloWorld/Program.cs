@@ -1,5 +1,3 @@
-// ReSharper disable AccessToDisposedClosure
-
 using Surreal.Scripting;
 
 var size = new Vector2(256f, 144f);
@@ -65,7 +63,7 @@ Game.Start(platform, async context =>
     graphics.ClearColorBuffer(palette[0]);
 
     shader.SetUniform("u_projectionView", projectionView);
-    shader.SetTexture("u_texture", font.Texture, 0);
+    shader.SetUniform("u_texture", font.Texture, 0);
 
     sprites.Begin(shader);
     sprites.DrawText(

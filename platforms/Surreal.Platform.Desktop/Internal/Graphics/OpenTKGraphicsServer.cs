@@ -440,7 +440,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
-  public void SetTextureUniform(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot)
+  public void SetShaderTexture(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot)
   {
     var program = new ProgramHandle(handle);
     var location = GL.GetUniformLocation(program, name);

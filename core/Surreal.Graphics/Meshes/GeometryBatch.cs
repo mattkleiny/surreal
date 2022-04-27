@@ -11,16 +11,16 @@ public sealed class GeometryBatch : IDisposable
 {
   private const int DefaultVertexCount = 16_000;
 
-  private readonly IDisposableBuffer<Vertex> vertices;
-  private readonly Mesh<Vertex> mesh;
+  private readonly IDisposableBuffer<Vertex2> vertices;
+  private readonly Mesh<Vertex2> mesh;
 
   private ShaderProgram? shader;
   private int vertexCount;
 
   public GeometryBatch(IGraphicsServer server, int maximumVertexCount = DefaultVertexCount)
   {
-    vertices = Buffers.AllocateNative<Vertex>(maximumVertexCount);
-    mesh     = new Mesh<Vertex>(server);
+    vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
+    mesh     = new Mesh<Vertex2>(server);
   }
 
   public void Begin(ShaderProgram shader)
@@ -131,11 +131,11 @@ public sealed class GeometryBatch : IDisposable
 
   public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, MeshType type)
   {
-    var destination = new SpanList<Vertex>(vertices.Span[vertexCount..points.Length]);
+    var destination = new SpanList<Vertex2>(vertices.Span[vertexCount..points.Length]);
 
     for (var i = 0; i < points.Length; i++)
     {
-      destination.Add(new Vertex(points[i], color));
+      destination.Add(new Vertex2(points[i], color, Vector2.Zero));
     }
 
     vertexCount += points.Length;
@@ -158,16 +158,5 @@ public sealed class GeometryBatch : IDisposable
   {
     mesh.Dispose();
     vertices.Dispose();
-  }
-
-  /// <summary>A single vertex in the batch.</summary>
-  [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex(Vector2 Position, Color Color)
-  {
-    [VertexDescriptor(VertexType.Float, 2)]
-    public Vector2 Position = Position;
-
-    [VertexDescriptor(VertexType.Float, 4)]
-    public Color Color = Color;
   }
 }

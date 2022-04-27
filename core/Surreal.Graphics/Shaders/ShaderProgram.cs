@@ -58,8 +58,8 @@ public sealed class ShaderProgram : GraphicsResource
   public void SetUniform(string name, in Matrix4x4 value)
     => server.SetShaderUniform(Handle, name, in value);
 
-  public void SetTexture(string name, Texture texture, int samplerSlot)
-    => server.SetTextureUniform(Handle, name, texture.Handle, samplerSlot);
+  public void SetUniform(string name, Texture texture, int samplerSlot)
+    => server.SetShaderTexture(Handle, name, texture.Handle, samplerSlot);
 
   /// <summary>Deletes and replaces the old shader with a new one.</summary>
   public void ReplaceShader(GraphicsHandle newHandle)

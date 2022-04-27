@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>HelloWorld</AssemblyName>
-    <RootNamespace>HelloWorld</RootNamespace>
-    <Description>A super basic example of bootstrapping with Surreal.</Description>
+    <AssemblyName>Isaac</AssemblyName>
+    <RootNamespace>Isaac</RootNamespace>
+    <Description>A binding of Isaac clone made with Surreal</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />

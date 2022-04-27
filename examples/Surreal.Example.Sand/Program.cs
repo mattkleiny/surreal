@@ -1,6 +1,4 @@
-﻿// ReSharper disable AccessToDisposedClosure
-
-using Sand;
+﻿using Sand;
 
 var platform = new DesktopPlatform
 {

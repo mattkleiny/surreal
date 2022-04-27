@@ -108,7 +108,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public void SetTextureUniform(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot)
+  public void SetShaderTexture(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot)
   {
     // no-op
   }

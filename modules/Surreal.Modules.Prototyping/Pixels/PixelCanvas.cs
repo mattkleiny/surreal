@@ -32,7 +32,9 @@ public class PixelCanvas : IDisposable
   public void Draw(ShaderProgram shader)
   {
     texture.WritePixels<Color32>(Width, Height, Span);
-    shader.SetTexture("u_texture", texture, 0);
+
+    shader.SetUniform("u_projectionView", Matrix4x4.Identity);
+    shader.SetUniform("u_texture", texture, 0);
 
     mesh.Draw(shader);
   }

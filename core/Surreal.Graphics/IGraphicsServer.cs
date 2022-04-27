@@ -54,6 +54,6 @@ public interface IGraphicsServer
   void SetShaderUniform(GraphicsHandle handle, string name, Quaternion value);
   void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value);
   void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value);
-  void SetTextureUniform(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot);
+  void SetShaderTexture(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot);
   void DeleteShader(GraphicsHandle handle);
 }

@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Scripting", "core\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Scripting.Tests", "core\Surreal.Scripting.Tests\Surreal.Scripting.Tests.csproj", "{5A9FF7AE-328A-42F5-BDFA-153B57A1FBFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Isaac", "examples\Surreal.Example.Isaac\Surreal.Example.Isaac.csproj", "{D871B18D-01C4-489A-8DA2-F2926B7DC01D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,10 @@ Global
 		{5A9FF7AE-328A-42F5-BDFA-153B57A1FBFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A9FF7AE-328A-42F5-BDFA-153B57A1FBFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A9FF7AE-328A-42F5-BDFA-153B57A1FBFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D871B18D-01C4-489A-8DA2-F2926B7DC01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D871B18D-01C4-489A-8DA2-F2926B7DC01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D871B18D-01C4-489A-8DA2-F2926B7DC01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D871B18D-01C4-489A-8DA2-F2926B7DC01D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,5 +211,6 @@ Global
 		{51F5D3ED-4E99-43C2-AB98-A2341E6A2013} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{05427FA4-F155-42DD-800C-BCCF30E974E5} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{5A9FF7AE-328A-42F5-BDFA-153B57A1FBFE} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{D871B18D-01C4-489A-8DA2-F2926B7DC01D} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal
