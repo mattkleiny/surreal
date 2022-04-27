@@ -1,17 +1,24 @@
 ﻿namespace Surreal.Mathematics;
 
 /// <summary>A rectangle in floating point 2-space.</summary>
-public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)
+public record struct Rectangle(float Left, float Top, float Right, float Bottom)
 {
+  public static Rectangle Empty => new(0, 0, 0, 0);
+
   public static Rectangle Create(Vector2 center, Vector2 size)
   {
-    var left = center.X - size.X;
-    var top = center.Y + size.Y;
-    var right = center.X + size.X;
-    var bottom = center.Y - size.Y;
+    var left = center.X - size.X / 2f;
+    var top = center.Y + size.Y / 2f;
+    var right = center.X + size.X / 2f;
+    var bottom = center.Y - size.Y / 2f;
 
     return new Rectangle(left, top, right, bottom);
   }
+
+  public float Left = Left;
+  public float Top = Top;
+  public float Right = Right;
+  public float Bottom = Bottom;
 
   public float Width  => Right - Left;
   public float Height => Bottom - Top;
@@ -50,17 +57,24 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
 }
 
 /// <summary>A rectangle in integral 2-space.</summary>
-public readonly record struct Box(int Left, int Top, int Right, int Bottom)
+public record struct Box(int Left, int Top, int Right, int Bottom)
 {
+  public static Box Empty => new(0, 0, 0, 0);
+
   public static Box Create(Point2 center, Point2 size)
   {
-    var left = center.X - size.X;
-    var top = center.Y + size.Y;
-    var right = center.X + size.X;
-    var bottom = center.Y - size.Y;
+    var left = center.X - size.X / 2;
+    var top = center.Y + size.Y / 2;
+    var right = center.X + size.X / 2;
+    var bottom = center.Y - size.Y / 2;
 
     return new Box(left, top, right, bottom);
   }
+
+  public int Left = Left;
+  public int Top = Top;
+  public int Right = Right;
+  public int Bottom = Bottom;
 
   public int Width  => Right - Left;
   public int Height => Bottom - Top;

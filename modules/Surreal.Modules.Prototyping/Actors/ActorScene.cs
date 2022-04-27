@@ -3,7 +3,7 @@
 namespace Surreal.Actors;
 
 /// <summary>A scene of managed <see cref="Actor"/>s.</summary>
-public sealed class ActorScene : IActorContext, IDisposable
+public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 {
   private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
   private readonly Queue<Actor> destroyQueue = new();
@@ -44,56 +44,41 @@ public sealed class ActorScene : IActorContext, IDisposable
 
   public void BeginFrame(TimeDelta deltaTime)
   {
-    foreach (var node in nodes.Values)
+    foreach (var actor in this)
     {
-      if (node.Status == ActorStatus.Active)
-      {
-        node.Data.OnBeginFrame(deltaTime);
-      }
+      actor.OnBeginFrame(deltaTime);
     }
   }
 
   public void Input(TimeDelta deltaTime)
   {
-    foreach (var node in nodes.Values)
+    foreach (var actor in this)
     {
-      if (node.Status == ActorStatus.Active)
-      {
-        node.Data.OnInput(deltaTime);
-      }
+      actor.OnInput(deltaTime);
     }
   }
 
   public void Update(TimeDelta deltaTime)
   {
-    foreach (var node in nodes.Values)
+    foreach (var actor in this)
     {
-      if (node.Status == ActorStatus.Active)
-      {
-        node.Data.OnUpdate(deltaTime);
-      }
+      actor.OnUpdate(deltaTime);
     }
   }
 
   public void Draw(TimeDelta deltaTime)
   {
-    foreach (var node in nodes.Values)
+    foreach (var actor in this)
     {
-      if (node.Status == ActorStatus.Active)
-      {
-        node.Data.OnDraw(deltaTime);
-      }
+      actor.OnDraw(deltaTime);
     }
   }
 
   public void EndFrame(TimeDelta deltaTime)
   {
-    foreach (var node in nodes.Values)
+    foreach (var actor in this)
     {
-      if (node.Status == ActorStatus.Active)
-      {
-        node.Data.OnEndFrame(deltaTime);
-      }
+      actor.OnEndFrame(deltaTime);
     }
 
     ProcessDestroyQueue();
@@ -159,9 +144,64 @@ public sealed class ActorScene : IActorContext, IDisposable
     nodes.Clear();
   }
 
+  public Enumerator GetEnumerator()
+  {
+    return new Enumerator(this);
+  }
+
+  IEnumerator<Actor> IEnumerable<Actor>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
   /// <summary>A single node in the scene.</summary>
   private sealed record Node<T>(T Data)
   {
     public ActorStatus Status { get; set; }
+  }
+
+  /// <summary>Allows enumerating active <see cref="Actor"/>s.</summary>
+  public struct Enumerator : IEnumerator<Actor>
+  {
+    private readonly ActorScene scene;
+    private Dictionary<ActorId, Node<Actor>>.ValueCollection.Enumerator enumerator;
+
+    public Enumerator(ActorScene scene)
+      : this()
+    {
+      this.scene = scene;
+      Reset();
+    }
+
+    public Actor       Current => enumerator.Current.Data;
+    object IEnumerator.Current => Current;
+
+    public bool MoveNext()
+    {
+      while (enumerator.MoveNext())
+      {
+        if (enumerator.Current.Status == ActorStatus.Active)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    public void Reset()
+    {
+      enumerator = scene.nodes.Values.GetEnumerator();
+    }
+
+    public void Dispose()
+    {
+      // no-op
+    }
   }
 }
