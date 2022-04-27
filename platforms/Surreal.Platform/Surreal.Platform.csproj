@@ -1,5 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Platform abstractions for Surreal.</Description>
-  </PropertyGroup>
-</Project>

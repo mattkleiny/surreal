@@ -4,10 +4,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="!$(ProjectName.EndsWith('Platform'))">
-    <ProjectReference Include="..\Surreal.Platform\Surreal.Platform.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Input\Surreal.Input.csproj" />
