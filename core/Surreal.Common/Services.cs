@@ -135,7 +135,7 @@ public sealed class ServiceRegistry : IServiceRegistry
 
   public void ReplaceService(Type serviceType, object instance)
   {
-    instancesByType[serviceType] = instance!;
+    instancesByType[serviceType] = instance;
   }
 
   public void Dispose()

@@ -1,22 +1,36 @@
+using System.Runtime.CompilerServices;
 using OpenTK.Audio.OpenAL;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
 
 namespace Surreal.Internal.Audio;
 
-internal sealed class OpenTKAudioServer : IAudioServer
+internal sealed class OpenTKAudioServer : IAudioServer, IDisposable
 {
+  private readonly ALDevice device;
+  private readonly ALContext context;
+
+  private bool isDisposed;
+
+  public OpenTKAudioServer()
+  {
+    device  = ALC.OpenDevice(null);
+    context = ALC.CreateContext(device, ref Unsafe.NullRef<int>());
+
+    ALC.MakeContextCurrent(context);
+  }
+
   public AudioHandle CreateAudioClip()
   {
     return new AudioHandle(AL.GenBuffer());
   }
 
-  public void DeleteAudioClip(AudioHandle handle)
+  public void DeleteAudioClip(AudioHandle clip)
   {
-    AL.DeleteBuffer(handle);
+    AL.DeleteBuffer(clip);
   }
 
-  public unsafe void WriteAudioClipData<T>(AudioHandle handle, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
+  public unsafe void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
     where T : unmanaged
   {
     var (frequency, channels, bitsPerSample) = sampleRate;
@@ -26,7 +40,7 @@ internal sealed class OpenTKAudioServer : IAudioServer
 
     fixed (T* pointer = data)
     {
-      AL.BufferData(handle, format, pointer, bytes, frequency);
+      AL.BufferData(clip, format, pointer, bytes, frequency);
     }
   }
 
@@ -35,9 +49,43 @@ internal sealed class OpenTKAudioServer : IAudioServer
     return new AudioHandle(AL.GenSource());
   }
 
-  public void DeleteAudioSource(AudioHandle handle)
+  public void PlayAudioSource(AudioHandle source, AudioHandle clip)
   {
-    AL.DeleteSource(handle);
+    AL.Source(source, ALSourcei.Buffer, clip);
+    AL.SourcePlay(source);
+  }
+
+  public void StopAudioSource(AudioHandle source)
+  {
+    AL.SourceStop(source);
+  }
+
+  public void SetAudioSourceVolume(AudioHandle source, float value)
+  {
+    AL.Source(source, ALSourcef.Gain, value);
+  }
+
+  public void SetAudioSourceLooping(AudioHandle source, bool value)
+  {
+    AL.Source(source, ALSourceb.Looping, value);
+  }
+
+  public void DeleteAudioSource(AudioHandle source)
+  {
+    AL.DeleteSource(source);
+  }
+
+  public void Dispose()
+  {
+    if (!isDisposed)
+    {
+      ALC.MakeContextCurrent(ALContext.Null);
+      ALC.DestroyContext(context);
+
+      ALC.CloseDevice(device);
+
+      isDisposed = true;
+    }
   }
 
   private static ALFormat GetSoundFormat(int channels, int bits)

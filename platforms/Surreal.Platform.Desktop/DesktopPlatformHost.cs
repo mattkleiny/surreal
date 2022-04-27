@@ -137,6 +137,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public void Dispose()
   {
+    AudioServer.Dispose();
     Window.Dispose();
   }
 

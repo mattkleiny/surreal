@@ -7,14 +7,15 @@ namespace Surreal.Audio.Clips;
 public sealed class AudioClip : AudioResource, IHasSizeEstimate
 {
   private readonly IAudioServer server;
-  private readonly AudioHandle handle;
 
   public AudioClip(IAudioServer server)
   {
     this.server = server;
-    handle      = server.CreateAudioClip();
+
+    Handle = server.CreateAudioClip();
   }
 
+  public AudioHandle     Handle   { get; }
   public TimeSpan        Duration { get; private set; } = TimeSpan.Zero;
   public AudioSampleRate Rate     { get; private set; } = AudioSampleRate.Standard;
   public Size            Size     { get; private set; } = Size.Zero;
@@ -26,14 +27,14 @@ public sealed class AudioClip : AudioResource, IHasSizeEstimate
     Rate     = rate;
     Size     = buffer.CalculateSize();
 
-    server.WriteAudioClipData(handle, rate, buffer);
+    server.WriteAudioClipData(Handle, rate, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteAudioClip(handle);
+      server.DeleteAudioClip(Handle);
     }
 
     base.Dispose(managed);
