@@ -8,4 +8,7 @@
     <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\palettes\space-dust-9.pal" />
+  </ItemGroup>
 </Project>

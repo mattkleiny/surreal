@@ -40,7 +40,7 @@ Game.Start(platform, async context =>
   var shader = await context.Assets.LoadAsset<ShaderProgram>("Assets/shaders/helloworld.glsl");
   var palette1 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/club-seoul-16.pal");
   var palette2 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/kule-16.pal");
-  var palette3 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/urbex-16.pal");
+  var palette3 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/space-dust-9.pal");
   var script = await context.Assets.LoadAsset<Script>("Assets/scripts/test.lua");
 
   using var source = new AudioSource(audio) { IsLooping = true };
@@ -48,7 +48,7 @@ Game.Start(platform, async context =>
 
   source.Play(clip);
 
-  var palette = palette1;
+  var palette = palette3;
 
   context.ExecuteVariableStep(time =>
   {
