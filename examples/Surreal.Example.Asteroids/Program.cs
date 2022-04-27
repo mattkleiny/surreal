@@ -1,6 +1,5 @@
 ﻿using Asteroids.Actors;
 using Surreal.Actors;
-using Surreal.Pixels;
 
 var platform = new DesktopPlatform
 {
@@ -21,7 +20,7 @@ Game.Start(platform, async context =>
 
   // load some resources
   using var shader = await context.Assets.LoadDefaultShaderAsync();
-  using var canvas = new PixelCanvas(graphics, 256, 144);
+  using var canvas = new AsteroidsCanvas(graphics, 256, 144);
   using var scene = new ActorScene();
 
   var palette = await context.Assets.LoadAsset<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");
@@ -29,32 +28,34 @@ Game.Start(platform, async context =>
   var random = Random.Shared;
   var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);
 
-  var respawn = () =>
+  void Respawn()
   {
+    canvas.IsExploding = false;
+
     scene.Clear();
 
     // spawn the player
-    var player = scene.Spawn(new Player(canvas, keyboard)
+    var player = scene.Spawn(new Player(canvas, keyboard, scene)
     {
       Position = center,
       Color    = palette[3]
     });
 
     // spawn a few asteroids
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 32; i++)
     {
       scene.Spawn(new Asteroid(canvas, player)
       {
-        Position = center + random.NextUnitCircle() * 50f,
-        Velocity = random.NextUnitCircle() * random.NextFloat(2f, 12f),
+        Position = center + random.NextUnitCircle() * 150f,
+        Velocity = random.NextUnitCircle() * random.NextFloat(4f, 12f),
         Rotation = random.NextFloat(0f, MathF.PI),
-        Spin     = random.NextFloat(0f, 0.5f),
+        Spin     = random.NextFloat(0f, 2f),
         Color    = palette[random.NextInt(1, 2)]
       });
     }
-  };
+  }
 
-  respawn();
+  Respawn();
 
   context.ExecuteVariableStep(time =>
   {
@@ -65,14 +66,14 @@ Game.Start(platform, async context =>
 
     if (keyboard.IsKeyPressed(Key.Space))
     {
-      respawn();
+      Respawn();
     }
 
-    canvas.Span.Fill(Color.Black);
+    canvas.Update(time.DeltaTime);
 
     scene.Input(time.DeltaTime);
-    scene.Update(time.DeltaTime);
     scene.Draw(time.DeltaTime);
+    scene.Update(time.DeltaTime);
 
     canvas.Draw(shader);
   });

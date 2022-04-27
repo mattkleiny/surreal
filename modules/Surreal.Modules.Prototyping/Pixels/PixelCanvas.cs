@@ -11,15 +11,15 @@ namespace Surreal.Pixels;
 /// A fun canvas of managed RGBA pixels that can be blitted to the screen.
 /// Use this to build per-pixel simulations.
 /// </summary>
-public sealed class PixelCanvas : IDisposable
+public class PixelCanvas : IDisposable
 {
-  private readonly Grid<Color> pixels;
+  private readonly Grid<Color32> pixels;
   private readonly Texture texture;
   private readonly Mesh mesh;
 
   public PixelCanvas(IGraphicsServer server, int width, int height)
   {
-    pixels  = new Grid<Color>(width, height);
+    pixels  = new Grid<Color32>(width, height);
     texture = new Texture(server, TextureFormat.Rgba8888);
     mesh    = Mesh.CreateQuad(server);
   }
@@ -27,17 +27,17 @@ public sealed class PixelCanvas : IDisposable
   public int Width  => pixels.Width;
   public int Height => pixels.Height;
 
-  public SpanGrid<Color> Span => pixels.Span;
+  public SpanGrid<Color32> Span => pixels.Span;
 
   public void Draw(ShaderProgram shader)
   {
-    texture.WritePixels<Color>(Width, Height, Span);
+    texture.WritePixels<Color32>(Width, Height, Span);
     shader.SetTexture("u_texture", texture, 0);
 
     mesh.Draw(shader);
   }
 
-  public void Fill(Color value)
+  public void Fill(Color32 value)
   {
     pixels.Fill(value);
   }

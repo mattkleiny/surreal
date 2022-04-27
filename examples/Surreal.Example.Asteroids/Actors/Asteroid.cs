@@ -18,7 +18,7 @@ public sealed class Asteroid : PolygonActor
   {
     base.OnUpdate(deltaTime);
 
-    if (Bounds.Contains(player.Position) && Polygon.ContainsPoint(player.Position))
+    if (Bounds.Contains(player.Position) && FinalPolygon.ContainsPoint(player.Position))
     {
       player.OnHitAsteroid(this);
     }

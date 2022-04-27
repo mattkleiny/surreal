@@ -37,6 +37,11 @@ Game.Start(platform, async context =>
 
     var point = new Point2((int)targetX, (int)targetY);
 
+    if (keyboard.IsKeyPressed(Key.Escape))
+    {
+      context.Exit();
+    }
+
     if (keyboard.IsKeyPressed(Key.Space))
     {
       canvas.Clear();

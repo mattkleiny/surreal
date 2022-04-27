@@ -51,14 +51,14 @@ public sealed class SandCanvas : IDisposable
 
       if (cell.IsOccupied)
       {
-        if (CheckAndMove(ref cell, x, y + 1)) continue;
-        if (CheckAndMove(ref cell, x - 1, y + 1)) continue;
-        CheckAndMove(ref cell, x + 1, y + 1);
+        if (SimulateSand(ref cell, x, y + 1)) continue;
+        if (SimulateSand(ref cell, x - 1, y + 1)) continue;
+        SimulateSand(ref cell, x + 1, y + 1);
       }
     }
   }
 
-  private bool CheckAndMove(ref Cell cell, int x, int y)
+  private bool SimulateSand(ref Cell cell, int x, int y)
   {
     if (x < 0 || x > cells.Width - 1) return false;
     if (y < 0 || y > cells.Height - 1) return false;
@@ -81,9 +81,9 @@ public sealed class SandCanvas : IDisposable
 
   public void Draw(ShaderProgram shader)
   {
-    static Color Painter(int x, int y, Cell cell)
+    static Color32 Painter(int x, int y, Cell cell)
     {
-      return cell.IsOccupied ? cell.Color : Color.White;
+      return cell.IsOccupied ? cell.Color : Color32.White;
     }
 
     cells.Span.BlitTo(pixels.Span, Painter);

@@ -152,7 +152,7 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 
   public void Dispose()
   {
-    nodes.Clear();
+    Clear();
   }
 
   public Enumerator GetEnumerator()

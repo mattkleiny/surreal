@@ -1,16 +1,20 @@
-﻿using Surreal.Pixels;
+﻿using Surreal.Actors;
 
 namespace Asteroids.Actors;
 
 /// <summary>The player ship.</summary>
 public sealed class Player : PolygonActor
 {
+  private readonly AsteroidsCanvas canvas;
   private readonly IKeyboardDevice keyboard;
+  private readonly ActorScene scene;
 
-  public Player(PixelCanvas canvas, IKeyboardDevice keyboard)
+  public Player(AsteroidsCanvas canvas, IKeyboardDevice keyboard, ActorScene scene)
     : base(canvas, CreatePlayerPolygon(4f))
   {
+    this.canvas   = canvas;
     this.keyboard = keyboard;
+    this.scene    = scene;
   }
 
   public float Speed { get; set; } = 50f;
@@ -35,8 +39,9 @@ public sealed class Player : PolygonActor
 
   public void OnHitAsteroid(Asteroid asteroid)
   {
-    // TODO: do something interesting
-    Destroy();
+    canvas.IsExploding = true;
+
+    scene.Clear();
   }
 
   /// <summary>Creates a new randomly shaped <see cref="Polygon"/> to represent a player.</summary>

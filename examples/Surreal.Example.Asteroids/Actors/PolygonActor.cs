@@ -1,5 +1,4 @@
 ﻿using Surreal.Actors;
-using Surreal.Memory;
 using Surreal.Pixels;
 
 namespace Asteroids.Actors;
@@ -9,13 +8,11 @@ public abstract class PolygonActor : Actor
 {
   private readonly PixelCanvas canvas;
 
-  private readonly Polygon polygon;
-  private readonly Polygon transformedPolygon = new();
-
   protected PolygonActor(PixelCanvas canvas, Polygon polygon)
   {
-    this.canvas  = canvas;
-    this.polygon = polygon;
+    this.canvas = canvas;
+
+    SourcePolygon = polygon;
   }
 
   public Vector2 Position = Vector2.Zero;
@@ -24,11 +21,13 @@ public abstract class PolygonActor : Actor
   public float Spin = 0f;
   public Color Color = Color.White;
 
-  /// <summary>The final <see cref="Polygon"/> shape of this actor.</summary>
-  public Polygon Polygon => transformedPolygon;
+  public Polygon SourcePolygon { get; }
+
+  /// <summary>The final <see cref="FinalPolygon"/> shape of this actor.</summary>
+  public Polygon FinalPolygon { get; } = new();
 
   /// <summary>The final bounds of the actor's polygon, constrained to the canvas.</summary>
-  public BoundingRect Bounds => Polygon.Bounds.Clamp(0, 0, canvas.Width - 1, canvas.Height - 1);
+  public BoundingRect Bounds => FinalPolygon.Bounds.Clamp(0, 0, canvas.Width - 1, canvas.Height - 1);
 
   protected override void OnUpdate(TimeDelta deltaTime)
   {
@@ -45,7 +44,7 @@ public abstract class PolygonActor : Actor
 
     var transform = rotation * translation;
 
-    transformedPolygon.TransformFrom(polygon, in transform);
+    FinalPolygon.TransformFrom(SourcePolygon, in transform);
   }
 
   protected override void OnDraw(TimeDelta time)
@@ -60,7 +59,7 @@ public abstract class PolygonActor : Actor
     {
       var point = new Vector2(x, y);
 
-      if (transformedPolygon.ContainsPoint(point))
+      if (FinalPolygon.ContainsPoint(point))
       {
         pixels[x, y] = Color;
       }
@@ -71,7 +70,7 @@ public abstract class PolygonActor : Actor
   private void CheckIfOffScreen()
   {
     // are we off-screen?
-    var halfSize = polygon.Size / 2f;
+    var halfSize = SourcePolygon.Size / 2f;
 
     if (Velocity.X < 0f && Position.X + halfSize.X < 0)
     {
