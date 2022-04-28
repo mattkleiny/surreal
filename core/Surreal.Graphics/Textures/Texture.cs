@@ -163,7 +163,7 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
 
   public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
   {
-    var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
+    var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(server, TextureFormat.Rgba8888)
     {
       FilterMode = settings.FilterMode,
@@ -182,7 +182,7 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
 
   private static async ValueTask<Texture> ReloadAsync(AssetLoaderContext context, Texture texture, CancellationToken cancellationToken = default)
   {
-    var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
+    var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
 
     texture.WritePixels(image);
 

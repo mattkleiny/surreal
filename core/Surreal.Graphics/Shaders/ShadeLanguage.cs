@@ -5,7 +5,7 @@ namespace Surreal.Graphics.Shaders;
 
 internal static class ShadeLanguage
 {
-  public static Unit Parse(string raw)
+  public static ShaderSyntaxTree Parse(string raw)
   {
     var stream = new AntlrInputStream(raw);
     var lexer = new ShadeLexer(stream);
@@ -13,23 +13,15 @@ internal static class ShadeLanguage
     var parser = new ShadeParser(tokens);
 
     parser.AddErrorListener(new ConsoleErrorListener<IToken>());
-    parser.AddErrorListener(new ErrorListener());
 
-    return parser.expression().Accept(new TransformVisitor());
+    return parser.expression().Accept(new SyntaxTreeTransformer());
   }
 
-  private sealed class ErrorListener : BaseErrorListener
+  private sealed class SyntaxTreeTransformer : ShadeBaseVisitor<ShaderSyntaxTree>
   {
-    public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+    public override ShaderSyntaxTree VisitEquality(ShadeParser.EqualityContext context)
     {
-    }
-  }
-
-  private sealed class TransformVisitor : ShadeBaseVisitor<Unit>
-  {
-    public override Unit VisitExpression(ShadeParser.ExpressionContext context)
-    {
-      return base.VisitExpression(context);
+      return base.VisitEquality(context);
     }
   }
 }

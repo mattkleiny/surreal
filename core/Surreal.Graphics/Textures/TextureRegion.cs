@@ -30,6 +30,6 @@ public sealed class TextureRegionLoader : AssetLoader<TextureRegion>
 {
   public override async ValueTask<TextureRegion> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
-    return await context.LoadDependencyAsync<Texture>(context.Path, cancellationToken);
+    return await context.LoadAsync<Texture>(context.Path, cancellationToken);
   }
 }

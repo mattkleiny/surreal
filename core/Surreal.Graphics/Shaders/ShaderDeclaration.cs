@@ -70,6 +70,18 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 
   public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
+    var declaration = await parser.ParseAsync(context.Path, encoding, cancellationToken);
+
+    if (context.IsHotReloadEnabled)
+    {
+      context.SubscribeToChanges<ShaderDeclaration>(ReloadAsync);
+    }
+
+    return declaration;
+  }
+
+  private async ValueTask<ShaderDeclaration> ReloadAsync(AssetLoaderContext context, ShaderDeclaration existingDeclaration, CancellationToken cancellationToken)
+  {
     return await parser.ParseAsync(context.Path, encoding, cancellationToken);
   }
 }

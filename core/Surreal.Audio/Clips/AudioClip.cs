@@ -53,7 +53,7 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
 
   public override async ValueTask<AudioClip> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
-    var buffer = await context.LoadDependencyAsync<AudioBuffer>(context.Path, cancellationToken);
+    var buffer = await context.LoadAsync<AudioBuffer>(context.Path, cancellationToken);
     var clip = new AudioClip(server);
 
     clip.Write<byte>(buffer.Duration, buffer.Rate, buffer.Memory.Span);

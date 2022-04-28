@@ -1,6 +1,4 @@
-﻿using Surreal.Graphics.Shaders.Transformers;
-
-namespace Surreal.Graphics.Shaders;
+﻿namespace Surreal.Graphics.Shaders.Transformers;
 
 public class SpriteShaderTransformerTests
 {

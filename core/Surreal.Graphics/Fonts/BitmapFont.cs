@@ -150,7 +150,7 @@ public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
   public override async ValueTask<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
-    var texture = await context.LoadDependencyAsync<Texture>(GetImagePath(context, descriptor), cancellationToken);
+    var texture = await context.LoadAsync<Texture>(GetImagePath(context, descriptor), cancellationToken);
 
     return new BitmapFont(descriptor, texture);
   }
