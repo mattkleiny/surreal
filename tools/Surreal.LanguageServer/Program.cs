@@ -12,10 +12,10 @@ var server = await LanguageServer.From(options =>
 
   options.OnStarted(async (languageServer, cancellationToken) =>
   {
-    using var work = await languageServer.WorkDoneManager.Create(new WorkDoneProgressBegin
-    {
-      Title = "Doing some work"
-    });
+    using var work = await languageServer.WorkDoneManager.Create(
+      cancellationToken: cancellationToken,
+      begin: new WorkDoneProgressBegin { Title = "Doing some work" }
+    );
 
     work.OnNext(new WorkDoneProgressReport { Message = "doing things..." });
 

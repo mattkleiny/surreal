@@ -44,7 +44,7 @@ public sealed record RoomPlan
       RoomType.Shop     => Color.Yellow,
       RoomType.Boss     => Color.Red,
 
-      _ => throw new ArgumentOutOfRangeException()
+      _ => throw new InvalidOperationException($"An unexpected room type was encountered: {Type}")
     };
 
     batch.DrawWireQuad(Position, Size, outerColor);

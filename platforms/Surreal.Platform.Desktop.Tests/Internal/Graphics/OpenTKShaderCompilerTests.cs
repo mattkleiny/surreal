@@ -66,7 +66,6 @@ public class OpenTKShaderCompilerTests
 
   [Test]
   [TestCase("resx://Surreal.Graphics/Resources/shaders/common.shade")]
-  [TestCase("resx://Surreal.Graphics/Resources/shaders/geometry.shade")]
   [TestCase("resx://Surreal.Graphics/Resources/shaders/sprite.shade")]
   public async Task it_should_compile_shader_programs(VirtualPath path)
   {
