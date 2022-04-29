@@ -1,11 +1,11 @@
 ﻿namespace Asteroids.Actors;
 
-/// <summary>An <see cref="Actor"/> that maintains a polygonal shape.</summary>
-public abstract class PolygonActor : Actor
+/// <summary>An <see cref="Surreal.Actors.Actor"/> that maintains a polygonal shape.</summary>
+public abstract class Actor : Surreal.Actors.Actor
 {
   private readonly PixelCanvas canvas;
 
-  protected PolygonActor(PixelCanvas canvas, Polygon polygon)
+  protected Actor(PixelCanvas canvas, Polygon polygon)
   {
     this.canvas   = canvas;
     SourcePolygon = polygon;
@@ -28,7 +28,18 @@ public abstract class PolygonActor : Actor
     base.OnUpdate(deltaTime);
 
     CheckIfOffScreen();
+    UpdatePositionAndRotation(deltaTime);
+  }
 
+  protected override void OnDraw(TimeDelta time)
+  {
+    base.OnDraw(time);
+
+    DrawPolygon();
+  }
+
+  private void UpdatePositionAndRotation(TimeDelta deltaTime)
+  {
     // update position and rotation
     Position += Velocity * deltaTime;
     Rotation += Spin * deltaTime;
@@ -39,25 +50,6 @@ public abstract class PolygonActor : Actor
     var transform = rotation * translation;
 
     FinalPolygon.TransformFrom(SourcePolygon, in transform);
-  }
-
-  protected override void OnDraw(TimeDelta time)
-  {
-    base.OnDraw(time);
-
-    var pixels = canvas.Span;
-    var rectangle = Bounds;
-
-    for (int y = (int) rectangle.Bottom; y < (int) rectangle.Top; y++)
-    for (int x = (int) rectangle.Left; x < (int) rectangle.Right; x++)
-    {
-      var point = new Vector2(x, y);
-
-      if (FinalPolygon.ContainsPoint(point))
-      {
-        pixels[x, y] = Color;
-      }
-    }
   }
 
   /// <summary>Checks to see if we've gone off-screen and moves us back if we have.</summary>
@@ -84,6 +76,23 @@ public abstract class PolygonActor : Actor
     if (Velocity.Y > 0f && Position.Y - halfSize.Y > canvas.Height)
     {
       Position.Y = -halfSize.Y; // bottom
+    }
+  }
+
+  private void DrawPolygon()
+  {
+    var pixels = canvas.Pixels;
+    var rectangle = Bounds;
+
+    for (int y = (int) rectangle.Bottom; y < (int) rectangle.Top; y++)
+    for (int x = (int) rectangle.Left; x < (int) rectangle.Right; x++)
+    {
+      var point = new Vector2(x, y);
+
+      if (FinalPolygon.ContainsPoint(point))
+      {
+        pixels[x, y] = Color;
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
-﻿using Asteroids.Actors;
+﻿using Asteroids;
+using Asteroids.Actors;
 
 var platform = new DesktopPlatform
 {
@@ -19,7 +20,7 @@ Game.Start(platform, async context =>
 
   // load some resources
   using var shader = await context.Assets.LoadDefaultShaderAsync();
-  using var canvas = new AsteroidsCanvas(graphics, 256, 144);
+  using var canvas = new Canvas(graphics, 256, 144);
   using var scene = new ActorScene();
 
   var palette = await context.Assets.LoadAsset<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");

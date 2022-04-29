@@ -27,11 +27,11 @@ public class PixelCanvas : IDisposable
   public int Width  => pixels.Width;
   public int Height => pixels.Height;
 
-  public SpanGrid<Color32> Span => pixels.Span;
+  public SpanGrid<Color32> Pixels => pixels.Span;
 
   public void Draw(ShaderProgram shader)
   {
-    texture.WritePixels<Color32>(Width, Height, Span);
+    texture.WritePixels<Color32>(Width, Height, Pixels);
 
     shader.SetUniform("u_projectionView", Matrix4x4.Identity);
     shader.SetUniform("u_texture", texture, 0);

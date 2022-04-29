@@ -83,7 +83,7 @@ public sealed class SandCanvas : IDisposable
       return cell.IsOccupied ? cell.Color : Color32.White;
     }
 
-    cells.Span.BlitTo(pixels.Span, Painter);
+    cells.Span.BlitTo(pixels.Pixels, Painter);
     pixels.Draw(shader);
   }
 

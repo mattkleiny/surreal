@@ -5,6 +5,43 @@ namespace Asteroids.Actors;
 /// <summary>A simple polygon in 2-space that can be transformed and queried.</summary>
 public sealed class Polygon
 {
+  /// <summary>Creates a new polygon to represent a triangle.</summary>
+  public static Polygon CreateTriangle(float scale)
+  {
+    var vertices = new Vector2[3];
+
+    vertices[0] = new Vector2(-scale, scale);
+    vertices[1] = new Vector2(0f, -scale);
+    vertices[2] = new Vector2(scale, scale);
+
+    return new Polygon(vertices);
+  }
+
+  /// <summary>Creates a new randomly shaped polygon to represent an asteroid.</summary>
+  public static Polygon CreateAsteroid(FloatRange radiusRange)
+  {
+    var random = Random.Shared;
+
+    var vertices = new Vector2[random.NextInt(5, 12)];
+    var list = new SpanList<Vector2>(vertices);
+
+    var theta = 0f;
+
+    for (var i = 0; i < list.Capacity; i++)
+    {
+      theta += 2 * MathF.PI / list.Capacity;
+
+      var radius = random.NextRange(radiusRange);
+
+      var x = radius * MathF.Cos(theta);
+      var y = radius * MathF.Sin(theta);
+
+      list.Add(new Vector2(x, y));
+    }
+
+    return new Polygon(vertices);
+  }
+
   private Vector2[] vertices;
 
   /// <summary>Creates an empty polygon.</summary>

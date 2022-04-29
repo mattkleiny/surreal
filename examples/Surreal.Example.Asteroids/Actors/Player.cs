@@ -1,14 +1,14 @@
 ﻿namespace Asteroids.Actors;
 
 /// <summary>The player ship.</summary>
-public sealed class Player : PolygonActor
+public sealed class Player : Actor
 {
-  private readonly AsteroidsCanvas canvas;
+  private readonly Canvas canvas;
   private readonly IKeyboardDevice keyboard;
   private readonly ActorScene scene;
 
-  public Player(AsteroidsCanvas canvas, IKeyboardDevice keyboard, ActorScene scene)
-    : base(canvas, CreatePlayerPolygon(4f))
+  public Player(Canvas canvas, IKeyboardDevice keyboard, ActorScene scene)
+    : base(canvas, Polygon.CreateTriangle(4f))
   {
     this.canvas   = canvas;
     this.keyboard = keyboard;
@@ -21,6 +21,18 @@ public sealed class Player : PolygonActor
   {
     base.OnInput(deltaTime);
 
+    HandleKeyboardInput();
+  }
+
+  public void OnHitAsteroid(Asteroid asteroid)
+  {
+    canvas.IsGameOver = true;
+
+    scene.Clear();
+  }
+
+  private void HandleKeyboardInput()
+  {
     var movement = Vector2.Zero;
     var spin = 0f;
 
@@ -33,24 +45,5 @@ public sealed class Player : PolygonActor
 
     Velocity = Vector2.Transform(movement, rotation);
     Spin     = spin;
-  }
-
-  public void OnHitAsteroid(Asteroid asteroid)
-  {
-    canvas.IsGameOver = true;
-
-    scene.Clear();
-  }
-
-  /// <summary>Creates a new randomly shaped <see cref="Polygon"/> to represent a player.</summary>
-  private static Polygon CreatePlayerPolygon(float scale)
-  {
-    var vertices = new Vector2[3];
-
-    vertices[0] = new Vector2(-scale, scale);
-    vertices[1] = new Vector2(0f, -scale);
-    vertices[2] = new Vector2(scale, scale);
-
-    return new Polygon(vertices);
   }
 }

@@ -34,7 +34,7 @@ Game.Start(platform, async context =>
 
     graphics.ClearColorBuffer(Color.Black);
 
-    var pixels = canvas.Span;
+    var pixels = canvas.Pixels;
 
     pixels.Fill(Color.White * 0.2f);
     pixels.DrawCircle(position, 32 * scale , Color.Blue);
