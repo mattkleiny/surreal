@@ -15,6 +15,7 @@ public record struct Color(float R, float G, float B, float A = 1f)
   public static readonly Color Blue = new(0, 0, 1f);
   public static readonly Color Yellow = new(1f, 1f, 0);
   public static readonly Color Magenta = new(1f, 0, 1f);
+  public static readonly Color Cyan = new(0, 1f, 1f);
   public static readonly Color White = new(1f, 1f, 1f);
   public static readonly Color Clear = new(0, 0, 0, 0);
 
@@ -79,6 +80,7 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
   public static readonly Color32 Blue = new(0, 0, 255);
   public static readonly Color32 Yellow = new(255, 255, 0);
   public static readonly Color32 Magenta = new(255, 0, 255);
+  public static readonly Color32 Cyan = new(0, 255, 255);
   public static readonly Color32 White = new(255, 255, 255);
   public static readonly Color32 Clear = new(0, 0, 0, 0);
 

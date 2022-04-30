@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.3" PrivateAssets="compile" />
     <PackageReference Include="Antlr4BuildTasks" Version="8.17" PrivateAssets="all" />
+    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta16" PrivateAssets="compile" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile" />
   </ItemGroup>
   <ItemGroup>

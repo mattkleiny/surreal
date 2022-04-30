@@ -28,7 +28,8 @@ Game.Start(platform, async context =>
   context.Assets.AddLoader(new ScriptLoader(scripts));
 
   // load assets
-  var font = await context.Assets.LoadDefaultFontAsync();
+  var bitmapFont = await context.Assets.LoadDefaultBitmapFontAsync();
+  var trueTypeFont = await context.Assets.LoadDefaultFontAsync();
   var clip = await context.Assets.LoadAssetAsync<AudioClip>("Assets/audio/test.wav");
   var shader = await context.Assets.LoadAssetAsync<ShaderProgram>("Assets/shaders/helloworld.glsl");
   var palette1 = await context.Assets.LoadAssetAsync<ColorPalette>("Assets/palettes/club-seoul-16.pal");
@@ -38,6 +39,8 @@ Game.Start(platform, async context =>
 
   using var source = new AudioSource(audio) { IsLooping = true };
   using var sprites = new SpriteBatch(graphics);
+
+  using var font = trueTypeFont.GetFont(16);
 
   // set-up a basic camera
   var camera = new Camera
@@ -65,7 +68,7 @@ Game.Start(platform, async context =>
     graphics.ClearColorBuffer(palette[0]);
 
     shader.SetUniform("u_projectionView", camera.ProjectionView);
-    shader.SetUniform("u_texture", font.Texture, 0);
+    shader.SetUniform("u_texture", bitmapFont.Texture, 0);
 
     sprites.Begin(shader);
     sprites.DrawText(

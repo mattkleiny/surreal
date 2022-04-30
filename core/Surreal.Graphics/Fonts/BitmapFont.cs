@@ -20,16 +20,15 @@ public enum VerticalAlignment
   Center
 }
 
-/// <summary>Utilities for working with <see cref="BitmapFont"/>s in a <see cref="SpriteBatch"/>.</summary>
+/// <summary>Utilities for working with <see cref="BitmapFont"/>s.</summary>
 public static class BitmapFontExtensions
 {
-  /// <summary>Loads the default <see cref="BitmapFont"/> from Surreal.</summary>
-  public static async ValueTask<BitmapFont> LoadDefaultFontAsync(this IAssetManager manager)
+  public static async ValueTask<BitmapFont> LoadDefaultBitmapFontAsync(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
   }
 
-  /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given font.</summary>
+  /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given <see cref="BitmapFont"/>.</summary>
   public static void DrawText(
     this SpriteBatch batch,
     BitmapFont font,
@@ -44,12 +43,12 @@ public static class BitmapFontExtensions
 
     if (horizontalAlignment == HorizontalAlignment.Center)
     {
-      position.X -= size.X / 2f;
+      position.X -= size.Width / 2f;
     }
 
     if (verticalAlignment == VerticalAlignment.Center)
     {
-      position.Y += size.Y / 2f;
+      position.Y += size.Height / 2f;
     }
 
     var startPosition = position;
@@ -98,7 +97,7 @@ public sealed class BitmapFont
   public Texture Texture { get; }
 
   /// <summary>Measures the width of the given piece of text in the underlying font.</summary>
-  public Point2 MeasureSize(string text)
+  public Rectangle MeasureSize(string text)
   {
     var lineCount = 0;
     var longestLine = 0;
@@ -121,8 +120,10 @@ public sealed class BitmapFont
     }
 
     return new(
-      X: longestLine * (descriptor.GlyphWidth + descriptor.GlyphPadding),
-      Y: lineCount * (descriptor.GlyphHeight + descriptor.GlyphPadding)
+      Left: 0,
+      Top: 0,
+      Right: longestLine * (descriptor.GlyphWidth + descriptor.GlyphPadding),
+      Bottom: lineCount * (descriptor.GlyphHeight + descriptor.GlyphPadding)
     );
   }
 

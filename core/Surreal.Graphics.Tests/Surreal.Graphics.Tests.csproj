@@ -5,4 +5,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\fonts\bitboy8_v1.ttf" />
+  </ItemGroup>
 </Project>

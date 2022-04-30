@@ -13,10 +13,7 @@ public enum PersistenceMode
 }
 
 /// <summary>Context for a persistence operation.</summary>
-public readonly record struct PersistenceContext(
-  IPersistenceStore Store,
-  PersistenceMode Mode = PersistenceMode.Transient
-);
+public readonly record struct PersistenceContext(IPersistenceStore Store, PersistenceMode Mode = PersistenceMode.Transient);
 
 /// <summary>Identifies an object with persistent data.</summary>
 public interface IPersistentObject
@@ -25,25 +22,6 @@ public interface IPersistentObject
 
   void OnPersistState(PersistenceContext context, IPersistenceWriter writer);
   void OnResumeState(PersistenceContext context, IPersistenceReader reader);
-}
-
-/// <summary>Static extensions for <see cref="IPersistentObject"/>s.</summary>
-public static class PersistentObjectExtensions
-{
-  public static void Persist(this IPersistentObject persistent, PersistenceContext context)
-  {
-    var writer = context.Store.CreateWriter(persistent.Id);
-
-    persistent.OnPersistState(context, writer);
-  }
-
-  public static void Resume(this IPersistentObject persistent, PersistenceContext context)
-  {
-    if (context.Store.CreateReader(persistent.Id, out var reader))
-    {
-      persistent.OnResumeState(context, reader);
-    }
-  }
 }
 
 /// <summary>A store for persistent data.</summary>
@@ -63,6 +41,28 @@ public interface IPersistenceReader
 public interface IPersistenceWriter
 {
   void Write<T>(Property<T> property, T value);
+}
+
+/// <summary>Static extensions for <see cref="IPersistentObject"/>s.</summary>
+public static class PersistentObjectExtensions
+{
+  public static void Persist(this IPersistentObject persistent, IPersistenceStore store, PersistenceMode mode = PersistenceMode.Transient)
+  {
+    var context = new PersistenceContext(store, mode);
+    var writer = store.CreateWriter(persistent.Id);
+
+    persistent.OnPersistState(context, writer);
+  }
+
+  public static void Resume(this IPersistentObject persistent, IPersistenceStore store, PersistenceMode mode = PersistenceMode.Transient)
+  {
+    var context = new PersistenceContext(store, mode);
+
+    if (store.CreateReader(persistent.Id, out var reader))
+    {
+      persistent.OnResumeState(context, reader);
+    }
+  }
 }
 
 /// <summary>In-memory storage of persistent data, for use in testing and in-process transitions.</summary>

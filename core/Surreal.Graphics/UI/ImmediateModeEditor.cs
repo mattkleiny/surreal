@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace Surreal.Graphics.UI.Editors;
+namespace Surreal.Graphics.UI;
 
 #pragma warning disable CA2255
 
@@ -61,17 +61,17 @@ public abstract class ImmediateModeEditor
   }
 }
 
-/// <summary>Allows editing a particular type <see cref="T"/> from an <see cref="IImmediateModeCanvas"/>.</summary>
+/// <summary>Allows editing a particular type <see cref="T"/> from an <see cref="IImmediateModeContext"/>.</summary>
 public abstract class ImmediateModeEditor<T> : ImmediateModeEditor
 {
-  public abstract void DrawReadOnly(IImmediateModeCanvas layout, T value);
-  public abstract void DrawReadWrite(IImmediateModeCanvas layout, ref T value);
+  public abstract void DrawReadOnly(IImmediateModeContext layout, T value);
+  public abstract void DrawReadWrite(IImmediateModeContext layout, ref T value);
 }
 
-/// <summary>Allows interacting with <see cref="ImmediateModeEditor"/>s from <see cref="IImmediateModeCanvas"/> APIs.</summary>
+/// <summary>Allows interacting with <see cref="ImmediateModeEditor"/>s from <see cref="IImmediateModeContext"/> APIs.</summary>
 public static class ImmediateModeEditorExtensions
 {
-  public static void DrawEditorReadOnly<T>(this IImmediateModeCanvas layout, T value)
+  public static void DrawEditorReadOnly<T>(this IImmediateModeContext layout, T value)
   {
     if (ImmediateModeEditor.TryGet<T>(out var editor))
     {
@@ -79,7 +79,7 @@ public static class ImmediateModeEditorExtensions
     }
   }
 
-  public static void DrawEditor<T>(this IImmediateModeCanvas layout, T value)
+  public static void DrawEditor<T>(this IImmediateModeContext layout, T value)
   {
     if (ImmediateModeEditor.TryGet<T>(out var editor))
     {
@@ -87,7 +87,7 @@ public static class ImmediateModeEditorExtensions
     }
   }
 
-  public static void DrawEditor<T>(this IImmediateModeCanvas layout, ref T value)
+  public static void DrawEditor<T>(this IImmediateModeContext layout, ref T value)
   {
     if (ImmediateModeEditor.TryGet<T>(out var editor))
     {

@@ -1,21 +1,17 @@
 ﻿namespace Sand;
 
 /// <summary>A simple canvas of 'sand' pixels that can be simulated.</summary>
-public sealed class SandCanvas : IDisposable
+public sealed class Canvas : PixelCanvas
 {
   private readonly Grid<Cell> cells;
-  private readonly PixelCanvas pixels;
 
   private IntervalTimer updateTimer = new(16.Milliseconds());
 
-  public SandCanvas(IGraphicsServer server, int width, int height)
+  public Canvas(IGraphicsServer server, int width, int height)
+    : base(server, width, height)
   {
-    cells  = new Grid<Cell>(width, height);
-    pixels = new PixelCanvas(server, width, height);
+    cells = new Grid<Cell>(width, height);
   }
-
-  public int Width  => pixels.Width;
-  public int Height => pixels.Height;
 
   public void AddSand(Point2 position, int radius, Color32 color)
   {
@@ -32,6 +28,7 @@ public sealed class SandCanvas : IDisposable
     if (updateTimer.Tick(deltaTime))
     {
       Simulate();
+      BlitToPixels();
 
       updateTimer.Reset();
     }
@@ -76,25 +73,19 @@ public sealed class SandCanvas : IDisposable
     return false;
   }
 
-  public void Draw(ShaderProgram shader)
+  private void BlitToPixels()
   {
     static Color32 Painter(int x, int y, Cell cell)
     {
       return cell.IsOccupied ? cell.Color : Color32.White;
     }
 
-    cells.Span.BlitTo(pixels.Pixels, Painter);
-    pixels.Draw(shader);
+    cells.Span.BlitTo(Pixels, Painter);
   }
 
   public void Clear()
   {
     cells.Span.Fill(default);
-  }
-
-  public void Dispose()
-  {
-    pixels.Dispose();
   }
 
   private record struct Cell(bool IsOccupied, Color32 Color);

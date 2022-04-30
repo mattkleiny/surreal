@@ -7,12 +7,12 @@ namespace Surreal.Graphics.UI;
 
 public static class CanvasTextExtensions
 {
-  public static void DrawText(this IImmediateModeCanvas layout, string text)
+  public static void DrawText(this IImmediateModeContext layout, string text)
   {
     throw new NotImplementedException();
   }
 
-  public static void DrawText(this IImmediateModeCanvas layout, ref TextInterpolator interpolator)
+  public static void DrawText(this IImmediateModeContext layout, ref TextInterpolator interpolator)
   {
     throw new NotImplementedException();
   }

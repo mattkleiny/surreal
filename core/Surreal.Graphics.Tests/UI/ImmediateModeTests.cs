@@ -1,13 +1,11 @@
-﻿using Surreal.Graphics.UI.Editors;
-
-namespace Surreal.Graphics.UI;
+﻿namespace Surreal.Graphics.UI;
 
 public class ImmediateModeTests
 {
   [Test]
   public void it_should_work()
   {
-    using var canvas = new ImmediateModeCanvas(new HeadlessGraphicsServer());
+    using var canvas = new ImmediateModeContext(new HeadlessGraphicsServer());
 
     var position = Vector2.Zero;
 

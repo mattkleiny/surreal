@@ -4,7 +4,7 @@
 [ImmediateModeEditor(typeof(Vector2))]
 public sealed class Vector2Editor : ImmediateModeEditor<Vector2>
 {
-  public override void DrawReadOnly(IImmediateModeCanvas layout, Vector2 value)
+  public override void DrawReadOnly(IImmediateModeContext layout, Vector2 value)
   {
     layout.BeginHorizontal();
 
@@ -14,7 +14,7 @@ public sealed class Vector2Editor : ImmediateModeEditor<Vector2>
     layout.EndHorizontal();
   }
 
-  public override void DrawReadWrite(IImmediateModeCanvas layout, ref Vector2 value)
+  public override void DrawReadWrite(IImmediateModeContext layout, ref Vector2 value)
   {
     layout.BeginHorizontal();
 

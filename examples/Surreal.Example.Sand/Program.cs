@@ -18,7 +18,7 @@ Game.Start(platform, async context =>
   var mouse = input.GetRequiredDevice<IMouseDevice>();
 
   using var shader = await context.Assets.LoadDefaultShaderAsync();
-  using var canvas = new SandCanvas(graphics, 256, 144);
+  using var canvas = new Canvas(graphics, 256, 144);
 
   var palette = await context.Assets.LoadAssetAsync<ColorPalette>("resx://Sand/Resources/palettes/kule-16.pal");
   var random = Random.Shared;

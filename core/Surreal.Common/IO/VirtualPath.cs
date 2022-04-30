@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Surreal.Text;
 
 namespace Surreal.IO;
 
 /// <summary>Represents a path in the virtual file system.</summary>
 [TypeConverter(typeof(VirtualPathTypeConverter))]
+[JsonConverter(typeof(VirtualPathJsonConverter))]
 public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 {
   private const string SchemeSeparator = "://";
@@ -67,6 +70,27 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
       }
 
       return (VirtualPath) raw;
+    }
+  }
+
+  /// <summary>The <see cref="JsonConverter{T}"/> for <see cref="VirtualPath"/>s.</summary>
+  public class VirtualPathJsonConverter : JsonConverter<VirtualPath>
+  {
+    public override VirtualPath Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+      var value = reader.GetString();
+
+      if (value == null)
+      {
+        return default;
+      }
+
+      return value;
+    }
+
+    public override void Write(Utf8JsonWriter writer, VirtualPath value, JsonSerializerOptions options)
+    {
+      writer.WriteStringValue(value.ToString());
     }
   }
 }
