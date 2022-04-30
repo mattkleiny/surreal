@@ -20,7 +20,7 @@ Game.Start(platform, async context =>
   using var shader = await context.Assets.LoadDefaultShaderAsync();
   using var canvas = new SandCanvas(graphics, 256, 144);
 
-  var palette = await context.Assets.LoadAsset<ColorPalette>("resx://Sand/Resources/palettes/kule-16.pal");
+  var palette = await context.Assets.LoadAssetAsync<ColorPalette>("resx://Sand/Resources/palettes/kule-16.pal");
   var random = Random.Shared;
 
   context.ExecuteVariableStep(time =>

@@ -15,7 +15,7 @@ public class LuaScriptServerTests
 
     manager.AddLoader(new ScriptLoader(server));
 
-    var script = await manager.LoadAsset<Script>(path);
+    var script = await manager.LoadAssetAsync<Script>(path);
     var result = script.ExecuteFunction("factorial", 4);
 
     result.Should().Be(24);

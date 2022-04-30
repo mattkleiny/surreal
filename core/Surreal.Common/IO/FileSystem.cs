@@ -13,18 +13,25 @@ public interface IFileSystem
 
   VirtualPath Resolve(VirtualPath path, params string[] paths);
 
-  ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard);
+  // synchronous API
+  VirtualPath[] Enumerate(string path, string wildcard);
+  Size GetSize(string path);
+  bool Exists(string path);
+  bool IsFile(string path);
+  bool IsDirectory(string path);
+  Stream OpenInputStream(string path);
+  Stream OpenOutputStream(string path);
+  MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length);
+  IPathWatcher WatchPath(VirtualPath path);
 
+  // asynchronous API
+  ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard);
   ValueTask<Size> GetSizeAsync(string path);
   ValueTask<bool> ExistsAsync(string path);
   ValueTask<bool> IsFileAsync(string path);
   ValueTask<bool> IsDirectoryAsync(string path);
-
   ValueTask<Stream> OpenInputStreamAsync(string path);
   ValueTask<Stream> OpenOutputStreamAsync(string path);
-  MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length);
-
-  IPathWatcher WatchPath(VirtualPath path);
 }
 
 /// <summary>A registry for <see cref="IFileSystem"/>s.</summary>
@@ -73,25 +80,29 @@ public abstract class FileSystem : IFileSystem
 
   public abstract VirtualPath Resolve(VirtualPath path, params string[] paths);
 
-  public abstract ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard);
-
-  public abstract ValueTask<Size> GetSizeAsync(string path);
-  public abstract ValueTask<bool> IsDirectoryAsync(string path);
-  public abstract ValueTask<bool> ExistsAsync(string path);
-  public abstract ValueTask<bool> IsFileAsync(string path);
-
-  public abstract ValueTask<Stream> OpenInputStreamAsync(string path);
-  public abstract ValueTask<Stream> OpenOutputStreamAsync(string path);
+  // synchronous API
+  public abstract VirtualPath[] Enumerate(string path, string wildcard);
+  public abstract Size GetSize(string path);
+  public abstract bool Exists(string path);
+  public abstract bool IsFile(string path);
+  public abstract bool IsDirectory(string path);
+  public abstract Stream OpenInputStream(string path);
+  public abstract Stream OpenOutputStream(string path);
 
   public virtual MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
-  {
-    throw new NotSupportedException("This file system does not support memory mapping.");
-  }
+    => throw new NotSupportedException("This file system does not support memory mapping.");
 
   public virtual IPathWatcher WatchPath(VirtualPath path)
-  {
-    throw new NotSupportedException("This file system does not support path watching.");
-  }
+    => throw new NotSupportedException("This file system does not support path watching.");
+
+  // asynchronous API
+  public virtual ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard) => new(Enumerate(path, wildcard));
+  public virtual ValueTask<Size> GetSizeAsync(string path) => new(GetSize(path));
+  public virtual ValueTask<bool> IsDirectoryAsync(string path) => new(IsDirectory(path));
+  public virtual ValueTask<bool> ExistsAsync(string path) => new(Exists(path));
+  public virtual ValueTask<bool> IsFileAsync(string path) => new(IsFile(path));
+  public virtual ValueTask<Stream> OpenInputStreamAsync(string path) => new(OpenInputStream(path));
+  public virtual ValueTask<Stream> OpenOutputStreamAsync(string path) => new(OpenOutputStream(path));
 
   private sealed class FileSystemRegistry : IFileSystemRegistry
   {

@@ -23,7 +23,7 @@ Game.Start(platform, async context =>
   using var canvas = new Canvas(graphics, 256, 144);
   using var scene = new ActorScene();
 
-  var palette = await context.Assets.LoadAsset<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");
+  var palette = await context.Assets.LoadAssetAsync<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");
 
   var random = Random.Shared;
   var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);

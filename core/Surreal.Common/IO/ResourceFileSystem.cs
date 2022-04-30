@@ -33,29 +33,49 @@ public sealed class ResourceFileSystem : FileSystem
   public override VirtualPath Resolve(VirtualPath path, params string[] paths)
     => path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
 
-  public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard) => throw new NotSupportedException();
+  public override VirtualPath[] Enumerate(string path, string wildcard)
+  {
+    throw new NotSupportedException();
+  }
 
-  public override ValueTask<Size> GetSizeAsync(string path) => throw new NotSupportedException();
-  public override ValueTask<bool> IsFileAsync(string path) => throw new NotSupportedException();
-  public override ValueTask<bool> IsDirectoryAsync(string path) => throw new NotSupportedException();
-  public override ValueTask<bool> ExistsAsync(string path) => throw new NotSupportedException();
+  public override Size GetSize(string path)
+  {
+    throw new NotSupportedException();
+  }
 
-  public override ValueTask<Stream> OpenInputStreamAsync(string path)
+  public override bool Exists(string path)
+  {
+    throw new NotSupportedException();
+  }
+
+  public override bool IsFile(string path)
+  {
+    throw new NotSupportedException();
+  }
+
+  public override bool IsDirectory(string path)
+  {
+    throw new NotSupportedException();
+  }
+
+  public override Stream OpenInputStream(string path)
   {
     foreach (var assembly in assemblies)
     {
       var stream = assembly.GetManifestResourceStream(NormalizePath(path));
-
       if (stream != null)
       {
-        return ValueTask.FromResult(stream);
+        return stream;
       }
     }
 
     throw new ResourceNotFoundException("Unable to locate resource: " + path);
   }
 
-  public override ValueTask<Stream> OpenOutputStreamAsync(string path) => throw new NotSupportedException();
+  public override Stream OpenOutputStream(string path)
+  {
+    throw new NotSupportedException();
+  }
 
   private static string NormalizePath(string path)
   {

@@ -26,7 +26,7 @@ public static class BitmapFontExtensions
   /// <summary>Loads the default <see cref="BitmapFont"/> from Surreal.</summary>
   public static async ValueTask<BitmapFont> LoadDefaultFontAsync(this IAssetManager manager)
   {
-    return await manager.LoadAsset<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
+    return await manager.LoadAssetAsync<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
   }
 
   /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given font.</summary>

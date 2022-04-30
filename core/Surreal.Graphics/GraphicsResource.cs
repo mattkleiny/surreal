@@ -9,4 +9,5 @@ public abstract class GraphicsResource : TrackedResource<GraphicsResource>
 {
   public static Size AllocatedBufferSize  => GetSizeEstimate<GraphicsBuffer>();
   public static Size AllocatedTextureSize => GetSizeEstimate<Texture>();
+  public static Size AllocatedMeshSize    => GetSizeEstimate<Mesh>();
 }

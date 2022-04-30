@@ -19,44 +19,42 @@ public sealed class LocalFileSystem : FileSystem
   public override VirtualPath Resolve(VirtualPath path, params string[] paths)
     => path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
 
-  public override ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard)
+  public override VirtualPath[] Enumerate(string path, string wildcard)
   {
-    var files = Directory
+    return Directory
       .GetFiles(path, wildcard, SearchOption.AllDirectories)
       .Select(_ => new VirtualPath("local", _))
       .ToArray();
-
-    return ValueTask.FromResult(files);
   }
 
-  public override ValueTask<Size> GetSizeAsync(string path)
+  public override Size GetSize(string path)
   {
-    return ValueTask.FromResult(new Size(new FileInfo(path).Length));
+    return new Size(new FileInfo(path).Length);
   }
 
-  public override async ValueTask<bool> ExistsAsync(string path)
+  public override bool Exists(string path)
   {
-    return await IsDirectoryAsync(path) || await IsFileAsync(path);
+    return IsDirectory(path) || IsFile(path);
   }
 
-  public override ValueTask<bool> IsDirectoryAsync(string path)
+  public override bool IsFile(string path)
   {
-    return ValueTask.FromResult(Directory.Exists(path));
+    return File.Exists(path);
   }
 
-  public override ValueTask<bool> IsFileAsync(string path)
+  public override bool IsDirectory(string path)
   {
-    return ValueTask.FromResult(File.Exists(path));
+    return Directory.Exists(path);
   }
 
-  public override ValueTask<Stream> OpenInputStreamAsync(string path)
+  public override Stream OpenInputStream(string path)
   {
-    return ValueTask.FromResult<Stream>(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+    return File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
   }
 
-  public override ValueTask<Stream> OpenOutputStreamAsync(string path)
+  public override Stream OpenOutputStream(string path)
   {
-    return ValueTask.FromResult<Stream>(File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None));
+    return File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
   }
 
   public override MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)

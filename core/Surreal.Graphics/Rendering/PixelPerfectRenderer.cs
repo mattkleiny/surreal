@@ -38,7 +38,7 @@ public sealed class PixelPerfectRenderer : PassBasedRenderer
 
     protected override async Task InitializeAsync(GraphicsContext context)
     {
-      shader = await context.Assets.LoadAsset<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/sprite/forward.shade");
+      shader = await context.Assets.LoadAssetAsync<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/sprite/forward.shade");
     }
   }
 

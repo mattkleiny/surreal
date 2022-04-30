@@ -10,7 +10,7 @@ public static class ShaderProgramExtensions
   /// <summary>Loads the default <see cref="ShaderProgram"/> from Surreal.</summary>
   public static ValueTask<ShaderProgram> LoadDefaultShaderAsync(this IAssetManager manager)
   {
-    return manager.LoadAsset<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/default.glsl");
+    return manager.LoadAssetAsync<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/default.glsl");
   }
 }
 

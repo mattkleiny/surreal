@@ -1,5 +1,6 @@
 ﻿using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
+using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
 
@@ -14,7 +15,7 @@ public enum MeshType
 }
 
 /// <summary>Abstracts over all possible <see cref="Mesh{TVertex}"/> types.</summary>
-public abstract class Mesh : IDisposable
+public abstract class Mesh : GraphicsResource, IHasSizeEstimate
 {
   /// <summary>Builds a full-screen <see cref="Mesh"/> quad.</summary>
   public static Mesh CreateQuad(IGraphicsServer server, float size = 1f)
@@ -38,17 +39,13 @@ public abstract class Mesh : IDisposable
     return mesh;
   }
 
-  /// <summary>The <see cref="VertexDescriptorSet"/> for the mesh.</summary>
-  public abstract VertexDescriptorSet Descriptors { get; }
+  public abstract Size Size { get; }
 
   /// <summary>Draws the mesh with the given <see cref="ShaderProgram"/>.</summary>
   public abstract void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles);
 
   /// <summary>Draws the mesh with the given <see cref="ShaderProgram"/> and primitive counts.</summary>
   public abstract void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles);
-
-  /// <summary>Disposes of the mesh, freeing any of it's allocated resources.</summary>
-  public abstract void Dispose();
 }
 
 /// <summary>A mesh with a strongly-typed vertex type, <see cref="TVertex"/>.</summary>
@@ -56,8 +53,8 @@ public abstract class Mesh : IDisposable
 public sealed class Mesh<TVertex> : Mesh
   where TVertex : unmanaged
 {
-  /// <summary>Descriptors are statically shared amongst all meshes.</summary>
-  private static VertexDescriptorSet SharedDescriptors { get; } = VertexDescriptorSet.Create<TVertex>();
+  /// <summary>Descriptors are statically shared amongst all <see cref="TVertex"/>.</summary>
+  private static readonly VertexDescriptorSet VertexDescriptors = VertexDescriptorSet.Create<TVertex>();
 
   private readonly IGraphicsServer server;
   private readonly GraphicsHandle handle;
@@ -75,7 +72,7 @@ public sealed class Mesh<TVertex> : Mesh
   public GraphicsBuffer<TVertex> Vertices { get; }
   public GraphicsBuffer<ushort>  Indices  { get; }
 
-  public override VertexDescriptorSet Descriptors => SharedDescriptors;
+  public override Size Size => Vertices.Size + Indices.Size;
 
   public override void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles)
   {
@@ -89,7 +86,7 @@ public sealed class Mesh<TVertex> : Mesh
       shader: shader.Handle,
       vertices: Vertices.Handle,
       indices: Indices.Handle,
-      descriptors: Descriptors,
+      descriptors: VertexDescriptors,
       vertexCount: vertexCount,
       indexCount: indexCount,
       meshType: type,
@@ -97,11 +94,16 @@ public sealed class Mesh<TVertex> : Mesh
     );
   }
 
-  public override void Dispose()
+  protected override void Dispose(bool managed)
   {
-    Vertices.Dispose();
-    Indices.Dispose();
+    if (managed)
+    {
+      Vertices.Dispose();
+      Indices.Dispose();
 
-    server.DeleteMesh(handle);
+      server.DeleteMesh(handle);
+    }
+
+    base.Dispose(managed);
   }
 }

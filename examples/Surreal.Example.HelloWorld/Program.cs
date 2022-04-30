@@ -29,12 +29,12 @@ Game.Start(platform, async context =>
 
   // load assets
   var font = await context.Assets.LoadDefaultFontAsync();
-  var clip = await context.Assets.LoadAsset<AudioClip>("Assets/audio/test.wav");
-  var shader = await context.Assets.LoadAsset<ShaderProgram>("Assets/shaders/helloworld.glsl");
-  var palette1 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/club-seoul-16.pal");
-  var palette2 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/kule-16.pal");
-  var palette3 = await context.Assets.LoadAsset<ColorPalette>("Assets/palettes/space-dust-9.pal");
-  var script = await context.Assets.LoadAsset<Script>("Assets/scripts/test.lua");
+  var clip = await context.Assets.LoadAssetAsync<AudioClip>("Assets/audio/test.wav");
+  var shader = await context.Assets.LoadAssetAsync<ShaderProgram>("Assets/shaders/helloworld.glsl");
+  var palette1 = await context.Assets.LoadAssetAsync<ColorPalette>("Assets/palettes/club-seoul-16.pal");
+  var palette2 = await context.Assets.LoadAssetAsync<ColorPalette>("Assets/palettes/kule-16.pal");
+  var palette3 = await context.Assets.LoadAssetAsync<ColorPalette>("Assets/palettes/space-dust-9.pal");
+  var script = await context.Assets.LoadAssetAsync<Script>("Assets/scripts/test.lua");
 
   using var source = new AudioSource(audio) { IsLooping = true };
   using var sprites = new SpriteBatch(graphics);

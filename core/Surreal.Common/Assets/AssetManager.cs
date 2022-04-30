@@ -23,7 +23,7 @@ public interface IAssetManager : IDisposable
   void AddSettings<T>(VirtualPath path, AssetSettings<T> settings);
   bool TryGetSettings<T>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<T>? results);
 
-  ValueTask<T> LoadAsset<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  ValueTask<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
 
   IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
 }
@@ -66,9 +66,9 @@ public sealed class AssetManager : IAssetManager
     settingsById[id] = settings;
   }
 
-  public async ValueTask<TAsset> LoadAsset<TAsset>(VirtualPath path, CancellationToken cancellationToken = default)
+  public async ValueTask<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    var id = new AssetId(typeof(TAsset), path);
+    var id = new AssetId(typeof(T), path);
     var context = new AssetLoaderContext(id, this);
 
     if (!TryGetLoader(context, out var loader))
@@ -82,7 +82,7 @@ public sealed class AssetManager : IAssetManager
       assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
-    return (TAsset)asset;
+    return (T)asset;
   }
 
   public IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
