@@ -47,6 +47,10 @@ public sealed class Material
   public void SetProperty(string name, Texture value, int sampler)
     => properties[name] = new TextureProperty(value, sampler);
 
+  /// <summary>Clears all properties from the material.</summary>
+  public void ClearProperties()
+    => properties.Clear();
+
   /// <summary>Applies the material properties to the <see cref="ShaderProgram"/>.</summary>
   public void Apply()
   {

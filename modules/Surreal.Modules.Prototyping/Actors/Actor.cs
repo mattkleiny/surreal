@@ -37,7 +37,7 @@ public class Actor
 
   public Actor()
   {
-    Behaviours = new BehaviourList(this);
+    Behaviours = new ActorBehaviourList(this);
   }
 
   public ActorId Id { get; private set; } = ActorId.Invalid;
@@ -49,7 +49,7 @@ public class Actor
   public bool IsActive    => Status == ActorStatus.Active;
   public bool IsInactive  => Status == ActorStatus.Inactive;
 
-  public BehaviourList Behaviours { get; }
+  public ActorBehaviourList Behaviours { get; }
 
   public void Enable() => context?.Enable(Id);
   public void Disable() => context?.Disable(Id);
@@ -70,7 +70,7 @@ public class Actor
   }
 
   public bool TryGetBehaviour<T>(out T result)
-    where T : Behaviour
+    where T : ActorBehaviour
   {
     return Behaviours.TryGet(out result);
   }

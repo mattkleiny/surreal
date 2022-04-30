@@ -31,9 +31,9 @@ public abstract class Actor : Surreal.Actors.Actor
     UpdatePositionAndRotation(deltaTime);
   }
 
-  protected override void OnDraw(TimeDelta time)
+  protected override void OnDraw(TimeDelta deltaTime)
   {
-    base.OnDraw(time);
+    base.OnDraw(deltaTime);
 
     DrawPolygon();
   }

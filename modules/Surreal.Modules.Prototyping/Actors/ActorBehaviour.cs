@@ -3,19 +3,19 @@ using Surreal.Timing;
 
 namespace Surreal.Actors;
 
-/// <summary>A list of <see cref="Behaviour"/>s with managed reference tracking.</summary>
-public sealed class BehaviourList : ListDecorator<Behaviour>
+/// <summary>A list of <see cref="ActorBehaviour"/>s with managed reference tracking.</summary>
+public sealed class ActorBehaviourList : ListDecorator<ActorBehaviour>
 {
   private readonly Actor actor;
 
-  public BehaviourList(Actor actor)
+  public ActorBehaviourList(Actor actor)
   {
     this.actor = actor;
   }
 
   /// <summary>Tries to locate the first behaviour of the given type, <see cref="T"/>.</summary>
   public bool TryGet<T>(out T result)
-    where T : Behaviour
+    where T : ActorBehaviour
   {
     foreach (var behaviour in Items)
     {
@@ -30,14 +30,14 @@ public sealed class BehaviourList : ListDecorator<Behaviour>
     return false;
   }
 
-  protected override void OnItemAdded(Behaviour item)
+  protected override void OnItemAdded(ActorBehaviour item)
   {
     base.OnItemAdded(item);
 
     item.Connect(actor);
   }
 
-  protected override void OnItemRemoved(Behaviour item)
+  protected override void OnItemRemoved(ActorBehaviour item)
   {
     base.OnItemRemoved(item);
 
@@ -46,7 +46,7 @@ public sealed class BehaviourList : ListDecorator<Behaviour>
 }
 
 /// <summary>A behaviour is an object-oriented component that you can attach to an <see cref="Actor"/>.</summary>
-public abstract class Behaviour
+public abstract class ActorBehaviour
 {
   public Actor Actor { get; private set; } = null!;
 
@@ -74,7 +74,7 @@ public abstract class Behaviour
   }
 
   public bool TryGetBehaviour<T>(out T result)
-    where T : Behaviour
+    where T : ActorBehaviour
   {
     return Actor.Behaviours.TryGet(out result);
   }
@@ -120,8 +120,8 @@ public abstract class Behaviour
   }
 }
 
-/// <summary>A <see cref="Behaviour"/> that expects a parent actor type <see cref="TActor"/>.</summary>
-public abstract class Behaviour<TActor> : Behaviour
+/// <summary>A <see cref="ActorBehaviour"/> that expects a parent actor type <see cref="TActor"/>.</summary>
+public abstract class ActorBehaviour<TActor> : ActorBehaviour
   where TActor : Actor
 {
   public new TActor Actor => (TActor) base.Actor;
