@@ -7,7 +7,6 @@ in vec2 o_uv;
 
 out vec4 FragColor;
 
-void main()
-{
-    FragColor = texture(u_texture, o_uv) * o_color;
+void main() {
+  FragColor = texture(u_texture, o_uv) * o_color;
 }

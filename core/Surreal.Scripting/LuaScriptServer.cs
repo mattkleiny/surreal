@@ -34,6 +34,15 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
       }
     });
 
+    // replace the default 'require' function
+    RegisterFunction(handle, "require", (string uri) =>
+    {
+      var path = VirtualPath.Parse(uri);
+      var code = path.ReadAllText();
+
+      entry.Runtime.DoString(code);
+    });
+
     return handle;
   }
 

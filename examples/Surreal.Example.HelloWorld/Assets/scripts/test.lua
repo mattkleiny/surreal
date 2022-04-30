@@ -1,4 +1,6 @@
-﻿time_elapsed = 0 -- local timer
+﻿require("Assets/scripts/utils.lua")
+
+time_elapsed = 0 -- local timer
 
 -- core update loop
 function update(delta_time)
@@ -8,9 +10,4 @@ function update(delta_time)
     say_hello("it has been " .. delta_time .. " seconds since the last frame")
     time_elapsed = 0
   end
-end
-
--- prints a simple message to the console
-function say_hello (message)
-  print("Hello " .. message)
 end
