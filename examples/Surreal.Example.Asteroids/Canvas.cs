@@ -14,20 +14,24 @@ public sealed class Canvas : PixelCanvas
 
   public void Update(TimeDelta deltaTime)
   {
-    if (IsGameOver && updateTimer.Tick(deltaTime))
+    if (!IsGameOver)
     {
-      SimulateSand(Pixels);
+      Pixels.Fill(Color32.Black);
+      return;
+    }
+
+    if (updateTimer.Tick(deltaTime))
+    {
+      SimulateSand();
 
       updateTimer.Reset();
     }
-    else
-    {
-      Pixels.Fill(Color32.Black);
-    }
   }
 
-  private void SimulateSand(SpanGrid<Color32> pixels)
+  private void SimulateSand()
   {
+    var pixels = Pixels;
+
     for (int y = pixels.Height - 1; y >= 0; y--)
     for (int x = 0; x < pixels.Width; x++)
     {

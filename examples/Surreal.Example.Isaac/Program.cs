@@ -12,19 +12,24 @@ var platform = new DesktopPlatform
 
 Game.Start(platform, async context =>
 {
+  // grab services
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var input = context.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
+  // load assets
   using var batch = new GeometryBatch(graphics);
   using var shader = await context.Assets.LoadDefaultShaderAsync();
   using var texture = Texture.CreateColored(graphics, Color.White);
 
-  // set-up a basic camera perspective
-  var projectionView =
-    Matrix4x4.CreateTranslation(-256f / 2f, -144f / 2f, 0f) * // view
-    Matrix4x4.CreateOrthographic(256f, 144f, 0f, 100f);       // projection
+  // set-up a basic camera
+  var camera = new Camera
+  {
+    Position = new(-256f / 2f, -144f / 2f),
+    Size     = new Vector2(256, 144),
+  };
 
+  // plan a random dungeon
   var random = Random.Shared;
   var plan = new RoomPlanGrid();
 
@@ -54,7 +59,7 @@ Game.Start(platform, async context =>
       plan.Add(last.AddChild(direction));
     }
 
-    shader.SetUniform("u_projectionView", in projectionView);
+    shader.SetUniform("u_projectionView", in camera.ProjectionView);
     shader.SetUniform("u_texture", texture, 0);
 
     batch.Begin(shader);

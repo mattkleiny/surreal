@@ -116,12 +116,12 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
       return new ShaderCompilationUnit
       {
         ShaderType = nodes.OfType<ShaderTypeDeclaration>().FirstOrDefault(new ShaderTypeDeclaration("none")),
-        Includes = nodes.OfType<Include>().ToImmutableHashSet(),
-        Uniforms = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
-        Varyings = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
-        Constants = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
-        Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
-        Stages = nodes.OfType<StageDeclaration>().ToImmutableArray()
+        Includes   = nodes.OfType<Include>().ToImmutableHashSet(),
+        Uniforms   = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
+        Varyings   = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
+        Constants  = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
+        Functions  = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
+        Stages     = nodes.OfType<StageDeclaration>().ToImmutableArray()
       };
     }
 
@@ -364,6 +364,8 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
         return new UnaryOperation(unaryOperator, value);
       }
 
+      // TODO: remove self-recursive instantiation
+      // TODO: break this down into smaller rules
       var expression =
         TryConsumeLiteralIf(TokenType.Keyword, "SAMPLE")
           ? ParseSampleOperation()

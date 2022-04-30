@@ -83,22 +83,15 @@ public sealed class ShaderProgram : GraphicsResource
 public sealed class ShaderProgramLoader : AssetLoader<ShaderProgram>
 {
   private readonly IGraphicsServer server;
-  private readonly ImmutableHashSet<string> extensions;
 
-  public ShaderProgramLoader(IGraphicsServer server, params string[] extensions)
-    : this(server, extensions.AsEnumerable())
+  public ShaderProgramLoader(IGraphicsServer server)
   {
-  }
-
-  public ShaderProgramLoader(IGraphicsServer server, IEnumerable<string> extensions)
-  {
-    this.server     = server;
-    this.extensions = extensions.ToImmutableHashSet();
+    this.server = server;
   }
 
   public override bool CanHandle(AssetLoaderContext context)
   {
-    return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
+    return base.CanHandle(context) && context.Path.Extension == ".shader";
   }
 
   public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)

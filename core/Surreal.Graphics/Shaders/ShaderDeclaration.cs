@@ -42,30 +42,22 @@ public sealed record ShaderDeclaration(string Path, ShaderCompilationUnit Compil
 /// <summary>An <see cref="AssetLoader{T}"/> for <see cref="ShaderDeclaration"/>s.</summary>
 public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
 {
-  private readonly ShaderParser parser;
-  private readonly ImmutableHashSet<string> extensions;
+  private readonly ShaderParser parser = new();
   private readonly Encoding encoding;
 
-  public ShaderDeclarationLoader(ShaderParser parser, params string[] extensions)
-    : this(parser, extensions.AsEnumerable())
+  public ShaderDeclarationLoader()
+    : this(Encoding.UTF8)
   {
   }
 
-  public ShaderDeclarationLoader(ShaderParser parser, IEnumerable<string> extensions)
-    : this(parser, extensions, Encoding.UTF8)
+  public ShaderDeclarationLoader(Encoding encoding)
   {
-  }
-
-  public ShaderDeclarationLoader(ShaderParser parser, IEnumerable<string> extensions, Encoding encoding)
-  {
-    this.parser = parser;
-    this.extensions = extensions.ToImmutableHashSet();
     this.encoding = encoding;
   }
 
   public override bool CanHandle(AssetLoaderContext context)
   {
-    return base.CanHandle(context) && extensions.Contains(context.Path.Extension);
+    return base.CanHandle(context) && context.Path.Extension == ".shade";
   }
 
   public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)

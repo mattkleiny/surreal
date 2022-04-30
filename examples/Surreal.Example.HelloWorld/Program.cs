@@ -16,11 +16,6 @@ var platform = new DesktopPlatform
 
 Game.Start(platform, async context =>
 {
-  // set-up a basic camera perspective
-  var projectionView =
-    Matrix4x4.CreateTranslation(-size.X / 2f, -size.Y / 2f, 0f) * // view
-    Matrix4x4.CreateOrthographic(size.X, size.Y, 0f, 100f); // projection
-
   // grab services
   var audio = context.Services.GetRequiredService<IAudioServer>();
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
@@ -44,6 +39,13 @@ Game.Start(platform, async context =>
   using var source = new AudioSource(audio) { IsLooping = true };
   using var sprites = new SpriteBatch(graphics);
 
+  // set-up a basic camera
+  var camera = new Camera
+  {
+    Position = new(-size.X / 2f, -size.Y / 2f),
+    Size     = new Vector2(size.X, size.Y),
+  };
+
   source.Play(clip);
 
   var palette = palette3;
@@ -62,7 +64,7 @@ Game.Start(platform, async context =>
     // render
     graphics.ClearColorBuffer(palette[0]);
 
-    shader.SetUniform("u_projectionView", projectionView);
+    shader.SetUniform("u_projectionView", camera.ProjectionView);
     shader.SetUniform("u_texture", font.Texture, 0);
 
     sprites.Begin(shader);

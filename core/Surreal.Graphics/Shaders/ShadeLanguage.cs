@@ -19,9 +19,5 @@ internal static class ShadeLanguage
 
   private sealed class SyntaxTreeTransformer : ShadeBaseVisitor<ShaderSyntaxTree>
   {
-    public override ShaderSyntaxTree VisitEquality(ShadeParser.EqualityContext context)
-    {
-      return base.VisitEquality(context);
-    }
   }
 }

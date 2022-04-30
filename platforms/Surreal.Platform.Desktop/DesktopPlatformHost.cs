@@ -93,9 +93,9 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
-    manager.AddLoader(new ShaderProgramLoader(GraphicsServer, ".shade"));
+    manager.AddLoader(new ShaderProgramLoader(GraphicsServer));
     manager.AddLoader(new OpenTKShaderProgramLoader(GraphicsServer));
-    manager.AddLoader(new ShaderDeclarationLoader(new ShaderParser(manager), ".shade"));
+    manager.AddLoader(new ShaderDeclarationLoader());
     manager.AddLoader(new TextureLoader(GraphicsServer));
     manager.AddLoader(new TextureRegionLoader());
   }

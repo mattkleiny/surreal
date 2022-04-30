@@ -44,19 +44,6 @@ public readonly record struct BoundingRect(Vector2 Min, Vector2 Max)
     return $"BoundingRect ({Left}, {Top}, {Right}, {Bottom})";
   }
 
-  /// <summary>Computes a <see cref="BoundingRect"/> re-centered at the given position.</summary>
-  public BoundingRect Recenter(Vector2 center)
-  {
-    var size = Size;
-
-    return new BoundingRect(
-      center.X - size.X / 2f,
-      center.Y + size.Y / 2f,
-      center.X + size.X / 2f,
-      center.Y - size.Y / 2f
-    );
-  }
-
   /// <summary>Clamps the bounding rect to the given range.</summary>
   public BoundingRect Clamp(float minX, float minY, float maxX, float maxY) => new(
     Min: new Vector2(Min.X.Clamp(minX, maxX), Min.Y.Clamp(minY, maxY)),
