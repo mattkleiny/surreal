@@ -39,6 +39,27 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     return texture;
   }
 
+  /// <summary>Creates a texture from random noise.</summary>
+  public static Texture CreateNoise(IGraphicsServer server, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8888)
+  {
+    var texture = new Texture(server, format);
+    var random = seed.ToRandom();
+
+    var pixels = new SpanGrid<Color>(new Color[width * height], width);
+
+    for (var y = 0; y < height; y++)
+    for (var x = 0; x < width; x++)
+    {
+      var color = random.NextFloat();
+
+      pixels[x, y] = new Color(color, color, color);
+    }
+
+    texture.WritePixels<Color>(width, height, pixels);
+
+    return texture;
+  }
+
   private readonly IGraphicsServer server;
   private TextureFilterMode filterMode = TextureFilterMode.Point;
   private TextureWrapMode wrapMode = TextureWrapMode.Clamp;

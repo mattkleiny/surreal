@@ -16,10 +16,12 @@ public readonly ref struct SpanGrid<T>
   {
     this.storage = storage;
     this.stride  = stride;
+
+    Height = storage.Length / stride;
   }
 
   public int Width  => stride;
-  public int Height => storage.Length / stride;
+  public int Height { get; }
   public int Length => storage.Length;
 
   public ref T this[Point2 position] => ref this[position.X, position.Y];

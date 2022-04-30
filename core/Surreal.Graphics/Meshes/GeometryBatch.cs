@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
 using Surreal.Memory;

@@ -35,6 +35,11 @@ public class Actor
 {
   private IActorContext? context;
 
+  public Actor()
+  {
+    Behaviours = new BehaviourList(this);
+  }
+
   public ActorId Id { get; private set; } = ActorId.Invalid;
 
   public ActorStatus       Status   => context?.GetStatus(Id) ?? ActorStatus.Unknown;
@@ -43,6 +48,8 @@ public class Actor
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
   public bool IsActive    => Status == ActorStatus.Active;
   public bool IsInactive  => Status == ActorStatus.Inactive;
+
+  public BehaviourList Behaviours { get; }
 
   public void Enable() => context?.Enable(Id);
   public void Disable() => context?.Disable(Id);
@@ -62,43 +69,89 @@ public class Actor
     Id = ActorId.Invalid;
   }
 
+  public bool TryGetBehaviour<T>(out T result)
+    where T : Behaviour
+  {
+    return Behaviours.TryGet(out result);
+  }
+
   protected internal virtual void OnAwake()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnAwake();
+    }
   }
 
   protected internal virtual void OnStart()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnStart();
+    }
   }
 
   protected internal virtual void OnEnable()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnEnable();
+    }
   }
 
   protected internal virtual void OnBeginFrame(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnBeginFrame(deltaTime);
+    }
   }
 
   protected internal virtual void OnInput(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnInput(deltaTime);
+    }
   }
 
   protected internal virtual void OnUpdate(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnUpdate(deltaTime);
+    }
   }
 
-  protected internal virtual void OnDraw(TimeDelta time)
+  protected internal virtual void OnDraw(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnDraw(deltaTime);
+    }
   }
 
   protected internal virtual void OnEndFrame(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnEndFrame(deltaTime);
+    }
   }
 
   protected internal virtual void OnDisable()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnDisable();
+    }
   }
 
   protected internal virtual void OnDestroy()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnDestroy();
+    }
   }
 }

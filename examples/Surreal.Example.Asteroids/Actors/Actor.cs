@@ -15,7 +15,7 @@ public abstract class Actor : Surreal.Actors.Actor
   public Vector2 Velocity = Vector2.Zero;
   public float Rotation = 0f;
   public float Spin = 0f;
-  public Color Color = Color.White;
+  public Color32 Color = Color32.White;
 
   public Polygon SourcePolygon { get; }
   public Polygon FinalPolygon  { get; } = new();
