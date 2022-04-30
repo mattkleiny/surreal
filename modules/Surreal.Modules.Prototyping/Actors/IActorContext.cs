@@ -7,6 +7,9 @@ internal interface IActorContext
 
   ActorStatus GetStatus(ActorId id);
 
+  T Spawn<T>(T actor)
+    where T : Actor;
+
   ActorId AllocateId();
 
   void Enable(ActorId id);

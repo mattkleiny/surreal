@@ -1,27 +1,41 @@
 ﻿namespace Asteroids.Actors;
 
-/// <summary>An <see cref="Surreal.Actors.Actor"/> that maintains a polygonal shape.</summary>
-public abstract class Actor : Surreal.Actors.Actor
+/// <summary>An <see cref="Actor"/> for our game.</summary>
+public abstract class GameActor : Actor
 {
   private readonly PixelCanvas canvas;
 
-  protected Actor(PixelCanvas canvas, Polygon polygon)
+  protected GameActor(PixelCanvas canvas, Polygon polygon)
   {
     this.canvas   = canvas;
     SourcePolygon = polygon;
   }
 
   public Vector2 Position = Vector2.Zero;
-  public Vector2 Velocity = Vector2.Zero;
-  public float Rotation = 0f;
-  public float Spin = 0f;
-  public Color32 Color = Color32.White;
+  public Vector2 Velocity { get; set; } = Vector2.Zero;
+  public float   Rotation { get; set; } = 0f;
+  public float   Spin     { get; set; } = 0f;
+  public Color32 Color    { get; set; } = Color32.White;
 
   public Polygon SourcePolygon { get; }
   public Polygon FinalPolygon  { get; } = new();
 
   /// <summary>The final bounds of the actor's polygon, constrained to the canvas.</summary>
   public BoundingRect Bounds => FinalPolygon.Bounds.Clamp(0, 0, canvas.Width - 1, canvas.Height - 1);
+
+  protected override void OnEnable()
+  {
+    base.OnEnable();
+
+    Message.SubscribeAll(this);
+  }
+
+  protected override void OnDisable()
+  {
+    base.OnDisable();
+
+    Message.UnsubscribeAll(this);
+  }
 
   protected override void OnUpdate(TimeDelta deltaTime)
   {

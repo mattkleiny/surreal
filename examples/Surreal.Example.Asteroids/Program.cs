@@ -37,8 +37,9 @@ Game.Start(platform, async context =>
     // spawn the player
     var player = scene.Spawn(new Player(canvas, keyboard, scene)
     {
-      Position = center,
-      Color    = palette[3]
+      Position        = center,
+      Color           = palette[3],
+      ProjectileColor = palette[4]
     });
 
     // spawn a few asteroids
@@ -66,16 +67,18 @@ Game.Start(platform, async context =>
       context.Exit();
     }
 
-    if (keyboard.IsKeyPressed(Key.Space))
+    if (keyboard.IsKeyPressed(Key.F4))
     {
       Respawn();
     }
 
     canvas.Update(time.DeltaTime);
 
+    scene.BeginFrame(time.DeltaTime);
     scene.Input(time.DeltaTime);
     scene.Draw(time.DeltaTime);
     scene.Update(time.DeltaTime);
+    scene.EndFrame(time.DeltaTime);
 
     canvas.Draw(shader);
   });

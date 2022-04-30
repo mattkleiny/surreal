@@ -1,7 +1,7 @@
 ﻿namespace Asteroids.Actors;
 
 /// <summary>The player ship.</summary>
-public sealed class Player : Actor
+public sealed class Player : GameActor
 {
   private readonly Canvas canvas;
   private readonly IKeyboardDevice keyboard;
@@ -15,20 +15,14 @@ public sealed class Player : Actor
     this.scene    = scene;
   }
 
-  public float Speed { get; set; } = 50f;
+  public float   Speed           { get; set; } = 50f;
+  public Color32 ProjectileColor { get; set; } = Color32.Red;
 
   protected override void OnInput(TimeDelta deltaTime)
   {
     base.OnInput(deltaTime);
 
     HandleKeyboardInput();
-  }
-
-  public void OnHitAsteroid(Asteroid asteroid)
-  {
-    canvas.IsGameOver = true;
-
-    scene.Clear();
   }
 
   private void HandleKeyboardInput()
@@ -42,8 +36,27 @@ public sealed class Player : Actor
     if (keyboard.IsKeyDown(Key.D)) spin       += 5.0f;
 
     var rotation = Matrix3x2.CreateRotation(Rotation);
+    var forward = Vector2.Transform(movement, rotation);
 
-    Velocity = Vector2.Transform(movement, rotation);
+    Velocity = forward;
     Spin     = spin;
+
+    if (keyboard.IsKeyPressed(Key.Space))
+    {
+      Spawn(new Projectile(canvas, scene)
+      {
+        Position = Position,
+        Rotation = Rotation,
+        Color    = ProjectileColor
+      });
+    }
+  }
+
+  [MessageSubscriber]
+  private void OnPlayerHitAsteroid(ref PlayerHitAsteroid message)
+  {
+    canvas.IsGameOver = true;
+
+    scene.Clear();
   }
 }

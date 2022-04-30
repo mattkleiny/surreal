@@ -55,13 +55,6 @@ public class Actor
   public void Disable() => context?.Disable(Id);
   public void Destroy() => context?.Destroy(Id);
 
-  public Actor AddBehaviour(ActorBehaviour behaviour)
-  {
-    Behaviours.Add(behaviour);
-
-    return this;
-  }
-
   internal void Connect(IActorContext context)
   {
     this.context = context;
@@ -74,6 +67,24 @@ public class Actor
     this.context = null;
 
     Id = ActorId.Invalid;
+  }
+
+  public T Spawn<T>(T actor)
+    where T : Actor
+  {
+    if (context == null)
+    {
+      throw new InvalidOperationException("The actor is not part of a scene, unable to spawn child actor");
+    }
+
+    return context.Spawn(actor);
+  }
+
+  public Actor AddBehaviour(ActorBehaviour behaviour)
+  {
+    Behaviours.Add(behaviour);
+
+    return this;
   }
 
   public bool TryGetBehaviour<T>(out T result)

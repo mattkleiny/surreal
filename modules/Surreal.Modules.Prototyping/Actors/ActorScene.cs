@@ -6,6 +6,7 @@ namespace Surreal.Actors;
 public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 {
   private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
+  private readonly Queue<Actor> spawnQueue = new();
   private readonly Queue<Actor> destroyQueue = new();
 
   private ulong nextActorId = 0;
@@ -20,23 +21,13 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
   public T Spawn<T>(T actor)
     where T : Actor
   {
-    actor.Connect(this);
-
     if (nodes.TryGetValue(actor.Id, out var node))
     {
       node.Status = ActorStatus.Active;
     }
     else
     {
-      nodes[actor.Id] = new Node<Actor>(actor)
-      {
-        Status = ActorStatus.Active
-      };
-
-      // TODO: split these up, better FSM over actors
-      actor.OnEnable();
-      actor.OnAwake();
-      actor.OnStart();
+      spawnQueue.Enqueue(actor);
     }
 
     return actor;
@@ -44,6 +35,8 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 
   public void BeginFrame(TimeDelta deltaTime)
   {
+    ProcessSpawnQueue();
+
     foreach (var actor in this)
     {
       actor.OnBeginFrame(deltaTime);
@@ -93,6 +86,24 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     }
 
     ProcessDestroyQueue();
+  }
+
+  private void ProcessSpawnQueue()
+  {
+    while (spawnQueue.TryDequeue(out var actor))
+    {
+      actor.Connect(this);
+
+      nodes[actor.Id] = new Node<Actor>(actor)
+      {
+        Status = ActorStatus.Active
+      };
+
+      // TODO: split these up, better FSM over actors
+      actor.OnEnable();
+      actor.OnAwake();
+      actor.OnStart();
+    }
   }
 
   private void ProcessDestroyQueue()
