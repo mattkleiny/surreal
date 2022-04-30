@@ -13,6 +13,7 @@ public interface IScriptServer
 {
   ScriptHandle CreateScript();
   void CompileScriptCode(ScriptHandle handle, string code);
+  void RegisterFunction(ScriptHandle handle, string name, Delegate callback);
   object? ExecuteScript(ScriptHandle handle);
   object? ExecuteScriptFunction(ScriptHandle handle, string functionName);
   object? ExecuteScriptFunction(ScriptHandle handle, string functionName, object[] parameters);

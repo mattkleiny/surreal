@@ -15,6 +15,25 @@ public sealed class Image : IDisposable
 {
   private Image<Rgba32> image;
 
+  public static Image Load(VirtualPath path)
+  {
+    using var stream =  path.OpenInputStream();
+
+    // load the image
+    var image =  SixLabors.ImageSharp.Image.Load(stream);
+    if (image is Image<Rgba32> rgba)
+    {
+      // we're already in the right format
+      return new Image(rgba);
+    }
+
+    // we need to convert to RGBA
+    using (image)
+    {
+      return new Image(image.CloneAs<Rgba32>());
+    }
+  }
+
   public static async ValueTask<Image> LoadAsync(VirtualPath path)
   {
     await using var stream = await path.OpenInputStreamAsync();
@@ -64,6 +83,13 @@ public sealed class Image : IDisposable
 
       return new SpanGrid<Color32>(pixels, Width);
     }
+  }
+
+  public void Save(VirtualPath path)
+  {
+    using var stream = path.OpenOutputStream();
+
+    image.SaveAsPng(stream);
   }
 
   public async ValueTask SaveAsync(VirtualPath path)

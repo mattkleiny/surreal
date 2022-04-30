@@ -91,6 +91,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioServer));
     manager.AddLoader(new BitmapFontLoader());
+    manager.AddLoader(new TrueTypeFontLoader(GraphicsServer));
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new ShaderProgramLoader(GraphicsServer));

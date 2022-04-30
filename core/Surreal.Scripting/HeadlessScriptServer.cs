@@ -15,6 +15,11 @@ public sealed class HeadlessScriptServer : IScriptServer
     // no-op
   }
 
+  public void RegisterFunction(ScriptHandle handle, string name, Delegate callback)
+  {
+    // no-op
+  }
+
   public dynamic? ExecuteScript(ScriptHandle handle)
   {
     return null;

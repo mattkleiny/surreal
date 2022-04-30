@@ -17,6 +17,11 @@ public sealed class Script : ScriptResource
 
   public ScriptHandle Handle { get; }
 
+  public void RegisterFunction(string name, Delegate callback)
+  {
+    server.RegisterFunction(Handle, name, callback);
+  }
+
   public void UpdateCode(string code)
   {
     server.CompileScriptCode(Handle, code);

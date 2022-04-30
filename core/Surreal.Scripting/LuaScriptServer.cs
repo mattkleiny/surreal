@@ -20,6 +20,12 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
     entry.Runtime.LoadCLRPackage();
 
+    // replace the default 'print' function
+    RegisterFunction(handle, "print", (string message) =>
+    {
+      Log.Trace($"[Script {handle.Id}]: {message}");
+    });
+
     return handle;
   }
 
@@ -39,6 +45,16 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
     {
       Log.Error(exception, "Failed to compile script code");
     }
+  }
+
+  public void RegisterFunction(ScriptHandle handle, string name, Delegate callback)
+  {
+    if (!scripts.TryGetValue(handle, out var entry))
+    {
+      throw new InvalidOperationException($"Unable to access script for handle {handle}");
+    }
+
+    entry.Runtime.RegisterFunction(name, callback.Target, callback.Method);
   }
 
   public object? ExecuteScript(ScriptHandle handle)

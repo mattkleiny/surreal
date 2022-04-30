@@ -62,7 +62,7 @@ Game.Start(platform, async context =>
     if (keyboard.IsKeyPressed(Key.F3)) palette = palette3;
 
     // update scripts
-    script.ExecuteFunction("say_hello", "World");
+    script.ExecuteFunction("update", time.DeltaTime.Seconds);
 
     // render
     graphics.ClearColorBuffer(palette[0]);
@@ -72,7 +72,7 @@ Game.Start(platform, async context =>
 
     sprites.Begin(shader);
     sprites.DrawText(
-      font: font,
+      font: bitmapFont,
       text: "HELLO, SURREAL!",
       position: size / 2f,
       color: Color.Lerp(palette[1], palette[4], Maths.PingPong(time.TotalTime)),
