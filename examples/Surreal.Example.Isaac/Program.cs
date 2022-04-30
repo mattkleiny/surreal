@@ -20,8 +20,7 @@ Game.Start(platform, async context =>
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
   // set-up scripting
-  var scripting = new LuaScriptServer();
-  context.Assets.AddLoader(new ScriptLoader(scripting));
+  context.Assets.AddLoader(new ScriptLoader(new LuaScriptServer(), ".lua"));
 
   // load assets
   using var batch = new GeometryBatch(graphics);

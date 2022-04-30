@@ -22,9 +22,9 @@ public sealed class Script : ScriptResource
     server.RegisterFunction(Handle, name, callback);
   }
 
-  public void UpdateCode(string code)
+  public void UpdateCode(string code, VirtualPath sourcePath)
   {
-    server.CompileScriptCode(Handle, code);
+    server.CompileScriptCode(Handle, code, sourcePath);
   }
 
   public object? Execute()
@@ -58,16 +58,23 @@ public sealed class ScriptLoader : AssetLoader<Script>
 {
   private readonly IScriptServer server;
   private readonly Encoding encoding;
+  private readonly string extension;
 
-  public ScriptLoader(IScriptServer server)
-    : this(server, Encoding.UTF8)
+  public ScriptLoader(IScriptServer server, string extension)
+    : this(server, Encoding.UTF8, extension)
   {
   }
 
-  public ScriptLoader(IScriptServer server, Encoding encoding)
+  public ScriptLoader(IScriptServer server, Encoding encoding, string extension)
   {
-    this.server   = server;
-    this.encoding = encoding;
+    this.server    = server;
+    this.encoding  = encoding;
+    this.extension = extension;
+  }
+
+  public override bool CanHandle(AssetLoaderContext context)
+  {
+    return base.CanHandle(context) && context.Path.Extension == extension;
   }
 
   public override async ValueTask<Script> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
@@ -75,7 +82,7 @@ public sealed class ScriptLoader : AssetLoader<Script>
     var code = await context.Path.ReadAllTextAsync(encoding, cancellationToken);
     var script = new Script(server);
 
-    script.UpdateCode(code);
+    script.UpdateCode(code, context.Path);
 
     if (context.IsHotReloadEnabled)
     {
@@ -89,7 +96,7 @@ public sealed class ScriptLoader : AssetLoader<Script>
   {
     var code = await context.Path.ReadAllTextAsync(encoding, cancellationToken);
 
-    script.UpdateCode(code);
+    script.UpdateCode(code, context.Path);
 
     return script;
   }

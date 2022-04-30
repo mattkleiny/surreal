@@ -23,9 +23,7 @@ Game.Start(platform, async context =>
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
   // configure lua
-  using var scripts = new LuaScriptServer();
-
-  context.Assets.AddLoader(new ScriptLoader(scripts));
+  context.Assets.AddLoader(new ScriptLoader(new LuaScriptServer(), ".lua"));
 
   // load assets
   var bitmapFont = await context.Assets.LoadDefaultBitmapFontAsync();

@@ -29,6 +29,13 @@ public static class Message
     return data;
   }
 
+  public static T Publish<T>(ref T data)
+  {
+    NotifySubscribers(ref data);
+
+    return data;
+  }
+
   public static void Subscribe<T>(MessageSubscriber<T> subscriber)
   {
     lock (Subscribers)

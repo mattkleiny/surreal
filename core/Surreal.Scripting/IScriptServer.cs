@@ -1,4 +1,6 @@
-﻿namespace Surreal.Scripting;
+﻿using Surreal.IO;
+
+namespace Surreal.Scripting;
 
 /// <summary>An opaque handle to a resource in the underling <see cref="IScriptServer"/> implementation.</summary>
 public readonly record struct ScriptHandle(nint Id)
@@ -12,7 +14,7 @@ public readonly record struct ScriptHandle(nint Id)
 public interface IScriptServer
 {
   ScriptHandle CreateScript();
-  void CompileScriptCode(ScriptHandle handle, string code);
+  void CompileScriptCode(ScriptHandle handle, string code, VirtualPath sourcePath);
   void RegisterFunction(ScriptHandle handle, string name, Delegate callback);
   object? ExecuteScript(ScriptHandle handle);
   object? ExecuteScriptFunction(ScriptHandle handle, string functionName);

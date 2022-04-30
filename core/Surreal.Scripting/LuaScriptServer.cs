@@ -1,5 +1,6 @@
 ﻿using NLua;
 using Surreal.Diagnostics.Logging;
+using Surreal.IO;
 
 namespace Surreal.Scripting;
 
@@ -23,13 +24,20 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
     // replace the default 'print' function
     RegisterFunction(handle, "print", (string message) =>
     {
-      Log.Trace($"[Script {handle.Id}]: {message}");
+      if (entry.Path != null)
+      {
+        Log.Trace($"[{entry.Path.Value}]: {message}");
+      }
+      else
+      {
+        Log.Trace($"[Script {handle.Id}]: {message}");
+      }
     });
 
     return handle;
   }
 
-  public void CompileScriptCode(ScriptHandle handle, string code)
+  public void CompileScriptCode(ScriptHandle handle, string code, VirtualPath sourcePath)
   {
     if (!scripts.TryGetValue(handle, out var entry))
     {
@@ -38,6 +46,7 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
     try
     {
+      entry.Path = sourcePath;
       entry.Code = code;
       entry.Runtime.DoString(code);
     }
@@ -129,8 +138,9 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
   private sealed record ScriptEntry : IDisposable
   {
-    public Lua    Runtime { get; }      = new();
-    public string Code    { get; set; } = string.Empty;
+    public VirtualPath? Path    { get; set; }
+    public Lua          Runtime { get; }      = new();
+    public string       Code    { get; set; } = string.Empty;
 
     public void Dispose()
     {

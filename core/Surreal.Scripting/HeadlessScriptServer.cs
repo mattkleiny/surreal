@@ -1,4 +1,6 @@
-﻿namespace Surreal.Scripting;
+﻿using Surreal.IO;
+
+namespace Surreal.Scripting;
 
 /// <summary>A no-op <see cref="IScriptServer"/> for headless environments and testing.</summary>
 public sealed class HeadlessScriptServer : IScriptServer
@@ -10,7 +12,7 @@ public sealed class HeadlessScriptServer : IScriptServer
     return new ScriptHandle(Interlocked.Increment(ref nextScriptId));
   }
 
-  public void CompileScriptCode(ScriptHandle handle, string code)
+  public void CompileScriptCode(ScriptHandle handle, string code, VirtualPath sourcePath)
   {
     // no-op
   }
