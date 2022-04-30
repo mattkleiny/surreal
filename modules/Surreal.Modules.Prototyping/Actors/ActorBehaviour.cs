@@ -119,10 +119,3 @@ public abstract class ActorBehaviour
   {
   }
 }
-
-/// <summary>A <see cref="ActorBehaviour"/> that expects a parent actor type <see cref="TActor"/>.</summary>
-public abstract class ActorBehaviour<TActor> : ActorBehaviour
-  where TActor : Actor
-{
-  public new TActor Actor => (TActor) base.Actor;
-}

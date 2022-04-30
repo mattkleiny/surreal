@@ -55,6 +55,13 @@ public class Actor
   public void Disable() => context?.Disable(Id);
   public void Destroy() => context?.Destroy(Id);
 
+  public Actor AddBehaviour(ActorBehaviour behaviour)
+  {
+    Behaviours.Add(behaviour);
+
+    return this;
+  }
+
   internal void Connect(IActorContext context)
   {
     this.context = context;

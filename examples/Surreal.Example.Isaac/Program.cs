@@ -1,4 +1,6 @@
-﻿using Isaac.Dungeons;
+﻿using Isaac.Actors;
+using Isaac.Dungeons;
+using Surreal.Scripting;
 
 var platform = new DesktopPlatform
 {
@@ -17,10 +19,15 @@ Game.Start(platform, async context =>
   var input = context.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
+  // set-up scripting
+  var scripting = new LuaScriptServer();
+  context.Assets.AddLoader(new ScriptLoader(scripting));
+
   // load assets
   using var batch = new GeometryBatch(graphics);
   using var shader = await context.Assets.LoadDefaultShaderAsync();
   using var texture = Texture.CreateColored(graphics, Color.White);
+  using var scene = new ActorScene();
 
   // set-up a basic camera
   var camera = new Camera
@@ -39,7 +46,7 @@ Game.Start(platform, async context =>
     Type     = RoomType.Spawn
   });
 
-  context.ExecuteVariableStep(_ =>
+  context.ExecuteVariableStep(time =>
   {
     if (!context.Host.IsFocused)
     {
@@ -61,6 +68,12 @@ Game.Start(platform, async context =>
 
     shader.SetUniform("u_projectionView", in camera.ProjectionView);
     shader.SetUniform("u_texture", texture, 0);
+
+    scene.BeginFrame(time.DeltaTime);
+    scene.Input(time.DeltaTime);
+    scene.Update(time.DeltaTime);
+    scene.Draw(time.DeltaTime);
+    scene.EndFrame(time.DeltaTime);
 
     batch.Begin(shader);
     plan.First!.DrawGizmos(batch);
