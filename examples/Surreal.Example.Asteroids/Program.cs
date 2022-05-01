@@ -60,8 +60,6 @@ Game.Start(platform, async context =>
 
   context.ExecuteVariableStep(time =>
   {
-    if (!context.Host.IsFocused) return;
-
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       context.Exit();

@@ -26,14 +26,16 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
     var nativeWindowSettings = new NativeWindowSettings
     {
+      APIVersion      = configuration.OpenGlVersion,
       Title           = configuration.Title,
       WindowBorder    = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
       StartVisible    = !configuration.WaitForFirstFrame,
+      IsEventDriven   = configuration.IsEventDriven,
+      StartFocused    = true,
       Size            = new Vector2i(configuration.Width, configuration.Height),
-      Flags           = ContextFlags.ForwardCompatible | ContextFlags.Debug,
+      Flags           = GetContextFlags(),
       Profile         = ContextProfile.Core,
-      NumberOfSamples = 0,
-      APIVersion      = configuration.OpenGlVersion
+      NumberOfSamples = 0
     };
 
     window = new GameWindow(gameWindowSettings, nativeWindowSettings)
@@ -159,5 +161,16 @@ internal sealed class OpenTKWindow : IDesktopWindow
   public void Dispose()
   {
     window.Dispose();
+  }
+
+  private static ContextFlags GetContextFlags()
+  {
+    var flags = ContextFlags.ForwardCompatible;
+
+#if DEBUG
+    flags |= ContextFlags.Debug;
+#endif
+
+    return flags;
   }
 }

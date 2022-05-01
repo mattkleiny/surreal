@@ -21,6 +21,8 @@ Game.Start(platform, async context =>
   // set-up scripting
   context.Assets.AddLoader(new ScriptLoader(new LuaScriptServer(), ".lua"));
 
+  var script = await context.Assets.LoadAssetAsync<Script>("Assets/scripts/player.lua");
+
   // load assets
   using var batch = new GeometryBatch(graphics);
   using var shader = await context.Assets.LoadDefaultShaderAsync();
@@ -46,11 +48,6 @@ Game.Start(platform, async context =>
 
   context.ExecuteVariableStep(time =>
   {
-    if (!context.Host.IsFocused)
-    {
-      return;
-    }
-
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       context.Exit();
@@ -66,6 +63,8 @@ Game.Start(platform, async context =>
 
     shader.SetUniform("u_projectionView", in camera.ProjectionView);
     shader.SetUniform("u_texture", texture, 0);
+
+    script.ExecuteFunction("update");
 
     scene.BeginFrame(time.DeltaTime);
     scene.Input(time.DeltaTime);

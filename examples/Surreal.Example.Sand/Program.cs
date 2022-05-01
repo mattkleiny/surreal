@@ -25,8 +25,6 @@ Game.Start(platform, async context =>
 
   context.ExecuteVariableStep(time =>
   {
-    if (!context.Host.IsFocused) return;
-
     graphics.ClearColorBuffer(Color.Black);
 
     var mousePos = mouse.NormalisedPosition;
@@ -34,7 +32,7 @@ Game.Start(platform, async context =>
     var targetX = mousePos.X * canvas.Width - 1;
     var targetY = mousePos.Y * canvas.Height - 1;
 
-    var point = new Point2((int)targetX, (int)targetY);
+    var point = new Point2((int) targetX, (int) targetY);
 
     if (keyboard.IsKeyPressed(Key.Escape))
     {

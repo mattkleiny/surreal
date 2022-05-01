@@ -1,2 +1,3 @@
-﻿function update(actor, delta_time)
+﻿function update()
+  print("Hello, World!")
 end
