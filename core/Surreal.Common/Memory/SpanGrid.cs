@@ -104,6 +104,29 @@ public static class SpanGridExtensions
     }
   }
 
+  /// <summary>Draws a line in the grid.</summary>
+  public static void DrawLine<T>(this SpanGrid<T> grid, Point2 from, Point2 to, T value)
+  {
+    throw new NotImplementedException();
+  }
+
+  /// <summary>Draws a curve in the grid.</summary>
+  public static void DrawCurve<T, TCurve>(this SpanGrid<T> grid, TCurve curve, T value)
+    where TCurve : IPlanarCurve
+  {
+    throw new NotImplementedException();
+  }
+
+  /// <summary>Blits one grid to another.</summary>
+  public static void PaintTo<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
+  {
+    for (var y = 0; y < from.Height; y++)
+    for (var x = 0; x < from.Width; x++)
+    {
+      to[x, y] = painter(x, y, from[x, y]);
+    }
+  }
+
   /// <summary>Converts a grid to a string, using the given painting function.</summary>
   public static string ToString<T>(this SpanGrid<T> grid, Painter<T?, char> painter)
   {
@@ -123,15 +146,5 @@ public static class SpanGridExtensions
     }
 
     return builder.ToString();
-  }
-
-  /// <summary>Blits one grid to another.</summary>
-  public static void BlitTo<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
-  {
-    for (var y = 0; y < from.Height; y++)
-    for (var x = 0; x < from.Width; x++)
-    {
-      to[x, y] = painter(x, y, from[x, y]);
-    }
   }
 }

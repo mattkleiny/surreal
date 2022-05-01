@@ -86,8 +86,17 @@ public sealed class TextureAtlasBuilder
   }
 
   /// <summary>A single cell in a <see cref="TextureAtlasBuilder"/>.</summary>
-  public readonly record struct Cell(int Width, int Height)
+  public readonly struct Cell
   {
-    public Grid<Color32> Pixels { get; } = new(Width, Height);
+    public Cell(int width, int height)
+    {
+      Pixels = new Grid<Color32>(width, height);
+    }
+
+    public Grid<Color32> Pixels { get; }
+    public int           Width  => Pixels.Width;
+    public int           Height => Pixels.Height;
+
+    public SpanGrid<Color32> Span => Pixels.Span;
   }
 }

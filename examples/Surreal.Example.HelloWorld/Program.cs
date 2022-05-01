@@ -9,8 +9,8 @@ var platform = new DesktopPlatform
     Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    Width          = (int)(size.X * 6),
-    Height         = (int)(size.Y * 6)
+    Width          = (int) (size.X * 6),
+    Height         = (int) (size.Y * 6)
   }
 };
 
@@ -26,8 +26,7 @@ Game.Start(platform, async context =>
   context.Assets.AddLoader(new ScriptLoader(new LuaScriptServer(), ".lua"));
 
   // load assets
-  var bitmapFont = await context.Assets.LoadDefaultBitmapFontAsync();
-  var trueTypeFont = await context.Assets.LoadDefaultFontAsync();
+  var font = await context.Assets.LoadDefaultBitmapFontAsync();
   var clip = await context.Assets.LoadAssetAsync<AudioClip>("Assets/audio/test.wav");
   var shader = await context.Assets.LoadAssetAsync<ShaderProgram>("Assets/shaders/helloworld.glsl");
   var palette1 = await context.Assets.LoadAssetAsync<ColorPalette>("Assets/palettes/club-seoul-16.pal");
@@ -37,8 +36,6 @@ Game.Start(platform, async context =>
 
   using var source = new AudioSource(audio) { IsLooping = true };
   using var sprites = new SpriteBatch(graphics);
-
-  using var font = trueTypeFont.GetFont(16);
 
   // set-up a basic camera
   var camera = new Camera
@@ -66,11 +63,11 @@ Game.Start(platform, async context =>
     graphics.ClearColorBuffer(palette[0]);
 
     shader.SetUniform("u_projectionView", camera.ProjectionView);
-    shader.SetUniform("u_texture", bitmapFont.Texture, 0);
+    shader.SetUniform("u_texture", font.Texture, 0);
 
     sprites.Begin(shader);
     sprites.DrawText(
-      font: bitmapFont,
+      font: font,
       text: "HELLO, SURREAL!",
       position: size / 2f,
       color: Color.Lerp(palette[1], palette[4], Maths.PingPong(time.TotalTime)),

@@ -80,7 +80,7 @@ public sealed class Canvas : PixelCanvas
       return cell.IsOccupied ? cell.Color : Color32.White;
     }
 
-    cells.Span.BlitTo(Pixels, Painter);
+    cells.Span.PaintTo(Pixels, Painter);
   }
 
   public void Clear()

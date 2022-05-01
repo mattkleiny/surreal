@@ -4,6 +4,7 @@ using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Surreal.Mathematics;
+using Surreal.Memory;
 
 namespace Surreal.Graphics.Fonts;
 
@@ -78,11 +79,9 @@ public static class TrueTypeFontExtensions
 }
 
 /// <summary>A true type font that can be rendered at arbitrary sized.</summary>
-public sealed class TrueTypeFont : IDisposable
+public sealed class TrueTypeFont
 {
   private readonly IGraphicsServer server;
-  private readonly Dictionary<(float Size, FontWeight Weight), RasterizedFont> fontCache = new();
-
   private FontFamily family;
 
   internal TrueTypeFont(IGraphicsServer server, FontFamily family)
@@ -93,49 +92,30 @@ public sealed class TrueTypeFont : IDisposable
 
   public RasterizedFont GetFont(float size, FontWeight weight = FontWeight.Normal)
   {
-    if (!fontCache.TryGetValue((size, weight), out var result))
+    var font = family.CreateFont(size, weight switch
     {
-      var font = family.CreateFont(size, weight switch
-      {
-        FontWeight.Normal => FontStyle.Regular,
-        FontWeight.Italic => FontStyle.Italic,
-        FontWeight.Bold   => FontStyle.Bold,
+      FontWeight.Normal => FontStyle.Regular,
+      FontWeight.Italic => FontStyle.Italic,
+      FontWeight.Bold   => FontStyle.Bold,
 
-        _ => throw new ArgumentOutOfRangeException(nameof(weight), weight, null)
-      });
+      _ => throw new ArgumentOutOfRangeException(nameof(weight), weight, null)
+    });
 
-      fontCache[(size, weight)] = result = new RasterizedFont(server, font);
-    }
-
-    return result;
-  }
-
-  public void Dispose()
-  {
-    foreach (var font in fontCache.Values)
-    {
-      font.Dispose();
-    }
-
-    fontCache.Clear();
+    return new RasterizedFont(server, font);
   }
 
   /// <summary>A <see cref="TrueTypeFont"/> that has been rasterized at a particular size.</summary>
-  public sealed class RasterizedFont : IDisposable
+  public sealed class RasterizedFont
   {
-    // TODO: create a glyph cache, which allows writing new texture data for each requested character in a string
-    private readonly Font font;
+    private const string DefaultCharacterSet = "!@#$%^&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]{},./ ";
+
+    private readonly IGraphicsServer server;
     private readonly TextOptions options;
-    private readonly Texture texture;
-    private readonly TextRenderer renderer;
 
     internal RasterizedFont(IGraphicsServer server, Font font)
     {
-      this.font = font;
-
-      texture  = new Texture(server, TextureFormat.Rgba8888);
-      options  = new TextOptions(font);
-      renderer = new TextRenderer(new TextureGlyphRenderer());
+      this.server = server;
+      options     = new TextOptions(font);
     }
 
     /// <summary>Gets the relevant <see cref="TextureRegion"/> for rendering the given character.</summary>
@@ -152,74 +132,92 @@ public sealed class TrueTypeFont : IDisposable
       return new BoundingRect(size.Left, size.Bottom, size.Right, size.Top);
     }
 
-    public void Dispose()
+    /// <summary>Renders this font to a new <see cref="BitmapFont"/>.</summary>
+    public BitmapFont ToBitmapFont(string characters = DefaultCharacterSet)
     {
-      texture.Dispose();
+      var atlas = new TextureAtlasBuilder();
+      var renderer = new TextRenderer(new TextureGlyphRenderer(atlas));
+
+      renderer.RenderText(characters, options);
+
+      var texture = atlas.ToTexture(server, 3);
+      var descriptor = new BitmapFontDescriptor
+      {
+        FilePath     = null,
+        Columns      = 3,
+        GlyphHeight  = 16,
+        GlyphWidth   = 16,
+        GlyphPadding = 0
+      };
+
+      return new BitmapFont(descriptor, texture, ownsTexture: true);
     }
   }
 
   /// <summary>A <see cref="IGlyphRenderer"/> that emits to texel data in a given <see cref="Texture"/>.</summary>
   private sealed class TextureGlyphRenderer : IGlyphRenderer
   {
+    private TextureAtlasBuilder builder;
+    private TextureAtlasBuilder.Cell currentCell;
+    private Vector2 currentPoint;
+
+    public TextureGlyphRenderer(TextureAtlasBuilder builder)
+    {
+      this.builder = builder;
+    }
+
     void IGlyphRenderer.BeginText(FontRectangle bounds)
     {
-      // called before any thing else to provide access to the total required size to render the text
     }
 
     bool IGlyphRenderer.BeginGlyph(FontRectangle bounds, GlyphRendererParameters paramaters)
     {
-      // You can return false to skip all the figures within the glyph (if you return false EndGlyph will still be called)
+      currentCell = builder.AddCell(
+        (int) MathF.Ceiling(bounds.Width),
+        (int) MathF.Ceiling(bounds.Height)
+      );
 
-      return false;
+      return true;
     }
 
     void IGlyphRenderer.BeginFigure()
     {
-      // called at the start of the figure within the single glyph/layer
-      // glyphs are rendered as a serise of arcs, lines and movements
-      // which together describe a complex shape.
     }
 
     void IGlyphRenderer.MoveTo(Vector2 point)
     {
-      // move current point to location marked by point without describing a line;
+      currentPoint = point;
     }
 
     void IGlyphRenderer.QuadraticBezierTo(Vector2 secondControlPoint, Vector2 point)
     {
-      // describes Quadratic Bezier curve from the 'current point' using the
-      // 'second control point' and final 'point' leaving the 'current point'
-      // at 'point'
+      var curve = new QuadraticBezierCurve(currentPoint, secondControlPoint, point);
+
+      currentCell.Span.DrawCurve(curve, Color32.White);
     }
 
     void IGlyphRenderer.CubicBezierTo(Vector2 secondControlPoint, Vector2 thirdControlPoint, Vector2 point)
     {
-      // describes Cubic Bezier curve from the 'current point' using the
-      // 'second control point', 'third control point' and final 'point'
-      // leaving the 'current point' at 'point'
+      var curve = new CubicBezierCurve(currentPoint, secondControlPoint, thirdControlPoint, point);
+
+      currentCell.Span.DrawCurve(curve, Color32.White);
     }
 
     void IGlyphRenderer.LineTo(Vector2 point)
     {
-      // describes straight line from the 'current point' to the final 'point'
-      // leaving the 'current point' at 'point'
+      currentCell.Span.DrawLine(currentPoint, point, Color32.White);
     }
 
     void IGlyphRenderer.EndFigure()
     {
-      // Called after the figure has completed denoting a straight line should
-      // be drawn from the current point to the first point
     }
 
     void IGlyphRenderer.EndGlyph()
     {
-      // says the all figures have completed for the current glyph/layer.
-      // NOTE this will be called even if BeginGlyph return false.
     }
 
     void IGlyphRenderer.EndText()
     {
-      //once all glyphs/layers have been drawn this is called.
     }
   }
 }

@@ -83,13 +83,15 @@ internal sealed record BitmapFontDescriptor
 }
 
 /// <summary>A font represented as small bitmaps.</summary>
-public sealed class BitmapFont
+public sealed class BitmapFont : IDisposable
 {
   private readonly BitmapFontDescriptor descriptor;
+  private readonly bool ownsTexture;
 
-  internal BitmapFont(BitmapFontDescriptor descriptor, Texture texture)
+  internal BitmapFont(BitmapFontDescriptor descriptor, Texture texture, bool ownsTexture = false)
   {
     this.descriptor = descriptor;
+    this.ownsTexture = ownsTexture;
 
     Texture = texture;
   }
@@ -143,6 +145,14 @@ public sealed class BitmapFont
       )
     };
   }
+
+  public void Dispose()
+  {
+    if (ownsTexture)
+    {
+      Texture.Dispose();
+    }
+  }
 }
 
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="BitmapFont"/>s.</summary>
@@ -153,7 +163,7 @@ public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
     var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
     var texture = await context.LoadAsync<Texture>(GetImagePath(context, descriptor), cancellationToken);
 
-    return new BitmapFont(descriptor, texture);
+    return new BitmapFont(descriptor, texture, ownsTexture: false);
   }
 
   private static VirtualPath GetImagePath(AssetLoaderContext context, BitmapFontDescriptor descriptor)
