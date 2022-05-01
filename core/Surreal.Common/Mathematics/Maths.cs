@@ -81,8 +81,14 @@ public static class RandomExtensions
   public static Vector3 NextVector3(this Random random, float min, float max)
     => new(random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max));
 
+  public static Vector4 NextVector4(this Random random, float min, float max)
+    => new(random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max));
+
   public static Vector2 NextUnitCircle(this Random random)
     => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f));
+
+  public static Vector3 NextUnitSphere(this Random random)
+    => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f), random.NextFloat(-1f, 1f));
 
   public static TEnum NextEnum<TEnum>(this Random random)
     where TEnum : unmanaged, Enum

@@ -3,8 +3,13 @@
 // statements and declarations
 program : declaration* EOF;
 
-declaration         : variableDeclaration | statement;
-variableDeclaration : 'var' IDENTIFIER ( '=' expression)? ';';
+// declarations
+declaration          : uniformDeclaration | varyingDeclaration | statement;
+uniformDeclaration   : 'uniform' primitiveDeclaration ';';
+varyingDeclaration   : 'varying' primitiveDeclaration ';';
+primitiveDeclaration : (PRECISION)? PRIMITIVE IDENTIFIER;
+
+// statements
 statement           : expressionStatement | ifStatement;
 ifStatement         : 'if' '(' expression ')' statement ('else' statement)?;
 expressionStatement : expression ';';
@@ -23,5 +28,7 @@ primary : NUMBER | STRING | 'true' | 'false' | 'nil' | '(' expression ')' | IDEN
 // core primitive types
 NUMBER     : ('0' .. '9')+ ('.' ('0' .. '9')+)?;
 STRING     : ('a' .. 'z') | ('A' .. 'Z') | '_';
-IDENTIFIER : STRING;
+PRIMITIVE  : 'vec2' | 'vec3' | 'vec4';
+PRECISION  : 'lowp' | 'medp' | 'highp';
+IDENTIFIER : ([a-zA-Z_])*;
 WHITESPACE : (' ' | '\t')+ -> channel(HIDDEN);

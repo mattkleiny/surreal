@@ -1,5 +1,4 @@
-﻿using Isaac.Actors;
-using Isaac.Dungeons;
+﻿using Isaac.Dungeons;
 using Surreal.Scripting;
 
 var platform = new DesktopPlatform

@@ -130,18 +130,6 @@ internal sealed class OpenTKShaderCompiler
           builder.AppendComment(text);
           break;
 
-        case UniformDeclaration(var type, var name):
-          builder.AppendUniformDeclaration(ConvertPrecision(type.Precision), ConvertType(type), name);
-          break;
-
-        case VaryingDeclaration(var type, var name):
-          builder.AppendVaryingDeclaration(ConvertPrecision(type.Precision), ConvertType(type), name);
-          break;
-
-        case ConstantDeclaration(var type, var name, var value):
-          builder.AppendConstantDeclaration(ConvertPrecision(type.Precision), ConvertType(type), name, CompileExpression(value));
-          break;
-
         case Assignment(var variable, var value):
           builder.AppendAssignment(ConvertIdentifier(variable), CompileExpression(value));
           break;

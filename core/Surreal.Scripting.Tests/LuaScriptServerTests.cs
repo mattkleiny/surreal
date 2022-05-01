@@ -13,7 +13,7 @@ public class LuaScriptServerTests
     using var manager = new AssetManager();
     var server = new LuaScriptServer();
 
-    manager.AddLoader(new ScriptLoader(server));
+    manager.AddLoader(new ScriptLoader(server, ".lua"));
 
     var script = await manager.LoadAssetAsync<Script>(path);
     var result = script.ExecuteFunction("factorial", 4);

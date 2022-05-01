@@ -138,28 +138,28 @@ public abstract record ShaderSyntaxTree
 
     /// <summary>Declares a uniform parameter to the program.</summary>
     /// <example>uniform vec3 _direction;</example>
-    public sealed record UniformDeclaration(Primitive Type, string Name) : Statement
+    public sealed record UniformDeclaration(PrimitiveDeclaration Primitive) : Statement
     {
       public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
     }
 
     /// <summary>Declares a varying parameter to the program.</summary>
     /// <example>varying vec3 _direction;</example>
-    public sealed record VaryingDeclaration(Primitive Type, string Name) : Statement
+    public sealed record VaryingDeclaration(PrimitiveDeclaration Primitive) : Statement
     {
       public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
     }
 
     /// <summary>Declares a constant primitive.</summary>
     /// <example>const vec3 test = vec3(1,1,1);</example>
-    public sealed record ConstantDeclaration(Primitive Type, string Name, Expression Value) : Statement
+    public sealed record ConstantDeclaration(PrimitiveDeclaration Primitive, Expression Value) : Statement
     {
       public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
     }
 
     /// <summary>Declares a variable primitive.</summary>
     /// <example>vec3 test = vec3(1,1,1);</example>
-    public sealed record VariableDeclaration(Primitive Type, string Name, Expression Value) : Statement
+    public sealed record VariableDeclaration(PrimitiveDeclaration Primitive, Expression Value) : Statement
     {
       public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
     }
@@ -244,6 +244,13 @@ public abstract record ShaderSyntaxTree
     /// <summary>A constant value.</summary>
     /// <example>42</example>
     public sealed record Constant(object Value) : Expression
+    {
+      public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
+    }
+
+    /// <summary>Declares a primitive type.</summary>
+    /// <example>lowp vec2 tint;</example>
+    public sealed record PrimitiveDeclaration(Primitive Type, string Name) : Expression
     {
       public override void Accept(ShaderVisitor visitor) => visitor.Visit(this);
     }
@@ -515,5 +522,9 @@ public abstract class ShaderVisitor
     {
       parameter.Accept(this);
     }
+  }
+
+  public virtual void Visit(PrimitiveDeclaration node)
+  {
   }
 }

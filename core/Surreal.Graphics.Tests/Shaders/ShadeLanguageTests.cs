@@ -3,9 +3,16 @@
 public class ShadeLanguageTests
 {
   [Test]
-  [TestCase("2 + 2")]
-  public void it_should_parse_simple_expressions(string expression)
+  public void it_should_parse_simple_expressions()
   {
-    ShadeLanguage.Parse(expression);
+    const string code = @"
+      uniform sampler2d texture;
+      uniform lowp vec3 tint;
+      varying highp vec4 color;
+    ";
+
+    var result = ShadeLanguage.Parse(code);
+
+    result.Should().NotBeNull();
   }
 }

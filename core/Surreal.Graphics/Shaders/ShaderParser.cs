@@ -266,14 +266,7 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
 
     private VariableDeclaration ParseVariableDeclaration()
     {
-      var primitive = ParsePrimitive();
-      var name = ParseIdentifier();
-
-      Consume(TokenType.Equal);
-
-      var value = ParseExpression();
-
-      return new VariableDeclaration(primitive, name, value);
+      throw new NotImplementedException();
     }
 
     private Statement ParseIfStatement()
@@ -312,30 +305,17 @@ public sealed class ShaderParser : Parser<ShaderDeclaration>
 
     private UniformDeclaration ParseUniformDeclaration()
     {
-      var type = ParsePrimitive();
-      var name = ParseIdentifier();
-
-      return new UniformDeclaration(type, name);
+      throw new NotImplementedException();
     }
 
     private VaryingDeclaration ParseVaryingDeclaration()
     {
-      var type = ParsePrimitive();
-      var name = ParseIdentifier();
-
-      return new VaryingDeclaration(type, name);
+      throw new NotImplementedException();
     }
 
     private ConstantDeclaration ParseConstantDeclaration()
     {
-      var type = ParsePrimitive();
-      var name = ParseIdentifier();
-
-      Consume(TokenType.Equal);
-
-      var value = ParseExpression();
-
-      return new ConstantDeclaration(type, name, value);
+      throw new NotImplementedException();
     }
 
     [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
