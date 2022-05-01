@@ -5,6 +5,9 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
+
+    <!-- set a default icon for all projects -->
+    <ApplicationIcon>../../platforms/Surreal.Platform.Desktop/Resources/icons/surreal.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

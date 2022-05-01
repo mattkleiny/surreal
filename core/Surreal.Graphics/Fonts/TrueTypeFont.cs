@@ -1,6 +1,5 @@
 ﻿using SixLabors.Fonts;
 using Surreal.Assets;
-using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
 using Surreal.Mathematics;
@@ -32,49 +31,6 @@ public static class TrueTypeFontExtensions
   public static async ValueTask<TrueTypeFont> LoadBit536Async(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<TrueTypeFont>("resx://Surreal.Graphics/Resources/fonts/bit536_v1.ttf");
-  }
-
-  /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given <see cref="BitmapFont"/>.</summary>
-  public static void DrawText(
-    this SpriteBatch batch,
-    TrueTypeFont.RasterizedFont font,
-    string text,
-    Vector2 position,
-    Color color,
-    HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left,
-    VerticalAlignment verticalAlignment = VerticalAlignment.Top
-  )
-  {
-    var size = font.MeasureSize(text);
-
-    if (horizontalAlignment == HorizontalAlignment.Center)
-    {
-      position.X -= size.Width / 2f;
-    }
-
-    if (verticalAlignment == VerticalAlignment.Center)
-    {
-      position.Y += size.Height / 2f;
-    }
-
-    var startPosition = position;
-
-    for (var i = 0; i < text.Length; i++)
-    {
-      var glyph = font.GetGlyph(text[i]);
-
-      if (text[i] == '\n')
-      {
-        position.Y -= glyph.Size.Y;
-        position.X =  startPosition.X;
-      }
-      else
-      {
-        batch.Draw(glyph, position, glyph.Size, color);
-
-        position.X += glyph.Size.X;
-      }
-    }
   }
 }
 
@@ -116,12 +72,6 @@ public sealed class TrueTypeFont
     {
       this.server = server;
       options     = new TextOptions(font);
-    }
-
-    /// <summary>Gets the relevant <see cref="TextureRegion"/> for rendering the given character.</summary>
-    public TextureRegion GetGlyph(char character)
-    {
-      throw new NotImplementedException();
     }
 
     /// <summary>Measures the size of the given piece of text.</summary>

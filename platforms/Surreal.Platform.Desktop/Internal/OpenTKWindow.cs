@@ -140,11 +140,6 @@ internal sealed class OpenTKWindow : IDesktopWindow
     }
   }
 
-  public void Dispose()
-  {
-    window.Dispose();
-  }
-
   public unsafe void SetWindowIcon(Image image)
   {
     // convert our Color32 to raw bytes, pass a pointer down to GLFW
@@ -159,5 +154,10 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
       GLFW.SetWindowIcon(window.WindowPtr, images);
     }
+  }
+
+  public void Dispose()
+  {
+    window.Dispose();
   }
 }

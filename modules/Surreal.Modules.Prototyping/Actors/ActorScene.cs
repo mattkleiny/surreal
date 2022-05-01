@@ -99,7 +99,7 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
         Status = ActorStatus.Active
       };
 
-      // TODO: split these up, better FSM over actors
+      // TODO: split these up, better FSM over actors?
       actor.OnEnable();
       actor.OnAwake();
       actor.OnStart();

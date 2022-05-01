@@ -31,7 +31,6 @@ public sealed class Projectile : GameActor
 
   private void ProcessCollisions()
   {
-    // TODO: make this more efficient somehow?
     foreach (var actor in scene)
     {
       if (actor is Asteroid asteroid && asteroid.Bounds.Contains(Position) && asteroid.FinalPolygon.ContainsPoint(Position))

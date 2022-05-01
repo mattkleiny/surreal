@@ -69,6 +69,9 @@ public static class RandomExtensions
   public static Color NextColor(this Random random)
     => new(random.NextFloat(), random.NextFloat(), random.NextFloat());
 
+  public static Color32 NextColor32(this Random random)
+    => new((byte) random.NextInt(0, 255), (byte) random.NextInt(0, 255), (byte) random.NextInt(0, 255));
+
   public static Point2 NextPoint2(this Random random, int min, int max)
     => new(random.NextInt(min, max), random.NextInt(min, max));
 

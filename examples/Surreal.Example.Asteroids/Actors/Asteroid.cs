@@ -31,8 +31,6 @@ public sealed class Asteroid : GameActor
   {
     if (message.Asteroid == this)
     {
-      // TODO: break into smaller pieces?
-
       Destroy();
     }
   }

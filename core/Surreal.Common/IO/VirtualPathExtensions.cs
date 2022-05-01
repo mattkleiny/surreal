@@ -1,6 +1,5 @@
 ﻿using System.IO.MemoryMappedFiles;
 using System.Text.Json;
-using System.Xml.Linq;
 using Surreal.Memory;
 
 namespace Surreal.IO;
@@ -154,26 +153,6 @@ public static class VirtualPathExtensions
     await writer.FlushAsync();
   }
 
-  public static void SerializeBinary<T>(this VirtualPath path, T value)
-  {
-    throw new NotImplementedException();
-  }
-
-  public static ValueTask SerializeBinaryAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
-  {
-    throw new NotImplementedException();
-  }
-
-  public static T DeserializeBinary<T>(this VirtualPath path)
-  {
-    throw new NotImplementedException();
-  }
-
-  public static ValueTask<T> DeserializeBinaryAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    throw new NotImplementedException();
-  }
-
   public static void SerializeJson<T>(this VirtualPath path, T value)
     where T : class
   {
@@ -188,32 +167,6 @@ public static class VirtualPathExtensions
     await using var stream = await path.OpenOutputStreamAsync();
 
     await JsonSerializer.SerializeAsync(stream, value, cancellationToken: cancellationToken);
-  }
-
-  public static object DeserializeJson(this VirtualPath path, Type type)
-  {
-    using var stream = path.OpenInputStream();
-
-    var result = JsonSerializer.Deserialize(stream, type);
-    if (result == null)
-    {
-      throw new JsonException($"Failed to parse {type} from stream");
-    }
-
-    return result;
-  }
-
-  public static async ValueTask<object> DeserializeJsonAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
-  {
-    await using var stream = await path.OpenInputStreamAsync();
-
-    var result = await JsonSerializer.DeserializeAsync(stream, type, cancellationToken: cancellationToken);
-    if (result == null)
-    {
-      throw new JsonException($"Failed to parse {type} from stream");
-    }
-
-    return result;
   }
 
   public static T DeserializeJson<T>(this VirtualPath path)
@@ -244,37 +197,29 @@ public static class VirtualPathExtensions
     return result;
   }
 
-  public static object DeserializeXml(this VirtualPath path, Type type)
+  public static object DeserializeJson(this VirtualPath path, Type type)
   {
     using var stream = path.OpenInputStream();
 
-    throw new NotImplementedException();
+    var result = JsonSerializer.Deserialize(stream, type);
+    if (result == null)
+    {
+      throw new JsonException($"Failed to parse {type} from stream");
+    }
+
+    return result;
   }
 
-  public static async ValueTask<object> DeserializeXmlAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
+  public static async ValueTask<object> DeserializeJsonAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
+    var result = await JsonSerializer.DeserializeAsync(stream, type, cancellationToken: cancellationToken);
+    if (result == null)
+    {
+      throw new JsonException($"Failed to parse {type} from stream");
+    }
 
-    throw new NotImplementedException();
-  }
-
-  public static T DeserializeXml<T>(this VirtualPath path)
-    where T : class
-  {
-    using var stream = path.OpenInputStream();
-
-    throw new NotImplementedException();
-  }
-
-  public static async ValueTask<T> DeserializeXmlAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
-    where T : class
-  {
-    await using var stream = await path.OpenInputStreamAsync();
-
-    await XElement.LoadAsync(stream, LoadOptions.None, cancellationToken);
-
-    throw new NotImplementedException();
+    return result;
   }
 }

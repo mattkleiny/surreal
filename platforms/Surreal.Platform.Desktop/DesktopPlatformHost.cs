@@ -20,7 +20,7 @@ namespace Surreal;
 /// <summary>A specialization of <see cref="IPlatformHost"/> for desktop environments.</summary>
 public interface IDesktopPlatformHost : IPlatformHost
 {
-  IDesktopWindow Window { get; }
+  IDesktopWindow PrimaryWindow { get; }
 }
 
 /// <summary>Allows access to the platform's window.</summary>
@@ -148,5 +148,5 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     GraphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
   }
 
-  IDesktopWindow IDesktopPlatformHost.Window => Window;
+  IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
 }

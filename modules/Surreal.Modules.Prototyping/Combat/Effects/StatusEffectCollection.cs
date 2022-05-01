@@ -2,8 +2,6 @@
 
 namespace Surreal.Combat.Effects;
 
-// TODO: use a bitset to represent the presence of different 'kinds' of status effects
-
 /// <summary>A managed collection of <see cref="StatusEffect"/>s.</summary>
 [DebuggerDisplay("{effects.Count} status effects")]
 public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
@@ -17,19 +15,6 @@ public sealed class StatusEffectCollection : IEnumerable<StatusEffect>
   public StatusEffectCollection(object owner)
   {
     this.owner = owner;
-  }
-
-  public bool ContainsType(StatusEffectType type)
-  {
-    foreach (var effect in effects)
-    {
-      if (effect.Type == type)
-      {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   public bool Add(StatusEffect effect)
