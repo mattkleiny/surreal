@@ -51,7 +51,8 @@ internal sealed class OpenTKWindow : IDesktopWindow
       SetWindowIcon(image);
     }
 
-    window.Resize += _ => Resized?.Invoke(Width, Height);
+    window.Resize         += _ => Resized?.Invoke(Width, Height);
+    window.FocusedChanged += OnFocusChanged;
 
     window.MakeCurrent();
   }
@@ -155,6 +156,19 @@ internal sealed class OpenTKWindow : IDesktopWindow
       };
 
       GLFW.SetWindowIcon(window.WindowPtr, images);
+    }
+  }
+
+  private void OnFocusChanged(FocusedChangedEventArgs eventArgs)
+  {
+    if (!configuration.RunInBackground)
+    {
+      if (!eventArgs.IsFocused && configuration.ShowFpsInTitle)
+      {
+        window.Title = configuration.Title;
+      }
+
+      window.IsEventDriven = !eventArgs.IsFocused;
     }
   }
 

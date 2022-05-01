@@ -13,6 +13,7 @@ public sealed record DesktopConfiguration
   public bool   IsEventDriven     { get; set; } = false;
   public bool   WaitForFirstFrame { get; set; } = true;
   public bool   ShowFpsInTitle    { get; set; } = true;
+  public bool   RunInBackground   { get; set; } = false;
 
   public Version      OpenGlVersion { get; set; } = new(3, 3, 0);
   public VirtualPath? IconPath      { get; set; } = "resx://Surreal/Resources/icons/surreal.png";

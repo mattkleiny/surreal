@@ -64,7 +64,7 @@ public sealed class Game : IDisposable
     {
       if (task.IsFaulted)
       {
-        Log.Error((string)$"An unhandled top-level exception occurred: {task.Exception}");
+        Log.Error((string) $"An unhandled top-level exception occurred: {task.Exception}");
 
         game.Exit();
       }
@@ -107,7 +107,7 @@ public sealed class Game : IDisposable
   }
 
   /// <summary>Executes the given <see cref="gameLoop"/> with a variable step frequency.</summary>
-  public void ExecuteVariableStep(GameLoop gameLoop)
+  public void ExecuteVariableStep(GameLoop gameLoop, bool runInBackground = false)
   {
     var stopwatch = new Chronometer();
     var startTime = TimeStamp.Now;
@@ -123,7 +123,12 @@ public sealed class Game : IDisposable
 
       // run the frame logic
       Host.BeginFrame(gameTime.DeltaTime);
-      gameLoop(gameTime);
+
+      if (Host.IsFocused || runInBackground)
+      {
+        gameLoop(gameTime);
+      }
+
       Host.EndFrame(gameTime.DeltaTime);
 
       // we need to take over the event loop from here
@@ -132,7 +137,7 @@ public sealed class Game : IDisposable
   }
 
   /// <summary>Executes the given delegates with a fixed stepping interval on the <see cref="physics"/>.</summary>
-  public void ExecuteFixedStep(GameLoop physics, GameLoop render)
+  public void ExecuteFixedStep(GameLoop physics, GameLoop render, bool runInBackground = false)
   {
     var stopwatch = new Chronometer();
     var startTime = TimeStamp.Now;
@@ -147,23 +152,26 @@ public sealed class Game : IDisposable
         IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
       );
 
-      accumulator += gameTime.DeltaTime;
-
       Host.BeginFrame(gameTime.DeltaTime);
 
-      // run the physics steps
-      while (accumulator > 0f)
+      if (Host.IsFocused || runInBackground)
       {
-        physics(gameTime with
+        accumulator += gameTime.DeltaTime;
+
+        // run the physics steps
+        while (accumulator > 0f)
         {
-          TotalTime = TimeStamp.Now - startTime
-        });
+          physics(gameTime with
+          {
+            TotalTime = TimeStamp.Now - startTime
+          });
 
-        accumulator -= gameTime.DeltaTime;
+          accumulator -= gameTime.DeltaTime;
+        }
+
+        // run the render steps
+        render(gameTime);
       }
-
-      // run the render steps
-      render(gameTime);
 
       Host.EndFrame(gameTime.DeltaTime);
 
