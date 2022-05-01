@@ -37,6 +37,9 @@ public interface IDesktopWindow : IDisposable
   bool IsVsyncEnabled  { get; set; }
   bool IsCursorVisible { get; set; }
   bool IsClosing       { get; }
+
+  /// <summary>Sets the window icon to the given image.</summary>
+  void SetWindowIcon(Image image);
 }
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost

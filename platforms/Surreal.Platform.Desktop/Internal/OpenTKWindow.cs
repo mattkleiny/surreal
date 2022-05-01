@@ -1,7 +1,10 @@
-﻿using OpenTK.Mathematics;
+﻿using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Image = Surreal.Graphics.Images.Image;
+using RawImage = OpenTK.Windowing.GraphicsLibraryFramework.Image;
 
 namespace Surreal.Internal;
 
@@ -38,6 +41,13 @@ internal sealed class OpenTKWindow : IDesktopWindow
       VSync     = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
       IsVisible = !configuration.WaitForFirstFrame
     };
+
+    if (configuration.IconPath.HasValue)
+    {
+      using var image = Image.Load(configuration.IconPath.Value);
+
+      SetWindowIcon(image);
+    }
 
     window.Resize += _ => Resized?.Invoke(Width, Height);
 
@@ -133,5 +143,21 @@ internal sealed class OpenTKWindow : IDesktopWindow
   public void Dispose()
   {
     window.Dispose();
+  }
+
+  public unsafe void SetWindowIcon(Image image)
+  {
+    // convert our Color32 to raw bytes, pass a pointer down to GLFW
+    var rgba = MemoryMarshal.AsBytes(image.Pixels.ToReadOnlySpan());
+
+    fixed (byte* pixels = rgba)
+    {
+      ReadOnlySpan<RawImage> images = stackalloc RawImage[]
+      {
+        new RawImage(image.Width, image.Height, pixels)
+      };
+
+      GLFW.SetWindowIcon(window.WindowPtr, images);
+    }
   }
 }
