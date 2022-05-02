@@ -90,7 +90,7 @@ public sealed class BitmapFont : IDisposable
 
   internal BitmapFont(BitmapFontDescriptor descriptor, Texture texture, bool ownsTexture = false)
   {
-    this.descriptor = descriptor;
+    this.descriptor  = descriptor;
     this.ownsTexture = ownsTexture;
 
     Texture = texture;
@@ -121,7 +121,7 @@ public sealed class BitmapFont : IDisposable
       }
     }
 
-    return new(
+    return new Rectangle(
       Left: 0,
       Top: 0,
       Right: longestLine * (descriptor.GlyphWidth + descriptor.GlyphPadding),
@@ -161,12 +161,14 @@ public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
   public override async ValueTask<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
-    var texture = await context.LoadAsync<Texture>(GetImagePath(context, descriptor), cancellationToken);
+
+    var imagePath = GetImagePath(context.Path, descriptor);
+    var texture = await context.LoadAsync<Texture>(imagePath, cancellationToken);
 
     return new BitmapFont(descriptor, texture, ownsTexture: false);
   }
 
-  private static VirtualPath GetImagePath(AssetLoaderContext context, BitmapFontDescriptor descriptor)
+  private static VirtualPath GetImagePath(VirtualPath descriptorPath, BitmapFontDescriptor descriptor)
   {
     if (descriptor.FilePath != null)
     {
@@ -175,9 +177,9 @@ public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
         return descriptor.FilePath;
       }
 
-      return context.Path.GetDirectory().Resolve(descriptor.FilePath);
+      return descriptorPath.GetDirectory().Resolve(descriptor.FilePath);
     }
 
-    return descriptor.FilePath ?? context.Path.ChangeExtension("png");
+    return descriptorPath.ChangeExtension("png");
   }
 }

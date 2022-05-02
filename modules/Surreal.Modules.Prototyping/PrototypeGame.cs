@@ -5,6 +5,7 @@ using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.IO;
+using Surreal.Scripting;
 
 namespace Surreal;
 
@@ -23,26 +24,33 @@ public abstract class PrototypeGame<TSelf> : IDisposable
     Game.Start(platform, game.OnGameSetup, cancellationToken);
   }
 
+  private Game game = null!;
+
   public IAudioServer    AudioServer    { get; private set; } = null!;
   public IGraphicsServer GraphicsServer { get; private set; } = null!;
   public IInputServer    InputServer    { get; private set; } = null!;
+  public IScriptServer   ScriptServer   { get; private set; } = null!;
   public IKeyboardDevice Keyboard       { get; private set; } = null!;
   public IMouseDevice    Mouse          { get; private set; } = null!;
 
+  public void Exit() => game.Exit();
+
   /// <summary>Prepares the game and it's dependencies.</summary>
-  private async Task OnGameSetup(Game context)
+  private async Task OnGameSetup(Game game)
   {
+    this.game = game;
+
     OnRegisterFileSystems(FileSystem.Registry);
-    OnRegisterServices(context.Services);
-    OnRegisterAssetLoaders(context.Assets);
+    OnRegisterServices(game.Services);
 
-    OnInitializing(context.Host, context.Services);
+    OnInitializing(game.Host, game.Services);
+    OnRegisterAssetLoaders(game.Assets);
 
-    await OnLoadContentAsync(context.Assets);
+    await OnLoadContentAsync(game.Assets);
 
-    OnInitialized(context.Host, context.Services);
+    OnInitialized(game.Host, game.Services);
 
-    context.ExecuteFixedStep(OnUpdate, OnRender);
+    game.ExecuteVariableStep(OnGameTick);
   }
 
   /// <summary>Callback to register file systems in the system.</summary>
@@ -53,12 +61,14 @@ public abstract class PrototypeGame<TSelf> : IDisposable
   /// <summary>Callback to register services in the system.</summary>
   protected virtual void OnRegisterServices(IServiceRegistry services)
   {
+    services.AddSingleton<IScriptServer>(new LuaScriptServer());
   }
 
   /// <summary>Callback to register asset loaders in the system.</summary>
   protected virtual void OnRegisterAssetLoaders(IAssetManager assets)
   {
     assets.AddLoader(new ColorPaletteLoader());
+    assets.AddLoader(new ScriptLoader(ScriptServer, ".lua"));
   }
 
   /// <summary>The main callback for loading assets.</summary>
@@ -73,6 +83,7 @@ public abstract class PrototypeGame<TSelf> : IDisposable
     AudioServer    = services.GetRequiredService<IAudioServer>();
     GraphicsServer = services.GetRequiredService<IGraphicsServer>();
     InputServer    = services.GetRequiredService<IInputServer>();
+    ScriptServer   = services.GetRequiredService<IScriptServer>();
 
     Keyboard = InputServer.GetRequiredDevice<IKeyboardDevice>();
     Mouse    = InputServer.GetRequiredDevice<IMouseDevice>();
@@ -83,13 +94,32 @@ public abstract class PrototypeGame<TSelf> : IDisposable
   {
   }
 
-  /// <summary>The main callback for update operations.</summary>
+  private void OnGameTick(GameTime time)
+  {
+    OnBeginFrame(time);
+    OnInput(time);
+    OnUpdate(time);
+    OnDraw(time);
+    OnEndFrame(time);
+  }
+
+  protected virtual void OnBeginFrame(GameTime time)
+  {
+  }
+
+  protected virtual void OnInput(GameTime time)
+  {
+  }
+
   protected virtual void OnUpdate(GameTime time)
   {
   }
 
-  /// <summary>The main callback for render operations.</summary>
-  protected virtual void OnRender(GameTime time)
+  protected virtual void OnDraw(GameTime time)
+  {
+  }
+
+  protected virtual void OnEndFrame(GameTime time)
   {
   }
 

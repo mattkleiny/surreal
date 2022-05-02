@@ -124,7 +124,6 @@ internal sealed class OpenTKWindow : IDesktopWindow
   {
     if (!IsClosing)
     {
-      window.MakeCurrent();
       window.ProcessEvents();
     }
   }

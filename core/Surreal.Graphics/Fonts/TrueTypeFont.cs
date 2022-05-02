@@ -1,4 +1,5 @@
-﻿using SixLabors.Fonts;
+﻿using System.Globalization;
+using SixLabors.Fonts;
 using Surreal.Assets;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
@@ -107,7 +108,7 @@ public sealed class TrueTypeFont
   /// <summary>A <see cref="IGlyphRenderer"/> that emits to texel data in a given <see cref="Texture"/>.</summary>
   private sealed class TextureGlyphRenderer : IGlyphRenderer
   {
-    private TextureAtlasBuilder builder;
+    private readonly TextureAtlasBuilder builder;
     private TextureAtlasBuilder.Cell currentCell;
     private Vector2 currentPoint;
 
@@ -186,9 +187,11 @@ public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 
+    // configure a font collection, with a single font
     var collection = new FontCollection();
-    collection.Add(stream);
+    collection.Add(stream, CultureInfo.InvariantCulture);
 
+    // we're expecting a single font family per file
     var family = collection.Families.Single();
 
     return new TrueTypeFont(server, family);

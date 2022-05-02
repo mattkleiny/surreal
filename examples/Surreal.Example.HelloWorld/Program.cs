@@ -14,6 +14,8 @@ var platform = new DesktopPlatform
 
 Game.Start(platform, async context =>
 {
+  // ReSharper disable AccessToDisposedClosure
+
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = context.Services.GetRequiredService<IInputServer>().GetRequiredDevice<IKeyboardDevice>();
 

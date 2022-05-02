@@ -2,6 +2,8 @@
 
 Game.Start(platform, context =>
 {
+  // ReSharper disable AccessToDisposedClosure
+
   var log = LogFactory.GetLog<HeadlessPlatform>();
 
   var frameCounter = new FrameCounter();

@@ -13,6 +13,8 @@ var platform = new DesktopPlatform
 
 Game.Start(platform, async context =>
 {
+  // ReSharper disable AccessToDisposedClosure
+
   // grab services
   var graphics = context.Services.GetRequiredService<IGraphicsServer>();
   var input = context.Services.GetRequiredService<IInputServer>();

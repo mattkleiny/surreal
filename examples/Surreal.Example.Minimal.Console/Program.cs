@@ -11,6 +11,8 @@
 
 Game.Start(platform, context =>
 {
+  // ReSharper disable AccessToDisposedClosure
+
   var graphics = context.Services.GetRequiredService<IConsoleGraphics>();
 
   context.ExecuteVariableStep(_ =>
