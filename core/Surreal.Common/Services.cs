@@ -91,6 +91,40 @@ public sealed class ServiceRegistry : IServiceRegistry
 {
   private readonly ConcurrentDictionary<Type, Func<object>> activatorsByType = new();
   private readonly ConcurrentDictionary<Type, object> instancesByType = new();
+  private readonly ConcurrentDictionary<Type, Func<object>> creatorsByType = new();
+
+  public object Create(Type type)
+  {
+    Func<object> Factory(Type type)
+    {
+      var constructor = type.GetConstructors().Single();
+      var parameters = constructor.GetParameters();
+      var arguments = new object[parameters.Length];
+
+      object[] ArgumentFactory()
+      {
+        for (var i = 0; i < parameters.Length; i++)
+        {
+          var serviceType = parameters[i].ParameterType;
+          var service = GetService(serviceType) ?? throw new ServiceNotFoundException($"Unable to resolve service {serviceType} when activating type {type.FullName}");
+
+          arguments[i] = service;
+        }
+
+        return arguments;
+      }
+
+      return () =>
+      {
+        lock (arguments)
+        {
+          return Activator.CreateInstance(type, ArgumentFactory())!;
+        }
+      };
+    }
+
+    return creatorsByType.GetOrAdd(type, Factory).Invoke();
+  }
 
   public object? GetService(Type serviceType)
   {
@@ -105,25 +139,6 @@ public sealed class ServiceRegistry : IServiceRegistry
     }
 
     return null;
-  }
-
-  public object Create(Type type)
-  {
-    // TODO: cache some of this?
-
-    var constructor = type.GetConstructors().Single();
-    var parameters = constructor.GetParameters();
-    var arguments = new object[parameters.Length];
-
-    for (var i = 0; i < parameters.Length; i++)
-    {
-      var serviceType = parameters[i].ParameterType;
-      var service = GetService(serviceType) ?? throw new ServiceNotFoundException($"Unable to resolve service {serviceType} when activating type {type.FullName}");
-
-      arguments[i] = service;
-    }
-
-    return Activator.CreateInstance(type, arguments)!;
   }
 
   public void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType)
