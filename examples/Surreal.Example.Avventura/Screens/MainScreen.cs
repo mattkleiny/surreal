@@ -4,28 +4,31 @@ namespace Avventura.Screens;
 
 public sealed class MainScreen : IScreen
 {
+  private readonly Game game;
   private readonly IGraphicsServer graphics;
   private readonly IKeyboardDevice keyboard;
-  private readonly IMouseDevice mouse;
+  private readonly IScreenManager screens;
+  private readonly IServiceRegistry services;
+  private readonly Color color;
 
-  public MainScreen(IGraphicsServer graphics, IInputServer input)
+  public MainScreen(Game game, IGraphicsServer graphics, IKeyboardDevice keyboard, IScreenManager screens, IServiceRegistry services)
   {
+    this.game     = game;
     this.graphics = graphics;
+    this.keyboard = keyboard;
+    this.screens  = screens;
+    this.services = services;
 
-    keyboard = input.GetRequiredDevice<IKeyboardDevice>();
-    mouse    = input.GetRequiredDevice<IMouseDevice>();
+    color = Random.Shared.NextColor();
   }
 
-  public void OnUpdate(GameTime time, Game game)
+  public void OnUpdate(GameTime time)
   {
-    if (keyboard.IsKeyPressed(Key.Escape))
+    if (keyboard.IsKeyPressed(Key.Space))
     {
-      game.Exit();
+      screens.PushScreen(services.Create<MainScreen>());
     }
-  }
 
-  public void OnRender(GameTime time, Game game)
-  {
-    graphics.ClearColorBuffer(Color.White);
+    graphics.ClearColorBuffer(color);
   }
 }

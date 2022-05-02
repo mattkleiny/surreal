@@ -85,10 +85,10 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
   public static readonly Color32 Clear = new(0, 0, 0, 0);
 
   public static Color32 Lerp(Color32 a, Color32 b, float t) => new(
-    (byte) Maths.Lerp(a.R, b.R, t),
-    (byte) Maths.Lerp(a.G, b.G, t),
-    (byte) Maths.Lerp(a.B, b.B, t),
-    (byte) Maths.Lerp(a.A, b.A, t)
+    (byte)Maths.Lerp(a.R, b.R, t),
+    (byte)Maths.Lerp(a.G, b.G, t),
+    (byte)Maths.Lerp(a.B, b.B, t),
+    (byte)Maths.Lerp(a.A, b.A, t)
   );
 
   public byte R = R;
@@ -96,22 +96,22 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
   public byte B = B;
   public byte A = A;
 
-  public Color32 Lighten(byte amount) => new((byte) (R + amount), (byte) (G + amount), (byte) (B + amount));
-  public Color32 Darken(byte amount) => new((byte) (R - amount), (byte) (G - amount), (byte) (B - amount));
+  public Color32 Lighten(byte amount) => new((byte)(R + amount), (byte)(G + amount), (byte)(B + amount));
+  public Color32 Darken(byte amount) => new((byte)(R - amount), (byte)(G - amount), (byte)(B - amount));
 
   public override string ToString() => $"<{R}, {G}, {B}, {A}>";
 
-  public static Color32 operator +(Color32 a, Color32 b) => new((byte) (a.R + b.R), (byte) (a.G + b.G), (byte) (a.B + b.B), (byte) (a.A + b.A));
-  public static Color32 operator -(Color32 a, Color32 b) => new((byte) (a.R - b.R), (byte) (a.G - b.G), (byte) (a.B - b.B), (byte) (a.A - b.A));
-  public static Color32 operator *(Color32 a, int scalar) => new((byte) (a.R * scalar), (byte) (a.G * scalar), (byte) (a.B * scalar), (byte) (a.A * scalar));
-  public static Color32 operator /(Color32 a, int scalar) => new((byte) (a.R / scalar), (byte) (a.G / scalar), (byte) (a.B / scalar), (byte) (a.A / scalar));
+  public static Color32 operator +(Color32 a, Color32 b) => new((byte)(a.R + b.R), (byte)(a.G + b.G), (byte)(a.B + b.B), (byte)(a.A + b.A));
+  public static Color32 operator -(Color32 a, Color32 b) => new((byte)(a.R - b.R), (byte)(a.G - b.G), (byte)(a.B - b.B), (byte)(a.A - b.A));
+  public static Color32 operator *(Color32 a, int scalar) => new((byte)(a.R * scalar), (byte)(a.G * scalar), (byte)(a.B * scalar), (byte)(a.A * scalar));
+  public static Color32 operator /(Color32 a, int scalar) => new((byte)(a.R / scalar), (byte)(a.G / scalar), (byte)(a.B / scalar), (byte)(a.A / scalar));
 
   public static implicit operator Color32(Color color)
   {
-    var r = (byte) (color.R * 255.0f);
-    var g = (byte) (color.G * 255.0f);
-    var b = (byte) (color.B * 255.0f);
-    var a = (byte) (color.A * 255.0f);
+    var r = (byte)(color.R * 255.0f);
+    var g = (byte)(color.G * 255.0f);
+    var b = (byte)(color.B * 255.0f);
+    var a = (byte)(color.A * 255.0f);
 
     return new Color32(r, g, b, a);
   }

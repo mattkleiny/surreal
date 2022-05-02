@@ -128,6 +128,11 @@ public sealed class ServiceRegistry : IServiceRegistry
 
   public object? GetService(Type serviceType)
   {
+    if (serviceType == typeof(IServiceRegistry) || serviceType == typeof(ServiceRegistry))
+    {
+      return this;
+    }
+
     if (instancesByType.TryGetValue(serviceType, out var instance))
     {
       return instance;
