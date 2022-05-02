@@ -1,4 +1,5 @@
-﻿using RayTracer.Scenes;
+﻿using RayTracer;
+using Plane = RayTracer.Plane;
 
 var platform = new DesktopPlatform
 {
@@ -19,23 +20,53 @@ Game.Start(platform, async game =>
   using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var buffer = new PixelCanvas(graphics, 1920, 1080);
 
+  var checkerboard = await game.Assets.LoadAssetAsync<Image>("Assets/textures/checkerboard.png");
+
   // build a ray-tracing scene
   var scene = new Scene
   {
-    FieldOfView = 90f,
-    Background  = Color32.White,
-    Width       = buffer.Width,
-    Height      = buffer.Height,
+    Width  = buffer.Width,
+    Height = buffer.Height,
     Nodes =
     {
-      new Sphere(new(5f, -1f, -15f), 2f, new Material.Colored(Color32.Blue))
+      new Sphere(new(5f, -1f, -15f), 2f, new Material.SolidColor(Color.Blue, 0.6f)),
+      new Sphere(new(3f, 0f, -35f), 1f, new Material.SolidColor(Color.Green, 0.3f)),
+      new Sphere(new(3f, 2f, -20f), 1f, new Material.SolidColor(Color.Red, 0.3f)),
+      new Sphere(new(-5.5f, 0f, -15f), 1f, new Material.Textured(checkerboard, 0.2f)),
+      new Plane(new(0f, -4.2f, 0f), new(0f, -1f, 0f), new Material.SolidColor(Color.White, 0.1f)),
+    },
+    Lights =
+    {
+      new Light(new(-1f, -1f, 0f), Color.White, 1.0f),
+      new Light(new(1f, -1f, 0f), Color.White, 1.0f),
     }
   };
 
-  void RefreshScene()
+  void RefreshSequentially()
+  {
+    Task.Run(() =>
+    {
+      buffer.Pixels.Fill(scene.Background);
+
+      var pixels = buffer.Pixels;
+
+      for (int y = 0; y < buffer.Height; y++)
+      for (int x = 0; x < buffer.Width; x++)
+      {
+        if (x < pixels.Width && y < pixels.Height)
+        {
+          pixels[x, y] = scene.Sample(new(x, y));
+        }
+      }
+    });
+  }
+
+  void RefreshInParallel()
   {
     // start up some parallel work to process the image
     const int chunkCount = 32;
+
+    buffer.Pixels.Fill(scene.Background);
 
     var unitsX = buffer.Width / chunkCount;
     var unitsY = buffer.Height / chunkCount;
@@ -61,26 +92,20 @@ Game.Start(platform, async game =>
         {
           if (x < pixels.Width && y < pixels.Height)
           {
-            pixels[x, y] = scene.CastRay(new(x, y));
+            pixels[x, y] = scene.Sample(new(x, y));
           }
         }
       });
     }
   }
 
-  RefreshScene();
+  RefreshInParallel();
 
   game.ExecuteVariableStep(_ =>
   {
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      game.Exit();
-    }
-
-    if (keyboard.IsKeyPressed(Key.Space))
-    {
-      RefreshScene();
-    }
+    if (keyboard.IsKeyPressed(Key.Escape)) game.Exit();
+    if (keyboard.IsKeyPressed(Key.F1)) RefreshSequentially();
+    if (keyboard.IsKeyPressed(Key.F2)) RefreshInParallel();
 
     buffer.Draw(shader);
   });
