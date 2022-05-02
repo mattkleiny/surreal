@@ -12,15 +12,15 @@ var platform = new DesktopPlatform
   }
 };
 
-Game.Start(platform, async context =>
+Game.Start(platform, async game =>
 {
   // ReSharper disable AccessToDisposedClosure
 
-  var graphics = context.Services.GetRequiredService<IGraphicsServer>();
-  var keyboard = context.Services.GetRequiredService<IInputServer>().GetRequiredDevice<IKeyboardDevice>();
+  var graphics = game.Services.GetRequiredService<IGraphicsServer>();
+  var keyboard = game.Services.GetRequiredService<IInputServer>().GetRequiredDevice<IKeyboardDevice>();
 
-  var font = await context.Assets.LoadDefaultBitmapFontAsync();
-  var shader = await context.Assets.LoadDefaultShaderAsync();
+  var font = await game.Assets.LoadDefaultBitmapFontAsync();
+  var shader = await game.Assets.LoadDefaultShaderAsync();
 
   using var sprites = new SpriteBatch(graphics);
 
@@ -29,11 +29,11 @@ Game.Start(platform, async context =>
     Matrix4x4.CreateTranslation(-size.X / 2f, -size.Y / 2f, 0f) *
     Matrix4x4.CreateOrthographic(size.X, size.Y, 0f, 100f);
 
-  context.ExecuteVariableStep(_ =>
+  game.ExecuteVariableStep(_ =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
-      context.Exit();
+      game.Exit();
     }
 
     graphics.ClearColorBuffer(Color.White);

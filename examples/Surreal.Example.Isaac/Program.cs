@@ -11,23 +11,23 @@ var platform = new DesktopPlatform
   }
 };
 
-Game.Start(platform, async context =>
+Game.Start(platform, async game =>
 {
   // ReSharper disable AccessToDisposedClosure
 
   // grab services
-  var graphics = context.Services.GetRequiredService<IGraphicsServer>();
-  var input = context.Services.GetRequiredService<IInputServer>();
+  var graphics = game.Services.GetRequiredService<IGraphicsServer>();
+  var input = game.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
   // set-up scripting
-  context.Assets.AddLoader(new ScriptLoader(new LuaScriptServer(), ".lua"));
+  game.Assets.AddLoader(new ScriptLoader(new LuaScriptServer(), ".lua"));
 
-  var script = await context.Assets.LoadAssetAsync<Script>("Assets/scripts/player.lua");
+  var script = await game.Assets.LoadAssetAsync<Script>("Assets/scripts/player.lua");
 
   // load assets
   using var batch = new GeometryBatch(graphics);
-  using var shader = await context.Assets.LoadDefaultShaderAsync();
+  using var shader = await game.Assets.LoadDefaultShaderAsync();
   using var texture = Texture.CreateColored(graphics, Color.White);
   using var scene = new ActorScene();
 
@@ -48,11 +48,11 @@ Game.Start(platform, async context =>
     Type     = RoomType.Spawn
   });
 
-  context.ExecuteVariableStep(time =>
+  game.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
-      context.Exit();
+      game.Exit();
     }
 
     if (keyboard.IsKeyPressed(Key.Space))

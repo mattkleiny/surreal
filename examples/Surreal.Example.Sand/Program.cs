@@ -10,22 +10,22 @@ var platform = new DesktopPlatform
   }
 };
 
-Game.Start(platform, async context =>
+Game.Start(platform, async game =>
 {
   // ReSharper disable AccessToDisposedClosure
 
-  var graphics = context.Services.GetRequiredService<IGraphicsServer>();
-  var input = context.Services.GetRequiredService<IInputServer>();
+  var graphics = game.Services.GetRequiredService<IGraphicsServer>();
+  var input = game.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
   var mouse = input.GetRequiredDevice<IMouseDevice>();
 
-  using var shader = await context.Assets.LoadDefaultShaderAsync();
+  using var shader = await game.Assets.LoadDefaultShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
 
-  var palette = await context.Assets.LoadAssetAsync<ColorPalette>("resx://Sand/Resources/palettes/kule-16.pal");
+  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Sand/Resources/palettes/kule-16.pal");
   var random = Random.Shared;
 
-  context.ExecuteVariableStep(time =>
+  game.ExecuteVariableStep(time =>
   {
     graphics.ClearColorBuffer(Color.Black);
 
@@ -38,7 +38,7 @@ Game.Start(platform, async context =>
 
     if (keyboard.IsKeyPressed(Key.Escape))
     {
-      context.Exit();
+      game.Exit();
     }
 
     if (keyboard.IsKeyPressed(Key.Space))

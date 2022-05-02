@@ -1,6 +1,6 @@
 ﻿var platform = new HeadlessPlatform();
 
-Game.Start(platform, context =>
+Game.Start(platform, game =>
 {
   // ReSharper disable AccessToDisposedClosure
 
@@ -9,7 +9,7 @@ Game.Start(platform, context =>
   var frameCounter = new FrameCounter();
   var fpsTimer = new IntervalTimer(1.Seconds());
 
-  context.ExecuteVariableStep(time =>
+  game.ExecuteVariableStep(time =>
   {
     if (fpsTimer.Tick(time.DeltaTime))
     {

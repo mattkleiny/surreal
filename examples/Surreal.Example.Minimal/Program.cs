@@ -8,21 +8,21 @@
   }
 };
 
-Game.Start(platform, context =>
+Game.Start(platform, game =>
 {
   // ReSharper disable AccessToDisposedClosure
 
-  var graphics = context.Services.GetRequiredService<IGraphicsServer>();
-  var keyboard = context.Services.GetRequiredService<IInputServer>().GetRequiredDevice<IKeyboardDevice>();
+  var graphics = game.Services.GetRequiredService<IGraphicsServer>();
+  var keyboard = game.Services.GetRequiredService<IInputServer>().GetRequiredDevice<IKeyboardDevice>();
 
   var color1 = Random.Shared.NextColor();
   var color2 = Random.Shared.NextColor();
 
-  context.ExecuteVariableStep(time =>
+  game.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
-      context.Exit();
+      game.Exit();
     }
 
     graphics.ClearColorBuffer(Color.Lerp(color1, color2, Maths.PingPong(time.TotalTime)));

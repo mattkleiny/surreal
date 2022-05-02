@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Avventura</AssemblyName>
+    <RootNamespace>Avventura</RootNamespace>
+    <Description>The Last Voyage of the Avventura.</Description>
+    <ApplicationIcon>./Resources/icons/avventura.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+  </ItemGroup>
+</Project>

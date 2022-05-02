@@ -9,13 +9,13 @@
   }
 };
 
-Game.Start(platform, context =>
+Game.Start(platform, game =>
 {
   // ReSharper disable AccessToDisposedClosure
 
-  var graphics = context.Services.GetRequiredService<IConsoleGraphics>();
+  var graphics = game.Services.GetRequiredService<IConsoleGraphics>();
 
-  context.ExecuteVariableStep(_ =>
+  game.ExecuteVariableStep(_ =>
   {
     var x = Random.Shared.Next(0, graphics.Width);
     var y = Random.Shared.Next(0, graphics.Height);

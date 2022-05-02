@@ -11,21 +11,21 @@ var platform = new DesktopPlatform
   }
 };
 
-Game.Start(platform, async context =>
+Game.Start(platform, async game =>
 {
   // ReSharper disable AccessToDisposedClosure
 
   // prepare core services
-  var graphics = context.Services.GetRequiredService<IGraphicsServer>();
-  var input = context.Services.GetRequiredService<IInputServer>();
+  var graphics = game.Services.GetRequiredService<IGraphicsServer>();
+  var input = game.Services.GetRequiredService<IInputServer>();
   var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
 
   // load some resources
-  using var shader = await context.Assets.LoadDefaultShaderAsync();
+  using var shader = await game.Assets.LoadDefaultShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
   using var scene = new ActorScene();
 
-  var palette = await context.Assets.LoadAssetAsync<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");
+  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");
 
   var random = Random.Shared;
   var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);
@@ -60,11 +60,11 @@ Game.Start(platform, async context =>
 
   Respawn();
 
-  context.ExecuteVariableStep(time =>
+  game.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
-      context.Exit();
+      game.Exit();
     }
 
     if (keyboard.IsKeyPressed(Key.F4))
