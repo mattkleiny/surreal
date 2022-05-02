@@ -7,15 +7,14 @@ var platform = new DesktopPlatform
     Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    Width          = (int)(size.X * 6),
-    Height         = (int)(size.Y * 6)
+    Width          = (int) (size.X * 6),
+    Height         = (int) (size.Y * 6)
   }
 };
 
 Game.Start(platform, async game =>
 {
   // ReSharper disable AccessToDisposedClosure
-
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
@@ -41,7 +40,10 @@ Game.Start(platform, async game =>
     shader.SetUniform("u_projectionView", in projectionView);
     shader.SetUniform("u_texture", font.Texture, 0);
 
-    sprites.Begin(shader, Matrix3x2.Identity);
+    var radians = Maths.PingPong(time.TotalTime) * MathF.PI * 2f;
+    var rotation = Matrix3x2.CreateRotation(radians, size / 2f);
+
+    sprites.Begin(shader, rotation);
     sprites.DrawText(
       font: font,
       text: "HELLO, SURREAL!",
