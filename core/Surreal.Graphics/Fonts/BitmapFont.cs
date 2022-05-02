@@ -35,6 +35,7 @@ public static class BitmapFontExtensions
     string text,
     Vector2 position,
     Color color,
+    float angle = 0f,
     HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left,
     VerticalAlignment verticalAlignment = VerticalAlignment.Top
   )
@@ -64,7 +65,7 @@ public static class BitmapFontExtensions
       }
       else
       {
-        batch.Draw(glyph, position, glyph.Size, color);
+        batch.Draw(glyph, position, glyph.Size, angle, color);
 
         position.X += glyph.Size.X;
       }

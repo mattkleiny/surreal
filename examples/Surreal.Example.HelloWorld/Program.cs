@@ -29,7 +29,7 @@ Game.Start(platform, async game =>
     Matrix4x4.CreateTranslation(-size.X / 2f, -size.Y / 2f, 0f) *
     Matrix4x4.CreateOrthographic(size.X, size.Y, 0f, 100f);
 
-  game.ExecuteVariableStep(_ =>
+  game.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
@@ -47,6 +47,7 @@ Game.Start(platform, async game =>
       text: "HELLO, SURREAL!",
       position: size / 2f,
       color: Color.Black,
+      angle: Maths.PingPong(time.TotalTime) * MathF.PI * 2,
       horizontalAlignment: HorizontalAlignment.Center,
       verticalAlignment: VerticalAlignment.Center
     );

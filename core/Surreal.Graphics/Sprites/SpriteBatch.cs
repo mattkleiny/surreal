@@ -37,7 +37,7 @@ public sealed class SpriteBatch : IDisposable
   }
 
   [SkipLocalsInit]
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
   {
     if (region.Texture != lastTexture)
     {
@@ -51,43 +51,23 @@ public sealed class SpriteBatch : IDisposable
       Flush();
     }
 
-    // calculate u/v extents
+    var transform =
+      Matrix3x2.CreateScale(size) *
+      Matrix3x2.CreateRotation(angle) *
+      Matrix3x2.CreateTranslation(position);
+
     var uv = region.UV;
 
-    // calculate shape extents
-    var extentX = position.X + size.X;
-    var extentY = position.Y + size.Y;
+    // add quad data to our batch
+    Span<Vertex2> output = stackalloc Vertex2[4]
+    {
+      new(Vector2.Transform(new(-0.5f, -0.5f), transform), color, uv.BottomLeft),
+      new(Vector2.Transform(new(-0.5f, 0.5f), transform), color, uv.TopLeft),
+      new(Vector2.Transform(new(0.5f, 0.5f), transform), color, uv.TopRight),
+      new(Vector2.Transform(new(0.5f, -0.5f), transform), color, uv.BottomRight),
+    };
 
-    // add vertex data to our batch
-    var span = vertices.Span[vertexCount..];
-
-    ref var vertex0 = ref span[0];
-    vertex0.Position.X = position.X;
-    vertex0.Position.Y = position.Y;
-    vertex0.Color      = color;
-    vertex0.UV.X       = uv.Left;
-    vertex0.UV.Y       = uv.Bottom;
-
-    ref var vertex1 = ref span[1];
-    vertex1.Position.X = position.X;
-    vertex1.Position.Y = extentY;
-    vertex1.Color      = color;
-    vertex1.UV.X       = uv.Left;
-    vertex1.UV.Y       = uv.Top;
-
-    ref var vertex2 = ref span[2];
-    vertex2.Position.X = extentX;
-    vertex2.Position.Y = extentY;
-    vertex2.Color      = color;
-    vertex2.UV.X       = uv.Right;
-    vertex2.UV.Y       = uv.Top;
-
-    ref var vertex3 = ref span[3];
-    vertex3.Position.X = extentX;
-    vertex3.Position.Y = position.Y;
-    vertex3.Color      = color;
-    vertex3.UV.X       = uv.Right;
-    vertex3.UV.Y       = uv.Bottom;
+    output.CopyTo(vertices.Span[vertexCount..]);
 
     vertexCount += 4;
   }
@@ -113,10 +93,10 @@ public sealed class SpriteBatch : IDisposable
     for (ushort i = 0, j = 0; i < indexCount; i += 6, j += 4)
     {
       indices[i + 0] = j;
-      indices[i + 1] = (ushort) (j + 1);
-      indices[i + 2] = (ushort) (j + 2);
-      indices[i + 3] = (ushort) (j + 2);
-      indices[i + 4] = (ushort) (j + 3);
+      indices[i + 1] = (ushort)(j + 1);
+      indices[i + 2] = (ushort)(j + 2);
+      indices[i + 3] = (ushort)(j + 2);
+      indices[i + 4] = (ushort)(j + 3);
       indices[i + 5] = j;
     }
 
