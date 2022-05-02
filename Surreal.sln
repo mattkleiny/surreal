@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Isaac", "ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Avventura", "examples\Surreal.Example.Avventura\Surreal.Example.Avventura.csproj", "{8D4FEB70-FDD2-4E53-BD24-9FE3AD28D82F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.RayTracer", "examples\Surreal.Example.RayTracer\Surreal.Example.RayTracer.csproj", "{39A1329A-FE45-4F8F-8925-BC5FEC9C7DEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,10 @@ Global
 		{8D4FEB70-FDD2-4E53-BD24-9FE3AD28D82F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D4FEB70-FDD2-4E53-BD24-9FE3AD28D82F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D4FEB70-FDD2-4E53-BD24-9FE3AD28D82F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39A1329A-FE45-4F8F-8925-BC5FEC9C7DEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39A1329A-FE45-4F8F-8925-BC5FEC9C7DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39A1329A-FE45-4F8F-8925-BC5FEC9C7DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39A1329A-FE45-4F8F-8925-BC5FEC9C7DEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -219,5 +225,6 @@ Global
 		{5A9FF7AE-328A-42F5-BDFA-153B57A1FBFE} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{D871B18D-01C4-489A-8DA2-F2926B7DC01D} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{8D4FEB70-FDD2-4E53-BD24-9FE3AD28D82F} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{39A1329A-FE45-4F8F-8925-BC5FEC9C7DEE} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal
