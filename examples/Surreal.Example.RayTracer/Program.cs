@@ -22,10 +22,13 @@ Game.Start(platform, async game =>
   // build a ray-tracing scene
   var scene = new Scene
   {
-    Background = Color32.White,
-    Objects =
+    FieldOfView = 90f,
+    Background  = Color32.White,
+    Width       = buffer.Width,
+    Height      = buffer.Height,
+    Nodes =
     {
-      new Sphere(Vector3.Zero, 4f, new Material.Colored(Color32.Magenta))
+      new Sphere(new(5f, -1f, -15f), 2f, new Material.Colored(Color32.Blue))
     }
   };
 
