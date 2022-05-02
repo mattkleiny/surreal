@@ -7,8 +7,8 @@ var platform = new DesktopPlatform
     Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    Width          = (int) (size.X * 6),
-    Height         = (int) (size.Y * 6)
+    Width          = (int)(size.X * 6),
+    Height         = (int)(size.Y * 6)
   }
 };
 
@@ -41,13 +41,12 @@ Game.Start(platform, async game =>
     shader.SetUniform("u_projectionView", in projectionView);
     shader.SetUniform("u_texture", font.Texture, 0);
 
-    sprites.Begin(shader);
+    sprites.Begin(shader, Matrix3x2.Identity);
     sprites.DrawText(
       font: font,
       text: "HELLO, SURREAL!",
       position: size / 2f,
       color: Color.Black,
-      angle: Maths.PingPong(time.TotalTime) * MathF.PI * 2,
       horizontalAlignment: HorizontalAlignment.Center,
       verticalAlignment: VerticalAlignment.Center
     );

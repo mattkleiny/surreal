@@ -19,6 +19,7 @@ public sealed class SpriteBatch : IDisposable
   private ShaderProgram? shader;
   private Texture? lastTexture;
   private int vertexCount;
+  private Matrix3x2 transform = Matrix3x2.Identity;
 
   public SpriteBatch(IGraphicsServer server, int spriteCount = DefaultSpriteCount)
   {
@@ -31,13 +32,26 @@ public sealed class SpriteBatch : IDisposable
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
-  public void Begin(ShaderProgram shader)
+  public void Begin(ShaderProgram shader, Matrix3x2 transform)
   {
-    this.shader = shader;
+    this.transform = transform;
+    this.shader    = shader;
   }
 
-  [SkipLocalsInit]
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
+    => Draw(region, position, size, Color.White);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
+    => Draw(region, position, size, 0f, color);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
+    => Draw(region, position, size, angle, color, Matrix3x2.Identity);
+
+  [SkipLocalsInit]
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color, in Matrix3x2 transform)
   {
     if (region.Texture != lastTexture)
     {
@@ -51,20 +65,23 @@ public sealed class SpriteBatch : IDisposable
       Flush();
     }
 
-    var transform =
+    // compute final transform from individual pieces
+    var finalTransform =
       Matrix3x2.CreateScale(size) *
       Matrix3x2.CreateRotation(angle) *
-      Matrix3x2.CreateTranslation(position);
+      Matrix3x2.CreateTranslation(position) *
+      transform * this.transform;
 
+    // compute UV texture bounds
     var uv = region.UV;
 
     // add quad data to our batch
     Span<Vertex2> output = stackalloc Vertex2[4]
     {
-      new(Vector2.Transform(new(-0.5f, -0.5f), transform), color, uv.BottomLeft),
-      new(Vector2.Transform(new(-0.5f, 0.5f), transform), color, uv.TopLeft),
-      new(Vector2.Transform(new(0.5f, 0.5f), transform), color, uv.TopRight),
-      new(Vector2.Transform(new(0.5f, -0.5f), transform), color, uv.BottomRight),
+      new(Vector2.Transform(new(-0.5f, -0.5f), finalTransform), color, uv.BottomLeft),
+      new(Vector2.Transform(new(-0.5f, 0.5f), finalTransform), color, uv.TopLeft),
+      new(Vector2.Transform(new(0.5f, 0.5f), finalTransform), color, uv.TopRight),
+      new(Vector2.Transform(new(0.5f, -0.5f), finalTransform), color, uv.BottomRight),
     };
 
     output.CopyTo(vertices.Span[vertexCount..]);
