@@ -24,5 +24,4 @@ public sealed class HeadlessInputServer : IInputServer
     Keyboard.Update();
     Mouse.Update();
   }
-
 }

@@ -13,7 +13,7 @@ Game.Start(platform, game =>
   // ReSharper disable AccessToDisposedClosure
 
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
-  var keyboard = game.Services.GetRequiredService<IInputServer>().GetRequiredDevice<IKeyboardDevice>();
+  var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   var color1 = Random.Shared.NextColor();
   var color2 = Random.Shared.NextColor();

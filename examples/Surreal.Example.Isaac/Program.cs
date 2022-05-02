@@ -17,8 +17,7 @@ Game.Start(platform, async game =>
 
   // grab services
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
-  var input = game.Services.GetRequiredService<IInputServer>();
-  var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
+  var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   // set-up scripting
   game.Assets.AddLoader(new ScriptLoader(new LuaScriptServer(), ".lua"));

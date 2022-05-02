@@ -20,6 +20,9 @@ public interface IServiceModule
 /// <summary>A registry for services.</summary>
 public interface IServiceRegistry : IServiceProvider, IDisposable
 {
+  object Create(Type type);
+  T Create<T>() => (T)Create(typeof(T));
+
   void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
   void RegisterService(Type serviceType, object instance);
   void ReplaceService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
@@ -104,6 +107,25 @@ public sealed class ServiceRegistry : IServiceRegistry
     return null;
   }
 
+  public object Create(Type type)
+  {
+    // TODO: cache some of this?
+
+    var constructor = type.GetConstructors().Single();
+    var parameters = constructor.GetParameters();
+    var arguments = new object[parameters.Length];
+
+    for (var i = 0; i < parameters.Length; i++)
+    {
+      var serviceType = parameters[i].ParameterType;
+      var service = GetService(serviceType) ?? throw new ServiceNotFoundException($"Unable to resolve service {serviceType} when activating type {type.FullName}");
+
+      arguments[i] = service;
+    }
+
+    return Activator.CreateInstance(type, arguments)!;
+  }
+
   public void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType)
   {
     switch (lifetime)
@@ -155,7 +177,7 @@ public static class ServicesExtensions
 {
   public static T? GetService<T>(this IServiceProvider provider)
   {
-    return (T?) provider.GetService(typeof(T));
+    return (T?)provider.GetService(typeof(T));
   }
 
   public static IEnumerable<T> GetServices<T>(this IServiceProvider provider)
@@ -184,7 +206,7 @@ public static class ServicesExtensions
 
     if (service != null)
     {
-      result = (T) service;
+      result = (T)service;
       return true;
     }
 

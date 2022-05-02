@@ -17,7 +17,7 @@ Game.Start(platform, async game =>
   // ReSharper disable AccessToDisposedClosure
 
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
-  var keyboard = game.Services.GetRequiredService<IInputServer>().GetRequiredDevice<IKeyboardDevice>();
+  var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   var font = await game.Assets.LoadDefaultBitmapFontAsync();
   var shader = await game.Assets.LoadDefaultShaderAsync();

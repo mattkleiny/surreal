@@ -1,4 +1,7 @@
-﻿var platform = new DesktopPlatform
+﻿using Avventura.Screens;
+using Surreal.Screens;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -9,23 +12,4 @@
   }
 };
 
-Game.Start(platform, game =>
-{
-  // ReSharper disable AccessToDisposedClosure
-  var graphics = game.Services.GetRequiredService<IGraphicsServer>();
-  var input = game.Services.GetRequiredService<IInputServer>();
-
-  var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
-
-  game.ExecuteVariableStep(_ =>
-  {
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      game.Exit();
-    }
-
-    graphics.ClearColorBuffer(Color.White);
-  });
-
-  return Task.CompletedTask;
-});
+Game.Start(platform, game => game.ExecuteScreen<MainScreen>());

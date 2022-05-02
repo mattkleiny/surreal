@@ -15,9 +15,8 @@ Game.Start(platform, async game =>
   // ReSharper disable AccessToDisposedClosure
 
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
-  var input = game.Services.GetRequiredService<IInputServer>();
-  var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
-  var mouse = input.GetRequiredDevice<IMouseDevice>();
+  var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
+  var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
   using var shader = await game.Assets.LoadDefaultShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
@@ -34,7 +33,7 @@ Game.Start(platform, async game =>
     var targetX = mousePos.X * canvas.Width - 1;
     var targetY = mousePos.Y * canvas.Height - 1;
 
-    var point = new Point2((int) targetX, (int) targetY);
+    var point = new Point2((int)targetX, (int)targetY);
 
     if (keyboard.IsKeyPressed(Key.Escape))
     {

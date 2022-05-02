@@ -17,8 +17,7 @@ Game.Start(platform, async game =>
 
   // prepare core services
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
-  var input = game.Services.GetRequiredService<IInputServer>();
-  var keyboard = input.GetRequiredDevice<IKeyboardDevice>();
+  var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   // load some resources
   using var shader = await game.Assets.LoadDefaultShaderAsync();
