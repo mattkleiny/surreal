@@ -20,7 +20,7 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   var font = await game.Assets.LoadDefaultBitmapFontAsync();
-  var shader = await game.Assets.LoadDefaultShaderAsync();
+  var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
 
   using var sprites = new SpriteBatch(graphics);
 

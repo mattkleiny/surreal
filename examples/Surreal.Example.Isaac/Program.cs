@@ -26,7 +26,7 @@ Game.Start(platform, async game =>
 
   // load assets
   using var batch = new GeometryBatch(graphics);
-  using var shader = await game.Assets.LoadDefaultShaderAsync();
+  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var texture = Texture.CreateColored(graphics, Color.White);
   using var scene = new ActorScene();
 
@@ -62,10 +62,12 @@ Game.Start(platform, async game =>
       plan.Add(last.AddChild(direction));
     }
 
+    graphics.ClearColorBuffer(Color.Black);
+
     shader.SetUniform("u_projectionView", in camera.ProjectionView);
     shader.SetUniform("u_texture", texture, 0);
 
-    script.ExecuteFunction("update");
+    script.ExecuteFunction("update", time.DeltaTime.Seconds);
 
     scene.BeginFrame(time.DeltaTime);
     scene.Input(time.DeltaTime);

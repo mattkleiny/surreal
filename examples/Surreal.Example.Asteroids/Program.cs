@@ -20,7 +20,7 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   // load some resources
-  using var shader = await game.Assets.LoadDefaultShaderAsync();
+  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
   using var scene = new ActorScene();
 

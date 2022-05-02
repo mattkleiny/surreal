@@ -18,7 +18,7 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
   var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
-  using var shader = await game.Assets.LoadDefaultShaderAsync();
+  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
 
   var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Sand/Resources/palettes/kule-16.pal");

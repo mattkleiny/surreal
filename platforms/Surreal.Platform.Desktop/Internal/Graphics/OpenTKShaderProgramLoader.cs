@@ -1,5 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
-using Surreal.Assets;
+﻿using Surreal.Assets;
 using Surreal.Graphics.Shaders;
 using Surreal.IO;
 
@@ -22,9 +21,6 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 
   public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
-    var vertexPath = context.Path.ChangeExtension("vert.glsl");
-    var fragmentPath = context.Path.ChangeExtension("frag.glsl");
-
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
     var program = new ShaderProgram(server);
 
@@ -32,8 +28,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 
     if (context.IsHotReloadEnabled)
     {
-      context.SubscribeToChanges<ShaderProgram>(vertexPath, ReloadAsync);
-      context.SubscribeToChanges<ShaderProgram>(fragmentPath, ReloadAsync);
+      context.SubscribeToChanges<ShaderProgram>(ReloadAsync);
     }
 
     return program;
@@ -52,17 +47,9 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 
   private static async ValueTask<OpenTKShaderSet> LoadShaderSetAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
-    var vertexPath = context.Path.ChangeExtension("vert.glsl");
-    var fragmentPath = context.Path.ChangeExtension("frag.glsl");
+    await using var stream = await context.Path.OpenInputStreamAsync();
+    using var reader = new StreamReader(stream, Encoding.UTF8);
 
-    var vertexCode = await vertexPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
-    var fragmentCode = await fragmentPath.ReadAllTextAsync(Encoding.UTF8, cancellationToken);
-
-    var shaders = ImmutableArray.Create(
-      new OpenTKShader(ShaderType.VertexShader, vertexCode),
-      new OpenTKShader(ShaderType.FragmentShader, fragmentCode)
-    );
-
-    return new OpenTKShaderSet(context.Path.ToString(), shaders);
+    return await OpenTKShaderProcessor.ProcessGlslCodeAsync(context.Path, reader, cancellationToken);
   }
 }

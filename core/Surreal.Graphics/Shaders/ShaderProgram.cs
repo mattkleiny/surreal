@@ -7,10 +7,10 @@ namespace Surreal.Graphics.Shaders;
 /// <summary>Utilities for <see cref="ShaderProgram"/>s.</summary>
 public static class ShaderProgramExtensions
 {
-  /// <summary>Loads the default <see cref="ShaderProgram"/> from Surreal.</summary>
-  public static ValueTask<ShaderProgram> LoadDefaultShaderAsync(this IAssetManager manager)
+  /// <summary>Loads the default <see cref="ShaderProgram"/> for sprites from Surreal.</summary>
+  public static ValueTask<ShaderProgram> LoadDefaultSpriteShaderAsync(this IAssetManager manager)
   {
-    return manager.LoadAssetAsync<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/default.glsl");
+    return manager.LoadAssetAsync<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl");
   }
 }
 

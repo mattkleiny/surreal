@@ -6,7 +6,6 @@
     <ApplicationIcon>./Resources/icons/avventura.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Scripting\Surreal.Scripting.csproj" />
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
 </Project>
