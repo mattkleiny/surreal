@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Surreal.Mathematics;
+﻿using Surreal.Mathematics;
 
 namespace Surreal.Memory;
 
@@ -62,7 +61,6 @@ public static class SpanGridExtensions
   public delegate TOut Painter<in TIn, out TOut>(int x, int y, TIn value);
 
   /// <summary>Converts a <see cref="Span{T}"/> to a <see cref="SpanGrid{T}"/> with the given stride between rows.</summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static SpanGrid<T> ToGrid<T>(this Span<T> span, int stride) => new(span, stride);
 
   /// <summary>Draws a circle in the grid.</summary>

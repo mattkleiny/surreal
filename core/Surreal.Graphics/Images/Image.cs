@@ -17,10 +17,10 @@ public sealed class Image : IDisposable
 
   public static Image Load(VirtualPath path)
   {
-    using var stream =  path.OpenInputStream();
+    using var stream = path.OpenInputStream();
 
     // load the image
-    var image =  SixLabors.ImageSharp.Image.Load(stream);
+    var image = SixLabors.ImageSharp.Image.Load(stream);
     if (image is Image<Rgba32> rgba)
     {
       // we're already in the right format
@@ -59,6 +59,12 @@ public sealed class Image : IDisposable
     Debug.Assert(height > 0, "height > 0");
 
     image = new Image<Rgba32>(width, height);
+  }
+
+  public Image(SpanGrid<Color32> pixels)
+    : this(pixels.Width, pixels.Height)
+  {
+    pixels.ToReadOnlySpan().CopyTo(Pixels);
   }
 
   private Image(Image<Rgba32> image)

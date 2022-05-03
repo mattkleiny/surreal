@@ -39,7 +39,7 @@ public sealed class Scene
         {
           var reflectionRay = Ray.Reflect(surfaceNormal, ray.Direction, hitPoint, float.Epsilon);
 
-          color *= (1.0f - reflectivity);
+          color *= 1.0f - reflectivity;
           color += Trace(reflectionRay, depth + 1, maxDepth) * reflectivity;
         }
 
@@ -103,8 +103,8 @@ public sealed class Scene
     var fovAdjustment = MathF.Tan(FieldOfView.Radians / 2);
     var aspectRatio = Width / Height;
 
-    var sensorX = (((position.X + 0.5f) / Width) * 2.0f - 1.0f) * aspectRatio * fovAdjustment;
-    var sensorY = (1.0f - ((position.Y + 0.5f) / Height) * 2.0f) * fovAdjustment;
+    var sensorX = ((position.X + 0.5f) / Width * 2.0f - 1.0f) * aspectRatio * fovAdjustment;
+    var sensorY = (1.0f - (position.Y + 0.5f) / Height * 2.0f) * fovAdjustment;
 
     var direction = Vector3.Normalize(new Vector3(sensorX, sensorY, -1.0f));
 
@@ -172,7 +172,7 @@ public sealed record Sphere(Vector3 Center, float Radius, Material Material) : N
   {
     var spherical = point - Center;
 
-    var u = (1.0f + (MathF.Atan(spherical.X) / MathF.PI)) * 0.5f;
+    var u = (1.0f + MathF.Atan(spherical.X) / MathF.PI) * 0.5f;
     var v = MathF.Acos(spherical.Y / Radius) / MathF.PI;
 
     return new Vector2(u, v);

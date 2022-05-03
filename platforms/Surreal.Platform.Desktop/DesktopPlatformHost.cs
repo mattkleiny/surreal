@@ -38,6 +38,7 @@ public interface IDesktopWindow : IDisposable
   bool IsFocused       { get; set; }
   bool IsVsyncEnabled  { get; set; }
   bool IsCursorVisible { get; set; }
+  bool IsEventDriven   { get; set; }
   bool IsClosing       { get; }
 
   /// <summary>Sets the window icon to the given image.</summary>

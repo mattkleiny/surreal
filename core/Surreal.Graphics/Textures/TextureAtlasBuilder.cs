@@ -5,7 +5,7 @@ using Surreal.Memory;
 namespace Surreal.Graphics.Textures;
 
 /// <summary>A utility for building texture atlases from raw pixels.</summary>
-public sealed class TextureAtlasBuilder
+public class TextureAtlasBuilder
 {
   private readonly Queue<Cell> cells = new();
 

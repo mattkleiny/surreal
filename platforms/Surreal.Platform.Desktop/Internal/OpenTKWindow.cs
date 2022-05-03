@@ -97,6 +97,12 @@ internal sealed class OpenTKWindow : IDesktopWindow
     set => window.CursorVisible = value;
   }
 
+  public bool IsEventDriven
+  {
+    get => window.IsEventDriven;
+    set => window.IsEventDriven = value;
+  }
+
   public bool IsVsyncEnabled
   {
     get => window.VSync != VSyncMode.Off;

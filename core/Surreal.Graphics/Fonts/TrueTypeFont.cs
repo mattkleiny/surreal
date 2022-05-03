@@ -86,8 +86,8 @@ public sealed class TrueTypeFont
     /// <summary>Renders this font to a new <see cref="BitmapFont"/>.</summary>
     public BitmapFont ToBitmapFont(string characters = DefaultCharacterSet)
     {
-      var atlas = new TextureAtlasBuilder();
-      var renderer = new TextRenderer(new TextureGlyphRenderer(atlas));
+      var atlas = new TextureAtlasGlyphRenderer();
+      var renderer = new TextRenderer(atlas);
 
       renderer.RenderText(characters, options);
 
@@ -106,16 +106,10 @@ public sealed class TrueTypeFont
   }
 
   /// <summary>A <see cref="IGlyphRenderer"/> that emits to texel data in a given <see cref="Texture"/>.</summary>
-  private sealed class TextureGlyphRenderer : IGlyphRenderer
+  private sealed class TextureAtlasGlyphRenderer : TextureAtlasBuilder, IGlyphRenderer
   {
-    private readonly TextureAtlasBuilder builder;
-    private TextureAtlasBuilder.Cell currentCell;
+    private Cell currentCell;
     private Vector2 currentPoint;
-
-    public TextureGlyphRenderer(TextureAtlasBuilder builder)
-    {
-      this.builder = builder;
-    }
 
     void IGlyphRenderer.BeginText(FontRectangle bounds)
     {
@@ -123,7 +117,7 @@ public sealed class TrueTypeFont
 
     bool IGlyphRenderer.BeginGlyph(FontRectangle bounds, GlyphRendererParameters paramaters)
     {
-      currentCell = builder.AddCell(
+      currentCell = AddCell(
         (int) MathF.Ceiling(bounds.Width),
         (int) MathF.Ceiling(bounds.Height)
       );
