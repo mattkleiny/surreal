@@ -23,7 +23,7 @@ public enum VerticalAlignment
 /// <summary>Utilities for working with <see cref="BitmapFont"/>s.</summary>
 public static class BitmapFontExtensions
 {
-  public static async ValueTask<BitmapFont> LoadDefaultBitmapFontAsync(this IAssetManager manager)
+  public static async Task<BitmapFont> LoadDefaultBitmapFontAsync(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
   }
@@ -159,7 +159,7 @@ public sealed class BitmapFont : IDisposable
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="BitmapFont"/>s.</summary>
 public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
 {
-  public override async ValueTask<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
 

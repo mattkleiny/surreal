@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using OpenTK.Audio.OpenAL;
 using Surreal.Audio;
@@ -47,6 +48,11 @@ internal sealed class OpenTKAudioServer : IAudioServer, IDisposable
   public AudioHandle CreateAudioSource()
   {
     return new AudioHandle(AL.GenSource());
+  }
+
+  public bool IsAudioSourcePlaying(AudioHandle handle)
+  {
+    return AL.GetSourceState(handle) == ALSourceState.Playing;
   }
 
   public void PlayAudioSource(AudioHandle source, AudioHandle clip)

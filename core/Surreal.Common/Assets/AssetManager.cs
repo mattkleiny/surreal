@@ -23,7 +23,9 @@ public interface IAssetManager : IDisposable
   void AddSettings<T>(VirtualPath path, AssetSettings<T> settings);
   bool TryGetSettings<T>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<T>? results);
 
-  ValueTask<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  bool IsAssetLoaded<T>(VirtualPath path);
+  bool TryGetAsset<T>(VirtualPath path, [NotNullWhen(true)] out T? result);
+  Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
 
   IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
 }
@@ -59,6 +61,27 @@ public sealed class AssetManager : IAssetManager
     return false;
   }
 
+  public bool IsAssetLoaded<T>(VirtualPath path)
+  {
+    var id = new AssetId(typeof(T), path);
+
+    return assetsById.ContainsKey(id);
+  }
+
+  public bool TryGetAsset<T>(VirtualPath path, [NotNullWhen(true)] out T? result)
+  {
+    var id = new AssetId(typeof(T), path);
+
+    if (assetsById.TryGetValue(id, out var asset))
+    {
+      result = (T)asset;
+      return true;
+    }
+
+    result = default;
+    return false;
+  }
+
   public void AddSettings<T>(VirtualPath path, AssetSettings<T> settings)
   {
     var id = new AssetId(typeof(T), path);
@@ -66,7 +89,7 @@ public sealed class AssetManager : IAssetManager
     settingsById[id] = settings;
   }
 
-  public async ValueTask<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
     var id = new AssetId(typeof(T), path);
     var context = new AssetLoaderContext(id, this);

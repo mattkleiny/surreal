@@ -19,17 +19,17 @@ public enum FontWeight
 /// <summary>Utilities for working with <see cref="TrueTypeFont"/>s.</summary>
 public static class TrueTypeFontExtensions
 {
-  public static async ValueTask<TrueTypeFont> LoadDefaultFontAsync(this IAssetManager manager)
+  public static async Task<TrueTypeFont> LoadDefaultFontAsync(this IAssetManager manager)
   {
     return await manager.LoadBit536Async();
   }
 
-  public static async ValueTask<TrueTypeFont> LoadBitBoyFontAsync(this IAssetManager manager)
+  public static async Task<TrueTypeFont> LoadBitBoyFontAsync(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<TrueTypeFont>("resx://Surreal.Graphics/Resources/fonts/bitboy8_v1.ttf");
   }
 
-  public static async ValueTask<TrueTypeFont> LoadBit536Async(this IAssetManager manager)
+  public static async Task<TrueTypeFont> LoadBit536Async(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<TrueTypeFont>("resx://Surreal.Graphics/Resources/fonts/bit536_v1.ttf");
   }
@@ -177,7 +177,7 @@ public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
     this.server = server;
   }
 
-  public override async ValueTask<TrueTypeFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<TrueTypeFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 

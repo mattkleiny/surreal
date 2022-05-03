@@ -19,7 +19,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return base.CanHandle(context) && context.Path.Extension == ".glsl";
   }
 
-  public override async ValueTask<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
     var program = new ShaderProgram(server);
@@ -34,7 +34,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return program;
   }
 
-  private async ValueTask<ShaderProgram> ReloadAsync(AssetLoaderContext context, ShaderProgram program, CancellationToken cancellationToken = default)
+  private async Task<ShaderProgram> ReloadAsync(AssetLoaderContext context, ShaderProgram program, CancellationToken cancellationToken = default)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
     var handle = server.CreateShader();
@@ -45,7 +45,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return program;
   }
 
-  private static async ValueTask<OpenTKShaderSet> LoadShaderSetAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  private static async Task<OpenTKShaderSet> LoadShaderSetAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream, Encoding.UTF8);

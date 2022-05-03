@@ -60,7 +60,7 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
     return base.CanHandle(context) && context.Path.Extension == ".shade";
   }
 
-  public override async ValueTask<ShaderDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<ShaderDeclaration> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var declaration = await parser.ParseAsync(context.Path, encoding, cancellationToken);
 
@@ -72,7 +72,7 @@ public sealed class ShaderDeclarationLoader : AssetLoader<ShaderDeclaration>
     return declaration;
   }
 
-  private async ValueTask<ShaderDeclaration> ReloadAsync(AssetLoaderContext context, ShaderDeclaration existingDeclaration, CancellationToken cancellationToken)
+  private async Task<ShaderDeclaration> ReloadAsync(AssetLoaderContext context, ShaderDeclaration existingDeclaration, CancellationToken cancellationToken)
   {
     return await parser.ParseAsync(context.Path, encoding, cancellationToken);
   }

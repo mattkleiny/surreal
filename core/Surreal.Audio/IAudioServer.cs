@@ -20,6 +20,7 @@ public interface IAudioServer
 
   // audio sources
   AudioHandle CreateAudioSource();
+  bool IsAudioSourcePlaying(AudioHandle handle);
   void PlayAudioSource(AudioHandle source, AudioHandle clip);
   void StopAudioSource(AudioHandle source);
   void SetAudioSourceVolume(AudioHandle source, float value);

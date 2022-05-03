@@ -182,7 +182,7 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
     this.server = server;
   }
 
-  public override async ValueTask<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
+  public override async Task<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(server, TextureFormat.Rgba8888)
@@ -201,7 +201,7 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
     return texture;
   }
 
-  private static async ValueTask<Texture> ReloadAsync(AssetLoaderContext context, Texture texture, CancellationToken cancellationToken = default)
+  private static async Task<Texture> ReloadAsync(AssetLoaderContext context, Texture texture, CancellationToken cancellationToken = default)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
 

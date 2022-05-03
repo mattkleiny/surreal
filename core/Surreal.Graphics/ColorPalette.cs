@@ -66,7 +66,7 @@ public sealed record ColorPalette(Color[] colors, int Offset, int Count) : IRead
 /// <summary>The <see cref="AssetLoader{T}"/> for <see cref="ColorPalette"/>s.s</summary>
 public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
-  public override async ValueTask<ColorPalette> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<ColorPalette> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream);

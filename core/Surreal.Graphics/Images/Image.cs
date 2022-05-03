@@ -127,7 +127,7 @@ public sealed class ImageLoader : AssetLoader<Image>
     return base.CanHandle(context) && Extensions.Contains(context.Path.Extension);
   }
 
-  public override async ValueTask<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken = default)
+  public override async Task<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var image = await Image.LoadAsync(context.Path);
 
@@ -139,7 +139,7 @@ public sealed class ImageLoader : AssetLoader<Image>
     return image;
   }
 
-  private static async ValueTask<Image> ReloadAsync(AssetLoaderContext context, Image image, CancellationToken cancellationToken = default)
+  private static async Task<Image> ReloadAsync(AssetLoaderContext context, Image image, CancellationToken cancellationToken = default)
   {
     image.ReplaceImage(await Image.LoadAsync(context.Path));
 

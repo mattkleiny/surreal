@@ -16,6 +16,8 @@ public sealed class AudioSource : AudioResource
 
   public AudioHandle Handle { get; }
 
+  public bool IsPlaying => server.IsAudioSourcePlaying(Handle);
+
   public float Volume
   {
     get => volume;

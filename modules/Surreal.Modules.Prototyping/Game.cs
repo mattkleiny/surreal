@@ -31,6 +31,9 @@ public sealed class Game : IDisposable
   {
     Services = services;
     Host     = host;
+
+    services.AddSingleton(this);
+    services.AddSingleton(Assets);
   }
 
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]

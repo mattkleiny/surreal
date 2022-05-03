@@ -29,4 +29,17 @@ public static class DirectionExtensions
 
     return result;
   }
+
+  /// <summary>Converts a <see cref="Direction"/> to a <see cref="Vector2"/>.</summary>
+  public static Vector2 ToVector2(this Direction direction)
+  {
+    var result = Vector2.Zero;
+
+    if (direction.HasFlagFast(Direction.North)) result.Y += 1;
+    if (direction.HasFlagFast(Direction.South)) result.Y -= 1;
+    if (direction.HasFlagFast(Direction.East)) result.X  -= 1;
+    if (direction.HasFlagFast(Direction.West)) result.X  += 1;
+
+    return result;
+  }
 }

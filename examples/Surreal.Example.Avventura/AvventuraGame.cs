@@ -1,4 +1,6 @@
-﻿namespace Avventura;
+﻿using Surreal.Assets;
+
+namespace Avventura;
 
 public sealed class AvventuraGame : Game<AvventuraGame>
 {
@@ -15,12 +17,16 @@ public sealed class AvventuraGame : Game<AvventuraGame>
 
   private readonly IGraphicsServer graphics;
   private readonly IKeyboardDevice keyboard;
+  private readonly AudioManager audioManager;
 
-  public AvventuraGame(IGraphicsServer graphics, IKeyboardDevice keyboard)
+  public AvventuraGame(IAudioServer audio, IGraphicsServer graphics, IKeyboardDevice keyboard, IAssetManager asset)
   {
     this.graphics = graphics;
     this.keyboard = keyboard;
+
+    audioManager = new AudioManager(audio, asset);
   }
+
 
   protected override void OnUpdate(GameTime time)
   {
@@ -30,6 +36,13 @@ public sealed class AvventuraGame : Game<AvventuraGame>
     {
       Exit();
     }
+
+    if (keyboard.IsKeyPressed(Key.Space))
+    {
+      audioManager.PlayBite(SoundBite.ActorDamage);
+    }
+
+    audioManager.Update();
   }
 
   protected override void OnDraw(GameTime time)

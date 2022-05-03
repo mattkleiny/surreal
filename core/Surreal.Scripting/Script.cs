@@ -77,7 +77,7 @@ public sealed class ScriptLoader : AssetLoader<Script>
     return base.CanHandle(context) && context.Path.Extension == extension;
   }
 
-  public override async ValueTask<Script> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<Script> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var code = await context.Path.ReadAllTextAsync(encoding, cancellationToken);
     var script = new Script(server);
@@ -92,7 +92,7 @@ public sealed class ScriptLoader : AssetLoader<Script>
     return script;
   }
 
-  private async ValueTask<Script> ReloadAsync(AssetLoaderContext context, Script script, CancellationToken cancellationToken)
+  private async Task<Script> ReloadAsync(AssetLoaderContext context, Script script, CancellationToken cancellationToken)
   {
     var code = await context.Path.ReadAllTextAsync(encoding, cancellationToken);
 

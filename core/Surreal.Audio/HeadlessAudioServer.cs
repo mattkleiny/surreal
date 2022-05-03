@@ -28,6 +28,11 @@ public sealed class HeadlessAudioServer : IAudioServer
     return new AudioHandle(Interlocked.Increment(ref nextSourceId));
   }
 
+  public bool IsAudioSourcePlaying(AudioHandle handle)
+  {
+    return false;
+  }
+
   public void PlayAudioSource(AudioHandle source, AudioHandle clip)
   {
     // no-op
