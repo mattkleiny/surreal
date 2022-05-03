@@ -76,11 +76,11 @@ public sealed class TrueTypeFont
     }
 
     /// <summary>Measures the size of the given piece of text.</summary>
-    public BoundingRect MeasureSize(ReadOnlySpan<char> text)
+    public Rectangle MeasureSize(ReadOnlySpan<char> text)
     {
       var size = TextMeasurer.Measure(text, options);
 
-      return new BoundingRect(size.Left, size.Bottom, size.Right, size.Top);
+      return new Rectangle(size.Left, size.Bottom, size.Right, size.Top);
     }
 
     /// <summary>Renders this font to a new <see cref="BitmapFont"/>.</summary>

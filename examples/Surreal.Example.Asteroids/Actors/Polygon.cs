@@ -62,7 +62,7 @@ public sealed class Polygon
   public Vector2 Size   => Bounds.Size;
 
   /// <summary>The bounds of the polygon in 2-space.</summary>
-  public BoundingRect Bounds
+  public Rectangle Bounds
   {
     get
     {
@@ -79,7 +79,7 @@ public sealed class Polygon
         if (vertex.Y > maxY) maxY = vertex.Y;
       }
 
-      return new BoundingRect(minX, maxY, maxX, minY);
+      return new Rectangle(minX, maxY, maxX, minY);
     }
   }
 

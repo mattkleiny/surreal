@@ -70,15 +70,12 @@ public static class SpanGridExtensions
       .Create(center, new Point2(radius, radius))
       .Clamp(0, 0, grid.Width - 1, grid.Height - 1);
 
-    for (int y = rectangle.Bottom; y < rectangle.Top; y++)
-    for (int x = rectangle.Left; x < rectangle.Right; x++)
+    foreach (var point in rectangle.Points)
     {
-      var point = new Point2(x, y);
       var distance = point - center;
-
       if (distance.LengthSquared() < radius)
       {
-        grid[x, y] = value;
+        grid[point] = value;
       }
     }
   }
@@ -90,15 +87,9 @@ public static class SpanGridExtensions
       .Create(center, size)
       .Clamp(0, 0, grid.Width - 1, grid.Height - 1);
 
-    for (int y = rectangle.Bottom; y < rectangle.Top; y++)
-    for (int x = rectangle.Left; x < rectangle.Right; x++)
+    foreach (var point in rectangle.Points)
     {
-      var point = new Point2(x, y);
-
-      if (rectangle.Contains(point))
-      {
-        grid[x, y] = value;
-      }
+      grid[point] = value;
     }
   }
 

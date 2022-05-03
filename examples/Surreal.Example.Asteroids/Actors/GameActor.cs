@@ -21,7 +21,7 @@ public abstract class GameActor : Actor
   public Polygon FinalPolygon  { get; } = new();
 
   /// <summary>The final bounds of the actor's polygon, constrained to the canvas.</summary>
-  public BoundingRect Bounds => FinalPolygon.Bounds.Clamp(0, 0, canvas.Width - 1, canvas.Height - 1);
+  public Rectangle Bounds => FinalPolygon.Bounds.Clamp(0, 0, canvas.Width - 1, canvas.Height - 1);
 
   protected override void OnEnable()
   {

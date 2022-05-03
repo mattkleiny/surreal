@@ -6,18 +6,8 @@ namespace Surreal.Mathematics;
 /// <summary>Utilities for generating distance fields.</summary>
 public static class DistanceFields
 {
-  /// <summary>Generates a distance field on the given grid of <see cref="Color32"/>.</summary>
+  /// <summary>Converts the given grid of <see cref="Color32"/> into a distance field.</summary>
   public static void GenerateInPlace(SpanGrid<Color32> grid, int spread = 8)
-  {
-    GenerateInPlace(
-      grid: grid,
-      isInside: color => (color.R >= 128 || color.G >= 128 || color.B >= 128) && color.A >= 128,
-      factory: alpha => new Color(alpha, alpha, alpha)
-    );
-  }
-
-  /// <summary>Generates a distance field on the given grid of <see cref="T"/>.</summary>
-  public static void GenerateInPlace<T>(SpanGrid<T> grid, Predicate<T> isInside, Func<float, T> factory, int spread = 8)
   {
     var bitmap = new Grid<bool>(grid.Width, grid.Height);
 
@@ -25,7 +15,7 @@ public static class DistanceFields
     for (var y = 0; y < grid.Height; y++)
     for (var x = 0; x < grid.Width; x++)
     {
-      bitmap[x, y] = isInside(grid[x, y]);
+      bitmap[x, y] = IsInsideShape(grid[x, y]);
     }
 
     // compute distance to nearest edge
@@ -35,8 +25,14 @@ public static class DistanceFields
       var distance = FindSignedDistance(bitmap, x, y, spread);
       var alpha = DistanceToAlpha(distance, spread);
 
-      grid[x, y] = factory(alpha);
+      grid[x, y] = new Color(alpha, alpha, alpha);
     }
+  }
+
+  /// <summary>Determines if the given <see cref="color"/> is inside a shape on the image.</summary>
+  private static bool IsInsideShape(Color32 color)
+  {
+    return (color.R >= 128 || color.G >= 128 || color.B >= 128) && color.A >= 128;
   }
 
   /// <summary>Computes the signed distance to the nearest edge in a given <see cref="bitmap"/>.</summary>

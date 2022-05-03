@@ -52,7 +52,7 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }
 
-/// <summary>A <see cref="Queue{T}"/> with a fixed-sized upper bound.</summary>
+/// <summary>A <see cref="ConcurrentQueue{T}"/> with a fixed-sized upper bound.</summary>
 public sealed class BoundedConcurrentQueue<T>
 {
   private readonly ConcurrentQueue<T> queue;

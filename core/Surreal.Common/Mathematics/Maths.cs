@@ -5,13 +5,17 @@ namespace Surreal.Mathematics;
 /// <summary>Common used mathematical utilities.</summary>
 public static class Maths
 {
-  public static float DegreesToRadians(float degrees) => (float) (degrees * (Math.PI / 180));
-  public static float RadiansToDegrees(float radians) => (float) (radians * (180 / Math.PI));
+  public static float DegreesToRadians(float degrees) => (float)(degrees * (Math.PI / 180));
+  public static float RadiansToDegrees(float radians) => (float)(radians * (180 / Math.PI));
 
-  public static int Lerp(int a, int b, float t) => (int) (a + t * (b - a));
+  public static int Lerp(int a, int b, float t) => (int)(a + t * (b - a));
   public static float Lerp(float a, float b, float t) => a + t * (b - a);
 
   public static float PingPong(float t) => (MathF.Sin(t) + 1f) / 2f;
+
+  public static int CeilToInt(float value) => (int)MathF.Ceiling(value);
+  public static int FloorToInt(float value) => (int)MathF.Floor(value);
+  public static int RoundToInt(float value) => (int)MathF.Round(value);
 
   public static int Wrap(int value, int lower, int upper)
   {
@@ -31,7 +35,7 @@ public static class RandomExtensions
     => random.Next();
 
   public static float NextFloat(this Random random)
-    => (float) random.NextDouble();
+    => (float)random.NextDouble();
 
   public static int NextInt(this Random random, int min, int max)
     => random.Next(min, max + 1);
@@ -70,7 +74,7 @@ public static class RandomExtensions
     => new(random.NextFloat(), random.NextFloat(), random.NextFloat());
 
   public static Color32 NextColor32(this Random random)
-    => new((byte) random.NextInt(0, 255), (byte) random.NextInt(0, 255), (byte) random.NextInt(0, 255));
+    => new((byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255));
 
   public static Point2 NextPoint2(this Random random, int min, int max)
     => new(random.NextInt(min, max), random.NextInt(min, max));

@@ -52,7 +52,7 @@ public sealed class BoundedStack<T> : IEnumerable<T>
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 }
 
-/// <summary>A <see cref="Stack{T}"/> with a fixed-sized upper bound.</summary>
+/// <summary>A <see cref="ConcurrentStack{T}"/> with a fixed-sized upper bound.</summary>
 public sealed class BoundedConcurrentStack<T>
 {
   private readonly ConcurrentStack<T> stack;
