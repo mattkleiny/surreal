@@ -1,6 +1,6 @@
 ﻿using Surreal.Collections;
 
-namespace Surreal.Combat.Attributes;
+namespace Surreal.Mechanics.Combat.Attributes;
 
 /// <summary>Indicates a type of attribute.</summary>
 public readonly record struct AttributeType(string Name)

@@ -1,4 +1,4 @@
-﻿namespace Surreal.Combat;
+﻿namespace Surreal.Mechanics.Combat;
 
 /// <summary>Indicates damage to be applied to some other object.</summary>
 public record struct Damage(int Amount, DamageType Type)

@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Combat.Effects;
+namespace Surreal.Mechanics.Combat.Effects;
 
 /// <summary>A managed collection of <see cref="StatusEffect"/>s.</summary>
 [DebuggerDisplay("{effects.Count} status effects")]

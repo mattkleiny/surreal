@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Mechanics.Combat.Effects;
+using Surreal.Timing;
 
 namespace Surreal.Combat.Effects;
 

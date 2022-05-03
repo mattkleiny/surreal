@@ -1,11 +1,10 @@
-﻿using Surreal.Graphics;
-using Surreal.Graphics.Meshes;
+﻿using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
-namespace Surreal.Pixels;
+namespace Surreal.Graphics;
 
 /// <summary>
 /// A fun canvas of managed RGBA pixels that can be blitted to the screen.

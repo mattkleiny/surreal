@@ -27,7 +27,6 @@ public sealed class AvventuraGame : Game<AvventuraGame>
     audioManager = new AudioManager(audio, asset);
   }
 
-
   protected override void OnUpdate(GameTime time)
   {
     base.OnUpdate(time);
@@ -35,11 +34,6 @@ public sealed class AvventuraGame : Game<AvventuraGame>
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       Exit();
-    }
-
-    if (keyboard.IsKeyPressed(Key.Space))
-    {
-      audioManager.PlayBite(SoundBite.ActorDamage);
     }
 
     audioManager.Update();

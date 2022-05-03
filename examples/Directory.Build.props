@@ -40,7 +40,6 @@
     <Using Include="Surreal.Mathematics" />
     <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Timing" />
-    <Using Include="Surreal.Pixels" />
   </ItemGroup>
 
   <ItemGroup>
