@@ -96,7 +96,35 @@ public static class SpanGridExtensions
   /// <summary>Draws a line in the grid.</summary>
   public static void DrawLine<T>(this SpanGrid<T> grid, Point2 from, Point2 to, T value)
   {
-    throw new NotImplementedException();
+    var (x0, x1) = (from.X, to.X);
+    var (y0, y1) = (from.Y, to.Y);
+
+    int dx = Math.Abs(x1 - x0);
+    int sx = x0 < x1 ? 1 : -1;
+
+    int dy = Math.Abs(y1 - y0);
+    int sy = y0 < y1 ? 1 : -1;
+
+    int error = (dx > dy ? dx : -dy) / 2;
+
+    while (!(x0 == x1 && y0 == y1))
+    {
+      grid[x0, y0] = value;
+
+      var e2 = error;
+
+      if (e2 > -dx)
+      {
+        error -= dy;
+        x0    += sx;
+      }
+
+      if (e2 < dy)
+      {
+        error += dx;
+        y0    += sy;
+      }
+    }
   }
 
   /// <summary>Draws a curve in the grid.</summary>

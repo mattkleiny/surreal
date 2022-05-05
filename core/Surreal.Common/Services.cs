@@ -20,8 +20,8 @@ public interface IServiceModule
 /// <summary>A registry for services.</summary>
 public interface IServiceRegistry : IServiceProvider, IDisposable
 {
-  object Create(Type type);
-  T Create<T>() => (T)Create(typeof(T));
+  object Activate(Type type);
+  T Activate<T>() => (T)Activate(typeof(T));
 
   void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
   void RegisterService(Type serviceType, object instance);
@@ -93,7 +93,7 @@ public sealed class ServiceRegistry : IServiceRegistry
   private readonly ConcurrentDictionary<Type, object> instancesByType = new();
   private readonly ConcurrentDictionary<Type, Func<object>> creatorsByType = new();
 
-  public object Create(Type type)
+  public object Activate(Type type)
   {
     Func<object> Factory(Type type)
     {

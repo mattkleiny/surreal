@@ -230,7 +230,7 @@ public abstract class Game<TSelf> : IDisposable
   {
     Game.Start(platform, cancellationToken: cancellationToken, gameSetup: game =>
     {
-      using var self = game.Services.Create<TSelf>();
+      using var self = game.Services.Activate<TSelf>();
 
       return self.OnGameSetup(game);
     });
