@@ -155,8 +155,8 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
       Memory       = texture.ReadPixels<T>();
     }
 
-    public Memory<T> Memory { get; }
-    public Span<T>   Span   => Memory.Span;
+    public Memory<T>   Memory { get; }
+    public SpanGrid<T> Span   => Memory.Span.ToGrid(texture.Width);
 
     public void Dispose()
     {

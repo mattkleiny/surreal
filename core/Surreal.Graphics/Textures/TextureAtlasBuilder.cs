@@ -70,7 +70,7 @@ public class TextureAtlasBuilder
 
     while (cells.TryDequeue(out var cell))
     {
-      var source = cell.Pixels;
+      var source = cell.Span;
 
       for (int y = 0; y < cell.Height; y++)
       {
@@ -88,15 +88,16 @@ public class TextureAtlasBuilder
   /// <summary>A single cell in a <see cref="TextureAtlasBuilder"/>.</summary>
   public readonly struct Cell
   {
+    private readonly Grid<Color32> pixels;
+
     public Cell(int width, int height)
     {
-      Pixels = new Grid<Color32>(width, height);
+      pixels = new Grid<Color32>(width, height);
     }
 
-    public Grid<Color32> Pixels { get; }
-    public int           Width  => Pixels.Width;
-    public int           Height => Pixels.Height;
+    public int Width  => pixels.Width;
+    public int Height => pixels.Height;
 
-    public SpanGrid<Color32> Span => Pixels.Span;
+    public SpanGrid<Color32> Span => pixels.Span;
   }
 }

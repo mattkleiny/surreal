@@ -16,7 +16,7 @@ public readonly ref struct SpanGrid<T>
     this.storage = storage;
     this.stride  = stride;
 
-    Height = storage.Length / stride;
+    Height = stride > 0 ? storage.Length / stride : 0;
   }
 
   public int Width  => stride;

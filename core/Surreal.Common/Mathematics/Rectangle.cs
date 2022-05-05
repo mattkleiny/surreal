@@ -34,7 +34,7 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   public Vector2 BottomLeft  => new(Left, Bottom);
   public Vector2 BottomRight => new(Right, Bottom);
 
-  public PointEnumerator Points => new(Maths.CeilToInt(Width), Maths.CeilToInt(Height));
+  public PointEnumerator Points => new(BottomLeft, Maths.CeilToInt(Width), Maths.CeilToInt(Height));
 
   public override string ToString()
   {
@@ -68,20 +68,22 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   /// <summary>Allows enumerating points in a <see cref="Rectangle"/>.</summary>
   public struct PointEnumerator : IEnumerable<Point2>, IEnumerator<Point2>
   {
+    private readonly Point2 bottomLeft;
     private readonly int width;
     private readonly int height;
     private int offset;
 
-    public PointEnumerator(int width, int height)
+    public PointEnumerator(Point2 bottomLeft, int width, int height)
       : this()
     {
-      this.width  = width;
-      this.height = height;
+      this.bottomLeft = bottomLeft;
+      this.width      = width;
+      this.height     = height;
 
       Reset();
     }
 
-    public Point2      Current => new(offset % width, offset / width);
+    public Point2      Current => bottomLeft + new Point2(offset % width, offset / width);
     object IEnumerator.Current => Current;
 
     public bool MoveNext() => ++offset < width * height;
