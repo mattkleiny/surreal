@@ -75,18 +75,15 @@ public sealed class SpriteBatch : IDisposable
     // compute UV texture bounds
     var uv = region.UV;
 
-    // add quad data to our batch
-    Span<Vertex2> output = stackalloc Vertex2[4]
-    {
-      new(Vector2.Transform(new(-0.5f, -0.5f), finalTransform), color, uv.BottomLeft),
-      new(Vector2.Transform(new(-0.5f, 0.5f), finalTransform), color, uv.TopLeft),
-      new(Vector2.Transform(new(0.5f, 0.5f), finalTransform), color, uv.TopRight),
-      new(Vector2.Transform(new(0.5f, -0.5f), finalTransform), color, uv.BottomRight),
-    };
+    // add results to sprite batch
+    var output = new SpanList<Vertex2>(vertices.Span[vertexCount..]);
 
-    output.CopyTo(vertices.Span[vertexCount..]);
+    output.Add(new(Vector2.Transform(new(-0.5f, -0.5f), finalTransform), color, uv.BottomLeft));
+    output.Add(new(Vector2.Transform(new(-0.5f, 0.5f), finalTransform), color, uv.TopLeft));
+    output.Add(new(Vector2.Transform(new(0.5f, 0.5f), finalTransform), color, uv.TopRight));
+    output.Add(new(Vector2.Transform(new(0.5f, -0.5f), finalTransform), color, uv.BottomRight));
 
-    vertexCount += 4;
+    vertexCount += output.Count;
   }
 
   public void Flush()
