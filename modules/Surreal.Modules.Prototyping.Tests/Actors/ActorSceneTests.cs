@@ -9,8 +9,10 @@ public class ActorSceneTests
   {
     var scene = new ActorScene();
     var actor = Substitute.For<Actor>();
+    var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
+    scene.BeginFrame(deltaTime);
 
     actor.Received(1).OnAwake();
     actor.Status.Should().Be(ActorStatus.Active);
@@ -24,6 +26,7 @@ public class ActorSceneTests
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
+    scene.BeginFrame(deltaTime);
     scene.Input(deltaTime);
 
     actor.Received(1).OnInput(deltaTime);
@@ -37,6 +40,7 @@ public class ActorSceneTests
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
+    scene.BeginFrame(deltaTime);
     scene.Update(deltaTime);
 
     actor.Received(1).OnUpdate(deltaTime);
@@ -50,6 +54,7 @@ public class ActorSceneTests
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
+    scene.BeginFrame(deltaTime);
     scene.Draw(deltaTime);
 
     actor.Received(1).OnDraw(deltaTime);
@@ -63,6 +68,7 @@ public class ActorSceneTests
     var deltaTime = 16.Milliseconds();
 
     scene.Spawn(actor);
+    scene.BeginFrame(deltaTime);
     actor.Destroy();
 
     actor.Status.Should().Be(ActorStatus.Destroyed);

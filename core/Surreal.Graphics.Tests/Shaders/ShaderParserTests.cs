@@ -4,7 +4,7 @@ namespace Surreal.Graphics.Shaders;
 
 public class ShaderParserTests
 {
-  [Test]
+  [Test, Ignore("Not yet implemented")]
   [TestCase("Assets/shaders/test01.shade")]
   [TestCase("Assets/shaders/test02.shade")]
   [TestCase("resx://Surreal.Graphics/Resources/shaders/common.shade")]

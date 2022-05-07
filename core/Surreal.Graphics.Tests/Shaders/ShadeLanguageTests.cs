@@ -2,7 +2,7 @@
 
 public class ShadeLanguageTests
 {
-  [Test]
+  [Test, Ignore("Not yet implemented")]
   public void it_should_parse_simple_expressions()
   {
     const string code = @"
