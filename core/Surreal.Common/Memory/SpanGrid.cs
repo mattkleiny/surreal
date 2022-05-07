@@ -36,6 +36,17 @@ public readonly ref struct SpanGrid<T>
     }
   }
 
+  public ref T this[Index x, Index y]
+  {
+    get
+    {
+      var ix = x.GetOffset(Width);
+      var iy = y.GetOffset(Height);
+
+      return ref storage[ix + iy * stride];
+    }
+  }
+
   public void Fill(T value)
   {
     storage.Fill(value);
@@ -53,6 +64,60 @@ public readonly ref struct SpanGrid<T>
 
   public static implicit operator Span<T>(SpanGrid<T> grid) => grid.ToSpan();
   public static implicit operator ReadOnlySpan<T>(SpanGrid<T> grid) => grid.ToSpan();
+  public static implicit operator ReadOnlySpanGrid<T>(SpanGrid<T> grid) => new(grid.storage, grid.stride);
+}
+
+/// <summary>A <see cref="ReadOnlySpan{T}"/> that is interpreted as a grid.</summary>
+[DebuggerDisplay("ReadOnlySpanGrid {Length} elements ({Width}x{Height})")]
+public readonly ref struct ReadOnlySpanGrid<T>
+{
+  public static ReadOnlySpanGrid<T> Empty => default;
+
+  private readonly ReadOnlySpan<T> storage;
+  private readonly int stride;
+
+  public ReadOnlySpanGrid(ReadOnlySpan<T> storage, int stride)
+  {
+    this.storage = storage;
+    this.stride  = stride;
+
+    Height = stride > 0 ? storage.Length / stride : 0;
+  }
+
+  public int Width  => stride;
+  public int Height { get; }
+  public int Length => storage.Length;
+
+  public T this[Point2 position] => this[position.X, position.Y];
+
+  public T this[int x, int y]
+  {
+    get
+    {
+      Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
+      Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
+
+      return storage[x + y * stride];
+    }
+  }
+
+  public T this[Index x, Index y]
+  {
+    get
+    {
+      var ix = x.GetOffset(Width);
+      var iy = y.GetOffset(Height);
+
+      return storage[ix + iy * stride];
+    }
+  }
+
+  public ReadOnlySpan<T> ToReadOnlySpan()
+  {
+    return storage;
+  }
+
+  public static implicit operator ReadOnlySpan<T>(ReadOnlySpanGrid<T> grid) => grid.ToReadOnlySpan();
 }
 
 /// <summary>Static extensions for dealing with <see cref="SpanGrid{T}"/>s.</summary>

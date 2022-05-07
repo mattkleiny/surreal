@@ -61,7 +61,7 @@ public sealed class Image : IDisposable
     image = new Image<Rgba32>(width, height);
   }
 
-  public Image(SpanGrid<Color32> pixels)
+  public Image(ReadOnlySpanGrid<Color32> pixels)
     : this(pixels.Width, pixels.Height)
   {
     pixels.ToReadOnlySpan().CopyTo(Pixels);
