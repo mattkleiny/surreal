@@ -41,6 +41,24 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
     return FromRadians(radians);
   }
 
+  public Span<Vector2> SweepArc(float radius, Span<Vector2> storage)
+  {
+    var theta = 0f;
+    var delta = Radians / storage.Length;
+
+    for (var i = 0; i < storage.Length; i++)
+    {
+      theta += delta;
+
+      var x = radius * MathF.Cos(theta);
+      var y = radius * MathF.Sin(theta);
+
+      storage[i] = new Vector2(x, y);
+    }
+
+    return storage;
+  }
+
   public override string ToString() => $"{Degrees:F}°";
 
   public int CompareTo(Angle other) => Radians.CompareTo(other.Radians);

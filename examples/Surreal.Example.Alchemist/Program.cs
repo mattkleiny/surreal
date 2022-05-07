@@ -21,6 +21,9 @@ Game.Start(platform, async game =>
 
   void RebuildMesh()
   {
+    var color1 = Random.Shared.NextColor();
+    var color2 = Random.Shared.NextColor();
+
     mesh.Tessellate(tessellator =>
     {
       const int numberOfPoints = 16;
@@ -40,8 +43,9 @@ Game.Start(platform, async game =>
 
         var x = radius * MathF.Cos(theta);
         var y = radius * MathF.Sin(theta);
+        var color = Color.Lerp(color1, color2, i / (float) numberOfPoints);
 
-        points.Add(new Vertex2(new(x, y), Color.White, new Vector2(0f, 0f)));
+        points.Add(new Vertex2(new(x, y), color, new Vector2(0f, 0f)));
       }
 
       tessellator.AddTriangleFan(points);

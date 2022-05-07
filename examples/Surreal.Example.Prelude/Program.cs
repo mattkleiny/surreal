@@ -22,7 +22,7 @@ Game.Start(platform, async game =>
   using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var canvas = new PixelCanvas(graphics, 320, 200);
 
-  var map = TileMap.Default;
+  var map = TileMap.CreateDefault();
 
   game.ExecuteVariableStep(_ =>
   {

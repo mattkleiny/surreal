@@ -13,7 +13,7 @@ public sealed record Tile(byte Id) : Enumeration<Tile>
 /// <summary>A tilemap that can be rendered to a <see cref="PixelCanvas"/>.</summary>
 public sealed class TileMap
 {
-  public static TileMap Default { get; } = Create(@"
+  public static TileMap CreateDefault() => Create(@"
     ################
     #              #
     #              #
