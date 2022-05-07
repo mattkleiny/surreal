@@ -11,17 +11,22 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- shared build properties -->
+    <!-- core build properties -->
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
-    <NoWarn>CS0067;CS0414;CS0436</NoWarn>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Surreal</RootNamespace>
+
+    <!-- analysis and warnings -->
+    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
+    <NoWarn>CS0067;CS0414;CS0436</NoWarn>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- trimming -->
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +36,7 @@
     <Using Include="System.Collections.Generic" />
     <Using Include="System.Collections.Immutable" />
     <Using Include="System.Diagnostics" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="System.Numerics" />
     <Using Include="System.Text" />
 
@@ -60,6 +66,8 @@
   <!-- test project configuration -->
   <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <IsPackable>false</IsPackable>
+    <IsTrimmable>false</IsTrimmable>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
 
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
@@ -87,6 +95,8 @@
   <PropertyGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
+    <IsTrimmable>false</IsTrimmable>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
 
   <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">

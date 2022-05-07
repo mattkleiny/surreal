@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 /// <summary>A list of weighted elements of <see cref="T"/>.</summary>
 public sealed class WeightedList<T> : IEnumerable<T>

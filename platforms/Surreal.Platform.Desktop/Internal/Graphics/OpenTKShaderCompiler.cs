@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using Surreal.Graphics.Shaders;
 using Surreal.Text;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree;

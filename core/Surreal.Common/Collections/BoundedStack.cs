@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 /// <summary>A <see cref="Stack{T}"/> with a fixed-sized upper bound.</summary>
 public sealed class BoundedStack<T> : IEnumerable<T>

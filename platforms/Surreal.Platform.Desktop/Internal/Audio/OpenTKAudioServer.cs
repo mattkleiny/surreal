@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using OpenTK.Audio.OpenAL;
 using Surreal.Audio;

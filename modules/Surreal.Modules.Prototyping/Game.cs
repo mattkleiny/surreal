@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime;
+﻿using System.Runtime;
 using Surreal.Assets;
 using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;

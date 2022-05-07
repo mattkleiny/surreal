@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 public class EnumerationTests
 {

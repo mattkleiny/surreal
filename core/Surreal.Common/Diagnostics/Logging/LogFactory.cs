@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Surreal.Text;
+﻿using Surreal.Text;
 
 namespace Surreal.Diagnostics.Logging;
 

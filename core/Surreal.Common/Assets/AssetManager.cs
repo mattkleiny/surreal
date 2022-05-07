@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Surreal.Diagnostics.Logging;
+﻿using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 
 namespace Surreal.Assets;

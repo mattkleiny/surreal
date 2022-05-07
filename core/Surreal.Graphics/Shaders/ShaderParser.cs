@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Surreal.Assets;
+﻿using Surreal.Assets;
 using Surreal.Graphics.Shaders.Transformers;
 using Surreal.IO;
 using Surreal.Text;

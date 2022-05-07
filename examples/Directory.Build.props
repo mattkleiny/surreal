@@ -12,10 +12,13 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputType>WinExe</OutputType>
-    <PublishTrimmed>true</PublishTrimmed>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <PublishSingleFile>true</PublishSingleFile>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
+    <!-- il compiler flags -->
+    <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+    <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+    <IlcTrimMetadata>true</IlcTrimMetadata>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,6 +43,10 @@
     <Using Include="Surreal.Mathematics" />
     <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Timing" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-preview.3.22175.4" />
   </ItemGroup>
 
   <ItemGroup>

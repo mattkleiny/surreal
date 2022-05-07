@@ -8,6 +8,7 @@ public interface IPoolAware
 }
 
 /// <summary>A pool of objects of type, <see cref="T"/>.</summary>
+[RequiresUnreferencedCode("Discovers types via reflection")]
 public sealed class Pool<T>
 {
   /// <summary>A shared pool for instances of type, <see cref="T"/>.</summary>

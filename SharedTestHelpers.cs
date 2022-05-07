@@ -13,6 +13,7 @@ namespace Surreal;
 /// <summary>Provides a customized AutoFixture for use in test method parameter injection.</summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Method)]
+[RequiresUnreferencedCode("Discovers specimen builders via reflection")]
 internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
 {
   private readonly Lazy<IFixture> fixture = new(BuildFixture);
