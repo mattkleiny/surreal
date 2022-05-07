@@ -38,6 +38,8 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
   public GraphicsHandle Handle { get; }
   public BufferUsage    Usage  { get; }
 
+  public Span<T> this[Range range] => Read(range).Span;
+
   public BufferDataLease Rent()
   {
     return new BufferDataLease(this);
@@ -45,7 +47,9 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
 
   public Memory<T> Read(Optional<Range> range = default)
   {
-    return server.ReadBufferData<T>(Handle, range.GetOrDefault(Range.All));
+    var (offset, length) = range.GetOrDefault(Range.All).GetOffsetAndLength(Length);
+
+    return server.ReadBufferData<T>(Handle, offset, length);
   }
 
   public void Write(ReadOnlySpan<T> buffer)
@@ -54,6 +58,11 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
     Size   = buffer.CalculateSize();
 
     server.WriteBufferData(Handle, buffer, Usage);
+  }
+
+  public void Write(nint offset, ReadOnlySpan<T> buffer)
+  {
+    server.WriteSubBufferData(Handle, offset, buffer);
   }
 
   protected override void Dispose(bool managed)
@@ -65,7 +74,6 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
 
     base.Dispose(managed);
   }
-
 
   /// <summary>Allows borrowing the <see cref="GraphicsBuffer"/> data.</summary>
   public readonly struct BufferDataLease : IMemoryOwner<T>

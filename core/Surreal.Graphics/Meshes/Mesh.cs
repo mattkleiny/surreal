@@ -71,11 +71,8 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
     where TVertex : unmanaged
   {
     var mesh = new Mesh<TVertex>(server);
-    var tessellator = mesh.CreateTessellator();
 
-    builder(tessellator);
-
-    tessellator.WriteTo(mesh);
+    mesh.Tessellate(builder);
 
     return mesh;
   }
@@ -100,12 +97,12 @@ public sealed class Mesh<TVertex> : Mesh
   private readonly IGraphicsServer server;
   private readonly GraphicsHandle handle;
 
-  public Mesh(IGraphicsServer server)
+  public Mesh(IGraphicsServer server, BufferUsage usage = BufferUsage.Static)
   {
     this.server = server;
 
-    Vertices = new GraphicsBuffer<TVertex>(server);
-    Indices  = new GraphicsBuffer<ushort>(server);
+    Vertices = new GraphicsBuffer<TVertex>(server, usage);
+    Indices  = new GraphicsBuffer<ushort>(server, usage);
 
     handle = server.CreateMesh();
   }
@@ -118,6 +115,15 @@ public sealed class Mesh<TVertex> : Mesh
   public Tessellator<TVertex> CreateTessellator()
   {
     return new Tessellator<TVertex>();
+  }
+
+  public void Tessellate(Action<Tessellator<TVertex>> builder)
+  {
+    var tessellator = CreateTessellator();
+
+    builder(tessellator);
+
+    tessellator.WriteTo(this);
   }
 
   public override void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles)

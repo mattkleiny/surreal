@@ -43,12 +43,17 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public Memory<T> ReadBufferData<T>(GraphicsHandle handle, Range range) where T : unmanaged
+  public Memory<T> ReadBufferData<T>(GraphicsHandle handle, nint offset, int length) where T : unmanaged
   {
     return Memory<T>.Empty;
   }
 
   public void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged
+  {
+    // no-op
+  }
+
+  public void WriteSubBufferData<T>(GraphicsHandle handle, nint offset, ReadOnlySpan<T> data) where T : unmanaged
   {
     // no-op
   }
@@ -63,7 +68,17 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     return Memory<T>.Empty;
   }
 
+  public Memory<T> ReadSubTextureData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  {
+    return Memory<T>.Empty;
+  }
+
   public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  {
+    // no-op
+  }
+
+  public void WriteSubTextureData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
   {
     // no-op
   }

@@ -1,6 +1,4 @@
-﻿using Alchemist.Graphics;
-
-var platform = new DesktopPlatform
+﻿var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -17,15 +15,51 @@ Game.Start(platform, async game =>
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
-  using var mesh = IslandMeshes.Create(graphics);
+  using var mesh = new Mesh<Vertex2>(graphics, BufferUsage.Dynamic);
   using var texture = Texture.CreateColored(graphics, Color.White);
   using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
+
+  void RebuildMesh()
+  {
+    mesh.Tessellate(tessellator =>
+    {
+      const int numberOfPoints = 16;
+      const float innerRadius = 0.25f;
+      const float outerRadius = 1f;
+
+      var random = Random.Shared;
+      var points = new SpanList<Vertex2>(stackalloc Vertex2[numberOfPoints]);
+
+      var theta = 0f;
+
+      for (var i = 0; i < numberOfPoints; i++)
+      {
+        theta += 2 * MathF.PI / numberOfPoints;
+
+        var radius = random.NextFloat(innerRadius, outerRadius);
+
+        var x = radius * MathF.Cos(theta);
+        var y = radius * MathF.Sin(theta);
+
+        points.Add(new Vertex2(new(x, y), Color.White, new Vector2(0f, 0f)));
+      }
+
+      tessellator.AddTriangleFan(points);
+    });
+  }
+
+  RebuildMesh();
 
   game.ExecuteVariableStep(_ =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       game.Exit();
+    }
+
+    if (keyboard.IsKeyPressed(Key.Space))
+    {
+      RebuildMesh();
     }
 
     graphics.ClearColorBuffer(Color.Black);

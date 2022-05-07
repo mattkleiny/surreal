@@ -68,25 +68,17 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteBuffer(buffer);
   }
 
-  public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, Range range)
+  public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, nint offset, int length)
     where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
-
-    int sizeInBytes = 0;
+    var result = new T[length];
 
     GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
-    GL.GetBufferParameteri(BufferTargetARB.ArrayBuffer, BufferPNameARB.BufferSize, ref sizeInBytes);
-
-    var stride = sizeof(T);
-    var (offset, length) = range.GetOffsetAndLength(sizeInBytes / stride);
-
-    var byteOffset = offset * stride;
-    var result = new T[length];
 
     fixed (T* pointer = result)
     {
-      GL.GetBufferSubData(BufferTargetARB.ArrayBuffer, new IntPtr(byteOffset), sizeInBytes, pointer);
+      GL.GetBufferSubData(BufferTargetARB.ArrayBuffer, offset * sizeof(T), length * sizeof(T), pointer);
     }
 
     return result;
@@ -110,6 +102,18 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
       GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, bufferUsage);
+    }
+  }
+
+  public unsafe void WriteSubBufferData<T>(GraphicsHandle handle, nint offset, ReadOnlySpan<T> data) where T : unmanaged
+  {
+    var buffer = new BufferHandle(handle);
+    var bytes = data.Length * sizeof(T);
+
+    fixed (T* pointer = data)
+    {
+      GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
+      GL.BufferSubData(BufferTargetARB.ArrayBuffer, offset, bytes, pointer);
     }
   }
 
@@ -160,6 +164,36 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return results;
   }
 
+  public unsafe Memory<T> ReadSubTextureData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  {
+    var texture = new TextureHandle(handle);
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    GL.BindTexture(TextureTarget.Texture2d, texture);
+
+    var results = new T[width * height];
+
+    fixed (T* pointer = results)
+    {
+      GL.GetTextureSubImage(
+        texture: texture,
+        level: mipLevel,
+        xoffset: offsetX,
+        yoffset: offsetY,
+        zoffset: 0,
+        width: width,
+        height: height,
+        depth: 1,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer,
+        bufSize: results.Length
+      );
+    }
+
+    return results;
+  }
+
   public unsafe void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel)
     where T : unmanaged
   {
@@ -179,6 +213,30 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
         width: width,
         height: height,
         border: 0,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
+      );
+    }
+  }
+
+  public unsafe void WriteSubTextureData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  {
+    var texture = new TextureHandle(handle);
+
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    GL.BindTexture(TextureTarget.Texture2d, texture);
+
+    fixed (T* pointer = pixels)
+    {
+      GL.TexSubImage2D(
+        target: TextureTarget.Texture2d,
+        level: mipLevel,
+        width: width,
+        height: height,
+        xoffset: offsetX,
+        yoffset: offsetY,
         format: pixelFormat,
         type: pixelType,
         pixels: pointer
