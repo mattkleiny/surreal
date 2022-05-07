@@ -1,4 +1,6 @@
-﻿var platform = new DesktopPlatform
+﻿using Surreal.UI;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -17,7 +19,9 @@ Game.Start(platform, async game =>
 
   using var mesh = new Mesh<Vertex2>(graphics, BufferUsage.Dynamic);
   using var texture = Texture.CreateColored(graphics, Color.White);
-  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
+  using var spriteShader = await game.Assets.LoadDefaultSpriteShaderAsync();
+  using var uiShader = await game.Assets.LoadDefaultUIShaderAsync();
+  using var context = new ImmediateModeContext(graphics, uiShader);
 
   void RebuildMesh()
   {
@@ -68,9 +72,9 @@ Game.Start(platform, async game =>
 
     graphics.ClearColorBuffer(Color.Black);
 
-    shader.SetUniform("u_projectionView", Matrix4x4.Identity);
-    shader.SetUniform("u_texture", texture, 0);
+    spriteShader.SetUniform("u_projectionView", Matrix4x4.Identity);
+    spriteShader.SetUniform("u_texture", texture, 0);
 
-    mesh.Draw(shader);
+    mesh.Draw(spriteShader);
   });
 });

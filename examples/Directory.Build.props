@@ -41,6 +41,7 @@
     <Using Include="Surreal.Mathematics" />
     <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Timing" />
+    <Using Include="Surreal.UI" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
@@ -49,6 +50,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\modules\Surreal.Modules.Prototyping\Surreal.Modules.Prototyping.csproj" />
+    <ProjectReference Include="..\..\modules\Surreal.Modules.UI\Surreal.Modules.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">

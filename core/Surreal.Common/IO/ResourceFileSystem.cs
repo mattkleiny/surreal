@@ -8,26 +8,9 @@ public sealed class ResourceFileSystem : FileSystem
 {
   private const string Separator = "/";
 
-  private static Assembly[] GetDefaultAssemblies()
-  {
-    return AppDomain.CurrentDomain
-      .GetAssemblies()
-      // dynamic assemblies do not support resources
-      .Where(assembly => !assembly.IsDynamic)
-      .ToArray();
-  }
-
-  private readonly Assembly[] assemblies;
-
-  public ResourceFileSystem()
-    : this(GetDefaultAssemblies())
-  {
-  }
-
   public ResourceFileSystem(params Assembly[] assemblies)
     : base("resource", "resources", "embedded", "resx")
   {
-    this.assemblies = assemblies;
   }
 
   public override VirtualPath Resolve(VirtualPath path, params string[] paths)
@@ -60,7 +43,7 @@ public sealed class ResourceFileSystem : FileSystem
 
   public override Stream OpenInputStream(string path)
   {
-    foreach (var assembly in assemblies)
+    foreach (var assembly in GetDefaultAssemblies())
     {
       var stream = assembly.GetManifestResourceStream(NormalizePath(path));
       if (stream != null)
@@ -80,6 +63,15 @@ public sealed class ResourceFileSystem : FileSystem
   private static string NormalizePath(string path)
   {
     return path.Replace('/', '.');
+  }
+
+  private static IEnumerable<Assembly> GetDefaultAssemblies()
+  {
+    return AppDomain.CurrentDomain
+      .GetAssemblies()
+      // dynamic assemblies do not support resources
+      .Where(assembly => !assembly.GetName().Name!.StartsWith("System."))
+      .Where(assembly => !assembly.IsDynamic);
   }
 }
 
