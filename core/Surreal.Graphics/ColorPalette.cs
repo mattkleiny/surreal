@@ -5,21 +5,21 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>A palette of <see cref="Color"/>s, with span and range support.</summary>
-public sealed record ColorPalette(Color[] colors, int Offset, int Count) : IReadOnlyList<Color>
+/// <summary>A palette of <see cref="Color32"/>s, with span and range support.</summary>
+public sealed record ColorPalette(Color32[] colors, int Offset, int Count) : IReadOnlyList<Color32>
 {
-  private readonly Color[] colors = colors;
+  private readonly Color32[] colors = colors;
 
-  public ColorPalette(Color[] colors)
+  public ColorPalette(Color32[] colors)
     : this(colors, 0, colors.Length)
   {
   }
 
   /// <summary>Accesses a single color of the <see cref="ColorPalette"/>.</summary>
-  public Color this[int index] => colors[Offset + index];
+  public Color32 this[int index] => colors[Offset + index];
 
   /// <summary>Accesses a single color of the <see cref="ColorPalette"/>.</summary>
-  public Color this[Index index] => colors[Offset + index.GetOffset(Count)];
+  public Color32 this[Index index] => colors[Offset + index.GetOffset(Count)];
 
   /// <summary>Accesses a sub-range of the <see cref="ColorPalette"/>.</summary>
   public ColorPalette this[Range range]
@@ -33,13 +33,13 @@ public sealed record ColorPalette(Color[] colors, int Offset, int Count) : IRead
   }
 
   public Enumerator GetEnumerator() => new(this);
-  IEnumerator<Color> IEnumerable<Color>.GetEnumerator() => GetEnumerator();
+  IEnumerator<Color32> IEnumerable<Color32>.GetEnumerator() => GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-  public static implicit operator ColorPalette(Color[] colors) => new(colors, 0, colors.Length);
+  public static implicit operator ColorPalette(Color32[] colors) => new(colors, 0, colors.Length);
 
   /// <summary>Enumerates the <see cref="ColorPalette"/>.</summary>
-  public struct Enumerator : IEnumerator<Color>
+  public struct Enumerator : IEnumerator<Color32>
   {
     private readonly ColorPalette palette;
     private int index;
@@ -50,7 +50,7 @@ public sealed record ColorPalette(Color[] colors, int Offset, int Count) : IRead
       index        = -1;
     }
 
-    public Color       Current => palette[index];
+    public Color32     Current => palette[index];
     object IEnumerator.Current => Current;
 
     public bool MoveNext() => ++index < palette.Count;
@@ -88,7 +88,7 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
     }
 
     var count = int.Parse(rawCount, CultureInfo.InvariantCulture);
-    var colors = new Color[count];
+    var colors = new Color32[count];
 
     for (var i = 0; i < colors.Length; i++)
     {

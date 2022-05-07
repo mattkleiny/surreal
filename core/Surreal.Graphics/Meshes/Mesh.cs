@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Surreal.Graphics.Shaders;
+﻿using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
@@ -18,24 +17,65 @@ public enum MeshType
 /// <summary>Abstracts over all possible <see cref="Mesh{TVertex}"/> types.</summary>
 public abstract class Mesh : GraphicsResource, IHasSizeEstimate
 {
-  /// <summary>Builds a full-screen <see cref="Mesh"/> quad.</summary>
+  /// <summary>Builds a simple triangle <see cref="Mesh"/>.</summary>
+  public static Mesh CreateTriangle(IGraphicsServer server, float size = 1f)
+  {
+    return Build<Vertex2>(server, tessellator =>
+    {
+      tessellator.AddTriangle(
+        new Vertex2(new(-size, -size), Color.White, new(0f, 0f)),
+        new Vertex2(new(0f, size), Color.White, new(0.5f, 1f)),
+        new Vertex2(new(size, -size), Color.White, new(1f, 0f))
+      );
+    });
+  }
+
+  /// <summary>Builds a simple quad <see cref="Mesh"/> quad.</summary>
   public static Mesh CreateQuad(IGraphicsServer server, float size = 1f)
   {
-    var mesh = new Mesh<Vertex2>(server);
-
-    mesh.Vertices.Write(stackalloc[]
+    return Build<Vertex2>(server, tessellator =>
     {
-      new Vertex2(new(-size, -size), Color.White, new(0f, 1f)),
-      new Vertex2(new(-size, size), Color.White, new(0f, 0f)),
-      new Vertex2(new(size, size), Color.White, new(1f, 0f)),
-      new Vertex2(new(size, -size), Color.White, new(1f, 1f))
+      tessellator.AddQuad(
+        new Vertex2(new(-size, -size), Color.White, new(0f, 1f)),
+        new Vertex2(new(-size, size), Color.White, new(0f, 0f)),
+        new Vertex2(new(size, size), Color.White, new(1f, 0f)),
+        new Vertex2(new(size, -size), Color.White, new(1f, 1f))
+      );
     });
+  }
 
-    mesh.Indices.Write(stackalloc ushort[]
+  /// <summary>Builds a simple circle <see cref="Mesh"/>.</summary>
+  public static Mesh CreateCircle(IGraphicsServer server, float radius = 1f, int segments = 16)
+  {
+    return Build<Vertex2>(server, tessellator =>
     {
-      0, 1, 2,
-      0, 2, 3
+      var vertices = new SpanList<Vertex2>(stackalloc Vertex2[segments]);
+      var theta = 0f;
+
+      for (var i = 0; i < segments; i++)
+      {
+        theta += 2 * MathF.PI / segments;
+
+        var x = radius * MathF.Cos(theta);
+        var y = radius * MathF.Sin(theta);
+
+        vertices.Add(new Vertex2(new(x, y), Color.White, new(0f, 0f)));
+      }
+
+      tessellator.AddTriangleFan(vertices);
     });
+  }
+
+  /// <summary>Convenience method for building <see cref="Mesh{TVertex}"/>s with a <see cref="Tessellator{TVertex}"/>.</summary>
+  public static Mesh<TVertex> Build<TVertex>(IGraphicsServer server, Action<Tessellator<TVertex>> builder)
+    where TVertex : unmanaged
+  {
+    var mesh = new Mesh<TVertex>(server);
+    var tessellator = mesh.CreateTessellator();
+
+    builder(tessellator);
+
+    tessellator.WriteTo(mesh);
 
     return mesh;
   }

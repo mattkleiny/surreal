@@ -72,6 +72,8 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     Handle = server.CreateTexture(filterMode, wrapMode);
   }
 
+  public IGraphicsServer Server => server;
+
   public int  Width  { get; private set; }
   public int  Height { get; private set; }
   public Size Size   { get; private set; }

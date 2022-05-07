@@ -2,20 +2,31 @@
 
 public static class IslandMeshes
 {
-  public static Mesh<Vertex2> Create(IGraphicsServer graphics)
+  public static Mesh<Vertex2> Create(IGraphicsServer graphics, int numberOfPoints = 8, Seed seed = default)
   {
-    var mesh = new Mesh<Vertex2>(graphics);
-    var tessellator = mesh.CreateTessellator();
+    return Mesh.Build<Vertex2>(graphics, tessellator =>
+    {
+      const float innerRadius = 0.5f;
+      const float outerRadius = 1.25f;
 
-    tessellator.AddQuad(
-      new Vertex2(new(-0.5f, -0.5f), Color.Red, new Vector2(0f, 0f)),
-      new Vertex2(new(-0.5f, 0.5f), Color.Green, new Vector2(0f, 1f)),
-      new Vertex2(new(0.5f, 0.5f), Color.Blue, new Vector2(1f, 1f)),
-      new Vertex2(new(0.5f, -0.5f), Color.White, new Vector2(1f, 0f))
-    );
+      var random = seed.ToRandom();
+      var points = new SpanList<Vertex2>(stackalloc Vertex2[numberOfPoints]);
 
-    tessellator.WriteTo(mesh);
+      var theta = 0f;
 
-    return mesh;
+      for (var i = 0; i < numberOfPoints; i++)
+      {
+        theta += 2 * MathF.PI / numberOfPoints;
+
+        var radius = random.NextFloat(innerRadius, outerRadius);
+
+        var x = radius * MathF.Cos(theta);
+        var y = radius * MathF.Sin(theta);
+
+        points.Add(new Vertex2(new(x, y), Color.White, new Vector2(0f, 0f)));
+      }
+
+      tessellator.AddTriangleFan(points);
+    });
   }
 }
