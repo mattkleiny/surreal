@@ -66,11 +66,10 @@ public static class SpanGridExtensions
   /// <summary>Draws a circle in the grid.</summary>
   public static void DrawCircle<T>(this SpanGrid<T> grid, Point2 center, int radius, T value)
   {
-    var rectangle = Rectangle
-      .Create(center, new Point2(radius, radius))
-      .Clamp(0, 0, grid.Width - 1, grid.Height - 1);
+    var rectangle = Rectangle.Create(center, new Point2(radius, radius));
+    var clamped = rectangle.Clamp(0, 0, grid.Width - 1, grid.Height - 1);
 
-    foreach (var point in rectangle.Points)
+    foreach (var point in clamped.Points)
     {
       var distance = point - center;
       if (distance.LengthSquared() < radius)
@@ -83,10 +82,18 @@ public static class SpanGridExtensions
   /// <summary>Draws a rectangle in the grid.</summary>
   public static void DrawRectangle<T>(this SpanGrid<T> grid, Point2 center, Point2 size, T value)
   {
-    var rectangle = Rectangle
-      .Create(center, size)
-      .Clamp(0, 0, grid.Width - 1, grid.Height - 1);
+    var rectangle = Rectangle.Create(center, size);
+    var clamped = rectangle.Clamp(0, 0, grid.Width - 1, grid.Height - 1);
 
+    foreach (var point in clamped.Points)
+    {
+      grid[point] = value;
+    }
+  }
+
+  /// <summary>Draws a rectangle in the grid.</summary>
+  public static void DrawRectangle<T>(this SpanGrid<T> grid, Rectangle rectangle, T value)
+  {
     foreach (var point in rectangle.Points)
     {
       grid[point] = value;
@@ -96,6 +103,7 @@ public static class SpanGridExtensions
   /// <summary>Draws a line in the grid.</summary>
   public static void DrawLine<T>(this SpanGrid<T> grid, Point2 from, Point2 to, T value)
   {
+    // bresenham line algorithm
     var (x0, x1) = (from.X, to.X);
     var (y0, y1) = (from.Y, to.Y);
 
@@ -127,14 +135,36 @@ public static class SpanGridExtensions
     }
   }
 
-  /// <summary>Draws a curve in the grid.</summary>
-  public static void DrawCurve<T, TCurve>(this SpanGrid<T> grid, TCurve curve, T value)
-    where TCurve : IPlanarCurve
+  /// <summary>Draws a strip of lines in the grid.</summary>
+  public static void DrawLineStrip<T>(this SpanGrid<T> grid, ReadOnlySpan<Point2> positions, T value)
   {
-    throw new NotImplementedException();
+    for (var i = 1; i < positions.Length; i++)
+    {
+      var from = positions[i - 1];
+      var to = positions[i];
+
+      grid.DrawLine(from, to, value);
+    }
   }
 
-  /// <summary>Blits one grid to another.</summary>
+  /// <summary>Draws a curve in the grid.</summary>
+  public static void DrawCurve<T, TCurve>(this SpanGrid<T> grid, TCurve curve, T value, int samples = 16)
+    where TCurve : IPlanarCurve
+  {
+    // collect all points
+    var positions = new SpanList<Point2>(stackalloc Point2[samples]);
+    var delta = 1f / samples;
+
+    for (int i = 0; i < samples; i++)
+    {
+      positions.Add(curve.SampleAt(delta * i));
+    }
+
+    // draw line strip
+    grid.DrawLineStrip(positions.ToSpan(), value);
+  }
+
+  /// <summary>Paints this grid onto another via a given <see cref="painter"/> function.</summary>
   public static void PaintTo<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
   {
     for (var y = 0; y < from.Height; y++)
@@ -144,7 +174,7 @@ public static class SpanGridExtensions
     }
   }
 
-  /// <summary>Converts a grid to a string, using the given painting function.</summary>
+  /// <summary>Converts the grid to a string, using the given <see cref="painter"/> function.</summary>
   public static string ToString<T>(this SpanGrid<T> grid, Painter<T?, char> painter)
   {
     var builder = new StringBuilder();

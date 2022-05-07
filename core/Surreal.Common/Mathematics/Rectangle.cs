@@ -74,11 +74,11 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     private int offset;
 
     public PointEnumerator(Point2 bottomLeft, int width, int height)
-      : this()
     {
       this.bottomLeft = bottomLeft;
       this.width      = width;
       this.height     = height;
+      offset          = -1;
 
       Reset();
     }

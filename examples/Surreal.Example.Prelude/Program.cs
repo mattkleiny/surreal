@@ -31,6 +31,8 @@ Game.Start(platform, async game =>
       game.Exit();
     }
 
+    canvas.Pixels.Fill(Color32.Black);
+
     map.Draw(canvas.Pixels);
     canvas.Draw(shader);
   });

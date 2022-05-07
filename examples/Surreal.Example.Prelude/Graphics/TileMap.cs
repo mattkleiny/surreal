@@ -6,20 +6,8 @@ public sealed record Tile(byte Id) : Enumeration<Tile>
   public static Tile Empty { get; } = new(0);
   public static Tile Wall  { get; } = new(1);
 
-  public static bool TryGet(byte id, out Tile result)
-  {
-    foreach (var tile in All)
-    {
-      if (tile.Id == id)
-      {
-        result = tile;
-        return true;
-      }
-    }
-
-    result = default!;
-    return false;
-  }
+  /// <summary>A look-up of <see cref="Tile"/>s by their associated IDs.</summary>
+  public static ImmutableDictionary<byte, Tile> TilesById { get; } = All.ToImmutableDictionary(_ => _.Id);
 }
 
 /// <summary>A tilemap that can be rendered to a <see cref="PixelCanvas"/>.</summary>
@@ -75,29 +63,32 @@ public sealed class TileMap
 
   public Tile this[int x, int y]
   {
-    get
-    {
-      if (!Tile.TryGet(tiles[x, y], out var tile))
-      {
-        throw new Exception($"An invalid tile is specified at ({x}, {y})");
-      }
-
-      return tile;
-    }
+    get => Tile.TilesById[tiles[x, y]];
     set => tiles[x, y] = value.Id;
   }
 
   public void Draw(SpanGrid<Color32> pixels)
   {
+    var scale = new Vector2(16, 16);
+
     for (int y = 0; y < Height; y++)
     for (int x = 0; x < Width; x++)
     {
-      pixels[x, y] = tiles[x, y] switch
+      var tile = tiles[x, y];
+
+      var rect = new Rectangle(
+        Left: x * scale.X,
+        Top: (y + 1) * scale.Y,
+        Right: (x + 1) * scale.X,
+        Bottom: y * scale.Y
+      ).Clamp(0, 0, pixels.Width - 1, pixels.Height - 1);
+
+      pixels.DrawRectangle(rect, tile switch
       {
         0 => Color32.Black,
         1 => Color32.White,
         _ => Color32.Magenta
-      };
+      });
     }
   }
 }
