@@ -1,4 +1,6 @@
-﻿var platform = new DesktopPlatform
+﻿using Alchemist.Graphics;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -9,11 +11,15 @@
   }
 };
 
-Game.Start(platform, game =>
+Game.Start(platform, async game =>
 {
   // ReSharper disable AccessToDisposedClosure
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
+
+  using var mesh = IslandMeshes.Create(graphics);
+  using var texture = Texture.CreateColored(graphics, Color.White);
+  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
 
   game.ExecuteVariableStep(_ =>
   {
@@ -23,7 +29,10 @@ Game.Start(platform, game =>
     }
 
     graphics.ClearColorBuffer(Color.Black);
-  });
 
-  return Task.CompletedTask;
+    shader.SetUniform("u_projectionView", Matrix4x4.Identity);
+    shader.SetUniform("u_texture", texture, 0);
+
+    mesh.Draw(shader);
+  });
 });

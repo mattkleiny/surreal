@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Shaders;
+﻿using System.Runtime.CompilerServices;
+using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
 using Surreal.Memory;
 
@@ -73,6 +74,11 @@ public sealed class Mesh<TVertex> : Mesh
   public GraphicsBuffer<ushort>  Indices  { get; }
 
   public override Size Size => Vertices.Size + Indices.Size;
+
+  public Tessellator<TVertex> CreateTessellator()
+  {
+    return new Tessellator<TVertex>();
+  }
 
   public override void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles)
   {

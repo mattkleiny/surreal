@@ -17,8 +17,6 @@
     <!-- il compiler flags -->
     <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
     <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
-    <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
-    <IlcTrimMetadata>true</IlcTrimMetadata>
   </PropertyGroup>
 
   <ItemGroup>
