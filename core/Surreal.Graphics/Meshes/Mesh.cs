@@ -117,9 +117,14 @@ public sealed class Mesh<TVertex> : Mesh
 
   public override Size Size => Vertices.Size + Indices.Size;
 
+  public Tessellator<TVertex> CreateTessellator()
+  {
+    return new Tessellator<TVertex>();
+  }
+
   public void Tessellate(Action<Tessellator<TVertex>> builder)
   {
-    var tessellator = new Tessellator<TVertex>();
+    var tessellator = CreateTessellator();
 
     builder(tessellator);
 

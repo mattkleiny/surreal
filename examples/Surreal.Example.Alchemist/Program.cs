@@ -1,4 +1,6 @@
-﻿var platform = new DesktopPlatform
+﻿using Surreal.UI.Immediate;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -17,6 +19,7 @@ Game.Start(platform, async game =>
   using var mesh = new Mesh<Vertex2>(graphics, BufferUsage.Dynamic);
   using var texture = Texture.CreateColored(graphics, Color.White);
   using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
+  using var context = new ImmediateModeContext(await BatchedImmediateModeRenderer.CreateAsync(graphics, game.Assets));
 
   void RebuildMesh()
   {
@@ -53,7 +56,7 @@ Game.Start(platform, async game =>
 
   RebuildMesh();
 
-  game.ExecuteVariableStep(_ =>
+  game.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
@@ -70,6 +73,17 @@ Game.Start(platform, async game =>
     shader.SetUniform("u_projectionView", Matrix4x4.Identity);
     shader.SetUniform("u_texture", texture, 0);
 
-    mesh.Draw(shader);
+    // mesh.Draw(shader);
+    const float size = 0.5f;
+
+    context.Renderer.DrawTriangle(
+      new(-size, -size),
+      new(0f, size),
+      new(size, -size),
+      Color.White
+    );
+
+    context.Update(time.DeltaTime);
+    context.Draw(time.DeltaTime);
   });
 });
