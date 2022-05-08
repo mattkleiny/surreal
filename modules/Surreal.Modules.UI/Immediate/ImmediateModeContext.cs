@@ -5,16 +5,24 @@ using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
+using Surreal.Input;
+using Surreal.Input.Keyboard;
+using Surreal.Input.Mouse;
 using Surreal.Mathematics;
-using Surreal.Timing;
+using Surreal.Memory;
 
 namespace Surreal.UI.Immediate;
+
+/// <summary>A key for <see cref="Style"/> in a <see cref="Skin"/>.</summary>
+public readonly record struct StyleKey(string Name);
 
 /// <summary>A single style in a <see cref="Skin"/>.</summary>
 public sealed record Style
 {
   public Color ForegroundColor { get; set; } = Color.White;
   public Color BackgroundColor { get; set; } = Color.Black;
+  public Color ActiveColor     { get; set; } = Color.Black.Lighten(0.2f);
+  public Color InactiveColor   { get; set; } = Color.White.Darken(0.2f);
   public float LineWidth       { get; set; } = 1f;
 }
 
@@ -27,9 +35,9 @@ public sealed record Skin
   public Style DefaultStyle { get; } = new();
 
   /// <summary>Attempts to get the <see cref="Style"/> with the given name.</summary>
-  public Style GetStyleOrDefault(string name, Optional<Style> defaultStyle = default)
+  public Style GetStyleOrDefault(StyleKey key, Optional<Style> defaultStyle = default)
   {
-    if (!stylesByName.TryGetValue(name, out var style))
+    if (!stylesByName.TryGetValue(key.Name, out var style))
     {
       return defaultStyle.GetOrDefault(DefaultStyle);
     }
@@ -45,20 +53,34 @@ public sealed record Skin
 }
 
 /// <summary>A context for immediate mode rendering.</summary>
-public sealed class ImmediateModeContext : IDisposable
+public sealed class ImmediateModeContext : IDisposable, IPaintingContext
 {
+  private readonly IPlatformHost host;
   private readonly Dictionary<int, object> state = new();
 
-  public ImmediateModeContext(IImmediateModeRenderer renderer)
+  private readonly IMouseDevice mouse;
+  private readonly IKeyboardDevice keyboard;
+  private readonly ShaderProgram shader;
+  private readonly Mesh<Vertex> mesh;
+  private readonly Tessellator<Vertex> tessellator;
+
+  public ImmediateModeContext(IGraphicsServer graphics, IInputServer input, IPlatformHost host, IAssetManager assets)
   {
-    Renderer = renderer;
+    this.host = host;
+
+    mouse    = input.GetRequiredDevice<IMouseDevice>();
+    keyboard = input.GetRequiredDevice<IKeyboardDevice>();
+
+    shader      = assets.LoadAssetAsync<ShaderProgram>("resx://Surreal.UI/Resources/shaders/batched-ui.glsl").Result;
+    mesh        = new Mesh<Vertex>(graphics);
+    tessellator = mesh.CreateTessellator();
   }
 
-  /// <summary>The active immediate mode skin.</summary>
+  /// <summary>The active skin.</summary>
   public Skin Skin { get; set; } = new();
 
-  /// <summary>The active <see cref="IImmediateModeRenderer"/>.</summary>
-  public IImmediateModeRenderer Renderer { get; }
+  public IMouseDevice    Mouse    => mouse;
+  public IKeyboardDevice Keyboard => keyboard;
 
   /// <summary>Gets a unique ID for the control at the given position.</summary>
   public int GetControlId(Rectangle rectangle)
@@ -79,57 +101,29 @@ public sealed class ImmediateModeContext : IDisposable
     state.Remove(controlId);
   }
 
-  public void Update(TimeDelta deltaTime)
+  /// <summary>Removes all state for all controls.</summary>
+  public void ClearAllState()
   {
+    state.Clear();
   }
 
-  public void Draw(TimeDelta deltaTime)
+  /// <summary>Renders the UI to the display.</summary>
+  public void Present()
   {
-    Renderer.Flush();
-  }
+    // update batch geometry
+    tessellator.WriteTo(mesh);
+    tessellator.Clear();
 
-  public void Dispose()
-  {
-    Renderer.Dispose();
-  }
-}
+    // set-up a basic orthographic projection
+    var projectionView =
+      Matrix4x4.CreateTranslation(-host.Width / 2f, -host.Height / 2f, 0f) *
+      Matrix4x4.CreateOrthographic(host.Width, host.Height, 0f, 100f);
 
-/// <summary>Allows an <see cref="ImmediateModeContext"/> to render to some display.</summary>
-public interface IImmediateModeRenderer : IDisposable
-{
-  void DrawLine(Vector2 from, Vector2 to, Color color, float thickness = 1f);
-  void DrawLineStrip(ReadOnlySpan<Vector2> vertices, Color color, float thickness = 1f);
-  void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Color color);
-  void DrawTriangleStrip(ReadOnlySpan<Vector2> vertices, Color color);
-  void DrawStrokeRect(Rectangle rectangle, Color color);
-  void DrawFillRect(Rectangle rectangle, Color color);
-  void DrawText(Rectangle rectangle, string text, Color color);
-  void DrawTexture(Rectangle rectangle, Texture texture);
+    shader.SetUniform("u_projectionView", in projectionView);
+    shader.SetUniform("u_screenSize", new Vector2(host.Width, host.Height));
 
-  /// <summary>Flushes all commands to the underlying hardware.</summary>
-  void Flush();
-}
-
-/// <summary>An <see cref="IImmediateModeRenderer"/> that uses a simple geometry batch and specialized shader program.</summary>
-public sealed class BatchedImmediateModeRenderer : IImmediateModeRenderer
-{
-  private readonly ShaderProgram shader;
-  private readonly Mesh<Vertex> mesh;
-  private readonly Tessellator<Vertex> tessellator;
-
-  public static async ValueTask<BatchedImmediateModeRenderer> CreateAsync(IGraphicsServer server, IAssetManager assets)
-  {
-    var shader = await assets.LoadAssetAsync<ShaderProgram>("resx://Surreal.UI/Resources/shaders/batchedui.glsl");
-
-    return new BatchedImmediateModeRenderer(server, shader);
-  }
-
-  private BatchedImmediateModeRenderer(IGraphicsServer server, ShaderProgram shader)
-  {
-    this.shader = shader;
-
-    mesh        = new Mesh<Vertex>(server);
-    tessellator = mesh.CreateTessellator();
+    // render the UI
+    mesh.Draw(shader);
   }
 
   public void DrawLine(Vector2 from, Vector2 to, Color color, float thickness = 1)
@@ -154,9 +148,16 @@ public sealed class BatchedImmediateModeRenderer : IImmediateModeRenderer
     );
   }
 
-  public void DrawTriangleStrip(ReadOnlySpan<Vector2> vertices, Color color)
+  public void DrawTriangleFan(ReadOnlySpan<Vector2> vertices, Color color)
   {
-    throw new NotImplementedException();
+    var result = new SpanList<Vertex>(stackalloc Vertex[vertices.Length]);
+
+    foreach (var position in vertices)
+    {
+      result.Add(new Vertex(position, color));
+    }
+
+    tessellator.AddTriangleFan(result);
   }
 
   public void DrawStrokeRect(Rectangle rectangle, Color color)
@@ -166,7 +167,12 @@ public sealed class BatchedImmediateModeRenderer : IImmediateModeRenderer
 
   public void DrawFillRect(Rectangle rectangle, Color color)
   {
-    throw new NotImplementedException();
+    tessellator.AddQuad(
+      new Vertex(rectangle.BottomLeft, color),
+      new Vertex(rectangle.TopLeft, color),
+      new Vertex(rectangle.TopRight, color),
+      new Vertex(rectangle.BottomRight, color)
+    );
   }
 
   public void DrawText(Rectangle rectangle, string text, Color color)
@@ -177,13 +183,6 @@ public sealed class BatchedImmediateModeRenderer : IImmediateModeRenderer
   public void DrawTexture(Rectangle rectangle, Texture texture)
   {
     throw new NotImplementedException();
-  }
-
-  public void Flush()
-  {
-    tessellator.WriteTo(mesh);
-    mesh.Draw(shader);
-    tessellator.Clear();
   }
 
   public void Dispose()

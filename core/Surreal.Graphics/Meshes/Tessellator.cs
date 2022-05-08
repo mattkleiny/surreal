@@ -10,7 +10,7 @@ public sealed class Tessellator<TVertex>
   private readonly List<ushort> indices = new();
 
   public ushort VertexCount => (ushort) vertices.Count;
-  public int    IndexCount  => indices.Count;
+  public uint   IndexCount  => (uint) indices.Count;
 
   public ReadOnlySpan<TVertex> Vertices => vertices.AsSpan();
   public ReadOnlySpan<ushort>  Indices  => indices.AsSpan();

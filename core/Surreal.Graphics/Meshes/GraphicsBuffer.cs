@@ -7,7 +7,8 @@ namespace Surreal.Graphics.Meshes;
 public enum BufferType
 {
   Vertex,
-  Index
+  Index,
+  Uniform
 }
 
 /// <summary>Different usage models for buffers.</summary>

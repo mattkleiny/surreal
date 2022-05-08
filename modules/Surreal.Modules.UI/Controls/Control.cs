@@ -26,7 +26,7 @@ public abstract class Control : IDisposable
   {
   }
 
-  protected internal virtual void OnDraw(TimeDelta deltaTime)
+  protected internal virtual void OnDraw(TimeDelta deltaTime, IPaintingContext context)
   {
   }
 
