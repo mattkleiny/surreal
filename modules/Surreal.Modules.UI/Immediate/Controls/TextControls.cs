@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.UI.Controls;
+namespace Surreal.UI.Immediate.Controls;
 
 /// <summary>Text controls for immediate mode UI rendering.</summary>
 public static class TextControls

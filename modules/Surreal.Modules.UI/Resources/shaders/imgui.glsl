@@ -17,11 +17,11 @@ out int v_textureIndex;
 
 void main()
 {
-    v_color = color;
-    v_uv = uv;
-    v_textureIndex = textureIndex;
+  v_color = color;
+  v_uv = uv;
+  v_textureIndex = textureIndex;
 
-    gl_Position = vec4(position, 0.0, 1.0) * u_projectionView;
+  gl_Position = vec4(position, 0.0, 1.0) * u_projectionView;
 }
 
 #shader_type fragment
@@ -36,7 +36,8 @@ in int v_textureIndex;
 
 void main()
 {
-  if (v_textureIndex == -1) {
+  if (v_textureIndex == -1)
+  {
     return v_color;
   }
 

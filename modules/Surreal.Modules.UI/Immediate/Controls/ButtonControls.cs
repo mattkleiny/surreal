@@ -1,6 +1,6 @@
 ﻿using Surreal.Mathematics;
 
-namespace Surreal.UI.Controls;
+namespace Surreal.UI.Immediate.Controls;
 
 /// <summary>Methods for rendering in an <see cref="ImmediateModeContext"/>.</summary>
 public static class ButtonControls

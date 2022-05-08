@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>Prelude</AssemblyName>
-    <RootNamespace>Prelude</RootNamespace>
-    <Description>Prelude of the Chambered. A little pixel-based raycasting game.</Description>
+    <AssemblyName>RayCaster</AssemblyName>
+    <RootNamespace>RayCaster</RootNamespace>
+    <Description>A fun little ray caster in Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />

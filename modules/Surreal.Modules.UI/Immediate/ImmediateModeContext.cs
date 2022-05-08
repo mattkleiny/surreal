@@ -9,7 +9,7 @@ using Surreal.Input.Keyboard;
 using Surreal.Mathematics;
 using Surreal.Timing;
 
-namespace Surreal.UI;
+namespace Surreal.UI.Immediate;
 
 /// <summary>A skin for <see cref="ImmediateModeContext"/> rendering.</summary>
 public sealed record Skin

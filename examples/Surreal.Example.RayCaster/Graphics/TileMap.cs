@@ -1,4 +1,4 @@
-﻿namespace Prelude.Graphics;
+﻿namespace RayCaster.Graphics;
 
 /// <summary>A single tile in the <see cref="TileMap"/>.</summary>
 public sealed record Tile(byte Id) : Enumeration<Tile>

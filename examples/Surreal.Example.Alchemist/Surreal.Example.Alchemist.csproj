@@ -3,7 +3,6 @@
     <AssemblyName>Alchemist</AssemblyName>
     <RootNamespace>Alchemist</RootNamespace>
     <Description>A game about defending an arcane world of floating islands.</Description>
-    <ApplicationIcon>./Resources/icons/alchemist.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />

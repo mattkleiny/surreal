@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
@@ -121,5 +122,19 @@ public sealed class SpriteBatch : IDisposable
   {
     mesh.Dispose();
     vertices.Dispose();
+  }
+
+  /// <summary>A common 2d vertex type for primitive shapes.</summary>
+  [StructLayout(LayoutKind.Sequential)]
+  private record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
+  {
+    [VertexDescriptor(VertexType.Float, 2)]
+    public Vector2 Position = Position;
+
+    [VertexDescriptor(VertexType.Float, 4)]
+    public Color Color = Color;
+
+    [VertexDescriptor(VertexType.Float, 2)]
+    public Vector2 UV = UV;
   }
 }

@@ -1,11 +1,11 @@
-﻿using Prelude.Graphics;
+﻿using RayCaster.Graphics;
 using Viewport = Surreal.Graphics.PixelCanvas;
 
 var platform = new DesktopPlatform
 {
   Configuration =
   {
-    Title          = "Hello, Surreal!",
+    Title          = "Ray Caster",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
     Width          = 320 * 6,

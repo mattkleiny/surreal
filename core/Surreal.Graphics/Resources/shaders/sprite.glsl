@@ -1,4 +1,6 @@
-﻿#version 330 core
+﻿// Core shader for sprite rendering.
+
+#version 330 core
 
 #shader_type vertex
 
@@ -13,10 +15,10 @@ out vec2 v_uv;
 
 void main()
 {
-    v_color = color;
-    v_uv = uv;
+  v_color = color;
+  v_uv = uv;
 
-    gl_Position = vec4(position, 0.0, 1.0) * u_projectionView;
+  gl_Position = vec4(position, 0.0, 1.0) * u_projectionView;
 }
 
 #shader_type fragment
@@ -30,5 +32,5 @@ in vec4 v_color;
 
 void main()
 {
-    color = texture(u_texture, v_uv) * v_color;
+  color = texture(u_texture, v_uv) * v_color;
 }

@@ -15,34 +15,37 @@ public sealed class AvventuraGame : Game<AvventuraGame>
     }
   });
 
-  private readonly IGraphicsServer graphics;
-  private readonly IKeyboardDevice keyboard;
-  private readonly AudioManager audioManager;
+  public IAudioServer    AudioServer    { get; }
+  public AudioManager    AudioManager   { get; }
+  public IGraphicsServer GraphicsServer { get; }
+  public IKeyboardDevice Keyboard       { get; }
+  public IAssetManager   AssetManager   { get; }
 
-  public AvventuraGame(IAudioServer audio, IGraphicsServer graphics, IKeyboardDevice keyboard, IAssetManager asset)
+  public AvventuraGame(IAudioServer audio, IGraphicsServer graphicsServer, IKeyboardDevice keyboard, IAssetManager assetManager)
   {
-    this.graphics = graphics;
-    this.keyboard = keyboard;
-
-    audioManager = new AudioManager(audio, asset);
+    AudioServer    = audio;
+    GraphicsServer = graphicsServer;
+    Keyboard       = keyboard;
+    AssetManager   = assetManager;
+    AudioManager   = new AudioManager(audio, assetManager);
   }
 
   protected override void OnUpdate(GameTime time)
   {
     base.OnUpdate(time);
 
-    if (keyboard.IsKeyPressed(Key.Escape))
+    if (Keyboard.IsKeyPressed(Key.Escape))
     {
       Exit();
     }
 
-    audioManager.Update();
+    AudioManager.Update();
   }
 
   protected override void OnDraw(GameTime time)
   {
     base.OnDraw(time);
 
-    graphics.ClearColorBuffer(Color.White);
+    GraphicsServer.ClearColorBuffer(Color.White);
   }
 }

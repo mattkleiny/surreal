@@ -1,13 +1,10 @@
-﻿using Surreal.UI;
-
-var platform = new DesktopPlatform
+﻿var platform = new DesktopPlatform
 {
   Configuration =
   {
     Title          = "Alchemist",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    IconPath       = "resx://Alchemist/Resources/icons/alchemist.png"
   }
 };
 
@@ -20,8 +17,6 @@ Game.Start(platform, async game =>
   using var mesh = new Mesh<Vertex2>(graphics, BufferUsage.Dynamic);
   using var texture = Texture.CreateColored(graphics, Color.White);
   using var spriteShader = await game.Assets.LoadDefaultSpriteShaderAsync();
-  using var uiShader = await game.Assets.LoadDefaultUIShaderAsync();
-  using var context = new ImmediateModeContext(graphics, uiShader);
 
   void RebuildMesh()
   {
