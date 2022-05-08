@@ -33,7 +33,7 @@ uniform sampler2D u_texture[32];
 
 in vec2 v_uv;
 in vec4 v_color;
-in flat int v_textureId;
+flat in int v_textureId;
 
 void main()
 {

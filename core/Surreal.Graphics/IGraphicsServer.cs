@@ -8,6 +8,8 @@ namespace Surreal.Graphics;
 /// <summary>An opaque handle to a resource in the underling <see cref="IGraphicsServer"/> implementation.</summary>
 public readonly record struct GraphicsHandle(nint Id)
 {
+  public static GraphicsHandle None => default;
+
   public static implicit operator nint(GraphicsHandle handle) => handle.Id;
   public static implicit operator int(GraphicsHandle handle) => (int) handle.Id;
   public static implicit operator uint(GraphicsHandle handle) => (uint) handle.Id;
@@ -59,4 +61,9 @@ public interface IGraphicsServer
   void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value);
   void SetShaderTexture(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot);
   void DeleteShader(GraphicsHandle handle);
+
+  // frame buffers
+  GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment);
+  void SetActiveFrameBuffer(GraphicsHandle handle);
+  void DeleteFrameBuffer(GraphicsHandle handle);
 }

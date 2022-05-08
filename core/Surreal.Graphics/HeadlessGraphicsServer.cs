@@ -12,6 +12,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   private int nextTextureId = 0;
   private int nextMeshId = 0;
   private int nextShaderId = 0;
+  private int nextFrameBufferId = 0;
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -179,6 +180,21 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   }
 
   public void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value)
+  {
+    // no-op
+  }
+
+  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
+  {
+    return new GraphicsHandle(Interlocked.Increment(ref nextFrameBufferId));
+  }
+
+  public void SetActiveFrameBuffer(GraphicsHandle handle)
+  {
+    // no-op
+  }
+
+  public void DeleteFrameBuffer(GraphicsHandle handle)
   {
     // no-op
   }

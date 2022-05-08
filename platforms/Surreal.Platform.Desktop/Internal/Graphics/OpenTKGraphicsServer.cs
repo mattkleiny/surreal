@@ -520,6 +520,31 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteProgram(program);
   }
 
+  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
+  {
+    var handle = GL.GenFramebuffer();
+
+    GL.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
+    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, new TextureHandle(colorAttachment), level: 0);
+    GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);
+
+    return new GraphicsHandle(handle.Handle);
+  }
+
+  public void SetActiveFrameBuffer(GraphicsHandle handle)
+  {
+    var framebuffer = new FramebufferHandle(handle);
+
+    GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
+  }
+
+  public void DeleteFrameBuffer(GraphicsHandle handle)
+  {
+    var framebuffer = new FramebufferHandle(handle);
+
+    GL.DeleteFramebuffer(framebuffer);
+  }
+
   private static int GetInternalFormat(TextureFormat format)
   {
     return format switch

@@ -5,6 +5,8 @@ namespace Surreal.Scripting;
 /// <summary>An opaque handle to a resource in the underling <see cref="IScriptServer"/> implementation.</summary>
 public readonly record struct ScriptHandle(nint Id)
 {
+  public static ScriptHandle None => default;
+
   public static implicit operator nint(ScriptHandle handle) => handle.Id;
   public static implicit operator int(ScriptHandle handle) => (int)handle.Id;
   public static implicit operator uint(ScriptHandle handle) => (uint)handle.Id;
