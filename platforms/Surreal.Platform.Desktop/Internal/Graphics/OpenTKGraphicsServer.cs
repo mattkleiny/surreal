@@ -54,7 +54,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.Flush();
   }
 
-  public GraphicsHandle CreateBuffer()
+  public GraphicsHandle CreateBuffer(BufferType type)
   {
     var buffer = GL.GenBuffer();
 
@@ -68,26 +68,28 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteBuffer(buffer);
   }
 
-  public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, nint offset, int length)
+  public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
     where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
+    var kind = ConvertBufferType(type);
     var result = new T[length];
 
-    GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
+    GL.BindBuffer(kind, buffer);
 
     fixed (T* pointer = result)
     {
-      GL.GetBufferSubData(BufferTargetARB.ArrayBuffer, offset * sizeof(T), length * sizeof(T), pointer);
+      GL.GetBufferSubData(kind, offset * sizeof(T), length * sizeof(T), pointer);
     }
 
     return result;
   }
 
-  public unsafe void WriteBufferData<T>(GraphicsHandle handle, ReadOnlySpan<T> data, BufferUsage usage)
+  public unsafe void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
     where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
+    var kind = ConvertBufferType(type);
     var bytes = data.Length * sizeof(T);
 
     var bufferUsage = usage switch
@@ -100,20 +102,21 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
     fixed (T* pointer = data)
     {
-      GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
-      GL.BufferData(BufferTargetARB.ArrayBuffer, bytes, pointer, bufferUsage);
+      GL.BindBuffer(kind, buffer);
+      GL.BufferData(kind, bytes, pointer, bufferUsage);
     }
   }
 
-  public unsafe void WriteSubBufferData<T>(GraphicsHandle handle, nint offset, ReadOnlySpan<T> data) where T : unmanaged
+  public unsafe void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data) where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
+    var kind = ConvertBufferType(type);
     var bytes = data.Length * sizeof(T);
 
     fixed (T* pointer = data)
     {
-      GL.BindBuffer(BufferTargetARB.ArrayBuffer, buffer);
-      GL.BufferSubData(BufferTargetARB.ArrayBuffer, offset, bytes, pointer);
+      GL.BindBuffer(kind, buffer);
+      GL.BufferSubData(kind, offset, bytes, pointer);
     }
   }
 
@@ -164,7 +167,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return results;
   }
 
-  public unsafe Memory<T> ReadSubTextureData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  public unsafe Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
   {
     var texture = new TextureHandle(handle);
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
@@ -220,7 +223,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
-  public unsafe void WriteSubTextureData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
   {
     var texture = new TextureHandle(handle);
 
@@ -544,6 +547,17 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     if (type == typeof(ushort)) return DrawElementsType.UnsignedShort;
 
     throw new InvalidOperationException($"An unrecognized index type was provided: {type}");
+  }
+
+  private static BufferTargetARB ConvertBufferType(BufferType type)
+  {
+    return type switch
+    {
+      BufferType.Vertex => BufferTargetARB.ArrayBuffer,
+      BufferType.Index  => BufferTargetARB.ElementArrayBuffer,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    };
   }
 
   private static VertexAttribPointerType ConvertVertexType(VertexType attributeType)

@@ -16,7 +16,7 @@ Game.Start(platform, async game =>
 
   using var mesh = new Mesh<Vertex2>(graphics, BufferUsage.Dynamic);
   using var texture = Texture.CreateColored(graphics, Color.White);
-  using var spriteShader = await game.Assets.LoadDefaultSpriteShaderAsync();
+  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
 
   void RebuildMesh()
   {
@@ -67,9 +67,9 @@ Game.Start(platform, async game =>
 
     graphics.ClearColorBuffer(Color.Black);
 
-    spriteShader.SetUniform("u_projectionView", Matrix4x4.Identity);
-    spriteShader.SetUniform("u_texture", texture, 0);
+    shader.SetUniform("u_projectionView", Matrix4x4.Identity);
+    shader.SetUniform("u_texture", texture, 0);
 
-    mesh.Draw(spriteShader);
+    mesh.Draw(shader);
   });
 });

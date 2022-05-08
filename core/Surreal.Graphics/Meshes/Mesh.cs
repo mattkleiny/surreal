@@ -17,10 +17,21 @@ public enum MeshType
 /// <summary>Abstracts over all possible <see cref="Mesh{TVertex}"/> types.</summary>
 public abstract class Mesh : GraphicsResource, IHasSizeEstimate
 {
-  /// <summary>Builds a simple triangle <see cref="Mesh"/>.</summary>
-  public static Mesh CreateTriangle(IGraphicsServer server, float size = 1f)
+  /// <summary>Convenience method for building <see cref="Mesh{TVertex}"/>s with a <see cref="Tessellator{TVertex}"/>.</summary>
+  public static Mesh<TVertex> Create<TVertex>(IGraphicsServer server, Action<Tessellator<TVertex>> builder)
+    where TVertex : unmanaged
   {
-    return Build<Vertex2>(server, tessellator =>
+    var mesh = new Mesh<TVertex>(server);
+
+    mesh.Tessellate(builder);
+
+    return mesh;
+  }
+
+  /// <summary>Builds a simple triangle <see cref="Mesh"/>.</summary>
+  public static Mesh<Vertex2> CreateTriangle(IGraphicsServer server, float size = 1f)
+  {
+    return Create<Vertex2>(server, tessellator =>
     {
       tessellator.AddTriangle(
         new Vertex2(new(-size, -size), Color.White, new(0f, 0f)),
@@ -31,9 +42,9 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   }
 
   /// <summary>Builds a simple quad <see cref="Mesh"/> quad.</summary>
-  public static Mesh CreateQuad(IGraphicsServer server, float size = 1f)
+  public static Mesh<Vertex2> CreateQuad(IGraphicsServer server, float size = 1f)
   {
-    return Build<Vertex2>(server, tessellator =>
+    return Create<Vertex2>(server, tessellator =>
     {
       tessellator.AddQuad(
         new Vertex2(new(-size, -size), Color.White, new(0f, 1f)),
@@ -45,9 +56,9 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   }
 
   /// <summary>Builds a simple circle <see cref="Mesh"/>.</summary>
-  public static Mesh CreateCircle(IGraphicsServer server, float radius = 1f, int segments = 16)
+  public static Mesh<Vertex2> CreateCircle(IGraphicsServer server, float radius = 1f, int segments = 16)
   {
-    return Build<Vertex2>(server, tessellator =>
+    return Create<Vertex2>(server, tessellator =>
     {
       var vertices = new SpanList<Vertex2>(stackalloc Vertex2[segments]);
       var theta = 0f;
@@ -56,25 +67,20 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
       {
         theta += 2 * MathF.PI / segments;
 
-        var x = radius * MathF.Cos(theta);
-        var y = radius * MathF.Sin(theta);
+        var cos = MathF.Cos(theta);
+        var sin = MathF.Sin(theta);
 
-        vertices.Add(new Vertex2(new(x, y), Color.White, new(0f, 0f)));
+        var x = radius * cos;
+        var y = radius * sin;
+
+        var u = (cos + 1f) / 2f;
+        var v = (sin + 1f) / 2f;
+
+        vertices.Add(new Vertex2(new(x, y), Color.White, new(u, v)));
       }
 
       tessellator.AddTriangleFan(vertices);
     });
-  }
-
-  /// <summary>Convenience method for building <see cref="Mesh{TVertex}"/>s with a <see cref="Tessellator{TVertex}"/>.</summary>
-  public static Mesh<TVertex> Build<TVertex>(IGraphicsServer server, Action<Tessellator<TVertex>> builder)
-    where TVertex : unmanaged
-  {
-    var mesh = new Mesh<TVertex>(server);
-
-    mesh.Tessellate(builder);
-
-    return mesh;
   }
 
   public abstract Size Size { get; }
@@ -95,31 +101,25 @@ public sealed class Mesh<TVertex> : Mesh
   private static readonly VertexDescriptorSet VertexDescriptors = VertexDescriptorSet.Create<TVertex>();
 
   private readonly IGraphicsServer server;
-  private readonly GraphicsHandle handle;
 
   public Mesh(IGraphicsServer server, BufferUsage usage = BufferUsage.Static)
   {
     this.server = server;
 
-    Vertices = new GraphicsBuffer<TVertex>(server, usage);
-    Indices  = new GraphicsBuffer<ushort>(server, usage);
-
-    handle = server.CreateMesh();
+    Vertices = new GraphicsBuffer<TVertex>(server, BufferType.Vertex, usage);
+    Indices  = new GraphicsBuffer<ushort>(server, BufferType.Index, usage);
+    Handle   = server.CreateMesh();
   }
 
+  public GraphicsHandle          Handle   { get; }
   public GraphicsBuffer<TVertex> Vertices { get; }
   public GraphicsBuffer<ushort>  Indices  { get; }
 
   public override Size Size => Vertices.Size + Indices.Size;
 
-  public Tessellator<TVertex> CreateTessellator()
-  {
-    return new Tessellator<TVertex>();
-  }
-
   public void Tessellate(Action<Tessellator<TVertex>> builder)
   {
-    var tessellator = CreateTessellator();
+    var tessellator = new Tessellator<TVertex>();
 
     builder(tessellator);
 
@@ -134,7 +134,7 @@ public sealed class Mesh<TVertex> : Mesh
   public override void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
   {
     server.DrawMesh(
-      mesh: handle,
+      mesh: Handle,
       shader: shader.Handle,
       vertices: Vertices.Handle,
       indices: Indices.Handle,
@@ -142,7 +142,7 @@ public sealed class Mesh<TVertex> : Mesh
       vertexCount: vertexCount,
       indexCount: indexCount,
       meshType: type,
-      indexType: Indices.Type
+      indexType: Indices.ElementType
     );
   }
 
@@ -150,10 +150,10 @@ public sealed class Mesh<TVertex> : Mesh
   {
     if (managed)
     {
+      server.DeleteMesh(Handle);
+
       Vertices.Dispose();
       Indices.Dispose();
-
-      server.DeleteMesh(handle);
     }
 
     base.Dispose(managed);

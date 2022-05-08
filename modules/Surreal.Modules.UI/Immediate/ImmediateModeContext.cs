@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
@@ -126,15 +125,5 @@ public sealed class ImmediateModeContext : IDisposable
 
     [VertexDescriptor(VertexType.Int, 1)]
     public int TextureIndex = TextureIndex;
-  }
-}
-
-/// <summary>Utilities for <see cref="ImmediateModeContext"/>s.</summary>
-public static class ImmediateModeContextExtensions
-{
-  /// <summary>Loads the default <see cref="ShaderProgram"/> for UI from Surreal.</summary>
-  public static async Task<ShaderProgram> LoadDefaultUIShaderAsync(this IAssetManager manager)
-  {
-    return await manager.LoadAssetAsync<ShaderProgram>("resx://Surreal.UI/Resources/shaders/imgui.glsl");
   }
 }

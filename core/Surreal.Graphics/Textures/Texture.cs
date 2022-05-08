@@ -118,10 +118,10 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     return server.ReadTextureData<T>(Handle);
   }
 
-  public Memory<T> ReadSubPixels<T>(int offsetX, int offsetY, int width, int height)
+  public Memory<T> ReadPixelsSub<T>(int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    return server.ReadSubTextureData<T>(Handle, offsetX, offsetY, width, height);
+    return server.ReadTextureSubData<T>(Handle, offsetX, offsetY, width, height);
   }
 
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
@@ -134,10 +134,10 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     server.WriteTextureData(Handle, width, height, pixels, Format);
   }
 
-  public void WriteSubPixels<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
+  public void WritePixelsSub<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    server.WriteSubTextureData(Handle, offsetX, offsetY, width, height, pixels, Format);
+    server.WriteTextureSubData(Handle, offsetX, offsetY, width, height, pixels, Format);
   }
 
   public void WritePixels(Image image)

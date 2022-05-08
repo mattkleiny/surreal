@@ -33,8 +33,8 @@ public sealed class Tessellator<TVertex>
 
   public void WriteTo(Mesh<TVertex> mesh)
   {
-    mesh.Vertices.Write(vertices.AsSpan());
-    mesh.Indices.Write(indices.AsSpan());
+    mesh.Vertices.Write(Vertices);
+    mesh.Indices.Write(Indices);
   }
 }
 
@@ -92,44 +92,5 @@ public static class TessellatorExtensions
     tessellator.AddIndex(offset + 0);
     tessellator.AddIndex(offset + 2);
     tessellator.AddIndex(offset + 3);
-  }
-
-  /// <summary>Adds a fan of triangles based on the centroid of the given set of vertices.</summary>
-  public static void AddCentroidFan(this Tessellator<Vertex2> tessellator, ReadOnlySpan<Vertex2> vertices)
-  {
-    static Vector2 CalculateCentroid(ReadOnlySpan<Vertex2> vertices)
-    {
-      var center = Vector2.Zero;
-
-      foreach (var vertex in vertices)
-      {
-        center += vertex.Position;
-      }
-
-      return center / vertices.Length;
-    }
-
-    // add center vertex
-    var start = tessellator.VertexCount;
-
-    tessellator.AddVertex(new Vertex2(CalculateCentroid(vertices), vertices[0].Color, new Vector2(0.5f, 0.5f)));
-
-    // add remaining vertices, connected to center
-    for (var i = 0; i < vertices.Length - 2; i++)
-    {
-      var offset = tessellator.VertexCount;
-
-      tessellator.AddVertex(vertices[i]);
-      tessellator.AddVertex(vertices[i + 1]);
-
-      tessellator.AddIndex(start);
-      tessellator.AddIndex(offset + 0);
-      tessellator.AddIndex(offset + 1);
-    }
-
-    // connect the last triangle to the start and end of the fan
-    tessellator.AddIndex(start);
-    tessellator.AddIndex(start + 1);
-    tessellator.AddIndex(tessellator.VertexCount);
   }
 }

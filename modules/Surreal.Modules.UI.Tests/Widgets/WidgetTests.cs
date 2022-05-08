@@ -1,6 +1,6 @@
-﻿using Surreal.UI.Retained;
+﻿using Surreal.UI.Widgets;
 
-namespace Surreal.Retained;
+namespace Surreal.Widgets;
 
 public class WidgetTests
 {
