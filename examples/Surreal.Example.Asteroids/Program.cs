@@ -1,7 +1,4 @@
-﻿using Asteroids;
-using Asteroids.Actors;
-
-var platform = new DesktopPlatform
+﻿var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -24,7 +21,7 @@ Game.Start(platform, async game =>
   using var canvas = new Canvas(graphics, 256, 144);
   using var scene = new ActorScene();
 
-  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Asteroids/Resources/palettes/space-dust-9.pal");
+  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Surreal/Resources/palettes/space-dust-9.pal");
 
   var random = Random.Shared;
   var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);

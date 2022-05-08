@@ -1,4 +1,4 @@
-﻿namespace Asteroids.Actors;
+﻿namespace Surreal.Actors;
 
 /// <summary>An <see cref="Actor"/> for our game.</summary>
 public abstract class GameActor : Actor

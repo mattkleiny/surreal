@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>Sand</AssemblyName>
-    <RootNamespace>Sand</RootNamespace>
     <Description>A fun little sand simulation in Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>

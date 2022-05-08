@@ -1,6 +1,4 @@
-﻿using Sand;
-
-var platform = new DesktopPlatform
+﻿var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -21,7 +19,7 @@ Game.Start(platform, async game =>
   using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
 
-  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Sand/Resources/palettes/kule-16.pal");
+  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Surreal/Resources/palettes/kule-16.pal");
   var random = Random.Shared;
 
   game.ExecuteVariableStep(time =>

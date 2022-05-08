@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>Headless</AssemblyName>
-    <RootNamespace>Headless</RootNamespace>
     <Description>A super basic example of headless execution with Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>

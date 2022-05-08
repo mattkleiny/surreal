@@ -1,4 +1,4 @@
-﻿namespace Asteroids.Actors;
+﻿namespace Surreal.Actors;
 
 /// <summary>An asteroid that floats about and can impact the player.</summary>
 public sealed class Asteroid : GameActor

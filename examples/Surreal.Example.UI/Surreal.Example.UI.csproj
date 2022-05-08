@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>An example of the minimal framework API for rapid game prototyping.</Description>
-  </PropertyGroup>
+	<PropertyGroup>
+    <Description>An example of UI in Surreal</Description>
+	</PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>

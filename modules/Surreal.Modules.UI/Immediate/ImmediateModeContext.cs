@@ -134,7 +134,10 @@ public sealed class BatchedImmediateModeRenderer : IImmediateModeRenderer
 
   public void DrawLine(Vector2 from, Vector2 to, Color color, float thickness = 1)
   {
-    throw new NotImplementedException();
+    tessellator.AddLine(
+      new Vertex(from, color, Thickness: thickness),
+      new Vertex(to, color, Thickness: thickness)
+    );
   }
 
   public void DrawLineStrip(ReadOnlySpan<Vector2> vertices, Color color, float thickness = 1)
@@ -191,7 +194,7 @@ public sealed class BatchedImmediateModeRenderer : IImmediateModeRenderer
 
   /// <summary>A vertex used in immediate mode rendering.</summary>
   [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex(Vector2 Position, Color Color, Vector2 UV = default, int ControlId = -1, int TextureIndex = -1)
+  private record struct Vertex(Vector2 Position, Color Color, Vector2 UV = default, float Thickness = 1f, int ControlId = -1, int TextureIndex = -1)
   {
     [VertexDescriptor(VertexType.Float, 2)]
     public Vector2 Position = Position;
@@ -201,6 +204,9 @@ public sealed class BatchedImmediateModeRenderer : IImmediateModeRenderer
 
     [VertexDescriptor(VertexType.Float, 2)]
     public Vector2 UV = UV;
+
+    [VertexDescriptor(VertexType.Float, 1)]
+    public float Thickness = Thickness;
 
     [VertexDescriptor(VertexType.Int, 1)]
     public int ControlId = ControlId;

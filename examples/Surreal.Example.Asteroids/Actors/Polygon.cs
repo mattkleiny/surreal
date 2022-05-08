@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Asteroids.Actors;
+namespace Surreal.Actors;
 
 /// <summary>A simple polygon in 2-space that can be transformed and queried.</summary>
 public sealed class Polygon

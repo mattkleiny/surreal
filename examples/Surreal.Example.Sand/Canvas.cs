@@ -1,4 +1,4 @@
-﻿namespace Sand;
+﻿namespace Surreal;
 
 /// <summary>A simple canvas of 'sand' pixels that can be simulated.</summary>
 public sealed class Canvas : PixelCanvas

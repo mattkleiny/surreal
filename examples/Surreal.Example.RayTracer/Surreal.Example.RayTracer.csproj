@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>RayTracer</AssemblyName>
-    <RootNamespace>RayTracer</RootNamespace>
     <Description>A fun little ray tracer in Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>

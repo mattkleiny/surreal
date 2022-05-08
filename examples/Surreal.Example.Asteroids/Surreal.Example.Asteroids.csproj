@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>AsteroidsExample</AssemblyName>
-    <RootNamespace>Asteroids</RootNamespace>
     <Description>An asteroids clone for Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>

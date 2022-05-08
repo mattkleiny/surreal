@@ -1,4 +1,4 @@
-﻿namespace RayTracer;
+﻿namespace Surreal;
 
 /// <summary>A scene that can be ray-traced</summary>
 public sealed class Scene

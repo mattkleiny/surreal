@@ -1,4 +1,4 @@
-﻿namespace Asteroids.Actors;
+﻿namespace Surreal.Actors;
 
 /// <summary>The player ship.</summary>
 public sealed class Player : GameActor

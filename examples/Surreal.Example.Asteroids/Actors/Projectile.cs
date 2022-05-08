@@ -1,4 +1,4 @@
-﻿namespace Asteroids.Actors;
+﻿namespace Surreal.Actors;
 
 /// <summary>A projectile that can destroy asteroids.</summary>
 public sealed class Projectile : GameActor

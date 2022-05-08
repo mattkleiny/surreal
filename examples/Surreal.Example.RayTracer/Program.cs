@@ -1,5 +1,4 @@
-﻿using RayTracer;
-using Plane = RayTracer.Plane;
+﻿using Plane = Surreal.Plane;
 
 var platform = new DesktopPlatform
 {

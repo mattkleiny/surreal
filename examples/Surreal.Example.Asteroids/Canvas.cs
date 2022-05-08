@@ -1,4 +1,4 @@
-﻿namespace Asteroids;
+﻿namespace Surreal;
 
 /// <summary>A <see cref="PixelCanvas"/> for the asteroids example.</summary>
 public sealed class Canvas : PixelCanvas
