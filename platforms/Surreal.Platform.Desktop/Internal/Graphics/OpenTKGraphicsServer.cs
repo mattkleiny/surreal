@@ -167,7 +167,28 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return results;
   }
 
-  public unsafe Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  public unsafe void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
+    where T : unmanaged
+  {
+    var texture = new TextureHandle(handle);
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    GL.BindTexture(TextureTarget.Texture2d, texture);
+
+    fixed (T* pointer = buffer)
+    {
+      GL.GetTexImage(
+        target: TextureTarget.Texture2d,
+        level: mipLevel,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
+      );
+    }
+  }
+
+  public unsafe Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged
   {
     var texture = new TextureHandle(handle);
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
@@ -195,6 +216,33 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
 
     return results;
+  }
+
+  public unsafe void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged
+  {
+    var texture = new TextureHandle(handle);
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    GL.BindTexture(TextureTarget.Texture2d, texture);
+
+    fixed (T* pointer = buffer)
+    {
+      GL.GetTextureSubImage(
+        texture: texture,
+        level: mipLevel,
+        xoffset: offsetX,
+        yoffset: offsetY,
+        zoffset: 0,
+        width: width,
+        height: height,
+        depth: 1,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer,
+        bufSize: buffer.Length
+      );
+    }
   }
 
   public unsafe void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel)
@@ -304,14 +352,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var attribute = descriptors[index];
 
       GL.VertexAttribPointer(
-        index: (uint) index,
+        index: (uint)index,
         size: attribute.Count,
         type: ConvertVertexType(attribute.Type),
         normalized: attribute.ShouldNormalize,
         stride: descriptors.Stride,
         offset: attribute.Offset
       );
-      GL.EnableVertexAttribArray((uint) index);
+      GL.EnableVertexAttribArray((uint)index);
     }
 
     if (indexCount > 0)
@@ -507,7 +555,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var location = GL.GetUniformLocation(program, name);
     if (location != -1)
     {
-      GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
+      GL.ActiveTexture(TextureUnit.Texture0 + (uint)samplerSlot);
       GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
       GL.Uniform1i(location, samplerSlot);
     }
@@ -549,7 +597,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return format switch
     {
-      TextureFormat.Rgba8888 => (int) All.Rgba8,
+      TextureFormat.Rgba8888 => (int)All.Rgba8,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
@@ -619,8 +667,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return filterMode switch
     {
-      TextureFilterMode.Point  => (int) All.Nearest,
-      TextureFilterMode.Linear => (int) All.Linear,
+      TextureFilterMode.Point  => (int)All.Nearest,
+      TextureFilterMode.Linear => (int)All.Linear,
 
       _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
     };
@@ -630,8 +678,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return wrapMode switch
     {
-      TextureWrapMode.Clamp  => (int) All.ClampToEdge,
-      TextureWrapMode.Repeat => (int) All.MirroredRepeat,
+      TextureWrapMode.Clamp  => (int)All.ClampToEdge,
+      TextureWrapMode.Repeat => (int)All.MirroredRepeat,
 
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };

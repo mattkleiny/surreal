@@ -3,14 +3,16 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
+// TODO: work on me
+
 /// <summary>A material is a <see cref="ShaderProgram"/> with unique uniform values stored efficiently on the GPU.</summary>
-public sealed class Material : GraphicsResource
+public sealed class ShaderMaterial : GraphicsResource
 {
   private readonly IGraphicsServer server;
   private readonly ShaderProgram program;
   private readonly GraphicsHandle buffer;
 
-  public Material(IGraphicsServer server, ShaderProgram program)
+  public ShaderMaterial(IGraphicsServer server, ShaderProgram program)
   {
     this.program = program;
     this.server  = server;
