@@ -47,7 +47,7 @@ public sealed class TrueTypeFont
     this.family = family;
   }
 
-  public RasterizedFont GetFont(float size, FontWeight weight = FontWeight.Normal)
+  public RasterFont GetFont(float size, FontWeight weight = FontWeight.Normal)
   {
     var font = family.CreateFont(size, weight switch
     {
@@ -58,18 +58,18 @@ public sealed class TrueTypeFont
       _ => throw new ArgumentOutOfRangeException(nameof(weight), weight, null)
     });
 
-    return new RasterizedFont(server, font);
+    return new RasterFont(server, font);
   }
 
-  /// <summary>A <see cref="TrueTypeFont"/> that has been rasterized at a particular size.</summary>
-  public sealed class RasterizedFont
+  /// <summary>A <see cref="TrueTypeFont"/> that can be rasterized at a particular size.</summary>
+  public sealed class RasterFont
   {
     private const string DefaultCharacterSet = "!@#$%^&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]{},./ ";
 
     private readonly IGraphicsServer server;
     private readonly TextOptions options;
 
-    internal RasterizedFont(IGraphicsServer server, Font font)
+    internal RasterFont(IGraphicsServer server, Font font)
     {
       this.server = server;
       options     = new TextOptions(font);

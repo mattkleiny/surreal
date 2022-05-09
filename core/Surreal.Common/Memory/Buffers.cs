@@ -14,6 +14,9 @@ public interface IBuffer<T>
 
   /// <summary>The underlying <see cref="Span{T}"/> representing the buffer data.</summary>
   Span<T> Span => Memory.Span;
+
+  /// <summary>Resizes the underlying buffer storage.</summary>
+  void Resize(int newLength);
 }
 
 /// <summary>A <see cref="IBuffer{T}"/> that can be deterministically disposed.</summary>
@@ -39,7 +42,7 @@ public static class Buffers
   /// <summary>A buffer backed by a managed array.</summary>
   private sealed class ManagedBuffer<T> : IBuffer<T>
   {
-    private readonly T[] elements;
+    private T[] elements;
 
     public ManagedBuffer(int length)
     {
@@ -47,6 +50,11 @@ public static class Buffers
     }
 
     public Memory<T> Memory => elements;
+
+    public void Resize(int newLength)
+    {
+      Array.Resize(ref elements, newLength);
+    }
   }
 
   /// <summary>A buffer backed by a pinned array.</summary>
@@ -62,6 +70,11 @@ public static class Buffers
     }
 
     public Memory<T> Memory => elements;
+
+    public void Resize(int newLength)
+    {
+      throw new NotSupportedException("Unable to resize pinned buffer!");
+    }
   }
 
   /// <summary>A buffer backed by native memory.</summary>
@@ -70,7 +83,7 @@ public static class Buffers
     where T : unmanaged
   {
     private readonly int length;
-    private readonly void* buffer;
+    private void* buffer;
 
     private bool isDisposed;
 
@@ -78,12 +91,9 @@ public static class Buffers
     {
       this.length = length;
 
-      buffer = NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
-
-      if (zeroFill)
-      {
-        GetSpan().Fill(default!);
-      }
+      buffer = zeroFill
+        ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
+        : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
     }
 
     ~NativeBuffer()
@@ -123,6 +133,11 @@ public static class Buffers
       {
         throw new ObjectDisposedException(nameof(NativeBuffer<T>));
       }
+    }
+
+    public void Resize(int newLength)
+    {
+      buffer = NativeMemory.Realloc(buffer, (nuint)newLength);
     }
 
     Memory<T> IBuffer<T>.Memory => base.Memory;
@@ -185,6 +200,11 @@ public static class Buffers
       {
         throw new ObjectDisposedException(nameof(MappedBuffer<T>));
       }
+    }
+
+    public void Resize(int newLength)
+    {
+      throw new NotSupportedException("Unable to resize mapped buffers!");
     }
 
     Memory<T> IBuffer<T>.Memory => base.Memory;
