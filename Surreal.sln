@@ -90,6 +90,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.UI", "examp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor", "core\Surreal.Editor\Surreal.Editor.csproj", "{6869D02E-3A87-41FA-8371-7E08CA2CBE21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Editor", "examples\Surreal.Example.Editor\Surreal.Example.Editor.csproj", "{4A83E80D-5ADA-44CC-9D64-D35F168538B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -204,6 +206,10 @@ Global
 		{6869D02E-3A87-41FA-8371-7E08CA2CBE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6869D02E-3A87-41FA-8371-7E08CA2CBE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6869D02E-3A87-41FA-8371-7E08CA2CBE21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A83E80D-5ADA-44CC-9D64-D35F168538B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A83E80D-5ADA-44CC-9D64-D35F168538B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A83E80D-5ADA-44CC-9D64-D35F168538B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A83E80D-5ADA-44CC-9D64-D35F168538B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,5 +247,6 @@ Global
 		{AEB2213E-650D-434F-807D-4801ECCD0392} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{768FB796-9699-436C-96CB-7E43C4770E3B} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{6869D02E-3A87-41FA-8371-7E08CA2CBE21} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{4A83E80D-5ADA-44CC-9D64-D35F168538B8} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal
