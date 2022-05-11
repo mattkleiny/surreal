@@ -57,6 +57,7 @@ internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
     [Key.D] = Keys.D,
     [Key.Q] = Keys.Q,
     [Key.E] = Keys.E,
+    [Key.R] = Keys.R,
     [Key.Escape] = Keys.Escape,
     [Key.Space] = Keys.Space,
     [Key.Tilde] = Keys.GraveAccent,

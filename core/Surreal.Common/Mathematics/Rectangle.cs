@@ -13,9 +13,9 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   public static Rectangle Create(Vector2 center, Vector2 size)
   {
     var left = center.X - size.X / 2f;
-    var top = center.Y + size.Y / 2f;
+    var top = center.Y - size.Y / 2f;
     var right = center.X + size.X / 2f;
-    var bottom = center.Y - size.Y / 2f;
+    var bottom = center.Y +size.Y / 2f;
 
     return new Rectangle(left, top, right, bottom);
   }
@@ -34,7 +34,7 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   public Vector2 BottomLeft  => new(Left, Bottom);
   public Vector2 BottomRight => new(Right, Bottom);
 
-  public PointEnumerator Points => new(BottomLeft, Maths.CeilToInt(Width), Maths.CeilToInt(Height));
+  public PointEnumerator Points => new(TopLeft, Maths.CeilToInt(Width), Maths.CeilToInt(Height));
 
   public override string ToString()
   {
@@ -61,8 +61,8 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   {
     return vector.X >= Left &&
            vector.X <= Right &&
-           vector.Y >= Top &&
-           vector.Y <= Bottom;
+           vector.Y >= Bottom &&
+           vector.Y <= Top;
   }
 
   /// <summary>Allows enumerating points in a <see cref="Rectangle"/>.</summary>

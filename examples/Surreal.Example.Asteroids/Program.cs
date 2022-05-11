@@ -63,7 +63,7 @@ Game.Start(platform, async game =>
       game.Exit();
     }
 
-    if (keyboard.IsKeyPressed(Key.F4))
+    if (keyboard.IsKeyPressed(Key.R))
     {
       Respawn();
     }

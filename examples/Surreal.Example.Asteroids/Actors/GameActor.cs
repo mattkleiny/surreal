@@ -77,9 +77,9 @@ public abstract class GameActor : Actor
       Position.X = canvas.Width + halfSize.X; // left
     }
 
-    if (Velocity.Y < 0f && Position.Y + halfSize.Y < 0)
+    if (Velocity.Y < 0f && Position.Y - halfSize.Y < 0)
     {
-      Position.Y = canvas.Height + halfSize.Y; // top
+      Position.Y = canvas.Height - halfSize.Y; // top
     }
 
     if (Velocity.X > 0f && Position.X - halfSize.X > canvas.Width)
@@ -87,9 +87,9 @@ public abstract class GameActor : Actor
       Position.X = -halfSize.X; // right
     }
 
-    if (Velocity.Y > 0f && Position.Y - halfSize.Y > canvas.Height)
+    if (Velocity.Y > 0f && Position.Y + halfSize.Y > canvas.Height)
     {
-      Position.Y = -halfSize.Y; // bottom
+      Position.Y = halfSize.Y; // bottom
     }
   }
 

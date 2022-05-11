@@ -21,6 +21,7 @@ public enum Key : ushort
   D,
   Q,
   E,
+  R,
   Escape,
   Space,
   Tilde,
