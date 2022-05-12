@@ -69,7 +69,6 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
     fixture.Customizations.Add(new TimeOnlyGenerator());
     fixture.Customizations.Add(new IntRangeGenerator());
     fixture.Customizations.Add(new FloatRangeGenerator());
-    fixture.Customizations.Add(new TimeSpanRangeGenerator());
 
     foreach (var builder in DiscoverSpecimenBuilders())
     {
@@ -136,22 +135,6 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
       var max = MathF.Max(value1, value2);
 
       return new FloatRange(min, max);
-    }
-  }
-
-  private sealed class TimeSpanRangeGenerator : SpecimenBuilder<TimeSpanRange>
-  {
-    protected override TimeSpanRange Create(ISpecimenContext context, string? name = null)
-    {
-      var random = Random.Shared;
-
-      var value1 = random.NextTimeSpan();
-      var value2 = random.NextTimeSpan();
-
-      var min = value1 < value2 ? value1 : value2;
-      var max = value1 > value2 ? value1 : value2;
-
-      return new TimeSpanRange(min, max);
     }
   }
 

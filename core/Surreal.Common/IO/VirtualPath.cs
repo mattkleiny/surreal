@@ -13,24 +13,15 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 {
   private const string SchemeSeparator = "://";
 
+  /// <summary>Parses the given potential URI into a <see cref="VirtualPath"/>.</summary>
   public static VirtualPath Parse(string uri)
   {
-    StringSpan scheme;
-    StringSpan target;
-
-    var index = uri.IndexOf(SchemeSeparator, StringComparison.Ordinal);
-    if (index > -1)
+    if (StringSpan.TrySplit(uri, SchemeSeparator, out var result))
     {
-      scheme = uri.AsStringSpan(0, index);
-      target = uri.AsStringSpan(index + SchemeSeparator.Length);
-    }
-    else
-    {
-      scheme = "local";
-      target = uri;
+      return new VirtualPath(result.Left, result.Right);
     }
 
-    return new VirtualPath(scheme, target);
+    return new VirtualPath("local", uri);
   }
 
   public string Extension => Path.GetExtension(Target.Source)!;
@@ -59,7 +50,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
         return base.ConvertTo(context, culture, value, destinationType);
       }
 
-      return (VirtualPath) value.ToString()!;
+      return (VirtualPath)value.ToString()!;
     }
 
     public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
@@ -69,7 +60,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
         return base.ConvertFrom(context, culture, value);
       }
 
-      return (VirtualPath) raw;
+      return (VirtualPath)raw;
     }
   }
 

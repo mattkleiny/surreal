@@ -5,11 +5,40 @@ namespace Surreal.Text;
 /// <summary>Represents a span of a <see cref="string"/>.</summary>
 public readonly record struct StringSpan(string? Source, int Offset, int Length)
 {
+  /// <summary>Splits a string at the first instance of the given character, yielding the left and right halves.</summary>
+  public static (StringSpan Left, StringSpan Right) Split(string input, string separator)
+  {
+    if (!TrySplit(input, separator, out var result))
+    {
+      throw new ArgumentException("The given string was not able to be split", nameof(input));
+    }
+
+    return result;
+  }
+
+  /// <summary>Splits a string at the first instance of the given character, yielding the left and right halves.</summary>
+  public static bool TrySplit(string input, string separator, out (StringSpan Left, StringSpan Right) result)
+  {
+    var index = input.IndexOf(separator, StringComparison.Ordinal);
+    if (index > -1)
+    {
+      var left = input.AsStringSpan(0, index);
+      var right = input.AsStringSpan(index + separator.Length);
+
+      result = (left, right);
+      return true;
+    }
+
+    result = default;
+    return false;
+  }
+
   public StringSpan(string source)
     : this(source, 0, source.Length)
   {
   }
 
+  /// <summary>Accesses a single character in the span.</summary>
   public char this[Index index]
   {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26,6 +55,7 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     }
   }
 
+  /// <summary>Accesses a range of characters in the span.</summary>
   public StringSpan this[Range range]
   {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,19 +72,23 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     }
   }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public bool Match(char token) => Peek() == token;
-
+  /// <summary>Returns the next character from the start of the span.</summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public char Peek() => Length > 1 ? this[1] : '\0';
 
+  /// <summary>Determines if the next character matches the given token.</summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public bool Match(char token) => Peek() == token;
+
   public bool Equals(StringSpan other)
   {
+    // equality is based on the individual characters of the span.
     return ToSpan().SequenceEqual(other.ToSpan());
   }
 
   public override int GetHashCode()
   {
+    // hash code is based on the individual characters of the span.</summary>
     return string.GetHashCode(ToSpan());
   }
 
@@ -70,20 +104,14 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
 /// <summary>General purpose extensions for <see cref="StringSpan"/>s.</summary>
 public static class StringSpanExtensions
 {
-  public static StringSpan AsStringSpan(this string source)
-  {
-    return new StringSpan(source, 0, source.Length);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static StringSpan AsStringSpan(this string source) => new(source, 0, source.Length);
 
-  public static StringSpan AsStringSpan(this string source, int offset)
-  {
-    return new StringSpan(source, offset, source.Length - offset);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static StringSpan AsStringSpan(this string source, int offset) => new(source, offset, source.Length - offset);
 
-  public static StringSpan AsStringSpan(this string source, int offset, int length)
-  {
-    return new StringSpan(source, offset, length);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static StringSpan AsStringSpan(this string source, int offset, int length) => new(source, offset, length);
 
   /// <summary>Consumes all of the next contiguous digits in the span.</summary>
   public static StringSpan ConsumeNumeric(this StringSpan span)

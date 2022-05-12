@@ -49,9 +49,9 @@ public readonly struct Slice<T> : IEnumerable<T>
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
   public static implicit operator Slice<T>(List<T> list) => new(list);
-
   public static implicit operator ReadOnlySlice<T>(Slice<T> slice) => new(slice.list, slice.Offset, slice.Length);
 
+  /// <summary>An enumerator for a <see cref="Slice{T}"/>.</summary>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly Slice<T> slice;
@@ -122,6 +122,7 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
   public static implicit operator ReadOnlySlice<T>(T[] array) => new(array);
   public static implicit operator ReadOnlySlice<T>(List<T> list) => new(list);
 
+  /// <summary>An enumerator for <see cref="ReadOnlySlice{T}"/>.</summary>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly ReadOnlySlice<T> slice;
@@ -150,6 +151,15 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
 /// <summary>Commonly used extensions for <see cref="Slice{T}"/> and <see cref="ReadOnlySlice{T}"/>.</summary>
 public static class SliceExtensions
 {
+  /// <summary>Converts the given list to a slice.</summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Slice<T> AsSlice<T>(this List<T> list) => list;
+
+  /// <summary>Converts the given list to a read-only slice.</summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list) => list;
+
+  /// <summary>Swaps two elements in-place inside the slice.</summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Swap<T>(this Slice<T> slice, int fromIndex, int toIndex)
   {
