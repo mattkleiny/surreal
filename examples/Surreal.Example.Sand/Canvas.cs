@@ -3,24 +3,24 @@
 /// <summary>A simple canvas of 'sand' pixels that can be simulated.</summary>
 public sealed class Canvas : PixelCanvas
 {
-  private readonly Grid<Cell> cells;
+  private static readonly Color32 Empty = Color32.White;
 
   private IntervalTimer updateTimer = new(16.Milliseconds());
 
   public Canvas(IGraphicsServer server, int width, int height)
     : base(server, width, height)
   {
-    cells = new Grid<Cell>(width, height);
+    Pixels.Fill(Empty);
   }
 
   public void AddSand(Point2 position, int radius, Color32 color)
   {
-    cells.Span.DrawCircle(position, radius, new Cell(IsOccupied: true, color));
+    Pixels.DrawCircle(position, radius, color);
   }
 
   public void DeleteSand(Point2 position, int radius)
   {
-    cells.Span.DrawCircle(position, radius, new Cell(IsOccupied: false, Color32.Clear));
+    Pixels.DrawCircle(position, radius, Empty);
   }
 
   public void Update(TimeDelta deltaTime)
@@ -28,7 +28,6 @@ public sealed class Canvas : PixelCanvas
     if (updateTimer.Tick(deltaTime))
     {
       Simulate();
-      BlitToPixels();
 
       updateTimer.Reset();
     }
@@ -36,36 +35,33 @@ public sealed class Canvas : PixelCanvas
 
   private void Simulate()
   {
-    var cells = this.cells.Span;
+    var span = Pixels;
 
-    for (int y = cells.Height - 1; y >= 0; y--)
-    for (int x = 0; x < cells.Width; x++)
+    for (int y = span.Height - 1; y >= 0; y--)
+    for (int x = 0; x < span.Width; x++)
     {
-      ref var cell = ref cells[x, y];
+      ref var pixel = ref span[x, y];
 
-      if (cell.IsOccupied)
+      if (pixel != Empty)
       {
-        if (SimulateSand(ref cell, x, y + 1)) continue;
-        if (SimulateSand(ref cell, x - 1, y + 1)) continue;
-        SimulateSand(ref cell, x + 1, y + 1);
+        if (SimulateSand(ref pixel, x, y + 1)) continue;
+        if (SimulateSand(ref pixel, x - 1, y + 1)) continue;
+        SimulateSand(ref pixel, x + 1, y + 1);
       }
     }
   }
 
-  private bool SimulateSand(ref Cell cell, int x, int y)
+  private bool SimulateSand(ref Color32 pixel, int x, int y)
   {
-    if (x < 0 || x > cells.Width - 1) return false;
-    if (y < 0 || y > cells.Height - 1) return false;
+    if (x < 0 || x > Pixels.Width - 1) return false;
+    if (y < 0 || y > Pixels.Height - 1) return false;
 
-    ref var target = ref cells[x, y];
+    ref var target = ref Pixels[x, y];
 
-    if (cell.IsOccupied && !target.IsOccupied)
+    if (pixel != Empty && target == Empty)
     {
-      target.IsOccupied = true;
-      target.Color      = cell.Color;
-
-      cell.IsOccupied = false;
-      cell.Color      = Color32.Clear;
+      target = pixel;
+      pixel  = Empty;
 
       return true;
     }
@@ -73,20 +69,8 @@ public sealed class Canvas : PixelCanvas
     return false;
   }
 
-  private void BlitToPixels()
-  {
-    static Color32 Painter(int x, int y, Cell cell)
-    {
-      return cell.IsOccupied ? cell.Color : Color32.White;
-    }
-
-    cells.Span.PaintTo(Pixels, Painter);
-  }
-
   public void Clear()
   {
-    cells.Span.Fill(default);
+    Pixels.Fill(Empty);
   }
-
-  private record struct Cell(bool IsOccupied, Color32 Color);
 }

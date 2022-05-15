@@ -32,6 +32,9 @@ public sealed class SpriteBatch : IDisposable
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
+  public void Begin(ShaderProgram shader)
+    => material = new Material(shader);
+
   public void Begin(Material material)
     => this.material = material;
 

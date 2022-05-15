@@ -15,6 +15,9 @@ public sealed record ColorPalette(Color32[] colors, int Offset, int Count) : IRe
   {
   }
 
+  /// <summary>Allows accessing the palette as a <see cref="Span{T}"/>.</summary>
+  public ReadOnlySpan<Color32> Span => colors;
+
   /// <summary>Accesses a single color of the <see cref="ColorPalette"/>.</summary>
   public Color32 this[int index] => colors[Offset + index];
 
@@ -32,11 +35,20 @@ public sealed record ColorPalette(Color32[] colors, int Offset, int Count) : IRe
     }
   }
 
-  public Enumerator GetEnumerator() => new(this);
-  IEnumerator<Color32> IEnumerable<Color32>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  public Enumerator GetEnumerator()
+  {
+    return new Enumerator(this);
+  }
 
-  public static implicit operator ColorPalette(Color32[] colors) => new(colors, 0, colors.Length);
+  IEnumerator<Color32> IEnumerable<Color32>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   /// <summary>Enumerates the <see cref="ColorPalette"/>.</summary>
   public struct Enumerator : IEnumerator<Color32>

@@ -18,8 +18,10 @@ Game.Start(platform, async game =>
 
   using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
+  using var texture = new Texture(graphics, TextureFormat.Rgba8888);
 
-  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Surreal/Resources/palettes/kule-16.pal");
+  var palette = await game.Assets.LoadKule16Async();
+
   var random = Random.Shared;
 
   game.ExecuteVariableStep(time =>
@@ -31,7 +33,7 @@ Game.Start(platform, async game =>
     var targetX = mousePos.X * canvas.Width - 1;
     var targetY = mousePos.Y * canvas.Height - 1;
 
-    var point = new Point2((int)targetX, (int)targetY);
+    var point = new Point2((int) targetX, (int) targetY);
 
     if (keyboard.IsKeyPressed(Key.Escape))
     {

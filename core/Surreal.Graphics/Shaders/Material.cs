@@ -5,7 +5,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
-/// <summary>A material is a <see cref="ShaderProgram"/> with unique uniform values stored efficiently on the GPU.</summary>
+/// <summary>A material is a <see cref="ShaderProgram"/> with unique uniform values store on the CPU.</summary>
 public sealed class Material : GraphicsResource
 {
   private readonly Dictionary<string, Uniform> uniforms = new();
