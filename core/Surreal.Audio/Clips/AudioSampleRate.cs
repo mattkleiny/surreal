@@ -12,7 +12,7 @@ public readonly record struct AudioSampleRate(int Frequency, int Channels, int B
 
   public Size CalculateSize(TimeSpan duration)
   {
-    return new Size((int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond));
+    return (int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond);
   }
 
   public override string ToString()

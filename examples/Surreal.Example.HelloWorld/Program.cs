@@ -18,8 +18,8 @@ Game.Start(platform, async game =>
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
-  var font = await game.Assets.LoadDefaultBitmapFontAsync();
-  var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
+  using var font = await game.Assets.LoadDefaultBitmapFontAsync();
+  using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
 
   using var sprites = new SpriteBatch(graphics);
 
@@ -28,7 +28,10 @@ Game.Start(platform, async game =>
     Matrix4x4.CreateTranslation(-size.X / 2f, -size.Y / 2f, 0f) *
     Matrix4x4.CreateOrthographic(size.X, size.Y, 0f, 100f);
 
-  game.ExecuteVariableStep(time =>
+  material.SetUniform("u_projectionView", projectionView);
+  material.SetUniform("u_texture", font.Texture);
+
+  game.ExecuteVariableStep(_ =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
@@ -37,13 +40,7 @@ Game.Start(platform, async game =>
 
     graphics.ClearColorBuffer(Color.White);
 
-    shader.SetUniform("u_projectionView", in projectionView);
-    shader.SetUniform("u_texture", font.Texture, 0);
-
-    var radians = Maths.PingPong(time.TotalTime) * MathF.PI * 2f;
-    var rotation = Matrix3x2.CreateRotation(radians, size / 2f);
-
-    sprites.Begin(shader, rotation);
+    sprites.Begin(material);
     sprites.DrawText(
       font: font,
       text: "HELLO, SURREAL!",

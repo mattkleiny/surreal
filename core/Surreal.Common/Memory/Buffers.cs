@@ -118,6 +118,11 @@ public static class Buffers
       // no-op
     }
 
+    public void Resize(int newLength)
+    {
+      buffer = NativeMemory.Realloc(buffer, (nuint)newLength);
+    }
+
     protected override void Dispose(bool disposing)
     {
       CheckNotDisposed();
@@ -133,11 +138,6 @@ public static class Buffers
       {
         throw new ObjectDisposedException(nameof(NativeBuffer<T>));
       }
-    }
-
-    public void Resize(int newLength)
-    {
-      buffer = NativeMemory.Realloc(buffer, (nuint)newLength);
     }
 
     Memory<T> IBuffer<T>.Memory => base.Memory;
@@ -181,6 +181,11 @@ public static class Buffers
       // no-op
     }
 
+    public void Resize(int newLength)
+    {
+      throw new NotSupportedException("Unable to resize mapped buffers!");
+    }
+
     protected override void Dispose(bool disposing)
     {
       CheckNotDisposed();
@@ -200,11 +205,6 @@ public static class Buffers
       {
         throw new ObjectDisposedException(nameof(MappedBuffer<T>));
       }
-    }
-
-    public void Resize(int newLength)
-    {
-      throw new NotSupportedException("Unable to resize mapped buffers!");
     }
 
     Memory<T> IBuffer<T>.Memory => base.Memory;

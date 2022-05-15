@@ -17,10 +17,9 @@ public sealed class SpriteBatch : IDisposable
   private readonly IDisposableBuffer<Vertex2> vertices;
   private readonly Mesh<Vertex2> mesh;
 
-  private ShaderProgram? shader;
+  private Material? material;
   private Texture? lastTexture;
   private int vertexCount;
-  private Matrix3x2 transform = Matrix3x2.Identity;
 
   public SpriteBatch(IGraphicsServer server, int spriteCount = DefaultSpriteCount)
   {
@@ -33,11 +32,8 @@ public sealed class SpriteBatch : IDisposable
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
-  public void Begin(ShaderProgram shader, Matrix3x2 transform)
-  {
-    this.transform = transform;
-    this.shader    = shader;
-  }
+  public void Begin(Material material)
+    => this.material = material;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
@@ -71,7 +67,7 @@ public sealed class SpriteBatch : IDisposable
       Matrix3x2.CreateScale(size) *
       Matrix3x2.CreateRotation(angle) *
       Matrix3x2.CreateTranslation(position) *
-      transform * this.transform;
+      transform;
 
     // compute UV texture bounds
     var uv = region.UV;
@@ -90,13 +86,13 @@ public sealed class SpriteBatch : IDisposable
   public void Flush()
   {
     if (vertexCount == 0) return;
-    if (shader == null) return;
+    if (material == null) return;
 
     var spriteCount = vertexCount / 4;
     var indexCount = spriteCount * 6;
 
     mesh.Vertices.Write(vertices.Span[..vertexCount]);
-    mesh.Draw(shader, vertexCount, indexCount);
+    mesh.Draw(material, vertexCount, indexCount);
 
     vertexCount = 0;
   }
@@ -108,10 +104,10 @@ public sealed class SpriteBatch : IDisposable
     for (ushort i = 0, j = 0; i < indexCount; i += 6, j += 4)
     {
       indices[i + 0] = j;
-      indices[i + 1] = (ushort)(j + 1);
-      indices[i + 2] = (ushort)(j + 2);
-      indices[i + 3] = (ushort)(j + 2);
-      indices[i + 4] = (ushort)(j + 3);
+      indices[i + 1] = (ushort) (j + 1);
+      indices[i + 2] = (ushort) (j + 2);
+      indices[i + 3] = (ushort) (j + 2);
+      indices[i + 4] = (ushort) (j + 3);
       indices[i + 5] = j;
     }
 

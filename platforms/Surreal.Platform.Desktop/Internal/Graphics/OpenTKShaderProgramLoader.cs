@@ -4,7 +4,7 @@ using Surreal.IO;
 
 namespace Surreal.Internal.Graphics;
 
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="OpenTKShaderSet"/>s.</summary>
+/// <summary>The <see cref="AssetLoader{T}"/> for GLSL <see cref="ShaderProgram"/>s.</summary>
 internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 {
   private readonly OpenTKGraphicsServer server;

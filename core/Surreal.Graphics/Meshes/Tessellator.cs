@@ -74,17 +74,20 @@ public static class TessellatorExtensions
   public static void AddTriangleFan<TVertex>(this Tessellator<TVertex> tessellator, ReadOnlySpan<TVertex> vertices)
     where TVertex : unmanaged
   {
-    for (var i = 0; i < vertices.Length - 2; i++)
+    var first = tessellator.VertexCount;
+
+    tessellator.AddVertex(vertices[0]);
+
+    for (var i = 1; i < vertices.Length - 1; i++)
     {
       var offset = tessellator.VertexCount;
 
-      tessellator.AddVertex(vertices[0]);
+      tessellator.AddVertex(vertices[i + 0]);
       tessellator.AddVertex(vertices[i + 1]);
-      tessellator.AddVertex(vertices[i + 2]);
 
+      tessellator.AddIndex(first);
       tessellator.AddIndex(offset + 0);
       tessellator.AddIndex(offset + 1);
-      tessellator.AddIndex(offset + 2);
     }
   }
 

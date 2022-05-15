@@ -51,17 +51,18 @@ public interface IGraphicsServer
   // shaders
   GraphicsHandle CreateShader();
   void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration);
-  void SetShaderUniform(GraphicsHandle handle, string name, int value);
-  void SetShaderUniform(GraphicsHandle handle, string name, float value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Point2 value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Point3 value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Vector2 value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Vector3 value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Vector4 value);
-  void SetShaderUniform(GraphicsHandle handle, string name, Quaternion value);
-  void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value);
-  void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value);
-  void SetShaderTexture(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot);
+  int GetShaderUniformLocation(GraphicsHandle handle, string name);
+  void SetShaderUniform(GraphicsHandle handle, int location, int value);
+  void SetShaderUniform(GraphicsHandle handle, int location, float value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Point2 value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Point3 value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value);
+  void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value);
+  void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value);
+  void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot);
   void DeleteShader(GraphicsHandle handle);
 
   // frame buffers

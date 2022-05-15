@@ -48,8 +48,6 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
   public BufferType     Type   { get; }
   public BufferUsage    Usage  { get; }
 
-  public Span<T> this[Range range] => Read(range).Span;
-
   public BufferDataLease Rent()
   {
     return new BufferDataLease(this);

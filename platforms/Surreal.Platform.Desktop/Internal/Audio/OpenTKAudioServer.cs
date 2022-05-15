@@ -25,11 +25,6 @@ internal sealed class OpenTKAudioServer : IAudioServer, IDisposable
     return new AudioHandle(AL.GenBuffer());
   }
 
-  public void DeleteAudioClip(AudioHandle clip)
-  {
-    AL.DeleteBuffer(clip);
-  }
-
   public unsafe void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
     where T : unmanaged
   {
@@ -42,6 +37,11 @@ internal sealed class OpenTKAudioServer : IAudioServer, IDisposable
     {
       AL.BufferData(clip, format, pointer, bytes, frequency);
     }
+  }
+
+  public void DeleteAudioClip(AudioHandle clip)
+  {
+    AL.DeleteBuffer(clip);
   }
 
   public AudioHandle CreateAudioSource()

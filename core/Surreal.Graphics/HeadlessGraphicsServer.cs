@@ -134,7 +134,12 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public void SetShaderTexture(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot)
+  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
+  {
+    return 0;
+  }
+
+  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
     // no-op
   }
@@ -144,52 +149,52 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, int value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, float value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, float value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Point2 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Point2 value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Point3 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Point3 value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector2 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector3 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector4 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Quaternion value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
   {
     // no-op
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
   {
     // no-op
   }

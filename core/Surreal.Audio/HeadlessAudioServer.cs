@@ -13,12 +13,12 @@ public sealed class HeadlessAudioServer : IAudioServer
     return new AudioHandle(Interlocked.Increment(ref nextClipId));
   }
 
-  public void DeleteAudioClip(AudioHandle clip)
+  public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged
   {
     // no-op
   }
 
-  public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged
+  public void DeleteAudioClip(AudioHandle clip)
   {
     // no-op
   }

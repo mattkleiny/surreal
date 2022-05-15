@@ -1,4 +1,5 @@
-﻿using Plane = Surreal.Plane;
+﻿using Material = Surreal.Material;
+using Plane = Surreal.Plane;
 
 var platform = new DesktopPlatform
 {
@@ -28,11 +29,11 @@ Game.Start(platform, async game =>
     Height = buffer.Height,
     Nodes =
     {
-      new Sphere(new(5f, -1f, -15f), 2f, new Material.SolidColor(Color.Blue, 0.6f)),
-      new Sphere(new(3f, 0f, -35f), 1f, new Material.SolidColor(Color.Green, 0.3f)),
-      new Sphere(new(3f, 2f, -20f), 1f, new Material.SolidColor(Color.Red, 0.3f)),
+      new Sphere(new(5f, -1f, -15f), 2f, new Material.Solid(Color.Blue, 0.6f)),
+      new Sphere(new(3f, 0f, -35f), 1f, new Material.Solid(Color.Green, 0.3f)),
+      new Sphere(new(3f, 2f, -20f), 1f, new Material.Solid(Color.Red, 0.3f)),
       new Sphere(new(-5.5f, 0f, -15f), 1f, new Material.Textured(checkerboard, 0.2f)),
-      new Plane(new(0f, -4.2f, 0f), new(0f, -1f, 0f), new Material.SolidColor(Color.White, 0.1f)),
+      new Plane(new(0f, -4.2f, 0f), new(0f, -1f, 0f), new Material.Solid(Color.White, 0.1f)),
     },
     Lights =
     {

@@ -17,8 +17,8 @@ public interface IAudioServer
 {
   // audio clips
   AudioHandle CreateAudioClip();
-  void DeleteAudioClip(AudioHandle clip);
   void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged;
+  void DeleteAudioClip(AudioHandle clip);
 
   // audio sources
   AudioHandle CreateAudioSource();

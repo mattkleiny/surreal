@@ -42,6 +42,7 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
   public static bool operator <=(Size left, Size right) => left.Bytes <= right.Bytes;
   public static bool operator >=(Size left, Size right) => left.Bytes >= right.Bytes;
 
+  public static implicit operator Size(int bytes) => new(bytes);
   public static implicit operator int(Size size) => (int) size.Bytes;
   public static implicit operator long(Size size) => size.Bytes;
 }

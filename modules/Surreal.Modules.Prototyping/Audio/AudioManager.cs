@@ -18,7 +18,7 @@ public sealed class SoundBiteSet : IEnumerable<SoundBite>
     bites.Add(bite, weight);
   }
 
-  public bool TryWeightedSelect(Random random, out SoundBite result)
+  public bool TrySelectWeighted(Random random, out SoundBite result)
   {
     return bites.TrySelect(random, out result);
   }
@@ -42,13 +42,13 @@ public sealed class AudioManager : IDisposable
   private readonly IAssetManager assets;
   private readonly AudioSource[] audioSources;
 
-  public AudioManager(IAudioServer server, IAssetManager assets, int maxVoices = 32)
+  public AudioManager(IAudioServer server, IAssetManager assets, int maxSources = 32)
   {
     this.assets = assets;
 
-    audioSources = new AudioSource[maxVoices];
+    audioSources = new AudioSource[maxSources];
 
-    for (var i = 0; i < maxVoices; i++)
+    for (var i = 0; i < maxSources; i++)
     {
       audioSources[i] = new AudioSource(server);
     }
@@ -56,7 +56,7 @@ public sealed class AudioManager : IDisposable
 
   public void PlayBite(SoundBiteSet set)
   {
-    if (set.TryWeightedSelect(Random.Shared, out var bite))
+    if (set.TrySelectWeighted(Random.Shared, out var bite))
     {
       PlayBite(bite);
     }

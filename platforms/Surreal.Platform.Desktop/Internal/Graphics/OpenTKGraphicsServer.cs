@@ -100,9 +100,10 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       _ => throw new ArgumentOutOfRangeException(nameof(usage), usage, null)
     };
 
+    GL.BindBuffer(kind, buffer);
+
     fixed (T* pointer = data)
     {
-      GL.BindBuffer(kind, buffer);
       GL.BufferData(kind, bytes, pointer, bufferUsage);
     }
   }
@@ -113,9 +114,10 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var kind = ConvertBufferType(type);
     var bytes = data.Length * sizeof(T);
 
+    GL.BindBuffer(kind, buffer);
+
     fixed (T* pointer = data)
     {
-      GL.BindBuffer(kind, buffer);
       GL.BufferSubData(kind, offset, bytes, pointer);
     }
   }
@@ -352,14 +354,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var attribute = descriptors[index];
 
       GL.VertexAttribPointer(
-        index: (uint)index,
+        index: (uint) index,
         size: attribute.Count,
         type: ConvertVertexType(attribute.Type),
         normalized: attribute.ShouldNormalize,
         stride: descriptors.Stride,
         offset: attribute.Offset
       );
-      GL.EnableVertexAttribArray((uint)index);
+      GL.EnableVertexAttribArray((uint) index);
     }
 
     if (indexCount > 0)
@@ -393,6 +395,13 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var shaderSet = shaderCompiler.CompileShader(declaration);
 
     LinkShader(handle, shaderSet);
+  }
+
+  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
+  {
+    var program = new ProgramHandle(handle);
+
+    return GL.GetUniformLocation(program, name);
   }
 
   public void LinkShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
@@ -445,120 +454,87 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, int value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform1i(location, value);
-    }
+    if (location == -1) return;
+
+    GL.Uniform1i(location, value);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, float value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, float value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform1f(location, value);
-    }
+    if (location == -1) return;
+
+    GL.Uniform1f(location, value);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Point2 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Point2 value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform2i(location, value.X, value.Y);
-    }
+    if (location == -1) return;
+
+    GL.Uniform2i(location, value.X, value.Y);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Point3 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Point3 value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform3i(location, value.X, value.Y, value.Z);
-    }
+    if (location == -1) return;
+
+    GL.Uniform3i(location, value.X, value.Y, value.Z);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector2 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform2f(location, value.X, value.Y);
-    }
+    if (location == -1) return;
+
+    GL.Uniform2f(location, value.X, value.Y);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector3 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform3f(location, value.X, value.Y, value.Z);
-    }
+    if (location == -1) return;
+
+    GL.Uniform3f(location, value.X, value.Y, value.Z);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Vector4 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
-    }
+    if (location == -1) return;
+
+    GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, Quaternion value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
-    }
+    if (location == -1) return;
+
+    GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, string name, in Matrix3x2 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      var result = Unsafe.As<Matrix3x2, OpenTK.Mathematics.Matrix3x2>(ref Unsafe.AsRef(in value));
+    if (location == -1) return;
 
-      GL.UniformMatrix3x2f(location, 1, true, stackalloc[] { result });
-    }
+    var result = Unsafe.As<Matrix3x2, OpenTK.Mathematics.Matrix3x2>(ref Unsafe.AsRef(in value));
+
+    GL.UniformMatrix3x2f(location, 1, true, stackalloc[] { result });
   }
 
-  public unsafe void SetShaderUniform(GraphicsHandle handle, string name, in Matrix4x4 value)
+  public unsafe void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      var result = Unsafe.As<Matrix4x4, Matrix4>(ref Unsafe.AsRef(in value));
+    if (location == -1) return;
 
-      GL.UniformMatrix4f(location, 1, true, stackalloc[] { result });
-    }
+    var result = Unsafe.As<Matrix4x4, Matrix4>(ref Unsafe.AsRef(in value));
+
+    GL.UniformMatrix4f(location, 1, true, stackalloc[] { result });
   }
 
-  public void SetShaderTexture(GraphicsHandle handle, string name, GraphicsHandle texture, int samplerSlot)
+  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
-    var program = new ProgramHandle(handle);
-    var location = GL.GetUniformLocation(program, name);
-    if (location != -1)
-    {
-      GL.ActiveTexture(TextureUnit.Texture0 + (uint)samplerSlot);
-      GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
-      GL.Uniform1i(location, samplerSlot);
-    }
+    if (location == -1) return;
+
+    GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
+    GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
+    GL.Uniform1i(location, samplerSlot);
   }
 
   public void DeleteShader(GraphicsHandle handle)
@@ -597,7 +573,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return format switch
     {
-      TextureFormat.Rgba8888 => (int)All.Rgba8,
+      TextureFormat.Rgba8888 => (int) All.Rgba8,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
@@ -667,8 +643,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return filterMode switch
     {
-      TextureFilterMode.Point  => (int)All.Nearest,
-      TextureFilterMode.Linear => (int)All.Linear,
+      TextureFilterMode.Point  => (int) All.Nearest,
+      TextureFilterMode.Linear => (int) All.Linear,
 
       _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
     };
@@ -678,8 +654,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return wrapMode switch
     {
-      TextureWrapMode.Clamp  => (int)All.ClampToEdge,
-      TextureWrapMode.Repeat => (int)All.MirroredRepeat,
+      TextureWrapMode.Clamp  => (int) All.ClampToEdge,
+      TextureWrapMode.Repeat => (int) All.MirroredRepeat,
 
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };

@@ -6,13 +6,6 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
 
-/// <summary>Filter modes for a <see cref="Texture"/>.</summary>
-public enum TextureFilterMode
-{
-  Point,
-  Linear
-}
-
 /// <summary>Formats for a <see cref="Texture"/>.</summary>
 public enum TextureFormat
 {
@@ -24,6 +17,13 @@ public enum TextureWrapMode
 {
   Clamp,
   Repeat
+}
+
+/// <summary>Filter modes for a <see cref="Texture"/>.</summary>
+public enum TextureFilterMode
+{
+  Point,
+  Linear
 }
 
 /// <summary>A texture that can be uploaded to the GPU.</summary>

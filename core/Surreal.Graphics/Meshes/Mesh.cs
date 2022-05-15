@@ -90,6 +90,12 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
 
   /// <summary>Draws the mesh with the given <see cref="ShaderProgram"/> and primitive counts.</summary>
   public abstract void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles);
+
+  /// <summary>Draws the mesh with the given <see cref="Material"/>.</summary>
+  public abstract void Draw(Material material, MeshType type = MeshType.Triangles);
+
+  /// <summary>Draws the mesh with the given <see cref="Material"/> and primitive counts.</summary>
+  public abstract void Draw(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles);
 }
 
 /// <summary>A mesh with a strongly-typed vertex type, <see cref="TVertex"/>.</summary>
@@ -129,6 +135,18 @@ public sealed class Mesh<TVertex> : Mesh
     builder(tessellator);
 
     tessellator.WriteTo(this);
+  }
+
+  public override void Draw(Material material, MeshType type = MeshType.Triangles)
+  {
+    Draw(material, Vertices.Length, Indices.Length, type);
+  }
+
+  public override void Draw(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
+  {
+    material.ApplyUniforms();
+
+    Draw(material.Shader, vertexCount, indexCount, type);
   }
 
   public override void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles)

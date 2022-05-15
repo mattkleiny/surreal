@@ -19,19 +19,21 @@ public static class Buttons
   {
     var isPressed = false;
 
-    if (rectangle.Contains(context.Mouse.Position))
-    {
-      context.DrawFillRect(rectangle, style.ActiveColor);
-
-      if (context.Mouse.IsButtonPressed(MouseButton.Left))
-      {
-        isPressed = true;
-      }
-    }
-    else
-    {
-      context.DrawFillRect(rectangle, style.InactiveColor);
-    }
+    // var (space, response) = context.AllocateInteractiveSpace(rectangle);
+    //
+    // if (space.Contains(context.Mouse.Position))
+    // {
+    //   context.DrawFillRect(rectangle, style.ActiveColor);
+    //
+    //   if (context.Mouse.IsButtonPressed(MouseButton.Left))
+    //   {
+    //     isPressed = true;
+    //   }
+    // }
+    // else
+    // {
+    //   context.DrawFillRect(rectangle, style.InactiveColor);
+    // }
 
     return isPressed;
   }

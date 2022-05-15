@@ -216,7 +216,7 @@ public abstract record Material(float Reflectivity)
   public abstract Color SampleAt(Vector2 uv);
 
   /// <summary>A simple solid color <see cref="Material"/>.</summary>
-  public sealed record SolidColor(Color Color, float Reflectivity) : Material(Reflectivity)
+  public sealed record Solid(Color Color, float Reflectivity) : Material(Reflectivity)
   {
     public override Color SampleAt(Vector2 uv)
     {

@@ -13,6 +13,20 @@ public static class CollectionExtensions
     return CollectionsMarshal.AsSpan(list);
   }
 
+  /// <summary>Retrieves a reference to a value type in a dictionary or creates it if it doesn't already exist.</summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ref TValue GetOrCreateRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
+    where TKey : notnull
+    where TValue : struct
+  {
+    if (!dictionary.ContainsKey(key))
+    {
+      dictionary.Add(key, new TValue());
+    }
+
+    return ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
+  }
+
   /// <summary>Retrieves a value from the dictionary or adds it if it doesn't already exist.</summary>
   public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
     where TKey : notnull

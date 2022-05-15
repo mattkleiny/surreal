@@ -139,54 +139,5 @@ public record ListItem(string Label) : Widget
 public abstract record Element(Widget Widget)
 {
   public abstract void Update(TimeDelta deltaTime);
-  public abstract void Draw(TimeDelta deltaTime, IElementRenderer renderer);
-}
-
-public interface IElementRenderer
-{
-  void DrawLine();
-  void DrawTriangle();
-  void DrawTriangleFan();
-  void DrawQuad();
-  void DrawText();
-  void DrawTexture();
-  void DrawImage();
-}
-
-internal class ElementRenderQueue : IElementRenderer
-{
-  public void DrawLine()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DrawTriangle()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DrawTriangleFan()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DrawQuad()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DrawText()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DrawTexture()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DrawImage()
-  {
-    throw new NotImplementedException();
-  }
+  public abstract void Draw(TimeDelta deltaTime, IPaintingContext context);
 }
