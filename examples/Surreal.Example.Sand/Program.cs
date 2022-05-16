@@ -18,7 +18,7 @@ Game.Start(platform, async game =>
 
   using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
-  using var texture = new Texture(graphics, TextureFormat.Rgba8888);
+  using var texture = new Texture(graphics, TextureFormat.Rgba8);
 
   var palette = await game.Assets.LoadKule16Async();
 

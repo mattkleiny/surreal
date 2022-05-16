@@ -19,7 +19,7 @@ public class PixelCanvas : IDisposable
   public PixelCanvas(IGraphicsServer server, int width, int height)
   {
     pixels  = new Grid<Color32>(width, height);
-    texture = new Texture(server, TextureFormat.Rgba8888);
+    texture = new Texture(server, TextureFormat.Rgba8);
     mesh    = Mesh.CreateQuad(server);
   }
 

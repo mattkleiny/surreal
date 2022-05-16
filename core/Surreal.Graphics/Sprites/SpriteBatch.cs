@@ -38,15 +38,15 @@ public sealed class SpriteBatch : IDisposable
   public void Begin(Material material)
     => this.material = material;
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public void Draw(in TextureRegion region, Vector2 position)
+    => Draw(region, position, region.Size);
+
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
     => Draw(region, position, size, Color.White);
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
     => Draw(region, position, size, 0f, color);
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
     => Draw(region, position, size, angle, color, Matrix3x2.Identity);
 

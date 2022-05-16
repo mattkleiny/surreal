@@ -54,7 +54,7 @@ public class TextureAtlasBuilder
   /// <summary>Converts the <see cref="TextureAtlasBuilder"/> to a single <see cref="Texture"/>.</summary>
   public Texture ToTexture(IGraphicsServer server, int stride)
   {
-    var texture = new Texture(server, TextureFormat.Rgba8888);
+    var texture = new Texture(server, TextureFormat.Rgba8);
     var grid = ToGrid(stride);
 
     texture.WritePixels<Color32>(grid.Width, grid.Height, grid.Span);

@@ -3,7 +3,7 @@
 namespace Surreal.Graphics;
 
 [RegisterSpecimenBuilder]
-internal sealed class HeadlessGraphicsServerBuilder : SpecimenBuilder<IGraphicsServer>
+internal sealed class GraphicsServerBuilder : SpecimenBuilder<IGraphicsServer>
 {
   protected override IGraphicsServer Create(ISpecimenContext context, string? name = null)
   {

@@ -9,7 +9,7 @@ namespace Surreal.Graphics.Textures;
 /// <summary>Formats for a <see cref="Texture"/>.</summary>
 public enum TextureFormat
 {
-  Rgba8888
+  Rgba8
 }
 
 /// <summary>Wrapping modes for a <see cref="Texture"/>.</summary>
@@ -30,7 +30,7 @@ public enum TextureFilterMode
 public sealed class Texture : GraphicsResource, IHasSizeEstimate
 {
   /// <summary>Creates a colored 1x1 texture.</summary>
-  public static Texture CreateColored(IGraphicsServer server, Color color, TextureFormat format = TextureFormat.Rgba8888)
+  public static Texture CreateColored(IGraphicsServer server, Color color, TextureFormat format = TextureFormat.Rgba8)
   {
     var texture = new Texture(server, format);
 
@@ -40,7 +40,7 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   }
 
   /// <summary>Creates a texture from random noise.</summary>
-  public static Texture CreateNoise(IGraphicsServer server, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8888)
+  public static Texture CreateNoise(IGraphicsServer server, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8)
   {
     var texture = new Texture(server, format);
     var random = seed.ToRandom();
@@ -211,7 +211,7 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
   public override async Task<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(server, TextureFormat.Rgba8888)
+    var texture = new Texture(server, TextureFormat.Rgba8)
     {
       FilterMode = settings.FilterMode,
       WrapMode   = settings.WrapMode

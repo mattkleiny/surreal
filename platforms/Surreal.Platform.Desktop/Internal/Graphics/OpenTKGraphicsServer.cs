@@ -252,8 +252,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     var texture = new TextureHandle(handle);
 
-    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
     var internalFormat = GetInternalFormat(format);
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
 
     GL.BindTexture(TextureTarget.Texture2d, texture);
 
@@ -573,7 +573,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return format switch
     {
-      TextureFormat.Rgba8888 => (int) All.Rgba8,
+      TextureFormat.Rgba8 => (int) All.Rgba8,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
