@@ -522,15 +522,31 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteProgram(program);
   }
 
-  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
+  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment, GraphicsHandle? depthAttachment, GraphicsHandle? stencilAttachment)
   {
     var handle = GL.GenFramebuffer();
 
     GL.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
     GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, new TextureHandle(colorAttachment), level: 0);
+
+    if (depthAttachment != null)
+    {
+      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2d, new TextureHandle(depthAttachment.Value), level: 0);
+    }
+
+    if (stencilAttachment != null)
+    {
+      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.StencilAttachment, TextureTarget.Texture2d, new TextureHandle(stencilAttachment.Value), level: 0);
+    }
+
     GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);
 
     return new GraphicsHandle(handle.Handle);
+  }
+
+  public void SetDefaultFrameBuffer()
+  {
+    GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);
   }
 
   public void SetActiveFrameBuffer(GraphicsHandle handle)
@@ -551,7 +567,17 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return format switch
     {
+      // integral
+      TextureFormat.R8    => (int) All.R8,
+      TextureFormat.Rg8   => (int) All.Rg8,
+      TextureFormat.Rgb8  => (int) All.Rgb8,
       TextureFormat.Rgba8 => (int) All.Rgba8,
+
+      // floating
+      TextureFormat.R     => (int) All.R,
+      TextureFormat.Rg    => (int) All.Rg,
+      TextureFormat.Rgb   => (int) All.Rgb,
+      TextureFormat.Rgba  => (int) All.Rgba,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
@@ -559,10 +585,18 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   private static (PixelFormat Format, PixelType Type) GetPixelFormatAndType(Type type)
   {
-    if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
+    // integral
+    if (type == typeof(byte)) return (PixelFormat.Red, PixelType.UnsignedByte);
+    if (type == typeof(Point2)) return (PixelFormat.Rg, PixelType.UnsignedByte);
+    if (type == typeof(Point3)) return (PixelFormat.Rgb, PixelType.UnsignedByte);
     if (type == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
+
+    // floating
+    if (type == typeof(float)) return (PixelFormat.Red, PixelType.Float);
+    if (type == typeof(Vector2)) return (PixelFormat.Rg, PixelType.Float);
     if (type == typeof(Vector3)) return (PixelFormat.Rgb, PixelType.Float);
     if (type == typeof(Vector4)) return (PixelFormat.Rgba, PixelType.Float);
+    if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
 
     throw new InvalidOperationException($"An unrecognized pixel type was provided: {type}");
   }

@@ -9,7 +9,14 @@ namespace Surreal.Graphics.Textures;
 /// <summary>Formats for a <see cref="Texture"/>.</summary>
 public enum TextureFormat
 {
-  Rgba8
+  R8,
+  Rg8,
+  Rgb8,
+  Rgba8,
+  R,
+  Rg,
+  Rgb,
+  Rgba,
 }
 
 /// <summary>Wrapping modes for a <see cref="Texture"/>.</summary>

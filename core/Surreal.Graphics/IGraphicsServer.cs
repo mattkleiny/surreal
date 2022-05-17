@@ -66,7 +66,8 @@ public interface IGraphicsServer
   void DeleteShader(GraphicsHandle handle);
 
   // frame buffers
-  GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment);
+  GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment, GraphicsHandle? depthAttachment, GraphicsHandle? stencilAttachment);
+  void SetDefaultFrameBuffer();
   void SetActiveFrameBuffer(GraphicsHandle handle);
   void DeleteFrameBuffer(GraphicsHandle handle);
 }

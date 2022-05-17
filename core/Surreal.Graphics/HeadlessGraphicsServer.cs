@@ -199,9 +199,14 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
+  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment, GraphicsHandle? depthAttachment, GraphicsHandle? stencilAttachment)
   {
     return new GraphicsHandle(Interlocked.Increment(ref nextFrameBufferId));
+  }
+
+  public void SetDefaultFrameBuffer()
+  {
+    // no-op
   }
 
   public void SetActiveFrameBuffer(GraphicsHandle handle)
