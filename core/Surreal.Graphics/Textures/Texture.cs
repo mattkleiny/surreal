@@ -68,7 +68,6 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     return texture;
   }
 
-  private readonly IGraphicsServer server;
   private TextureFilterMode filterMode = TextureFilterMode.Point;
   private TextureWrapMode wrapMode = TextureWrapMode.Clamp;
 
@@ -78,13 +77,13 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     TextureFilterMode filterMode = TextureFilterMode.Point,
     TextureWrapMode wrapMode = TextureWrapMode.Clamp)
   {
-    this.server = server;
+    this.Server = server;
 
     Format = format;
     Handle = server.CreateTexture(filterMode, wrapMode);
   }
 
-  public IGraphicsServer Server => server;
+  public IGraphicsServer Server { get; }
 
   public int  Width  { get; private set; }
   public int  Height { get; private set; }
@@ -99,7 +98,7 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     set
     {
       filterMode = value;
-      server.SetTextureFilterMode(Handle, value);
+      Server.SetTextureFilterMode(Handle, value);
     }
   }
 
@@ -109,7 +108,7 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     set
     {
       wrapMode = value;
-      server.SetTextureWrapMode(Handle, value);
+      Server.SetTextureWrapMode(Handle, value);
     }
   }
 
@@ -127,25 +126,25 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   public Memory<T> ReadPixels<T>()
     where T : unmanaged
   {
-    return server.ReadTextureData<T>(Handle);
+    return Server.ReadTextureData<T>(Handle);
   }
 
   public void ReadPixels<T>(Span<T> buffer)
     where T : unmanaged
   {
-    server.ReadTextureData(Handle, buffer);
+    Server.ReadTextureData(Handle, buffer);
   }
 
   public Memory<T> ReadPixelsSub<T>(int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    return server.ReadTextureSubData<T>(Handle, offsetX, offsetY, width, height);
+    return Server.ReadTextureSubData<T>(Handle, offsetX, offsetY, width, height);
   }
 
   public void ReadPixelsSub<T>(Span<T> buffer, int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    server.ReadTextureSubData(Handle, buffer, offsetX, offsetY, width, height);
+    Server.ReadTextureSubData(Handle, buffer, offsetX, offsetY, width, height);
   }
 
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
@@ -155,13 +154,13 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     Height = height;
     Size   = pixels.CalculateSize();
 
-    server.WriteTextureData(Handle, width, height, pixels, Format);
+    Server.WriteTextureData(Handle, width, height, pixels, Format);
   }
 
   public void WritePixelsSub<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    server.WriteTextureSubData(Handle, offsetX, offsetY, width, height, pixels, Format);
+    Server.WriteTextureSubData(Handle, offsetX, offsetY, width, height, pixels, Format);
   }
 
   public void WritePixels(Image image)
@@ -175,7 +174,7 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   {
     if (managed)
     {
-      server.DeleteTexture(Handle);
+      Server.DeleteTexture(Handle);
     }
 
     base.Dispose(managed);

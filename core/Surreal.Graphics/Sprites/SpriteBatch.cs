@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;

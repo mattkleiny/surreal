@@ -1,5 +1,6 @@
 using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
@@ -45,23 +46,22 @@ public static class ShaderProgramExtensions
 /// <summary>A low-level shader program on the GPU.</summary>
 public sealed class ShaderProgram : GraphicsResource
 {
-  private readonly IGraphicsServer server;
-
   public ShaderProgram(IGraphicsServer server)
   {
-    this.server = server;
+    this.Server = server;
 
     Handle = server.CreateShader();
   }
 
-  public GraphicsHandle Handle { get; private set; }
+  public IGraphicsServer Server { get; }
+  public GraphicsHandle  Handle { get; private set; }
 
   public ReadOnlySlice<AttributeMetadata> Attributes { get; private set; } = ReadOnlySlice<AttributeMetadata>.Empty;
   public ReadOnlySlice<UniformMetadata>   Uniforms   { get; private set; } = ReadOnlySlice<UniformMetadata>.Empty;
 
   public int GetUniformLocation(string name)
   {
-    return server.GetShaderUniformLocation(Handle, name);
+    return Server.GetShaderUniformLocation(Handle, name);
   }
 
   public bool TryGetUniformLocation(string name, out int location)
@@ -75,7 +75,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -83,7 +83,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -91,7 +91,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -99,7 +99,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -107,7 +107,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -115,7 +115,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -123,7 +123,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -131,7 +131,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -139,7 +139,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, value);
+      Server.SetShaderUniform(Handle, location, value);
     }
   }
 
@@ -147,7 +147,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, in value);
+      Server.SetShaderUniform(Handle, location, in value);
     }
   }
 
@@ -155,7 +155,7 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderUniform(Handle, location, in value);
+      Server.SetShaderUniform(Handle, location, in value);
     }
   }
 
@@ -163,14 +163,14 @@ public sealed class ShaderProgram : GraphicsResource
   {
     if (TryGetUniformLocation(name, out var location))
     {
-      server.SetShaderSampler(Handle, location, texture.Handle, slot);
+      Server.SetShaderSampler(Handle, location, texture.Handle, slot);
     }
   }
 
   /// <summary>Deletes and replaces the old shader with a new one.</summary>
   public void ReplaceShader(GraphicsHandle newHandle)
   {
-    server.DeleteShader(Handle);
+    Server.DeleteShader(Handle);
 
     Handle = newHandle;
   }
@@ -178,15 +178,15 @@ public sealed class ShaderProgram : GraphicsResource
   /// <summary>Updates the attribute/uniform metadata for the shader.</summary>
   public void ReloadMetadata()
   {
-    Attributes = server.GetShaderAttributeMetadata(Handle);
-    Uniforms   = server.GetShaderUniformMetadata(Handle);
+    Attributes = Server.GetShaderAttributeMetadata(Handle);
+    Uniforms   = Server.GetShaderUniformMetadata(Handle);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteShader(Handle);
+      Server.DeleteShader(Handle);
     }
 
     base.Dispose(managed);

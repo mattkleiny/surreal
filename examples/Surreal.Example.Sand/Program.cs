@@ -20,7 +20,7 @@ Game.Start(platform, async game =>
   using var canvas = new Canvas(graphics, 256, 144);
   using var batch = new SpriteBatch(graphics);
 
-  var palette = await game.Assets.LoadKule16Async();
+  var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Kule16);
 
   var random = Random.Shared;
 

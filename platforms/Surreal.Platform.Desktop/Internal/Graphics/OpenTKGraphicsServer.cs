@@ -4,6 +4,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Surreal.Collections;
 using Surreal.Graphics;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;

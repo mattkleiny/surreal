@@ -1,4 +1,6 @@
-﻿var platform = new DesktopPlatform
+﻿using Surreal.Graphics.Materials;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
@@ -17,7 +19,7 @@ Game.Start(platform, async game =>
 
   using var font = await game.Assets.LoadDefaultBitmapFontAsync();
   using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
-  using var effect = await game.Assets.LoadAberrationMaterialAsync();
+  using var effect = await game.Assets.LoadAberrationEffectAsync();
 
   using var batch = new SpriteBatch(graphics);
   using var target = new RenderTarget(graphics, RenderTargetDescriptor.Default);
@@ -38,7 +40,7 @@ Game.Start(platform, async game =>
       game.Exit();
     }
 
-    effect.Locals.SetProperty(MaterialProperty.Intensity, MathF.Sin(time.TotalTime) * 0.05f);
+    effect.Intensity = MathF.Sin(time.TotalTime) * 0.05f;
 
     using (target.ActivateForScope())
     {

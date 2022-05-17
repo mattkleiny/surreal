@@ -5,6 +5,7 @@ using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input;

@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Shaders;
+﻿using Surreal.Graphics.Materials;
+using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
 using Surreal.Memory;
 

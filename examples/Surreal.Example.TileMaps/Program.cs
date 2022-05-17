@@ -19,8 +19,13 @@ Game.Start(platform, async game =>
   var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
   using var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/example_tile.png");
-  using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
+  using var material = await game.Assets.LoadPaletteShiftEffectAsync();
   using var batch = new SpriteBatch(graphics);
+
+  // set-up the color palette
+  var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Demichrome4);
+
+  material.Palette = palette;
 
   // set-up a basic tilemap
   var tileMap = new TileMap<Tile>(16, 9);
@@ -67,7 +72,7 @@ Game.Start(platform, async game =>
 
     var mousePos = mouse.NormalisedPosition * camera.Size;
 
-    graphics.ClearColorBuffer(Color.White);
+    graphics.ClearColorBuffer(palette[^1]);
 
     batch.Begin(material);
 
@@ -78,7 +83,7 @@ Game.Start(platform, async game =>
         // TODO: why is this upside down?
         if (rect.Contains(mousePos with { Y = camera.Size.Y - mousePos.Y }))
         {
-          return (sprite, Color.Cyan);
+          return (sprite, Color.Yellow);
         }
 
         return (sprite, Color.White);
