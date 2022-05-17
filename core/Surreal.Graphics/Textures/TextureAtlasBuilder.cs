@@ -7,6 +7,8 @@ namespace Surreal.Graphics.Textures;
 /// <summary>A utility for building texture atlases from raw pixels.</summary>
 public class TextureAtlasBuilder
 {
+  // TODO: work on this
+
   private readonly Queue<Cell> cells = new();
 
   /// <summary>Adds a new cell to a <see cref="TextureAtlasBuilder"/>.</summary>

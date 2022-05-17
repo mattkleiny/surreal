@@ -13,41 +13,26 @@ public readonly record struct RenderTargetDescriptor(int Width, int Height, Text
 /// <summary>Manages a frame buffer that can be rendered to.</summary>
 public sealed class RenderTarget : GraphicsResource
 {
-  // TODO: some more work on this?
-
   private readonly IGraphicsServer server;
 
-  public RenderTarget(
-    IGraphicsServer server,
-    RenderTargetDescriptor colorDescriptor,
-    RenderTargetDescriptor? depthDescriptor = null,
-    RenderTargetDescriptor? stencilDescriptor = null)
+  public RenderTarget(IGraphicsServer server, RenderTargetDescriptor colorDescriptor)
   {
     this.server = server;
 
     ColorAttachment = new Texture(server, colorDescriptor.Format);
     ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<Color32>.Empty);
 
-    if (depthDescriptor != null)
-    {
-      DepthAttachment = new Texture(server, depthDescriptor.Value.Format);
-      DepthAttachment.WritePixels(depthDescriptor.Value.Width, depthDescriptor.Value.Height, ReadOnlySpan<Color32>.Empty);
-    }
-
-    if (stencilDescriptor != null)
-    {
-      StencilAttachment = new Texture(server, stencilDescriptor.Value.Format);
-      StencilAttachment.WritePixels(stencilDescriptor.Value.Width, stencilDescriptor.Value.Height, ReadOnlySpan<Color32>.Empty);
-    }
-
-    Handle = server.CreateFrameBuffer(ColorAttachment.Handle, DepthAttachment?.Handle, StencilAttachment?.Handle);
+    Handle = server.CreateFrameBuffer(ColorAttachment.Handle);
   }
 
-  public GraphicsHandle Handle { get; }
+  public GraphicsHandle Handle          { get; }
+  public Texture        ColorAttachment { get; }
 
-  public Texture  ColorAttachment   { get; }
-  public Texture? DepthAttachment   { get; }
-  public Texture? StencilAttachment { get; }
+  /// <summary>Activates the <see cref="RenderTarget"/> for the duration of the given scope.</summary>
+  public RenderTargetScope Rent()
+  {
+    return new RenderTargetScope(this);
+  }
 
   /// <summary>Activates this as the primary render target.</summary>
   public void Activate()
@@ -68,10 +53,26 @@ public sealed class RenderTarget : GraphicsResource
       server.DeleteFrameBuffer(Handle);
 
       ColorAttachment.Dispose();
-      DepthAttachment?.Dispose();
-      StencilAttachment?.Dispose();
     }
 
     base.Dispose(managed);
+  }
+
+  /// <summary>A scope for enabling a particular <see cref="RenderTarget"/>.</summary>
+  public readonly struct RenderTargetScope : IDisposable
+  {
+    private readonly RenderTarget target;
+
+    public RenderTargetScope(RenderTarget target)
+    {
+      this.target = target;
+
+      target.Activate();
+    }
+
+    public void Dispose()
+    {
+      target.Deactivate();
+    }
   }
 }

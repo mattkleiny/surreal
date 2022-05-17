@@ -40,7 +40,11 @@ public sealed class SpriteBatch : IDisposable
     => Begin(new Material(shader));
 
   public void Begin(Material material)
-    => this.material = material;
+  {
+    vertexCount = 0; // reset vertex pointer
+
+    this.material = material;
+  }
 
   public void Draw(in TextureRegion region, Vector2 position)
     => Draw(region, position, region.Size);

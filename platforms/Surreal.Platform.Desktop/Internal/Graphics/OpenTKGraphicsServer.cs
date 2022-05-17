@@ -329,25 +329,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteTexture(texture);
   }
 
-  public GraphicsHandle CreateMesh()
+  public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
   {
     var array = GL.GenVertexArray();
 
-    return new GraphicsHandle(array.Handle);
-  }
-
-  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
-  {
-    var primitiveType = ConvertMeshType(meshType);
-    var elementType = ConvertElementType(indexType);
-
-    var array = new VertexArrayHandle(mesh);
-    var program = new ProgramHandle(shader);
-
     GL.BindVertexArray(array);
-    GL.BindBuffer(BufferTargetARB.ArrayBuffer, new BufferHandle(vertices));
 
-    GL.UseProgram(program);
+    GL.BindBuffer(BufferTargetARB.ArrayBuffer, new BufferHandle(vertices));
+    GL.BindBuffer(BufferTargetARB.ElementArrayBuffer, new BufferHandle(indices));
 
     // N.B: assumes ordered in the order they appear in location binding
     for (var index = 0; index < descriptors.Length; index++)
@@ -355,19 +344,34 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var attribute = descriptors[index];
 
       GL.VertexAttribPointer(
-        index: (uint)index,
+        index: (uint) index,
         size: attribute.Count,
         type: ConvertVertexType(attribute.Type),
         normalized: attribute.ShouldNormalize,
         stride: descriptors.Stride,
         offset: attribute.Offset
       );
-      GL.EnableVertexAttribArray((uint)index);
+      GL.EnableVertexAttribArray((uint) index);
     }
+
+    GL.BindVertexArray(VertexArrayHandle.Zero);
+
+    return new GraphicsHandle(array.Handle);
+  }
+
+  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  {
+    var array = new VertexArrayHandle(mesh);
+    var program = new ProgramHandle(shader);
+
+    GL.BindVertexArray(array);
+    GL.UseProgram(program);
+
+    var primitiveType = ConvertMeshType(meshType);
 
     if (indexCount > 0)
     {
-      GL.BindBuffer(BufferTargetARB.ElementArrayBuffer, new BufferHandle(indices));
+      var elementType = ConvertElementType(indexType);
 
       GL.DrawElements(primitiveType, indexCount, elementType, offset: 0);
     }
@@ -375,6 +379,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       GL.DrawArrays(primitiveType, first: 0, vertexCount);
     }
+
+    GL.BindVertexArray(VertexArrayHandle.Zero);
   }
 
   public void DeleteMesh(GraphicsHandle handle)
@@ -415,7 +421,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
       GL.GetActiveAttrib(
         program: program,
-        index: (uint)index,
+        index: (uint) index,
         bufSize: int.MaxValue,
         length: ref length,
         size: ref size,
@@ -461,7 +467,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
       GL.GetActiveUniform(
         program: program,
-        index: (uint)index,
+        index: (uint) index,
         bufSize: int.MaxValue,
         length: ref length,
         size: ref size,
@@ -605,7 +611,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
-    GL.ActiveTexture(TextureUnit.Texture0 + (uint)samplerSlot);
+    GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
     GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
     GL.Uniform1i(location, samplerSlot);
   }
@@ -617,38 +623,31 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteProgram(program);
   }
 
-  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment, GraphicsHandle? depthAttachment, GraphicsHandle? stencilAttachment)
+  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
   {
-    var handle = GL.GenFramebuffer();
+    var framebuffer = GL.GenFramebuffer();
 
-    GL.BindFramebuffer(FramebufferTarget.Framebuffer, handle);
+    GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
     GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, new TextureHandle(colorAttachment), level: 0);
 
-    if (depthAttachment != null)
+    if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.FramebufferComplete)
     {
-      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2d, new TextureHandle(depthAttachment.Value), level: 0);
-    }
-
-    if (stencilAttachment != null)
-    {
-      GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.StencilAttachment, TextureTarget.Texture2d, new TextureHandle(stencilAttachment.Value), level: 0);
+      throw new GraphicsException("The frame buffer is incomplete");
     }
 
     GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);
 
-    return new GraphicsHandle(handle.Handle);
+    return new GraphicsHandle(framebuffer.Handle);
+  }
+
+  public void SetActiveFrameBuffer(GraphicsHandle handle)
+  {
+    GL.BindFramebuffer(FramebufferTarget.Framebuffer, new FramebufferHandle(handle));
   }
 
   public void SetDefaultFrameBuffer()
   {
     GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);
-  }
-
-  public void SetActiveFrameBuffer(GraphicsHandle handle)
-  {
-    var framebuffer = new FramebufferHandle(handle);
-
-    GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
   }
 
   public void DeleteFrameBuffer(GraphicsHandle handle)
@@ -663,16 +662,16 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return format switch
     {
       // integral
-      TextureFormat.R8    => (int)All.R8,
-      TextureFormat.Rg8   => (int)All.Rg8,
-      TextureFormat.Rgb8  => (int)All.Rgb8,
-      TextureFormat.Rgba8 => (int)All.Rgba8,
+      TextureFormat.R8    => (int) All.R8,
+      TextureFormat.Rg8   => (int) All.Rg8,
+      TextureFormat.Rgb8  => (int) All.Rgb8,
+      TextureFormat.Rgba8 => (int) All.Rgba8,
 
       // floating
-      TextureFormat.R    => (int)All.R,
-      TextureFormat.Rg   => (int)All.Rg,
-      TextureFormat.Rgb  => (int)All.Rgb,
-      TextureFormat.Rgba => (int)All.Rgba,
+      TextureFormat.R    => (int) All.R,
+      TextureFormat.Rg   => (int) All.Rg,
+      TextureFormat.Rgb  => (int) All.Rgb,
+      TextureFormat.Rgba => (int) All.Rgba,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
@@ -750,8 +749,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return filterMode switch
     {
-      TextureFilterMode.Point  => (int)All.Nearest,
-      TextureFilterMode.Linear => (int)All.Linear,
+      TextureFilterMode.Point  => (int) All.Nearest,
+      TextureFilterMode.Linear => (int) All.Linear,
 
       _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
     };
@@ -761,8 +760,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return wrapMode switch
     {
-      TextureWrapMode.Clamp  => (int)All.ClampToEdge,
-      TextureWrapMode.Repeat => (int)All.MirroredRepeat,
+      TextureWrapMode.Clamp  => (int) All.ClampToEdge,
+      TextureWrapMode.Repeat => (int) All.MirroredRepeat,
 
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };

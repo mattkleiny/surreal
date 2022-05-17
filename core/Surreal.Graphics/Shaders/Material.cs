@@ -266,17 +266,4 @@ public sealed class MaterialPropertyCollection
     [FieldOffset(0)] public Matrix3x2 Matrix3x2;
     [FieldOffset(0)] public Matrix4x4 Matrix4x4;
   }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    foreach (var uniform in Uniforms)
-    {
-      yield return uniform;
-    }
-
-    foreach (var sampler in Samplers)
-    {
-      yield return sampler;
-    }
-  }
 }

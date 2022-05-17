@@ -45,8 +45,8 @@ public interface IGraphicsServer
   void DeleteTexture(GraphicsHandle handle);
 
   // meshes
-  GraphicsHandle CreateMesh();
-  void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType);
+  GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors);
+  void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, int vertexCount, int indexCount, MeshType meshType, Type indexType);
   void DeleteMesh(GraphicsHandle handle);
 
   // shaders
@@ -69,8 +69,8 @@ public interface IGraphicsServer
   void DeleteShader(GraphicsHandle handle);
 
   // frame buffers
-  GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment, GraphicsHandle? depthAttachment, GraphicsHandle? stencilAttachment);
-  void SetDefaultFrameBuffer();
+  GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment);
   void SetActiveFrameBuffer(GraphicsHandle handle);
+  void SetDefaultFrameBuffer();
   void DeleteFrameBuffer(GraphicsHandle handle);
 }

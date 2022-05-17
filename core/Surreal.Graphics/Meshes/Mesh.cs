@@ -114,7 +114,8 @@ public sealed class Mesh<TVertex> : Mesh
 
     Vertices = new GraphicsBuffer<TVertex>(server, BufferType.Vertex, usage);
     Indices  = new GraphicsBuffer<ushort>(server, BufferType.Index, usage);
-    Handle   = server.CreateMesh();
+
+    Handle = server.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
   }
 
   public GraphicsHandle          Handle   { get; }
@@ -159,9 +160,6 @@ public sealed class Mesh<TVertex> : Mesh
     server.DrawMesh(
       mesh: Handle,
       shader: shader.Handle,
-      vertices: Vertices.Handle,
-      indices: Indices.Handle,
-      descriptors: VertexDescriptors,
       vertexCount: vertexCount,
       indexCount: indexCount,
       meshType: type,

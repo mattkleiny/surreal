@@ -1,10 +1,11 @@
 ﻿using Surreal.Assets;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics;
 
-/// <summary>Utilities for working with <see cref="ColorPalette"/>s.</summary>
-public static class ColorPalettes
+/// <summary>Common graphics utilities and extensions.</summary>
+public static class GraphicsExtensions
 {
   public static async Task<ColorPalette> LoadKule16Async(this IAssetManager assets)
   {
@@ -19,6 +20,11 @@ public static class ColorPalettes
   public static async Task<ColorPalette> LoadSpaceDust9Async(this IAssetManager assets)
   {
     return await assets.LoadAssetAsync<ColorPalette>("resx://Surreal/Resources/palettes/space-dust-9.pal");
+  }
+
+  public static async Task<Material> LoadAberrationMaterialAsync(this IAssetManager assets)
+  {
+    return await assets.LoadAssetAsync<Material>("resx://Surreal/Resources/shaders/aberration.glsl");
   }
 
   /// <summary>Writes the colors from the given <see cref="ColorPalette"/> into the texture.</summary>

@@ -34,6 +34,7 @@ public enum TextureFilterMode
 }
 
 /// <summary>A texture that can be uploaded to the GPU.</summary>
+[DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
 public sealed class Texture : GraphicsResource, IHasSizeEstimate
 {
   /// <summary>Creates a colored 1x1 texture.</summary>
@@ -71,7 +72,11 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   private TextureFilterMode filterMode = TextureFilterMode.Point;
   private TextureWrapMode wrapMode = TextureWrapMode.Clamp;
 
-  public Texture(IGraphicsServer server, TextureFormat format)
+  public Texture(
+    IGraphicsServer server,
+    TextureFormat format = TextureFormat.Rgba8,
+    TextureFilterMode filterMode = TextureFilterMode.Point,
+    TextureWrapMode wrapMode = TextureWrapMode.Clamp)
   {
     this.server = server;
 
@@ -201,6 +206,7 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
 /// <summary>Settings for <see cref="Texture"/>s.</summary>
 public sealed record TextureSettings : AssetSettings<Texture>
 {
+  public TextureFormat     Format     { get; init; } = TextureFormat.Rgba8;
   public TextureFilterMode FilterMode { get; init; } = TextureFilterMode.Point;
   public TextureWrapMode   WrapMode   { get; init; } = TextureWrapMode.Clamp;
 }
@@ -218,11 +224,7 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
   public override async Task<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(server, TextureFormat.Rgba8)
-    {
-      FilterMode = settings.FilterMode,
-      WrapMode   = settings.WrapMode
-    };
+    var texture = new Texture(server, settings.Format, settings.FilterMode, settings.WrapMode);
 
     texture.WritePixels(image);
 

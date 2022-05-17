@@ -110,12 +110,12 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public GraphicsHandle CreateMesh()
+  public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
   {
     return new GraphicsHandle(Interlocked.Increment(ref nextMeshId));
   }
 
-  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, int vertexCount, int indexCount, MeshType meshType, Type indexType)
   {
     // no-op
   }
@@ -210,17 +210,17 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment, GraphicsHandle? depthAttachment, GraphicsHandle? stencilAttachment)
+  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
   {
     return new GraphicsHandle(Interlocked.Increment(ref nextFrameBufferId));
   }
 
-  public void SetDefaultFrameBuffer()
+  public void SetActiveFrameBuffer(GraphicsHandle handle)
   {
     // no-op
   }
 
-  public void SetActiveFrameBuffer(GraphicsHandle handle)
+  public void SetDefaultFrameBuffer()
   {
     // no-op
   }
