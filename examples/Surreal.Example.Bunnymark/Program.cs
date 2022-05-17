@@ -10,6 +10,8 @@
 
 Game.Start(platform, async game =>
 {
+  // ReSharper disable AccessToDisposedClosure
+
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
@@ -25,10 +27,9 @@ Game.Start(platform, async game =>
 
   var actors = new List<Bunny>();
 
-  material.SetUniform("u_projectionView", in camera.ProjectionView);
-  material.SetUniform("u_texture", texture);
+  material.SetProperty("u_projectionView", in camera.ProjectionView);
 
-  game.ExecuteVariableStep(time =>
+  game.ExecuteVariableStep(_ =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {

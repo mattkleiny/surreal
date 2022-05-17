@@ -1,5 +1,3 @@
-var size = new Vector2(256f, 144f);
-
 var platform = new DesktopPlatform
 {
   Configuration =
@@ -7,8 +5,8 @@ var platform = new DesktopPlatform
     Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    Width          = (int) (size.X * 6),
-    Height         = (int) (size.Y * 6)
+    Width          = 1536,
+    Height         = 864
   }
 };
 
@@ -24,12 +22,13 @@ Game.Start(platform, async game =>
   using var sprites = new SpriteBatch(graphics);
 
   // set-up a basic orthographic projection
-  var projectionView =
-    Matrix4x4.CreateTranslation(-size.X / 2f, -size.Y / 2f, 0f) *
-    Matrix4x4.CreateOrthographic(size.X, size.Y, 0f, 100f);
+  var camera = new Camera
+  {
+    Position = Vector2.Zero,
+    Size     = new Vector2(256, 144)
+  };
 
-  material.SetUniform("u_projectionView", projectionView);
-  material.SetUniform("u_texture", font.Texture);
+  material.SetProperty("u_projectionView", in camera.ProjectionView);
 
   game.ExecuteVariableStep(_ =>
   {
@@ -44,7 +43,7 @@ Game.Start(platform, async game =>
     sprites.DrawText(
       font: font,
       text: "HELLO, SURREAL!",
-      position: size / 2f,
+      position: Vector2.Zero,
       color: Color.Black,
       horizontalAlignment: HorizontalAlignment.Center,
       verticalAlignment: VerticalAlignment.Center

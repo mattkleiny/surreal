@@ -51,6 +51,7 @@ public static class Message
     }
   }
 
+  [RequiresUnreferencedCode("Discovers methods via reflection")]
   public static void SubscribeAll(object target)
   {
     foreach (var method in DiscoverSubscriberMethods(target))
@@ -64,6 +65,7 @@ public static class Message
     }
   }
 
+  [RequiresUnreferencedCode("Discovers methods via reflection")]
   public static void UnsubscribeAll(object target)
   {
     foreach (var method in DiscoverSubscriberMethods(target))
@@ -79,9 +81,10 @@ public static class Message
 
   private static void NotifySubscribers<T>(ref T data)
   {
+    // N.B: subscribers is a pointer to a collection and could change out from underneath us
     ReadOnlySlice<Delegate> subscribers;
 
-    // optimistically grab all available subscribers before notifcation
+    // optimistically grab all available subscribers before notification
     lock (Subscribers)
     {
       if (!Subscribers.TryGetValues(typeof(T), out subscribers))
@@ -138,4 +141,30 @@ public static class Message
 
   /// <summary>Represents a reflected subscriber method.</summary>
   private record struct SubscriberMethod(MethodInfo Method, Type MessageType, Type DelegateType);
+}
+
+/// <summary>A simple channel of <see cref="T"/> messages to be sent between consumers.</summary>
+public sealed class MessageChannel<T> : IDisposable
+{
+  private readonly BlockingCollection<T> messages;
+
+  public MessageChannel(int capacity = int.MaxValue)
+  {
+    messages = new BlockingCollection<T>(capacity);
+  }
+
+  public void Post(T message)
+  {
+    messages.Add(message);
+  }
+
+  public T Receive()
+  {
+    return messages.Take();
+  }
+
+  public void Dispose()
+  {
+    messages.Dispose();
+  }
 }

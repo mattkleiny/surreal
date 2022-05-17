@@ -1,5 +1,6 @@
 ﻿using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
+using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using Surreal.Memory;
@@ -28,14 +29,24 @@ public class PixelCanvas : IDisposable
 
   public SpanGrid<Color32> Pixels => pixels.Span;
 
-  public void Draw(ShaderProgram shader)
+  public MaterialProperty<Matrix4x4> ProjectionViewProperty { get; set; } = new("u_projectionView");
+  public MaterialProperty<Texture>   TextureProperty        { get; set; } = new("u_texture");
+
+  public void Draw(Material material)
   {
     texture.WritePixels<Color32>(Width, Height, Pixels);
 
-    shader.SetUniform("u_projectionView", Matrix4x4.Identity);
-    shader.SetUniform("u_texture", texture, 0);
+    material.SetProperty(ProjectionViewProperty, Matrix4x4.Identity);
+    material.SetProperty(TextureProperty, texture);
 
-    mesh.Draw(shader);
+    mesh.Draw(material);
+  }
+
+  public void Draw(SpriteBatch batch)
+  {
+    texture.WritePixels<Color32>(Width, Height, Pixels);
+
+    batch.Draw(texture, Vector2.Zero, new Vector2(2f, 2f)); // TODO: why doubled?
   }
 
   public void Fill(Color32 value)

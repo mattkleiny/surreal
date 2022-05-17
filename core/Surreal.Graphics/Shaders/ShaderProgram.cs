@@ -16,7 +16,7 @@ public static class ShaderProgramExtensions
   /// <summary>Loads the default <see cref="Material"/> for sprites from Surreal.</summary>
   public static async Task<Material> LoadDefaultSpriteMaterialAsync(this IAssetManager manager)
   {
-    return new Material(await manager.LoadAssetAsync<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl"));
+    return await manager.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl");
   }
 }
 
@@ -30,35 +30,111 @@ public sealed class ShaderProgram : GraphicsResource
     this.server = server;
 
     Handle = server.CreateShader();
+
+    // TODO: retain a list of default uniforms and offer an API for reflection
   }
 
   public GraphicsHandle Handle { get; private set; }
 
-  public int GetUniformLocation(string name) => server.GetShaderUniformLocation(Handle, name);
+  public int GetUniformLocation(string name)
+  {
+    return server.GetShaderUniformLocation(Handle, name);
+  }
 
-  public void SetUniform(string name, int value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, float value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, Point2 value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, Point3 value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, Vector2 value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, Vector3 value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, Vector4 value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, Quaternion value) => server.SetShaderUniform(Handle, GetUniformLocation(name), value);
-  public void SetUniform(string name, in Matrix3x2 value) => server.SetShaderUniform(Handle, GetUniformLocation(name), in value);
-  public void SetUniform(string name, in Matrix4x4 value) => server.SetShaderUniform(Handle, GetUniformLocation(name), in value);
-  public void SetUniform(string name, Texture texture, int slot) => server.SetShaderSampler(Handle, GetUniformLocation(name), texture.Handle, slot);
+  public bool TryGetUniformLocation(string name, out int location)
+  {
+    location = GetUniformLocation(name);
 
-  public void SetUniform(int location, int value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, float value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, Point2 value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, Point3 value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, Vector2 value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, Vector3 value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, Vector4 value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, Quaternion value) => server.SetShaderUniform(Handle, location, value);
-  public void SetUniform(int location, in Matrix3x2 value) => server.SetShaderUniform(Handle, location, in value);
-  public void SetUniform(int location, in Matrix4x4 value) => server.SetShaderUniform(Handle, location, in value);
-  public void SetUniform(int location, Texture texture, int slot) => server.SetShaderSampler(Handle, location, texture.Handle, slot);
+    return location != -1;
+  }
+
+  public void SetUniform(string name, int value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, float value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, Point2 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, Point3 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, Vector2 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, Vector3 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, Vector4 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, Quaternion value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, in Matrix3x2 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, in value);
+    }
+  }
+
+  public void SetUniform(string name, in Matrix4x4 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, in value);
+    }
+  }
+
+  public void SetUniform(string name, Texture texture, int slot)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderSampler(Handle, location, texture.Handle, slot);
+    }
+  }
 
   /// <summary>Deletes and replaces the old shader with a new one.</summary>
   public void ReplaceShader(GraphicsHandle newHandle)

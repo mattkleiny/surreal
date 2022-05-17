@@ -456,64 +456,46 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
-    if (location == -1) return;
-
     GL.Uniform1i(location, value);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, float value)
   {
-    if (location == -1) return;
-
     GL.Uniform1f(location, value);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point2 value)
   {
-    if (location == -1) return;
-
     GL.Uniform2i(location, value.X, value.Y);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point3 value)
   {
-    if (location == -1) return;
-
     GL.Uniform3i(location, value.X, value.Y, value.Z);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)
   {
-    if (location == -1) return;
-
     GL.Uniform2f(location, value.X, value.Y);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value)
   {
-    if (location == -1) return;
-
     GL.Uniform3f(location, value.X, value.Y, value.Z);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value)
   {
-    if (location == -1) return;
-
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value)
   {
-    if (location == -1) return;
-
     GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
   {
-    if (location == -1) return;
-
     var result = Unsafe.As<Matrix3x2, OpenTK.Mathematics.Matrix3x2>(ref Unsafe.AsRef(in value));
 
     GL.UniformMatrix3x2f(location, 1, true, stackalloc[] { result });
@@ -521,8 +503,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public unsafe void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
   {
-    if (location == -1) return;
-
     var result = Unsafe.As<Matrix4x4, Matrix4>(ref Unsafe.AsRef(in value));
 
     GL.UniformMatrix4f(location, 1, true, stackalloc[] { result });
@@ -530,8 +510,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
-    if (location == -1) return;
-
     GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
     GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
     GL.Uniform1i(location, samplerSlot);

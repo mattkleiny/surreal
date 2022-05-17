@@ -17,9 +17,9 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   // load some resources
-  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var canvas = new Canvas(graphics, 256, 144);
   using var scene = new ActorScene();
+  using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
 
   var palette = await game.Assets.LoadSpaceDust9Async();
 
@@ -76,6 +76,6 @@ Game.Start(platform, async game =>
     scene.Update(time.DeltaTime);
     scene.EndFrame(time.DeltaTime);
 
-    canvas.Draw(shader);
+    canvas.Draw(material);
   });
 });

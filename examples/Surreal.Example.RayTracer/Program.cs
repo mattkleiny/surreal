@@ -17,8 +17,8 @@ Game.Start(platform, async game =>
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
-  using var shader = await game.Assets.LoadDefaultSpriteShaderAsync();
   using var buffer = new PixelCanvas(graphics, 1920, 1080);
+  using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
 
   var checkerboard = await game.Assets.LoadAssetAsync<Image>("Assets/textures/checkerboard.png");
 
@@ -107,6 +107,6 @@ Game.Start(platform, async game =>
     if (keyboard.IsKeyPressed(Key.F1)) RefreshSequentially();
     if (keyboard.IsKeyPressed(Key.F2)) RefreshInParallel();
 
-    buffer.Draw(shader);
+    buffer.Draw(material);
   });
 });

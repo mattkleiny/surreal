@@ -144,7 +144,7 @@ public sealed class Mesh<TVertex> : Mesh
 
   public override void Draw(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
   {
-    material.ApplyUniforms();
+    material.Apply(); // TODO: put this in a better place (material batching?)
 
     Draw(material.Shader, vertexCount, indexCount, type);
   }
