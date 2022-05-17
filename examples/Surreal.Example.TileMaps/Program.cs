@@ -70,18 +70,20 @@ Game.Start(platform, async game =>
       RandomizeTileMap();
     }
 
+    // TODO: why is this upside down?
     var mousePos = mouse.NormalisedPosition * camera.Size;
+    mousePos = mousePos with { Y = camera.Size.Y - mousePos.Y };
+    var viewingRect = Rectangle.Create(mousePos, new Vector2(4, 4));
 
     graphics.ClearColorBuffer(palette[^1]);
 
     batch.Begin(effect);
 
-    tileMap.Draw(batch, Vector2.Zero, tileSize, mousePos, (tile, rect) =>
+    tileMap.Draw(batch, viewingRect, Vector2.Zero, tileSize, mousePos, (tile, rect) =>
     {
       if (tile == Tile.Filled)
       {
-        // TODO: why is this upside down?
-        if (rect.Contains(mousePos with { Y = camera.Size.Y - mousePos.Y }))
+        if (rect.Contains(mousePos))
         {
           return (sprite, Color.Yellow);
         }
