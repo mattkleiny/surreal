@@ -3,7 +3,7 @@ using Surreal.Graphics.Shaders.Internal;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
-namespace Surreal.Graphics.Shaders;
+namespace Surreal.Graphics.Shaders.Parsing;
 
 /// <summary>Utilities for working with the Shade language.</summary>
 internal static class ShadeLanguage

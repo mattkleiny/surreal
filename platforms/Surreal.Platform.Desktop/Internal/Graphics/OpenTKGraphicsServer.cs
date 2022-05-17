@@ -8,6 +8,7 @@ using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
+using BlendingFactor = OpenTK.Graphics.OpenGL.BlendingFactor;
 using Matrix3x2 = System.Numerics.Matrix3x2;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 using Quaternion = System.Numerics.Quaternion;
@@ -27,17 +28,41 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public OpenTKGraphicsServer(Version version)
   {
     shaderCompiler = new OpenTKShaderCompiler(version);
-
-    // enable some sane defaults for the context.
-    GL.FrontFace(FrontFaceDirection.Cw);
-    GL.Disable(EnableCap.CullFace);
-    GL.Enable(EnableCap.Blend);
-    GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
   }
 
   public void SetViewportSize(Viewport viewport)
   {
     GL.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
+  }
+
+  public void SetBlendState(BlendState state)
+  {
+    static BlendingFactor ConvertBlendFactor(BlendMode mode) => mode switch
+    {
+      BlendMode.SourceColor         => BlendingFactor.SrcColor,
+      BlendMode.TargetColor         => BlendingFactor.DstColor,
+      BlendMode.SourceAlpha         => BlendingFactor.SrcAlpha,
+      BlendMode.TargetAlpha         => BlendingFactor.DstAlpha,
+      BlendMode.OneMinusSourceColor => BlendingFactor.OneMinusSrcAlpha,
+      BlendMode.OneMinusTargetColor => BlendingFactor.OneMinusDstColor,
+      BlendMode.OneMinusSourceAlpha => BlendingFactor.OneMinusSrcAlpha,
+      BlendMode.OneMinusTargetAlpha => BlendingFactor.OneMinusDstAlpha,
+
+      _ => throw new InvalidOperationException($"An unexpected blend mode was specified {mode}")
+    };
+
+    if (state.IsEnabled)
+    {
+      var sfactor = ConvertBlendFactor(state.Source);
+      var dfactor = ConvertBlendFactor(state.Target);
+
+      GL.Enable(EnableCap.Blend);
+      GL.BlendFunc(sfactor, dfactor);
+    }
+    else
+    {
+      GL.Disable(EnableCap.Blend);
+    }
   }
 
   public void ClearColorBuffer(Color color)
@@ -360,7 +385,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return new GraphicsHandle(array.Handle);
   }
 
-  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType)
   {
     var array = new VertexArrayHandle(mesh);
 

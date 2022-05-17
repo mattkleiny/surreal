@@ -6,7 +6,7 @@ using static Surreal.Graphics.Shaders.ShaderSyntaxTree;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Expression;
 using static Surreal.Graphics.Shaders.ShaderSyntaxTree.Statement;
 
-namespace Surreal.Graphics.Shaders;
+namespace Surreal.Graphics.Shaders.Parsing;
 
 // TODO: remove self-recursive tree evaluations (depth + 1, maxDepth, etc).
 

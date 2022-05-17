@@ -14,7 +14,7 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile" />
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="Shaders\Shade.g4">
+    <Antlr4 Include="Shaders\Parsing\Shade.g4">
       <Package>Surreal.Graphics.Shaders.Internal</Package>
       <Listener>false</Listener>
       <Visitor>true</Visitor>

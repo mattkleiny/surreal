@@ -1,5 +1,4 @@
-﻿using Surreal.Input.Mouse;
-using Surreal.Mathematics;
+﻿using Surreal.Mathematics;
 
 namespace Surreal.UI.Immediate.Controls;
 

@@ -7,6 +7,26 @@ using static Surreal.Graphics.Shaders.MaterialPropertySet;
 
 namespace Surreal.Graphics.Shaders;
 
+/// <summary>Different kinds of blends.</summary>
+public enum BlendMode
+{
+  SourceColor,
+  TargetColor,
+  SourceAlpha,
+  TargetAlpha,
+  OneMinusSourceColor,
+  OneMinusTargetColor,
+  OneMinusSourceAlpha,
+  OneMinusTargetAlpha,
+}
+
+/// <summary>State efor a blending operation.</summary>
+public readonly record struct BlendState(bool IsEnabled, BlendMode Source, BlendMode Target)
+{
+  public static BlendState Disabled            { get; } = default(BlendState) with { IsEnabled = false };
+  public static BlendState OneMinusSourceAlpha { get; } = new(true, BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
+}
+
 /// <summary>Standard purpose <see cref="MaterialProperty{T}"/>s.</summary>
 public static class MaterialProperty
 {
@@ -41,11 +61,15 @@ public sealed class Material : GraphicsResource
   /// <summary>The properties associated with this material.</summary>
   public MaterialPropertySet Locals { get; } = new();
 
-  // TODO: add blending modes and sorting keys?
+  /// <summary>The desired <see cref="BlendState"/> for this material.</summary>
+  public BlendState Blending { get; set; } = BlendState.OneMinusSourceAlpha;
 
   /// <summary>Applies the material properties to the underlying shader.</summary>
-  public void Apply()
+  public void Apply(IGraphicsServer server)
   {
+    // bind the shader
+    server.SetActiveShader(Shader.Handle);
+
     // apply globals
     ApplyUniforms(Globals.Uniforms);
     ApplySamplers(Globals.Samplers);
@@ -53,6 +77,9 @@ public sealed class Material : GraphicsResource
     // apply locals
     ApplyUniforms(Locals.Uniforms);
     ApplySamplers(Locals.Samplers);
+
+    // apply blend state
+    server.SetBlendState(Blending);
   }
 
   private void ApplyUniforms(Dictionary<string, Uniform> uniforms)

@@ -1,4 +1,4 @@
-﻿using Surreal.Graphics.Shaders;
+﻿using Surreal.Graphics.Shaders.Parsing;
 using Surreal.IO;
 
 namespace Surreal.Internal.Graphics;

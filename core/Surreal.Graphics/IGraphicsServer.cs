@@ -21,6 +21,7 @@ public interface IGraphicsServer
 {
   // intrinsics
   void SetViewportSize(Viewport viewport);
+  void SetBlendState(BlendState state);
   void ClearColorBuffer(Color color);
   void ClearDepthBuffer();
   void FlushToDevice();
@@ -46,7 +47,7 @@ public interface IGraphicsServer
 
   // meshes
   GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors);
-  void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, int vertexCount, int indexCount, MeshType meshType, Type indexType);
+  void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType);
   void DeleteMesh(GraphicsHandle handle);
 
   // shaders

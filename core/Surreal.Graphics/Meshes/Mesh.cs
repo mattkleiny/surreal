@@ -145,13 +145,10 @@ public sealed class Mesh<TVertex> : Mesh
 
   public override void Draw(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
   {
-    // TODO: put this in a better place (material batching?)
-    server.SetActiveShader(material.Shader.Handle);
-    material.Apply();
+    material.Apply(server); // TODO: put this in a better place (material batching?)
 
     server.DrawMesh(
       mesh: Handle,
-      shader: material.Shader.Handle,
       vertexCount: vertexCount,
       indexCount: indexCount,
       meshType: type,
@@ -170,7 +167,6 @@ public sealed class Mesh<TVertex> : Mesh
 
     server.DrawMesh(
       mesh: Handle,
-      shader: shader.Handle,
       vertexCount: vertexCount,
       indexCount: indexCount,
       meshType: type,

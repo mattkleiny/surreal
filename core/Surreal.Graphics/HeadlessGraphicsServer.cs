@@ -20,6 +20,11 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
+  public void SetBlendState(BlendState state)
+  {
+    // no-op
+  }
+
   public void ClearColorBuffer(Color color)
   {
     // no-op
@@ -115,7 +120,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     return new GraphicsHandle(Interlocked.Increment(ref nextMeshId));
   }
 
-  public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType)
   {
     // no-op
   }
