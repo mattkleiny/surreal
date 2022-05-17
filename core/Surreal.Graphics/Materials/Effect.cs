@@ -2,7 +2,7 @@
 
 namespace Surreal.Graphics.Materials;
 
-/// <summary>A utility for decorating <see cref="Material"/>s for composition.</summary>
+/// <summary>An effect is a specially configured <see cref="Material"/>.</summary>
 public abstract class Effect : IDisposable
 {
   protected Effect(Material material)

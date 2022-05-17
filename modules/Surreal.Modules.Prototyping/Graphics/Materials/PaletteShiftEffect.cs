@@ -2,7 +2,7 @@
 
 namespace Surreal.Graphics.Materials;
 
-/// <summary>A <see cref="Effect"/> for the palette shift material.</summary>
+/// <summary>An <see cref="Effect"/> for the palette shift shader.</summary>
 public sealed class PaletteShiftEffect : Effect
 {
   private static MaterialProperty<Texture> PaletteTexture { get; } = new("u_palette");

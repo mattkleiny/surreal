@@ -6,7 +6,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
-/// <summary>Different kinds of uniform values supported on a <see cref="ShaderProgram"/>..</summary>
+/// <summary>Different kinds of uniform values supported on a <see cref="ShaderProgram"/>.</summary>
 public enum UniformType
 {
   Integer,
@@ -32,11 +32,6 @@ public readonly record struct UniformMetadata(string Name, int Location, int Len
 /// <summary>Utilities for <see cref="ShaderProgram"/>s.</summary>
 public static class ShaderProgramExtensions
 {
-  public static async Task<ShaderProgram> LoadDefaultSpriteShaderAsync(this IAssetManager manager)
-  {
-    return await manager.LoadAssetAsync<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl");
-  }
-
   public static async Task<Material> LoadDefaultSpriteMaterialAsync(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl");

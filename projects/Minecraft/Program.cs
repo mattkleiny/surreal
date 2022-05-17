@@ -5,6 +5,7 @@
     Title          = "Minecraft",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
+    IconPath       = "resx://Minecraft/Resources/icons/minecraft.png"
   }
 };
 

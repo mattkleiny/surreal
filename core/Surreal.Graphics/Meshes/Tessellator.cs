@@ -125,7 +125,7 @@ public static class TessellatorExtensions
   }
 }
 
-/// <summary>A stream of geometry instructions packed into an efficient array to make it simpler to use..</summary>
+/// <summary>A stream of geometry instructions packed into an efficient array to make it simpler to use.</summary>
 public sealed class GeometryStream : IDisposable
 {
   private readonly MemoryStream stream = Pool<MemoryStream>.Shared.CreateOrRent();

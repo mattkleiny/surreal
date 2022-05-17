@@ -2,7 +2,7 @@
 
 namespace Surreal.Systems;
 
-/// <summary>Base class for any <see cref="ISceneSystem"/> implementation that monitors components..</summary>
+/// <summary>Base class for any <see cref="ISceneSystem"/> implementation that monitors components.</summary>
 public abstract class ComponentSystem : SceneSystem
 {
   protected ComponentSystem(ComponentMask mask)

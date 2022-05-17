@@ -3,7 +3,7 @@ using Surreal.Timing;
 
 namespace Surreal.Automata.BehaviourTrees.Decorators;
 
-/// <summary>A <see cref="BehaviourDecorator"/> that executes the child node if the given property is the given value..</summary>
+/// <summary>A <see cref="BehaviourDecorator"/> that executes the child node if the given property is the given value.</summary>
 public sealed record CheckProperty<T>(BehaviourNode Child, Property<T> Property, T Value) : BehaviourDecorator(Child)
   where T : IEquatable<T>
 {

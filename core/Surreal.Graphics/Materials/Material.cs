@@ -17,14 +17,14 @@ public enum BlendMode
   OneMinusTargetAlpha,
 }
 
-/// <summary>State efor a blending operation.</summary>
+/// <summary>State blending operation.</summary>
 public readonly record struct BlendState(bool IsEnabled, BlendMode Source, BlendMode Target)
 {
   public static BlendState Disabled            { get; } = default(BlendState) with { IsEnabled = false };
   public static BlendState OneMinusSourceAlpha { get; } = new(true, BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
 }
 
-/// <summary>A material is a <see cref="ShaderProgram"/> with unique uniform values store on the CPU.</summary>
+/// <summary>A material is a configuration of the graphics state and properties used for rendering.</summary>
 [DebuggerDisplay("Material (Uniforms {Locals.Uniforms.Count}, Samplers {Locals.Samplers.Count})")]
 public sealed class Material : GraphicsResource
 {

@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Graphics.Materials;
 
-/// <summary>A <see cref="Effect"/> for the palette shift material.</summary>
+/// <summary>A <see cref="Effect"/> for the aberration shader.</summary>
 public sealed class AberrationEffect : Effect
 {
   public AberrationEffect(Material material)

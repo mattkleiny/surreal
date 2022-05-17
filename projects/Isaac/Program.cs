@@ -4,7 +4,8 @@
   {
     Title          = "Isaac",
     IsVsyncEnabled = true,
-    ShowFpsInTitle = true
+    ShowFpsInTitle = true,
+    IconPath       = "resx://Isaac/Resources/icons/isaac.png"
   }
 };
 
