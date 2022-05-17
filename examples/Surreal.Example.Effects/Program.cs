@@ -28,27 +28,17 @@ Game.Start(platform, async game =>
     Size     = new Vector2(256, 144)
   };
 
-  material.Properties.Set(Material.DefaultProjectionView, in camera.ProjectionView);
-  effect.Properties.Set(Material.DefaultProjectionView, in camera.ProjectionView);
+  material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
+  effect.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
 
-  var intensity = new MaterialProperty<float>("u_intensity");
-
-  game.ExecuteVariableStep(_ =>
+  game.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       game.Exit();
     }
 
-    if (keyboard.IsKeyDown(Key.W))
-    {
-      effect.Properties.Get(intensity) += 0.001f;
-    }
-
-    if (keyboard.IsKeyDown(Key.S))
-    {
-      effect.Properties.Get(intensity) -= 0.001f;
-    }
+    effect.Locals.SetProperty(MaterialProperty.Intensity, MathF.Sin(time.TotalTime) * 0.05f);
 
     using (target.ActivateForScope())
     {

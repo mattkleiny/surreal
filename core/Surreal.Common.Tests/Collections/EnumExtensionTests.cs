@@ -1,7 +1,5 @@
 ﻿namespace Surreal.Collections;
 
-#pragma warning disable S2344
-
 public class EnumExtensionTests
 {
   [Test]

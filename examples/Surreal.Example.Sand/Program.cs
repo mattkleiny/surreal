@@ -16,9 +16,9 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
   var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
-  using var canvas = new Canvas(graphics, 256, 144);
-  using var texture = new Texture(graphics, TextureFormat.Rgba8);
   using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
+  using var canvas = new Canvas(graphics, 256, 144);
+  using var batch = new SpriteBatch(graphics);
 
   var palette = await game.Assets.LoadKule16Async();
 
@@ -57,7 +57,11 @@ Game.Start(platform, async game =>
       canvas.DeleteSand(point, radius: 16);
     }
 
+    batch.Begin(material);
+
     canvas.Update(time.DeltaTime);
-    canvas.Draw(material);
+    canvas.DrawNormalized(batch);
+
+    batch.Flush();
   });
 });

@@ -12,6 +12,7 @@ using Matrix3x2 = System.Numerics.Matrix3x2;
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 using Quaternion = System.Numerics.Quaternion;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
+using UniformType = Surreal.Graphics.Shaders.UniformType;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
@@ -400,109 +401,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     LinkShader(handle, shaderSet);
   }
 
-  public unsafe ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
-  {
-    var program = new ProgramHandle(handle);
-    int count = 0;
-
-    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
-
-    var results = new AttributeMetadata[count];
-
-    for (var index = 0; index < count; index++)
-    {
-      var length = 0;
-      var size = 0;
-      var type = default(AttributeType);
-
-      GL.GetActiveAttrib(
-        program: program,
-        index: (uint) index,
-        bufSize: int.MaxValue,
-        length: ref length,
-        size: ref size,
-        type: ref type,
-        name: out var name
-      );
-      if (string.IsNullOrEmpty(name)) continue;
-
-      results[index] = new AttributeMetadata(name, index, length, size, type switch
-      {
-        // TODO: support more types?
-        AttributeType.Int         => typeof(int),
-        AttributeType.Float       => typeof(float),
-        AttributeType.IntVec2     => typeof(Point2),
-        AttributeType.IntVec3     => typeof(Point3),
-        AttributeType.FloatVec2   => typeof(Vector2),
-        AttributeType.FloatVec3   => typeof(Vector3),
-        AttributeType.FloatVec4   => typeof(Vector4),
-        AttributeType.FloatMat3x2 => typeof(Matrix3x2),
-        AttributeType.FloatMat4   => typeof(Matrix4x4),
-        AttributeType.Sampler2d   => typeof(Texture),
-
-        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
-      });
-    }
-
-    return results;
-  }
-
-  public unsafe ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
-  {
-    var program = new ProgramHandle(handle);
-    int count = 0;
-
-    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
-
-    var results = new UniformMetadata[count];
-
-    for (var index = 0; index < count; index++)
-    {
-      var length = 0;
-      var size = 0;
-      var type = default(UniformType);
-
-      GL.GetActiveUniform(
-        program: program,
-        index: (uint) index,
-        bufSize: int.MaxValue,
-        length: ref length,
-        size: ref size,
-        type: ref type,
-        name: out var name
-      );
-      if (string.IsNullOrEmpty(name)) continue;
-
-      var location = GL.GetUniformLocation(program, name);
-
-      results[index] = new UniformMetadata(name, location, length, size, type switch
-      {
-        // TODO: support more types?
-        UniformType.Int         => typeof(int),
-        UniformType.Float       => typeof(float),
-        UniformType.IntVec2     => typeof(Point2),
-        UniformType.IntVec3     => typeof(Point3),
-        UniformType.FloatVec2   => typeof(Vector2),
-        UniformType.FloatVec3   => typeof(Vector3),
-        UniformType.FloatVec4   => typeof(Vector4),
-        UniformType.FloatMat3x2 => typeof(Matrix3x2),
-        UniformType.FloatMat4   => typeof(Matrix4x4),
-        UniformType.Sampler2d   => typeof(Texture),
-
-        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
-      });
-    }
-
-    return results;
-  }
-
-  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
-  {
-    var program = new ProgramHandle(handle);
-
-    return GL.GetUniformLocation(program, name);
-  }
-
   public void LinkShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
   {
     var program = new ProgramHandle(handle);
@@ -553,6 +451,107 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
+  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
+  {
+    var program = new ProgramHandle(handle);
+
+    return GL.GetUniformLocation(program, name);
+  }
+
+  public unsafe ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
+  {
+    var program = new ProgramHandle(handle);
+    int count = 0;
+
+    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
+
+    var results = new AttributeMetadata[count];
+
+    for (var index = 0; index < count; index++)
+    {
+      var length = 0;
+      var size = 0;
+      var type = default(AttributeType);
+
+      GL.GetActiveAttrib(
+        program: program,
+        index: (uint) index,
+        bufSize: int.MaxValue,
+        length: ref length,
+        size: ref size,
+        type: ref type,
+        name: out var name
+      );
+      if (string.IsNullOrEmpty(name)) continue;
+
+      results[index] = new AttributeMetadata(name, index, length, size, type switch
+      {
+        AttributeType.Int         => UniformType.Integer,
+        AttributeType.Float       => UniformType.Float,
+        AttributeType.IntVec2     => UniformType.Point2,
+        AttributeType.IntVec3     => UniformType.Point3,
+        AttributeType.FloatVec2   => UniformType.Vector2,
+        AttributeType.FloatVec3   => UniformType.Vector3,
+        AttributeType.FloatVec4   => UniformType.Vector4,
+        AttributeType.FloatMat3x2 => UniformType.Matrix3x2,
+        AttributeType.FloatMat4   => UniformType.Matrix4x4,
+        AttributeType.Sampler2d   => UniformType.Texture,
+
+        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
+      });
+    }
+
+    return results;
+  }
+
+  public unsafe ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
+  {
+    var program = new ProgramHandle(handle);
+    int count = 0;
+
+    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
+
+    var results = new UniformMetadata[count];
+
+    for (var index = 0; index < count; index++)
+    {
+      var length = 0;
+      var size = 0;
+      var type = default(OpenTK.Graphics.OpenGL.UniformType);
+
+      GL.GetActiveUniform(
+        program: program,
+        index: (uint) index,
+        bufSize: int.MaxValue,
+        length: ref length,
+        size: ref size,
+        type: ref type,
+        name: out var name
+      );
+      if (string.IsNullOrEmpty(name)) continue;
+
+      var location = GL.GetUniformLocation(program, name);
+
+      results[index] = new UniformMetadata(name, location, length, size, type switch
+      {
+        OpenTK.Graphics.OpenGL.UniformType.Int         => UniformType.Integer,
+        OpenTK.Graphics.OpenGL.UniformType.Float       => UniformType.Float,
+        OpenTK.Graphics.OpenGL.UniformType.IntVec2     => UniformType.Point2,
+        OpenTK.Graphics.OpenGL.UniformType.IntVec3     => UniformType.Point3,
+        OpenTK.Graphics.OpenGL.UniformType.FloatVec2   => UniformType.Vector2,
+        OpenTK.Graphics.OpenGL.UniformType.FloatVec3   => UniformType.Vector3,
+        OpenTK.Graphics.OpenGL.UniformType.FloatVec4   => UniformType.Vector4,
+        OpenTK.Graphics.OpenGL.UniformType.FloatMat3x2 => UniformType.Matrix3x2,
+        OpenTK.Graphics.OpenGL.UniformType.FloatMat4   => UniformType.Matrix4x4,
+        OpenTK.Graphics.OpenGL.UniformType.Sampler2d   => UniformType.Texture,
+
+        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
+      });
+    }
+
+    return results;
+  }
+
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
     GL.Uniform1i(location, value);
@@ -571,6 +570,11 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void SetShaderUniform(GraphicsHandle handle, int location, Point3 value)
   {
     GL.Uniform3i(location, value.X, value.Y, value.Z);
+  }
+
+  public void SetShaderUniform(GraphicsHandle handle, int location, Point4 value)
+  {
+    GL.Uniform4i(location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)

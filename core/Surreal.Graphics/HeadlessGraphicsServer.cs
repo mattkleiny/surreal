@@ -185,6 +185,11 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
+  public void SetShaderUniform(GraphicsHandle handle, int location, Point4 value)
+  {
+    // no-op
+  }
+
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)
   {
     // no-op

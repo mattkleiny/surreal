@@ -3,8 +3,6 @@ using Surreal.Memory;
 
 namespace Surreal;
 
-#pragma warning disable S3881
-
 /// <summary>An application resource that can be deterministically destroyed.</summary>
 public abstract class Resource : IDisposable
 {

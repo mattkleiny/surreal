@@ -5,8 +5,8 @@ var platform = new DesktopPlatform
     Title          = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    Width          = 1536,
-    Height         = 864
+    Width          = 256 * 6,
+    Height         = 144 * 6
   }
 };
 
@@ -27,7 +27,7 @@ Game.Start(platform, async game =>
     Size     = new Vector2(256, 144)
   };
 
-  material.Properties.Set(Material.DefaultProjectionView, in camera.ProjectionView);
+  material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
 
   game.ExecuteVariableStep(_ =>
   {
@@ -43,7 +43,7 @@ Game.Start(platform, async game =>
       font: font,
       text: "HELLO, WORLD!",
       position: Vector2.Zero,
-      scale: Vector2.One * 1.4f,
+      scale: Vector2.One,
       color: Color.Black,
       horizontalAlignment: HorizontalAlignment.Center,
       verticalAlignment: VerticalAlignment.Center

@@ -27,23 +27,20 @@ public class PixelCanvas : IDisposable
   public int Width  => pixels.Width;
   public int Height => pixels.Height;
 
-  public SpanGrid<Color32>         Pixels          => pixels.Span;
-  public MaterialProperty<Texture> TextureProperty { get; set; } = Material.DefaultTexture;
-
-  public void Draw(Material material)
-  {
-    texture.WritePixels<Color32>(Width, Height, Pixels);
-
-    material.Properties.Set(TextureProperty, texture);
-
-    mesh.Draw(material);
-  }
+  public SpanGrid<Color32> Pixels => pixels.Span;
 
   public void Draw(SpriteBatch batch)
   {
     texture.WritePixels<Color32>(Width, Height, Pixels);
 
-    batch.Draw(texture, Vector2.Zero, new Vector2(2f, 2f)); // TODO: why doubled?
+    batch.Draw(texture, Vector2.Zero);
+  }
+
+  public void DrawNormalized(SpriteBatch batch)
+  {
+    texture.WritePixels<Color32>(Width, Height, Pixels);
+
+    batch.Draw(texture, Vector2.Zero, new Vector2(2f, 2f));
   }
 
   public void Fill(Color32 value)

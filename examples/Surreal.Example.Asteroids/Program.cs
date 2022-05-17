@@ -17,14 +17,26 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
 
   // load some resources
+  using var font = await game.Assets.LoadDefaultBitmapFontAsync();
+  using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
+
   using var canvas = new Canvas(graphics, 256, 144);
   using var scene = new ActorScene();
-  using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
+  using var batch = new SpriteBatch(graphics);
 
   var palette = await game.Assets.LoadSpaceDust9Async();
 
   var random = Random.Shared;
   var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);
+
+  // set-up a basic orthographic projection
+  var camera = new Camera
+  {
+    Position = Vector2.Zero,
+    Size     = new Vector2(256, 144)
+  };
+
+  material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
 
   void Respawn()
   {
@@ -68,10 +80,25 @@ Game.Start(platform, async game =>
       Respawn();
     }
 
+    batch.Begin(material);
+
     canvas.Update(time.DeltaTime);
-
     scene.Tick(time.DeltaTime);
+    canvas.Draw(batch);
 
-    canvas.Draw(material);
+    if (canvas.IsGameOver)
+    {
+      batch.DrawText(
+        font: font,
+        text: "GAME OVER!",
+        position: Vector2.Zero,
+        scale: Vector2.One * 1.4f,
+        color: Color.White,
+        horizontalAlignment: HorizontalAlignment.Center,
+        verticalAlignment: VerticalAlignment.Center
+      );
+    }
+
+    batch.Flush();
   });
 });

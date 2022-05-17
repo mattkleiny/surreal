@@ -31,7 +31,7 @@ Game.Start(platform, async game =>
 
   var actors = new List<Bunny>();
 
-  material.Properties.Set(Material.DefaultProjectionView, in camera.ProjectionView);
+  material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
 
   game.ExecuteVariableStep(time =>
   {

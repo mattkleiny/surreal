@@ -85,3 +85,40 @@ public record struct Point3(int X, int Y, int Z)
     (int) MathF.Floor(vector.Z)
   );
 }
+
+/// <summary>An integral point in 4-space.</summary>
+[StructLayout(LayoutKind.Sequential)]
+public record struct Point4(int X, int Y, int Z, int W)
+{
+  public static readonly Point4 Zero = new(0, 0, 0, 0);
+  public static readonly Point4 UnitX = new(1, 0, 0, 0);
+  public static readonly Point4 UnitY = new(0, 1, 0, 0);
+  public static readonly Point4 UnitZ = new(0, 0, 1, 0);
+  public static readonly Point4 UnitW = new(0, 0, 0, 1);
+
+  public int X = X;
+  public int Y = Y;
+  public int Z = Z;
+  public int W = W;
+
+  public override string ToString() => $"<{X} {Y} {Z} {W}>";
+
+  // scalar operations
+  public static Point4 operator +(Point4 a, int s) => new(a.X + s, a.Y + s, a.Z + s, a.W + s);
+  public static Point4 operator -(Point4 a, int s) => new(a.X - s, a.Y - s, a.Z - s, a.W - s);
+  public static Point4 operator *(Point4 a, int s) => new(a.X * s, a.Y * s, a.Z * s, a.W * s);
+  public static Point4 operator /(Point4 a, int s) => new(a.X / s, a.Y / s, a.Z / s, a.W / s);
+
+  // piece-wise operations
+  public static Point4 operator +(Point4 a, Point4 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
+  public static Point4 operator -(Point4 a, Point4 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
+  public static Point4 operator *(Point4 a, Point4 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z, a.W * b.W);
+  public static Point4 operator /(Point4 a, Point4 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z, a.W / b.W);
+
+  // self-mutation
+  public static Point4 operator -(Point4 self) => new(-self.X, -self.Y, -self.Z, -self.W);
+
+  // implicit conversion
+  public static implicit operator Vector4(Point4 self) => new(self.X, self.Y, self.Z, self.W);
+  public static implicit operator Point4((int, int, int, int) value) => new(value.Item1, value.Item2, value.Item3, value.Item4);
+}

@@ -2,9 +2,6 @@
 
 namespace Surreal.Mathematics;
 
-#pragma warning disable S1104
-#pragma warning disable S2328
-
 /// <summary>A floating-point representation of color.</summary>
 [StructLayout(LayoutKind.Sequential)]
 public record struct Color(float R, float G, float B, float A = 1f)
@@ -56,10 +53,10 @@ public record struct Color(float R, float G, float B, float A = 1f)
   public static Color operator *(Color a, float scalar) => new(a.R * scalar, a.G * scalar, a.B * scalar, a.A * scalar);
   public static Color operator /(Color a, float scalar) => new(a.R / scalar, a.G / scalar, a.B / scalar, a.A / scalar);
 
-  public static explicit operator Color(Vector4 vector) => new(vector.X, vector.Y, vector.Z, vector.W);
   public static explicit operator Color(Vector3 vector) => new(vector.X, vector.Y, vector.Z);
-  public static explicit operator Vector4(Color color) => new(color.R, color.G, color.B, color.A);
+  public static explicit operator Color(Vector4 vector) => new(vector.X, vector.Y, vector.Z, vector.W);
   public static explicit operator Vector3(Color color) => new(color.R, color.G, color.B);
+  public static explicit operator Vector4(Color color) => new(color.R, color.G, color.B, color.A);
 
   public static implicit operator Color(Color32 color)
   {
@@ -109,6 +106,11 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
   public static Color32 operator /(Color32 a, Color32 b) => new((byte) (a.R / b.R), (byte) (a.G / b.G), (byte) (a.B / b.B), (byte) (a.A / b.A));
   public static Color32 operator *(Color32 a, int scalar) => new((byte) (a.R * scalar), (byte) (a.G * scalar), (byte) (a.B * scalar), (byte) (a.A * scalar));
   public static Color32 operator /(Color32 a, int scalar) => new((byte) (a.R / scalar), (byte) (a.G / scalar), (byte) (a.B / scalar), (byte) (a.A / scalar));
+
+  public static explicit operator Color32(Point3 vector) => new((byte) vector.X, (byte) vector.Y, (byte) vector.Z);
+  public static explicit operator Color32(Point4 vector) => new((byte) vector.X, (byte) vector.Y, (byte) vector.Z, (byte) vector.W);
+  public static explicit operator Point3(Color32 color) => new(color.R, color.G, color.B);
+  public static explicit operator Point4(Color32 color) => new(color.R, color.G, color.B, color.A);
 
   public static implicit operator Color32(Color color)
   {

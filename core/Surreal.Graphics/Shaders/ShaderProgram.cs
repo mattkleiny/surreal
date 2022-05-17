@@ -5,27 +5,42 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
+/// <summary>Different kinds of uniform values supported on a <see cref="ShaderProgram"/>..</summary>
+public enum UniformType
+{
+  Integer,
+  Float,
+  Point2,
+  Point3,
+  Point4,
+  Vector2,
+  Vector3,
+  Vector4,
+  Quaternion,
+  Matrix3x2,
+  Matrix4x4,
+  Texture
+}
+
+/// <summary>Metadata about attributes in a <see cref="ShaderProgram"/>.</summary>
+public readonly record struct AttributeMetadata(string Name, int Location, int Length, int Count, UniformType Type);
+
+/// <summary>Metadata about uniforms in a <see cref="ShaderProgram"/>.</summary>
+public readonly record struct UniformMetadata(string Name, int Location, int Length, int Count, UniformType Type);
+
 /// <summary>Utilities for <see cref="ShaderProgram"/>s.</summary>
 public static class ShaderProgramExtensions
 {
-  /// <summary>Loads the default <see cref="ShaderProgram"/> for sprites from Surreal.</summary>
   public static async Task<ShaderProgram> LoadDefaultSpriteShaderAsync(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<ShaderProgram>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl");
   }
 
-  /// <summary>Loads the default <see cref="Material"/> for sprites from Surreal.</summary>
   public static async Task<Material> LoadDefaultSpriteMaterialAsync(this IAssetManager manager)
   {
     return await manager.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl");
   }
 }
-
-/// <summary>Metadata about attributes in a <see cref="ShaderProgram"/>.</summary>
-public readonly record struct AttributeMetadata(string Name, int Location, int Length, int Count, Type Type);
-
-/// <summary>Metadata about uniforms in a <see cref="ShaderProgram"/>.</summary>
-public readonly record struct UniformMetadata(string Name, int Location, int Length, int Count, Type Type);
 
 /// <summary>A low-level shader program on the GPU.</summary>
 public sealed class ShaderProgram : GraphicsResource
@@ -81,6 +96,14 @@ public sealed class ShaderProgram : GraphicsResource
   }
 
   public void SetUniform(string name, Point3 value)
+  {
+    if (TryGetUniformLocation(name, out var location))
+    {
+      server.SetShaderUniform(Handle, location, value);
+    }
+  }
+
+  public void SetUniform(string name, Point4 value)
   {
     if (TryGetUniformLocation(name, out var location))
     {

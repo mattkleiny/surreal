@@ -34,7 +34,7 @@ public sealed class SpriteBatch : IDisposable
   }
 
   /// <summary>The <see cref="MaterialProperty{T}"/> to bind textures to.</summary>
-  public MaterialProperty<Texture> TextureProperty { get; set; } = Material.DefaultTexture;
+  public MaterialProperty<Texture> TextureProperty { get; set; } = MaterialProperty.Texture;
 
   public void Begin(ShaderProgram shader)
     => Begin(new Material(shader));
@@ -100,7 +100,7 @@ public sealed class SpriteBatch : IDisposable
     // bind the appropriate texture
     if (lastTexture != null)
     {
-      material.Properties.Set(TextureProperty, lastTexture);
+      material.Locals.SetProperty(TextureProperty, lastTexture);
     }
 
     mesh.Vertices.Write(vertices.Span[..vertexCount]);
