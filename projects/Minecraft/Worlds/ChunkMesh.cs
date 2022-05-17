@@ -23,7 +23,7 @@ public sealed class ChunkMesh : IDisposable
   public bool IsDirty { get; private set; } = true;
   public bool IsReady { get; private set; }
 
-  public void Render(MeshType type)
+  public void Draw(Material material)
   {
     if (IsDirty)
     {
@@ -35,7 +35,7 @@ public sealed class ChunkMesh : IDisposable
 
     if (IsReady)
     {
-      // TODO: draw the mesh
+      mesh.Draw(material);
     }
   }
 
@@ -67,15 +67,14 @@ public sealed class ChunkMesh : IDisposable
       if (!chunk.GetBlock(x, y, z + 1).IsSolid) tessellator.AddFace(x, y, z, Face.Back, block.Color);
     }
 
-    // TODO: schedule upload?
-    // MinecraftGame.Schedule(() =>
-    // {
-    //   // upload vertices/indices to the GPU
-    //   mesh.Vertices.Write(tessellator.Vertices);
-    //   mesh.Indices.Write(tessellator.Indices);
-    //
-    //   IsReady = true;
-    // });
+    Game.ScheduleNextFrame(() =>
+    {
+      // upload vertices/indices to the GPU
+      mesh.Vertices.Write(tessellator.Vertices);
+      mesh.Indices.Write(tessellator.Indices);
+
+      IsReady = true;
+    });
   }
 
   public void Dispose()
@@ -114,21 +113,21 @@ public sealed class ChunkMesh : IDisposable
   private sealed class Tessellator
   {
     private readonly List<Vertex> vertices = new();
-    private readonly List<ushort> indices = new();
+    private readonly List<uint> indices = new();
 
-    public Span<Vertex> Vertices => CollectionsMarshal.AsSpan(vertices);
-    public Span<ushort> Indices  => CollectionsMarshal.AsSpan(indices);
+    public Span<Vertex> Vertices => vertices.AsSpan();
+    public Span<uint>   Indices  => indices.AsSpan();
 
     public void AddFace(int x, int y, int z, Face face, Color color)
     {
       const float size = 0.5f;
 
-      indices.Add((ushort) (vertices.Count + 0));
-      indices.Add((ushort) (vertices.Count + 1));
-      indices.Add((ushort) (vertices.Count + 2));
-      indices.Add((ushort) (vertices.Count + 0));
-      indices.Add((ushort) (vertices.Count + 2));
-      indices.Add((ushort) (vertices.Count + 3));
+      indices.Add((uint) (vertices.Count + 0));
+      indices.Add((uint) (vertices.Count + 1));
+      indices.Add((uint) (vertices.Count + 2));
+      indices.Add((uint) (vertices.Count + 0));
+      indices.Add((uint) (vertices.Count + 2));
+      indices.Add((uint) (vertices.Count + 3));
 
       switch (face)
       {

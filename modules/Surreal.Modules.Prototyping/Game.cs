@@ -26,6 +26,12 @@ public sealed class Game : IDisposable
 
   private readonly ConcurrentQueue<Action> callbacks = new();
 
+  public static void ScheduleNextFrame(Action callback)
+  {
+    // TODO: do something better here
+    SynchronizationContext.Current?.Post(_ => callback(), null);
+  }
+
   private Game(IServiceRegistry services, IPlatformHost host)
   {
     Services = services;
