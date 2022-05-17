@@ -1,7 +1,6 @@
-﻿using Surreal.Graphics.Shaders.Parsing;
-using Surreal.IO;
+﻿using Surreal.IO;
 
-namespace Surreal.Graphics.Shaders;
+namespace Surreal.Graphics.Shaders.Parsing;
 
 public class ShaderParserTests
 {

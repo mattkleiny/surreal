@@ -1,19 +1,57 @@
-﻿using Surreal.Collections;
+﻿using System.Runtime.InteropServices;
+using Surreal.Collections;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Meshes;
 
 /// <summary>A utility for tessellating shapes into meshes of vertex geometry.</summary>
-public sealed class Tessellator<TVertex>
+public abstract class Tessellator
+{
+  /// <summary>The types of <see cref="Figure"/> supported.</summary>
+  protected enum FigureType : byte
+  {
+    Line,
+    Triangle,
+    Circle,
+    Rectangle,
+  }
+
+  /// <summary>A type of object to be rendered; a <see cref="Figure"/> with a clipping rect.</summary>
+  protected record struct ClippedFigure
+  {
+    public Rectangle ClippingRect;
+    public Figure Figure;
+  }
+
+  /// <summary>A type of object to be rendered; a union of all possible types and a tag.</summary>
+  [StructLayout(LayoutKind.Explicit)]
+  protected record struct Figure
+  {
+    [FieldOffset(0)] public FigureType Tag;
+    [FieldOffset(1)] public Line Line;
+    [FieldOffset(1)] public Triangle Triangle;
+    [FieldOffset(1)] public Circle Circle;
+    [FieldOffset(1)] public Rectangle Rectangle;
+  }
+
+  protected record struct Line(Vector2 From, Vector2 To);
+  protected record struct Triangle(Vector2 A, Vector2 B, Vector2 C);
+  protected record struct Circle(Vector2 Center, float Radius);
+}
+
+/// <summary>A utility for tessellating shapes into meshes of vertex geometry.</summary>
+public sealed class Tessellator<TVertex> : Tessellator
   where TVertex : unmanaged
 {
   // TODO: convert this into internal shape representations and then add a 'tessellation' step at the end
-  // TODO: consider using a stream packing method to make it efficient at runtime
 
+  private readonly List<ClippedFigure> figures = new();
   private readonly List<TVertex> vertices = new();
   private readonly List<uint> indices = new();
 
-  public ushort VertexCount => (ushort) vertices.Count;
-  public uint   IndexCount  => (uint) indices.Count;
+  public int  FigureCount => figures.Count;
+  public uint VertexCount => (uint) vertices.Count;
+  public uint IndexCount  => (uint) indices.Count;
 
   public ReadOnlySpan<TVertex> Vertices => vertices.AsSpan();
   public ReadOnlySpan<uint>    Indices  => indices.AsSpan();
@@ -28,12 +66,25 @@ public sealed class Tessellator<TVertex>
     throw new NotImplementedException();
   }
 
+  public void AddLine(Vector2 a, Vector2 b)
+  {
+    figures.Add(new ClippedFigure
+    {
+      ClippingRect = Rectangle.Empty,
+      Figure = new Figure
+      {
+        Tag = FigureType.Line,
+        Line = new Line(a, b)
+      }
+    });
+  }
+
   public void AddVertex(TVertex vertex)
   {
     vertices.Add(vertex);
   }
 
-  public void AddIndex(int index)
+  public void AddIndex(uint index)
   {
     indices.Add((ushort) index);
   }
@@ -122,76 +173,5 @@ public static class TessellatorExtensions
     tessellator.AddIndex(offset + 0);
     tessellator.AddIndex(offset + 2);
     tessellator.AddIndex(offset + 3);
-  }
-}
-
-/// <summary>A stream of geometry instructions packed into an efficient array to make it simpler to use.</summary>
-public sealed class GeometryStream : IDisposable
-{
-  private readonly MemoryStream stream = Pool<MemoryStream>.Shared.CreateOrRent();
-  private readonly BinaryWriter writer;
-
-  // TODO: work on this
-
-  public GeometryStream()
-  {
-    writer = new BinaryWriter(stream);
-  }
-
-  public void AddCircle(Vector2 center, float radius)
-  {
-    writer.Write((byte) ShapeKind.Circle);
-    writer.Write(center.X);
-    writer.Write(center.Y);
-    writer.Write(radius);
-  }
-
-  public void AddTriangle(Vector2 a, Vector2 b, Vector2 c)
-  {
-    writer.Write((byte) ShapeKind.Triangle);
-    writer.Write(a.X);
-    writer.Write(a.Y);
-    writer.Write(b.X);
-    writer.Write(b.Y);
-    writer.Write(c.X);
-    writer.Write(c.Y);
-  }
-
-  public void AddQuad(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
-  {
-    writer.Write((byte) ShapeKind.Quad);
-    writer.Write(a.X);
-    writer.Write(a.Y);
-    writer.Write(b.X);
-    writer.Write(b.Y);
-    writer.Write(c.X);
-    writer.Write(c.Y);
-    writer.Write(d.X);
-    writer.Write(d.Y);
-  }
-
-  public void AddPoints(ReadOnlySpan<Vector2> points)
-  {
-    writer.Write((byte) ShapeKind.Points);
-    writer.Write(points.Length);
-
-    foreach (var point in points)
-    {
-      writer.Write(point.X);
-      writer.Write(point.Y);
-    }
-  }
-
-  public void Dispose()
-  {
-    Pool<MemoryStream>.Shared.Return(stream);
-  }
-
-  private enum ShapeKind : byte
-  {
-    Circle,
-    Triangle,
-    Quad,
-    Points,
   }
 }

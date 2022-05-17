@@ -1,6 +1,4 @@
-﻿using Surreal.Graphics.Shaders.Parsing;
-
-namespace Surreal.Graphics.Shaders;
+﻿namespace Surreal.Graphics.Shaders.Parsing;
 
 public class ShadeLanguageTests
 {
