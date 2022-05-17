@@ -53,12 +53,12 @@ public static class BitmapFontExtensions
 
     if (horizontalAlignment == HorizontalAlignment.Center)
     {
-      position.X -= size.Width / 2f;
+      position.X -= size.Width / 2f * scale.X;
     }
 
     if (verticalAlignment == VerticalAlignment.Center)
     {
-      position.Y += size.Height / 2f;
+      position.Y += size.Height / 2f * scale.Y;
     }
 
     var startPosition = position;

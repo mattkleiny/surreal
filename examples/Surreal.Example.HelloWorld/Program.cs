@@ -44,7 +44,7 @@ Game.Start(platform, async game =>
       font: font,
       text: "HELLO, SURREAL!",
       position: Vector2.Zero,
-      scale: Vector2.One,
+      scale: Vector2.One * 1.4f,
       color: Color.Black,
       horizontalAlignment: HorizontalAlignment.Center,
       verticalAlignment: VerticalAlignment.Center
