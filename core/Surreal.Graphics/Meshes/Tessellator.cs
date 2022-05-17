@@ -10,13 +10,13 @@ public sealed class Tessellator<TVertex>
   // TODO: consider using a stream packing method to make it efficient at runtime
 
   private readonly List<TVertex> vertices = new();
-  private readonly List<ushort> indices = new();
+  private readonly List<uint> indices = new();
 
-  public ushort VertexCount => (ushort)vertices.Count;
-  public uint   IndexCount  => (uint)indices.Count;
+  public ushort VertexCount => (ushort) vertices.Count;
+  public uint   IndexCount  => (uint) indices.Count;
 
   public ReadOnlySpan<TVertex> Vertices => vertices.AsSpan();
-  public ReadOnlySpan<ushort>  Indices  => indices.AsSpan();
+  public ReadOnlySpan<uint>    Indices  => indices.AsSpan();
 
   public void BeginClipRect()
   {
@@ -35,7 +35,7 @@ public sealed class Tessellator<TVertex>
 
   public void AddIndex(int index)
   {
-    indices.Add((ushort)index);
+    indices.Add((ushort) index);
   }
 
   public void Clear()
@@ -48,75 +48,6 @@ public sealed class Tessellator<TVertex>
   {
     mesh.Vertices.Write(Vertices);
     mesh.Indices.Write(Indices);
-  }
-}
-
-/// <summary>A stream of geometry instructions packed into an efficient array to make it simpler to use..</summary>
-public sealed class GeometryStream : IDisposable
-{
-  private readonly MemoryStream stream = Pool<MemoryStream>.Shared.CreateOrRent();
-  private readonly BinaryWriter writer;
-
-  public GeometryStream()
-  {
-    writer = new BinaryWriter(stream);
-  }
-
-  public void AddCircle(Vector2 center, float radius)
-  {
-    writer.Write((byte)ShapeKind.Circle);
-    writer.Write(center.X);
-    writer.Write(center.Y);
-    writer.Write(radius);
-  }
-
-  public void AddTriangle(Vector2 a, Vector2 b, Vector2 c)
-  {
-    writer.Write((byte)ShapeKind.Triangle);
-    writer.Write(a.X);
-    writer.Write(a.Y);
-    writer.Write(b.X);
-    writer.Write(b.Y);
-    writer.Write(c.X);
-    writer.Write(c.Y);
-  }
-
-  public void AddQuad(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
-  {
-    writer.Write((byte)ShapeKind.Quad);
-    writer.Write(a.X);
-    writer.Write(a.Y);
-    writer.Write(b.X);
-    writer.Write(b.Y);
-    writer.Write(c.X);
-    writer.Write(c.Y);
-    writer.Write(d.X);
-    writer.Write(d.Y);
-  }
-
-  public void AddPoints(ReadOnlySpan<Vector2> points)
-  {
-    writer.Write((byte)ShapeKind.Points);
-    writer.Write(points.Length);
-
-    foreach (var point in points)
-    {
-      writer.Write(point.X);
-      writer.Write(point.Y);
-    }
-  }
-
-  public void Dispose()
-  {
-    Pool<MemoryStream>.Shared.Return(stream);
-  }
-
-  private enum ShapeKind : byte
-  {
-    Circle,
-    Triangle,
-    Quad,
-    Points,
   }
 }
 
@@ -191,5 +122,76 @@ public static class TessellatorExtensions
     tessellator.AddIndex(offset + 0);
     tessellator.AddIndex(offset + 2);
     tessellator.AddIndex(offset + 3);
+  }
+}
+
+/// <summary>A stream of geometry instructions packed into an efficient array to make it simpler to use..</summary>
+public sealed class GeometryStream : IDisposable
+{
+  private readonly MemoryStream stream = Pool<MemoryStream>.Shared.CreateOrRent();
+  private readonly BinaryWriter writer;
+
+  // TODO: work on this
+
+  public GeometryStream()
+  {
+    writer = new BinaryWriter(stream);
+  }
+
+  public void AddCircle(Vector2 center, float radius)
+  {
+    writer.Write((byte) ShapeKind.Circle);
+    writer.Write(center.X);
+    writer.Write(center.Y);
+    writer.Write(radius);
+  }
+
+  public void AddTriangle(Vector2 a, Vector2 b, Vector2 c)
+  {
+    writer.Write((byte) ShapeKind.Triangle);
+    writer.Write(a.X);
+    writer.Write(a.Y);
+    writer.Write(b.X);
+    writer.Write(b.Y);
+    writer.Write(c.X);
+    writer.Write(c.Y);
+  }
+
+  public void AddQuad(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+  {
+    writer.Write((byte) ShapeKind.Quad);
+    writer.Write(a.X);
+    writer.Write(a.Y);
+    writer.Write(b.X);
+    writer.Write(b.Y);
+    writer.Write(c.X);
+    writer.Write(c.Y);
+    writer.Write(d.X);
+    writer.Write(d.Y);
+  }
+
+  public void AddPoints(ReadOnlySpan<Vector2> points)
+  {
+    writer.Write((byte) ShapeKind.Points);
+    writer.Write(points.Length);
+
+    foreach (var point in points)
+    {
+      writer.Write(point.X);
+      writer.Write(point.Y);
+    }
+  }
+
+  public void Dispose()
+  {
+    Pool<MemoryStream>.Shared.Return(stream);
+  }
+
+  private enum ShapeKind : byte
+  {
+    Circle,
+    Triangle,
+    Quad,
+    Points,
   }
 }

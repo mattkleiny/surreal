@@ -18,16 +18,10 @@ public sealed class Material : GraphicsResource
   public static MaterialProperty<Matrix4x4> DefaultProjectionView { get; } = new("u_projectionView");
 
   /// <summary>A global collection of material properties that will be applied to all materials.</summary>
-  public static MaterialPropertyCollection Globals { get; }
+  public static MaterialPropertyCollection Globals { get; } = new();
 
   private readonly bool ownsShader;
   private MaterialPropertyCollection properties = new();
-
-  static Material()
-  {
-    Globals = new MaterialPropertyCollection();
-    Globals.Set(DefaultProjectionView, Matrix4x4.Identity);
-  }
 
   public Material(ShaderProgram shader, bool ownsShader = true)
   {

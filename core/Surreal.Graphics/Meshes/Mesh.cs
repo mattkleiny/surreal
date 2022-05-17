@@ -113,14 +113,14 @@ public sealed class Mesh<TVertex> : Mesh
     this.server = server;
 
     Vertices = new GraphicsBuffer<TVertex>(server, BufferType.Vertex, usage);
-    Indices  = new GraphicsBuffer<ushort>(server, BufferType.Index, usage);
+    Indices  = new GraphicsBuffer<uint>(server, BufferType.Index, usage);
 
     Handle = server.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
   }
 
   public GraphicsHandle          Handle   { get; }
   public GraphicsBuffer<TVertex> Vertices { get; }
-  public GraphicsBuffer<ushort>  Indices  { get; }
+  public GraphicsBuffer<uint>    Indices  { get; }
 
   public override Size Size => Vertices.Size + Indices.Size;
 

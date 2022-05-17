@@ -74,8 +74,11 @@ public sealed class Game : IDisposable
       }
     }));
 
-    // run the game
-    game.RunEventLoop();
+    while (!game.Host.IsClosing && !game.IsClosing)
+    {
+      // eventually this will end up blocking when a main loop takes over
+      game.PumpEventLoop();
+    }
   }
 
   public IServiceRegistry Services { get; init; }
@@ -89,16 +92,6 @@ public sealed class Game : IDisposable
   public void Schedule(Action callback)
   {
     callbacks.Enqueue(callback);
-  }
-
-  /// <summary>Runs the main event loop for the game.</summary>
-  private void RunEventLoop()
-  {
-    while (!Host.IsClosing && !IsClosing)
-    {
-      // eventually this will end up blocking when a main loop takes over
-      PumpEventLoop();
-    }
   }
 
   /// <summary>Pumps the main event loop a single frame.</summary>
@@ -237,6 +230,7 @@ public abstract class Game<TSelf> : IDisposable
 
   private Game game = null!;
 
+  /// <summary>Exits the game at the end of the frame.</summary>
   public void Exit() => game.Exit();
 
   /// <summary>Prepares the game and it's dependencies.</summary>
@@ -252,7 +246,7 @@ public abstract class Game<TSelf> : IDisposable
 
     OnInitialized(game.Host, game.Services);
 
-    game.ExecuteVariableStep(OnGameTick);
+    game.ExecuteVariableStep(OnTick);
   }
 
   /// <summary>Callback to register file systems in the system.</summary>
@@ -284,32 +278,8 @@ public abstract class Game<TSelf> : IDisposable
   {
   }
 
-  private void OnGameTick(GameTime time)
-  {
-    OnBeginFrame(time);
-    OnInput(time);
-    OnUpdate(time);
-    OnDraw(time);
-    OnEndFrame(time);
-  }
-
-  protected virtual void OnBeginFrame(GameTime time)
-  {
-  }
-
-  protected virtual void OnInput(GameTime time)
-  {
-  }
-
-  protected virtual void OnUpdate(GameTime time)
-  {
-  }
-
-  protected virtual void OnDraw(GameTime time)
-  {
-  }
-
-  protected virtual void OnEndFrame(GameTime time)
+  /// <summary>Called each frame to advance the game.</summary>
+  protected virtual void OnTick(GameTime time)
   {
   }
 

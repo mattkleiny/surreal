@@ -48,7 +48,7 @@ Game.Start(platform, async game =>
 
     if (mouse.IsButtonDown(MouseButton.Left))
     {
-      for (int i = 0; i < 32; i++)
+      for (int i = 0; i < 64; i++)
       {
         actors.Add(new Bunny
         {
@@ -60,7 +60,7 @@ Game.Start(platform, async game =>
 
     if (mouse.IsButtonDown(MouseButton.Right))
     {
-      for (int i = 0; i < 32; i++)
+      for (int i = 0; i < 64; i++)
       {
         if (actors.Count > 0)
         {
@@ -83,7 +83,7 @@ Game.Start(platform, async game =>
       font: font,
       text: $"Bunnies {actors.Count}",
       position: new Vector2(50f, 50f),
-      scale: Vector2.One,
+      scale: new Vector2(4f, 4f),
       color: Color.Black
     );
 

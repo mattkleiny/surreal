@@ -12,7 +12,7 @@ namespace Surreal.Graphics.Sprites;
 public sealed class SpriteBatch : IDisposable
 {
   private const int DefaultSpriteCount = 200;
-  private const int MaximumSpriteCount = 8000;
+  private const int MaximumSpriteCount = int.MaxValue / 6;
 
   private readonly IDisposableBuffer<Vertex2> vertices;
   private readonly Mesh<Vertex2> mesh;
@@ -55,11 +55,8 @@ public sealed class SpriteBatch : IDisposable
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
     => Draw(region, position, size, 0f, color);
 
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
-    => Draw(region, position, size, angle, color, Matrix3x2.Identity);
-
   [SkipLocalsInit]
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color, in Matrix3x2 transform)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
   {
     if (region.Texture != lastTexture)
     {
@@ -73,13 +70,10 @@ public sealed class SpriteBatch : IDisposable
       Flush();
     }
 
-    // TODO: profile this?
     // compute final transform from individual pieces
-    var finalTransform =
-      Matrix3x2.CreateScale(size) *
-      Matrix3x2.CreateRotation(angle) *
-      Matrix3x2.CreateTranslation(position) *
-      transform;
+    var transform = MathF.Abs(angle) > float.Epsilon
+      ? Matrix3x2.CreateScale(size) * Matrix3x2.CreateRotation(angle) * Matrix3x2.CreateTranslation(position)
+      : Matrix3x2.CreateScale(size) * Matrix3x2.CreateTranslation(position);
 
     // compute UV texture bounds
     var uv = region.UV;
@@ -87,10 +81,10 @@ public sealed class SpriteBatch : IDisposable
     // add results to sprite batch
     var output = new SpanList<Vertex2>(vertices.Span[vertexCount..]);
 
-    output.Add(new(Vector2.Transform(new(-0.5f, -0.5f), finalTransform), color, uv.BottomLeft));
-    output.Add(new(Vector2.Transform(new(-0.5f, 0.5f), finalTransform), color, uv.TopLeft));
-    output.Add(new(Vector2.Transform(new(0.5f, 0.5f), finalTransform), color, uv.TopRight));
-    output.Add(new(Vector2.Transform(new(0.5f, -0.5f), finalTransform), color, uv.BottomRight));
+    output.AddUnchecked(new(Vector2.Transform(new(-0.5f, -0.5f), transform), color, uv.BottomLeft));
+    output.AddUnchecked(new(Vector2.Transform(new(-0.5f, 0.5f), transform), color, uv.TopLeft));
+    output.AddUnchecked(new(Vector2.Transform(new(0.5f, 0.5f), transform), color, uv.TopRight));
+    output.AddUnchecked(new(Vector2.Transform(new(0.5f, -0.5f), transform), color, uv.BottomRight));
 
     vertexCount += output.Count;
   }
@@ -117,16 +111,16 @@ public sealed class SpriteBatch : IDisposable
 
   private unsafe void CreateIndices(int indexCount)
   {
-    Span<ushort> indices = stackalloc ushort[indexCount];
+    Span<uint> indices = stackalloc uint[indexCount];
 
-    for (ushort i = 0, j = 0; i < indexCount; i += 6, j += 4)
+    for (int i = 0, j = 0; i < indexCount; i += 6, j += 4)
     {
-      indices[i + 0] = j;
-      indices[i + 1] = (ushort) (j + 1);
-      indices[i + 2] = (ushort) (j + 2);
-      indices[i + 3] = (ushort) (j + 2);
-      indices[i + 4] = (ushort) (j + 3);
-      indices[i + 5] = j;
+      indices[i + 0] = (uint) j;
+      indices[i + 1] = (uint) (j + 1);
+      indices[i + 2] = (uint) (j + 2);
+      indices[i + 3] = (uint) (j + 2);
+      indices[i + 4] = (uint) (j + 3);
+      indices[i + 5] = (uint) j;
     }
 
     mesh.Indices.Write(indices);

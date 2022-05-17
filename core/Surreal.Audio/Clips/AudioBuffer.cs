@@ -22,8 +22,8 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
   public AudioSampleRate Rate     { get; }
 
   public Memory<byte> Memory => buffer.Memory;
-  public Span<byte>   Span   => Memory.Span;
-  public Size         Size   => buffer.Memory.Span.CalculateSize();
+  public Span<byte>   Span   => buffer.Span;
+  public Size         Size   => Span.CalculateSize();
 
   protected override void Dispose(bool managed)
   {

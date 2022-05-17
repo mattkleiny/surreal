@@ -49,6 +49,7 @@ public static class BitmapFontExtensions
     VerticalAlignment verticalAlignment = VerticalAlignment.Top
   )
   {
+    // TODO: implement galley system for layout out text?
     var size = font.MeasureSize(text);
 
     if (horizontalAlignment == HorizontalAlignment.Center)

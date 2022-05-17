@@ -41,7 +41,7 @@ Game.Start(platform, async game =>
     batch.Begin(material);
     batch.DrawText(
       font: font,
-      text: "HELLO, SURREAL!",
+      text: "HELLO, WORLD!",
       position: Vector2.Zero,
       scale: Vector2.One * 1.4f,
       color: Color.Black,

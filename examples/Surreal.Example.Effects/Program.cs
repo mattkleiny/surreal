@@ -50,7 +50,7 @@ Game.Start(platform, async game =>
       effect.Properties.Get(intensity) -= 0.001f;
     }
 
-    using (target.Rent())
+    using (target.ActivateForScope())
     {
       graphics.ClearColorBuffer(Color.White);
 

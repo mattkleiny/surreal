@@ -29,7 +29,7 @@ public sealed class RenderTarget : GraphicsResource
   public Texture        ColorAttachment { get; }
 
   /// <summary>Activates the <see cref="RenderTarget"/> for the duration of the given scope.</summary>
-  public RenderTargetScope Rent()
+  public RenderTargetScope ActivateForScope()
   {
     return new RenderTargetScope(this);
   }

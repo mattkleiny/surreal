@@ -13,7 +13,7 @@ public interface IBuffer<T>
   Memory<T> Memory { get; }
 
   /// <summary>The underlying <see cref="Span{T}"/> representing the buffer data.</summary>
-  Span<T> Span => Memory.Span;
+  Span<T> Span { get; }
 
   /// <summary>Resizes the underlying buffer storage.</summary>
   void Resize(int newLength);
@@ -50,6 +50,7 @@ public static class Buffers
     }
 
     public Memory<T> Memory => elements;
+    public Span<T>   Span   => elements;
 
     public void Resize(int newLength)
     {
@@ -70,6 +71,7 @@ public static class Buffers
     }
 
     public Memory<T> Memory => elements;
+    public Span<T>   Span   => elements;
 
     public void Resize(int newLength)
     {
@@ -92,14 +94,16 @@ public static class Buffers
       this.length = length;
 
       buffer = zeroFill
-        ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
-        : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
+        ? NativeMemory.AllocZeroed((nuint) length, (nuint) Unsafe.SizeOf<T>())
+        : NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
     }
 
     ~NativeBuffer()
     {
       Dispose(false);
     }
+
+    public Span<T> Span => GetSpan();
 
     public override Span<T> GetSpan()
     {
@@ -120,15 +124,17 @@ public static class Buffers
 
     public void Resize(int newLength)
     {
-      buffer = NativeMemory.Realloc(buffer, (nuint)newLength);
+      buffer = NativeMemory.Realloc(buffer, (nuint) newLength);
     }
 
     protected override void Dispose(bool disposing)
     {
-      CheckNotDisposed();
-      NativeMemory.Free(buffer);
+      if (!isDisposed)
+      {
+        NativeMemory.Free(buffer);
 
-      isDisposed = true;
+        isDisposed = true;
+      }
     }
 
     [Conditional("DEBUG")]
@@ -166,9 +172,13 @@ public static class Buffers
       accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
     }
 
+    public Span<T> Span => GetSpan();
+
     public override Span<T> GetSpan()
     {
-      return new Span<T>(pointer, (int)accessor.Capacity);
+      CheckNotDisposed();
+
+      return new Span<T>(pointer, (int) accessor.Capacity);
     }
 
     public override MemoryHandle Pin(int elementIndex = 0)
@@ -188,14 +198,15 @@ public static class Buffers
 
     protected override void Dispose(bool disposing)
     {
-      CheckNotDisposed();
+      if (!isDisposed)
+      {
+        accessor.SafeMemoryMappedViewHandle.ReleasePointer();
 
-      accessor.SafeMemoryMappedViewHandle.ReleasePointer();
+        accessor.Dispose();
+        file.Dispose();
 
-      accessor.Dispose();
-      file.Dispose();
-
-      isDisposed = true;
+        isDisposed = true;
+      }
     }
 
     [Conditional("DEBUG")]

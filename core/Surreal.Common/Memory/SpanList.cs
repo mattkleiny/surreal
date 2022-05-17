@@ -16,6 +16,7 @@ public ref struct SpanList<T>
   public int Count    { get; private set; }
   public int Capacity => storage.Length;
 
+  public ref T this[int index] => ref storage[index];
   public ref T this[Index index] => ref storage[index];
 
   public SpanList<T> this[Range range]
@@ -38,6 +39,11 @@ public ref struct SpanList<T>
       throw new InvalidOperationException("Cannot add any more elements, it will overflow the buffer!");
     }
 
+    storage[Count++] = element;
+  }
+
+  public void AddUnchecked(T element)
+  {
     storage[Count++] = element;
   }
 
