@@ -14,7 +14,7 @@ public static class RandomExtensions
   public static double NextDouble(this Random random, double min, double max) => random.NextDouble() * (max - min) + min;
 
   public static int NextSign(this Random random) => random.Next() < 0.5f ? 1 : -1;
-  public static bool NextBool(this Random random, float chance = 0.5f) => random.NextChance(chance);
+  public static bool NextBool(this Random random, float chance = 0.5f) => random.NextSingle() < chance;
   public static bool NextChance(this Random random, float chance) => NextBool(random, chance);
 
   public static int NextRange(this Random random, IntRange range) => random.Next(range.Min, range.Max);

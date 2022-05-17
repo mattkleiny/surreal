@@ -664,7 +664,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
     if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.FramebufferComplete)
     {
-      throw new GraphicsException("The frame buffer is incomplete");
+      throw new GraphicsException("The frame buffer is incomplete; are the texture formats compatible?");
     }
 
     GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);

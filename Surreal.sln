@@ -92,6 +92,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Bunnymark",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.Effects", "examples\Surreal.Example.Effects\Surreal.Example.Effects.csproj", "{0DB7A442-BC6C-4E15-AF0A-E715C17303FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Example.TileMaps", "examples\Surreal.Example.TileMaps\Surreal.Example.TileMaps.csproj", "{282552B3-5A5D-48A2-88AA-3988CC9689A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -210,6 +212,10 @@ Global
 		{0DB7A442-BC6C-4E15-AF0A-E715C17303FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DB7A442-BC6C-4E15-AF0A-E715C17303FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DB7A442-BC6C-4E15-AF0A-E715C17303FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{282552B3-5A5D-48A2-88AA-3988CC9689A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{282552B3-5A5D-48A2-88AA-3988CC9689A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{282552B3-5A5D-48A2-88AA-3988CC9689A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{282552B3-5A5D-48A2-88AA-3988CC9689A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -248,5 +254,6 @@ Global
 		{768FB796-9699-436C-96CB-7E43C4770E3B} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{B4B2013D-77BF-4C5C-8E3E-67EA22FDD039} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{0DB7A442-BC6C-4E15-AF0A-E715C17303FF} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{282552B3-5A5D-48A2-88AA-3988CC9689A6} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 	EndGlobalSection
 EndGlobal

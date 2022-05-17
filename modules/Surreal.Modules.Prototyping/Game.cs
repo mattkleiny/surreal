@@ -68,7 +68,9 @@ public sealed class Game : IDisposable
     {
       if (task.IsFaulted)
       {
-        Log.Error((string) $"An unhandled top-level exception occurred: {task.Exception}");
+        Log.Error(task.Exception is { InnerExceptions.Count: 1 }
+          ? $"An unhandled top-level exception occurred: {task.Exception.InnerExceptions.Single()}"
+          : $"An unhandled top-level exception occurred: {task.Exception}");
 
         game.Exit();
       }

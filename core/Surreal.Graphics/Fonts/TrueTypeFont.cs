@@ -64,7 +64,20 @@ public sealed class TrueTypeFont
   /// <summary>A <see cref="TrueTypeFont"/> that can be rasterized at a particular size.</summary>
   public sealed class RasterFont
   {
-    private const string DefaultCharacterSet = "!@#$%^&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]{},./ ";
+    private static readonly string AsciiCharacterSet;
+
+    static RasterFont()
+    {
+      // build default ASCII character set
+      var builder = new StringBuilder();
+
+      for (int i = 0; i < 256; i++)
+      {
+        builder.Append((char) i);
+      }
+
+      AsciiCharacterSet = builder.ToString();
+    }
 
     private readonly IGraphicsServer server;
     private readonly TextOptions options;
@@ -84,7 +97,13 @@ public sealed class TrueTypeFont
     }
 
     /// <summary>Renders this font to a new <see cref="BitmapFont"/>.</summary>
-    public BitmapFont ToBitmapFont(string characters = DefaultCharacterSet)
+    public BitmapFont ToBitmapFont()
+    {
+      return ToBitmapFont(AsciiCharacterSet);
+    }
+
+    /// <summary>Renders this font to a new <see cref="BitmapFont"/>.</summary>
+    public BitmapFont ToBitmapFont(string characters)
     {
       var atlas = new TextureAtlasGlyphRenderer();
       var renderer = new TextRenderer(atlas);

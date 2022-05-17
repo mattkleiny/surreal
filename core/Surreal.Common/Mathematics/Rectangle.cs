@@ -1,5 +1,7 @@
 ﻿namespace Surreal.Mathematics;
 
+// TODO: make the coordinate system consistent across the project
+
 /// <summary>A bounding rectangle in 2-space.</summary>
 public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)
 {
@@ -15,7 +17,7 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     var left = center.X - size.X / 2f;
     var top = center.Y - size.Y / 2f;
     var right = center.X + size.X / 2f;
-    var bottom = center.Y +size.Y / 2f;
+    var bottom = center.Y + size.Y / 2f;
 
     return new Rectangle(left, top, right, bottom);
   }
@@ -61,8 +63,8 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   {
     return vector.X >= Left &&
            vector.X <= Right &&
-           vector.Y >= Bottom &&
-           vector.Y <= Top;
+           vector.Y >= Top &&
+           vector.Y <= Bottom;
   }
 
   /// <summary>Allows enumerating points in a <see cref="Rectangle"/>.</summary>

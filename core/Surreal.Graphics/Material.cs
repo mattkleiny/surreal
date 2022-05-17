@@ -1,11 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
-using static Surreal.Graphics.Shaders.MaterialPropertySet;
+using static Surreal.Graphics.MaterialPropertySet;
 
-namespace Surreal.Graphics.Shaders;
+namespace Surreal.Graphics;
 
 /// <summary>Different kinds of blends.</summary>
 public enum BlendMode
@@ -40,7 +41,7 @@ public static class MaterialProperty
 public readonly record struct MaterialProperty<T>(string Name);
 
 /// <summary>A material is a <see cref="ShaderProgram"/> with unique uniform values store on the CPU.</summary>
-[DebuggerDisplay("Material (Uniforms {Locals.Uniforms.Count}, Samplers {properties.Samplers.Count})")]
+[DebuggerDisplay("Material (Uniforms {Locals.Uniforms.Count}, Samplers {Locals.Samplers.Count})")]
 public sealed class Material : GraphicsResource
 {
   /// <summary>Global properties shared amongst all <see cref="Material"/>s.</summary>

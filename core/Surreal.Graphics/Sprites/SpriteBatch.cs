@@ -58,6 +58,7 @@ public sealed class SpriteBatch : IDisposable
   [SkipLocalsInit]
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
   {
+    if (region.Texture == null) return; // empty region? don't bother
     if (region.Texture != lastTexture)
     {
       // if we're switching texture, we'll need to flush and start again
