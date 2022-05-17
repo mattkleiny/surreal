@@ -107,7 +107,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     manager.AddLoader(new MaterialLoader());
     manager.AddLoader(new OpenTKShaderProgramLoader(GraphicsServer));
     manager.AddLoader(new TextureLoader(GraphicsServer));
-    manager.AddLoader(new TextureRegionLoader());
   }
 
   public void RegisterFileSystems(IFileSystemRegistry registry)

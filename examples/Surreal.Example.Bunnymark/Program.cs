@@ -16,7 +16,7 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
   var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
-  using var texture = await game.Assets.LoadAssetAsync<Texture>("Assets/wabbit_alpha.png");
+  using var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/wabbit_alpha.png");
   using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
   using var font = await game.Assets.LoadDefaultBitmapFontAsync();
   using var batch = new SpriteBatch(graphics, spriteCount: 8000);
@@ -31,7 +31,7 @@ Game.Start(platform, async game =>
 
   material.Properties.Add(Material.DefaultProjectionView, in camera.ProjectionView);
 
-  game.ExecuteVariableStep(_ =>
+  game.ExecuteVariableStep(time =>
   {
     if (keyboard.IsKeyPressed(Key.Escape))
     {
@@ -48,10 +48,22 @@ Game.Start(platform, async game =>
     {
       for (int i = 0; i < 32; i++)
       {
-        actors.Add(new Bunny(texture, batch)
+        actors.Add(new Bunny
         {
-          Position = new Vector2(targetX, 1 - targetY)
+          Position = new Vector2(targetX, 1 - targetY),
+          Velocity = Random.Shared.NextUnitCircle()
         });
+      }
+    }
+
+    if (mouse.IsButtonDown(MouseButton.Right))
+    {
+      for (int i = 0; i < 32; i++)
+      {
+        if (actors.Count > 0)
+        {
+          actors.RemoveAt(actors.Count - 1);
+        }
       }
     }
 
@@ -61,8 +73,8 @@ Game.Start(platform, async game =>
 
     foreach (ref var bunny in actors.AsSpan())
     {
-      bunny.Update();
-      bunny.Draw();
+      bunny.Update(time.DeltaTime);
+      bunny.Draw(batch, sprite);
     }
 
     batch.DrawText(
@@ -79,28 +91,26 @@ Game.Start(platform, async game =>
 
 public record struct Bunny
 {
-  private readonly Texture sprite;
-  private readonly SpriteBatch batch;
-
-  public Bunny(Texture sprite, SpriteBatch batch)
-  {
-    this.sprite = sprite;
-    this.batch  = batch;
-
-    Position = Vector2.Zero;
-    Velocity = Random.Shared.NextUnitCircle();
-  }
-
   public Vector2 Position;
   public Vector2 Velocity;
 
-  public void Update()
+  public void Update(TimeDelta deltaTime)
   {
-    Position += Velocity;
+    Position += Velocity * deltaTime * 100f;
+
+    CheckIfOffScreen();
   }
 
-  public void Draw()
+  public void Draw(SpriteBatch batch, Texture sprite)
   {
     batch.Draw(sprite, Position);
+  }
+
+  private void CheckIfOffScreen()
+  {
+    if (Velocity.X < 0f && Position.X < -960f) Position.X = 960f; // left
+    if (Velocity.Y < 0f && Position.Y < -540f) Position.Y = 540f; // top
+    if (Velocity.X > 0f && Position.X > 960f) Position.X  = -960f; // right
+    if (Velocity.Y > 0f && Position.Y > 540f) Position.Y  = -540f; // bottom
   }
 }
