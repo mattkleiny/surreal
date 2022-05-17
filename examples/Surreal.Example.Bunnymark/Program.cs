@@ -27,7 +27,7 @@ Game.Start(platform, async game =>
 
   var actors = new List<Bunny>();
 
-  material.SetProperty("u_projectionView", in camera.ProjectionView);
+  material.Properties.Add(Material.DefaultProjectionView, in camera.ProjectionView);
 
   game.ExecuteVariableStep(_ =>
   {
@@ -48,10 +48,10 @@ Game.Start(platform, async game =>
 
     batch.Begin(material);
 
-    for (var i = 0; i < actors.Count; i++)
+    foreach (ref var bunny in actors.AsSpan())
     {
-      actors[i].Update();
-      actors[i].Draw();
+      bunny.Update();
+      bunny.Draw();
     }
 
     batch.Flush();

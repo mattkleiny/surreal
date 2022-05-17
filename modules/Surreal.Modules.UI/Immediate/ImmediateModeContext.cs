@@ -92,7 +92,7 @@ public sealed class ImmediateModeContext : IDisposable, IPaintingContext
   public TState GetState<TState>(int controlId)
     where TState : new()
   {
-    return (TState) state.GetOrAdd(controlId);
+    return (TState)state.GetOrAdd(controlId);
   }
 
   /// <summary>Removes the state for the given control.</summary>
@@ -119,11 +119,7 @@ public sealed class ImmediateModeContext : IDisposable, IPaintingContext
       Matrix4x4.CreateTranslation(-host.Width / 2f, -host.Height / 2f, 0f) *
       Matrix4x4.CreateOrthographic(host.Width, host.Height, 0f, 100f);
 
-    shader.SetUniform("u_projectionView", in projectionView);
-    shader.SetUniform("u_screenSize", new Vector2(host.Width, host.Height));
-
-    // render the UI
-    mesh.Draw(shader);
+    throw new NotImplementedException();
   }
 
   public void DrawLine(Vector2 from, Vector2 to, Color color, float thickness = 1)

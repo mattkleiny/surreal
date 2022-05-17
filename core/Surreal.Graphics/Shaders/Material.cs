@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Surreal.Assets;
 using Surreal.Collections;
 using Surreal.Graphics.Textures;
@@ -15,10 +14,17 @@ public readonly record struct MaterialProperty<T>(string Name);
 [DebuggerDisplay("Material (Uniforms {properties.Uniforms.Count}, Samplers {properties.Samplers.Count})")]
 public sealed class Material : GraphicsResource
 {
-  // TODO: offer a global collection of material properties that can be set from anywhere and accessed by all other materials
+  public static MaterialProperty<Texture>   DefaultTexture        { get; } = new("u_texture");
+  public static MaterialProperty<Matrix4x4> DefaultProjectionView { get; } = new("u_projectionView");
 
-  private readonly MaterialPropertyCollection properties = new();
+  /// <summary>A global collection of material properties that will be applied to all materials.</summary>
+  public static MaterialPropertyCollection Globals { get; } = new()
+  {
+    { DefaultProjectionView, Matrix4x4.Identity },
+  };
+
   private readonly bool ownsShader;
+  private MaterialPropertyCollection properties = new();
 
   public Material(ShaderProgram shader, bool ownsShader = true)
   {
@@ -27,54 +33,36 @@ public sealed class Material : GraphicsResource
     Shader = shader;
   }
 
+  /// <summary>The associated <see cref="ShaderProgram"/> for the material.</summary>
   public ShaderProgram Shader { get; }
 
-  public void SetProperty<T>(MaterialProperty<T> property, T value)
-    => properties.Set(property, value);
-
-  public void SetProperty(string name, int value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, float value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, Point2 value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, Point3 value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, Vector2 value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, Vector3 value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, Vector4 value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, Quaternion value)
-    => properties.Set(name, value);
-
-  public void SetProperty(string name, in Matrix3x2 value)
-    => properties.Set(name, in value);
-
-  public void SetProperty(string name, in Matrix4x4 value)
-    => properties.Set(name, in value);
-
-  public void SetProperty(string name, Texture texture, int slot = 0)
-    => properties.Set(name, texture, slot);
-
-  public void SetProperties(MaterialPropertyCollection collection)
+  /// <summary>The associated properties for the material.</summary>
+  public MaterialPropertyCollection Properties
   {
-    // TODO: unset all the old uniforms?
-    // TODO: set all of the new uniforms
+    get => properties;
+    set
+    {
+      // TODO: unset all the old uniforms?
+      // TODO: set all of the new uniforms
+      properties = value;
+    }
   }
 
   /// <summary>Applies the material properties to the underlying shader.</summary>
   public void Apply()
   {
-    foreach (var (name, uniform) in properties.Uniforms)
+    // apply globals
+    ApplyUniforms(Globals.Uniforms);
+    ApplySamplers(Globals.Samplers);
+
+    // apply locals
+    ApplyUniforms(properties.Uniforms);
+    ApplySamplers(properties.Samplers);
+  }
+
+  private void ApplyUniforms(Dictionary<string, Uniform> uniforms)
+  {
+    foreach (var (name, uniform) in uniforms)
     {
       switch (uniform.Kind)
       {
@@ -91,11 +79,14 @@ public sealed class Material : GraphicsResource
         case UniformKind.Matrix4x4:  Shader.SetUniform(name, in uniform.Value.Matrix4x4); break;
 // @formatter:on
 
-        default: throw new ArgumentOutOfRangeException();
+        default: throw new InvalidOperationException($"An unexpected uniform value was encountered: {uniform.Kind}");
       }
     }
+  }
 
-    foreach (var (name, sampler) in properties.Samplers)
+  private void ApplySamplers(Dictionary<string, Sampler> samplers)
+  {
+    foreach (var (name, sampler) in samplers)
     {
       Shader.SetUniform(name, sampler.Texture, sampler.TextureSlot);
     }
@@ -122,113 +113,95 @@ public sealed class MaterialLoader : AssetLoader<Material>
 }
 
 /// <summary>A collection of properties that can be attached to a <see cref="Material"/>.</summary>
-public sealed class MaterialPropertyCollection
+/// <remarks>This collection is not thread-safe.</remarks>
+public sealed class MaterialPropertyCollection : IEnumerable
 {
   internal Dictionary<string, Uniform> Uniforms { get; } = new();
   internal Dictionary<string, Sampler> Samplers { get; } = new();
 
-  public void Set<T>(MaterialProperty<T> property, T value)
+  public void Add(MaterialProperty<int> property, int value)
   {
-    if (typeof(T) == typeof(int)) Set(property.Name, Unsafe.As<T, int>(ref value));
-    else if (typeof(T) == typeof(float)) Set(property.Name, Unsafe.As<T, float>(ref value));
-    else if (typeof(T) == typeof(Point2)) Set(property.Name, Unsafe.As<T, Point2>(ref value));
-    else if (typeof(T) == typeof(Point3)) Set(property.Name, Unsafe.As<T, Point3>(ref value));
-    else if (typeof(T) == typeof(Vector2)) Set(property.Name, Unsafe.As<T, Vector2>(ref value));
-    else if (typeof(T) == typeof(Vector3)) Set(property.Name, Unsafe.As<T, Vector3>(ref value));
-    else if (typeof(T) == typeof(Vector4)) Set(property.Name, Unsafe.As<T, Vector4>(ref value));
-    else if (typeof(T) == typeof(Quaternion)) Set(property.Name, Unsafe.As<T, Quaternion>(ref value));
-    else if (typeof(T) == typeof(Matrix3x2)) Set(property.Name, in Unsafe.As<T, Matrix3x2>(ref value));
-    else if (typeof(T) == typeof(Matrix4x4)) Set(property.Name, in Unsafe.As<T, Matrix4x4>(ref value));
-    else if (typeof(T) == typeof(Texture)) Set(property.Name, Unsafe.As<T, Texture>(ref value));
-    else
-    {
-      throw new InvalidOperationException($"An unrecognized material property type was requested: {property}");
-    }
-  }
-
-  public void Set(string name, int value)
-  {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind          = UniformKind.Integer;
     uniform.Value.Integer = value;
   }
 
-  public void Set(string name, float value)
+  public void Add(MaterialProperty<float> property, float value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind        = UniformKind.Float;
     uniform.Value.Float = value;
   }
 
-  public void Set(string name, Point2 value)
+  public void Add(MaterialProperty<Point2> property, Point2 value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind         = UniformKind.Point2;
     uniform.Value.Point2 = value;
   }
 
-  public void Set(string name, Point3 value)
+  public void Add(MaterialProperty<Point3> property, Point3 value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind         = UniformKind.Point3;
     uniform.Value.Point3 = value;
   }
 
-  public void Set(string name, Vector2 value)
+  public void Add(MaterialProperty<Vector2> property, Vector2 value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind          = UniformKind.Vector2;
     uniform.Value.Vector2 = value;
   }
 
-  public void Set(string name, Vector3 value)
+  public void Add(MaterialProperty<Vector3> property, Vector3 value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind          = UniformKind.Vector3;
     uniform.Value.Vector3 = value;
   }
 
-  public void Set(string name, Vector4 value)
+  public void Add(MaterialProperty<Vector4> property, Vector4 value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind          = UniformKind.Vector4;
     uniform.Value.Vector4 = value;
   }
 
-  public void Set(string name, Quaternion value)
+  public void Add(MaterialProperty<Quaternion> property, Quaternion value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind             = UniformKind.Quaternion;
     uniform.Value.Quaternion = value;
   }
 
-  public void Set(string name, in Matrix3x2 value)
+  public void Add(MaterialProperty<Matrix3x2> property, in Matrix3x2 value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind            = UniformKind.Matrix3x2;
     uniform.Value.Matrix3x2 = value;
   }
 
-  public void Set(string name, in Matrix4x4 value)
+  public void Add(MaterialProperty<Matrix4x4> property, in Matrix4x4 value)
   {
-    ref var uniform = ref Uniforms.GetOrCreateRef(name);
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Kind            = UniformKind.Matrix4x4;
     uniform.Value.Matrix4x4 = value;
   }
 
-  public void Set(string name, Texture texture, int slot = 0)
+  public void Add(MaterialProperty<Texture> property, Texture texture, int slot = 0)
   {
-    ref var sampler = ref Samplers.GetOrCreateRef(name);
+    ref var sampler = ref Samplers.GetOrCreateRef(property.Name);
 
     sampler.Texture     = texture;
     sampler.TextureSlot = slot;
@@ -289,5 +262,18 @@ public sealed class MaterialPropertyCollection
     [FieldOffset(0)] public Quaternion Quaternion;
     [FieldOffset(0)] public Matrix3x2 Matrix3x2;
     [FieldOffset(0)] public Matrix4x4 Matrix4x4;
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    foreach (var uniform in Uniforms)
+    {
+      yield return uniform;
+    }
+
+    foreach (var sampler in Samplers)
+    {
+      yield return sampler;
+    }
   }
 }

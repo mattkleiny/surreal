@@ -1,6 +1,6 @@
 ﻿namespace Surreal;
 
-public sealed class Bunny
+public record struct Bunny
 {
   private readonly Texture sprite;
   private readonly SpriteBatch batch;
@@ -10,11 +10,12 @@ public sealed class Bunny
     this.sprite = sprite;
     this.batch  = batch;
 
+    Position = Vector2.Zero;
     Velocity = Random.Shared.NextUnitCircle();
   }
 
-  public Vector2 Position { get; set; }
-  public Vector2 Velocity { get; set; }
+  public Vector2 Position;
+  public Vector2 Velocity;
 
   public void Update()
   {

@@ -70,11 +70,7 @@ Game.Start(platform, async game =>
 
     canvas.Update(time.DeltaTime);
 
-    scene.BeginFrame(time.DeltaTime);
-    scene.Input(time.DeltaTime);
-    scene.Draw(time.DeltaTime);
-    scene.Update(time.DeltaTime);
-    scene.EndFrame(time.DeltaTime);
+    scene.Tick(time.DeltaTime);
 
     canvas.Draw(material);
   });

@@ -28,7 +28,7 @@ Game.Start(platform, async game =>
     Size     = new Vector2(256, 144)
   };
 
-  material.SetProperty("u_projectionView", in camera.ProjectionView);
+  material.Properties.Add(Material.DefaultProjectionView, in camera.ProjectionView);
 
   game.ExecuteVariableStep(_ =>
   {

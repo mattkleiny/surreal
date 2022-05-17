@@ -26,7 +26,7 @@ public sealed class SpriteBatch : IDisposable
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount <= MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-    // TODO: allocate on the heap instead?
+    // TODO: allocate on the managed heap instead?
     vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
     mesh     = new Mesh<Vertex2>(server);
 
@@ -34,7 +34,7 @@ public sealed class SpriteBatch : IDisposable
   }
 
   /// <summary>The <see cref="MaterialProperty{T}"/> to bind textures to.</summary>
-  public MaterialProperty<Texture> TextureProperty { get; set; } = new("u_texture");
+  public MaterialProperty<Texture> TextureProperty { get; set; } = Material.DefaultTexture;
 
   public void Begin(ShaderProgram shader)
     => Begin(new Material(shader));
@@ -102,7 +102,7 @@ public sealed class SpriteBatch : IDisposable
     // bind the appropriate texture
     if (lastTexture != null)
     {
-      material.SetProperty(TextureProperty, lastTexture);
+      material.Properties.Add(TextureProperty, lastTexture);
     }
 
     mesh.Vertices.Write(vertices.Span[..vertexCount]);

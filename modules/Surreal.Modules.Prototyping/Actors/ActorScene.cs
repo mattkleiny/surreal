@@ -33,6 +33,16 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     return actor;
   }
 
+  /// <summary>Ticks the entire scene in sequence.</summary>
+  public void Tick(TimeDelta deltaTime)
+  {
+    BeginFrame(deltaTime);
+    Input(deltaTime);
+    Draw(deltaTime);
+    Update(deltaTime);
+    EndFrame(deltaTime);
+  }
+
   public void BeginFrame(TimeDelta deltaTime)
   {
     ProcessSpawnQueue();

@@ -206,7 +206,7 @@ public sealed record Plane(Vector3 Origin, Vector3 Normal, Material Material) : 
 
   public override Vector2 CalculateUV(Vector3 point)
   {
-    return new(0f, 0f); // TODO: implement me
+    return new Vector2(0f, 0f); // TODO: implement me
   }
 }
 

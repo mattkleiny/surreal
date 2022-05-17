@@ -27,17 +27,14 @@ public class PixelCanvas : IDisposable
   public int Width  => pixels.Width;
   public int Height => pixels.Height;
 
-  public SpanGrid<Color32> Pixels => pixels.Span;
-
-  public MaterialProperty<Matrix4x4> ProjectionViewProperty { get; set; } = new("u_projectionView");
-  public MaterialProperty<Texture>   TextureProperty        { get; set; } = new("u_texture");
+  public SpanGrid<Color32>         Pixels          => pixels.Span;
+  public MaterialProperty<Texture> TextureProperty { get; set; } = Material.DefaultTexture;
 
   public void Draw(Material material)
   {
     texture.WritePixels<Color32>(Width, Height, Pixels);
 
-    material.SetProperty(ProjectionViewProperty, Matrix4x4.Identity);
-    material.SetProperty(TextureProperty, texture);
+    material.Properties.Add(TextureProperty, texture);
 
     mesh.Draw(material);
   }
