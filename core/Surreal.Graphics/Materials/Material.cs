@@ -99,7 +99,10 @@ public sealed class Material : GraphicsResource
   {
     foreach (var (name, sampler) in samplers)
     {
-      Shader.SetUniform(name, sampler.Texture, sampler.TextureSlot);
+      if (sampler.Texture != null)
+      {
+        Shader.SetUniform(name, sampler.Texture, sampler.TextureSlot);
+      }
     }
   }
 

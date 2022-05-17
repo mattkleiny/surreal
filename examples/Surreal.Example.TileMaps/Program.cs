@@ -23,7 +23,7 @@ Game.Start(platform, async game =>
   using var batch = new SpriteBatch(graphics);
 
   // set-up the color palette
-  var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Demichrome4);
+  var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Hollow4);
 
   effect.Palette = palette;
 

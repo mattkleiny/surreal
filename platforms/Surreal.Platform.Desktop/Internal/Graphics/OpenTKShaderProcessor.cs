@@ -9,6 +9,8 @@ internal static class OpenTKShaderProcessor
 {
   public static async Task<OpenTKShaderSet> ProcessGlslCodeAsync(VirtualPath path, TextReader reader, CancellationToken cancellationToken = default)
   {
+    // TODO: make ordering more robust?
+
     var sharedCode = await ParseSharedCodeAsync(reader, cancellationToken);
     var vertexCode = await ParseVertexCodeAsync(reader, cancellationToken);
     var fragmentCode = await ParseFragmentCodeAsync(reader, cancellationToken);
