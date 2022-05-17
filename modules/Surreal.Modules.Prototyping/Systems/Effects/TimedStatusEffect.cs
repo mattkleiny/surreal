@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Mechanics.Combat.Effects;
+namespace Surreal.Systems.Effects;
 
 /// <summary>A <see cref="StatusEffect"/> that ticks over a duration.</summary>
 public abstract class TimedStatusEffect : StatusEffect

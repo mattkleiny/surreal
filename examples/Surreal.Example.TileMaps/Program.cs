@@ -1,4 +1,4 @@
-﻿using Surreal.TileMaps;
+﻿using Surreal.Systems.TileMaps;
 
 var platform = new DesktopPlatform
 {

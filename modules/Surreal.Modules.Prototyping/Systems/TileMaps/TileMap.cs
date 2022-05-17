@@ -2,7 +2,7 @@
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
-namespace Surreal.TileMaps;
+namespace Surreal.Systems.TileMaps;
 
 /// <summary>A fixed-size tile map that can be rendered to a <see cref="SpriteBatch"/>.</summary>
 public sealed class TileMap<T>

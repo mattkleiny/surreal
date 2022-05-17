@@ -1,4 +1,4 @@
-﻿namespace Surreal.Mechanics.Combat.Effects;
+﻿namespace Surreal.Systems.Effects;
 
 /// <summary>Indicates an object that may receive <see cref="StatusEffect"/>s.</summary>
 public interface IStatusEffectOwner

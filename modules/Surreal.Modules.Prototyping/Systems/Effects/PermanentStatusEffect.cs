@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Mechanics.Combat.Effects;
+namespace Surreal.Systems.Effects;
 
 /// <summary>A <see cref="StatusEffect"/> that persists over a duration but does not tick.</summary>
 public abstract class PermanentStatusEffect : StatusEffect

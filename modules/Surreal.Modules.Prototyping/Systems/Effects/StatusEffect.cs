@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Mechanics.Combat.Effects;
+namespace Surreal.Systems.Effects;
 
 /// <summary>A status effect that can be periodically updated.</summary>
 public abstract class StatusEffect

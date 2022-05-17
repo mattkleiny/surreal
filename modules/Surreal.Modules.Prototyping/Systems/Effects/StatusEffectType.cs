@@ -1,4 +1,4 @@
-﻿namespace Surreal.Mechanics.Combat.Effects;
+﻿namespace Surreal.Systems.Effects;
 
 /// <summary>Indicates a type of status effect.</summary>
 public readonly record struct StatusEffectType(string Name)

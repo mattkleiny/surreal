@@ -1,4 +1,4 @@
-﻿namespace Surreal.Mechanics.Combat.Attributes;
+﻿namespace Surreal.Systems.Attributes;
 
 /// <summary>Represents an owner for <see cref="AttributeType"/>s</summary>
 public interface IAttributeOwner
