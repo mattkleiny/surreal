@@ -122,6 +122,26 @@ public sealed class MaterialPropertyCollection
   internal Dictionary<string, Uniform> Uniforms { get; } = new();
   internal Dictionary<string, Sampler> Samplers { get; } = new();
 
+  // TODO: clean these up?
+
+  public ref int Get(MaterialProperty<int> property)
+  {
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
+
+    uniform.Kind = UniformKind.Integer;
+
+    return ref uniform.Value.Integer;
+  }
+
+  public ref float Get(MaterialProperty<float> property)
+  {
+    ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
+
+    uniform.Kind = UniformKind.Float;
+
+    return ref uniform.Value.Float;
+  }
+
   public void Set(MaterialProperty<int> property, int value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);

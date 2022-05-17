@@ -19,7 +19,7 @@ public sealed class RenderTarget : GraphicsResource
   {
     this.server = server;
 
-    ColorAttachment = new Texture(server, colorDescriptor.Format);
+    ColorAttachment = new Texture(server, colorDescriptor.Format, colorDescriptor.FilterMode, colorDescriptor.WrapMode);
     ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<Color32>.Empty);
 
     Handle = server.CreateFrameBuffer(ColorAttachment.Handle);

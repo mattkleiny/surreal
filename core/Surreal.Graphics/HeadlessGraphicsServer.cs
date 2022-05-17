@@ -155,6 +155,11 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
+  public void SetActiveShader(GraphicsHandle handle)
+  {
+    // no-op
+  }
+
   public void DeleteShader(GraphicsHandle handle)
   {
     // no-op

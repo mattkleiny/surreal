@@ -19,11 +19,9 @@ Game.Start(platform, async game =>
   using var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/wabbit_alpha.png");
   using var font = await game.Assets.LoadDefaultBitmapFontAsync();
 
-  using var spriteMaterial = await game.Assets.LoadDefaultSpriteMaterialAsync();
-  using var aberrationMaterial = await game.Assets.LoadAberrationMaterialAsync();
-
+  using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
   using var batch = new SpriteBatch(graphics, spriteCount: 8000);
-  using var target = new RenderTarget(graphics, RenderTargetDescriptor.Default with { Width = 256, Height = 144 });
+  using var target = new RenderTarget(graphics, RenderTargetDescriptor.Default);
 
   var camera = new Camera
   {
@@ -33,8 +31,7 @@ Game.Start(platform, async game =>
 
   var actors = new List<Bunny>();
 
-  spriteMaterial.Properties.Set(Material.DefaultProjectionView, in camera.ProjectionView);
-  aberrationMaterial.Properties.Set(Material.DefaultProjectionView, in camera.ProjectionView);
+  material.Properties.Set(Material.DefaultProjectionView, in camera.ProjectionView);
 
   game.ExecuteVariableStep(time =>
   {
@@ -74,29 +71,22 @@ Game.Start(platform, async game =>
 
     graphics.ClearColorBuffer(Color.White);
 
-    using (target.Rent())
+    batch.Begin(material);
+
+    foreach (ref var bunny in actors.AsSpan())
     {
-      batch.Begin(spriteMaterial);
-
-      foreach (ref var bunny in actors.AsSpan())
-      {
-        bunny.Update(time.DeltaTime);
-        bunny.Draw(batch, sprite);
-      }
-
-      batch.DrawText(
-        font: font,
-        text: $"Bunnies {actors.Count}",
-        position: new Vector2(50f, 50f),
-        scale: Vector2.One,
-        color: Color.Black
-      );
-
-      batch.Flush();
+      bunny.Update(time.DeltaTime);
+      bunny.Draw(batch, sprite);
     }
 
-    batch.Begin(aberrationMaterial);
-    batch.Draw(target.ColorAttachment, Vector2.Zero, Vector2.One);
+    batch.DrawText(
+      font: font,
+      text: $"Bunnies {actors.Count}",
+      position: new Vector2(50f, 50f),
+      scale: Vector2.One,
+      color: Color.Black
+    );
+
     batch.Flush();
   });
 });

@@ -362,10 +362,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public void DrawMesh(GraphicsHandle mesh, GraphicsHandle shader, int vertexCount, int indexCount, MeshType meshType, Type indexType)
   {
     var array = new VertexArrayHandle(mesh);
-    var program = new ProgramHandle(shader);
 
     GL.BindVertexArray(array);
-    GL.UseProgram(program);
 
     var primitiveType = ConvertMeshType(meshType);
 
@@ -379,8 +377,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       GL.DrawArrays(primitiveType, first: 0, vertexCount);
     }
-
-    GL.BindVertexArray(VertexArrayHandle.Zero);
   }
 
   public void DeleteMesh(GraphicsHandle handle)
@@ -428,6 +424,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
         type: ref type,
         name: out var name
       );
+      if (string.IsNullOrEmpty(name)) continue;
 
       results[index] = new AttributeMetadata(name, index, length, size, type switch
       {
@@ -474,6 +471,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
         type: ref type,
         name: out var name
       );
+      if (string.IsNullOrEmpty(name)) continue;
 
       var location = GL.GetUniformLocation(program, name);
 
@@ -614,6 +612,11 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
     GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
     GL.Uniform1i(location, samplerSlot);
+  }
+
+  public void SetActiveShader(GraphicsHandle handle)
+  {
+    GL.UseProgram(new ProgramHandle(handle));
   }
 
   public void DeleteShader(GraphicsHandle handle)

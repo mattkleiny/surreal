@@ -66,6 +66,7 @@ public interface IGraphicsServer
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value);
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value);
   void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot);
+  void SetActiveShader(GraphicsHandle handle);
   void DeleteShader(GraphicsHandle handle);
 
   // frame buffers

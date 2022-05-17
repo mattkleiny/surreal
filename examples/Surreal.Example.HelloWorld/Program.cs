@@ -18,8 +18,7 @@ Game.Start(platform, async game =>
 
   using var font = await game.Assets.LoadDefaultBitmapFontAsync();
   using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
-
-  using var sprites = new SpriteBatch(graphics);
+  using var batch = new SpriteBatch(graphics);
 
   // set-up a basic orthographic projection
   var camera = new Camera
@@ -39,8 +38,8 @@ Game.Start(platform, async game =>
 
     graphics.ClearColorBuffer(Color.White);
 
-    sprites.Begin(material);
-    sprites.DrawText(
+    batch.Begin(material);
+    batch.DrawText(
       font: font,
       text: "HELLO, SURREAL!",
       position: Vector2.Zero,
@@ -49,6 +48,6 @@ Game.Start(platform, async game =>
       horizontalAlignment: HorizontalAlignment.Center,
       verticalAlignment: VerticalAlignment.Center
     );
-    sprites.Flush();
+    batch.Flush();
   });
 });
