@@ -14,6 +14,7 @@ Game.Start(platform, async game =>
 
   var graphics = game.Services.GetRequiredService<IGraphicsServer>();
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
+  var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
   using var texture = await game.Assets.LoadAssetAsync<Texture>("Assets/wabbit_alpha.png");
   using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
@@ -36,11 +37,20 @@ Game.Start(platform, async game =>
       game.Exit();
     }
 
-    if (keyboard.IsKeyDown(Key.Space))
+    // TODO: why is this upside down?
+    var mousePos = mouse.NormalisedPosition;
+
+    var targetX = mousePos.X * camera.Size.X - camera.Size.X / 2f;
+    var targetY = mousePos.Y * camera.Size.Y - camera.Size.Y / 2f;
+
+    if (mouse.IsButtonDown(MouseButton.Left))
     {
-      for (int i = 0; i < 100; i++)
+      for (int i = 0; i < 32; i++)
       {
-        actors.Add(new Bunny(texture, batch));
+        actors.Add(new Bunny(texture, batch)
+        {
+          Position = new Vector2(targetX, 1 - targetY)
+        });
       }
     }
 
@@ -57,3 +67,31 @@ Game.Start(platform, async game =>
     batch.Flush();
   });
 });
+
+public record struct Bunny
+{
+  private readonly Texture sprite;
+  private readonly SpriteBatch batch;
+
+  public Bunny(Texture sprite, SpriteBatch batch)
+  {
+    this.sprite = sprite;
+    this.batch  = batch;
+
+    Position = Vector2.Zero;
+    Velocity = Random.Shared.NextUnitCircle();
+  }
+
+  public Vector2 Position;
+  public Vector2 Velocity;
+
+  public void Update()
+  {
+    Position += Velocity;
+  }
+
+  public void Draw()
+  {
+    batch.Draw(sprite, Position);
+  }
+}

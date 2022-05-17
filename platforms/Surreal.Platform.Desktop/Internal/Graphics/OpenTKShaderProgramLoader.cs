@@ -25,6 +25,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     var program = new ShaderProgram(server);
 
     server.LinkShader(program.Handle, shaderSet);
+    program.ReloadMetadata();
 
     if (context.IsHotReloadEnabled)
     {
@@ -41,6 +42,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 
     server.LinkShader(handle, shaderSet);
     program.ReplaceShader(handle);
+    program.ReloadMetadata();
 
     return program;
   }

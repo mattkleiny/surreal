@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Meshes;
+﻿using Surreal.Collections;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -132,6 +133,16 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
   {
     // no-op
+  }
+
+  public ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
+  {
+    return ReadOnlySlice<AttributeMetadata>.Empty;
+  }
+
+  public ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
+  {
+    return ReadOnlySlice<UniformMetadata>.Empty;
   }
 
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)

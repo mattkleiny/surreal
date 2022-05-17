@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Meshes;
+﻿using Surreal.Collections;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
@@ -11,8 +12,8 @@ public readonly record struct GraphicsHandle(nint Id)
   public static GraphicsHandle None => default;
 
   public static implicit operator nint(GraphicsHandle handle) => handle.Id;
-  public static implicit operator int(GraphicsHandle handle) => (int) handle.Id;
-  public static implicit operator uint(GraphicsHandle handle) => (uint) handle.Id;
+  public static implicit operator int(GraphicsHandle handle) => (int)handle.Id;
+  public static implicit operator uint(GraphicsHandle handle) => (uint)handle.Id;
 }
 
 /// <summary>An abstraction over the different types of graphics servers available.</summary>
@@ -52,6 +53,8 @@ public interface IGraphicsServer
   GraphicsHandle CreateShader();
   void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration);
   int GetShaderUniformLocation(GraphicsHandle handle, string name);
+  ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle);
+  ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
   void SetShaderUniform(GraphicsHandle handle, int location, float value);
   void SetShaderUniform(GraphicsHandle handle, int location, Point2 value);

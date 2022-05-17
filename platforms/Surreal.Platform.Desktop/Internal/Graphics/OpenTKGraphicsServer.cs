@@ -2,6 +2,7 @@
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using Surreal.Collections;
 using Surreal.Graphics;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -354,14 +355,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var attribute = descriptors[index];
 
       GL.VertexAttribPointer(
-        index: (uint) index,
+        index: (uint)index,
         size: attribute.Count,
         type: ConvertVertexType(attribute.Type),
         normalized: attribute.ShouldNormalize,
         stride: descriptors.Stride,
         offset: attribute.Offset
       );
-      GL.EnableVertexAttribArray((uint) index);
+      GL.EnableVertexAttribArray((uint)index);
     }
 
     if (indexCount > 0)
@@ -395,6 +396,100 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var shaderSet = shaderCompiler.CompileShader(declaration);
 
     LinkShader(handle, shaderSet);
+  }
+
+  public unsafe ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
+  {
+    var program = new ProgramHandle(handle);
+    int count = 0;
+
+    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
+
+    var results = new AttributeMetadata[count];
+
+    for (var index = 0; index < count; index++)
+    {
+      var length = 0;
+      var size = 0;
+      var type = default(AttributeType);
+
+      GL.GetActiveAttrib(
+        program: program,
+        index: (uint)index,
+        bufSize: int.MaxValue,
+        length: ref length,
+        size: ref size,
+        type: ref type,
+        name: out var name
+      );
+
+      results[index] = new AttributeMetadata(name, index, length, size, type switch
+      {
+        // TODO: support more types?
+        AttributeType.Int         => typeof(int),
+        AttributeType.Float       => typeof(float),
+        AttributeType.IntVec2     => typeof(Point2),
+        AttributeType.IntVec3     => typeof(Point3),
+        AttributeType.FloatVec2   => typeof(Vector2),
+        AttributeType.FloatVec3   => typeof(Vector3),
+        AttributeType.FloatVec4   => typeof(Vector4),
+        AttributeType.FloatMat3x2 => typeof(Matrix3x2),
+        AttributeType.FloatMat4   => typeof(Matrix4x4),
+        AttributeType.Sampler2d   => typeof(Texture),
+
+        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
+      });
+    }
+
+    return results;
+  }
+
+  public unsafe ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
+  {
+    var program = new ProgramHandle(handle);
+    int count = 0;
+
+    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
+
+    var results = new UniformMetadata[count];
+
+    for (var index = 0; index < count; index++)
+    {
+      var length = 0;
+      var size = 0;
+      var type = default(UniformType);
+
+      GL.GetActiveUniform(
+        program: program,
+        index: (uint)index,
+        bufSize: int.MaxValue,
+        length: ref length,
+        size: ref size,
+        type: ref type,
+        name: out var name
+      );
+
+      var location = GL.GetUniformLocation(program, name);
+
+      results[index] = new UniformMetadata(name, location, length, size, type switch
+      {
+        // TODO: support more types?
+        UniformType.Int         => typeof(int),
+        UniformType.Float       => typeof(float),
+        UniformType.IntVec2     => typeof(Point2),
+        UniformType.IntVec3     => typeof(Point3),
+        UniformType.FloatVec2   => typeof(Vector2),
+        UniformType.FloatVec3   => typeof(Vector3),
+        UniformType.FloatVec4   => typeof(Vector4),
+        UniformType.FloatMat3x2 => typeof(Matrix3x2),
+        UniformType.FloatMat4   => typeof(Matrix4x4),
+        UniformType.Sampler2d   => typeof(Texture),
+
+        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
+      });
+    }
+
+    return results;
   }
 
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)
@@ -510,7 +605,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
-    GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
+    GL.ActiveTexture(TextureUnit.Texture0 + (uint)samplerSlot);
     GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
     GL.Uniform1i(location, samplerSlot);
   }
@@ -568,16 +663,16 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return format switch
     {
       // integral
-      TextureFormat.R8    => (int) All.R8,
-      TextureFormat.Rg8   => (int) All.Rg8,
-      TextureFormat.Rgb8  => (int) All.Rgb8,
-      TextureFormat.Rgba8 => (int) All.Rgba8,
+      TextureFormat.R8    => (int)All.R8,
+      TextureFormat.Rg8   => (int)All.Rg8,
+      TextureFormat.Rgb8  => (int)All.Rgb8,
+      TextureFormat.Rgba8 => (int)All.Rgba8,
 
       // floating
-      TextureFormat.R     => (int) All.R,
-      TextureFormat.Rg    => (int) All.Rg,
-      TextureFormat.Rgb   => (int) All.Rgb,
-      TextureFormat.Rgba  => (int) All.Rgba,
+      TextureFormat.R    => (int)All.R,
+      TextureFormat.Rg   => (int)All.Rg,
+      TextureFormat.Rgb  => (int)All.Rgb,
+      TextureFormat.Rgba => (int)All.Rgba,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
@@ -655,8 +750,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return filterMode switch
     {
-      TextureFilterMode.Point  => (int) All.Nearest,
-      TextureFilterMode.Linear => (int) All.Linear,
+      TextureFilterMode.Point  => (int)All.Nearest,
+      TextureFilterMode.Linear => (int)All.Linear,
 
       _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
     };
@@ -666,8 +761,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return wrapMode switch
     {
-      TextureWrapMode.Clamp  => (int) All.ClampToEdge,
-      TextureWrapMode.Repeat => (int) All.MirroredRepeat,
+      TextureWrapMode.Clamp  => (int)All.ClampToEdge,
+      TextureWrapMode.Repeat => (int)All.MirroredRepeat,
 
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };

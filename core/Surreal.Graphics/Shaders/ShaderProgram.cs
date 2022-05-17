@@ -1,4 +1,5 @@
 using Surreal.Assets;
+using Surreal.Collections;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
@@ -20,6 +21,12 @@ public static class ShaderProgramExtensions
   }
 }
 
+/// <summary>Metadata about attributes in a <see cref="ShaderProgram"/>.</summary>
+public readonly record struct AttributeMetadata(string Name, int Location, int Length, int Count, Type Type);
+
+/// <summary>Metadata about uniforms in a <see cref="ShaderProgram"/>.</summary>
+public readonly record struct UniformMetadata(string Name, int Location, int Length, int Count, Type Type);
+
 /// <summary>A low-level shader program on the GPU.</summary>
 public sealed class ShaderProgram : GraphicsResource
 {
@@ -30,11 +37,12 @@ public sealed class ShaderProgram : GraphicsResource
     this.server = server;
 
     Handle = server.CreateShader();
-
-    // TODO: retain a list of default uniforms and offer an API for reflection
   }
 
   public GraphicsHandle Handle { get; private set; }
+
+  public ReadOnlySlice<AttributeMetadata> Attributes { get; private set; } = ReadOnlySlice<AttributeMetadata>.Empty;
+  public ReadOnlySlice<UniformMetadata>   Uniforms   { get; private set; } = ReadOnlySlice<UniformMetadata>.Empty;
 
   public int GetUniformLocation(string name)
   {
@@ -140,7 +148,15 @@ public sealed class ShaderProgram : GraphicsResource
   public void ReplaceShader(GraphicsHandle newHandle)
   {
     server.DeleteShader(Handle);
+
     Handle = newHandle;
+  }
+
+  /// <summary>Updates the attribute/uniform metadata for the shader.</summary>
+  public void ReloadMetadata()
+  {
+    Attributes = server.GetShaderAttributeMetadata(Handle);
+    Uniforms   = server.GetShaderUniformMetadata(Handle);
   }
 
   protected override void Dispose(bool managed)

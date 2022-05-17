@@ -18,6 +18,16 @@ public sealed class Tessellator<TVertex>
   public ReadOnlySpan<TVertex> Vertices => vertices.AsSpan();
   public ReadOnlySpan<ushort>  Indices  => indices.AsSpan();
 
+  public void BeginClipRect()
+  {
+    throw new NotImplementedException();
+  }
+
+  public void EndClipRect()
+  {
+    throw new NotImplementedException();
+  }
+
   public void AddVertex(TVertex vertex)
   {
     vertices.Add(vertex);
