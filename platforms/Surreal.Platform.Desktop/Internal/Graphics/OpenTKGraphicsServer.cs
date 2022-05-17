@@ -554,68 +554,68 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
-    GL.Uniform1i(location, value);
+    GL.ProgramUniform1i(new ProgramHandle(handle), location, value);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, float value)
   {
-    GL.Uniform1f(location, value);
+    GL.ProgramUniform1f(new ProgramHandle(handle), location, value);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point2 value)
   {
-    GL.Uniform2i(location, value.X, value.Y);
+    GL.ProgramUniform2i(new ProgramHandle(handle), location, value.X, value.Y);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point3 value)
   {
-    GL.Uniform3i(location, value.X, value.Y, value.Z);
+    GL.ProgramUniform3i(new ProgramHandle(handle), location, value.X, value.Y, value.Z);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point4 value)
   {
-    GL.Uniform4i(location, value.X, value.Y, value.Z, value.W);
+    GL.ProgramUniform4i(new ProgramHandle(handle), location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)
   {
-    GL.Uniform2f(location, value.X, value.Y);
+    GL.ProgramUniform2f(new ProgramHandle(handle), location, value.X, value.Y);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value)
   {
-    GL.Uniform3f(location, value.X, value.Y, value.Z);
+    GL.ProgramUniform3f(new ProgramHandle(handle), location, value.X, value.Y, value.Z);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value)
   {
-    GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
+    GL.ProgramUniform4f(new ProgramHandle(handle), location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value)
   {
-    GL.Uniform4f(location, value.X, value.Y, value.Z, value.W);
+    GL.ProgramUniform4f(new ProgramHandle(handle), location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
   {
     var result = Unsafe.As<Matrix3x2, OpenTK.Mathematics.Matrix3x2>(ref Unsafe.AsRef(in value));
 
-    GL.UniformMatrix3x2f(location, 1, true, stackalloc[] { result });
+    GL.ProgramUniformMatrix3x2f(new ProgramHandle(handle), location, 1, true, stackalloc[] { result });
   }
 
   public unsafe void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
   {
     var result = Unsafe.As<Matrix4x4, Matrix4>(ref Unsafe.AsRef(in value));
 
-    GL.UniformMatrix4f(location, 1, true, stackalloc[] { result });
+    GL.ProgramUniformMatrix4f(new ProgramHandle(handle), location, 1, true, stackalloc[] { result });
   }
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
     GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
     GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
-    GL.Uniform1i(location, samplerSlot);
+    GL.ProgramUniform1i(new ProgramHandle(handle), location, samplerSlot);
   }
 
   public void SetActiveShader(GraphicsHandle handle)

@@ -12,8 +12,8 @@ public readonly record struct GraphicsHandle(nint Id)
   public static GraphicsHandle None => default;
 
   public static implicit operator nint(GraphicsHandle handle) => handle.Id;
-  public static implicit operator int(GraphicsHandle handle) => (int)handle.Id;
-  public static implicit operator uint(GraphicsHandle handle) => (uint)handle.Id;
+  public static implicit operator int(GraphicsHandle handle) => (int) handle.Id;
+  public static implicit operator uint(GraphicsHandle handle) => (uint) handle.Id;
 }
 
 /// <summary>An abstraction over the different types of graphics servers available.</summary>
@@ -55,16 +55,6 @@ public interface IGraphicsServer
   int GetShaderUniformLocation(GraphicsHandle handle, string name);
   ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle);
   ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out int value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out float value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Point2 value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Point3 value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Vector2 value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Vector3 value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Vector4 value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Quaternion value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Matrix3x2 value);
-  // bool GetShaderUniform(GraphicsHandle handle, int location, out Matrix4x4 value);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
   void SetShaderUniform(GraphicsHandle handle, int location, float value);
   void SetShaderUniform(GraphicsHandle handle, int location, Point2 value);

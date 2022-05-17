@@ -135,6 +135,11 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
+  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
+  {
+    return 0;
+  }
+
   public ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
   {
     return ReadOnlySlice<AttributeMetadata>.Empty;
@@ -143,16 +148,6 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   public ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
   {
     return ReadOnlySlice<UniformMetadata>.Empty;
-  }
-
-  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
-  {
-    return 0;
-  }
-
-  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
-  {
-    // no-op
   }
 
   public void SetActiveShader(GraphicsHandle handle)
@@ -216,6 +211,11 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
+  {
+    // no-op
+  }
+
+  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
     // no-op
   }

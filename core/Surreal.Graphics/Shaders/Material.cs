@@ -41,6 +41,8 @@ public sealed class Material : GraphicsResource
   /// <summary>The properties associated with this material.</summary>
   public MaterialPropertySet Locals { get; } = new();
 
+  // TODO: add blending modes and sorting keys?
+
   /// <summary>Applies the material properties to the underlying shader.</summary>
   public void Apply()
   {
