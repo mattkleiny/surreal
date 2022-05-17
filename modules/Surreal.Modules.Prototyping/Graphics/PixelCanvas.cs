@@ -34,7 +34,7 @@ public class PixelCanvas : IDisposable
   {
     texture.WritePixels<Color32>(Width, Height, Pixels);
 
-    material.Properties.Add(TextureProperty, texture);
+    material.Properties.Set(TextureProperty, texture);
 
     mesh.Draw(material);
   }

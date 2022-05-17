@@ -18,13 +18,16 @@ public sealed class Material : GraphicsResource
   public static MaterialProperty<Matrix4x4> DefaultProjectionView { get; } = new("u_projectionView");
 
   /// <summary>A global collection of material properties that will be applied to all materials.</summary>
-  public static MaterialPropertyCollection Globals { get; } = new()
-  {
-    { DefaultProjectionView, Matrix4x4.Identity },
-  };
+  public static MaterialPropertyCollection Globals { get; }
 
   private readonly bool ownsShader;
   private MaterialPropertyCollection properties = new();
+
+  static Material()
+  {
+    Globals = new MaterialPropertyCollection();
+    Globals.Set(DefaultProjectionView, Matrix4x4.Identity);
+  }
 
   public Material(ShaderProgram shader, bool ownsShader = true)
   {
@@ -114,12 +117,12 @@ public sealed class MaterialLoader : AssetLoader<Material>
 
 /// <summary>A collection of properties that can be attached to a <see cref="Material"/>.</summary>
 /// <remarks>This collection is not thread-safe.</remarks>
-public sealed class MaterialPropertyCollection : IEnumerable
+public sealed class MaterialPropertyCollection
 {
   internal Dictionary<string, Uniform> Uniforms { get; } = new();
   internal Dictionary<string, Sampler> Samplers { get; } = new();
 
-  public void Add(MaterialProperty<int> property, int value)
+  public void Set(MaterialProperty<int> property, int value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -127,7 +130,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Integer = value;
   }
 
-  public void Add(MaterialProperty<float> property, float value)
+  public void Set(MaterialProperty<float> property, float value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -135,7 +138,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Float = value;
   }
 
-  public void Add(MaterialProperty<Point2> property, Point2 value)
+  public void Set(MaterialProperty<Point2> property, Point2 value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -143,7 +146,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Point2 = value;
   }
 
-  public void Add(MaterialProperty<Point3> property, Point3 value)
+  public void Set(MaterialProperty<Point3> property, Point3 value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -151,7 +154,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Point3 = value;
   }
 
-  public void Add(MaterialProperty<Vector2> property, Vector2 value)
+  public void Set(MaterialProperty<Vector2> property, Vector2 value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -159,7 +162,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Vector2 = value;
   }
 
-  public void Add(MaterialProperty<Vector3> property, Vector3 value)
+  public void Set(MaterialProperty<Vector3> property, Vector3 value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -167,7 +170,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Vector3 = value;
   }
 
-  public void Add(MaterialProperty<Vector4> property, Vector4 value)
+  public void Set(MaterialProperty<Vector4> property, Vector4 value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -175,7 +178,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Vector4 = value;
   }
 
-  public void Add(MaterialProperty<Quaternion> property, Quaternion value)
+  public void Set(MaterialProperty<Quaternion> property, Quaternion value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -183,7 +186,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Quaternion = value;
   }
 
-  public void Add(MaterialProperty<Matrix3x2> property, in Matrix3x2 value)
+  public void Set(MaterialProperty<Matrix3x2> property, in Matrix3x2 value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -191,7 +194,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Matrix3x2 = value;
   }
 
-  public void Add(MaterialProperty<Matrix4x4> property, in Matrix4x4 value)
+  public void Set(MaterialProperty<Matrix4x4> property, in Matrix4x4 value)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -199,7 +202,7 @@ public sealed class MaterialPropertyCollection : IEnumerable
     uniform.Value.Matrix4x4 = value;
   }
 
-  public void Add(MaterialProperty<Texture> property, Texture texture, int slot = 0)
+  public void Set(MaterialProperty<Texture> property, Texture texture, int slot = 0)
   {
     ref var sampler = ref Samplers.GetOrCreateRef(property.Name);
 

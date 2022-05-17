@@ -102,7 +102,7 @@ public sealed class SpriteBatch : IDisposable
     // bind the appropriate texture
     if (lastTexture != null)
     {
-      material.Properties.Add(TextureProperty, lastTexture);
+      material.Properties.Set(TextureProperty, lastTexture);
     }
 
     mesh.Vertices.Write(vertices.Span[..vertexCount]);
