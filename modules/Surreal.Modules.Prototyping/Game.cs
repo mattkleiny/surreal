@@ -23,13 +23,12 @@ public sealed class Game : IDisposable
   public delegate void GameLoop(GameTime time);
 
   private static readonly ILog Log = LogFactory.GetLog<Game>();
+  private static readonly ConcurrentQueue<Action> Callbacks = new();
 
-  private readonly ConcurrentQueue<Action> callbacks = new();
-
-  public static void ScheduleNextFrame(Action callback)
+  /// <summary>Schedules a function to be invoked at the start of the next frame.</summary>
+  public static void Schedule(Action callback)
   {
-    // TODO: do something better here
-    SynchronizationContext.Current?.Post(_ => callback(), null);
+    Callbacks.Enqueue(callback);
   }
 
   private Game(IServiceRegistry services, IPlatformHost host)
@@ -59,7 +58,7 @@ public sealed class Game : IDisposable
     using var game = new Game(services, host);
 
     // marshal all async work back to the main thread
-    SynchronizationContext.SetSynchronizationContext(new GameSynchronizationContext(game));
+    SynchronizationContext.SetSynchronizationContext(new GameSynchronizationContext());
 
     // allow early termination of the core event loop
     cancellationToken.Register(() => game.IsClosing = true);
@@ -70,7 +69,7 @@ public sealed class Game : IDisposable
     host.RegisterFileSystems(FileSystem.Registry);
 
     // prepare the game and loop
-    game.Schedule(() => gameSetup(game).ContinueWith(task =>
+    Schedule(() => gameSetup(game).ContinueWith(task =>
     {
       if (task.IsFaulted)
       {
@@ -85,7 +84,7 @@ public sealed class Game : IDisposable
     while (!game.Host.IsClosing && !game.IsClosing)
     {
       // eventually this will end up blocking when a main loop takes over
-      game.PumpEventLoop();
+      PumpEventLoop();
     }
   }
 
@@ -96,16 +95,10 @@ public sealed class Game : IDisposable
   /// <summary>True if the game is getting ready to close.</summary>
   public bool IsClosing { get; private set; } = false;
 
-  /// <summary>Schedules an action to be invoked on the event loop.</summary>
-  public void Schedule(Action callback)
-  {
-    callbacks.Enqueue(callback);
-  }
-
   /// <summary>Pumps the main event loop a single frame.</summary>
-  private void PumpEventLoop()
+  private static void PumpEventLoop()
   {
-    while (callbacks.TryDequeue(out var callback))
+    while (Callbacks.TryDequeue(out var callback))
     {
       callback.Invoke();
     }
@@ -199,21 +192,14 @@ public sealed class Game : IDisposable
   /// <summary>Synchronizes back to the main <see cref="Game"/>.</summary>
   private sealed class GameSynchronizationContext : SynchronizationContext
   {
-    private readonly Game game;
-
-    public GameSynchronizationContext(Game game)
-    {
-      this.game = game;
-    }
-
     public override void Post(SendOrPostCallback callback, object? state)
     {
-      game.Schedule(() => callback(state));
+      Schedule(() => callback(state));
     }
 
     public override void Send(SendOrPostCallback callback, object? state)
     {
-      game.Schedule(() => callback(state));
+      Schedule(() => callback(state));
     }
   }
 }

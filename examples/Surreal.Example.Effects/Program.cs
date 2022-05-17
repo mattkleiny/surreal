@@ -1,6 +1,4 @@
-﻿using Surreal.Graphics.Materials;
-
-var platform = new DesktopPlatform
+﻿var platform = new DesktopPlatform
 {
   Configuration =
   {

@@ -18,7 +18,6 @@ Game.Start(platform, game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
   var input = game.Services.GetRequiredService<IInputServer>();
 
-  // TODO: more work on this
   using var ui = new ImmediateModeContext(graphics, input, game.Host, game.Assets);
 
   game.ExecuteVariableStep(_ =>

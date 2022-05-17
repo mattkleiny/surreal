@@ -1,4 +1,4 @@
-﻿using Surreal.Components;
+﻿using Surreal.Aspects;
 using Surreal.Timing;
 
 namespace Surreal.Systems;
@@ -6,8 +6,8 @@ namespace Surreal.Systems;
 /// <summary>A simple <see cref="ComponentSystem"/> that iterates components linearly.</summary>
 public abstract class IteratingSystem : ComponentSystem
 {
-  protected IteratingSystem(ComponentMask mask)
-    : base(mask)
+  protected IteratingSystem(Aspect aspect)
+    : base(aspect)
   {
   }
 

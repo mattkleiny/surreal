@@ -1,5 +1,4 @@
-﻿using Surreal.Collections;
-using Surreal.Systems;
+﻿using Surreal.Systems;
 using Surreal.Systems.Attributes;
 using Surreal.Systems.Effects;
 

@@ -55,7 +55,15 @@ public sealed class StateMachine : IAutomata
 
   AutomataStatus IAutomata.Tick(in AutomataContext context, TimeDelta deltaTime)
   {
-    var status = CurrentState.Update(new StateContext(Owner, Properties, this, context.LevelOfDetail, context.Priority), deltaTime);
+    var innerContext = new StateContext(
+      Owner: context.Owner,
+      Properties: context.Properties,
+      StateMachine: this,
+      LevelOfDetail: context.LevelOfDetail,
+      Priority: context.Priority
+    );
+
+    var status = CurrentState.Update(in innerContext, deltaTime);
 
     return status switch
     {
@@ -116,7 +124,14 @@ public sealed record AutomataState(IAutomata Automata) : State
 {
   protected internal override StateStatus OnUpdate(in StateContext context, TimeDelta deltaTime)
   {
-    var status = Automata.Tick(new AutomataContext(context.LevelOfDetail, context.Priority), deltaTime);
+    var innerContext = new AutomataContext(
+      Owner: context.Owner,
+      Properties: context.Properties,
+      LevelOfDetail: context.LevelOfDetail,
+      Priority: context.Priority
+    );
+
+    var status = Automata.Tick(in innerContext, deltaTime);
 
     return status switch
     {

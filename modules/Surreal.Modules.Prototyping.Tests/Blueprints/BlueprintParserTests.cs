@@ -1,6 +1,6 @@
 ﻿using Surreal.IO;
 
-namespace Surreal;
+namespace Surreal.Blueprints;
 
 public class BlueprintParserTests
 {

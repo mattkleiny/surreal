@@ -19,13 +19,13 @@ Game.Start(platform, async game =>
   var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
   using var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/example_tile.png");
-  using var material = await game.Assets.LoadPaletteShiftEffectAsync();
+  using var effect = await game.Assets.LoadPaletteShiftEffectAsync();
   using var batch = new SpriteBatch(graphics);
 
   // set-up the color palette
   var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Demichrome4);
 
-  material.Palette = palette;
+  effect.Palette = palette;
 
   // set-up a basic tilemap
   var tileMap = new TileMap<Tile>(16, 9);
@@ -38,7 +38,7 @@ Game.Start(platform, async game =>
     Size     = new Vector2(256, 144)
   };
 
-  material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
+  effect.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
 
   void RandomizeTileMap()
   {
@@ -74,7 +74,7 @@ Game.Start(platform, async game =>
 
     graphics.ClearColorBuffer(palette[^1]);
 
-    batch.Begin(material);
+    batch.Begin(effect);
 
     tileMap.Draw(batch, Vector2.Zero, tileSize, mousePos, (tile, rect) =>
     {

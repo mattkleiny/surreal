@@ -1,75 +1,41 @@
 namespace Surreal.Components;
 
-/// <summary>Describes a union of component types for use in component queries.</summary>
-public readonly record struct ComponentMask
+/// <summary>A mask for a component, with a shared unique identifier to represent it.</summary>
+public readonly record struct ComponentMask(BigInteger Mask)
 {
   public static ComponentMask Empty => default;
+  public static ComponentMask For<T>() => ComponentType.For<T>().Mask;
 
-  public static ComponentMask Of<T1>()
-    => new(ComponentType.GetBit<T1>());
+  public bool IsEmpty => Mask == 0;
 
-  public static ComponentMask Of<T1, T2>()
-    => new(ComponentType.GetBit<T1>(), ComponentType.GetBit<T2>());
+  public bool ContainsAll(ComponentMask other) => (other.Mask & Mask) == other.Mask;
+  public bool ContainsAny(ComponentMask other) => (other.Mask & Mask) != 0;
 
-  public static ComponentMask Of<T1, T2, T3>()
-    => new(ComponentType.GetBit<T1>(), ComponentType.GetBit<T2>(), ComponentType.GetBit<T3>());
+  public ComponentMask Include<T>() => Include(ComponentType.For<T>());
+  public ComponentMask Include(ComponentType type) => this | type.Mask;
 
-  public static ComponentMask Of<T1, T2, T3, T4>()
-    => new(ComponentType.GetBit<T1>(), ComponentType.GetBit<T2>(), ComponentType.GetBit<T3>(), ComponentType.GetBit<T4>());
-
-  private readonly BigInteger mask;
-
-  private ComponentMask(params BigInteger[] bits)
-  {
-    mask = 0;
-
-    foreach (var bit in bits)
-    {
-      mask |= bit;
-    }
-  }
-
-  internal bool Contains<T>()
-  {
-    return Contains(ComponentType.GetBit<T>());
-  }
-
-  internal bool Contains(ComponentType type)
-  {
-    return Contains(type.Bit);
-  }
-
-  internal bool Contains(BigInteger bit)
-  {
-    return (bit & mask) == bit;
-  }
+  public ComponentMask Exclude<T>() => Exclude(ComponentType.For<T>());
+  public ComponentMask Exclude(ComponentType type) => this ^ type.Mask;
 
   public override string ToString()
   {
-    if (mask <= 0) { return "Empty Aspect"; }
+    if (IsEmpty) return "Empty Mask";
 
-    var labels = new StringBuilder();
+    var builder = new StringBuilder();
 
-    foreach (var (type, _, _) in ComponentType.ForMask(mask))
+    foreach (var (type, _, _) in ComponentType.ForMask(this))
     {
-      if (labels.Length > 0)
+      if (builder.Length > 0)
       {
-        labels.Append(" and ");
+        builder.Append(", ");
       }
 
-      labels.Append(type.Name);
+      builder.Append(type.Name);
     }
 
-    return $"Aspect of <{labels}>";
+    return builder.ToString();
   }
 
-  public bool Equals(ComponentMask other)
-  {
-    return mask == other.mask;
-  }
-
-  public override int GetHashCode()
-  {
-    return mask.GetHashCode();
-  }
+  public static ComponentMask operator |(ComponentMask left, ComponentMask right) => new(left.Mask | right.Mask);
+  public static ComponentMask operator ^(ComponentMask left, ComponentMask right) => new(left.Mask ^ right.Mask);
 }

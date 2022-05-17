@@ -1,23 +1,24 @@
-﻿using Surreal.Components;
+﻿using Surreal.Aspects;
+using Surreal.Components;
 
 namespace Surreal.Systems;
 
 /// <summary>Base class for any <see cref="ISceneSystem"/> implementation that monitors components.</summary>
 public abstract class ComponentSystem : SceneSystem
 {
-  protected ComponentSystem(ComponentMask mask)
+  protected ComponentSystem(Aspect aspect)
   {
-    Mask = mask;
+    Aspect = aspect;
   }
 
-  public ComponentMask    Mask     { get; }
+  public Aspect           Aspect   { get; }
   public HashSet<ActorId> ActorIds { get; } = new();
 
   // TODO: find a way to fire these events?
 
   protected internal virtual void OnComponentAdded(ActorId id, ComponentType type)
   {
-    if (Mask.Contains(type))
+    if (Aspect.IsInterestedIn(type.Mask))
     {
       ActorIds.Add(id);
     }
@@ -25,7 +26,7 @@ public abstract class ComponentSystem : SceneSystem
 
   protected internal virtual void OnComponentRemoved(ActorId id, ComponentType type)
   {
-    if (Mask.Contains(type))
+    if (Aspect.IsInterestedIn(type.Mask))
     {
       ActorIds.Remove(id);
     }

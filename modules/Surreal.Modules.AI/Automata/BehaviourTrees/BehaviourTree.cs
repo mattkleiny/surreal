@@ -53,7 +53,15 @@ public sealed class BehaviourTree : IAutomata
 
   AutomataStatus IAutomata.Tick(in AutomataContext context, TimeDelta deltaTime)
   {
-    var status = Root.Update(new BehaviourContext(Owner, Properties, this, context.LevelOfDetail, context.Priority), deltaTime);
+    var innerContext = new BehaviourContext(
+      Owner: context.Owner,
+      Properties: context.Properties,
+      BehaviourTree: this,
+      LevelOfDetail: context.LevelOfDetail,
+      Priority: context.Priority
+    );
+
+    var status = Root.Update(innerContext, deltaTime);
 
     return status switch
     {

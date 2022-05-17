@@ -1,9 +1,9 @@
 ﻿using Surreal.Assets;
 using Surreal.IO;
 using Surreal.Text;
-using static Surreal.BlueprintSyntaxTree;
+using static Surreal.Blueprints.BlueprintSyntaxTree;
 
-namespace Surreal;
+namespace Surreal.Blueprints;
 
 /// <summary>Parser front-end for blueprint descriptors.</summary>
 public sealed class BlueprintParser : Parser<BlueprintDeclaration>
@@ -37,6 +37,7 @@ public sealed class BlueprintParser : Parser<BlueprintDeclaration>
     declaration = await MergeIncludesAsync(declaration, cancellationToken);
 
     // TODO: validate the result?
+    // TODO: source generator to turn these into usable C# types?
 
     return declaration;
   }

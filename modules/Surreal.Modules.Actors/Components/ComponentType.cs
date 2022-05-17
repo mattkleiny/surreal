@@ -1,40 +1,42 @@
 ﻿namespace Surreal.Components;
 
-/// <summary>A mask for a component, with a shared unique identifier to represent it.</summary>
-public readonly record struct ComponentType(Type Type, int Id, BigInteger Bit)
+/// <summary>A type of a component, with a shared unique identifier to represent it.</summary>
+public readonly record struct ComponentType(Type Type, int Id, ComponentMask Mask)
 {
-  private static readonly Dictionary<Type, ComponentType> Metadata = new();
+  private static readonly ConcurrentDictionary<Type, ComponentType> Metadata = new();
+  private static readonly object BitLocker = new();
 
   private static int nextId = 0;
   private static BigInteger nextBit = 1;
 
-  public static int GetId<T>() => GetOrCreate<T>().Id;
-  public static BigInteger GetBit<T>() => GetOrCreate<T>().Bit;
-
-  public static ComponentType GetOrCreate<T>()
+  public static ComponentType For<T>()
   {
-    return GetOrCreate(typeof(T));
+    return For(typeof(T));
   }
 
-  public static ComponentType GetOrCreate(Type type)
+  public static ComponentType For(Type type)
   {
-    if (!Metadata.TryGetValue(type, out var result))
+    static ComponentType CreateComponent(Type type)
     {
-      var id = Interlocked.Increment(ref nextId);
-      var bit = nextBit <<= 1; // TODO: interlocked increment?
+      lock (BitLocker)
+      {
+        var id = Interlocked.Increment(ref nextId);
+        var bit = nextBit <<= 1;
+        var mask = new ComponentMask(bit);
 
-      Metadata[type] = result = new ComponentType(type, id, bit);
+        return new ComponentType(type, id, mask);
+      }
     }
 
-    return result;
+    return Metadata.GetOrAdd(type, CreateComponent);
   }
 
-  /// <summary>Creates an enumerable from a <see cref="BigInteger"/>  which holds type bits.</summary>
-  internal static IEnumerable<ComponentType> ForMask(BigInteger bits)
+  /// <summary>Determines all <see cref="ComponentType"/>s that match the given mask.</summary>
+  internal static IEnumerable<ComponentType> ForMask(ComponentMask mask)
   {
     foreach (var type in Metadata.Values)
     {
-      if ((type.Bit & bits) != 0)
+      if (mask.ContainsAll(type.Mask))
       {
         yield return type;
       }

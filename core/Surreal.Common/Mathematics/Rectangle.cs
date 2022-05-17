@@ -63,8 +63,8 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   {
     return vector.X >= Left &&
            vector.X <= Right &&
-           vector.Y >= Top &&
-           vector.Y <= Bottom;
+           vector.Y >= Bottom &&
+           vector.Y <= Top;
   }
 
   /// <summary>Allows enumerating points in a <see cref="Rectangle"/>.</summary>

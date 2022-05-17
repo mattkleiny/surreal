@@ -1,4 +1,4 @@
-﻿using Surreal.Components;
+﻿using Surreal.Aspects;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -22,7 +22,7 @@ public class IteratingSystemTests
   private sealed class TestSystem : IteratingSystem
   {
     public TestSystem()
-      : base(ComponentMask.Of<Transform>())
+      : base(new Aspect().With<Transform>())
     {
     }
   }

@@ -1,8 +1,8 @@
 ﻿using Surreal.Assets;
 using Surreal.IO;
-using static Surreal.BlueprintSyntaxTree;
+using static Surreal.Blueprints.BlueprintSyntaxTree;
 
-namespace Surreal;
+namespace Surreal.Blueprints;
 
 /// <summary>Different kinds of <see cref="BlueprintArchetype"/>s.</summary>
 public enum ArchetypeKind

@@ -127,10 +127,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.AI", "modul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.AI.Tests", "modules\Surreal.Modules.AI.Tests\Surreal.Modules.AI.Tests.csproj", "{ABDCE759-C1E6-4D67-952B-0EA4AA2D6447}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Blueprints", "modules\Surreal.Modules.Blueprints\Surreal.Modules.Blueprints.csproj", "{3DC29136-232B-4567-AF3F-A20824A50A06}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Blueprints.Tests", "modules\Surreal.Modules.Blueprints.Tests\Surreal.Modules.Blueprints.Tests.csproj", "{3A593C77-4963-4B85-B0A2-7AD825C1920F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -309,14 +305,6 @@ Global
 		{ABDCE759-C1E6-4D67-952B-0EA4AA2D6447}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABDCE759-C1E6-4D67-952B-0EA4AA2D6447}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABDCE759-C1E6-4D67-952B-0EA4AA2D6447}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3DC29136-232B-4567-AF3F-A20824A50A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3DC29136-232B-4567-AF3F-A20824A50A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3DC29136-232B-4567-AF3F-A20824A50A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3DC29136-232B-4567-AF3F-A20824A50A06}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A593C77-4963-4B85-B0A2-7AD825C1920F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A593C77-4963-4B85-B0A2-7AD825C1920F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A593C77-4963-4B85-B0A2-7AD825C1920F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A593C77-4963-4B85-B0A2-7AD825C1920F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -370,7 +358,5 @@ Global
 		{36603F10-1EA6-4E59-B6E4-459C7BB622C3} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{ED5F8F86-E4F2-4A4A-98EB-3BFD41BF5283} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 		{ABDCE759-C1E6-4D67-952B-0EA4AA2D6447} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
-		{3DC29136-232B-4567-AF3F-A20824A50A06} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
-		{3A593C77-4963-4B85-B0A2-7AD825C1920F} = {E7739C9D-8FE6-4B33-8363-4717FBC0E7E7}
 	EndGlobalSection
 EndGlobal

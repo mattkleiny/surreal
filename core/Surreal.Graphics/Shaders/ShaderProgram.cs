@@ -43,8 +43,7 @@ public sealed class ShaderProgram : GraphicsResource
 {
   public ShaderProgram(IGraphicsServer server)
   {
-    this.Server = server;
-
+    Server = server;
     Handle = server.CreateShader();
   }
 

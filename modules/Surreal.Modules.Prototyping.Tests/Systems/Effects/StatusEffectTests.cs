@@ -1,7 +1,6 @@
-﻿using Surreal.Systems.Effects;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
-namespace Surreal.Combat.Effects;
+namespace Surreal.Systems.Effects;
 
 public class StatusEffectTests
 {

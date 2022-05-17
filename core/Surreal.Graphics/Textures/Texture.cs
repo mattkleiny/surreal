@@ -77,8 +77,7 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     TextureFilterMode filterMode = TextureFilterMode.Point,
     TextureWrapMode wrapMode = TextureWrapMode.Clamp)
   {
-    this.Server = server;
-
+    Server = server;
     Format = format;
     Handle = server.CreateTexture(filterMode, wrapMode);
   }

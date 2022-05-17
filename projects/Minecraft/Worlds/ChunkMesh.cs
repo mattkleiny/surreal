@@ -67,7 +67,7 @@ public sealed class ChunkMesh : IDisposable
       if (!chunk.GetBlock(x, y, z + 1).IsSolid) tessellator.AddFace(x, y, z, Face.Back, block.Color);
     }
 
-    Game.ScheduleNextFrame(() =>
+    Game.Schedule(() =>
     {
       // upload vertices/indices to the GPU
       mesh.Vertices.Write(tessellator.Vertices);

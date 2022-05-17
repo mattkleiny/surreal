@@ -27,12 +27,15 @@ public sealed class SpriteBatch : IDisposable
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount <= MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-    // TODO: allocate on the managed heap instead?
+    Server = server;
+
     vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
     mesh     = new Mesh<Vertex2>(server);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
+
+  public IGraphicsServer Server { get; }
 
   /// <summary>The <see cref="MaterialProperty{T}"/> to bind textures to.</summary>
   public MaterialProperty<Texture> TextureProperty { get; set; } = MaterialProperty.Texture;

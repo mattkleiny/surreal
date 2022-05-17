@@ -7,7 +7,14 @@ public sealed record NestedAutomata(IAutomata Automata) : BehaviourTask
 {
   protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, TimeDelta deltaTime)
   {
-    var status = Automata.Tick(new AutomataContext(context.LevelOfDetail, context.Priority), deltaTime);
+    var innerContext = new AutomataContext(
+      Owner: context.Owner,
+      Properties: context.Properties,
+      LevelOfDetail: context.LevelOfDetail,
+      Priority: context.Priority
+    );
+
+    var status = Automata.Tick(in innerContext, deltaTime);
 
     return status switch
     {
