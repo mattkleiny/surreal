@@ -29,11 +29,20 @@ public static class BitmapFontExtensions
   }
 
   /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given <see cref="BitmapFont"/>.</summary>
+  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position)
+    => DrawText(batch, font, text, position, Color.White);
+
+  /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given <see cref="BitmapFont"/>.</summary>
+  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color)
+    => DrawText(batch, font, text, position, Vector2.One, color);
+
+  /// <summary>Draws text on the given <see cref="SpriteBatch"/> with the given <see cref="BitmapFont"/>.</summary>
   public static void DrawText(
     this SpriteBatch batch,
     BitmapFont font,
     string text,
     Vector2 position,
+    Vector2 scale,
     Color color,
     float angle = 0f,
     HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left,
@@ -61,14 +70,19 @@ public static class BitmapFontExtensions
 
       if (character == '\n')
       {
-        position.Y -= glyph.Size.Y;
+        position.Y -= glyph.Size.Y * scale.Y;
         position.X =  startPosition.X;
       }
       else
       {
-        batch.Draw(glyph, position, glyph.Size, angle, color);
+        var targetScale = new Vector2(
+          glyph.Size.X * scale.X,
+          glyph.Size.Y * scale.Y
+        );
 
-        position.X += glyph.Size.X;
+        batch.Draw(glyph, position, targetScale, angle, color);
+
+        position.X += glyph.Size.X * scale.X;
       }
     }
   }

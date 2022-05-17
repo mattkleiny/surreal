@@ -18,6 +18,7 @@ Game.Start(platform, async game =>
 
   using var texture = await game.Assets.LoadAssetAsync<Texture>("Assets/wabbit_alpha.png");
   using var material = await game.Assets.LoadDefaultSpriteMaterialAsync();
+  using var font = await game.Assets.LoadDefaultBitmapFontAsync();
   using var batch = new SpriteBatch(graphics, spriteCount: 8000);
 
   var camera = new Camera
@@ -63,6 +64,14 @@ Game.Start(platform, async game =>
       bunny.Update();
       bunny.Draw();
     }
+
+    batch.DrawText(
+      font: font,
+      text: $"Bunnies {actors.Count}",
+      position: new Vector2(50f, 50f),
+      scale: Vector2.One,
+      color: Color.Black
+    );
 
     batch.Flush();
   });

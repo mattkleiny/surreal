@@ -38,6 +38,6 @@ public class BitmapFontTests
 
     var font = await manager.LoadAssetAsync<BitmapFont>("Assets/fonts/IBM.font");
 
-    batch.DrawText(font, "This is a test", Vector2.Zero, Color.White);
+    batch.DrawText(font, "This is a test", Vector2.Zero, Vector2.One, Color.White);
   }
 }
