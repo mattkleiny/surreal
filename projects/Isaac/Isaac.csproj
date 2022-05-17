@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Isaac</AssemblyName>
+    <RootNamespace>Isaac</RootNamespace>
+    <ApplicationIcon>./Isaac.ico</ApplicationIcon>
+    <Description>An example game based on Surreal; a simple Isaac-inspired dungeon crawler.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A framework for actors in game logic.</Description>
+  </PropertyGroup>
+</Project>
