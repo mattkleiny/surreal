@@ -6,7 +6,7 @@ namespace Surreal.Collections;
 // TODO: clean up this -1, +1 nonsense.
 // TODO: have a better indexer, maybe use an option type or something?
 
-/// <summary>An index or pointer into an item in an <see cref="GenerationalArena{T}"/>.</summary>
+/// <summary>A safe index into an item in an <see cref="GenerationalArena{T}"/>.</summary>
 public readonly record struct ArenaIndex(ushort Id, uint Generation)
 {
   public static ArenaIndex Invalid => default;
@@ -30,6 +30,7 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
 
   private uint nextIndex = 1;
   private uint generation = 1;
+  private bool hasDirtyGeneration;
 
   /// <summary>Accesses a single item in the arena.</summary>
   public ref T this[ArenaIndex index]
@@ -97,24 +98,8 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     {
       entry = default;
 
-      Interlocked.Increment(ref generation);
+      hasDirtyGeneration = true;
     }
-  }
-
-  /// <summary>Removes a batch of the given indices from the arena.</summary>
-  public void RemoveAll(ReadOnlySpan<ArenaIndex> indices)
-  {
-    foreach (var index in indices)
-    {
-      ref var entry = ref entries[index.Offset];
-
-      if (entry.Generation == index.Generation)
-      {
-        entry = default;
-      }
-    }
-
-    Interlocked.Increment(ref generation);
   }
 
   /// <summary>
@@ -123,6 +108,14 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   /// </summary>
   private ArenaIndex AllocateIndex()
   {
+    // bump the generation when we need to allocate and we've since removed an item
+    if (hasDirtyGeneration)
+    {
+      Interlocked.Increment(ref generation);
+
+      hasDirtyGeneration = false;
+    }
+
     // try and re-use an existing index
     for (var i = 0; i < entries.Length; i++)
     {

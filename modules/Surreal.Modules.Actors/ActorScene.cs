@@ -1,4 +1,5 @@
-﻿using Surreal.Collections;
+﻿using System.Runtime.CompilerServices;
+using Surreal.Collections;
 using Surreal.Memory;
 using Surreal.Timing;
 
@@ -98,6 +99,12 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     while (spawnQueue.TryDequeue(out var id))
     {
       ref var node = ref nodes[id];
+
+      if (Unsafe.IsNullRef(ref node))
+      {
+        continue;
+      }
+
       var actor = node.Data;
 
       node.Status = ActorStatus.Active;
@@ -115,11 +122,14 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
   {
     if (destroyQueue.Count <= 0) return;
 
-    var batch = new SpanList<ArenaIndex>(stackalloc ArenaIndex[destroyQueue.Count]);
-
     while (destroyQueue.TryDequeue(out var id))
     {
       ref var node = ref nodes[id];
+
+      if (Unsafe.IsNullRef(ref node))
+      {
+        continue;
+      }
 
       var actor = nodes[id].Data;
 
@@ -131,20 +141,30 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 
       actor.Disconnect(this);
 
-      batch.Add(id);
+      nodes.Remove(id);
     }
-
-    nodes.RemoveAll(batch);
   }
 
   public ActorStatus GetStatus(ArenaIndex index)
   {
-    return nodes[index].Status;
+    ref var node = ref nodes[index];
+
+    if (Unsafe.IsNullRef(ref node))
+    {
+      return ActorStatus.Unknown;
+    }
+
+    return node.Status;
   }
 
   void IActorContext.Enable(ArenaIndex index)
   {
     ref var node = ref nodes[index];
+
+    if (Unsafe.IsNullRef(ref node))
+    {
+      return;
+    }
 
     if (node.Status != ActorStatus.Destroyed)
     {
@@ -156,6 +176,11 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
   {
     ref var node = ref nodes[index];
 
+    if (Unsafe.IsNullRef(ref node))
+    {
+      return;
+    }
+
     if (node.Status != ActorStatus.Destroyed)
     {
       node.Status = ActorStatus.Inactive;
@@ -165,6 +190,11 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
   void IActorContext.Destroy(ArenaIndex index)
   {
     ref var node = ref nodes[index];
+
+    if (Unsafe.IsNullRef(ref node))
+    {
+      return;
+    }
 
     if (node.Status != ActorStatus.Destroyed)
     {

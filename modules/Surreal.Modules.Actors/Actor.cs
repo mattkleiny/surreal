@@ -26,9 +26,9 @@ public class Actor
     Behaviours = new ActorBehaviourList(this);
   }
 
-  public ArenaIndex Index { get; private set; } = ArenaIndex.Invalid;
+  public ArenaIndex Id { get; private set; } = ArenaIndex.Invalid;
 
-  public ActorStatus       Status   => context?.GetStatus(Index) ?? ActorStatus.Unknown;
+  public ActorStatus       Status   => context?.GetStatus(Id) ?? ActorStatus.Unknown;
   public IServiceProvider? Services => context?.Services;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
@@ -37,22 +37,22 @@ public class Actor
 
   public ActorBehaviourList Behaviours { get; }
 
-  public void Enable() => context?.Enable(Index);
-  public void Disable() => context?.Disable(Index);
-  public void Destroy() => context?.Destroy(Index);
+  public void Enable() => context?.Enable(Id);
+  public void Disable() => context?.Disable(Id);
+  public void Destroy() => context?.Destroy(Id);
 
-  internal void Connect(IActorContext context, ArenaIndex index)
+  internal void Connect(IActorContext context, ArenaIndex id)
   {
     this.context = context;
 
-    Index = index;
+    Id = id;
   }
 
   internal void Disconnect(IActorContext context)
   {
     this.context = null;
 
-    Index = ArenaIndex.Invalid;
+    Id = ArenaIndex.Invalid;
   }
 
   public T Spawn<T>(T actor)
@@ -77,6 +77,26 @@ public class Actor
     where T : ActorBehaviour
   {
     return Behaviours.TryGet(out result);
+  }
+
+  public T GetBehaviour<T>()
+  {
+    throw new NotImplementedException();
+  }
+
+  public void AddComponent<T>(T component)
+  {
+    throw new NotImplementedException();
+  }
+
+  public ref T GetComponent<T>()
+  {
+    throw new NotImplementedException();
+  }
+
+  public bool TryGetComponent<T>(out T result)
+  {
+    throw new NotImplementedException();
   }
 
   protected internal virtual void OnAwake()
