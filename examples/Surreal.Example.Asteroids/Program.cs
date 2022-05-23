@@ -1,4 +1,6 @@
-﻿var platform = new DesktopPlatform
+﻿using Surreal.Actors;
+
+var platform = new DesktopPlatform
 {
   Configuration =
   {
