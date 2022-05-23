@@ -29,9 +29,12 @@ public class BufferTests
   [Test]
   public void it_should_allocate_and_free_a_mapped_buffer()
   {
-    using var buffer = Buffers.AllocateMapped<uint>("test.bin", 0, 1024);
+    if (OperatingSystem.IsWindows())
+    {
+      using var buffer = Buffers.AllocateMapped<uint>("test.bin", 0, 1024);
 
-    FillBuffer(buffer.Span);
+      FillBuffer(buffer.Span);
+    }
   }
 
   private static void FillBuffer(Span<uint> span)
