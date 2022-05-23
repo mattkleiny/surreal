@@ -1,11 +1,12 @@
 ﻿using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Surreal.Collections;
 
 // TODO: clean up this -1, +1 nonsense.
 // TODO: have a better indexer, maybe use an option type or something?
 
-/// <summary>An index or pointer into an item in an <see cref="Arena{T}"/>.</summary>
+/// <summary>An index or pointer into an item in an <see cref="GenerationalArena{T}"/>.</summary>
 public readonly record struct ArenaIndex(ushort Id, uint Generation)
 {
   public static ArenaIndex Invalid => default;
@@ -13,18 +14,18 @@ public readonly record struct ArenaIndex(ushort Id, uint Generation)
   public bool IsInvalid => Id == 0;
   public bool IsValid   => Id != 0;
 
+  public int Offset => Id - 1;
+
   public override string ToString()
   {
     return Id.ToString(CultureInfo.InvariantCulture);
   }
 }
 
-/// <summary>An arena is a collection of objects with safe externalized indices (<see cref="ArenaIndex"/>).</summary>
-public sealed class Arena<T> : IEnumerable<T>
+/// <summary>A generational arena is a collection of <see cref="T"/> with safe externalized indices in the form of (<see cref="ArenaIndex"/>).</summary>
+public sealed class GenerationalArena<T> : IEnumerable<T>
   where T : notnull
 {
-  private static T empty = default!;
-
   private Entry[] entries = Array.Empty<Entry>();
 
   private uint nextIndex = 1;
@@ -35,15 +36,46 @@ public sealed class Arena<T> : IEnumerable<T>
   {
     get
     {
-      ref var entry = ref entries[index.Id - 1];
+      var offset = index.Offset;
 
-      if (index.Generation != entry.Generation)
+      if (offset < entries.Length)
       {
-        return ref empty;
+        ref var entry = ref entries[offset];
+
+        if (index.Generation == entry.Generation)
+        {
+          return ref entry.Value;
+        }
       }
 
-      return ref entry.Value;
+      return ref Unsafe.NullRef<T>();
     }
+  }
+
+  /// <summary>Determines if the given index is contained in the arena.</summary>
+  public bool Contains(ArenaIndex index)
+  {
+    var offset = index.Offset;
+
+    if (offset >= entries.Length)
+    {
+      return false;
+    }
+
+    return index.Generation == entries[offset].Generation;
+  }
+
+  /// <summary>Inserts an entry into the arena with the given fixed <see cref="ArenaIndex"/>.</summary>
+  public void Insert(ArenaIndex index, T value)
+  {
+    var offset = index.Offset;
+
+    if (offset >= entries.Length)
+    {
+      Array.Resize(ref entries, offset + 1);
+    }
+
+    entries[offset] = new Entry(value, index.Generation);
   }
 
   /// <summary>Adds a new item to the arena and returns it's <see cref="ArenaIndex"/>.</summary>
@@ -51,13 +83,7 @@ public sealed class Arena<T> : IEnumerable<T>
   {
     var index = AllocateIndex();
 
-    // make space if necessary
-    if (entries.Length < index.Id)
-    {
-      Array.Resize(ref entries, index.Id);
-    }
-
-    entries[index.Id - 1] = new Entry(value, index.Generation);
+    entries[index.Offset] = new Entry(value, index.Generation);
 
     return index;
   }
@@ -80,7 +106,7 @@ public sealed class Arena<T> : IEnumerable<T>
   {
     foreach (var index in indices)
     {
-      ref var entry = ref entries[index.Id - 1];
+      ref var entry = ref entries[index.Offset];
 
       if (entry.Generation == index.Generation)
       {
@@ -91,7 +117,10 @@ public sealed class Arena<T> : IEnumerable<T>
     Interlocked.Increment(ref generation);
   }
 
-  /// <summary>Allocates a new <see cref="ArenaIndex"/> either by finding the first free spot in the list or allocating new space.</summary>
+  /// <summary>
+  /// Allocates a new <see cref="ArenaIndex"/> either by finding the first free spot in the list
+  /// or allocating new space.
+  /// </summary>
   private ArenaIndex AllocateIndex()
   {
     // try and re-use an existing index
@@ -105,10 +134,15 @@ public sealed class Arena<T> : IEnumerable<T>
       }
     }
 
-    // otherwise allocate a new one
-    var index = (ushort)(Interlocked.Increment(ref nextIndex) - 1);
+    // otherwise allocate a new one and make space if necessary
+    var id = (ushort)(Interlocked.Increment(ref nextIndex) - 1);
 
-    return new ArenaIndex(index, generation);
+    if (id >= entries.Length)
+    {
+      Array.Resize(ref entries, id);
+    }
+
+    return new ArenaIndex(id, generation);
   }
 
   public Enumerator GetEnumerator()
@@ -126,13 +160,13 @@ public sealed class Arena<T> : IEnumerable<T>
     return GetEnumerator();
   }
 
-  /// <summary>Allows enumerating an <see cref="Arena{T}"/>.</summary>
+  /// <summary>Allows enumerating an <see cref="GenerationalArena{T}"/>.</summary>
   public struct Enumerator : IEnumerator<T>
   {
-    private readonly Arena<T> arena;
+    private readonly GenerationalArena<T> arena;
     private int index;
 
-    public Enumerator(Arena<T> arena)
+    public Enumerator(GenerationalArena<T> arena)
       : this()
     {
       this.arena = arena;
@@ -141,7 +175,7 @@ public sealed class Arena<T> : IEnumerable<T>
 
     public ref T       Current => ref arena.entries[index].Value;
     T IEnumerator<T>.  Current => arena.entries[index].Value;
-    object IEnumerator.Current => Current!;
+    object IEnumerator.Current => Current;
 
     public bool MoveNext()
     {
@@ -167,7 +201,7 @@ public sealed class Arena<T> : IEnumerable<T>
     }
   }
 
-  /// <summary>Manages a single entry in the <see cref="Arena{T}"/>.</summary>
+  /// <summary>Manages a single entry in the <see cref="GenerationalArena{T}"/>.</summary>
   [SuppressMessage("ReSharper", "ConvertToConstant.Local")]
   [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
   private record struct Entry(T Value, uint Generation)

@@ -7,11 +7,9 @@ namespace Surreal;
 /// <summary>A scene of managed <see cref="Actor"/>s.</summary>
 public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 {
-  private readonly Arena<Node<Actor>> nodes = new();
+  private readonly GenerationalArena<Node<Actor>> nodes = new();
   private readonly Queue<ArenaIndex> spawnQueue = new();
   private readonly Queue<ArenaIndex> destroyQueue = new();
-
-  private ulong nextActorId = 0;
 
   public ActorScene(IServiceProvider? services = null)
   {
@@ -139,14 +137,14 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     nodes.RemoveAll(batch);
   }
 
-  public ActorStatus GetStatus(ArenaIndex id)
+  public ActorStatus GetStatus(ArenaIndex index)
   {
-    return nodes[id].Status;
+    return nodes[index].Status;
   }
 
-  void IActorContext.Enable(ArenaIndex id)
+  void IActorContext.Enable(ArenaIndex index)
   {
-    ref var node = ref nodes[id];
+    ref var node = ref nodes[index];
 
     if (node.Status != ActorStatus.Destroyed)
     {
@@ -154,9 +152,9 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     }
   }
 
-  void IActorContext.Disable(ArenaIndex id)
+  void IActorContext.Disable(ArenaIndex index)
   {
-    ref var node = ref nodes[id];
+    ref var node = ref nodes[index];
 
     if (node.Status != ActorStatus.Destroyed)
     {
@@ -164,15 +162,15 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     }
   }
 
-  void IActorContext.Destroy(ArenaIndex id)
+  void IActorContext.Destroy(ArenaIndex index)
   {
-    ref var node = ref nodes[id];
+    ref var node = ref nodes[index];
 
     if (node.Status != ActorStatus.Destroyed)
     {
       node.Status = ActorStatus.Destroyed;
 
-      destroyQueue.Enqueue(id);
+      destroyQueue.Enqueue(index);
     }
   }
 
@@ -207,7 +205,7 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
   {
     private readonly ActorScene scene;
     private readonly ActorStatus status;
-    private Arena<Node<Actor>>.Enumerator enumerator;
+    private GenerationalArena<Node<Actor>>.Enumerator enumerator;
 
     public Enumerator(ActorScene scene, ActorStatus status)
       : this()

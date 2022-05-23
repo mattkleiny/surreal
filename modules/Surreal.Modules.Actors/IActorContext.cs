@@ -7,12 +7,12 @@ internal interface IActorContext
 {
   IServiceProvider? Services { get; }
 
-  ActorStatus GetStatus(ArenaIndex id);
+  ActorStatus GetStatus(ArenaIndex index);
 
   T Spawn<T>(T actor)
     where T : Actor;
 
-  void Enable(ArenaIndex id);
-  void Disable(ArenaIndex id);
-  void Destroy(ArenaIndex id);
+  void Enable(ArenaIndex index);
+  void Disable(ArenaIndex index);
+  void Destroy(ArenaIndex index);
 }

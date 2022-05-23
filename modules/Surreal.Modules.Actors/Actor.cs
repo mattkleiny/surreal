@@ -26,9 +26,9 @@ public class Actor
     Behaviours = new ActorBehaviourList(this);
   }
 
-  public ArenaIndex Id { get; private set; } = ArenaIndex.Invalid;
+  public ArenaIndex Index { get; private set; } = ArenaIndex.Invalid;
 
-  public ActorStatus       Status   => context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public ActorStatus       Status   => context?.GetStatus(Index) ?? ActorStatus.Unknown;
   public IServiceProvider? Services => context?.Services;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
@@ -37,22 +37,22 @@ public class Actor
 
   public ActorBehaviourList Behaviours { get; }
 
-  public void Enable() => context?.Enable(Id);
-  public void Disable() => context?.Disable(Id);
-  public void Destroy() => context?.Destroy(Id);
+  public void Enable() => context?.Enable(Index);
+  public void Disable() => context?.Disable(Index);
+  public void Destroy() => context?.Destroy(Index);
 
-  internal void Connect(IActorContext context, ArenaIndex id)
+  internal void Connect(IActorContext context, ArenaIndex index)
   {
     this.context = context;
 
-    Id = id;
+    Index = index;
   }
 
   internal void Disconnect(IActorContext context)
   {
     this.context = null;
 
-    Id = ArenaIndex.Invalid;
+    Index = ArenaIndex.Invalid;
   }
 
   public T Spawn<T>(T actor)

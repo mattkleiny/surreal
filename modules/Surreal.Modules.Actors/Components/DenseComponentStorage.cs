@@ -6,23 +6,22 @@ namespace Surreal.Components;
 public sealed class DenseComponentStorage<T> : IComponentStorage<T>
   where T : notnull, new()
 {
-  public ref T GetOrCreateComponent(ArenaIndex id, Optional<T> prototype)
+  private readonly GenerationalArena<T> components = new();
+
+  public ref T GetComponent(ArenaIndex index)
   {
-    throw new NotImplementedException();
+    return ref components[index];
   }
 
-  public ref T GetComponent(ArenaIndex id)
+  public ref T AddComponent(ArenaIndex index, Optional<T> prototype)
   {
-    throw new NotImplementedException();
+    components.Insert(index, prototype.GetOrDefault(new T()));
+
+    return ref components[index];
   }
 
-  public ref T AddComponent(ArenaIndex id, Optional<T> prototype)
+  public void RemoveComponent(ArenaIndex index)
   {
-    throw new NotImplementedException();
-  }
-
-  public bool RemoveComponent(ArenaIndex id)
-  {
-    throw new NotImplementedException();
+    components.Remove(index);
   }
 }

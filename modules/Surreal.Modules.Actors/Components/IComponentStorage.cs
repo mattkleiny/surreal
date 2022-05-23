@@ -6,25 +6,25 @@ namespace Surreal.Components;
 /// <summary>Represents generically any <see cref="IComponentStorage{T}"/> type.</summary>
 public interface IComponentStorage
 {
-  bool RemoveComponent(ArenaIndex id);
+  void RemoveComponent(ArenaIndex index);
 }
 
 /// <summary>Represents storage for a component of type <see cref="T"/>.</summary>
 public interface IComponentStorage<T> : IComponentStorage
   where T : notnull
 {
-  ref T GetOrCreateComponent(ArenaIndex id, Optional<T> prototype)
+  ref T GetOrCreateComponent(ArenaIndex index, Optional<T> prototype)
   {
-    ref var component = ref GetComponent(id);
+    ref var component = ref GetComponent(index);
 
     if (Unsafe.IsNullRef(ref component))
     {
-      return ref AddComponent(id, prototype);
+      return ref AddComponent(index, prototype);
     }
 
     return ref component;
   }
 
-  ref T GetComponent(ArenaIndex id);
-  ref T AddComponent(ArenaIndex id, Optional<T> prototype);
+  ref T GetComponent(ArenaIndex index);
+  ref T AddComponent(ArenaIndex index, Optional<T> prototype);
 }

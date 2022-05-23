@@ -17,11 +17,25 @@ public static class CollectionExtensions
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ref TValue GetOrCreateRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
     where TKey : notnull
-    where TValue : struct
+    where TValue : new()
   {
     if (!dictionary.ContainsKey(key))
     {
       dictionary.Add(key, new TValue());
+    }
+
+    return ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
+  }
+
+  /// <summary>Retrieves a reference to a value type in a dictionary, or returns a null ref if it's not available.</summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ref TValue GetRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
+    where TKey : notnull
+    where TValue : new()
+  {
+    if (!dictionary.ContainsKey(key))
+    {
+      return ref Unsafe.NullRef<TValue>();
     }
 
     return ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
