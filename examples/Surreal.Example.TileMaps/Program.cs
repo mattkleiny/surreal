@@ -18,14 +18,17 @@ Game.Start(platform, async game =>
   var keyboard = game.Services.GetRequiredService<IKeyboardDevice>();
   var mouse = game.Services.GetRequiredService<IMouseDevice>();
 
-  using var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/example_tile.png");
-  using var effect = await game.Assets.LoadPaletteShiftEffectAsync();
+  using var tileSprite = await game.Assets.LoadAssetAsync<Texture>("Assets/example_tile.png");
+  using var wireMaterial = await game.Assets.LoadDefaultWireMaterialAsync();
+  using var paletteShift = await game.Assets.LoadPaletteShiftEffectAsync();
+
   using var batch = new SpriteBatch(graphics);
+  using var geometry = new GeometryBatch(graphics);
 
   // set-up the color palette
   var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Hollow4);
 
-  effect.Palette = palette;
+  paletteShift.Palette = palette;
 
   // set-up a basic tilemap
   var tileMap = new TileMap<Tile>(16, 9);
@@ -38,7 +41,8 @@ Game.Start(platform, async game =>
     Size     = new Vector2(256, 144)
   };
 
-  effect.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
+  paletteShift.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
+  wireMaterial.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
 
   void RandomizeTileMap()
   {
@@ -73,26 +77,34 @@ Game.Start(platform, async game =>
     // TODO: why is this upside down?
     var mousePos = mouse.NormalisedPosition * camera.Size;
     mousePos = mousePos with { Y = camera.Size.Y - mousePos.Y };
-    var viewingRect = Rectangle.Create(mousePos, new Vector2(4, 4));
+    var viewingRect = Rectangle.Create(mousePos, new Vector2(4f * 16f, 4 * 16f));
 
     graphics.ClearColorBuffer(palette[^1]);
 
-    batch.Begin(effect);
+    batch.Begin(paletteShift);
+    geometry.Begin(wireMaterial);
 
-    tileMap.Draw(batch, viewingRect, Vector2.Zero, tileSize, mousePos, (tile, rect) =>
+    tileMap.Draw(batch, Vector2.Zero, tileSize, mousePos, (tile, rect) =>
     {
       if (tile == Tile.Filled)
       {
         if (rect.Contains(mousePos))
         {
-          return (sprite, Color.Yellow);
+          return (tileSprite, Color.Yellow);
         }
 
-        return (sprite, Color.White);
+        if (viewingRect.Contains(rect.Center))
+        {
+          return (tileSprite, Color.White);
+        }
+
+        return (tileSprite, Color.White * 0.8f);
       }
 
       return (TextureRegion.Empty, Color.White);
     });
+
+    geometry.DrawSolidQuad(viewingRect, Color.Cyan);
 
     batch.Flush();
   });
@@ -101,7 +113,7 @@ Game.Start(platform, async game =>
 public readonly record struct Tile(ushort Id)
 {
   private static int nextId = 0;
-  private static ushort NextId() => (ushort) Interlocked.Increment(ref nextId);
+  private static ushort NextId() => (ushort)Interlocked.Increment(ref nextId);
 
   public static Tile Empty  { get; } = new(Id: NextId());
   public static Tile Filled { get; } = new(Id: NextId());

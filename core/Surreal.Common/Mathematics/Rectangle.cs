@@ -28,7 +28,7 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   public float Width  => Right - Left;
   public float Height => Bottom - Top;
 
-  public Vector2 Center => new(Left + Width / 2f, Bottom + Height / 2f);
+  public Vector2 Center => new(Left + Width / 2f, Top + Height / 2f);
   public Vector2 Size   => new(Width, Height);
 
   public Vector2 TopLeft     => new(Left, Top);
@@ -55,16 +55,16 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   {
     return point.X >= Left &&
            point.X <= Right &&
-           point.Y >= Bottom &&
-           point.Y <= Top;
+           point.Y >= Top &&
+           point.Y <= Bottom;
   }
 
   public bool Contains(Vector2 vector)
   {
     return vector.X >= Left &&
            vector.X <= Right &&
-           vector.Y >= Bottom &&
-           vector.Y <= Top;
+           vector.Y >= Top &&
+           vector.Y <= Bottom;
   }
 
   /// <summary>Allows enumerating points in a <see cref="Rectangle"/>.</summary>

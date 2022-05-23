@@ -1,3 +1,4 @@
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
 using Surreal.Mathematics;
 using Surreal.Memory;
@@ -8,12 +9,12 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>An efficient batch of geometric primitives for rendering to the GPU.</summary>
 public sealed class GeometryBatch : IDisposable
 {
-  private const int DefaultVertexCount = 16_000;
+  private const int DefaultVertexCount = 64;
 
   private readonly IDisposableBuffer<Vertex2> vertices;
   private readonly Mesh<Vertex2> mesh;
 
-  private ShaderProgram? shader;
+  private Material? material;
   private int vertexCount;
 
   public GeometryBatch(IGraphicsServer server, int maximumVertexCount = DefaultVertexCount)
@@ -23,7 +24,14 @@ public sealed class GeometryBatch : IDisposable
   }
 
   public void Begin(ShaderProgram shader)
-    => this.shader = shader;
+    => material = new Material(shader);
+
+  public void Begin(Material material)
+  {
+    vertexCount = 0; // reset vertex pointer
+
+    this.material = material;
+  }
 
   public void DrawPoint(Vector2 position, Color color)
     => DrawPrimitive(stackalloc[] { position }, color, MeshType.Points);
@@ -46,8 +54,14 @@ public sealed class GeometryBatch : IDisposable
   public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
     => DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.LineLoop);
 
+  public void DrawSolidQuad(Rectangle rectangle, Color color)
+    => DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.Triangles);
+
   public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
     => DrawQuad(center, size, color, MeshType.Triangles);
+
+  public void DrawWireQuad(Rectangle rectangle, Color color)
+    => DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.LineLoop);
 
   public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
     => DrawQuad(center, size, color, MeshType.LineLoop);
@@ -145,10 +159,10 @@ public sealed class GeometryBatch : IDisposable
   private void Flush(MeshType type)
   {
     if (vertexCount == 0) return;
-    if (shader == null) return;
+    if (material == null) return;
 
     mesh.Vertices.Write(vertices.Span[..vertexCount]);
-    mesh.Draw(shader, vertexCount, 0, type);
+    mesh.Draw(material, vertexCount, 0, type);
 
     vertexCount = 0;
   }
