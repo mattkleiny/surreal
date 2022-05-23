@@ -76,7 +76,8 @@ Game.Start(platform, async game =>
     foreach (ref var bunny in actors.AsSpan())
     {
       bunny.Update(time.DeltaTime);
-      bunny.Draw(batch, sprite);
+
+      batch.Draw(sprite, bunny.Position);
     }
 
     batch.DrawText(
@@ -101,11 +102,6 @@ public record struct Bunny
     Position += Velocity * deltaTime * 100f;
 
     CheckIfOffScreen();
-  }
-
-  public void Draw(SpriteBatch batch, Texture sprite)
-  {
-    batch.Draw(sprite, Position);
   }
 
   private void CheckIfOffScreen()

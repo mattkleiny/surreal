@@ -10,6 +10,7 @@ public abstract class Effect : IDisposable
     Material = material;
   }
 
+  /// <summary>The underlying <see cref="Material"/> instance.</summary>
   public Material Material { get; }
 
   public IGraphicsServer     Server => Material.Server;

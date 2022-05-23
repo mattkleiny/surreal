@@ -52,6 +52,6 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream, Encoding.UTF8);
 
-    return await OpenTKShaderProcessor.ProcessGlslCodeAsync(context.Path, reader, cancellationToken);
+    return await OpenTKShaderProcessor.ParseCodeAsync(context.Path, reader, cancellationToken);
   }
 }
