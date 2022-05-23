@@ -1,264 +1,238 @@
-﻿using System.Reflection;
-using Surreal.Components;
-using Surreal.Systems;
+﻿using Surreal.Collections;
 using Surreal.Timing;
 
 namespace Surreal;
 
 /// <summary>A scene of managed <see cref="Actor"/>s.</summary>
-public sealed class ActorScene : IActorContext, IDisposable
+public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 {
-  private readonly Dictionary<ActorId, Node<Actor>> nodes = new();
-  private readonly ComponentStorageGroup components = new();
-  private readonly LinkedList<ISceneSystem> systems = new();
-  private readonly Queue<Actor> destroyQueue = new();
+  private readonly Arena<Node<Actor>> nodes = new();
+  private readonly Queue<ArenaIndex> spawnQueue = new();
+  private readonly Queue<ArenaIndex> destroyQueue = new();
 
   private ulong nextActorId = 0;
 
-  public void AddSystem(ISceneSystem system)
+  public ActorScene(IServiceProvider? services = null)
   {
-    systems.AddLast(system);
+    Services = services;
   }
 
-  public void RemoveSystem(ISceneSystem system)
-  {
-    systems.Remove(system);
-  }
+  public IServiceProvider? Services { get; }
 
   public T Spawn<T>(T actor)
     where T : Actor
   {
-    actor.Connect(this);
-
-    if (nodes.TryGetValue(actor.Id, out var node))
-    {
-      node.ActorStatus = ActorStatus.Active;
-    }
-    else
-    {
-      nodes[actor.Id] = new Node<Actor>(actor)
-      {
-        ActorStatus = ActorStatus.Active,
-      };
-
-      // TODO: split these up, better FSM over actors
-      actor.OnEnable();
-      actor.OnAwake();
-      actor.OnStart();
-    }
+    spawnQueue.Enqueue(nodes.Add(new Node<Actor>(actor)));
 
     return actor;
   }
 
+  /// <summary>Ticks the entire scene in sequence.</summary>
+  public void Tick(TimeDelta deltaTime)
+  {
+    BeginFrame(deltaTime);
+    Input(deltaTime);
+    Draw(deltaTime);
+    Update(deltaTime);
+    EndFrame(deltaTime);
+  }
+
   public void BeginFrame(TimeDelta deltaTime)
   {
-    foreach (var system in systems)
-    {
-      system.OnBeginFrame(deltaTime);
-    }
+    ProcessSpawnQueue();
 
-    foreach (var node in nodes.Values)
+    foreach (var actor in this)
     {
-      if (node.ActorStatus == ActorStatus.Active)
-      {
-        node.Data.OnBeginFrame(deltaTime);
-      }
+      actor.OnBeginFrame(deltaTime);
     }
   }
 
   public void Input(TimeDelta deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var actor in this)
     {
-      system.OnInput(deltaTime);
-    }
-
-    foreach (var node in nodes.Values)
-    {
-      if (node.ActorStatus == ActorStatus.Active)
-      {
-        node.Data.OnInput(deltaTime);
-      }
+      actor.OnInput(deltaTime);
     }
   }
 
   public void Update(TimeDelta deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var actor in this)
     {
-      system.OnUpdate(deltaTime);
+      actor.OnUpdate(deltaTime);
     }
-
-    foreach (var node in nodes.Values)
-    {
-      if (node.ActorStatus == ActorStatus.Active)
-      {
-        node.Data.OnUpdate(deltaTime);
-      }
-    }
-
-    ProcessDestroyQueue();
   }
 
   public void Draw(TimeDelta deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var actor in this)
     {
-      system.OnDraw(deltaTime);
-    }
-
-    foreach (var node in nodes.Values)
-    {
-      if (node.ActorStatus == ActorStatus.Active)
-      {
-        node.Data.OnDraw(deltaTime);
-      }
+      actor.OnDraw(deltaTime);
     }
   }
 
   public void EndFrame(TimeDelta deltaTime)
   {
-    foreach (var system in systems)
+    foreach (var actor in this)
     {
-      system.OnEndFrame(deltaTime);
+      actor.OnEndFrame(deltaTime);
     }
 
-    foreach (var node in nodes.Values)
-    {
-      if (node.ActorStatus == ActorStatus.Active)
-      {
-        node.Data.OnEndFrame(deltaTime);
-      }
-    }
+    ProcessDestroyQueue();
   }
 
-  public ActorStatus GetStatus(ActorId id)
+  public void Clear()
   {
-    if (nodes.TryGetValue(id, out var node))
+    // clears the scene of nodes
+    foreach (var node in nodes)
     {
-      return node.ActorStatus;
+      node.Data.Destroy();
     }
 
-    return ActorStatus.Unknown;
+    ProcessDestroyQueue();
   }
 
-  ActorId IActorContext.AllocateId()
+  private void ProcessSpawnQueue()
   {
-    return new ActorId(Interlocked.Increment(ref nextActorId));
-  }
-
-  void IActorContext.Enable(ActorId id)
-  {
-    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
+    while (spawnQueue.TryDequeue(out var id))
     {
-      node.ActorStatus = ActorStatus.Active;
-    }
-  }
+      ref var node = ref nodes[id];
+      var actor = node.Data;
 
-  void IActorContext.Disable(ActorId id)
-  {
-    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
-    {
-      node.ActorStatus = ActorStatus.Inactive;
-    }
-  }
+      node.Status = ActorStatus.Active;
 
-  void IActorContext.Destroy(ActorId id)
-  {
-    if (nodes.TryGetValue(id, out var node) && node.ActorStatus != ActorStatus.Destroyed)
-    {
-      node.ActorStatus = ActorStatus.Destroyed;
+      actor.Connect(this, id);
 
-      destroyQueue.Enqueue(node.Data);
+      // TODO: split these up, better FSM over actors?
+      actor.OnEnable();
+      actor.OnAwake();
+      actor.OnStart();
     }
   }
 
   private void ProcessDestroyQueue()
   {
-    while (destroyQueue.TryDequeue(out var actor))
+    while (destroyQueue.TryDequeue(out var id))
     {
-      // TODO: split these up, better FSM over actors
+      ref var node = ref nodes[id];
+
+      var actor = nodes[id].Data;
+
+      node.Status = ActorStatus.Destroyed;
+
+      // TODO: split these up, better FSM over internal actor states?
       actor.OnDisable();
       actor.OnDestroy();
 
       actor.Disconnect(this);
 
       nodes.Remove(actor.Id);
-      components.RemoveAll(actor.Id);
+    }
+  }
+
+  public ActorStatus GetStatus(ArenaIndex id)
+  {
+    return nodes[id].Status;
+  }
+
+  void IActorContext.Enable(ArenaIndex id)
+  {
+    ref var node = ref nodes[id];
+
+    if (node.Status != ActorStatus.Destroyed)
+    {
+      node.Status = ActorStatus.Active;
+    }
+  }
+
+  void IActorContext.Disable(ArenaIndex id)
+  {
+    ref var node = ref nodes[id];
+
+    if (node.Status != ActorStatus.Destroyed)
+    {
+      node.Status = ActorStatus.Inactive;
+    }
+  }
+
+  void IActorContext.Destroy(ArenaIndex id)
+  {
+    ref var node = ref nodes[id];
+
+    if (node.Status != ActorStatus.Destroyed)
+    {
+      node.Status = ActorStatus.Destroyed;
+
+      destroyQueue.Enqueue(id);
     }
   }
 
   public void Dispose()
   {
-    components.Dispose();
-    nodes.Clear();
+    Clear();
   }
 
-  IComponentStorage<T> IActorContext.GetStorage<T>()
+  public Enumerator GetEnumerator()
   {
-    return components.GetOrCreateStorage<T>();
+    return new Enumerator(this, ActorStatus.Active);
+  }
+
+  IEnumerator<Actor> IEnumerable<Actor>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
   }
 
   /// <summary>A single node in the scene.</summary>
-  private sealed record Node<T>(T Data)
+  private record struct Node<T>(T Data)
   {
-    public ActorStatus   ActorStatus { get; set; }
-    public Node<T>?      Parent      { get; set; }
-    public List<Node<T>> Children    { get; } = new();
+    public ActorStatus Status = ActorStatus.Unknown;
   }
 
-  /// <summary>A storage group for components, for use in scene actors.</summary>
-  private sealed class ComponentStorageGroup : IDisposable
+  /// <summary>Allows enumerating active <see cref="Actor"/>s.</summary>
+  public struct Enumerator : IEnumerator<Actor>
   {
-    private readonly Dictionary<Type, IComponentStorage> storagesByType = new();
+    private readonly ActorScene scene;
+    private readonly ActorStatus status;
+    private Arena<Node<Actor>>.Enumerator enumerator;
 
-    public IComponentStorage<T> GetOrCreateStorage<T>()
-      where T : notnull, new()
+    public Enumerator(ActorScene scene, ActorStatus status)
+      : this()
     {
-      if (!storagesByType.TryGetValue(typeof(T), out var storage))
-      {
-        storagesByType[typeof(T)] = storage = CreateStorage<T>();
-      }
+      this.scene  = scene;
+      this.status = status;
 
-      return (IComponentStorage<T>) storage;
+      Reset();
     }
 
-    public void RemoveAll(ActorId id)
+    public Actor       Current => enumerator.Current.Data;
+    object IEnumerator.Current => Current;
+
+    public bool MoveNext()
     {
-      foreach (var storage in storagesByType.Values)
+      while (enumerator.MoveNext())
       {
-        storage.RemoveComponent(id);
+        if (enumerator.Current.Status == status)
+        {
+          return true;
+        }
       }
+
+      return false;
+    }
+
+    public void Reset()
+    {
+      enumerator = scene.nodes.GetEnumerator();
     }
 
     public void Dispose()
     {
-      foreach (var storage in storagesByType.Values)
-      {
-        if (storage is IDisposable disposable)
-        {
-          disposable.Dispose();
-        }
-      }
-
-      storagesByType.Clear();
-    }
-
-    private static IComponentStorage<T> CreateStorage<T>()
-      where T : notnull, new()
-    {
-      var storageType = typeof(SparseComponentStorage<>);
-      var attribute = typeof(T).GetCustomAttribute<ComponentAttribute>();
-
-      // check for per-component storage types
-      if (attribute != null)
-      {
-        storageType = attribute.StorageType ?? storageType;
-      }
-
-      var instance = Activator.CreateInstance(storageType.MakeGenericType(typeof(T)))!;
-
-      return (IComponentStorage<T>) instance;
+      // no-op
     }
   }
 }

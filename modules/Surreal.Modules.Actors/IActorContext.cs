@@ -1,18 +1,18 @@
-﻿using Surreal.Components;
+﻿using Surreal.Collections;
 
 namespace Surreal;
 
 /// <summary>The context in which an <see cref="Actor"/> lives; hooked up after spawning into a scene.</summary>
 internal interface IActorContext
 {
-  ActorStatus GetStatus(ActorId id);
+  IServiceProvider? Services { get; }
 
-  ActorId AllocateId();
+  ActorStatus GetStatus(ArenaIndex id);
 
-  void Enable(ActorId id);
-  void Disable(ActorId id);
-  void Destroy(ActorId id);
+  T Spawn<T>(T actor)
+    where T : Actor;
 
-  IComponentStorage<T> GetStorage<T>()
-    where T : notnull, new();
+  void Enable(ArenaIndex id);
+  void Disable(ArenaIndex id);
+  void Destroy(ArenaIndex id);
 }

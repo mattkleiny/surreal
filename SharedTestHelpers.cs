@@ -18,6 +18,7 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
 {
   private readonly Lazy<IFixture> fixture = new(BuildFixture);
 
+  [SuppressMessage("Trimming", "IL2046:\'RequiresUnreferencedCodeAttribute\' annotations must match across all interface implementations or overrides.")]
   TestMethod ISimpleTestBuilder.BuildFrom(IMethodInfo method, Test? suite)
   {
     var builder = new NUnitTestCaseBuilder();

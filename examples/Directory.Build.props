@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Using Include="Surreal" />
-    <Using Include="Surreal.Actors" />
     <Using Include="Surreal.Audio" />
     <Using Include="Surreal.Audio.Clips" />
     <Using Include="Surreal.Collections" />

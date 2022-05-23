@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Runtime.CompilerServices;
+﻿using Surreal.Collections;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -10,21 +9,7 @@ public enum ActorStatus
   Unknown,
   Active,
   Inactive,
-  Destroyed,
-}
-
-/// <summary>Uniquely identifies a single <see cref="Actor"/>.</summary>
-public readonly record struct ActorId(ulong Id)
-{
-  public static ActorId Invalid => default;
-
-  public bool IsInvalid => Id == 0;
-  public bool IsValid   => Id != 0;
-
-  public override string ToString()
-  {
-    return Id.ToString(CultureInfo.InvariantCulture);
-  }
+  Destroyed
 }
 
 /// <summary>An actor in the game world.</summary>
@@ -36,141 +21,141 @@ public class Actor
 {
   private IActorContext? context;
 
-  public ActorId     Id     { get; private set; } = ActorId.Invalid;
-  public ActorStatus Status => context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public Actor()
+  {
+    Behaviours = new ActorBehaviourList(this);
+  }
+
+  public ArenaIndex Id { get; private set; } = ArenaIndex.Invalid;
+
+  public ActorStatus       Status   => context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public IServiceProvider? Services => context?.Services;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
   public bool IsActive    => Status == ActorStatus.Active;
   public bool IsInactive  => Status == ActorStatus.Inactive;
 
+  public ActorBehaviourList Behaviours { get; }
+
   public void Enable() => context?.Enable(Id);
   public void Disable() => context?.Disable(Id);
   public void Destroy() => context?.Destroy(Id);
 
-  internal void Connect(IActorContext context)
+  internal void Connect(IActorContext context, ArenaIndex id)
   {
     this.context = context;
 
-    Id = context.AllocateId();
+    Id = id;
   }
 
   internal void Disconnect(IActorContext context)
   {
     this.context = null;
 
-    Id = ActorId.Invalid;
+    Id = ArenaIndex.Invalid;
   }
 
-  public ref T GetOrCreateComponent<T>()
-    where T : notnull, new()
-  {
-    return ref GetOrCreateComponent(new T());
-  }
-
-  public ref T GetOrCreateComponent<T>(T prototype)
-    where T : notnull, new()
+  public T Spawn<T>(T actor)
+    where T : Actor
   {
     if (context == null)
     {
-      throw new ActorException("The actor is not currently part of a scene so components are not available");
+      throw new InvalidOperationException("The actor is not part of a scene, unable to spawn child actor");
     }
 
-    var storage = context.GetStorage<T>();
-
-    return ref storage.GetOrCreateComponent(Id, prototype);
+    return context.Spawn(actor);
   }
 
-  public ref T AddComponent<T>(T prototype)
-    where T : notnull, new()
+  public Actor AddBehaviour(ActorBehaviour behaviour)
   {
-    if (context == null)
-    {
-      throw new ActorException("The actor is not currently part of a scene so components are not available");
-    }
+    Behaviours.Add(behaviour);
 
-    var storage = context.GetStorage<T>();
-
-    return ref storage.AddComponent(Id, prototype);
+    return this;
   }
 
-  public ref T GetComponent<T>()
-    where T : notnull, new()
+  public bool TryGetBehaviour<T>(out T result)
+    where T : ActorBehaviour
   {
-    if (context == null)
-    {
-      throw new ActorException("The actor is not currently part of a scene so components are not available");
-    }
-
-    var storage = context.GetStorage<T>();
-    ref var component = ref storage.GetComponent(Id);
-
-    if (Unsafe.IsNullRef(ref component))
-    {
-      throw new ActorException($"The given component '{typeof(T).Name}' is not available on actor id {Id}");
-    }
-
-    return ref component;
-  }
-
-  public bool RemoveComponent<T>()
-    where T : notnull, new()
-  {
-    if (context == null)
-    {
-      throw new ActorException("The actor is not currently part of a scene so components are not available");
-    }
-
-    var storage = context.GetStorage<T>();
-
-    return storage.RemoveComponent(Id);
+    return Behaviours.TryGet(out result);
   }
 
   protected internal virtual void OnAwake()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnAwake();
+    }
   }
 
   protected internal virtual void OnStart()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnStart();
+    }
   }
 
   protected internal virtual void OnEnable()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnEnable();
+    }
   }
 
   protected internal virtual void OnBeginFrame(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnBeginFrame(deltaTime);
+    }
   }
 
   protected internal virtual void OnInput(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnInput(deltaTime);
+    }
   }
 
   protected internal virtual void OnUpdate(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnUpdate(deltaTime);
+    }
   }
 
-  protected internal virtual void OnDraw(TimeDelta time)
+  protected internal virtual void OnDraw(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnDraw(deltaTime);
+    }
   }
 
   protected internal virtual void OnEndFrame(TimeDelta deltaTime)
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnEndFrame(deltaTime);
+    }
   }
 
   protected internal virtual void OnDisable()
   {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnDisable();
+    }
   }
 
   protected internal virtual void OnDestroy()
   {
-  }
-}
-
-/// <summary>Indicates an error with the Actor/Component system.</summary>
-public sealed class ActorException : Exception
-{
-  public ActorException(string message)
-    : base(message)
-  {
+    foreach (var behaviour in Behaviours)
+    {
+      behaviour.OnDestroy();
+    }
   }
 }

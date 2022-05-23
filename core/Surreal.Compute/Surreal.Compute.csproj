@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Compute drivers for Surreal.</Description>
-    <RootNamespace>Surreal.Compute</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
-  </ItemGroup>
-</Project>

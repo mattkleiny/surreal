@@ -4,5 +4,5 @@
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class ComponentAttribute : Attribute
 {
-  public Type? StorageType { get; set; }
+  public Type StorageType { get; set; } = typeof(DenseComponentStorage<>);
 }

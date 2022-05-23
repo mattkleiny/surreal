@@ -191,22 +191,22 @@ public sealed class ImmediateModeContext : IDisposable, IPaintingContext
   [StructLayout(LayoutKind.Sequential)]
   private record struct Vertex(Vector2 Position, Color Color, Vector2 UV = default, float Thickness = 1f, int ControlId = -1, int TextureIndex = -1)
   {
-    [VertexDescriptor(VertexType.Float, 2)]
+    [VertexDescriptor(2, VertexType.Float)]
     public Vector2 Position = Position;
 
-    [VertexDescriptor(VertexType.Float, 4)]
+    [VertexDescriptor(4, VertexType.Float)]
     public Color Color = Color;
 
-    [VertexDescriptor(VertexType.Float, 2)]
+    [VertexDescriptor(2, VertexType.Float)]
     public Vector2 UV = UV;
 
-    [VertexDescriptor(VertexType.Float, 1)]
+    [VertexDescriptor(1, VertexType.Float)]
     public float Thickness = Thickness;
 
-    [VertexDescriptor(VertexType.Int, 1)]
+    [VertexDescriptor(1, VertexType.Int)]
     public int ControlId = ControlId;
 
-    [VertexDescriptor(VertexType.Int, 1)]
+    [VertexDescriptor(1, VertexType.Int)]
     public int TextureIndex = TextureIndex;
   }
 }

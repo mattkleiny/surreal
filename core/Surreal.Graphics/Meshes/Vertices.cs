@@ -7,13 +7,13 @@ namespace Surreal.Graphics.Meshes;
 [StructLayout(LayoutKind.Sequential)]
 public record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
 {
-  [VertexDescriptor(VertexType.Float, 2)]
+  [VertexDescriptor(2, VertexType.Float)]
   public Vector2 Position = Position;
 
-  [VertexDescriptor(VertexType.Float, 4)]
+  [VertexDescriptor(4, VertexType.Float)]
   public Color Color = Color;
 
-  [VertexDescriptor(VertexType.Float, 2)]
+  [VertexDescriptor(2, VertexType.Float)]
   public Vector2 UV = UV;
 }
 
@@ -21,12 +21,12 @@ public record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
 [StructLayout(LayoutKind.Sequential)]
 public record struct Vertex3(Vector3 Position, Color Color, Vector2 UV)
 {
-  [VertexDescriptor(VertexType.Float, 3)]
+  [VertexDescriptor(3, VertexType.Float)]
   public Vector3 Position = Position;
 
-  [VertexDescriptor(VertexType.Float, 4)]
+  [VertexDescriptor(4, VertexType.Float)]
   public Color Color = Color;
 
-  [VertexDescriptor(VertexType.Float, 2)]
+  [VertexDescriptor(2, VertexType.Float)]
   public Vector2 UV = UV;
 }

@@ -91,25 +91,25 @@ public readonly ref struct ReadOnlySpanGrid<T>
 
   public T this[Point2 position] => this[position.X, position.Y];
 
-  public T this[int x, int y]
+  public ref readonly T this[int x, int y]
   {
     get
     {
       Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
       Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
-      return storage[x + y * stride];
+      return ref storage[x + y * stride];
     }
   }
 
-  public T this[Index x, Index y]
+  public ref readonly T this[Index x, Index y]
   {
     get
     {
       var ix = x.GetOffset(Width);
       var iy = y.GetOffset(Height);
 
-      return storage[ix + iy * stride];
+      return ref storage[ix + iy * stride];
     }
   }
 

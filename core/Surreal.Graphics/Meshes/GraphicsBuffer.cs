@@ -8,7 +8,6 @@ public enum BufferType
 {
   Vertex,
   Index,
-  Uniform
 }
 
 /// <summary>Different usage models for buffers.</summary>
