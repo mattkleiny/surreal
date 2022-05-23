@@ -1,4 +1,5 @@
 ﻿using Surreal.Collections;
+using Surreal.Memory;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -94,6 +95,8 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 
   private void ProcessSpawnQueue()
   {
+    if (spawnQueue.Count <= 0) return;
+
     while (spawnQueue.TryDequeue(out var id))
     {
       ref var node = ref nodes[id];
@@ -112,6 +115,10 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 
   private void ProcessDestroyQueue()
   {
+    if (destroyQueue.Count <= 0) return;
+
+    var batch = new SpanList<ArenaIndex>(stackalloc ArenaIndex[destroyQueue.Count]);
+
     while (destroyQueue.TryDequeue(out var id))
     {
       ref var node = ref nodes[id];
@@ -126,8 +133,10 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
 
       actor.Disconnect(this);
 
-      nodes.Remove(actor.Id);
+      batch.Add(id);
     }
+
+    nodes.RemoveAll(batch);
   }
 
   public ActorStatus GetStatus(ArenaIndex id)

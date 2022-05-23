@@ -75,6 +75,22 @@ public sealed class Arena<T> : IEnumerable<T>
     }
   }
 
+  /// <summary>Removes a batch of the given indices from the arena.</summary>
+  public void RemoveAll(ReadOnlySpan<ArenaIndex> indices)
+  {
+    foreach (var index in indices)
+    {
+      ref var entry = ref entries[index.Id - 1];
+
+      if (entry.Generation == index.Generation)
+      {
+        entry = default;
+      }
+    }
+
+    Interlocked.Increment(ref generation);
+  }
+
   /// <summary>Allocates a new <see cref="ArenaIndex"/> either by finding the first free spot in the list or allocating new space.</summary>
   private ArenaIndex AllocateIndex()
   {
