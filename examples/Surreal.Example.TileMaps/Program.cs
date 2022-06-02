@@ -26,7 +26,7 @@ Game.Start(platform, async game =>
   using var geometry = new GeometryBatch(graphics);
 
   // set-up the color palette
-  var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Hollow4);
+  var palette = await game.Assets.LoadBuiltInPaletteAsync(BuiltInPalette.Hollow4);
 
   paletteShift.Palette = palette;
 

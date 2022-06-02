@@ -18,7 +18,7 @@ public enum BuiltInPalette
 /// <summary>Common graphics utilities and extensions.</summary>
 public static class GraphicsExtensions
 {
-  public static async Task<ColorPalette> LoadPaletteAsync(this IAssetManager assets, BuiltInPalette palette)
+  public static async Task<ColorPalette> LoadBuiltInPaletteAsync(this IAssetManager assets, BuiltInPalette palette)
   {
     return await assets.LoadAssetAsync<ColorPalette>(palette switch
     {

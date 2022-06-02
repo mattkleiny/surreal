@@ -20,7 +20,7 @@ Game.Start(platform, async game =>
   using var canvas = new Canvas(graphics, 256, 144);
   using var batch = new SpriteBatch(graphics);
 
-  var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.Kule16);
+  var palette = await game.Assets.LoadBuiltInPaletteAsync(BuiltInPalette.Hollow4);
 
   var random = Random.Shared;
 
@@ -47,7 +47,7 @@ Game.Start(platform, async game =>
 
     if (mouse.IsButtonDown(MouseButton.Left))
     {
-      var color = palette[random.Next(2, 6)];
+      var color = palette[random.Next(1, palette.Count)];
 
       canvas.AddSand(point, radius: 4, color);
     }

@@ -2,22 +2,12 @@
   <PropertyGroup>
     <Description>Graphics drivers for Surreal.</Description>
     <RootNamespace>Surreal.Graphics</RootNamespace>
-    <NoWarn>3021</NoWarn> <!-- Antlr output -->
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.3" PrivateAssets="compile" />
-    <PackageReference Include="Antlr4BuildTasks" Version="8.17" PrivateAssets="all" />
     <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta16" PrivateAssets="compile" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile" />
-  </ItemGroup>
-  <ItemGroup>
-    <Antlr4 Include="Shaders\Parsing\Shade.g4">
-      <Package>Surreal.Graphics.Shaders.Internal</Package>
-      <Listener>false</Listener>
-      <Visitor>true</Visitor>
-    </Antlr4>
   </ItemGroup>
 </Project>

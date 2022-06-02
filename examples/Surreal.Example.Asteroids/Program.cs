@@ -26,7 +26,7 @@ Game.Start(platform, async game =>
   using var scene = new ActorScene();
   using var batch = new SpriteBatch(graphics);
 
-  var palette = await game.Assets.LoadPaletteAsync(BuiltInPalette.SpaceDust9);
+  var palette = await game.Assets.LoadBuiltInPaletteAsync(BuiltInPalette.SpaceDust9);
 
   var random = Random.Shared;
   var center = new Vector2(canvas.Width / 2f, canvas.Height / 2f);

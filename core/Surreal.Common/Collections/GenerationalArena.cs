@@ -3,9 +3,6 @@ using System.Runtime.CompilerServices;
 
 namespace Surreal.Collections;
 
-// TODO: clean up this -1, +1 nonsense.
-// TODO: have a better indexer, maybe use an option type or something?
-
 /// <summary>A safe index into an item in an <see cref="GenerationalArena{T}"/>.</summary>
 public readonly record struct ArenaIndex(ushort Id, uint Generation)
 {
@@ -28,10 +25,11 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
 {
   private Entry[] entries = Array.Empty<Entry>();
 
-  private uint nextIndex = 1;
+  private uint nextIndex = 0;
   private uint generation = 1;
   private bool hasDirtyGeneration;
 
+  // TODO: have a better indexer, maybe use an option type or something?
   /// <summary>Accesses a single item in the arena.</summary>
   public ref T this[ArenaIndex index]
   {
@@ -128,8 +126,7 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     }
 
     // otherwise allocate a new one and make space if necessary
-    var id = (ushort)(Interlocked.Increment(ref nextIndex) - 1);
-
+    var id = (ushort)(Interlocked.Increment(ref nextIndex));
     if (id >= entries.Length)
     {
       Array.Resize(ref entries, id);
@@ -151,6 +148,16 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   IEnumerator IEnumerable.GetEnumerator()
   {
     return GetEnumerator();
+  }
+
+  /// <summary>Manages a single entry in the <see cref="GenerationalArena{T}"/>.</summary>
+  [SuppressMessage("ReSharper", "ConvertToConstant.Local")]
+  [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
+  private record struct Entry(T Value, uint Generation)
+  {
+    public T Value = Value;
+    public bool IsOccupied = true;
+    public uint Generation = Generation;
   }
 
   /// <summary>Allows enumerating an <see cref="GenerationalArena{T}"/>.</summary>
@@ -192,15 +199,5 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     {
       // no-op
     }
-  }
-
-  /// <summary>Manages a single entry in the <see cref="GenerationalArena{T}"/>.</summary>
-  [SuppressMessage("ReSharper", "ConvertToConstant.Local")]
-  [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
-  private record struct Entry(T Value, uint Generation)
-  {
-    public T Value = Value;
-    public bool IsOccupied = true;
-    public uint Generation = Generation;
   }
 }

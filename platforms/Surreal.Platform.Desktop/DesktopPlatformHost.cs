@@ -6,7 +6,6 @@ using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
-using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
@@ -59,7 +58,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
     Window         = new OpenTKWindow(configuration);
     AudioServer    = new OpenTKAudioServer();
-    GraphicsServer = new OpenTKGraphicsServer(configuration.OpenGlVersion);
+    GraphicsServer = new OpenTKGraphicsServer();
     InputServer    = new OpenTKInputServer(Window);
 
     Resized += OnResized;
@@ -103,8 +102,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     manager.AddLoader(new TrueTypeFontLoader(GraphicsServer));
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
-    manager.AddLoader(new ShaderProgramLoader(GraphicsServer));
-    manager.AddLoader(new ShaderDeclarationLoader());
     manager.AddLoader(new MaterialLoader());
     manager.AddLoader(new OpenTKShaderProgramLoader(GraphicsServer));
     manager.AddLoader(new TextureLoader(GraphicsServer));

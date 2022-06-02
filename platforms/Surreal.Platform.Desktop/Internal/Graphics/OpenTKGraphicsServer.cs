@@ -24,13 +24,6 @@ namespace Surreal.Internal.Graphics;
 /// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
-  private readonly OpenTKShaderCompiler shaderCompiler;
-
-  public OpenTKGraphicsServer(Version version)
-  {
-    shaderCompiler = new OpenTKShaderCompiler(version);
-  }
-
   public void SetViewportSize(Viewport viewport)
   {
     GL.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
@@ -404,6 +397,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       GL.DrawArrays(primitiveType, first: 0, vertexCount);
     }
+
+    GL.BindVertexArray(VertexArrayHandle.Zero);
   }
 
   public void DeleteMesh(GraphicsHandle handle)
@@ -418,13 +413,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var shader = GL.CreateProgram();
 
     return new GraphicsHandle(shader.Handle);
-  }
-
-  public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
-  {
-    var shaderSet = shaderCompiler.CompileShader(declaration);
-
-    LinkShader(handle, shaderSet);
   }
 
   public void LinkShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
@@ -475,13 +463,6 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       GL.DeleteShader(shaderId);
     }
-  }
-
-  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
-  {
-    var program = new ProgramHandle(handle);
-
-    return GL.GetUniformLocation(program, name);
   }
 
   public unsafe ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
@@ -576,6 +557,11 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
 
     return results;
+  }
+
+  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
+  {
+    return GL.GetUniformLocation(new ProgramHandle(handle), name);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)

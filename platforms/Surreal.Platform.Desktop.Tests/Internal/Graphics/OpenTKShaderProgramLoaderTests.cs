@@ -2,7 +2,7 @@
 
 namespace Surreal.Internal.Graphics;
 
-public class OpenTKShaderProcessorTests
+public class OpenTKShaderProgramLoaderTests
 {
   [Test]
   public async Task it_should_parse_a_valid_glsl_program()
@@ -44,7 +44,7 @@ public class OpenTKShaderProcessorTests
       }
     ";
 
-    var shaderSet = await OpenTKShaderProcessor.ParseCodeAsync("test.glsl", new StringReader(code));
+    var shaderSet = await OpenTKShaderProgramLoader.ParseCodeAsync("test.glsl", new StringReader(code));
 
     shaderSet.Shaders.Length.Should().Be(2);
     shaderSet.Shaders[0].Type.Should().Be(ShaderType.VertexShader);

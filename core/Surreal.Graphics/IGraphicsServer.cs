@@ -53,10 +53,9 @@ public interface IGraphicsServer
 
   // shaders
   GraphicsHandle CreateShader();
-  void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration);
-  int GetShaderUniformLocation(GraphicsHandle handle, string name);
   ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle);
   ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle);
+  int GetShaderUniformLocation(GraphicsHandle handle, string name);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
   void SetShaderUniform(GraphicsHandle handle, int location, float value);
   void SetShaderUniform(GraphicsHandle handle, int location, Point2 value);

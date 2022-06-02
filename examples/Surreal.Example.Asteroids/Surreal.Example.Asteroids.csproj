@@ -3,7 +3,7 @@
     <Description>An asteroids clone for Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\modules\Surreal.Modules.Actors\Surreal.Modules.Actors.csproj" />
+    <ProjectReference Include="..\..\modules\Surreal.Modules.Framework\Surreal.Modules.Framework.csproj" />
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
   </ItemGroup>
 </Project>

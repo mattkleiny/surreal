@@ -3,7 +3,7 @@
 /// <summary>A simple canvas of 'sand' pixels that can be simulated.</summary>
 public sealed class Canvas : PixelCanvas
 {
-  private static readonly Color32 Empty = Color32.White;
+  private static readonly Color32 Empty = Color32.Black;
 
   private IntervalTimer updateTimer = new(16.Milliseconds());
 

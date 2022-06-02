@@ -136,16 +136,6 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     return new GraphicsHandle(Interlocked.Increment(ref nextShaderId));
   }
 
-  public void CompileShader(GraphicsHandle handle, ShaderDeclaration declaration)
-  {
-    // no-op
-  }
-
-  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
-  {
-    return 0;
-  }
-
   public ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
   {
     return ReadOnlySlice<AttributeMetadata>.Empty;
@@ -154,6 +144,11 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
   public ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
   {
     return ReadOnlySlice<UniformMetadata>.Empty;
+  }
+
+  public int GetShaderUniformLocation(GraphicsHandle handle, string name)
+  {
+    return 0;
   }
 
   public void SetActiveShader(GraphicsHandle handle)

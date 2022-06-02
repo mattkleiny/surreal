@@ -1,5 +1,4 @@
-﻿using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Sprites;
+﻿using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using Surreal.Memory;
@@ -14,13 +13,11 @@ public class PixelCanvas : IDisposable
 {
   private readonly Grid<Color32> pixels;
   private readonly Texture texture;
-  private readonly Mesh mesh;
 
   public PixelCanvas(IGraphicsServer server, int width, int height)
   {
     pixels  = new Grid<Color32>(width, height);
-    texture = new Texture(server, TextureFormat.Rgba8);
-    mesh    = Mesh.CreateQuad(server);
+    texture = new Texture(server);
   }
 
   public int Width  => pixels.Width;
@@ -49,7 +46,6 @@ public class PixelCanvas : IDisposable
 
   public void Dispose()
   {
-    mesh.Dispose();
     texture.Dispose();
   }
 }
