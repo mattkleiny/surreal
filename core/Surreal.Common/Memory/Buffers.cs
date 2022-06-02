@@ -50,7 +50,7 @@ public static class Buffers
     }
 
     public Memory<T> Memory => elements;
-    public Span<T>   Span   => elements;
+    public Span<T> Span => elements;
 
     public void Resize(int newLength)
     {
@@ -71,7 +71,7 @@ public static class Buffers
     }
 
     public Memory<T> Memory => elements;
-    public Span<T>   Span   => elements;
+    public Span<T> Span => elements;
 
     public void Resize(int newLength)
     {
@@ -94,8 +94,8 @@ public static class Buffers
       this.length = length;
 
       buffer = zeroFill
-        ? NativeMemory.AllocZeroed((nuint) length, (nuint) Unsafe.SizeOf<T>())
-        : NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
+        ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
+        : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
     }
 
     ~NativeBuffer()
@@ -124,7 +124,7 @@ public static class Buffers
 
     public void Resize(int newLength)
     {
-      buffer = NativeMemory.Realloc(buffer, (nuint) newLength);
+      buffer = NativeMemory.Realloc(buffer, (nuint)newLength);
     }
 
     protected override void Dispose(bool disposing)
@@ -166,7 +166,7 @@ public static class Buffers
         throw new InvalidOperationException($"The given path does not support memory mapped files: {path}");
       }
 
-      file     = path.OpenMemoryMappedFile(offset, length);
+      file = path.OpenMemoryMappedFile(offset, length);
       accessor = file.CreateViewAccessor(offset, length, MemoryMappedFileAccess.ReadWrite);
 
       accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
@@ -178,7 +178,7 @@ public static class Buffers
     {
       CheckNotDisposed();
 
-      return new Span<T>(pointer, (int) accessor.Capacity);
+      return new Span<T>(pointer, (int)accessor.Capacity);
     }
 
     public override MemoryHandle Pin(int elementIndex = 0)

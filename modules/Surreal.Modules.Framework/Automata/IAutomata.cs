@@ -31,7 +31,6 @@ public enum LevelOfDetail : byte
 /// <summary>The context for <see cref="IAutomata"/> operations.</summary>
 public readonly record struct AutomataContext(
   object Owner,
-  IPropertyCollection Properties,
   LevelOfDetail LevelOfDetail,
   Priority Priority
 );

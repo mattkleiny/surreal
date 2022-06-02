@@ -52,13 +52,13 @@ public sealed class Camera
     }
   }
 
-  public ref readonly Matrix4x4 View           => ref view;
-  public ref readonly Matrix4x4 Projection     => ref projection;
+  public ref readonly Matrix4x4 View => ref view;
+  public ref readonly Matrix4x4 Projection => ref projection;
   public ref readonly Matrix4x4 ProjectionView => ref projectionView;
 
   private void RecomputeViewProjection()
   {
-    view       = Matrix4x4.CreateTranslation(position.X, position.Y, 0f);
+    view = Matrix4x4.CreateTranslation(position.X, position.Y, 0f);
     projection = Matrix4x4.CreateOrthographic(size.X, size.Y, nearPlane, farPlane);
 
     projectionView = view * projection;

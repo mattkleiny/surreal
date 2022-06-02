@@ -10,14 +10,14 @@ public static class EnumExtensions
   public static unsafe int AsInt<TEnum>(this TEnum value)
     where TEnum : unmanaged, Enum
   {
-    return *(int*) &value;
+    return *(int*)&value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static unsafe TEnum AsEnum<TEnum>(this int value)
     where TEnum : unmanaged, Enum
   {
-    return *(TEnum*) &value;
+    return *(TEnum*)&value;
   }
 
   public static bool EqualsFast<TEnum>(this TEnum first, TEnum second)
@@ -90,11 +90,11 @@ public static class EnumExtensions
     public MaskEnumerator(TEnum flags)
     {
       this.flags = flags;
-      flag       = 1;
-      index      = -1;
+      flag = 1;
+      index = -1;
     }
 
-    public TEnum       Current => CachedEnumLookup<TEnum>.Values[index];
+    public TEnum Current => CachedEnumLookup<TEnum>.Values[index];
     object IEnumerator.Current => Current;
 
     public bool MoveNext()
@@ -125,7 +125,7 @@ public static class EnumExtensions
 
     public void Reset()
     {
-      flag  = 1;
+      flag = 1;
       index = -1;
     }
 
@@ -142,7 +142,7 @@ public static class EnumExtensions
   private static class CachedEnumLookup<TEnum>
     where TEnum : unmanaged, Enum
   {
-    public static ImmutableArray<string> Names  { get; } = Enum.GetNames(typeof(TEnum)).ToImmutableArray();
-    public static ImmutableArray<TEnum>  Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToImmutableArray();
+    public static ImmutableArray<string> Names { get; } = Enum.GetNames(typeof(TEnum)).ToImmutableArray();
+    public static ImmutableArray<TEnum> Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToImmutableArray();
   }
 }

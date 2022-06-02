@@ -15,7 +15,6 @@ public enum StateStatus
 /// <summary>The context for <see cref="StateMachine"/> operations.</summary>
 public readonly record struct StateContext(
   object Owner,
-  IPropertyCollection Properties,
   StateMachine StateMachine,
   LevelOfDetail LevelOfDetail = LevelOfDetail.Medium,
   Priority Priority = Priority.Medium
@@ -31,24 +30,17 @@ public readonly record struct StateContext(
 public sealed class StateMachine : IAutomata
 {
   public StateMachine(object owner, State initialState)
-    : this(owner, new PropertyBag(), initialState)
   {
-  }
-
-  public StateMachine(object owner, IPropertyCollection properties, State initialState)
-  {
-    Owner        = owner;
-    Properties   = properties;
+    Owner = owner;
     CurrentState = initialState;
   }
 
-  public object              Owner        { get; }
-  public IPropertyCollection Properties   { get; }
-  public State               CurrentState { get; private set; }
+  public object Owner { get; }
+  public State CurrentState { get; private set; }
 
   public StateStatus Update(TimeDelta deltaTime)
   {
-    var context = new StateContext(Owner, Properties, this);
+    var context = new StateContext(Owner, this);
 
     return CurrentState.Update(context, deltaTime);
   }
@@ -57,7 +49,6 @@ public sealed class StateMachine : IAutomata
   {
     var innerContext = new StateContext(
       Owner: context.Owner,
-      Properties: context.Properties,
       StateMachine: this,
       LevelOfDetail: context.LevelOfDetail,
       Priority: context.Priority
@@ -68,9 +59,9 @@ public sealed class StateMachine : IAutomata
     return status switch
     {
       StateStatus.Sleeping => AutomataStatus.Running,
-      StateStatus.Running  => AutomataStatus.Running,
-      StateStatus.Success  => AutomataStatus.Success,
-      StateStatus.Failure  => AutomataStatus.Failure,
+      StateStatus.Running => AutomataStatus.Running,
+      StateStatus.Success => AutomataStatus.Success,
+      StateStatus.Failure => AutomataStatus.Failure,
 
       _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
     };
@@ -126,7 +117,6 @@ public sealed record AutomataState(IAutomata Automata) : State
   {
     var innerContext = new AutomataContext(
       Owner: context.Owner,
-      Properties: context.Properties,
       LevelOfDetail: context.LevelOfDetail,
       Priority: context.Priority
     );

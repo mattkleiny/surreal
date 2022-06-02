@@ -9,7 +9,7 @@ public readonly record struct ArenaIndex(ushort Id, uint Generation)
   public static ArenaIndex Invalid => default;
 
   public bool IsInvalid => Id == 0;
-  public bool IsValid   => Id != 0;
+  public bool IsValid => Id != 0;
 
   public int Offset => Id - 1;
 
@@ -173,8 +173,8 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
       Reset();
     }
 
-    public ref T       Current => ref arena.entries[index].Value;
-    T IEnumerator<T>.  Current => arena.entries[index].Value;
+    public ref T Current => ref arena.entries[index].Value;
+    T IEnumerator<T>.Current => arena.entries[index].Value;
     object IEnumerator.Current => Current;
 
     public bool MoveNext()

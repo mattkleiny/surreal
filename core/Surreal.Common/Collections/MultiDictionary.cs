@@ -16,8 +16,9 @@ public sealed class MultiDictionary<TKey, TValue>
     dictionary = new Dictionary<TKey, List<TValue>>(comparer);
   }
 
-  public int               Count => dictionary.Count;
-  public IEnumerable<TKey> Keys  => dictionary.Keys;
+  public int Count => dictionary.Count;
+
+  public IEnumerable<TKey> Keys => dictionary.Keys;
 
   public ReadOnlySlice<TValue> this[TKey key]
   {

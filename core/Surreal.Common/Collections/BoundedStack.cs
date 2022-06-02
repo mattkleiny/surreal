@@ -16,7 +16,7 @@ public sealed class BoundedStack<T> : IEnumerable<T>
     this.maxCapacity = maxCapacity;
   }
 
-  public int Count    => stack.Count;
+  public int Count => stack.Count;
   public int Capacity => maxCapacity;
 
   public bool TryPeek([MaybeNullWhen(false)] out T result)
@@ -45,9 +45,20 @@ public sealed class BoundedStack<T> : IEnumerable<T>
     stack.Clear();
   }
 
-  public Stack<T>.Enumerator GetEnumerator() => stack.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-  IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+  public Stack<T>.Enumerator GetEnumerator()
+  {
+    return stack.GetEnumerator();
+  }
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 }
 
 /// <summary>A <see cref="ConcurrentStack{T}"/> with a fixed-sized upper bound.</summary>
@@ -63,7 +74,7 @@ public sealed class BoundedConcurrentStack<T>
     this.maxCapacity = maxCapacity;
   }
 
-  public int Count    => stack.Count;
+  public int Count => stack.Count;
   public int Capacity => maxCapacity;
 
   public bool TryPeek([MaybeNullWhen(false)] out T result)

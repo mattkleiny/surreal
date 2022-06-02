@@ -14,7 +14,6 @@ public static class CollectionExtensions
   }
 
   /// <summary>Retrieves a reference to a value type in a dictionary or creates it if it doesn't already exist.</summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ref TValue GetOrCreateRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
     where TKey : notnull
     where TValue : new()
@@ -28,7 +27,6 @@ public static class CollectionExtensions
   }
 
   /// <summary>Retrieves a reference to a value type in a dictionary, or returns a null ref if it's not available.</summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ref TValue GetRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
     where TKey : notnull
     where TValue : new()

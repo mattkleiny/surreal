@@ -153,17 +153,17 @@ public sealed class AssetManager : IAssetManager
 
     var watcher = path.Watch();
 
-    watcher.Created  += OnPathModified;
+    watcher.Created += OnPathModified;
     watcher.Modified += OnPathModified;
-    watcher.Deleted  += OnPathModified;
+    watcher.Deleted += OnPathModified;
 
     watchers.Add(watcher);
 
     return Disposables.Anonymous(() =>
     {
-      watcher.Created  -= OnPathModified;
+      watcher.Created -= OnPathModified;
       watcher.Modified -= OnPathModified;
-      watcher.Deleted  -= OnPathModified;
+      watcher.Deleted -= OnPathModified;
 
       watcher.Dispose();
     });

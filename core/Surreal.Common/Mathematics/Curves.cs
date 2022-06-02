@@ -16,7 +16,7 @@ public static class Curves
 {
   public static Curve Constant(float d) => _ => d;
 
-  public static Curve Linear        { get; } = t => t;
+  public static Curve Linear { get; } = t => t;
   public static Curve InverseLinear { get; } = t => 1f - t;
 
   public static Curve PlanarX<T>(T curve) where T : IPlanarCurve => t => curve.SampleAt(t).X;

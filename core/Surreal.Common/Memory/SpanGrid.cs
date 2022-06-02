@@ -15,12 +15,12 @@ public readonly ref struct SpanGrid<T>
   public SpanGrid(Span<T> storage, int stride)
   {
     this.storage = storage;
-    this.stride  = stride;
+    this.stride = stride;
 
     Height = stride > 0 ? storage.Length / stride : 0;
   }
 
-  public int Width  => stride;
+  public int Width => stride;
   public int Height { get; }
   public int Length => storage.Length;
 
@@ -80,12 +80,12 @@ public readonly ref struct ReadOnlySpanGrid<T>
   public ReadOnlySpanGrid(ReadOnlySpan<T> storage, int stride)
   {
     this.storage = storage;
-    this.stride  = stride;
+    this.stride = stride;
 
     Height = stride > 0 ? storage.Length / stride : 0;
   }
 
-  public int Width  => stride;
+  public int Width => stride;
   public int Height { get; }
   public int Length => storage.Length;
 
@@ -195,13 +195,13 @@ public static class SpanGridExtensions
       if (e2 > -dx)
       {
         error -= dy;
-        x0    += sx;
+        x0 += sx;
       }
 
       if (e2 < dy)
       {
         error += dx;
-        y0    += sy;
+        y0 += sy;
       }
     }
   }
@@ -222,7 +222,6 @@ public static class SpanGridExtensions
   public static void DrawCurve<T, TCurve>(this SpanGrid<T> grid, TCurve curve, T value, int samples = 16)
     where TCurve : IPlanarCurve
   {
-    // collect all points
     var positions = new SpanList<Point2>(stackalloc Point2[samples]);
     var delta = 1f / samples;
 
@@ -231,7 +230,6 @@ public static class SpanGridExtensions
       positions.Add(curve.SampleAt(delta * i));
     }
 
-    // draw line strip
     grid.DrawLineStrip(positions.ToSpan(), value);
   }
 
@@ -239,9 +237,11 @@ public static class SpanGridExtensions
   public static void PaintTo<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
   {
     for (var y = 0; y < from.Height; y++)
-    for (var x = 0; x < from.Width; x++)
     {
-      to[x, y] = painter(x, y, from[x, y]);
+      for (var x = 0; x < from.Width; x++)
+      {
+        to[x, y] = painter(x, y, from[x, y]);
+      }
     }
   }
 

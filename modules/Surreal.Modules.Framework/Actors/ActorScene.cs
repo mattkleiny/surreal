@@ -239,13 +239,13 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     public Enumerator(ActorScene scene, ActorStatus status)
       : this()
     {
-      this.scene  = scene;
+      this.scene = scene;
       this.status = status;
 
       Reset();
     }
 
-    public Actor       Current => enumerator.Current.Data;
+    public Actor Current => enumerator.Current.Data;
     object IEnumerator.Current => Current;
 
     public bool MoveNext()

@@ -16,7 +16,7 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
     this.maxCapacity = maxCapacity;
   }
 
-  public int Count    => queue.Count;
+  public int Count => queue.Count;
   public int Capacity => maxCapacity;
 
   public bool TryPeek([MaybeNullWhen(false)] out T result)
@@ -45,9 +45,20 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
     queue.Clear();
   }
 
-  public Queue<T>.Enumerator GetEnumerator() => queue.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-  IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+  public Queue<T>.Enumerator GetEnumerator()
+  {
+    return queue.GetEnumerator();
+  }
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 }
 
 /// <summary>A <see cref="ConcurrentQueue{T}"/> with a fixed-sized upper bound.</summary>
@@ -63,7 +74,7 @@ public sealed class BoundedConcurrentQueue<T>
     this.maxCapacity = maxCapacity;
   }
 
-  public int Count    => queue.Count;
+  public int Count => queue.Count;
   public int Capacity => maxCapacity;
 
   public bool TryPeek([MaybeNullWhen(false)] out T result)

@@ -12,9 +12,9 @@ public sealed record AlwaysSuccess(BehaviourNode Child) : BehaviourDecorator(Chi
     return status switch
     {
       BehaviourStatus.Sleeping => BehaviourStatus.Sleeping,
-      BehaviourStatus.Running  => BehaviourStatus.Running,
-      BehaviourStatus.Success  => BehaviourStatus.Success,
-      BehaviourStatus.Failure  => BehaviourStatus.Success,
+      BehaviourStatus.Running => BehaviourStatus.Running,
+      BehaviourStatus.Success => BehaviourStatus.Success,
+      BehaviourStatus.Failure => BehaviourStatus.Success,
 
       _ => throw new InvalidOperationException($"An unrecognized status was encountered: {status}"),
     };

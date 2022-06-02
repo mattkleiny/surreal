@@ -5,15 +5,15 @@ public interface IInterlinkedElement<TSelf>
   where TSelf : class, IInterlinkedElement<TSelf>
 {
   TSelf? Previous { get; set; }
-  TSelf? Next     { get; set; }
+  TSelf? Next { get; set; }
 }
 
 /// <summary>A linked list where each node contains pointers to/from each other, in-structure.</summary>
 public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
   where TNode : class, IInterlinkedElement<TNode>
 {
-  public TNode? Head    { get; private set; }
-  public bool   IsEmpty => Head == null;
+  public TNode? Head { get; private set; }
+  public bool IsEmpty => Head == null;
 
   public void Add(TNode newHead)
   {
@@ -64,9 +64,20 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
     Head = null;
   }
 
-  public Enumerator GetEnumerator() => new(this);
-  IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  public Enumerator GetEnumerator()
+  {
+    return new(this);
+  }
+
+  IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   /// <summary>Enumerates the <see cref="InterlinkedList{TNode}"/> from head to tail.</summary>
   public struct Enumerator : IEnumerator<TNode>
@@ -80,7 +91,7 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
       current = default;
     }
 
-    public TNode       Current => current!;
+    public TNode Current => current!;
     object IEnumerator.Current => Current;
 
     public bool MoveNext()

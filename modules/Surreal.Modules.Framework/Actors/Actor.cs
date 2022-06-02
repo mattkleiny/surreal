@@ -28,12 +28,12 @@ public class Actor
 
   public ArenaIndex Id { get; private set; } = ArenaIndex.Invalid;
 
-  public ActorStatus       Status   => context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public ActorStatus Status => context?.GetStatus(Id) ?? ActorStatus.Unknown;
   public IServiceProvider? Services => context?.Services;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
-  public bool IsActive    => Status == ActorStatus.Active;
-  public bool IsInactive  => Status == ActorStatus.Inactive;
+  public bool IsActive => Status == ActorStatus.Active;
+  public bool IsInactive => Status == ActorStatus.Inactive;
 
   public ActorBehaviourList Behaviours { get; }
 

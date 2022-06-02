@@ -32,10 +32,10 @@ public sealed class Pool<T>
     switch (result)
     {
       case IPoolAware aware:
-      {
-        aware.OnRent();
-        break;
-      }
+        {
+          aware.OnRent();
+          break;
+        }
     }
 
     return result;
@@ -78,14 +78,40 @@ public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware
 
   private readonly List<T> list = new(capacity: 0);
 
-  public void Add(T element) => list.Add(element);
-  public void Remove(T element) => list.Remove(element);
-  public void Clear() => list.Clear();
-  public void Dispose() => Pool.Return(this);
+  public void Add(T element)
+  {
+    list.Add(element);
+  }
 
-  public List<T>.Enumerator GetEnumerator() => list.GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-  IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+  public void Remove(T element)
+  {
+    list.Remove(element);
+  }
+
+  public void Clear()
+  {
+    list.Clear();
+  }
+
+  public void Dispose()
+  {
+    Pool.Return(this);
+  }
+
+  public List<T>.Enumerator GetEnumerator()
+  {
+    return list.GetEnumerator();
+  }
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   void IPoolAware.OnRent()
   {

@@ -9,7 +9,6 @@ public sealed record NestedAutomata(IAutomata Automata) : BehaviourTask
   {
     var innerContext = new AutomataContext(
       Owner: context.Owner,
-      Properties: context.Properties,
       LevelOfDetail: context.LevelOfDetail,
       Priority: context.Priority
     );

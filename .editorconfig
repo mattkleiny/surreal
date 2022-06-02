@@ -22,6 +22,8 @@ dotnet_diagnostic.CA1711.severity = None # Don't suffix with reserved type names
 dotnet_diagnostic.CA1720.severity = None # Don't use reserved type names
 dotnet_diagnostic.CA1822.severity = None # Member can be marked as static
 dotnet_diagnostic.CA1067.severity = None # Override Equals() (buggy with records)
+dotnet_diagnostic.CA1050.severity = None # Declare types in namespaces
+dotnet_diagnostic.CA1310.severity = None # Culture-aware string operations.
 
 ## Sonar Analyzers
 dotnet_diagnostic.S4144.severity = None # Update this method so that its implementation is not identical to 'blah'

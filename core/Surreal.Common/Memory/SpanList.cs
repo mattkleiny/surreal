@@ -13,7 +13,7 @@ public ref struct SpanList<T>
     Count = 0;
   }
 
-  public int Count    { get; private set; }
+  public int Count { get; private set; }
   public int Capacity => storage.Length;
 
   public ref T this[int index] => ref storage[index];

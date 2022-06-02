@@ -17,7 +17,7 @@ public abstract record Enumeration<T>
     {
       if (property.PropertyType == typeof(T))
       {
-        builder.Add((T) property.GetValue(null)!);
+        builder.Add((T)property.GetValue(null)!);
       }
     }
 

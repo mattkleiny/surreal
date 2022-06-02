@@ -7,7 +7,7 @@ public abstract class ListDecorator<T> : ICollection<T>
 {
   protected List<T> Items { get; } = new();
 
-  public int  Count      => Items.Count;
+  public int Count => Items.Count;
   public bool IsReadOnly => false;
 
   public virtual bool Contains(T item)

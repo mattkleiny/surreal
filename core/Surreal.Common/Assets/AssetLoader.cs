@@ -9,7 +9,7 @@ public delegate Task<T> AssetChangedHandler<T>(AssetLoaderContext context, T exi
 /// <summary>Context for <see cref="IAssetLoader"/> operations.</summary>
 public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manager)
 {
-  public Type        Type => Id.Type;
+  public Type Type => Id.Type;
   public VirtualPath Path => Id.Path;
 
   public bool IsHotReloadEnabled => Manager.IsHotReloadEnabled;

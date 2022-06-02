@@ -96,7 +96,7 @@ public sealed class WeightedList<T> : IEnumerable<T>
       Reset();
     }
 
-    public T           Current => enumerator.Current.Item;
+    public T Current => enumerator.Current.Item;
     object IEnumerator.Current => Current;
 
     public bool MoveNext()

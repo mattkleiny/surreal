@@ -44,9 +44,20 @@ public readonly struct Slice<T> : IEnumerable<T>
     }
   }
 
-  public Enumerator GetEnumerator() => new(this);
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-  IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+  public Enumerator GetEnumerator()
+  {
+    return new Enumerator(this);
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   public static implicit operator Slice<T>(List<T> list) => new(list);
   public static implicit operator ReadOnlySlice<T>(Slice<T> slice) => new(slice.list, slice.Offset, slice.Length);
@@ -64,7 +75,7 @@ public readonly struct Slice<T> : IEnumerable<T>
       Reset();
     }
 
-    public T           Current => slice[index];
+    public T Current => slice[index];
     object IEnumerator.Current => Current!;
 
     public bool MoveNext() => ++index < slice.Length;
@@ -115,9 +126,20 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
     }
   }
 
-  public Enumerator GetEnumerator() => new(this);
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-  IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+  public Enumerator GetEnumerator()
+  {
+    return new Enumerator(this);
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   public static implicit operator ReadOnlySlice<T>(T[] array) => new(array);
   public static implicit operator ReadOnlySlice<T>(List<T> list) => new(list);
@@ -135,7 +157,7 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
       Reset();
     }
 
-    public T           Current => slice[index];
+    public T Current => slice[index];
     object IEnumerator.Current => Current!;
 
     public bool MoveNext() => ++index < slice.Length;

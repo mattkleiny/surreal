@@ -19,7 +19,6 @@ public enum BehaviourStatus
 /// <summary>The context for <see cref="BehaviourNode"/> operations.</summary>
 public readonly record struct BehaviourContext(
   object Owner,
-  IPropertyCollection Properties,
   BehaviourTree BehaviourTree,
   LevelOfDetail LevelOfDetail = LevelOfDetail.Medium,
   Priority Priority = Priority.Medium
@@ -29,24 +28,17 @@ public readonly record struct BehaviourContext(
 public sealed class BehaviourTree : IAutomata
 {
   public BehaviourTree(object owner, BehaviourNode root)
-    : this(owner, new PropertyBag(), root)
   {
+    Owner = owner;
+    Root = root;
   }
 
-  public BehaviourTree(object owner, IPropertyCollection properties, BehaviourNode root)
-  {
-    Owner      = owner;
-    Properties = properties;
-    Root       = root;
-  }
-
-  public object              Owner      { get; }
-  public IPropertyCollection Properties { get; }
-  public BehaviourNode       Root       { get; }
+  public object Owner { get; }
+  public BehaviourNode Root { get; }
 
   public BehaviourStatus Update(TimeDelta deltaTime)
   {
-    var context = new BehaviourContext(Owner, Properties, this);
+    var context = new BehaviourContext(Owner, this);
 
     return Root.Update(context, deltaTime);
   }
@@ -55,7 +47,6 @@ public sealed class BehaviourTree : IAutomata
   {
     var innerContext = new BehaviourContext(
       Owner: context.Owner,
-      Properties: context.Properties,
       BehaviourTree: this,
       LevelOfDetail: context.LevelOfDetail,
       Priority: context.Priority
@@ -66,9 +57,9 @@ public sealed class BehaviourTree : IAutomata
     return status switch
     {
       BehaviourStatus.Sleeping => AutomataStatus.Running,
-      BehaviourStatus.Running  => AutomataStatus.Running,
-      BehaviourStatus.Success  => AutomataStatus.Success,
-      BehaviourStatus.Failure  => AutomataStatus.Failure,
+      BehaviourStatus.Running => AutomataStatus.Running,
+      BehaviourStatus.Success => AutomataStatus.Success,
+      BehaviourStatus.Failure => AutomataStatus.Failure,
 
       _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
     };

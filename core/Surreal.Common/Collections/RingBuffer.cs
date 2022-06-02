@@ -13,7 +13,7 @@ public sealed class RingBuffer<T> : IEnumerable<T>
     Count = 0;
   }
 
-  public int Count    { get; private set; }
+  public int Count { get; private set; }
   public int Capacity => elements.Length;
 
   public ref T this[Index index] => ref elements[index];
@@ -48,9 +48,20 @@ public sealed class RingBuffer<T> : IEnumerable<T>
     Array.Resize(ref elements, size);
   }
 
-  public Enumerator GetEnumerator() => new(this);
-  IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  public Enumerator GetEnumerator()
+  {
+    return new Enumerator(this);
+  }
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   public struct Enumerator : IEnumerator<T>
   {
@@ -65,8 +76,8 @@ public sealed class RingBuffer<T> : IEnumerable<T>
       Reset();
     }
 
-    public ref T       Current => ref buffer.elements[currentPos];
-    T IEnumerator<T>.  Current => buffer.elements[currentPos];
+    public ref T Current => ref buffer.elements[currentPos];
+    T IEnumerator<T>.Current => buffer.elements[currentPos];
     object IEnumerator.Current => Current!;
 
     public bool MoveNext()
