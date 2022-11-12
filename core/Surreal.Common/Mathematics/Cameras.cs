@@ -3,64 +3,67 @@
 /// <summary>A camera which allows computation of view-projection matrices from source information.</summary>
 public sealed class Camera
 {
-  private Vector2 position = Vector2.Zero;
-  private Vector2 size = new(1920, 1080);
-  private float nearPlane = 0f;
-  private float farPlane = 100f;
+  private float _farPlane = 100f;
+  private float _nearPlane = 0f;
+  private Vector2 _position = Vector2.Zero;
+  private Matrix4x4 _projection = Matrix4x4.Identity;
+  private Matrix4x4 _projectionView = Matrix4x4.Identity;
+  private Vector2 _size = new(1920, 1080);
 
-  private Matrix4x4 view = Matrix4x4.Identity;
-  private Matrix4x4 projection = Matrix4x4.Identity;
-  private Matrix4x4 projectionView = Matrix4x4.Identity;
+  private Matrix4x4 _view = Matrix4x4.Identity;
 
   public Vector2 Position
   {
-    get => position;
+    get => _position;
     set
     {
-      position = value;
+      _position = value;
       RecomputeViewProjection();
     }
   }
 
   public Vector2 Size
   {
-    get => size;
+    get => _size;
     set
     {
-      size = value;
+      _size = value;
       RecomputeViewProjection();
     }
   }
 
   public float NearPlane
   {
-    get => nearPlane;
+    get => _nearPlane;
     set
     {
-      nearPlane = value;
+      _nearPlane = value;
       RecomputeViewProjection();
     }
   }
 
   public float FarPlane
   {
-    get => farPlane;
+    get => _farPlane;
     set
     {
-      farPlane = value;
+      _farPlane = value;
       RecomputeViewProjection();
     }
   }
 
-  public ref readonly Matrix4x4 View => ref view;
-  public ref readonly Matrix4x4 Projection => ref projection;
-  public ref readonly Matrix4x4 ProjectionView => ref projectionView;
+  public ref readonly Matrix4x4 View => ref _view;
+  public ref readonly Matrix4x4 Projection => ref _projection;
+  public ref readonly Matrix4x4 ProjectionView => ref _projectionView;
 
   private void RecomputeViewProjection()
   {
-    view = Matrix4x4.CreateTranslation(position.X, position.Y, 0f);
-    projection = Matrix4x4.CreateOrthographic(size.X, size.Y, nearPlane, farPlane);
+    _view = Matrix4x4.CreateTranslation(_position.X, _position.Y, 0f);
+    _projection = Matrix4x4.CreateOrthographic(_size.X, _size.Y, _nearPlane, _farPlane);
 
-    projectionView = view * projection;
+    _projectionView = _view * _projection;
   }
 }
+
+
+

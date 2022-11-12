@@ -3,26 +3,26 @@ using Surreal.Mathematics;
 
 namespace Surreal.Memory;
 
-/// <summary>A <see cref="Span{T}"/> that is interpreted as a grid.</summary>
+/// <summary>A <see cref="Span{T}" /> that is interpreted as a grid.</summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
 public readonly ref struct SpanGrid<T>
 {
   public static SpanGrid<T> Empty => default;
 
-  private readonly Span<T> storage;
-  private readonly int stride;
+  private readonly Span<T> _storage;
 
   public SpanGrid(Span<T> storage, int stride)
   {
-    this.storage = storage;
-    this.stride = stride;
+    _storage = storage;
+    Width = stride;
 
     Height = stride > 0 ? storage.Length / stride : 0;
   }
 
-  public int Width => stride;
+  public int Width { get; }
+
   public int Height { get; }
-  public int Length => storage.Length;
+  public int Length => _storage.Length;
 
   public ref T this[Point2 position] => ref this[position.X, position.Y];
 
@@ -33,7 +33,7 @@ public readonly ref struct SpanGrid<T>
       Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
       Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
-      return ref storage[x + y * stride];
+      return ref _storage[x + y * Width];
     }
   }
 
@@ -44,50 +44,61 @@ public readonly ref struct SpanGrid<T>
       var ix = x.GetOffset(Width);
       var iy = y.GetOffset(Height);
 
-      return ref storage[ix + iy * stride];
+      return ref _storage[ix + iy * Width];
     }
   }
 
   public void Fill(T value)
   {
-    storage.Fill(value);
+    _storage.Fill(value);
   }
 
   public Span<T> ToSpan()
   {
-    return storage;
+    return _storage;
   }
 
   public ReadOnlySpan<T> ToReadOnlySpan()
   {
-    return storage;
+    return _storage;
   }
 
-  public static implicit operator Span<T>(SpanGrid<T> grid) => grid.ToSpan();
-  public static implicit operator ReadOnlySpan<T>(SpanGrid<T> grid) => grid.ToSpan();
-  public static implicit operator ReadOnlySpanGrid<T>(SpanGrid<T> grid) => new(grid.storage, grid.stride);
+  public static implicit operator Span<T>(SpanGrid<T> grid)
+  {
+    return grid.ToSpan();
+  }
+
+  public static implicit operator ReadOnlySpan<T>(SpanGrid<T> grid)
+  {
+    return grid.ToSpan();
+  }
+
+  public static implicit operator ReadOnlySpanGrid<T>(SpanGrid<T> grid)
+  {
+    return new ReadOnlySpanGrid<T>(grid._storage, grid.Width);
+  }
 }
 
-/// <summary>A <see cref="ReadOnlySpan{T}"/> that is interpreted as a grid.</summary>
+/// <summary>A <see cref="ReadOnlySpan{T}" /> that is interpreted as a grid.</summary>
 [DebuggerDisplay("ReadOnlySpanGrid {Length} elements ({Width}x{Height})")]
 public readonly ref struct ReadOnlySpanGrid<T>
 {
   public static ReadOnlySpanGrid<T> Empty => default;
 
-  private readonly ReadOnlySpan<T> storage;
-  private readonly int stride;
+  private readonly ReadOnlySpan<T> _storage;
 
   public ReadOnlySpanGrid(ReadOnlySpan<T> storage, int stride)
   {
-    this.storage = storage;
-    this.stride = stride;
+    _storage = storage;
+    Width = stride;
 
     Height = stride > 0 ? storage.Length / stride : 0;
   }
 
-  public int Width => stride;
+  public int Width { get; }
+
   public int Height { get; }
-  public int Length => storage.Length;
+  public int Length => _storage.Length;
 
   public T this[Point2 position] => this[position.X, position.Y];
 
@@ -98,7 +109,7 @@ public readonly ref struct ReadOnlySpanGrid<T>
       Debug.Assert(x >= 0 && x < Width, "x >= 0 && x < Width");
       Debug.Assert(y >= 0 && y < Height, "y >= 0 && y < Height");
 
-      return ref storage[x + y * stride];
+      return ref _storage[x + y * Width];
     }
   }
 
@@ -109,30 +120,39 @@ public readonly ref struct ReadOnlySpanGrid<T>
       var ix = x.GetOffset(Width);
       var iy = y.GetOffset(Height);
 
-      return ref storage[ix + iy * stride];
+      return ref _storage[ix + iy * Width];
     }
   }
 
   public ReadOnlySpan<T> ToReadOnlySpan()
   {
-    return storage;
+    return _storage;
   }
 
-  public static implicit operator ReadOnlySpan<T>(ReadOnlySpanGrid<T> grid) => grid.ToReadOnlySpan();
+  public static implicit operator ReadOnlySpan<T>(ReadOnlySpanGrid<T> grid)
+  {
+    return grid.ToReadOnlySpan();
+  }
 }
 
-/// <summary>Static extensions for dealing with <see cref="SpanGrid{T}"/>s.</summary>
+/// <summary>Static extensions for dealing with <see cref="SpanGrid{T}" />s.</summary>
 public static class SpanGridExtensions
 {
   public delegate TOut Painter<in TIn, out TOut>(int x, int y, TIn value);
 
-  /// <summary>Converts a <see cref="Span{T}"/> to a <see cref="SpanGrid{T}"/> with the given stride between rows.</summary>
+  /// <summary>Converts a <see cref="Span{T}" /> to a <see cref="SpanGrid{T}" /> with the given stride between rows.</summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static SpanGrid<T> ToGrid<T>(this Span<T> span, int stride) => new(span, stride);
+  public static SpanGrid<T> ToGrid<T>(this Span<T> span, int stride)
+  {
+    return new SpanGrid<T>(span, stride);
+  }
 
-  /// <summary>Converts a <see cref="ReadOnlySpan{T}"/> to a <see cref="ReadOnlySpanGrid{T}"/> with the given stride between rows.</summary>
+  /// <summary>Converts a <see cref="ReadOnlySpan{T}" /> to a <see cref="ReadOnlySpanGrid{T}" /> with the given stride between rows.</summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static ReadOnlySpanGrid<T> ToReadOnlyGrid<T>(this ReadOnlySpan<T> span, int stride) => new(span, stride);
+  public static ReadOnlySpanGrid<T> ToReadOnlyGrid<T>(this ReadOnlySpan<T> span, int stride)
+  {
+    return new ReadOnlySpanGrid<T>(span, stride);
+  }
 
   /// <summary>Draws a circle in the grid.</summary>
   public static void DrawCircle<T>(this SpanGrid<T> grid, Point2 center, int radius, T value)
@@ -156,19 +176,13 @@ public static class SpanGridExtensions
     var rectangle = Rectangle.Create(center, size);
     var clamped = rectangle.Clamp(0, 0, grid.Width - 1, grid.Height - 1);
 
-    foreach (var point in clamped.Points)
-    {
-      grid[point] = value;
-    }
+    foreach (var point in clamped.Points) grid[point] = value;
   }
 
   /// <summary>Draws a rectangle in the grid.</summary>
   public static void DrawRectangle<T>(this SpanGrid<T> grid, Rectangle rectangle, T value)
   {
-    foreach (var point in rectangle.Points)
-    {
-      grid[point] = value;
-    }
+    foreach (var point in rectangle.Points) grid[point] = value;
   }
 
   /// <summary>Draws a line in the grid.</summary>
@@ -178,13 +192,13 @@ public static class SpanGridExtensions
     var (x0, x1) = (from.X, to.X);
     var (y0, y1) = (from.Y, to.Y);
 
-    int dx = Math.Abs(x1 - x0);
-    int sx = x0 < x1 ? 1 : -1;
+    var dx = Math.Abs(x1 - x0);
+    var sx = x0 < x1 ? 1 : -1;
 
-    int dy = Math.Abs(y1 - y0);
-    int sy = y0 < y1 ? 1 : -1;
+    var dy = Math.Abs(y1 - y0);
+    var sy = y0 < y1 ? 1 : -1;
 
-    int error = (dx > dy ? dx : -dy) / 2;
+    var error = (dx > dy ? dx : -dy) / 2;
 
     while (!(x0 == x1 && y0 == y1))
     {
@@ -225,34 +239,30 @@ public static class SpanGridExtensions
     var positions = new SpanList<Point2>(stackalloc Point2[samples]);
     var delta = 1f / samples;
 
-    for (int i = 0; i < samples; i++)
-    {
-      positions.Add(curve.SampleAt(delta * i));
-    }
+    for (var i = 0; i < samples; i++) positions.Add(curve.SampleAt(delta * i));
 
     grid.DrawLineStrip(positions.ToSpan(), value);
   }
 
-  /// <summary>Paints this grid onto another via a given <see cref="painter"/> function.</summary>
+  /// <summary>Paints this grid onto another via a given <see cref="painter" /> function.</summary>
   public static void PaintTo<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
   {
     for (var y = 0; y < from.Height; y++)
-    {
-      for (var x = 0; x < from.Width; x++)
-      {
-        to[x, y] = painter(x, y, from[x, y]);
-      }
-    }
+    for (var x = 0; x < from.Width; x++)
+      to[x, y] = painter(x, y, from[x, y]);
   }
 
-  /// <summary>Converts the grid to a string, using the given <see cref="painter"/> function.</summary>
+  /// <summary>Converts the grid to a string, using the given <see cref="painter" /> function.</summary>
   public static string ToString<T>(this SpanGrid<T> grid, Painter<T?, char> painter)
   {
     var builder = new StringBuilder();
 
     for (var y = 0; y < grid.Height; y++)
     {
-      if (y > 0) builder.AppendLine();
+      if (y > 0)
+      {
+        builder.AppendLine();
+      }
 
       for (var x = 0; x < grid.Width; x++)
       {
@@ -266,3 +276,6 @@ public static class SpanGridExtensions
     return builder.ToString();
   }
 }
+
+
+

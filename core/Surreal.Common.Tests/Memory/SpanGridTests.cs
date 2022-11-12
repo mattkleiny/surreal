@@ -10,10 +10,11 @@ public class SpanGridTests
     grid.Width.Should().Be(16);
     grid.Height.Should().Be(16);
 
-    for (int y = 0; y < grid.Height; y++)
-    for (int x = 0; x < grid.Width; x++)
-    {
+    for (var y = 0; y < grid.Height; y++)
+    for (var x = 0; x < grid.Width; x++)
       grid[x, y] = 100;
-    }
   }
 }
+
+
+

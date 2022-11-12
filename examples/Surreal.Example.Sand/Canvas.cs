@@ -5,7 +5,7 @@ public sealed class Canvas : PixelCanvas
 {
   private static readonly Color32 Empty = Color32.Black;
 
-  private IntervalTimer updateTimer = new(16.Milliseconds());
+  private IntervalTimer _updateTimer = new(16.Milliseconds());
 
   public Canvas(IGraphicsServer server, int width, int height)
     : base(server, width, height)
@@ -25,11 +25,11 @@ public sealed class Canvas : PixelCanvas
 
   public void Update(TimeDelta deltaTime)
   {
-    if (updateTimer.Tick(deltaTime))
+    if (_updateTimer.Tick(deltaTime))
     {
       Simulate();
 
-      updateTimer.Reset();
+      _updateTimer.Reset();
     }
   }
 
@@ -37,15 +37,23 @@ public sealed class Canvas : PixelCanvas
   {
     var span = Pixels;
 
-    for (int y = span.Height - 1; y >= 0; y--)
-    for (int x = 0; x < span.Width; x++)
+    for (var y = span.Height - 1; y >= 0; y--)
+    for (var x = 0; x < span.Width; x++)
     {
       ref var pixel = ref span[x, y];
 
       if (pixel != Empty)
       {
-        if (SimulateSand(ref pixel, x, y + 1)) continue;
-        if (SimulateSand(ref pixel, x - 1, y + 1)) continue;
+        if (SimulateSand(ref pixel, x, y + 1))
+        {
+          continue;
+        }
+
+        if (SimulateSand(ref pixel, x - 1, y + 1))
+        {
+          continue;
+        }
+
         SimulateSand(ref pixel, x + 1, y + 1);
       }
     }
@@ -53,15 +61,22 @@ public sealed class Canvas : PixelCanvas
 
   private bool SimulateSand(ref Color32 pixel, int x, int y)
   {
-    if (x < 0 || x > Pixels.Width - 1) return false;
-    if (y < 0 || y > Pixels.Height - 1) return false;
+    if (x < 0 || x > Pixels.Width - 1)
+    {
+      return false;
+    }
+
+    if (y < 0 || y > Pixels.Height - 1)
+    {
+      return false;
+    }
 
     ref var target = ref Pixels[x, y];
 
     if (pixel != Empty && target == Empty)
     {
       target = pixel;
-      pixel  = Empty;
+      pixel = Empty;
 
       return true;
     }
@@ -74,3 +89,5 @@ public sealed class Canvas : PixelCanvas
     Pixels.Fill(Empty);
   }
 }
+
+

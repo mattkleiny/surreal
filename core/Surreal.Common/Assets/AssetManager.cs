@@ -9,7 +9,10 @@ public abstract record AssetSettings<T>;
 /// <summary>Represents uniquely some asset type at a given path.</summary>
 public readonly record struct AssetId(Type Type, VirtualPath Path)
 {
-  public override string ToString() => Path.ToString();
+  public override string ToString()
+  {
+    return Path.ToString();
+  }
 }
 
 /// <summary>Allows managing assets.</summary>
@@ -29,30 +32,30 @@ public interface IAssetManager : IDisposable
   IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
 }
 
-/// <summary>The default <see cref="IAssetManager"/> implementation.</summary>
+/// <summary>The default <see cref="IAssetManager" /> implementation.</summary>
 public sealed class AssetManager : IAssetManager
 {
   private static readonly ILog Log = LogFactory.GetLog<AssetManager>();
+  private readonly Dictionary<AssetId, object> _assetsById = new();
 
-  private readonly List<IAssetLoader> loaders = new();
-  private readonly Dictionary<AssetId, object> assetsById = new();
-  private readonly Dictionary<AssetId, object> settingsById = new();
-  private readonly List<IPathWatcher> watchers = new();
+  private readonly List<IAssetLoader> _loaders = new();
+  private readonly Dictionary<AssetId, object> _settingsById = new();
+  private readonly List<IPathWatcher> _watchers = new();
 
   public bool IsHotReloadEnabled { get; set; } = true;
 
   public void AddLoader(IAssetLoader loader)
   {
-    loaders.Add(loader);
+    _loaders.Add(loader);
   }
 
   public bool TryGetSettings<T>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<T>? results)
   {
     var id = new AssetId(typeof(T), path);
 
-    if (settingsById.TryGetValue(id, out var settings))
+    if (_settingsById.TryGetValue(id, out var settings))
     {
-      results = (AssetSettings<T>)settings;
+      results = (AssetSettings<T>) settings;
       return true;
     }
 
@@ -64,16 +67,16 @@ public sealed class AssetManager : IAssetManager
   {
     var id = new AssetId(typeof(T), path);
 
-    return assetsById.ContainsKey(id);
+    return _assetsById.ContainsKey(id);
   }
 
   public bool TryGetAsset<T>(VirtualPath path, [NotNullWhen(true)] out T? result)
   {
     var id = new AssetId(typeof(T), path);
 
-    if (assetsById.TryGetValue(id, out var asset))
+    if (_assetsById.TryGetValue(id, out var asset))
     {
-      result = (T)asset;
+      result = (T) asset;
       return true;
     }
 
@@ -85,7 +88,7 @@ public sealed class AssetManager : IAssetManager
   {
     var id = new AssetId(typeof(T), path);
 
-    settingsById[id] = settings;
+    _settingsById[id] = settings;
   }
 
   public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
@@ -98,13 +101,13 @@ public sealed class AssetManager : IAssetManager
       throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.Type.Name}");
     }
 
-    if (!assetsById.TryGetValue(id, out var asset))
-    {
+    if (!_assetsById.TryGetValue(id, out var asset))
       // we'll continue asynchronously on the main thread
-      assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
+    {
+      _assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
-    return (T)asset;
+    return (T) asset;
   }
 
   public IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
@@ -131,11 +134,11 @@ public sealed class AssetManager : IAssetManager
       Monitor.Enter(modificationLock);
       try
       {
-        if (assetsById.TryGetValue(id, out var asset))
+        if (_assetsById.TryGetValue(id, out var asset))
         {
           var context = new AssetLoaderContext(id, this);
 
-          assetsById[id] = await handler(context, asset, CancellationToken.None);
+          _assetsById[id] = await handler(context, asset, CancellationToken.None);
         }
       }
       catch (Exception exception)
@@ -157,7 +160,7 @@ public sealed class AssetManager : IAssetManager
     watcher.Modified += OnPathModified;
     watcher.Deleted += OnPathModified;
 
-    watchers.Add(watcher);
+    _watchers.Add(watcher);
 
     return Disposables.Anonymous(() =>
     {
@@ -171,7 +174,7 @@ public sealed class AssetManager : IAssetManager
 
   public void Dispose()
   {
-    foreach (var asset in assetsById.Values)
+    foreach (var asset in _assetsById.Values)
     {
       if (asset is IDisposable disposable)
       {
@@ -179,7 +182,7 @@ public sealed class AssetManager : IAssetManager
       }
     }
 
-    foreach (var loader in loaders)
+    foreach (var loader in _loaders)
     {
       if (loader is IDisposable disposable)
       {
@@ -187,22 +190,19 @@ public sealed class AssetManager : IAssetManager
       }
     }
 
-    foreach (var watcher in watchers)
-    {
-      watcher.Dispose();
-    }
+    foreach (var watcher in _watchers) watcher.Dispose();
 
-    assetsById.Clear();
-    loaders.Clear();
-    watchers.Clear();
+    _assetsById.Clear();
+    _loaders.Clear();
+    _watchers.Clear();
   }
 
   /// <summary>Attempts to locate a valid loader for the given type.</summary>
   private bool TryGetLoader(AssetLoaderContext context, [NotNullWhen(true)] out IAssetLoader? result)
   {
-    for (var i = 0; i < loaders.Count; i++)
+    for (var i = 0; i < _loaders.Count; i++)
     {
-      var loader = loaders[i];
+      var loader = _loaders[i];
       if (loader.CanHandle(context))
       {
         result = loader;
@@ -223,3 +223,4 @@ public sealed class UnsupportedAssetException : Exception
   {
   }
 }
+

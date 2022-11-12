@@ -2,10 +2,10 @@
 
 namespace Surreal.Timing;
 
-/// <summary>A range of <see cref="ClockTime"/>s for scheduling.</summary>
+/// <summary>A range of <see cref="ClockTime" />s for scheduling.</summary>
 public readonly record struct ClockTimeRange(ClockTime Start, ClockTime End)
 {
-  public static ClockTimeRange Nothing   => new(default, default);
+  public static ClockTimeRange Nothing => new(default, default);
   public static ClockTimeRange EntireDay => new(ClockTime.MinValue, ClockTime.MaxValue);
 
   public bool Contains(ClockTime time)
@@ -21,8 +21,27 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
   private const int TicksPerMinute = TicksPerSecond * 60;
   private const int TicksPerHour = TicksPerMinute * 60;
 
-  public static ClockTime MinValue => new(hour: 00, minute: 00, second: 00);
-  public static ClockTime MaxValue => new(hour: 23, minute: 59, second: 59);
+  public ClockTime(DateTime dateTime)
+    : this(dateTime.Hour, dateTime.Minute, dateTime.Second)
+  {
+  }
+
+  public ClockTime(int hour, int minute, int second)
+    : this(CalculateTicks(hour, minute, second))
+  {
+  }
+
+  public static ClockTime MinValue => new(00, 00, 00);
+  public static ClockTime MaxValue => new(23, 59, 59);
+
+  public int Hours => Ticks / TicksPerHour % 24;
+  public int Minutes => Ticks / TicksPerMinute % 60;
+  public int Seconds => Ticks / TicksPerSecond % 60;
+
+  public int CompareTo(ClockTime other)
+  {
+    return Ticks.CompareTo(other.Ticks);
+  }
 
   public static ClockTime Parse(string raw)
   {
@@ -65,28 +84,30 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
     return true;
   }
 
-  public ClockTime(DateTime dateTime)
-    : this(dateTime.Hour, dateTime.Minute, dateTime.Second)
+  public override string ToString()
   {
+    return $"{Hours:00}:{Minutes:00}:{Seconds:00}";
   }
 
-  public ClockTime(int hour, int minute, int second)
-    : this(CalculateTicks(hour, minute, second))
+  public static bool operator <(ClockTime left, ClockTime right)
   {
+    return left.Ticks < right.Ticks;
   }
 
-  public int Hours   => Ticks / TicksPerHour % 24;
-  public int Minutes => Ticks / TicksPerMinute % 60;
-  public int Seconds => Ticks / TicksPerSecond % 60;
+  public static bool operator >(ClockTime left, ClockTime right)
+  {
+    return left.Ticks > right.Ticks;
+  }
 
-  public override string ToString() => $"{Hours:00}:{Minutes:00}:{Seconds:00}";
+  public static bool operator <=(ClockTime left, ClockTime right)
+  {
+    return left.Ticks <= right.Ticks;
+  }
 
-  public int CompareTo(ClockTime other) => Ticks.CompareTo(other.Ticks);
-
-  public static bool operator <(ClockTime left, ClockTime right) => left.Ticks < right.Ticks;
-  public static bool operator >(ClockTime left, ClockTime right) => left.Ticks > right.Ticks;
-  public static bool operator <=(ClockTime left, ClockTime right) => left.Ticks <= right.Ticks;
-  public static bool operator >=(ClockTime left, ClockTime right) => left.Ticks >= right.Ticks;
+  public static bool operator >=(ClockTime left, ClockTime right)
+  {
+    return left.Ticks >= right.Ticks;
+  }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static int CalculateTicks(int hour, int minute, int second)
@@ -96,3 +117,6 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
     return totalSeconds * TicksPerSecond;
   }
 }
+
+
+

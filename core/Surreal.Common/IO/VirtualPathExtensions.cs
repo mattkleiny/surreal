@@ -4,76 +4,120 @@ using Surreal.Memory;
 
 namespace Surreal.IO;
 
-/// <summary>Static extensions for working with <see cref="VirtualPath"/>s.</summary>
+/// <summary>Static extensions for working with <see cref="VirtualPath" />s.</summary>
 public static class VirtualPathExtensions
 {
   private static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
   public static bool SupportsWatching(this VirtualPath path)
-    => path.GetFileSystem().SupportsWatcher;
+  {
+    return path.GetFileSystem().SupportsWatcher;
+  }
 
   public static bool SupportsMemoryMapping(this VirtualPath path)
-    => path.GetFileSystem().SupportsMemoryMapping;
+  {
+    return path.GetFileSystem().SupportsMemoryMapping;
+  }
 
   public static IFileSystem GetFileSystem(this VirtualPath path)
-    => FileSystem.GetForScheme(path.Scheme.ToString())!;
+  {
+    return FileSystem.GetForScheme(path.Scheme.ToString())!;
+  }
 
   public static VirtualPath Resolve(this VirtualPath path, params string[] name)
-    => path.GetFileSystem().Resolve(path, name);
+  {
+    return path.GetFileSystem().Resolve(path, name);
+  }
 
   public static VirtualPath[] Enumerate(this VirtualPath path, string wildcard)
-    => path.GetFileSystem().Enumerate(path.Target.ToString(), wildcard);
+  {
+    return path.GetFileSystem().Enumerate(path.Target.ToString(), wildcard);
+  }
 
   public static ValueTask<VirtualPath[]> EnumerateAsync(this VirtualPath path, string wildcard)
-    => path.GetFileSystem().EnumerateAsync(path.Target.ToString(), wildcard);
+  {
+    return path.GetFileSystem().EnumerateAsync(path.Target.ToString(), wildcard);
+  }
 
   public static bool Exists(this VirtualPath path)
-    => path.GetFileSystem().Exists(path.Target.ToString());
+  {
+    return path.GetFileSystem().Exists(path.Target.ToString());
+  }
 
   public static ValueTask<bool> ExistsAsync(this VirtualPath path)
-    => path.GetFileSystem().ExistsAsync(path.Target.ToString());
+  {
+    return path.GetFileSystem().ExistsAsync(path.Target.ToString());
+  }
 
   public static bool IsFile(this VirtualPath path)
-    => path.GetFileSystem().IsFile(path.Target.ToString());
+  {
+    return path.GetFileSystem().IsFile(path.Target.ToString());
+  }
 
   public static ValueTask<bool> IsFileAsync(this VirtualPath path)
-    => path.GetFileSystem().IsFileAsync(path.Target.ToString());
+  {
+    return path.GetFileSystem().IsFileAsync(path.Target.ToString());
+  }
 
   public static bool IsDirectory(this VirtualPath path)
-    => path.GetFileSystem().IsDirectory(path.Target.ToString());
+  {
+    return path.GetFileSystem().IsDirectory(path.Target.ToString());
+  }
 
   public static ValueTask<bool> IsDirectoryAsync(this VirtualPath path)
-    => path.GetFileSystem().IsDirectoryAsync(path.Target.ToString());
+  {
+    return path.GetFileSystem().IsDirectoryAsync(path.Target.ToString());
+  }
 
   public static Size GetSize(this VirtualPath path)
-    => path.GetFileSystem().GetSize(path.Target.ToString());
+  {
+    return path.GetFileSystem().GetSize(path.Target.ToString());
+  }
 
   public static ValueTask<Size> GetSizeAsync(this VirtualPath path)
-    => path.GetFileSystem().GetSizeAsync(path.Target.ToString());
+  {
+    return path.GetFileSystem().GetSizeAsync(path.Target.ToString());
+  }
 
   public static Stream OpenInputStream(this VirtualPath path)
-    => path.GetFileSystem().OpenInputStream(path.Target.ToString());
+  {
+    return path.GetFileSystem().OpenInputStream(path.Target.ToString());
+  }
 
   public static ValueTask<Stream> OpenInputStreamAsync(this VirtualPath path)
-    => path.GetFileSystem().OpenInputStreamAsync(path.Target.ToString());
+  {
+    return path.GetFileSystem().OpenInputStreamAsync(path.Target.ToString());
+  }
 
   public static Stream OpenOutputStream(this VirtualPath path)
-    => path.GetFileSystem().OpenOutputStream(path.Target.ToString());
+  {
+    return path.GetFileSystem().OpenOutputStream(path.Target.ToString());
+  }
 
   public static ValueTask<Stream> OpenOutputStreamAsync(this VirtualPath path)
-    => path.GetFileSystem().OpenOutputStreamAsync(path.Target.ToString());
+  {
+    return path.GetFileSystem().OpenOutputStreamAsync(path.Target.ToString());
+  }
 
   public static MemoryMappedFile OpenMemoryMappedFile(this VirtualPath path, int offset, int length)
-    => path.GetFileSystem().OpenMemoryMappedFile(path.Target.ToString(), offset, length);
+  {
+    return path.GetFileSystem().OpenMemoryMappedFile(path.Target.ToString(), offset, length);
+  }
 
   public static IPathWatcher Watch(this VirtualPath path)
-    => path.GetFileSystem().WatchPath(path);
+  {
+    return path.GetFileSystem().WatchPath(path);
+  }
 
   public static VirtualPath ChangeExtension(this VirtualPath path, string newExtension)
-    => path with { Target = Path.ChangeExtension(path.Target.ToString(), newExtension) };
+  {
+    return path with { Target = Path.ChangeExtension(path.Target.ToString(), newExtension) };
+  }
 
   public static VirtualPath GetDirectory(this VirtualPath path)
-    => path with { Target = Path.GetDirectoryName(path.Target.ToSpan()) };
+  {
+    return path with { Target = Path.GetDirectoryName(path.Target.ToSpan()) };
+  }
 
   public static async ValueTask CopyToAsync(this VirtualPath from, VirtualPath to, CancellationToken cancellationToken = default)
   {
@@ -223,3 +267,6 @@ public static class VirtualPathExtensions
     return result;
   }
 }
+
+
+

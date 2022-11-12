@@ -19,7 +19,7 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A specialization of <see cref="IPlatformHost"/> for desktop environments.</summary>
+/// <summary>A specialization of <see cref="IPlatformHost" /> for desktop environments.</summary>
 public interface IDesktopPlatformHost : IPlatformHost
 {
   IDesktopWindow PrimaryWindow { get; }
@@ -28,18 +28,17 @@ public interface IDesktopPlatformHost : IPlatformHost
 /// <summary>Allows access to the platform's window.</summary>
 public interface IDesktopWindow : IDisposable
 {
-  event Action<int, int> Resized;
+  string Title { get; set; }
+  int Width { get; set; }
+  int Height { get; set; }
 
-  string Title  { get; set; }
-  int    Width  { get; set; }
-  int    Height { get; set; }
-
-  bool IsVisible       { get; set; }
-  bool IsFocused       { get; set; }
-  bool IsVsyncEnabled  { get; set; }
+  bool IsVisible { get; set; }
+  bool IsFocused { get; set; }
+  bool IsVsyncEnabled { get; set; }
   bool IsCursorVisible { get; set; }
-  bool IsEventDriven   { get; set; }
-  bool IsClosing       { get; }
+  bool IsEventDriven { get; set; }
+  bool IsClosing { get; }
+  event Action<int, int> Resized;
 
   /// <summary>Sets the window icon to the given image.</summary>
   void SetWindowIcon(Image image);
@@ -47,22 +46,27 @@ public interface IDesktopWindow : IDisposable
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 {
-  private readonly DesktopConfiguration configuration;
+  private readonly DesktopConfiguration _configuration;
 
-  private readonly FrameCounter frameCounter = new();
-  private IntervalTimer frameDisplayTimer = new(1.Seconds());
+  private readonly FrameCounter _frameCounter = new();
+  private IntervalTimer _frameDisplayTimer = new(1.Seconds());
 
   public DesktopPlatformHost(DesktopConfiguration configuration)
   {
-    this.configuration = configuration;
+    _configuration = configuration;
 
-    Window         = new OpenTKWindow(configuration);
-    AudioServer    = new OpenTKAudioServer();
+    Window = new OpenTKWindow(configuration);
+    AudioServer = new OpenTKAudioServer();
     GraphicsServer = new OpenTKGraphicsServer();
-    InputServer    = new OpenTKInputServer(Window);
+    InputServer = new OpenTKInputServer(Window);
 
     Resized += OnResized;
   }
+
+  public OpenTKWindow Window { get; }
+  public OpenTKAudioServer AudioServer { get; }
+  public OpenTKGraphicsServer GraphicsServer { get; }
+  public OpenTKInputServer InputServer { get; }
 
   public event Action<int, int> Resized
   {
@@ -70,12 +74,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     remove => Window.Resized -= value;
   }
 
-  public OpenTKWindow         Window         { get; }
-  public OpenTKAudioServer    AudioServer    { get; }
-  public OpenTKGraphicsServer GraphicsServer { get; }
-  public OpenTKInputServer    InputServer    { get; }
-
-  public int Width  => Window.Width;
+  public int Width => Window.Width;
   public int Height => Window.Height;
 
   public bool IsFocused => Window.IsFocused;
@@ -120,13 +119,13 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
       InputServer.Update();
 
       // show the game's FPS in the window title
-      if (configuration.ShowFpsInTitle)
+      if (_configuration.ShowFpsInTitle)
       {
-        frameCounter.Tick(deltaTime);
+        _frameCounter.Tick(deltaTime);
 
-        if (frameDisplayTimer.Tick(deltaTime))
+        if (_frameDisplayTimer.Tick(deltaTime))
         {
-          Window.Title = $"{configuration.Title} - {frameCounter.TicksPerSecond:F} FPS";
+          Window.Title = $"{_configuration.Title} - {_frameCounter.TicksPerSecond:F} FPS";
         }
       }
     }
@@ -146,10 +145,12 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     Window.Dispose();
   }
 
+  IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
+
   private void OnResized(int width, int height)
   {
     GraphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
   }
-
-  IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
 }
+
+

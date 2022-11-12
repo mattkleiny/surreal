@@ -14,13 +14,13 @@ public sealed class SpriteBatch : IDisposable
 {
   private const int DefaultSpriteCount = 200;
   private const int MaximumSpriteCount = int.MaxValue / 6;
+  private readonly Mesh<Vertex2> _mesh;
 
-  private readonly IDisposableBuffer<Vertex2> vertices;
-  private readonly Mesh<Vertex2> mesh;
+  private readonly IDisposableBuffer<Vertex2> _vertices;
+  private Texture? _lastTexture;
 
-  private Material? material;
-  private Texture? lastTexture;
-  private int vertexCount;
+  private Material? _material;
+  private int _vertexCount;
 
   public SpriteBatch(IGraphicsServer server, int spriteCount = DefaultSpriteCount)
   {
@@ -29,47 +29,65 @@ public sealed class SpriteBatch : IDisposable
 
     Server = server;
 
-    vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
-    mesh     = new Mesh<Vertex2>(server);
+    _vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
+    _mesh = new Mesh<Vertex2>(server);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
   public IGraphicsServer Server { get; }
 
-  /// <summary>The <see cref="MaterialProperty{T}"/> to bind textures to.</summary>
+  /// <summary>The <see cref="MaterialProperty{T}" /> to bind textures to.</summary>
   public MaterialProperty<Texture> TextureProperty { get; set; } = MaterialProperty.Texture;
 
+  public void Dispose()
+  {
+    _mesh.Dispose();
+    _vertices.Dispose();
+  }
+
   public void Begin(ShaderProgram shader)
-    => Begin(new Material(shader));
+  {
+    Begin(new Material(shader));
+  }
 
   public void Begin(Material material)
   {
-    vertexCount = 0; // reset vertex pointer
+    _vertexCount = 0; // reset vertex pointer
 
-    this.material = material;
+    _material = material;
   }
 
   public void Draw(in TextureRegion region, Vector2 position)
-    => Draw(region, position, region.Size);
+  {
+    Draw(region, position, region.Size);
+  }
 
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
-    => Draw(region, position, size, Color.White);
+  {
+    Draw(region, position, size, Color.White);
+  }
 
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
-    => Draw(region, position, size, 0f, color);
+  {
+    Draw(region, position, size, 0f, color);
+  }
 
   [SkipLocalsInit]
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
   {
-    if (region.Texture == null) return; // empty region? don't bother
-    if (region.Texture != lastTexture)
+    if (region.Texture == null)
+    {
+      return; // empty region? don't bother
+    }
+
+    if (region.Texture != _lastTexture)
     {
       // if we're switching texture, we'll need to flush and start again
       Flush();
-      lastTexture = region.Texture;
+      _lastTexture = region.Texture;
     }
-    else if (vertexCount >= vertices.Span.Length)
+    else if (_vertexCount >= _vertices.Span.Length)
     {
       // if we've exceeded the batch capacity, we'll need to flush and start again
       Flush();
@@ -84,34 +102,41 @@ public sealed class SpriteBatch : IDisposable
     var uv = region.UV;
 
     // add results to sprite batch
-    var output = new SpanList<Vertex2>(vertices.Span[vertexCount..]);
+    var output = new SpanList<Vertex2>(_vertices.Span[_vertexCount..]);
 
-    output.AddUnchecked(new(Vector2.Transform(new(-0.5f, -0.5f), transform), color, uv.BottomLeft));
-    output.AddUnchecked(new(Vector2.Transform(new(-0.5f, 0.5f), transform), color, uv.TopLeft));
-    output.AddUnchecked(new(Vector2.Transform(new(0.5f, 0.5f), transform), color, uv.TopRight));
-    output.AddUnchecked(new(Vector2.Transform(new(0.5f, -0.5f), transform), color, uv.BottomRight));
+    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(-0.5f, -0.5f), transform), color, uv.BottomLeft));
+    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(-0.5f, 0.5f), transform), color, uv.TopLeft));
+    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(0.5f, 0.5f), transform), color, uv.TopRight));
+    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(0.5f, -0.5f), transform), color, uv.BottomRight));
 
-    vertexCount += output.Count;
+    _vertexCount += output.Count;
   }
 
   public void Flush()
   {
-    if (vertexCount == 0) return;
-    if (material == null) return;
+    if (_vertexCount == 0)
+    {
+      return;
+    }
 
-    var spriteCount = vertexCount / 4;
+    if (_material == null)
+    {
+      return;
+    }
+
+    var spriteCount = _vertexCount / 4;
     var indexCount = spriteCount * 6;
 
     // bind the appropriate texture
-    if (lastTexture != null)
+    if (_lastTexture != null)
     {
-      material.Locals.SetProperty(TextureProperty, lastTexture);
+      _material.Locals.SetProperty(TextureProperty, _lastTexture);
     }
 
-    mesh.Vertices.Write(vertices.Span[..vertexCount]);
-    mesh.Draw(material, vertexCount, indexCount);
+    _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
+    _mesh.Draw(_material, _vertexCount, indexCount);
 
-    vertexCount = 0;
+    _vertexCount = 0;
   }
 
   private unsafe void CreateIndices(int indexCount)
@@ -128,26 +153,22 @@ public sealed class SpriteBatch : IDisposable
       indices[i + 5] = (uint) j;
     }
 
-    mesh.Indices.Write(indices);
-  }
-
-  public void Dispose()
-  {
-    mesh.Dispose();
-    vertices.Dispose();
+    _mesh.Indices.Write(indices);
   }
 
   /// <summary>A common 2d vertex type for primitive shapes.</summary>
   [StructLayout(LayoutKind.Sequential)]
   private record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
   {
-    [VertexDescriptor(2, VertexType.Float)]
-    public Vector2 Position = Position;
-
     [VertexDescriptor(4, VertexType.Float)]
     public Color Color = Color;
+    [VertexDescriptor(2, VertexType.Float)]
+    public Vector2 Position = Position;
 
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 UV = UV;
   }
 }
+
+
+

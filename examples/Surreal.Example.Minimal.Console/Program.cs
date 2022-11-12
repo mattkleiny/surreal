@@ -2,9 +2,9 @@
 {
   Configuration =
   {
-    Title          = "Hello, Surreal",
-    Width          = 280,
-    Height         = 120,
+    Title = "Hello, Surreal",
+    Width = 280,
+    Height = 120,
     ShowFpsInTitle = true
   }
 };

@@ -22,3 +22,5 @@ public class AspectTests
     aspect.IsInterestedIn(transform | sprite | statistics).Should().BeFalse();
   }
 }
+
+

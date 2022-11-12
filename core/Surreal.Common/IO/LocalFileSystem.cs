@@ -3,7 +3,7 @@ using Surreal.Memory;
 
 namespace Surreal.IO;
 
-/// <summary>A <see cref="FileSystem"/> for the host operating system.</summary>
+/// <summary>A <see cref="FileSystem" /> for the host operating system.</summary>
 public sealed class LocalFileSystem : FileSystem
 {
   private const string Separator = "/";
@@ -13,11 +13,13 @@ public sealed class LocalFileSystem : FileSystem
   {
   }
 
-  public override bool SupportsWatcher       => true;
+  public override bool SupportsWatcher => true;
   public override bool SupportsMemoryMapping => true;
 
   public override VirtualPath Resolve(VirtualPath path, params string[] paths)
-    => path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
+  {
+    return path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
+  }
 
   public override VirtualPath[] Enumerate(string path, string wildcard)
   {
@@ -60,11 +62,11 @@ public sealed class LocalFileSystem : FileSystem
   public override MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
   {
     return MemoryMappedFile.CreateFromFile(
-      path: path,
-      mode: FileMode.OpenOrCreate,
-      mapName: Guid.NewGuid().ToString(), // needs to be unique
-      capacity: length,
-      access: MemoryMappedFileAccess.ReadWrite
+      path,
+      FileMode.OpenOrCreate,
+      Guid.NewGuid().ToString(), // needs to be unique
+      length,
+      MemoryMappedFileAccess.ReadWrite
     );
   }
 
@@ -75,17 +77,11 @@ public sealed class LocalFileSystem : FileSystem
 
   private sealed class PathWatcher : IPathWatcher
   {
-    private readonly FileSystemWatcher watcher;
-
-    public event Action<VirtualPath>? Created;
-    public event Action<VirtualPath>? Modified;
-    public event Action<VirtualPath>? Deleted;
-
-    public VirtualPath FilePath { get; }
+    private readonly FileSystemWatcher _watcher;
 
     public PathWatcher(VirtualPath directoryPath, VirtualPath filePath)
     {
-      watcher = new FileSystemWatcher(directoryPath.Target.ToString())
+      _watcher = new FileSystemWatcher(directoryPath.Target.ToString())
       {
         Filter = Path.GetFileName(filePath.Target.ToString()),
 
@@ -96,25 +92,34 @@ public sealed class LocalFileSystem : FileSystem
       var context = SynchronizationContext.Current;
       if (context != null)
       {
-        watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(filePath), null);
-        watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
-        watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
-        watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(filePath), null);
+        _watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(filePath), null);
+        _watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
+        _watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
+        _watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(filePath), null);
       }
       else
       {
-        watcher.Created += (_, _) => Created?.Invoke(filePath);
-        watcher.Changed += (_, _) => Modified?.Invoke(filePath);
-        watcher.Renamed += (_, _) => Modified?.Invoke(filePath);
-        watcher.Deleted += (_, _) => Deleted?.Invoke(filePath);
+        _watcher.Created += (_, _) => Created?.Invoke(filePath);
+        _watcher.Changed += (_, _) => Modified?.Invoke(filePath);
+        _watcher.Renamed += (_, _) => Modified?.Invoke(filePath);
+        _watcher.Deleted += (_, _) => Deleted?.Invoke(filePath);
       }
 
       FilePath = filePath;
     }
 
+    public event Action<VirtualPath>? Created;
+    public event Action<VirtualPath>? Modified;
+    public event Action<VirtualPath>? Deleted;
+
+    public VirtualPath FilePath { get; }
+
     public void Dispose()
     {
-      watcher.Dispose();
+      _watcher.Dispose();
     }
   }
 }
+
+
+

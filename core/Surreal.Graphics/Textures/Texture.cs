@@ -6,7 +6,7 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
 
-/// <summary>Formats for a <see cref="Texture"/>.</summary>
+/// <summary>Formats for a <see cref="Texture" />.</summary>
 public enum TextureFormat
 {
   R8,
@@ -16,17 +16,17 @@ public enum TextureFormat
   R,
   Rg,
   Rgb,
-  Rgba,
+  Rgba
 }
 
-/// <summary>Wrapping modes for a <see cref="Texture"/>.</summary>
+/// <summary>Wrapping modes for a <see cref="Texture" />.</summary>
 public enum TextureWrapMode
 {
   Clamp,
   Repeat
 }
 
-/// <summary>Filter modes for a <see cref="Texture"/>.</summary>
+/// <summary>Filter modes for a <see cref="Texture" />.</summary>
 public enum TextureFilterMode
 {
   Point,
@@ -37,6 +37,50 @@ public enum TextureFilterMode
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
 public sealed class Texture : GraphicsResource, IHasSizeEstimate
 {
+  private TextureFilterMode _filterMode = TextureFilterMode.Point;
+  private TextureWrapMode _wrapMode = TextureWrapMode.Clamp;
+
+  public Texture(
+    IGraphicsServer server,
+    TextureFormat format = TextureFormat.Rgba8,
+    TextureFilterMode filterMode = TextureFilterMode.Point,
+    TextureWrapMode wrapMode = TextureWrapMode.Clamp)
+  {
+    Server = server;
+    Format = format;
+    Handle = server.CreateTexture(filterMode, wrapMode);
+  }
+
+  public IGraphicsServer Server { get; }
+
+  public int Width { get; private set; }
+  public int Height { get; private set; }
+
+  public GraphicsHandle Handle { get; }
+  public TextureFormat Format { get; set; }
+
+  public TextureFilterMode FilterMode
+  {
+    get => _filterMode;
+    set
+    {
+      _filterMode = value;
+      Server.SetTextureFilterMode(Handle, value);
+    }
+  }
+
+  public TextureWrapMode WrapMode
+  {
+    get => _wrapMode;
+    set
+    {
+      _wrapMode = value;
+      Server.SetTextureWrapMode(Handle, value);
+    }
+  }
+
+  public Size Size { get; private set; }
+
   /// <summary>Creates a colored 1x1 texture.</summary>
   public static Texture CreateColored(IGraphicsServer server, Color color, TextureFormat format = TextureFormat.Rgba8)
   {
@@ -66,49 +110,6 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     texture.WritePixels<Color>(width, height, pixels);
 
     return texture;
-  }
-
-  private TextureFilterMode filterMode = TextureFilterMode.Point;
-  private TextureWrapMode wrapMode = TextureWrapMode.Clamp;
-
-  public Texture(
-    IGraphicsServer server,
-    TextureFormat format = TextureFormat.Rgba8,
-    TextureFilterMode filterMode = TextureFilterMode.Point,
-    TextureWrapMode wrapMode = TextureWrapMode.Clamp)
-  {
-    Server = server;
-    Format = format;
-    Handle = server.CreateTexture(filterMode, wrapMode);
-  }
-
-  public IGraphicsServer Server { get; }
-
-  public int  Width  { get; private set; }
-  public int  Height { get; private set; }
-  public Size Size   { get; private set; }
-
-  public GraphicsHandle Handle { get; }
-  public TextureFormat  Format { get; set; }
-
-  public TextureFilterMode FilterMode
-  {
-    get => filterMode;
-    set
-    {
-      filterMode = value;
-      Server.SetTextureFilterMode(Handle, value);
-    }
-  }
-
-  public TextureWrapMode WrapMode
-  {
-    get => wrapMode;
-    set
-    {
-      wrapMode = value;
-      Server.SetTextureWrapMode(Handle, value);
-    }
   }
 
   public TextureRegion ToRegion()
@@ -149,9 +150,9 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    Width  = width;
+    Width = width;
     Height = height;
-    Size   = pixels.CalculateSize();
+    Size = pixels.CalculateSize();
 
     Server.WriteTextureData(Handle, width, height, pixels, Format);
   }
@@ -183,46 +184,46 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   public readonly struct TextureDataLease<T> : IMemoryOwner<T>
     where T : unmanaged
   {
-    private readonly Texture texture;
+    private readonly Texture _texture;
 
     public TextureDataLease(Texture texture)
     {
-      this.texture = texture;
-      Memory       = texture.ReadPixels<T>();
+      _texture = texture;
+      Memory = texture.ReadPixels<T>();
     }
 
-    public Memory<T>   Memory { get; }
-    public SpanGrid<T> Span   => Memory.Span.ToGrid(texture.Width);
+    public Memory<T> Memory { get; }
+    public SpanGrid<T> Span => Memory.Span.ToGrid(_texture.Width);
 
     public void Dispose()
     {
-      texture.WritePixels<T>(texture.Width, texture.Height, Memory.Span);
+      _texture.WritePixels<T>(_texture.Width, _texture.Height, Memory.Span);
     }
   }
 }
 
-/// <summary>Settings for <see cref="Texture"/>s.</summary>
+/// <summary>Settings for <see cref="Texture" />s.</summary>
 public sealed record TextureSettings : AssetSettings<Texture>
 {
-  public TextureFormat     Format     { get; init; } = TextureFormat.Rgba8;
+  public TextureFormat Format { get; init; } = TextureFormat.Rgba8;
   public TextureFilterMode FilterMode { get; init; } = TextureFilterMode.Point;
-  public TextureWrapMode   WrapMode   { get; init; } = TextureWrapMode.Clamp;
+  public TextureWrapMode WrapMode { get; init; } = TextureWrapMode.Clamp;
 }
 
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Texture"/>s.</summary>
+/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="Texture" />s.</summary>
 public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
 {
-  private readonly IGraphicsServer server;
+  private readonly IGraphicsServer _server;
 
   public TextureLoader(IGraphicsServer server)
   {
-    this.server = server;
+    _server = server;
   }
 
   public override async Task<Texture> LoadAsync(AssetLoaderContext context, TextureSettings settings, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(server, settings.Format, settings.FilterMode, settings.WrapMode);
+    var texture = new Texture(_server, settings.Format, settings.FilterMode, settings.WrapMode);
 
     texture.WritePixels(image);
 
@@ -243,3 +244,6 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
     return texture;
   }
 }
+
+
+

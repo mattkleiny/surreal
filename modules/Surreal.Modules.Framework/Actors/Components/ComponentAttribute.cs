@@ -6,3 +6,7 @@ public sealed class ComponentAttribute : Attribute
 {
   public Type StorageType { get; set; } = typeof(DenseComponentStorage<>);
 }
+
+
+
+

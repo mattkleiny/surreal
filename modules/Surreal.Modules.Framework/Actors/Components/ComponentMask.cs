@@ -4,22 +4,50 @@ namespace Surreal.Components;
 public readonly record struct ComponentMask(BigInteger Mask)
 {
   public static ComponentMask Empty => default;
-  public static ComponentMask For<T>() => ComponentType.For<T>().Mask;
 
   public bool IsEmpty => Mask == 0;
 
-  public bool ContainsAll(ComponentMask other) => (other.Mask & Mask) == other.Mask;
-  public bool ContainsAny(ComponentMask other) => (other.Mask & Mask) != 0;
+  public static ComponentMask For<T>()
+  {
+    return ComponentType.For<T>().Mask;
+  }
 
-  public ComponentMask Include<T>() => Include(ComponentType.For<T>());
-  public ComponentMask Include(ComponentType type) => this | type.Mask;
+  public bool ContainsAll(ComponentMask other)
+  {
+    return (other.Mask & Mask) == other.Mask;
+  }
 
-  public ComponentMask Exclude<T>() => Exclude(ComponentType.For<T>());
-  public ComponentMask Exclude(ComponentType type) => this ^ type.Mask;
+  public bool ContainsAny(ComponentMask other)
+  {
+    return (other.Mask & Mask) != 0;
+  }
+
+  public ComponentMask Include<T>()
+  {
+    return Include(ComponentType.For<T>());
+  }
+
+  public ComponentMask Include(ComponentType type)
+  {
+    return this | type.Mask;
+  }
+
+  public ComponentMask Exclude<T>()
+  {
+    return Exclude(ComponentType.For<T>());
+  }
+
+  public ComponentMask Exclude(ComponentType type)
+  {
+    return this ^ type.Mask;
+  }
 
   public override string ToString()
   {
-    if (IsEmpty) return "Empty Mask";
+    if (IsEmpty)
+    {
+      return "Empty Mask";
+    }
 
     var builder = new StringBuilder();
 
@@ -36,6 +64,15 @@ public readonly record struct ComponentMask(BigInteger Mask)
     return builder.ToString();
   }
 
-  public static ComponentMask operator |(ComponentMask left, ComponentMask right) => new(left.Mask | right.Mask);
-  public static ComponentMask operator ^(ComponentMask left, ComponentMask right) => new(left.Mask ^ right.Mask);
+  public static ComponentMask operator |(ComponentMask left, ComponentMask right)
+  {
+    return new ComponentMask(left.Mask | right.Mask);
+  }
+
+  public static ComponentMask operator ^(ComponentMask left, ComponentMask right)
+  {
+    return new ComponentMask(left.Mask ^ right.Mask);
+  }
 }
+
+

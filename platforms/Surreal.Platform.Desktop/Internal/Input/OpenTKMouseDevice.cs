@@ -6,68 +6,107 @@ namespace Surreal.Internal.Input;
 
 internal sealed class OpenTKMouseDevice : IMouseDevice
 {
-  private readonly OpenTKWindow window;
-  private readonly MouseState mouseState;
+  private readonly MouseState _mouseState;
+  private readonly OpenTKWindow _window;
 
   public OpenTKMouseDevice(OpenTKWindow window)
   {
-    this.window = window;
+    _window = window;
 
-    mouseState = window.MouseState;
+    _mouseState = window.MouseState;
   }
 
   public event Action<MouseButton>? ButtonPressed;
   public event Action<MouseButton>? ButtonReleased;
-  public event Action<Vector2>?     Moved;
+  public event Action<Vector2>? Moved;
 
-  public Vector2 Position           => new(mouseState.X, mouseState.Y);
-  public Vector2 NormalisedPosition => new(mouseState.X / window.Width, mouseState.Y / window.Height);
-  public Vector2 DeltaPosition      => new(mouseState.X - mouseState.PreviousX, mouseState.Y - mouseState.PreviousY);
+  public Vector2 Position => new(_mouseState.X, _mouseState.Y);
+  public Vector2 NormalisedPosition => new(_mouseState.X / _window.Width, _mouseState.Y / _window.Height);
+  public Vector2 DeltaPosition => new(_mouseState.X - _mouseState.PreviousX, _mouseState.Y - _mouseState.PreviousY);
 
   public bool IsCursorVisible
   {
-    get => window.IsCursorVisible;
-    set => window.IsCursorVisible = value;
+    get => _window.IsCursorVisible;
+    set => _window.IsCursorVisible = value;
   }
 
-  public bool IsButtonDown(MouseButton button) => mouseState.IsButtonDown(Convert(button));
-  public bool IsButtonUp(MouseButton button) => !mouseState.IsButtonDown(Convert(button));
-  public bool IsButtonPressed(MouseButton button) => mouseState.IsButtonDown(Convert(button)) && !mouseState.WasButtonDown(Convert(button));
-  public bool IsButtonReleased(MouseButton button) => mouseState.WasButtonDown(Convert(button)) && !mouseState.IsButtonDown(Convert(button));
+  public bool IsButtonDown(MouseButton button)
+  {
+    return _mouseState.IsButtonDown(Convert(button));
+  }
+
+  public bool IsButtonUp(MouseButton button)
+  {
+    return !_mouseState.IsButtonDown(Convert(button));
+  }
+
+  public bool IsButtonPressed(MouseButton button)
+  {
+    return _mouseState.IsButtonDown(Convert(button)) && !_mouseState.WasButtonDown(Convert(button));
+  }
+
+  public bool IsButtonReleased(MouseButton button)
+  {
+    return _mouseState.WasButtonDown(Convert(button)) && !_mouseState.IsButtonDown(Convert(button));
+  }
 
   public void Update()
   {
-    if (window.IsFocused)
+    if (_window.IsFocused)
     {
       // press events
-      if (IsButtonPressed(MouseButton.Left)) ButtonPressed?.Invoke(MouseButton.Left);
-      if (IsButtonPressed(MouseButton.Middle)) ButtonPressed?.Invoke(MouseButton.Middle);
-      if (IsButtonPressed(MouseButton.Right)) ButtonPressed?.Invoke(MouseButton.Right);
+      if (IsButtonPressed(MouseButton.Left))
+      {
+        ButtonPressed?.Invoke(MouseButton.Left);
+      }
+
+      if (IsButtonPressed(MouseButton.Middle))
+      {
+        ButtonPressed?.Invoke(MouseButton.Middle);
+      }
+
+      if (IsButtonPressed(MouseButton.Right))
+      {
+        ButtonPressed?.Invoke(MouseButton.Right);
+      }
 
       // release events
-      if (IsButtonReleased(MouseButton.Left)) ButtonReleased?.Invoke(MouseButton.Left);
-      if (IsButtonReleased(MouseButton.Middle)) ButtonReleased?.Invoke(MouseButton.Middle);
-      if (IsButtonReleased(MouseButton.Right)) ButtonReleased?.Invoke(MouseButton.Right);
+      if (IsButtonReleased(MouseButton.Left))
+      {
+        ButtonReleased?.Invoke(MouseButton.Left);
+      }
+
+      if (IsButtonReleased(MouseButton.Middle))
+      {
+        ButtonReleased?.Invoke(MouseButton.Middle);
+      }
+
+      if (IsButtonReleased(MouseButton.Right))
+      {
+        ButtonReleased?.Invoke(MouseButton.Right);
+      }
 
       // movement events
-      if (Math.Abs(mouseState.X - mouseState.PreviousX) > float.Epsilon ||
-          Math.Abs(mouseState.Y - mouseState.PreviousY) > float.Epsilon)
+      if (Math.Abs(_mouseState.X - _mouseState.PreviousX) > float.Epsilon ||
+          Math.Abs(_mouseState.Y - _mouseState.PreviousY) > float.Epsilon)
       {
         Moved?.Invoke(DeltaPosition);
       }
     }
   }
 
-  private static global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton Convert(MouseButton button)
+  private static OpenTK.Windowing.GraphicsLibraryFramework.MouseButton Convert(MouseButton button)
   {
     switch (button)
     {
-      case MouseButton.Left:   return global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Left;
-      case MouseButton.Middle: return global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Middle;
-      case MouseButton.Right:  return global::OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Right;
+      case MouseButton.Left: return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Left;
+      case MouseButton.Middle: return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Middle;
+      case MouseButton.Right: return OpenTK.Windowing.GraphicsLibraryFramework.MouseButton.Right;
 
       default:
         throw new ArgumentOutOfRangeException(nameof(button), button, "An unrecognized mouse button was requested.");
     }
   }
 }
+
+

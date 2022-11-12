@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Input.Keyboard;
 
-/// <summary>A keyboard <see cref="IInputDevice"/>.</summary>
+/// <summary>A keyboard <see cref="IInputDevice" />.</summary>
 public interface IKeyboardDevice : IInputDevice
 {
   event Action<Key> KeyPressed;
@@ -11,3 +11,6 @@ public interface IKeyboardDevice : IInputDevice
   bool IsKeyPressed(Key key);
   bool IsKeyReleased(Key key);
 }
+
+
+

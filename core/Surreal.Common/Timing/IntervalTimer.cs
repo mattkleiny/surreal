@@ -3,24 +3,24 @@ namespace Surreal.Timing;
 /// <summary>A stack-allocated interval timer.</summary>
 public struct IntervalTimer
 {
-  private readonly TimeSpan interval;
-  private float accumulator;
+  private readonly TimeSpan _interval;
+  private float _accumulator;
 
   public IntervalTimer(TimeSpan interval)
   {
     Debug.Assert(interval.Ticks > 0, "frequency.Ticks > 0");
 
-    this.interval = interval;
-    accumulator = 0f;
+    _interval = interval;
+    _accumulator = 0f;
   }
 
   public bool Tick(TimeDelta deltaTime)
   {
-    accumulator += deltaTime;
+    _accumulator += deltaTime;
 
-    if (accumulator >= interval.TotalSeconds)
+    if (_accumulator >= _interval.TotalSeconds)
     {
-      accumulator = 0f;
+      _accumulator = 0f;
       return true;
     }
 
@@ -29,6 +29,9 @@ public struct IntervalTimer
 
   public void Reset()
   {
-    accumulator = 0f;
+    _accumulator = 0f;
   }
 }
+
+
+

@@ -10,61 +10,91 @@ namespace Surreal.Graphics.Meshes;
 public sealed class GeometryBatch : IDisposable
 {
   private const int DefaultVertexCount = 64;
+  private readonly Mesh<Vertex2> _mesh;
 
-  private readonly IDisposableBuffer<Vertex2> vertices;
-  private readonly Mesh<Vertex2> mesh;
+  private readonly IDisposableBuffer<Vertex2> _vertices;
 
-  private Material? material;
-  private int vertexCount;
+  private Material? _material;
+  private int _vertexCount;
 
   public GeometryBatch(IGraphicsServer server, int maximumVertexCount = DefaultVertexCount)
   {
-    vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
-    mesh     = new Mesh<Vertex2>(server);
+    _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
+    _mesh = new Mesh<Vertex2>(server);
+  }
+
+  public void Dispose()
+  {
+    _mesh.Dispose();
+    _vertices.Dispose();
   }
 
   public void Begin(ShaderProgram shader)
-    => material = new Material(shader);
+  {
+    _material = new Material(shader);
+  }
 
   public void Begin(Material material)
   {
-    vertexCount = 0; // reset vertex pointer
+    _vertexCount = 0; // reset vertex pointer
 
-    this.material = material;
+    _material = material;
   }
 
   public void DrawPoint(Vector2 position, Color color)
-    => DrawPrimitive(stackalloc[] { position }, color, MeshType.Points);
+  {
+    DrawPrimitive(stackalloc[] { position }, color, MeshType.Points);
+  }
 
   public void DrawLine(Vector2 from, Vector2 to, Color color)
-    => DrawPrimitive(stackalloc[] { from, to }, color, MeshType.Lines);
+  {
+    DrawPrimitive(stackalloc[] { from, to }, color, MeshType.Lines);
+  }
 
   public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
-    => DrawPrimitive(points, color, MeshType.Lines);
+  {
+    DrawPrimitive(points, color, MeshType.Lines);
+  }
 
   public void DrawLineLoop(ReadOnlySpan<Vector2> points, Color color)
-    => DrawPrimitive(points, color, MeshType.LineLoop);
+  {
+    DrawPrimitive(points, color, MeshType.LineLoop);
+  }
 
   public void DrawLineStrip(ReadOnlySpan<Vector2> points, Color color)
-    => DrawPrimitive(points, color, MeshType.LineStrip);
+  {
+    DrawPrimitive(points, color, MeshType.LineStrip);
+  }
 
   public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-    => DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.Triangles);
+  {
+    DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.Triangles);
+  }
 
   public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-    => DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.LineLoop);
+  {
+    DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.LineLoop);
+  }
 
   public void DrawSolidQuad(Rectangle rectangle, Color color)
-    => DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.Triangles);
+  {
+    DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.Triangles);
+  }
 
   public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
-    => DrawQuad(center, size, color, MeshType.Triangles);
+  {
+    DrawQuad(center, size, color, MeshType.Triangles);
+  }
 
   public void DrawWireQuad(Rectangle rectangle, Color color)
-    => DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.LineLoop);
+  {
+    DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.LineLoop);
+  }
 
   public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
-    => DrawQuad(center, size, color, MeshType.LineLoop);
+  {
+    DrawQuad(center, size, color, MeshType.LineLoop);
+  }
 
   public void DrawCircle(Vector2 center, float radius, Color color, int segments = 16)
   {
@@ -125,7 +155,7 @@ public sealed class GeometryBatch : IDisposable
     var bottomRight = new Vector2(center.X + halfWidth, center.Y - halfHeight);
 
     DrawPrimitive(
-      points: stackalloc Vector2[]
+      stackalloc Vector2[]
       {
         // triangle 1
         bottomLeft,
@@ -137,39 +167,40 @@ public sealed class GeometryBatch : IDisposable
         bottomRight,
         bottomLeft
       },
-      color: color,
-      type: type
+      color,
+      type
     );
   }
 
   public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, MeshType type)
   {
-    var destination = new SpanList<Vertex2>(vertices.Span[vertexCount..points.Length]);
+    var destination = new SpanList<Vertex2>(_vertices.Span[_vertexCount..points.Length]);
 
-    for (var i = 0; i < points.Length; i++)
-    {
-      destination.Add(new Vertex2(points[i], color, Vector2.Zero));
-    }
+    for (var i = 0; i < points.Length; i++) destination.Add(new Vertex2(points[i], color, Vector2.Zero));
 
-    vertexCount += points.Length;
+    _vertexCount += points.Length;
 
     Flush(type);
   }
 
   private void Flush(MeshType type)
   {
-    if (vertexCount == 0) return;
-    if (material == null) return;
+    if (_vertexCount == 0)
+    {
+      return;
+    }
 
-    mesh.Vertices.Write(vertices.Span[..vertexCount]);
-    mesh.Draw(material, vertexCount, 0, type);
+    if (_material == null)
+    {
+      return;
+    }
 
-    vertexCount = 0;
-  }
+    _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
+    _mesh.Draw(_material, _vertexCount, 0, type);
 
-  public void Dispose()
-  {
-    mesh.Dispose();
-    vertices.Dispose();
+    _vertexCount = 0;
   }
 }
+
+
+

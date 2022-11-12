@@ -8,35 +8,35 @@ namespace Surreal.Audio.Clips;
 /// <summary>A buffer of waveform data for use in audio playback.</summary>
 public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
 {
-  private readonly IDisposableBuffer<byte> buffer;
+  private readonly IDisposableBuffer<byte> _buffer;
 
   public AudioBuffer(TimeSpan duration, AudioSampleRate rate)
   {
     Duration = duration;
-    Rate     = rate;
+    Rate = rate;
 
-    buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
+    _buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
   }
 
-  public TimeSpan        Duration { get; }
-  public AudioSampleRate Rate     { get; }
+  public TimeSpan Duration { get; }
+  public AudioSampleRate Rate { get; }
 
-  public Memory<byte> Memory => buffer.Memory;
-  public Span<byte>   Span   => buffer.Span;
-  public Size         Size   => Span.CalculateSize();
+  public Memory<byte> Memory => _buffer.Memory;
+  public Span<byte> Span => _buffer.Span;
+  public Size Size => Span.CalculateSize();
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      buffer.Dispose();
+      _buffer.Dispose();
     }
 
     base.Dispose(managed);
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="AudioBuffer"/>s.</summary>
+/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="AudioBuffer" />s.</summary>
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
   public override async Task<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
@@ -45,8 +45,8 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 
     await using WaveStream reader = context.Path.Extension switch
     {
-      ".wav"  => new WaveFileReader(stream),
-      ".mp3"  => new Mp3FileReader(stream),
+      ".wav" => new WaveFileReader(stream),
+      ".mp3" => new Mp3FileReader(stream),
       ".aiff" => new AiffFileReader(stream),
 
       _ => throw new UnsupportedAudioFormatException($"An unrecognized audio file format was requested: {context.Path}")
@@ -78,3 +78,4 @@ public sealed class UnsupportedAudioFormatException : Exception
   {
   }
 }
+

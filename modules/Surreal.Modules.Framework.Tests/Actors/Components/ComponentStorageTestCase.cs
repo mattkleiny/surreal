@@ -21,8 +21,8 @@ public class ComponentStorageTestCase<TStorage>
 
     var positions = new DenseComponentStorage<TestComponent>();
 
-    positions.AddComponent(entity1, new TestComponent(new(50, 20)));
-    positions.AddComponent(entity2, new TestComponent(new(-50, -20)));
+    positions.AddComponent(entity1, new TestComponent(new Vector2(50, 20)));
+    positions.AddComponent(entity2, new TestComponent(new Vector2(-50, -20)));
   }
 
   [Test]
@@ -35,8 +35,8 @@ public class ComponentStorageTestCase<TStorage>
 
     var positions = new DenseComponentStorage<TestComponent>();
 
-    positions.AddComponent(entity1, new TestComponent(new(50, 20)));
-    positions.AddComponent(entity2, new TestComponent(new(-50, -20)));
+    positions.AddComponent(entity1, new TestComponent(new Vector2(50, 20)));
+    positions.AddComponent(entity2, new TestComponent(new Vector2(-50, -20)));
 
     ref var component1 = ref positions.GetComponent(entity1);
     ref var component2 = ref positions.GetComponent(entity2);
@@ -58,3 +58,5 @@ public class DenseComponentStorageTests : ComponentStorageTestCase<DenseComponen
 public class SparseComponentStorageTests : ComponentStorageTestCase<SparseComponentStorage<TestComponent>>
 {
 }
+
+

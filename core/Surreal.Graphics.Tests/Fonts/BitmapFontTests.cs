@@ -30,7 +30,7 @@ public class BitmapFontTests
     var server = new HeadlessGraphicsServer();
 
     using var manager = new AssetManager();
-    using var batch = new SpriteBatch(server, spriteCount: 128);
+    using var batch = new SpriteBatch(server, 128);
 
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new TextureLoader(server));
@@ -41,3 +41,6 @@ public class BitmapFontTests
     batch.DrawText(font, "This is a test", Vector2.Zero, Vector2.One, Color.White);
   }
 }
+
+
+

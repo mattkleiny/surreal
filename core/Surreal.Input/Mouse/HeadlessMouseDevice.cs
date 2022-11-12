@@ -1,42 +1,60 @@
 namespace Surreal.Input.Mouse;
 
-/// <summary>A headless <see cref="IMouseDevice"/>.</summary>
+/// <summary>A headless <see cref="IMouseDevice" />.</summary>
 public sealed class HeadlessMouseDevice : IMouseDevice
 {
-  private readonly HashSet<MouseButton> pressedButtons = new();
-
-  public event Action<MouseButton>? ButtonPressed;
-  public event Action<MouseButton>? ButtonReleased;
-  public event Action<Vector2>?     Moved;
+  private readonly HashSet<MouseButton> _pressedButtons = new();
 
   public bool this[MouseButton button]
   {
-    get => pressedButtons.Contains(button);
+    get => _pressedButtons.Contains(button);
     set
     {
       if (value)
       {
-        pressedButtons.Add(button);
+        _pressedButtons.Add(button);
       }
       else
       {
-        pressedButtons.Remove(button);
+        _pressedButtons.Remove(button);
       }
     }
   }
 
-  public Vector2 Position           { get; set; } = new(0, 0);
+  public event Action<MouseButton>? ButtonPressed;
+  public event Action<MouseButton>? ButtonReleased;
+  public event Action<Vector2>? Moved;
+
+  public Vector2 Position { get; set; } = new(0, 0);
   public Vector2 NormalisedPosition => Position;
-  public Vector2 DeltaPosition      => new(0, 0);
+  public Vector2 DeltaPosition => new(0, 0);
 
   public bool IsCursorVisible { get; set; } = true;
 
-  public bool IsButtonDown(MouseButton button) => false;
-  public bool IsButtonUp(MouseButton button) => false;
-  public bool IsButtonPressed(MouseButton button) => false;
-  public bool IsButtonReleased(MouseButton button) => false;
+  public bool IsButtonDown(MouseButton button)
+  {
+    return false;
+  }
+
+  public bool IsButtonUp(MouseButton button)
+  {
+    return false;
+  }
+
+  public bool IsButtonPressed(MouseButton button)
+  {
+    return false;
+  }
+
+  public bool IsButtonReleased(MouseButton button)
+  {
+    return false;
+  }
 
   public void Update()
   {
   }
 }
+
+
+

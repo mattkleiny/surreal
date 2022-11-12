@@ -6,72 +6,82 @@ using Surreal.IO;
 
 namespace Surreal.Memory;
 
-/// <summary>Represents a buffer of data of <see cref="T"/>.</summary>
+/// <summary>Represents a buffer of data of <see cref="T" />.</summary>
 public interface IBuffer<T>
 {
-  /// <summary>The underlying <see cref="Memory{T}"/> representing the buffer data.</summary>
+  /// <summary>The underlying <see cref="Memory{T}" /> representing the buffer data.</summary>
   Memory<T> Memory { get; }
 
-  /// <summary>The underlying <see cref="Span{T}"/> representing the buffer data.</summary>
+  /// <summary>The underlying <see cref="Span{T}" /> representing the buffer data.</summary>
   Span<T> Span { get; }
 
   /// <summary>Resizes the underlying buffer storage.</summary>
   void Resize(int newLength);
 }
 
-/// <summary>A <see cref="IBuffer{T}"/> that can be deterministically disposed.</summary>
+/// <summary>A <see cref="IBuffer{T}" /> that can be deterministically disposed.</summary>
 public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable
 {
 }
 
-/// <summary>Static factories for <see cref="IBuffer{T}"/>s.</summary>
+/// <summary>Static factories for <see cref="IBuffer{T}" />s.</summary>
 public static class Buffers
 {
   public static IBuffer<T> Allocate<T>(int length)
-    => new ManagedBuffer<T>(length);
+  {
+    return new ManagedBuffer<T>(length);
+  }
 
   public static IBuffer<T> AllocatePinned<T>(int length, bool zeroFill = false)
-    => new PinnedBuffer<T>(length, zeroFill);
+  {
+    return new PinnedBuffer<T>(length, zeroFill);
+  }
 
   public static IDisposableBuffer<T> AllocateNative<T>(int length, bool zeroFill = false)
-    where T : unmanaged => new NativeBuffer<T>(length, zeroFill);
+    where T : unmanaged
+  {
+    return new NativeBuffer<T>(length, zeroFill);
+  }
 
   public static IDisposableBuffer<T> AllocateMapped<T>(VirtualPath path, int offset, int length)
-    where T : unmanaged => new MappedBuffer<T>(path, offset, length);
+    where T : unmanaged
+  {
+    return new MappedBuffer<T>(path, offset, length);
+  }
 
   /// <summary>A buffer backed by a managed array.</summary>
   private sealed class ManagedBuffer<T> : IBuffer<T>
   {
-    private T[] elements;
+    private T[] _elements;
 
     public ManagedBuffer(int length)
     {
-      elements = new T[length];
+      _elements = new T[length];
     }
 
-    public Memory<T> Memory => elements;
-    public Span<T> Span => elements;
+    public Memory<T> Memory => _elements;
+    public Span<T> Span => _elements;
 
     public void Resize(int newLength)
     {
-      Array.Resize(ref elements, newLength);
+      Array.Resize(ref _elements, newLength);
     }
   }
 
   /// <summary>A buffer backed by a pinned array.</summary>
   private sealed class PinnedBuffer<T> : IBuffer<T>
   {
-    private readonly T[] elements;
+    private readonly T[] _elements;
 
     public PinnedBuffer(int length, bool zeroFill)
     {
-      elements = zeroFill
-        ? GC.AllocateArray<T>(length, pinned: true)
-        : GC.AllocateUninitializedArray<T>(length, pinned: true);
+      _elements = zeroFill
+        ? GC.AllocateArray<T>(length, true)
+        : GC.AllocateUninitializedArray<T>(length, true);
     }
 
-    public Memory<T> Memory => elements;
-    public Span<T> Span => elements;
+    public Memory<T> Memory => _elements;
+    public Span<T> Span => _elements;
 
     public void Resize(int newLength)
     {
@@ -84,32 +94,39 @@ public static class Buffers
   private sealed unsafe class NativeBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
-    private readonly int length;
-    private void* buffer;
+    private readonly int _length;
+    private void* _buffer;
 
-    private bool isDisposed;
+    private bool _isDisposed;
 
     public NativeBuffer(int length, bool zeroFill)
     {
-      this.length = length;
+      _length = length;
 
-      buffer = zeroFill
-        ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
-        : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
+      _buffer = zeroFill
+        ? NativeMemory.AllocZeroed((nuint) length, (nuint) Unsafe.SizeOf<T>())
+        : NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
     }
+
+    public Span<T> Span => GetSpan();
+
+    public void Resize(int newLength)
+    {
+      _buffer = NativeMemory.Realloc(_buffer, (nuint) newLength);
+    }
+
+    Memory<T> IBuffer<T>.Memory => base.Memory;
 
     ~NativeBuffer()
     {
       Dispose(false);
     }
 
-    public Span<T> Span => GetSpan();
-
     public override Span<T> GetSpan()
     {
       CheckNotDisposed();
 
-      return new Span<T>(buffer, length);
+      return new Span<T>(_buffer, _length);
     }
 
     public override MemoryHandle Pin(int elementIndex = 0)
@@ -122,42 +139,35 @@ public static class Buffers
       // no-op
     }
 
-    public void Resize(int newLength)
-    {
-      buffer = NativeMemory.Realloc(buffer, (nuint)newLength);
-    }
-
     protected override void Dispose(bool disposing)
     {
-      if (!isDisposed)
+      if (!_isDisposed)
       {
-        NativeMemory.Free(buffer);
+        NativeMemory.Free(_buffer);
 
-        isDisposed = true;
+        _isDisposed = true;
       }
     }
 
     [Conditional("DEBUG")]
     private void CheckNotDisposed()
     {
-      if (isDisposed)
+      if (_isDisposed)
       {
         throw new ObjectDisposedException(nameof(NativeBuffer<T>));
       }
     }
-
-    Memory<T> IBuffer<T>.Memory => base.Memory;
   }
 
-  /// <summary>A <see cref="IDisposableBuffer{T}"/> for memory mapped files.</summary>
+  /// <summary>A <see cref="IDisposableBuffer{T}" /> for memory mapped files.</summary>
   private sealed unsafe class MappedBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
-    private readonly MemoryMappedFile file;
-    private readonly MemoryMappedViewAccessor accessor;
-    private readonly byte* pointer;
+    private readonly MemoryMappedViewAccessor _accessor;
+    private readonly MemoryMappedFile _file;
+    private readonly byte* _pointer;
 
-    private bool isDisposed;
+    private bool _isDisposed;
 
     public MappedBuffer(VirtualPath path, int offset, int length)
     {
@@ -166,19 +176,26 @@ public static class Buffers
         throw new InvalidOperationException($"The given path does not support memory mapped files: {path}");
       }
 
-      file = path.OpenMemoryMappedFile(offset, length);
-      accessor = file.CreateViewAccessor(offset, length, MemoryMappedFileAccess.ReadWrite);
+      _file = path.OpenMemoryMappedFile(offset, length);
+      _accessor = _file.CreateViewAccessor(offset, length, MemoryMappedFileAccess.ReadWrite);
 
-      accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
+      _accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref _pointer);
     }
 
     public Span<T> Span => GetSpan();
+
+    public void Resize(int newLength)
+    {
+      throw new NotSupportedException("Unable to resize mapped buffers!");
+    }
+
+    Memory<T> IBuffer<T>.Memory => base.Memory;
 
     public override Span<T> GetSpan()
     {
       CheckNotDisposed();
 
-      return new Span<T>(pointer, (int)accessor.Capacity);
+      return new Span<T>(_pointer, (int) _accessor.Capacity);
     }
 
     public override MemoryHandle Pin(int elementIndex = 0)
@@ -191,33 +208,29 @@ public static class Buffers
       // no-op
     }
 
-    public void Resize(int newLength)
-    {
-      throw new NotSupportedException("Unable to resize mapped buffers!");
-    }
-
     protected override void Dispose(bool disposing)
     {
-      if (!isDisposed)
+      if (!_isDisposed)
       {
-        accessor.SafeMemoryMappedViewHandle.ReleasePointer();
+        _accessor.SafeMemoryMappedViewHandle.ReleasePointer();
 
-        accessor.Dispose();
-        file.Dispose();
+        _accessor.Dispose();
+        _file.Dispose();
 
-        isDisposed = true;
+        _isDisposed = true;
       }
     }
 
     [Conditional("DEBUG")]
     private void CheckNotDisposed()
     {
-      if (isDisposed)
+      if (_isDisposed)
       {
         throw new ObjectDisposedException(nameof(MappedBuffer<T>));
       }
     }
-
-    Memory<T> IBuffer<T>.Memory => base.Memory;
   }
 }
+
+
+

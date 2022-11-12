@@ -4,20 +4,27 @@ using Surreal.IO;
 
 namespace Surreal.Scripting;
 
-/// <summary>A <see cref="IScriptServer"/> implementation for Lua, based on MoonSharp.</summary>
+/// <summary>A <see cref="IScriptServer" /> implementation for Lua, based on MoonSharp.</summary>
 public sealed class LuaScriptServer : IScriptServer, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<LuaScriptServer>();
 
-  private readonly Dictionary<ScriptHandle, ScriptEntry> scripts = new();
-  private int nextScriptId = 0;
+  private readonly Dictionary<ScriptHandle, ScriptEntry> _scripts = new();
+  private int _nextScriptId = 0;
+
+  public void Dispose()
+  {
+    foreach (var entry in _scripts.Values) entry.Dispose();
+
+    _scripts.Clear();
+  }
 
   public ScriptHandle CreateScript()
   {
-    var handle = new ScriptHandle(Interlocked.Increment(ref nextScriptId));
+    var handle = new ScriptHandle(Interlocked.Increment(ref _nextScriptId));
     var entry = new ScriptEntry();
 
-    scripts[handle] = entry;
+    _scripts[handle] = entry;
 
     entry.Runtime.LoadCLRPackage();
 
@@ -48,7 +55,7 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
   public void CompileScriptCode(ScriptHandle handle, string code, VirtualPath sourcePath)
   {
-    if (!scripts.TryGetValue(handle, out var entry))
+    if (!_scripts.TryGetValue(handle, out var entry))
     {
       throw new InvalidOperationException($"Unable to access script for handle {handle}");
     }
@@ -67,7 +74,7 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
   public void RegisterFunction(ScriptHandle handle, string name, Delegate callback)
   {
-    if (!scripts.TryGetValue(handle, out var entry))
+    if (!_scripts.TryGetValue(handle, out var entry))
     {
       throw new InvalidOperationException($"Unable to access script for handle {handle}");
     }
@@ -77,7 +84,7 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
   public object? ExecuteScript(ScriptHandle handle)
   {
-    if (!scripts.TryGetValue(handle, out var entry))
+    if (!_scripts.TryGetValue(handle, out var entry))
     {
       throw new InvalidOperationException($"Unable to access script for handle {handle}");
     }
@@ -101,7 +108,7 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
   public object? ExecuteScriptFunction(ScriptHandle handle, string functionName, object[] parameters)
   {
-    if (!scripts.TryGetValue(handle, out var entry))
+    if (!_scripts.TryGetValue(handle, out var entry))
     {
       throw new InvalidOperationException($"Unable to access script for handle {handle}");
     }
@@ -128,28 +135,18 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
 
   public void DeleteScript(ScriptHandle handle)
   {
-    if (scripts.TryGetValue(handle, out var entry))
+    if (_scripts.TryGetValue(handle, out var entry))
     {
       entry.Dispose();
-      scripts.Remove(handle);
+      _scripts.Remove(handle);
     }
-  }
-
-  public void Dispose()
-  {
-    foreach (var entry in scripts.Values)
-    {
-      entry.Dispose();
-    }
-
-    scripts.Clear();
   }
 
   private sealed record ScriptEntry : IDisposable
   {
-    public VirtualPath? Path    { get; set; }
-    public Lua          Runtime { get; }      = new();
-    public string       Code    { get; set; } = string.Empty;
+    public VirtualPath? Path { get; set; }
+    public Lua Runtime { get; } = new();
+    public string Code { get; set; } = string.Empty;
 
     public void Dispose()
     {
@@ -157,3 +154,6 @@ public sealed class LuaScriptServer : IScriptServer, IDisposable
     }
   }
 }
+
+
+

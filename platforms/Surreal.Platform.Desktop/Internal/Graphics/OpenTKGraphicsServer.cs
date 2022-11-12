@@ -9,9 +9,7 @@ using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
-using BlendingFactor = OpenTK.Graphics.OpenGL.BlendingFactor;
 using Matrix3x2 = System.Numerics.Matrix3x2;
-using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 using Quaternion = System.Numerics.Quaternion;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 using UniformType = Surreal.Graphics.Shaders.UniformType;
@@ -21,7 +19,7 @@ using Vector4 = System.Numerics.Vector4;
 
 namespace Surreal.Internal.Graphics;
 
-/// <summary>The <see cref="IGraphicsServer"/> for the OpenTK backend (OpenGL).</summary>
+/// <summary>The <see cref="IGraphicsServer" /> for the OpenTK backend (OpenGL).</summary>
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
   public void SetViewportSize(Viewport viewport)
@@ -31,19 +29,22 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetBlendState(BlendState state)
   {
-    static BlendingFactor ConvertBlendFactor(BlendMode mode) => mode switch
+    static BlendingFactor ConvertBlendFactor(BlendMode mode)
     {
-      BlendMode.SourceColor         => BlendingFactor.SrcColor,
-      BlendMode.TargetColor         => BlendingFactor.DstColor,
-      BlendMode.SourceAlpha         => BlendingFactor.SrcAlpha,
-      BlendMode.TargetAlpha         => BlendingFactor.DstAlpha,
-      BlendMode.OneMinusSourceColor => BlendingFactor.OneMinusSrcAlpha,
-      BlendMode.OneMinusTargetColor => BlendingFactor.OneMinusDstColor,
-      BlendMode.OneMinusSourceAlpha => BlendingFactor.OneMinusSrcAlpha,
-      BlendMode.OneMinusTargetAlpha => BlendingFactor.OneMinusDstAlpha,
+      return mode switch
+      {
+        BlendMode.SourceColor => BlendingFactor.SrcColor,
+        BlendMode.TargetColor => BlendingFactor.DstColor,
+        BlendMode.SourceAlpha => BlendingFactor.SrcAlpha,
+        BlendMode.TargetAlpha => BlendingFactor.DstAlpha,
+        BlendMode.OneMinusSourceColor => BlendingFactor.OneMinusSrcAlpha,
+        BlendMode.OneMinusTargetColor => BlendingFactor.OneMinusDstColor,
+        BlendMode.OneMinusSourceAlpha => BlendingFactor.OneMinusSrcAlpha,
+        BlendMode.OneMinusTargetAlpha => BlendingFactor.OneMinusDstAlpha,
 
-      _ => throw new InvalidOperationException($"An unexpected blend mode was specified {mode}")
-    };
+        _ => throw new InvalidOperationException($"An unexpected blend mode was specified {mode}")
+      };
+    }
 
     if (state.IsEnabled)
     {
@@ -115,7 +116,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
     var bufferUsage = usage switch
     {
-      BufferUsage.Static  => BufferUsageARB.StaticDraw,
+      BufferUsage.Static => BufferUsageARB.StaticDraw,
       BufferUsage.Dynamic => BufferUsageARB.DynamicDraw,
 
       _ => throw new ArgumentOutOfRangeException(nameof(usage), usage, null)
@@ -179,11 +180,11 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     fixed (T* pointer = results)
     {
       GL.GetTexImage(
-        target: TextureTarget.Texture2d,
-        level: mipLevel,
-        format: pixelFormat,
-        type: pixelType,
-        pixels: pointer
+        TextureTarget.Texture2d,
+        mipLevel,
+        pixelFormat,
+        pixelType,
+        pointer
       );
     }
 
@@ -201,11 +202,11 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     fixed (T* pointer = buffer)
     {
       GL.GetTexImage(
-        target: TextureTarget.Texture2d,
-        level: mipLevel,
-        format: pixelFormat,
-        type: pixelType,
-        pixels: pointer
+        TextureTarget.Texture2d,
+        mipLevel,
+        pixelFormat,
+        pixelType,
+        pointer
       );
     }
   }
@@ -223,16 +224,16 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     fixed (T* pointer = results)
     {
       GL.GetTextureSubImage(
-        texture: texture,
-        level: mipLevel,
-        xoffset: offsetX,
-        yoffset: offsetY,
-        zoffset: 0,
-        width: width,
-        height: height,
-        depth: 1,
-        format: pixelFormat,
-        type: pixelType,
+        texture,
+        mipLevel,
+        offsetX,
+        offsetY,
+        0,
+        width,
+        height,
+        1,
+        pixelFormat,
+        pixelType,
         pixels: pointer,
         bufSize: results.Length
       );
@@ -252,16 +253,16 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     fixed (T* pointer = buffer)
     {
       GL.GetTextureSubImage(
-        texture: texture,
-        level: mipLevel,
-        xoffset: offsetX,
-        yoffset: offsetY,
-        zoffset: 0,
-        width: width,
-        height: height,
-        depth: 1,
-        format: pixelFormat,
-        type: pixelType,
+        texture,
+        mipLevel,
+        offsetX,
+        offsetY,
+        0,
+        width,
+        height,
+        1,
+        pixelFormat,
+        pixelType,
         pixels: pointer,
         bufSize: buffer.Length
       );
@@ -281,15 +282,15 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     fixed (T* pointer = pixels)
     {
       GL.TexImage2D(
-        target: TextureTarget.Texture2d,
-        level: mipLevel,
-        internalformat: internalFormat,
-        width: width,
-        height: height,
-        border: 0,
-        format: pixelFormat,
-        type: pixelType,
-        pixels: pointer
+        TextureTarget.Texture2d,
+        mipLevel,
+        internalFormat,
+        width,
+        height,
+        0,
+        pixelFormat,
+        pixelType,
+        pointer
       );
     }
   }
@@ -305,8 +306,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     fixed (T* pointer = pixels)
     {
       GL.TexSubImage2D(
-        target: TextureTarget.Texture2d,
-        level: mipLevel,
+        TextureTarget.Texture2d,
+        mipLevel,
         width: width,
         height: height,
         xoffset: offsetX,
@@ -364,12 +365,12 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var attribute = descriptors[index];
 
       GL.VertexAttribPointer(
-        index: (uint) index,
-        size: attribute.Count,
-        type: ConvertVertexType(attribute.Type),
-        normalized: attribute.ShouldNormalize,
-        stride: descriptors.Stride,
-        offset: attribute.Offset
+        (uint) index,
+        attribute.Count,
+        ConvertVertexType(attribute.Type),
+        attribute.ShouldNormalize,
+        descriptors.Stride,
+        attribute.Offset
       );
       GL.EnableVertexAttribArray((uint) index);
     }
@@ -391,11 +392,11 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     {
       var elementType = ConvertElementType(indexType);
 
-      GL.DrawElements(primitiveType, indexCount, elementType, offset: 0);
+      GL.DrawElements(primitiveType, indexCount, elementType, 0);
     }
     else
     {
-      GL.DrawArrays(primitiveType, first: 0, vertexCount);
+      GL.DrawArrays(primitiveType, 0, vertexCount);
     }
 
     GL.BindVertexArray(VertexArrayHandle.Zero);
@@ -415,60 +416,10 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return new GraphicsHandle(shader.Handle);
   }
 
-  public void LinkShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
-  {
-    var program = new ProgramHandle(handle);
-    var shaderIds = new ShaderHandle[shaderSet.Shaders.Length];
-
-    GL.UseProgram(program);
-
-    for (var i = 0; i < shaderSet.Shaders.Length; i++)
-    {
-      var (stage, code) = shaderSet.Shaders[i];
-      var shader = shaderIds[i] = GL.CreateShader(stage);
-
-      GL.ShaderSource(shader, code);
-      GL.CompileShader(shader);
-
-      var compileStatus = 0;
-
-      GL.GetShaderi(shader, ShaderParameterName.CompileStatus, ref compileStatus);
-
-      if (compileStatus != 1)
-      {
-        GL.GetShaderInfoLog(shader, out var errorLog);
-        GL.DeleteShader(shader); // don't leak the shader
-
-        throw new PlatformException($"An error occurred whilst compiling a {stage} shader from {shaderSet.Path}: {errorLog}");
-      }
-
-      GL.AttachShader(program, shader);
-    }
-
-    int linkStatus = 0;
-
-    GL.LinkProgram(program);
-    GL.GetProgrami(program, ProgramPropertyARB.LinkStatus, ref linkStatus);
-
-    if (linkStatus != 1)
-    {
-      GL.GetProgramInfoLog(program, out var errorLog);
-      GL.DeleteProgram(program); // don't leak the program
-
-      throw new PlatformException($"An error occurred whilst linking a shader program from {shaderSet.Path}: {errorLog}");
-    }
-
-    // we're finished with the shaders, now
-    foreach (var shaderId in shaderIds)
-    {
-      GL.DeleteShader(shaderId);
-    }
-  }
-
   public unsafe ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
   {
     var program = new ProgramHandle(handle);
-    int count = 0;
+    var count = 0;
 
     GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
 
@@ -481,28 +432,31 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var type = default(AttributeType);
 
       GL.GetActiveAttrib(
-        program: program,
-        index: (uint) index,
-        bufSize: int.MaxValue,
-        length: ref length,
-        size: ref size,
-        type: ref type,
-        name: out var name
+        program,
+        (uint) index,
+        int.MaxValue,
+        ref length,
+        ref size,
+        ref type,
+        out var name
       );
-      if (string.IsNullOrEmpty(name)) continue;
+      if (string.IsNullOrEmpty(name))
+      {
+        continue;
+      }
 
       results[index] = new AttributeMetadata(name, index, length, size, type switch
       {
-        AttributeType.Int         => UniformType.Integer,
-        AttributeType.Float       => UniformType.Float,
-        AttributeType.IntVec2     => UniformType.Point2,
-        AttributeType.IntVec3     => UniformType.Point3,
-        AttributeType.FloatVec2   => UniformType.Vector2,
-        AttributeType.FloatVec3   => UniformType.Vector3,
-        AttributeType.FloatVec4   => UniformType.Vector4,
-        AttributeType.FloatMat3x2 => UniformType.Matrix3x2,
-        AttributeType.FloatMat4   => UniformType.Matrix4x4,
-        AttributeType.Sampler2d   => UniformType.Texture,
+        AttributeType.Int => UniformType.Integer,
+        AttributeType.Float => UniformType.Float,
+        AttributeType.IntVec2 => UniformType.Point2,
+        AttributeType.IntVec3 => UniformType.Point3,
+        AttributeType.FloatVec2 => UniformType.Vector2,
+        AttributeType.FloatVec3 => UniformType.Vector3,
+        AttributeType.FloatVec4 => UniformType.Vector4,
+        AttributeType.FloatMat3x2 => UniformType.Matrix3X2,
+        AttributeType.FloatMat4 => UniformType.Matrix4X4,
+        AttributeType.Sampler2d => UniformType.Texture,
 
         _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
       });
@@ -514,7 +468,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   public unsafe ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
   {
     var program = new ProgramHandle(handle);
-    int count = 0;
+    var count = 0;
 
     GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
 
@@ -527,30 +481,33 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var type = default(OpenTK.Graphics.OpenGL.UniformType);
 
       GL.GetActiveUniform(
-        program: program,
-        index: (uint) index,
-        bufSize: int.MaxValue,
-        length: ref length,
-        size: ref size,
-        type: ref type,
-        name: out var name
+        program,
+        (uint) index,
+        int.MaxValue,
+        ref length,
+        ref size,
+        ref type,
+        out var name
       );
-      if (string.IsNullOrEmpty(name)) continue;
+      if (string.IsNullOrEmpty(name))
+      {
+        continue;
+      }
 
       var location = GL.GetUniformLocation(program, name);
 
       results[index] = new UniformMetadata(name, location, length, size, type switch
       {
-        OpenTK.Graphics.OpenGL.UniformType.Int         => UniformType.Integer,
-        OpenTK.Graphics.OpenGL.UniformType.Float       => UniformType.Float,
-        OpenTK.Graphics.OpenGL.UniformType.IntVec2     => UniformType.Point2,
-        OpenTK.Graphics.OpenGL.UniformType.IntVec3     => UniformType.Point3,
-        OpenTK.Graphics.OpenGL.UniformType.FloatVec2   => UniformType.Vector2,
-        OpenTK.Graphics.OpenGL.UniformType.FloatVec3   => UniformType.Vector3,
-        OpenTK.Graphics.OpenGL.UniformType.FloatVec4   => UniformType.Vector4,
-        OpenTK.Graphics.OpenGL.UniformType.FloatMat3x2 => UniformType.Matrix3x2,
-        OpenTK.Graphics.OpenGL.UniformType.FloatMat4   => UniformType.Matrix4x4,
-        OpenTK.Graphics.OpenGL.UniformType.Sampler2d   => UniformType.Texture,
+        OpenTK.Graphics.OpenGL.UniformType.Int => UniformType.Integer,
+        OpenTK.Graphics.OpenGL.UniformType.Float => UniformType.Float,
+        OpenTK.Graphics.OpenGL.UniformType.IntVec2 => UniformType.Point2,
+        OpenTK.Graphics.OpenGL.UniformType.IntVec3 => UniformType.Point3,
+        OpenTK.Graphics.OpenGL.UniformType.FloatVec2 => UniformType.Vector2,
+        OpenTK.Graphics.OpenGL.UniformType.FloatVec3 => UniformType.Vector3,
+        OpenTK.Graphics.OpenGL.UniformType.FloatVec4 => UniformType.Vector4,
+        OpenTK.Graphics.OpenGL.UniformType.FloatMat3x2 => UniformType.Matrix3X2,
+        OpenTK.Graphics.OpenGL.UniformType.FloatMat4 => UniformType.Matrix4X4,
+        OpenTK.Graphics.OpenGL.UniformType.Sampler2d => UniformType.Texture,
 
         _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
       });
@@ -647,7 +604,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     var framebuffer = GL.GenFramebuffer();
 
     GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
-    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, new TextureHandle(colorAttachment), level: 0);
+    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, new TextureHandle(colorAttachment), 0);
 
     if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.FramebufferComplete)
     {
@@ -676,20 +633,67 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     GL.DeleteFramebuffer(framebuffer);
   }
 
+  public void LinkShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)
+  {
+    var program = new ProgramHandle(handle);
+    var shaderIds = new ShaderHandle[shaderSet.Shaders.Length];
+
+    GL.UseProgram(program);
+
+    for (var i = 0; i < shaderSet.Shaders.Length; i++)
+    {
+      var (stage, code) = shaderSet.Shaders[i];
+      var shader = shaderIds[i] = GL.CreateShader(stage);
+
+      GL.ShaderSource(shader, code);
+      GL.CompileShader(shader);
+
+      var compileStatus = 0;
+
+      GL.GetShaderi(shader, ShaderParameterName.CompileStatus, ref compileStatus);
+
+      if (compileStatus != 1)
+      {
+        GL.GetShaderInfoLog(shader, out var errorLog);
+        GL.DeleteShader(shader); // don't leak the shader
+
+        throw new PlatformException($"An error occurred whilst compiling a {stage} shader from {shaderSet.Path}: {errorLog}");
+      }
+
+      GL.AttachShader(program, shader);
+    }
+
+    var linkStatus = 0;
+
+    GL.LinkProgram(program);
+    GL.GetProgrami(program, ProgramPropertyARB.LinkStatus, ref linkStatus);
+
+    if (linkStatus != 1)
+    {
+      GL.GetProgramInfoLog(program, out var errorLog);
+      GL.DeleteProgram(program); // don't leak the program
+
+      throw new PlatformException($"An error occurred whilst linking a shader program from {shaderSet.Path}: {errorLog}");
+    }
+
+    // we're finished with the shaders, now
+    foreach (var shaderId in shaderIds) GL.DeleteShader(shaderId);
+  }
+
   private static int GetInternalFormat(TextureFormat format)
   {
     return format switch
     {
       // integral
-      TextureFormat.R8    => (int) All.R8,
-      TextureFormat.Rg8   => (int) All.Rg8,
-      TextureFormat.Rgb8  => (int) All.Rgb8,
+      TextureFormat.R8 => (int) All.R8,
+      TextureFormat.Rg8 => (int) All.Rg8,
+      TextureFormat.Rgb8 => (int) All.Rgb8,
       TextureFormat.Rgba8 => (int) All.Rgba8,
 
       // floating
-      TextureFormat.R    => (int) All.R,
-      TextureFormat.Rg   => (int) All.Rg,
-      TextureFormat.Rgb  => (int) All.Rgb,
+      TextureFormat.R => (int) All.R,
+      TextureFormat.Rg => (int) All.Rg,
+      TextureFormat.Rgb => (int) All.Rgb,
       TextureFormat.Rgba => (int) All.Rgba,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
@@ -699,26 +703,71 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   private static (PixelFormat Format, PixelType Type) GetPixelFormatAndType(Type type)
   {
     // integral
-    if (type == typeof(byte)) return (PixelFormat.Red, PixelType.UnsignedByte);
-    if (type == typeof(Point2)) return (PixelFormat.Rg, PixelType.UnsignedByte);
-    if (type == typeof(Point3)) return (PixelFormat.Rgb, PixelType.UnsignedByte);
-    if (type == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
+    if (type == typeof(byte))
+    {
+      return (PixelFormat.Red, PixelType.UnsignedByte);
+    }
+
+    if (type == typeof(Point2))
+    {
+      return (PixelFormat.Rg, PixelType.UnsignedByte);
+    }
+
+    if (type == typeof(Point3))
+    {
+      return (PixelFormat.Rgb, PixelType.UnsignedByte);
+    }
+
+    if (type == typeof(Color32))
+    {
+      return (PixelFormat.Rgba, PixelType.UnsignedByte);
+    }
 
     // floating
-    if (type == typeof(float)) return (PixelFormat.Red, PixelType.Float);
-    if (type == typeof(Vector2)) return (PixelFormat.Rg, PixelType.Float);
-    if (type == typeof(Vector3)) return (PixelFormat.Rgb, PixelType.Float);
-    if (type == typeof(Vector4)) return (PixelFormat.Rgba, PixelType.Float);
-    if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
+    if (type == typeof(float))
+    {
+      return (PixelFormat.Red, PixelType.Float);
+    }
+
+    if (type == typeof(Vector2))
+    {
+      return (PixelFormat.Rg, PixelType.Float);
+    }
+
+    if (type == typeof(Vector3))
+    {
+      return (PixelFormat.Rgb, PixelType.Float);
+    }
+
+    if (type == typeof(Vector4))
+    {
+      return (PixelFormat.Rgba, PixelType.Float);
+    }
+
+    if (type == typeof(Color))
+    {
+      return (PixelFormat.Rgba, PixelType.Float);
+    }
 
     throw new InvalidOperationException($"An unrecognized pixel type was provided: {type}");
   }
 
   private static DrawElementsType ConvertElementType(Type type)
   {
-    if (type == typeof(byte)) return DrawElementsType.UnsignedByte;
-    if (type == typeof(uint)) return DrawElementsType.UnsignedInt;
-    if (type == typeof(ushort)) return DrawElementsType.UnsignedShort;
+    if (type == typeof(byte))
+    {
+      return DrawElementsType.UnsignedByte;
+    }
+
+    if (type == typeof(uint))
+    {
+      return DrawElementsType.UnsignedInt;
+    }
+
+    if (type == typeof(ushort))
+    {
+      return DrawElementsType.UnsignedShort;
+    }
 
     throw new InvalidOperationException($"An unrecognized index type was provided: {type}");
   }
@@ -728,7 +777,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return type switch
     {
       BufferType.Vertex => BufferTargetARB.ArrayBuffer,
-      BufferType.Index  => BufferTargetARB.ElementArrayBuffer,
+      BufferType.Index => BufferTargetARB.ElementArrayBuffer,
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
@@ -738,13 +787,13 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return attributeType switch
     {
-      VertexType.UnsignedByte  => VertexAttribPointerType.UnsignedByte,
-      VertexType.Short         => VertexAttribPointerType.Short,
+      VertexType.UnsignedByte => VertexAttribPointerType.UnsignedByte,
+      VertexType.Short => VertexAttribPointerType.Short,
       VertexType.UnsignedShort => VertexAttribPointerType.UnsignedShort,
-      VertexType.Int           => VertexAttribPointerType.Int,
-      VertexType.UnsignedInt   => VertexAttribPointerType.UnsignedInt,
-      VertexType.Float         => VertexAttribPointerType.Float,
-      VertexType.Double        => VertexAttribPointerType.Double,
+      VertexType.Int => VertexAttribPointerType.Int,
+      VertexType.UnsignedInt => VertexAttribPointerType.UnsignedInt,
+      VertexType.Float => VertexAttribPointerType.Float,
+      VertexType.Double => VertexAttribPointerType.Double,
 
       _ => throw new ArgumentOutOfRangeException(nameof(attributeType), attributeType, null)
     };
@@ -754,10 +803,10 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return meshType switch
     {
-      MeshType.Points    => PrimitiveType.Points,
-      MeshType.Lines     => PrimitiveType.Lines,
+      MeshType.Points => PrimitiveType.Points,
+      MeshType.Lines => PrimitiveType.Lines,
       MeshType.LineStrip => PrimitiveType.LineStrip,
-      MeshType.LineLoop  => PrimitiveType.LineLoop,
+      MeshType.LineLoop => PrimitiveType.LineLoop,
       MeshType.Triangles => PrimitiveType.Triangles,
 
       _ => throw new ArgumentOutOfRangeException(nameof(meshType), meshType, null)
@@ -768,7 +817,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return filterMode switch
     {
-      TextureFilterMode.Point  => (int) All.Nearest,
+      TextureFilterMode.Point => (int) All.Nearest,
       TextureFilterMode.Linear => (int) All.Linear,
 
       _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
@@ -779,10 +828,12 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return wrapMode switch
     {
-      TextureWrapMode.Clamp  => (int) All.ClampToEdge,
+      TextureWrapMode.Clamp => (int) All.ClampToEdge,
       TextureWrapMode.Repeat => (int) All.MirroredRepeat,
 
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };
   }
 }
+
+

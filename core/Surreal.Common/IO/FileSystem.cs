@@ -8,7 +8,7 @@ public interface IFileSystem
 {
   ISet<string> Schemes { get; }
 
-  bool SupportsWatcher       { get; }
+  bool SupportsWatcher { get; }
   bool SupportsMemoryMapping { get; }
 
   VirtualPath Resolve(VirtualPath path, params string[] paths);
@@ -34,7 +34,7 @@ public interface IFileSystem
   ValueTask<Stream> OpenOutputStreamAsync(string path);
 }
 
-/// <summary>A registry for <see cref="IFileSystem"/>s.</summary>
+/// <summary>A registry for <see cref="IFileSystem" />s.</summary>
 public interface IFileSystemRegistry
 {
   IFileSystem? GetByScheme(string scheme);
@@ -45,10 +45,10 @@ public interface IFileSystemRegistry
   void Clear();
 }
 
-/// <summary>Allows watching <see cref="Path"/>s for changes.</summary>
+/// <summary>Allows watching <see cref="Path" />s for changes.</summary>
 public interface IPathWatcher : IDisposable
 {
-  /// <summary>The <see cref="VirtualPath"/> being watched.</summary>
+  /// <summary>The <see cref="VirtualPath" /> being watched.</summary>
   VirtualPath FilePath { get; }
 
   event Action<VirtualPath> Created;
@@ -56,16 +56,9 @@ public interface IPathWatcher : IDisposable
   event Action<VirtualPath> Deleted;
 }
 
-/// <summary>Base class for any <see cref="IFileSystem"/>.</summary>
+/// <summary>Base class for any <see cref="IFileSystem" />.</summary>
 public abstract class FileSystem : IFileSystem
 {
-  public static IFileSystemRegistry Registry { get; } = new FileSystemRegistry();
-
-  public static IFileSystem? GetForScheme(string scheme)
-  {
-    return Registry.GetByScheme(scheme);
-  }
-
   protected FileSystem(params string[] schemes)
   {
     Debug.Assert(schemes.Length > 0, "schemes.Length > 0");
@@ -73,9 +66,11 @@ public abstract class FileSystem : IFileSystem
     Schemes = new HashSet<string>(schemes);
   }
 
+  public static IFileSystemRegistry Registry { get; } = new FileSystemRegistry();
+
   public ISet<string> Schemes { get; }
 
-  public virtual bool SupportsWatcher       => false;
+  public virtual bool SupportsWatcher => false;
   public virtual bool SupportsMemoryMapping => false;
 
   public abstract VirtualPath Resolve(VirtualPath path, params string[] paths);
@@ -90,23 +85,59 @@ public abstract class FileSystem : IFileSystem
   public abstract Stream OpenOutputStream(string path);
 
   public virtual MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
-    => throw new NotSupportedException("This file system does not support memory mapping.");
+  {
+    throw new NotSupportedException("This file system does not support memory mapping.");
+  }
 
   public virtual IPathWatcher WatchPath(VirtualPath path)
-    => throw new NotSupportedException("This file system does not support path watching.");
+  {
+    throw new NotSupportedException("This file system does not support path watching.");
+  }
 
   // asynchronous API
-  public virtual ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard) => new(Enumerate(path, wildcard));
-  public virtual ValueTask<Size> GetSizeAsync(string path) => new(GetSize(path));
-  public virtual ValueTask<bool> IsDirectoryAsync(string path) => new(IsDirectory(path));
-  public virtual ValueTask<bool> ExistsAsync(string path) => new(Exists(path));
-  public virtual ValueTask<bool> IsFileAsync(string path) => new(IsFile(path));
-  public virtual ValueTask<Stream> OpenInputStreamAsync(string path) => new(OpenInputStream(path));
-  public virtual ValueTask<Stream> OpenOutputStreamAsync(string path) => new(OpenOutputStream(path));
+  public virtual ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard)
+  {
+    return new ValueTask<VirtualPath[]>(Enumerate(path, wildcard));
+  }
+
+  public virtual ValueTask<Size> GetSizeAsync(string path)
+  {
+    return new ValueTask<Size>(GetSize(path));
+  }
+
+  public virtual ValueTask<bool> IsDirectoryAsync(string path)
+  {
+    return new ValueTask<bool>(IsDirectory(path));
+  }
+
+  public virtual ValueTask<bool> ExistsAsync(string path)
+  {
+    return new ValueTask<bool>(Exists(path));
+  }
+
+  public virtual ValueTask<bool> IsFileAsync(string path)
+  {
+    return new ValueTask<bool>(IsFile(path));
+  }
+
+  public virtual ValueTask<Stream> OpenInputStreamAsync(string path)
+  {
+    return new ValueTask<Stream>(OpenInputStream(path));
+  }
+
+  public virtual ValueTask<Stream> OpenOutputStreamAsync(string path)
+  {
+    return new ValueTask<Stream>(OpenOutputStream(path));
+  }
+
+  public static IFileSystem? GetForScheme(string scheme)
+  {
+    return Registry.GetByScheme(scheme);
+  }
 
   private sealed class FileSystemRegistry : IFileSystemRegistry
   {
-    private readonly Dictionary<string, IFileSystem> fileSystemByScheme = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, IFileSystem> _fileSystemByScheme = new(StringComparer.OrdinalIgnoreCase);
 
     public FileSystemRegistry()
     {
@@ -116,7 +147,7 @@ public abstract class FileSystem : IFileSystem
 
     public IFileSystem? GetByScheme(string scheme)
     {
-      if (!fileSystemByScheme.TryGetValue(scheme, out var fileSystem))
+      if (!_fileSystemByScheme.TryGetValue(scheme, out var fileSystem))
       {
         return default;
       }
@@ -126,23 +157,20 @@ public abstract class FileSystem : IFileSystem
 
     public void Add(IFileSystem system)
     {
-      foreach (var scheme in system.Schemes)
-      {
-        fileSystemByScheme[scheme] = system;
-      }
+      foreach (var scheme in system.Schemes) _fileSystemByScheme[scheme] = system;
     }
 
     public void Remove(IFileSystem system)
     {
-      foreach (var scheme in system.Schemes)
-      {
-        fileSystemByScheme.Remove(scheme);
-      }
+      foreach (var scheme in system.Schemes) _fileSystemByScheme.Remove(scheme);
     }
 
     public void Clear()
     {
-      fileSystemByScheme.Clear();
+      _fileSystemByScheme.Clear();
     }
   }
 }
+
+
+

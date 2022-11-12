@@ -20,7 +20,11 @@ public interface IServiceModule
 public interface IServiceRegistry : IServiceProvider, IDisposable
 {
   object Activate(Type type);
-  T Activate<T>() => (T)Activate(typeof(T));
+
+  T Activate<T>()
+  {
+    return (T) Activate(typeof(T));
+  }
 
   void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
   void RegisterService(Type serviceType, object instance);
@@ -63,34 +67,31 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
     ReplaceService(typeof(TService), implementation);
   }
 
-  /// <summary>Adds the given <see cref="IServiceModule"/> to the registry.</summary>
+  /// <summary>Adds the given <see cref="IServiceModule" /> to the registry.</summary>
   void AddModule(IServiceModule module)
   {
     module.RegisterServices(this);
   }
 
-  /// <summary>Registers all of the <see cref="RegisterServiceAttribute"/>-annotated types in the given assembly.</summary>
+  /// <summary>Registers all of the <see cref="RegisterServiceAttribute" />-annotated types in the given assembly.</summary>
   [RequiresUnreferencedCode("Discovers services via reflection")]
   void AddAssemblyServices(Assembly assembly)
   {
     var candidates =
       from type in assembly.GetTypes()
-      from attribute in type.GetCustomAttributes<RegisterServiceAttribute>(inherit: true)
+      from attribute in type.GetCustomAttributes<RegisterServiceAttribute>(true)
       select new { Attribute = attribute, Type = type };
 
-    foreach (var candidate in candidates)
-    {
-      candidate.Attribute.RegisterService(candidate.Type, this);
-    }
+    foreach (var candidate in candidates) candidate.Attribute.RegisterService(candidate.Type, this);
   }
 }
 
-/// <summary>A simple default <see cref="IServiceRegistry"/> implementation.</summary>
+/// <summary>A simple default <see cref="IServiceRegistry" /> implementation.</summary>
 public sealed class ServiceRegistry : IServiceRegistry
 {
-  private readonly ConcurrentDictionary<Type, Func<object>> activatorsByType = new();
-  private readonly ConcurrentDictionary<Type, object> instancesByType = new();
-  private readonly ConcurrentDictionary<Type, Func<object>> creatorsByType = new();
+  private readonly ConcurrentDictionary<Type, Func<object>> _activatorsByType = new();
+  private readonly ConcurrentDictionary<Type, Func<object>> _creatorsByType = new();
+  private readonly ConcurrentDictionary<Type, object> _instancesByType = new();
 
   public object Activate(Type type)
   {
@@ -122,7 +123,7 @@ public sealed class ServiceRegistry : IServiceRegistry
       };
     }
 
-    return creatorsByType.GetOrAdd(type, Factory).Invoke();
+    return _creatorsByType.GetOrAdd(type, Factory).Invoke();
   }
 
   public object? GetService(Type serviceType)
@@ -132,12 +133,12 @@ public sealed class ServiceRegistry : IServiceRegistry
       return this;
     }
 
-    if (instancesByType.TryGetValue(serviceType, out var instance))
+    if (_instancesByType.TryGetValue(serviceType, out var instance))
     {
       return instance;
     }
 
-    if (activatorsByType.TryGetValue(serviceType, out var activator))
+    if (_activatorsByType.TryGetValue(serviceType, out var activator))
     {
       return activator();
     }
@@ -150,11 +151,11 @@ public sealed class ServiceRegistry : IServiceRegistry
     switch (lifetime)
     {
       case ServiceLifetime.Singleton:
-        instancesByType[serviceType] = Activator.CreateInstance(implementationType)!;
+        _instancesByType[serviceType] = Activator.CreateInstance(implementationType)!;
         break;
 
       case ServiceLifetime.Transient:
-        activatorsByType[serviceType] = () => Activator.CreateInstance(implementationType)!;
+        _activatorsByType[serviceType] = () => Activator.CreateInstance(implementationType)!;
         break;
 
       default:
@@ -164,24 +165,24 @@ public sealed class ServiceRegistry : IServiceRegistry
 
   public void RegisterService(Type serviceType, object instance)
   {
-    instancesByType[serviceType] = instance;
+    _instancesByType[serviceType] = instance;
   }
 
   public void ReplaceService(ServiceLifetime lifetime, Type serviceType, Type implementationType)
   {
-    instancesByType.TryRemove(serviceType, out _);
+    _instancesByType.TryRemove(serviceType, out _);
 
     RegisterService(lifetime, serviceType, implementationType);
   }
 
   public void ReplaceService(Type serviceType, object instance)
   {
-    instancesByType[serviceType] = instance;
+    _instancesByType[serviceType] = instance;
   }
 
   public void Dispose()
   {
-    foreach (var instance in instancesByType.Values)
+    foreach (var instance in _instancesByType.Values)
     {
       if (instance is IDisposable disposable)
       {
@@ -191,12 +192,12 @@ public sealed class ServiceRegistry : IServiceRegistry
   }
 }
 
-/// <summary>Static extension methods for <see cref="IServiceProvider"/> and related.</summary>
+/// <summary>Static extension methods for <see cref="IServiceProvider" /> and related.</summary>
 public static class ServicesExtensions
 {
   public static T? GetService<T>(this IServiceProvider provider)
   {
-    return (T?)provider.GetService(typeof(T));
+    return (T?) provider.GetService(typeof(T));
   }
 
   public static IEnumerable<T> GetServices<T>(this IServiceProvider provider)
@@ -225,7 +226,7 @@ public static class ServicesExtensions
 
     if (service != null)
     {
-      result = (T)service;
+      result = (T) service;
       return true;
     }
 
@@ -239,13 +240,13 @@ public static class ServicesExtensions
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class RegisterServiceAttribute : Attribute
 {
-  public Type?           ServiceType { get; }
-  public ServiceLifetime Lifetime    { get; set; } = ServiceLifetime.Singleton;
-
   public RegisterServiceAttribute(Type? serviceType = null)
   {
     ServiceType = serviceType;
   }
+
+  public Type? ServiceType { get; }
+  public ServiceLifetime Lifetime { get; set; } = ServiceLifetime.Singleton;
 
   public void RegisterService(Type type, IServiceRegistry registry)
   {
@@ -261,3 +262,6 @@ public class ServiceNotFoundException : Exception
   {
   }
 }
+
+
+

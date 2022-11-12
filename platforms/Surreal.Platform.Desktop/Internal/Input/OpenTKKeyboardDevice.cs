@@ -5,37 +5,6 @@ namespace Surreal.Internal.Input;
 
 internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
 {
-  private readonly OpenTKWindow window;
-  private readonly KeyboardState keyboardState;
-
-  public OpenTKKeyboardDevice(OpenTKWindow window)
-  {
-    this.window = window;
-
-    keyboardState = window.KeyboardState;
-  }
-
-  public event Action<Key> KeyPressed  = null!;
-  public event Action<Key> KeyReleased = null!;
-
-  public bool IsKeyDown(Key key) => keyboardState.IsKeyDown(Lookup[key]);
-  public bool IsKeyUp(Key key) => !keyboardState.IsKeyDown(Lookup[key]);
-  public bool IsKeyPressed(Key key) => keyboardState.IsKeyPressed(Lookup[key]);
-  public bool IsKeyReleased(Key key) => keyboardState.IsKeyReleased(Lookup[key]);
-
-  public void Update()
-  {
-    // only capture state if the window is focused
-    if (window.IsFocused)
-    {
-      foreach (var (key, _) in Lookup)
-      {
-        if (IsKeyPressed(key)) KeyPressed?.Invoke(key);
-        if (IsKeyReleased(key)) KeyReleased?.Invoke(key);
-      }
-    }
-  }
-
   private static readonly Dictionary<Key, Keys> Lookup = new()
   {
     [Key.LeftShift] = Keys.LeftShift,
@@ -63,4 +32,58 @@ internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
     [Key.Tilde] = Keys.GraveAccent,
     [Key.Tab] = Keys.Tab
   };
+  private readonly KeyboardState _keyboardState;
+  private readonly OpenTKWindow _window;
+
+  public OpenTKKeyboardDevice(OpenTKWindow window)
+  {
+    _window = window;
+
+    _keyboardState = window.KeyboardState;
+  }
+
+  public event Action<Key> KeyPressed = null!;
+  public event Action<Key> KeyReleased = null!;
+
+  public bool IsKeyDown(Key key)
+  {
+    return _keyboardState.IsKeyDown(Lookup[key]);
+  }
+
+  public bool IsKeyUp(Key key)
+  {
+    return !_keyboardState.IsKeyDown(Lookup[key]);
+  }
+
+  public bool IsKeyPressed(Key key)
+  {
+    return _keyboardState.IsKeyPressed(Lookup[key]);
+  }
+
+  public bool IsKeyReleased(Key key)
+  {
+    return _keyboardState.IsKeyReleased(Lookup[key]);
+  }
+
+  public void Update()
+  {
+    // only capture state if the window is focused
+    if (_window.IsFocused)
+    {
+      foreach (var (key, _) in Lookup)
+      {
+        if (IsKeyPressed(key))
+        {
+          KeyPressed?.Invoke(key);
+        }
+
+        if (IsKeyReleased(key))
+        {
+          KeyReleased?.Invoke(key);
+        }
+      }
+    }
+  }
 }
+
+

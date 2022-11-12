@@ -6,11 +6,6 @@ namespace Surreal;
 /// <summary>An application resource that can be deterministically destroyed.</summary>
 public abstract class Resource : IDisposable
 {
-  ~Resource()
-  {
-    Dispose(false);
-  }
-
   public bool IsDisposed { get; private set; }
 
   public void Dispose()
@@ -24,12 +19,17 @@ public abstract class Resource : IDisposable
     }
   }
 
+  ~Resource()
+  {
+    Dispose(false);
+  }
+
   protected virtual void Dispose(bool managed)
   {
   }
 }
 
-/// <summary>A <see cref="Resource"/> with global tracking in a static <see cref="InterlinkedList{TNode}"/>.</summary>
+/// <summary>A <see cref="Resource" /> with global tracking in a static <see cref="InterlinkedList{TNode}" />.</summary>
 public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSelf>
   where TSelf : TrackedResource<TSelf>
 {
@@ -43,7 +43,7 @@ public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSe
   public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
 
   TSelf? IInterlinkedElement<TSelf>.Previous { get; set; }
-  TSelf? IInterlinkedElement<TSelf>.Next     { get; set; }
+  TSelf? IInterlinkedElement<TSelf>.Next { get; set; }
 
   public static Size GetSizeEstimate<T>()
     where T : IHasSizeEstimate
@@ -80,3 +80,4 @@ public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSe
     base.Dispose(managed);
   }
 }
+

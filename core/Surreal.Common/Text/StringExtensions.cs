@@ -37,3 +37,6 @@ public static class StringExtensions
     return index == -1 ? value : value[..index];
   }
 }
+
+
+

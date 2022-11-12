@@ -6,7 +6,7 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
-/// <summary>Different kinds of uniform values supported on a <see cref="ShaderProgram"/>.</summary>
+/// <summary>Different kinds of uniform values supported on a <see cref="ShaderProgram" />.</summary>
 public enum UniformType
 {
   Integer,
@@ -18,18 +18,18 @@ public enum UniformType
   Vector3,
   Vector4,
   Quaternion,
-  Matrix3x2,
-  Matrix4x4,
+  Matrix3X2,
+  Matrix4X4,
   Texture
 }
 
-/// <summary>Metadata about attributes in a <see cref="ShaderProgram"/>.</summary>
+/// <summary>Metadata about attributes in a <see cref="ShaderProgram" />.</summary>
 public readonly record struct AttributeMetadata(string Name, int Location, int Length, int Count, UniformType Type);
 
-/// <summary>Metadata about uniforms in a <see cref="ShaderProgram"/>.</summary>
+/// <summary>Metadata about uniforms in a <see cref="ShaderProgram" />.</summary>
 public readonly record struct UniformMetadata(string Name, int Location, int Length, int Count, UniformType Type);
 
-/// <summary>Utilities for <see cref="ShaderProgram"/>s.</summary>
+/// <summary>Utilities for <see cref="ShaderProgram" />s.</summary>
 public static class ShaderProgramExtensions
 {
   public static async Task<Material> LoadDefaultWireMaterialAsync(this IAssetManager manager)
@@ -53,10 +53,10 @@ public sealed class ShaderProgram : GraphicsResource
   }
 
   public IGraphicsServer Server { get; }
-  public GraphicsHandle  Handle { get; private set; }
+  public GraphicsHandle Handle { get; private set; }
 
   public ReadOnlySlice<AttributeMetadata> Attributes { get; private set; } = ReadOnlySlice<AttributeMetadata>.Empty;
-  public ReadOnlySlice<UniformMetadata>   Uniforms   { get; private set; } = ReadOnlySlice<UniformMetadata>.Empty;
+  public ReadOnlySlice<UniformMetadata> Uniforms { get; private set; } = ReadOnlySlice<UniformMetadata>.Empty;
 
   public int GetUniformLocation(string name)
   {
@@ -178,7 +178,7 @@ public sealed class ShaderProgram : GraphicsResource
   public void ReloadMetadata()
   {
     Attributes = Server.GetShaderAttributeMetadata(Handle);
-    Uniforms   = Server.GetShaderUniformMetadata(Handle);
+    Uniforms = Server.GetShaderUniformMetadata(Handle);
   }
 
   protected override void Dispose(bool managed)
@@ -191,3 +191,6 @@ public sealed class ShaderProgram : GraphicsResource
     base.Dispose(managed);
   }
 }
+
+
+

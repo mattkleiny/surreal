@@ -3,14 +3,14 @@ using Surreal.IO;
 
 namespace Surreal.Scripting;
 
-/// <summary>Manages an underlying script resource in a <see cref="IScriptServer"/>.</summary>
+/// <summary>Manages an underlying script resource in a <see cref="IScriptServer" />.</summary>
 public sealed class Script : ScriptResource
 {
-  private readonly IScriptServer server;
+  private readonly IScriptServer _server;
 
   public Script(IScriptServer server)
   {
-    this.server = server;
+    _server = server;
 
     Handle = server.CreateScript();
   }
@@ -19,46 +19,46 @@ public sealed class Script : ScriptResource
 
   public void RegisterFunction(string name, Delegate callback)
   {
-    server.RegisterFunction(Handle, name, callback);
+    _server.RegisterFunction(Handle, name, callback);
   }
 
   public void UpdateCode(string code, VirtualPath sourcePath)
   {
-    server.CompileScriptCode(Handle, code, sourcePath);
+    _server.CompileScriptCode(Handle, code, sourcePath);
   }
 
   public object? Execute()
   {
-    return server.ExecuteScript(Handle);
+    return _server.ExecuteScript(Handle);
   }
 
   public object? ExecuteFunction(string functionName)
   {
-    return server.ExecuteScriptFunction(Handle, functionName);
+    return _server.ExecuteScriptFunction(Handle, functionName);
   }
 
   public object? ExecuteFunction(string functionName, params object[] parameters)
   {
-    return server.ExecuteScriptFunction(Handle, functionName, parameters);
+    return _server.ExecuteScriptFunction(Handle, functionName, parameters);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteScript(Handle);
+      _server.DeleteScript(Handle);
     }
 
     base.Dispose(managed);
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Script"/>s.</summary>
+/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="Script" />s.</summary>
 public sealed class ScriptLoader : AssetLoader<Script>
 {
-  private readonly IScriptServer server;
-  private readonly Encoding encoding;
-  private readonly string extension;
+  private readonly Encoding _encoding;
+  private readonly string _extension;
+  private readonly IScriptServer _server;
 
   public ScriptLoader(IScriptServer server, string extension)
     : this(server, Encoding.UTF8, extension)
@@ -67,20 +67,20 @@ public sealed class ScriptLoader : AssetLoader<Script>
 
   public ScriptLoader(IScriptServer server, Encoding encoding, string extension)
   {
-    this.server    = server;
-    this.encoding  = encoding;
-    this.extension = extension;
+    _server = server;
+    _encoding = encoding;
+    _extension = extension;
   }
 
   public override bool CanHandle(AssetLoaderContext context)
   {
-    return base.CanHandle(context) && context.Path.Extension == extension;
+    return base.CanHandle(context) && context.Path.Extension == _extension;
   }
 
   public override async Task<Script> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
-    var code = await context.Path.ReadAllTextAsync(encoding, cancellationToken);
-    var script = new Script(server);
+    var code = await context.Path.ReadAllTextAsync(_encoding, cancellationToken);
+    var script = new Script(_server);
 
     script.UpdateCode(code, context.Path);
 
@@ -94,10 +94,13 @@ public sealed class ScriptLoader : AssetLoader<Script>
 
   private async Task<Script> ReloadAsync(AssetLoaderContext context, Script script, CancellationToken cancellationToken)
   {
-    var code = await context.Path.ReadAllTextAsync(encoding, cancellationToken);
+    var code = await context.Path.ReadAllTextAsync(_encoding, cancellationToken);
 
     script.UpdateCode(code, context.Path);
 
     return script;
   }
 }
+
+
+

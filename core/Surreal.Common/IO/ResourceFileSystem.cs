@@ -3,7 +3,7 @@ using Surreal.Memory;
 
 namespace Surreal.IO;
 
-/// <summary>A <see cref="FileSystem"/> that uses embed assembly resources.</summary>
+/// <summary>A <see cref="FileSystem" /> that uses embed assembly resources.</summary>
 public sealed class ResourceFileSystem : FileSystem
 {
   private const string Separator = "/";
@@ -14,7 +14,9 @@ public sealed class ResourceFileSystem : FileSystem
   }
 
   public override VirtualPath Resolve(VirtualPath path, params string[] paths)
-    => path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
+  {
+    return path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
+  }
 
   public override VirtualPath[] Enumerate(string path, string wildcard)
   {
@@ -82,3 +84,6 @@ public sealed class ResourceNotFoundException : Exception
   {
   }
 }
+
+
+

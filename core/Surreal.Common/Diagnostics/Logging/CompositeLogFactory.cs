@@ -1,37 +1,40 @@
 ﻿namespace Surreal.Diagnostics.Logging;
 
-/// <summary>A <see cref="ILogFactory"/> that composes multiple other <see cref="ILogFactory"/>s.</summary>
+/// <summary>A <see cref="ILogFactory" /> that composes multiple other <see cref="ILogFactory" />s.</summary>
 public sealed class CompositeLogFactory : ILogFactory
 {
-  private readonly ILogFactory[] factories;
+  private readonly ILogFactory[] _factories;
 
   public CompositeLogFactory(params ILogFactory[] factories)
   {
-    this.factories = factories;
+    _factories = factories;
   }
 
   public ILog GetLog(string category)
   {
-    return new CompositeLog(factories.Select(factory => factory.GetLog(category)));
+    return new CompositeLog(_factories.Select(factory => factory.GetLog(category)));
   }
 
-  /// <summary>A <see cref="ILog"/> that delegates to multiple other <see cref="ILog"/>s.</summary>
+  /// <summary>A <see cref="ILog" /> that delegates to multiple other <see cref="ILog" />s.</summary>
   private sealed class CompositeLog : ILog
   {
-    private readonly ILog[] logs;
+    private readonly ILog[] _logs;
 
     public CompositeLog(IEnumerable<ILog> logs)
     {
-      this.logs = logs.ToArray();
+      _logs = logs.ToArray();
     }
 
     public bool IsLevelEnabled(LogLevel level)
     {
-      for (var i = 0; i < logs.Length; i++)
+      for (var i = 0; i < _logs.Length; i++)
       {
-        var log = logs[i];
+        var log = _logs[i];
 
-        if (log.IsLevelEnabled(level)) return true;
+        if (log.IsLevelEnabled(level))
+        {
+          return true;
+        }
       }
 
       return false;
@@ -39,9 +42,9 @@ public sealed class CompositeLogFactory : ILogFactory
 
     public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
-      for (var i = 0; i < logs.Length; i++)
+      for (var i = 0; i < _logs.Length; i++)
       {
-        var log = logs[i];
+        var log = _logs[i];
         if (log.IsLevelEnabled(level))
         {
           log.WriteMessage(level, message, exception);
@@ -53,9 +56,9 @@ public sealed class CompositeLogFactory : ILogFactory
     {
       string? cachedMessage = null;
 
-      for (var i = 0; i < logs.Length; i++)
+      for (var i = 0; i < _logs.Length; i++)
       {
-        var log = logs[i];
+        var log = _logs[i];
         if (log.IsLevelEnabled(level))
         {
           cachedMessage ??= handler.GetFormattedTextAndReturnToPool();
@@ -66,3 +69,4 @@ public sealed class CompositeLogFactory : ILogFactory
     }
   }
 }
+

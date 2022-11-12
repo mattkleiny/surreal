@@ -1,9 +1,9 @@
 ﻿namespace Surreal;
 
-/// <summary>A <see cref="PixelCanvas"/> for the asteroids example.</summary>
+/// <summary>A <see cref="PixelCanvas" /> for the asteroids example.</summary>
 public sealed class Canvas : PixelCanvas
 {
-  private IntervalTimer updateTimer = new(16.Milliseconds());
+  private IntervalTimer _updateTimer = new(16.Milliseconds());
 
   public Canvas(IGraphicsServer server, int width, int height)
     : base(server, width, height)
@@ -20,11 +20,11 @@ public sealed class Canvas : PixelCanvas
       return;
     }
 
-    if (updateTimer.Tick(deltaTime))
+    if (_updateTimer.Tick(deltaTime))
     {
       SimulateSand();
 
-      updateTimer.Reset();
+      _updateTimer.Reset();
     }
   }
 
@@ -32,15 +32,23 @@ public sealed class Canvas : PixelCanvas
   {
     var pixels = Pixels;
 
-    for (int y = pixels.Height - 1; y >= 0; y--)
-    for (int x = 0; x < pixels.Width; x++)
+    for (var y = pixels.Height - 1; y >= 0; y--)
+    for (var x = 0; x < pixels.Width; x++)
     {
       ref var pixel = ref pixels[x, y];
 
       if (pixel != Color32.Black)
       {
-        if (SimulateSand(ref pixel, x, y + 1)) continue;
-        if (SimulateSand(ref pixel, x - 1, y + 1)) continue;
+        if (SimulateSand(ref pixel, x, y + 1))
+        {
+          continue;
+        }
+
+        if (SimulateSand(ref pixel, x - 1, y + 1))
+        {
+          continue;
+        }
+
         SimulateSand(ref pixel, x + 1, y + 1);
       }
     }
@@ -48,15 +56,22 @@ public sealed class Canvas : PixelCanvas
 
   private bool SimulateSand(ref Color32 pixel, int x, int y)
   {
-    if (x < 0 || x > Width - 1) return false;
-    if (y < 0 || y > Height - 1) return false;
+    if (x < 0 || x > Width - 1)
+    {
+      return false;
+    }
+
+    if (y < 0 || y > Height - 1)
+    {
+      return false;
+    }
 
     ref var target = ref Pixels[x, y];
 
     if (target == Color32.Black)
     {
       target = pixel;
-      pixel  = Color32.Black;
+      pixel = Color32.Black;
 
       return true;
     }
@@ -64,3 +79,5 @@ public sealed class Canvas : PixelCanvas
     return false;
   }
 }
+
+

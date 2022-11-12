@@ -5,6 +5,62 @@ namespace Surreal.Actors;
 /// <summary>A simple polygon in 2-space that can be transformed and queried.</summary>
 public sealed class Polygon
 {
+  private Vector2[] _vertices;
+
+  /// <summary>Creates an empty polygon.</summary>
+  public Polygon()
+    : this(Array.Empty<Vector2>())
+  {
+  }
+
+  /// <summary>Creates a polygon with the given vertices.</summary>
+  public Polygon(Vector2[] vertices)
+  {
+    _vertices = vertices;
+  }
+
+  public int Length => _vertices.Length;
+
+  public Vector2 Center => Bounds.Center;
+  public Vector2 Size => Bounds.Size;
+
+  /// <summary>The bounds of the polygon in 2-space.</summary>
+  public Rectangle Bounds
+  {
+    get
+    {
+      var minX = float.MaxValue;
+      var minY = float.MaxValue;
+      var maxX = 0f;
+      var maxY = 0f;
+
+      foreach (var vertex in _vertices)
+      {
+        if (vertex.X < minX)
+        {
+          minX = vertex.X;
+        }
+
+        if (vertex.Y < minY)
+        {
+          minY = vertex.Y;
+        }
+
+        if (vertex.X > maxX)
+        {
+          maxX = vertex.X;
+        }
+
+        if (vertex.Y > maxY)
+        {
+          maxY = vertex.Y;
+        }
+      }
+
+      return new Rectangle(minX, maxY, maxX, minY);
+    }
+  }
+
   /// <summary>Creates a new polygon to represent a triangle.</summary>
   public static Polygon CreateTriangle(float scale)
   {
@@ -42,60 +98,19 @@ public sealed class Polygon
     return new Polygon(vertices);
   }
 
-  private Vector2[] vertices;
-
-  /// <summary>Creates an empty polygon.</summary>
-  public Polygon()
-    : this(Array.Empty<Vector2>())
-  {
-  }
-
-  /// <summary>Creates a polygon with the given vertices.</summary>
-  public Polygon(Vector2[] vertices)
-  {
-    this.vertices = vertices;
-  }
-
-  public int Length => vertices.Length;
-
-  public Vector2 Center => Bounds.Center;
-  public Vector2 Size   => Bounds.Size;
-
-  /// <summary>The bounds of the polygon in 2-space.</summary>
-  public Rectangle Bounds
-  {
-    get
-    {
-      var minX = float.MaxValue;
-      var minY = float.MaxValue;
-      var maxX = 0f;
-      var maxY = 0f;
-
-      foreach (var vertex in vertices)
-      {
-        if (vertex.X < minX) minX = vertex.X;
-        if (vertex.Y < minY) minY = vertex.Y;
-        if (vertex.X > maxX) maxX = vertex.X;
-        if (vertex.Y > maxY) maxY = vertex.Y;
-      }
-
-      return new Rectangle(minX, maxY, maxX, minY);
-    }
-  }
-
   /// <summary>Determines if the polygon contains the given point.</summary>
   public bool ContainsPoint(Vector2 point)
   {
     var direction = point with { X = 1000f };
     var intersectionCount = 0;
 
-    for (var i = 0; i < vertices.Length; i++)
+    for (var i = 0; i < _vertices.Length; i++)
     {
       // for each edge in the polygon
-      var start = vertices[i];
-      var end = i == vertices.Length - 1
-        ? vertices[0] // wind around end of polygon
-        : vertices[i + 1];
+      var start = _vertices[i];
+      var end = i == _vertices.Length - 1
+        ? _vertices[0] // wind around end of polygon
+        : _vertices[i + 1];
 
       // determine the number of times our 'ray' intersects the polygon
       if (Intersect(point, direction, start, end))
@@ -112,13 +127,10 @@ public sealed class Polygon
   {
     if (Length != other.Length)
     {
-      Array.Resize(ref vertices, other.Length);
+      Array.Resize(ref _vertices, other.Length);
     }
 
-    for (var i = 0; i < Length; i++)
-    {
-      vertices[i] = Vector2.Transform(other.vertices[i], transform);
-    }
+    for (var i = 0; i < Length; i++) _vertices[i] = Vector2.Transform(other._vertices[i], transform);
   }
 
   /// <summary>Determines if two lines intersect (ignoring co-linearity in this case).</summary>
@@ -136,3 +148,5 @@ public sealed class Polygon
            IsCounterClockwise(a, b, c) != IsCounterClockwise(a, b, d);
   }
 }
+
+

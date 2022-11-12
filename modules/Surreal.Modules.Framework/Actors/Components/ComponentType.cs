@@ -6,8 +6,8 @@ public readonly record struct ComponentType(Type Type, int Id, ComponentMask Mas
   private static readonly ConcurrentDictionary<Type, ComponentType> Metadata = new();
   private static readonly object BitLocker = new();
 
-  private static int nextId = 0;
-  private static BigInteger nextBit = 1;
+  private static int _nextId = 0;
+  private static BigInteger _nextBit = 1;
 
   public static ComponentType For<T>()
   {
@@ -20,8 +20,8 @@ public readonly record struct ComponentType(Type Type, int Id, ComponentMask Mas
     {
       lock (BitLocker)
       {
-        var id = Interlocked.Increment(ref nextId);
-        var bit = nextBit <<= 1;
+        var id = Interlocked.Increment(ref _nextId);
+        var bit = _nextBit <<= 1;
         var mask = new ComponentMask(bit);
 
         return new ComponentType(type, id, mask);
@@ -31,7 +31,7 @@ public readonly record struct ComponentType(Type Type, int Id, ComponentMask Mas
     return Metadata.GetOrAdd(type, CreateComponent);
   }
 
-  /// <summary>Determines all <see cref="ComponentType"/>s that match the given mask.</summary>
+  /// <summary>Determines all <see cref="ComponentType" />s that match the given mask.</summary>
   internal static IEnumerable<ComponentType> ForMask(ComponentMask mask)
   {
     foreach (var type in Metadata.Values)
@@ -43,3 +43,5 @@ public readonly record struct ComponentType(Type Type, int Id, ComponentMask Mas
     }
   }
 }
+
+

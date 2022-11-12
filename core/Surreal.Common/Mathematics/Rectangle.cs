@@ -5,12 +5,28 @@
 /// <summary>A bounding rectangle in 2-space.</summary>
 public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)
 {
-  public static Rectangle Empty => new(Vector2.Zero, Vector2.Zero);
-
   public Rectangle(Vector2 min, Vector2 max)
     : this(min.X, max.Y, max.X, min.Y)
   {
   }
+
+  public static Rectangle Empty => new(Vector2.Zero, Vector2.Zero);
+
+  public Vector2 Min => BottomLeft;
+  public Vector2 Max => TopRight;
+
+  public float Width => Right - Left;
+  public float Height => Bottom - Top;
+
+  public Vector2 Center => new(Left + Width / 2f, Top + Height / 2f);
+  public Vector2 Size => new(Width, Height);
+
+  public Vector2 TopLeft => new(Left, Top);
+  public Vector2 TopRight => new(Right, Top);
+  public Vector2 BottomLeft => new(Left, Bottom);
+  public Vector2 BottomRight => new(Right, Bottom);
+
+  public PointEnumerator Points => new(TopLeft, Maths.CeilToInt(Width), Maths.CeilToInt(Height));
 
   public static Rectangle Create(Vector2 center, Vector2 size)
   {
@@ -22,34 +38,21 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     return new Rectangle(left, top, right, bottom);
   }
 
-  public Vector2 Min => BottomLeft;
-  public Vector2 Max => TopRight;
-
-  public float Width  => Right - Left;
-  public float Height => Bottom - Top;
-
-  public Vector2 Center => new(Left + Width / 2f, Top + Height / 2f);
-  public Vector2 Size   => new(Width, Height);
-
-  public Vector2 TopLeft     => new(Left, Top);
-  public Vector2 TopRight    => new(Right, Top);
-  public Vector2 BottomLeft  => new(Left, Bottom);
-  public Vector2 BottomRight => new(Right, Bottom);
-
-  public PointEnumerator Points => new(TopLeft, Maths.CeilToInt(Width), Maths.CeilToInt(Height));
-
   public override string ToString()
   {
     return $"Rectangle ({Left}, {Top}, {Right}, {Bottom})";
   }
 
   /// <summary>Clamps the bounding rect to the given range.</summary>
-  public Rectangle Clamp(float minX, float minY, float maxX, float maxY) => new(
-    Left: Left.Clamp(minX, maxX),
-    Top: Top.Clamp(minY, maxY),
-    Right: Right.Clamp(minX, maxX),
-    Bottom: Bottom.Clamp(minY, maxY)
-  );
+  public Rectangle Clamp(float minX, float minY, float maxX, float maxY)
+  {
+    return new Rectangle(
+      Left.Clamp(minX, maxX),
+      Top.Clamp(minY, maxY),
+      Right.Clamp(minX, maxX),
+      Bottom.Clamp(minY, maxY)
+    );
+  }
 
   public bool Contains(Point2 point)
   {
@@ -67,29 +70,36 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
            vector.Y <= Bottom;
   }
 
-  /// <summary>Allows enumerating points in a <see cref="Rectangle"/>.</summary>
+  /// <summary>Allows enumerating points in a <see cref="Rectangle" />.</summary>
   public struct PointEnumerator : IEnumerable<Point2>, IEnumerator<Point2>
   {
-    private readonly Point2 bottomLeft;
-    private readonly int width;
-    private readonly int height;
-    private int offset;
+    private readonly Point2 _bottomLeft;
+    private readonly int _width;
+    private readonly int _height;
+    private int _offset;
 
     public PointEnumerator(Point2 bottomLeft, int width, int height)
     {
-      this.bottomLeft = bottomLeft;
-      this.width      = width;
-      this.height     = height;
-      offset          = -1;
+      _bottomLeft = bottomLeft;
+      _width = width;
+      _height = height;
+      _offset = -1;
 
       Reset();
     }
 
-    public Point2      Current => bottomLeft + new Point2(offset % width, offset / width);
+    public Point2 Current => _bottomLeft + new Point2(_offset % _width, _offset / _width);
     object IEnumerator.Current => Current;
 
-    public bool MoveNext() => ++offset < width * height;
-    public void Reset() => offset = -1;
+    public bool MoveNext()
+    {
+      return ++_offset < _width * _height;
+    }
+
+    public void Reset()
+    {
+      _offset = -1;
+    }
 
     public void Dispose()
     {
@@ -112,3 +122,6 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     }
   }
 }
+
+
+

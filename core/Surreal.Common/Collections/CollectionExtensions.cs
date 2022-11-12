@@ -6,7 +6,7 @@ namespace Surreal.Collections;
 /// <summary>General purpose collection extensions</summary>
 public static class CollectionExtensions
 {
-  /// <summary>Converts the given <see cref="List{T}"/> to a <see cref="Span{T}"/>.</summary>
+  /// <summary>Converts the given <see cref="List{T}" /> to a <see cref="Span{T}" />.</summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Span<T> AsSpan<T>(this List<T> list)
   {
@@ -63,3 +63,4 @@ public static class CollectionExtensions
     return items[random.Next(0, items.Count)];
   }
 }
+

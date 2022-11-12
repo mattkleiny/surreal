@@ -1,60 +1,61 @@
 ﻿namespace Surreal.Audio.Clips;
 
-/// <summary>An audio source allows <see cref="AudioClip"/>s to be played.</summary>
+/// <summary>An audio source allows <see cref="AudioClip" />s to be played.</summary>
 public sealed class AudioSource : AudioResource
 {
-  private readonly IAudioServer server;
-  private float volume;
-  private bool isLooping;
+  private readonly IAudioServer _server;
+  private bool _isLooping;
+  private float _volume;
 
   public AudioSource(IAudioServer server)
   {
-    this.server = server;
+    _server = server;
 
     Handle = server.CreateAudioSource();
   }
 
   public AudioHandle Handle { get; }
 
-  public bool IsPlaying => server.IsAudioSourcePlaying(Handle);
+  public bool IsPlaying => _server.IsAudioSourcePlaying(Handle);
 
   public float Volume
   {
-    get => volume;
+    get => _volume;
     set
     {
-      volume = value;
-      server.SetAudioSourceVolume(Handle, value);
+      _volume = value;
+      _server.SetAudioSourceVolume(Handle, value);
     }
   }
 
   public bool IsLooping
   {
-    get => isLooping;
+    get => _isLooping;
     set
     {
-      isLooping = value;
-      server.SetAudioSourceLooping(Handle, value);
+      _isLooping = value;
+      _server.SetAudioSourceLooping(Handle, value);
     }
   }
 
   public void Play(AudioClip clip)
   {
-    server.PlayAudioSource(Handle, clip.Handle);
+    _server.PlayAudioSource(Handle, clip.Handle);
   }
 
   public void Stop()
   {
-    server.StopAudioSource(Handle);
+    _server.StopAudioSource(Handle);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteAudioSource(Handle);
+      _server.DeleteAudioSource(Handle);
     }
 
     base.Dispose(managed);
   }
 }
+

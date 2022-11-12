@@ -19,25 +19,37 @@ public readonly record struct GameTime(
 /// <summary>Entry point for the game.</summary>
 public sealed class Game : IDisposable
 {
-  public delegate Task GameSetup(Game context);
   public delegate void GameLoop(GameTime time);
+  public delegate Task GameSetup(Game context);
 
   private static readonly ILog Log = LogFactory.GetLog<Game>();
   private static readonly ConcurrentQueue<Action> Callbacks = new();
+
+  private Game(IServiceRegistry services, IPlatformHost host)
+  {
+    Services = services;
+    Host = host;
+
+    services.AddSingleton(this);
+    services.AddSingleton(Assets);
+  }
+
+  public IServiceRegistry Services { get; init; }
+  public IPlatformHost Host { get; init; }
+  public IAssetManager Assets { get; } = new AssetManager();
+
+  /// <summary>True if the game is getting ready to close.</summary>
+  public bool IsClosing { get; private set; } = false;
+
+  public void Dispose()
+  {
+    Assets.Dispose();
+  }
 
   /// <summary>Schedules a function to be invoked at the start of the next frame.</summary>
   public static void Schedule(Action callback)
   {
     Callbacks.Enqueue(callback);
-  }
-
-  private Game(IServiceRegistry services, IPlatformHost host)
-  {
-    Services = services;
-    Host     = host;
-
-    services.AddSingleton(this);
-    services.AddSingleton(Assets);
   }
 
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
@@ -82,29 +94,17 @@ public sealed class Game : IDisposable
     }));
 
     while (!game.Host.IsClosing && !game.IsClosing)
-    {
       // eventually this will end up blocking when a main loop takes over
       PumpEventLoop();
-    }
   }
-
-  public IServiceRegistry Services { get; init; }
-  public IPlatformHost    Host     { get; init; }
-  public IAssetManager    Assets   { get; } = new AssetManager();
-
-  /// <summary>True if the game is getting ready to close.</summary>
-  public bool IsClosing { get; private set; } = false;
 
   /// <summary>Pumps the main event loop a single frame.</summary>
   private static void PumpEventLoop()
   {
-    while (Callbacks.TryDequeue(out var callback))
-    {
-      callback.Invoke();
-    }
+    while (Callbacks.TryDequeue(out var callback)) callback.Invoke();
   }
 
-  /// <summary>Executes the given <see cref="gameLoop"/> with a variable step frequency.</summary>
+  /// <summary>Executes the given <see cref="gameLoop" /> with a variable step frequency.</summary>
   public void ExecuteVariableStep(GameLoop gameLoop, bool runInBackground = false)
   {
     var stopwatch = new Chronometer();
@@ -114,9 +114,9 @@ public sealed class Game : IDisposable
     {
       // calculate frame times
       var gameTime = new GameTime(
-        DeltaTime: stopwatch.Tick(),
-        TotalTime: TimeStamp.Now - startTime,
-        IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
+        stopwatch.Tick(),
+        TimeStamp.Now - startTime,
+        stopwatch.Tick() > 32.Milliseconds()
       );
 
       // run the frame logic
@@ -134,7 +134,7 @@ public sealed class Game : IDisposable
     }
   }
 
-  /// <summary>Executes the given delegates with a fixed stepping interval on the <see cref="physics"/>.</summary>
+  /// <summary>Executes the given delegates with a fixed stepping interval on the <see cref="physics" />.</summary>
   public void ExecuteFixedStep(GameLoop physics, GameLoop render, bool runInBackground = false)
   {
     var stopwatch = new Chronometer();
@@ -145,9 +145,9 @@ public sealed class Game : IDisposable
     {
       // calculate frame times
       var gameTime = new GameTime(
-        DeltaTime: stopwatch.Tick(),
-        TotalTime: TimeStamp.Now - startTime,
-        IsRunningSlowly: stopwatch.Tick() > 32.Milliseconds()
+        stopwatch.Tick(),
+        TimeStamp.Now - startTime,
+        stopwatch.Tick() > 32.Milliseconds()
       );
 
       Host.BeginFrame(gameTime.DeltaTime);
@@ -184,12 +184,7 @@ public sealed class Game : IDisposable
     IsClosing = true;
   }
 
-  public void Dispose()
-  {
-    Assets.Dispose();
-  }
-
-  /// <summary>Synchronizes back to the main <see cref="Game"/>.</summary>
+  /// <summary>Synchronizes back to the main <see cref="Game" />.</summary>
   private sealed class GameSynchronizationContext : SynchronizationContext
   {
     public override void Post(SendOrPostCallback callback, object? state)
@@ -204,14 +199,20 @@ public sealed class Game : IDisposable
   }
 }
 
-/// <summary>A structured entry point for <see cref="Game"/>s.</summary>
+/// <summary>A structured entry point for <see cref="Game" />s.</summary>
 public abstract class Game<TSelf> : IDisposable
   where TSelf : Game<TSelf>
 {
-  /// <summary>The current instance of the game.</summary>
-  public static TSelf Current { get; private set; } = null!;
+  private Game _game = null!;
 
-  /// <summary>Starts the <see cref="TSelf"/>.</summary>
+  /// <summary>The current instance of the game.</summary>
+  public static TSelf Current { get; } = null!;
+
+  public virtual void Dispose()
+  {
+  }
+
+  /// <summary>Starts the <see cref="TSelf" />.</summary>
   public static void Start(IPlatform platform, CancellationToken cancellationToken = default)
   {
     Game.Start(platform, cancellationToken: cancellationToken, gameSetup: game =>
@@ -222,15 +223,16 @@ public abstract class Game<TSelf> : IDisposable
     });
   }
 
-  private Game game = null!;
-
   /// <summary>Exits the game at the end of the frame.</summary>
-  public void Exit() => game.Exit();
+  public void Exit()
+  {
+    _game.Exit();
+  }
 
   /// <summary>Prepares the game and it's dependencies.</summary>
   private async Task OnGameSetup(Game game)
   {
-    this.game = game;
+    _game = game;
 
     OnRegisterFileSystems(FileSystem.Registry);
     OnRegisterServices(game.Services);
@@ -276,8 +278,6 @@ public abstract class Game<TSelf> : IDisposable
   protected virtual void OnTick(GameTime time)
   {
   }
-
-  public virtual void Dispose()
-  {
-  }
 }
+
+

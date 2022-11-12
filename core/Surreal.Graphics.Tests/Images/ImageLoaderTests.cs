@@ -19,3 +19,6 @@ public class ImageLoaderTests
     image.Size.Bytes.Should().BeGreaterThan(0);
   }
 }
+
+
+

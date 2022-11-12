@@ -1,5 +1,4 @@
-﻿using Surreal.Collections;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal.Automata.BehaviourTrees;
 
@@ -7,16 +6,16 @@ namespace Surreal.Automata.BehaviourTrees;
 // TODO: support guard and semaphores
 // TODO: support aborting children/etc
 
-/// <summary>Status for execution of a <see cref="BehaviourNode"/>.</summary>
+/// <summary>Status for execution of a <see cref="BehaviourNode" />.</summary>
 public enum BehaviourStatus
 {
   Sleeping,
   Running,
   Success,
-  Failure,
+  Failure
 }
 
-/// <summary>The context for <see cref="BehaviourNode"/> operations.</summary>
+/// <summary>The context for <see cref="BehaviourNode" /> operations.</summary>
 public readonly record struct BehaviourContext(
   object Owner,
   BehaviourTree BehaviourTree,
@@ -24,7 +23,7 @@ public readonly record struct BehaviourContext(
   Priority Priority = Priority.Medium
 );
 
-/// <summary>An <see cref="IAutomata"/> that implements a behaviour tree.</summary>
+/// <summary>An <see cref="IAutomata" /> that implements a behaviour tree.</summary>
 public sealed class BehaviourTree : IAutomata
 {
   public BehaviourTree(object owner, BehaviourNode root)
@@ -36,20 +35,13 @@ public sealed class BehaviourTree : IAutomata
   public object Owner { get; }
   public BehaviourNode Root { get; }
 
-  public BehaviourStatus Update(TimeDelta deltaTime)
-  {
-    var context = new BehaviourContext(Owner, this);
-
-    return Root.Update(context, deltaTime);
-  }
-
   AutomataStatus IAutomata.Tick(in AutomataContext context, TimeDelta deltaTime)
   {
     var innerContext = new BehaviourContext(
-      Owner: context.Owner,
-      BehaviourTree: this,
-      LevelOfDetail: context.LevelOfDetail,
-      Priority: context.Priority
+      context.Owner,
+      this,
+      context.LevelOfDetail,
+      context.Priority
     );
 
     var status = Root.Update(innerContext, deltaTime);
@@ -61,12 +53,19 @@ public sealed class BehaviourTree : IAutomata
       BehaviourStatus.Success => AutomataStatus.Success,
       BehaviourStatus.Failure => AutomataStatus.Failure,
 
-      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
+      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}")
     };
+  }
+
+  public BehaviourStatus Update(TimeDelta deltaTime)
+  {
+    var context = new BehaviourContext(Owner, this);
+
+    return Root.Update(context, deltaTime);
   }
 }
 
-/// <summary>Root-level representation of a <see cref="BehaviourTree"/>.</summary>
+/// <summary>Root-level representation of a <see cref="BehaviourTree" />.</summary>
 public abstract record BehaviourNode
 {
   public BehaviourStatus CurrentStatus { get; private set; }
@@ -108,14 +107,16 @@ public abstract record BehaviourNode
   protected internal abstract BehaviourStatus OnUpdate(in BehaviourContext context, TimeDelta deltaTime);
 }
 
-/// <summary>Represent a <see cref="BehaviourNode"/> that implements some composite.</summary>
+/// <summary>Represent a <see cref="BehaviourNode" /> that implements some composite.</summary>
 public abstract record BehaviourComposite : BehaviourNode
 {
   public ImmutableList<BehaviourNode> Children { get; init; } = ImmutableList<BehaviourNode>.Empty;
 }
 
-/// <summary>Represent a <see cref="BehaviourNode"/> that implements some decorator</summary>
+/// <summary>Represent a <see cref="BehaviourNode" /> that implements some decorator</summary>
 public abstract record BehaviourDecorator(BehaviourNode Child) : BehaviourNode;
 
-/// <summary>Represent a <see cref="BehaviourNode"/> that implements some task.</summary>
+/// <summary>Represent a <see cref="BehaviourNode" /> that implements some task.</summary>
 public abstract record BehaviourTask : BehaviourNode;
+
+

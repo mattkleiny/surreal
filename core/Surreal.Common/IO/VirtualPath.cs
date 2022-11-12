@@ -13,7 +13,9 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 {
   private const string SchemeSeparator = "://";
 
-  /// <summary>Parses the given potential URI into a <see cref="VirtualPath"/>.</summary>
+  public string Extension => Path.GetExtension(Target.Source)!;
+
+  /// <summary>Parses the given potential URI into a <see cref="VirtualPath" />.</summary>
   public static VirtualPath Parse(string uri)
   {
     if (StringSpan.TrySplit(uri, SchemeSeparator, out var result))
@@ -24,13 +26,17 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
     return new VirtualPath("local", uri);
   }
 
-  public string Extension => Path.GetExtension(Target.Source)!;
+  public override string ToString()
+  {
+    return $"{Scheme}://{Target}";
+  }
 
-  public override string ToString() => $"{Scheme}://{Target}";
+  public static implicit operator VirtualPath(string uri)
+  {
+    return Parse(uri);
+  }
 
-  public static implicit operator VirtualPath(string uri) => Parse(uri);
-
-  /// <summary>The <see cref="TypeConverter"/> for <see cref="VirtualPath"/>s.</summary>
+  /// <summary>The <see cref="TypeConverter" /> for <see cref="VirtualPath" />s.</summary>
   private sealed class VirtualPathTypeConverter : TypeConverter
   {
     public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
@@ -50,7 +56,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
         return base.ConvertTo(context, culture, value, destinationType);
       }
 
-      return (VirtualPath)value.ToString()!;
+      return (VirtualPath) value.ToString()!;
     }
 
     public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
@@ -60,11 +66,11 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
         return base.ConvertFrom(context, culture, value);
       }
 
-      return (VirtualPath)raw;
+      return (VirtualPath) raw;
     }
   }
 
-  /// <summary>The <see cref="JsonConverter{T}"/> for <see cref="VirtualPath"/>s.</summary>
+  /// <summary>The <see cref="JsonConverter{T}" /> for <see cref="VirtualPath" />s.</summary>
   public class VirtualPathJsonConverter : JsonConverter<VirtualPath>
   {
     public override VirtualPath Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -85,3 +91,6 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
     }
   }
 }
+
+
+

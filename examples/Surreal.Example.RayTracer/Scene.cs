@@ -4,13 +4,13 @@
 public sealed class Scene
 {
   // scene properties
-  public int   Width       { get; set; } = 1920;
-  public int   Height      { get; set; } = 1080;
-  public Color Background  { get; set; } = Color.Black;
+  public int Width { get; set; } = 1920;
+  public int Height { get; set; } = 1080;
+  public Color Background { get; set; } = Color.Black;
   public Angle FieldOfView { get; set; } = Angle.FromDegrees(90f);
 
   // scene contents
-  public List<Node>  Nodes  { get; } = new();
+  public List<Node> Nodes { get; } = new();
   public List<Light> Lights { get; } = new();
 
   /// <summary>Traces the path of a ray through the scene and returns the color at it's target point.</summary>
@@ -85,7 +85,7 @@ public sealed class Scene
         if (distance < bestDistance)
         {
           bestDistance = distance;
-          bestNode     = node;
+          bestNode = node;
         }
       }
     }
@@ -215,7 +215,7 @@ public abstract record Material(float Reflectivity)
 {
   public abstract Color SampleAt(Vector2 uv);
 
-  /// <summary>A simple solid color <see cref="Material"/>.</summary>
+  /// <summary>A simple solid color <see cref="Material" />.</summary>
   public sealed record Solid(Color Color, float Reflectivity) : Material(Reflectivity)
   {
     public override Color SampleAt(Vector2 uv)
@@ -224,7 +224,7 @@ public abstract record Material(float Reflectivity)
     }
   }
 
-  /// <summary>A simple image-based <see cref="Material"/>.</summary>
+  /// <summary>A simple image-based <see cref="Material" />.</summary>
   public sealed record Textured(Image Image, float Reflectivity) : Material(Reflectivity)
   {
     public override Color SampleAt(Vector2 uv)
@@ -236,3 +236,5 @@ public abstract record Material(float Reflectivity)
     }
   }
 }
+
+

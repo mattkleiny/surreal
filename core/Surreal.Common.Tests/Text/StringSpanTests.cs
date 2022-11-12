@@ -19,3 +19,6 @@ public class StringSpanTests
     span[7..].ToString().Should().Be("World!");
   }
 }
+
+
+

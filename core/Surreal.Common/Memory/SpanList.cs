@@ -1,31 +1,31 @@
 namespace Surreal.Memory;
 
-/// <summary>A <see cref="Span{T}"/> that is operated like a <see cref="List{T}"/>.</summary>
+/// <summary>A <see cref="Span{T}" /> that is operated like a <see cref="List{T}" />.</summary>
 [DebuggerDisplay("SpanList {Count}/{Capacity}")]
 public ref struct SpanList<T>
 {
-  private readonly Span<T> storage;
+  private readonly Span<T> _storage;
 
   public SpanList(Span<T> storage)
   {
-    this.storage = storage;
+    _storage = storage;
 
     Count = 0;
   }
 
   public int Count { get; private set; }
-  public int Capacity => storage.Length;
+  public int Capacity => _storage.Length;
 
-  public ref T this[int index] => ref storage[index];
-  public ref T this[Index index] => ref storage[index];
+  public ref T this[int index] => ref _storage[index];
+  public ref T this[Index index] => ref _storage[index];
 
   public SpanList<T> this[Range range]
   {
     get
     {
-      var (offset, _) = range.GetOffsetAndLength(storage.Length);
+      var (offset, _) = range.GetOffsetAndLength(_storage.Length);
 
-      return new SpanList<T>(storage[range])
+      return new SpanList<T>(_storage[range])
       {
         Count = Math.Max(Count - offset, 0)
       };
@@ -39,12 +39,12 @@ public ref struct SpanList<T>
       throw new InvalidOperationException("Cannot add any more elements, it will overflow the buffer!");
     }
 
-    storage[Count++] = element;
+    _storage[Count++] = element;
   }
 
   public void AddUnchecked(T element)
   {
-    storage[Count++] = element;
+    _storage[Count++] = element;
   }
 
   public void Clear()
@@ -54,9 +54,19 @@ public ref struct SpanList<T>
 
   public Span<T> ToSpan()
   {
-    return storage[..Count];
+    return _storage[..Count];
   }
 
-  public static implicit operator Span<T>(SpanList<T> list) => list.ToSpan();
-  public static implicit operator ReadOnlySpan<T>(SpanList<T> list) => list.ToSpan();
+  public static implicit operator Span<T>(SpanList<T> list)
+  {
+    return list.ToSpan();
+  }
+
+  public static implicit operator ReadOnlySpan<T>(SpanList<T> list)
+  {
+    return list.ToSpan();
+  }
 }
+
+
+

@@ -4,21 +4,21 @@ namespace Surreal.Internal.Input;
 
 internal sealed class OpenTKInputServer : IInputServer
 {
-  private readonly List<IInputDevice> devices = new();
+  private readonly List<IInputDevice> _devices = new();
 
   public OpenTKInputServer(OpenTKWindow window)
   {
     Keyboard = new OpenTKKeyboardDevice(window);
-    Mouse    = new OpenTKMouseDevice(window);
+    Mouse = new OpenTKMouseDevice(window);
 
-    devices.Add(Keyboard);
-    devices.Add(Mouse);
+    _devices.Add(Keyboard);
+    _devices.Add(Mouse);
   }
 
   public OpenTKKeyboardDevice Keyboard { get; }
-  public OpenTKMouseDevice    Mouse    { get; }
+  public OpenTKMouseDevice Mouse { get; }
 
-  public IEnumerable<IInputDevice> Devices => devices;
+  public IEnumerable<IInputDevice> Devices => _devices;
 
   public void Update()
   {
@@ -26,3 +26,5 @@ internal sealed class OpenTKInputServer : IInputServer
     Mouse.Update();
   }
 }
+
+

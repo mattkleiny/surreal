@@ -18,3 +18,4 @@ public class AudioBufferLoaderTests
     buffer.Memory.Length.Should().BeGreaterThan(0);
   }
 }
+

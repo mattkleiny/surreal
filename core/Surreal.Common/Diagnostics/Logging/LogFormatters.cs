@@ -5,10 +5,10 @@ namespace Surreal.Diagnostics.Logging;
 /// <summary>Formats log messages with the given details.</summary>
 public delegate string LogFormatter(string category, LogLevel level, string message, Exception? exception);
 
-/// <summary>Standard purpose <see cref="LogFormatter"/>s.</summary>
+/// <summary>Standard purpose <see cref="LogFormatter" />s.</summary>
 public static class LogFormatters
 {
-  /// <summary>A default <see cref="LogFormatter"/> with some basic details.</summary>
+  /// <summary>A default <see cref="LogFormatter" /> with some basic details.</summary>
   public static LogFormatter Default(
     bool includeTime = true,
     bool includeThreadId = true,
@@ -40,7 +40,7 @@ public static class LogFormatters
         {
           LogLevel.Trace => " [TRACE]: ",
           LogLevel.Debug => " [DEBUG]: ",
-          LogLevel.Warn  => " [WARN]: ",
+          LogLevel.Warn => " [WARN]: ",
           LogLevel.Error => " [ERROR]: ",
           LogLevel.Fatal => " [FATAL]: ",
 
@@ -61,3 +61,4 @@ public static class LogFormatters
     };
   }
 }
+

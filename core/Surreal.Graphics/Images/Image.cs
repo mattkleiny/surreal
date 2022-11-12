@@ -13,7 +13,50 @@ namespace Surreal.Graphics.Images;
 [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
 public sealed class Image : IDisposable
 {
-  private Image<Rgba32> image;
+  private Image<Rgba32> _image;
+
+  public Image(int width, int height)
+  {
+    Debug.Assert(width > 0, "width > 0");
+    Debug.Assert(height > 0, "height > 0");
+
+    _image = new Image<Rgba32>(width, height);
+  }
+
+  public Image(ReadOnlySpanGrid<Color32> pixels)
+    : this(pixels.Width, pixels.Height)
+  {
+    pixels.ToReadOnlySpan().CopyTo(Pixels);
+  }
+
+  private Image(Image<Rgba32> image)
+  {
+    _image = image;
+  }
+
+  public int Width => _image.Width;
+  public int Height => _image.Height;
+  public Size Size => Pixels.ToSpan().CalculateSize();
+
+  public SpanGrid<Color32> Pixels
+  {
+    get
+    {
+      if (!_image.TryGetSinglePixelSpan(out var span))
+      {
+        throw new InvalidOperationException("The image span is not contiguous, unable to access pixels!");
+      }
+
+      var pixels = MemoryMarshal.Cast<Rgba32, Color32>(span);
+
+      return new SpanGrid<Color32>(pixels, Width);
+    }
+  }
+
+  public void Dispose()
+  {
+    _image.Dispose();
+  }
 
   public static Image Load(VirtualPath path)
   {
@@ -22,8 +65,8 @@ public sealed class Image : IDisposable
     // load the image
     var image = SixLabors.ImageSharp.Image.Load(stream);
     if (image is Image<Rgba32> rgba)
-    {
       // we're already in the right format
+    {
       return new Image(rgba);
     }
 
@@ -41,8 +84,8 @@ public sealed class Image : IDisposable
     // load the image
     var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
     if (image is Image<Rgba32> rgba)
-    {
       // we're already in the right format
+    {
       return new Image(rgba);
     }
 
@@ -53,71 +96,28 @@ public sealed class Image : IDisposable
     }
   }
 
-  public Image(int width, int height)
-  {
-    Debug.Assert(width > 0, "width > 0");
-    Debug.Assert(height > 0, "height > 0");
-
-    image = new Image<Rgba32>(width, height);
-  }
-
-  public Image(ReadOnlySpanGrid<Color32> pixels)
-    : this(pixels.Width, pixels.Height)
-  {
-    pixels.ToReadOnlySpan().CopyTo(Pixels);
-  }
-
-  private Image(Image<Rgba32> image)
-  {
-    this.image = image;
-  }
-
-  public int  Width  => image.Width;
-  public int  Height => image.Height;
-  public Size Size   => Pixels.ToSpan().CalculateSize();
-
-  public SpanGrid<Color32> Pixels
-  {
-    get
-    {
-      if (!image.TryGetSinglePixelSpan(out var span))
-      {
-        throw new InvalidOperationException("The image span is not contiguous, unable to access pixels!");
-      }
-
-      var pixels = MemoryMarshal.Cast<Rgba32, Color32>(span);
-
-      return new SpanGrid<Color32>(pixels, Width);
-    }
-  }
-
   public void Save(VirtualPath path)
   {
     using var stream = path.OpenOutputStream();
 
-    image.SaveAsPng(stream);
+    _image.SaveAsPng(stream);
   }
 
   public async ValueTask SaveAsync(VirtualPath path)
   {
     await using var stream = await path.OpenOutputStreamAsync();
 
-    await image.SaveAsPngAsync(stream);
+    await _image.SaveAsPngAsync(stream);
   }
 
   /// <summary>Swaps the underlying image content, for hot-reloading.</summary>
   internal void ReplaceImage(Image other)
   {
-    image = other.image;
-  }
-
-  public void Dispose()
-  {
-    image.Dispose();
+    _image = other._image;
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="Image"/>s.</summary>
+/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="Image" />s.</summary>
 public sealed class ImageLoader : AssetLoader<Image>
 {
   private static ImmutableHashSet<string> Extensions { get; } = ImmutableHashSet.Create(".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga");
@@ -146,3 +146,6 @@ public sealed class ImageLoader : AssetLoader<Image>
     return image;
   }
 }
+
+
+

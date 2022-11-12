@@ -1,18 +1,17 @@
-﻿using Surreal.Collections;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal.Automata.StateMachines;
 
-/// <summary>Status for an <see cref="State"/> operation.</summary>
+/// <summary>Status for an <see cref="State" /> operation.</summary>
 public enum StateStatus
 {
   Sleeping,
   Running,
   Success,
-  Failure,
+  Failure
 }
 
-/// <summary>The context for <see cref="StateMachine"/> operations.</summary>
+/// <summary>The context for <see cref="StateMachine" /> operations.</summary>
 public readonly record struct StateContext(
   object Owner,
   StateMachine StateMachine,
@@ -26,7 +25,7 @@ public readonly record struct StateContext(
   }
 }
 
-/// <summary>An <see cref="IAutomata"/> that implements a finite state machine.</summary>
+/// <summary>An <see cref="IAutomata" /> that implements a finite state machine.</summary>
 public sealed class StateMachine : IAutomata
 {
   public StateMachine(object owner, State initialState)
@@ -36,22 +35,15 @@ public sealed class StateMachine : IAutomata
   }
 
   public object Owner { get; }
-  public State CurrentState { get; private set; }
-
-  public StateStatus Update(TimeDelta deltaTime)
-  {
-    var context = new StateContext(Owner, this);
-
-    return CurrentState.Update(context, deltaTime);
-  }
+  public State CurrentState { get; }
 
   AutomataStatus IAutomata.Tick(in AutomataContext context, TimeDelta deltaTime)
   {
     var innerContext = new StateContext(
-      Owner: context.Owner,
-      StateMachine: this,
-      LevelOfDetail: context.LevelOfDetail,
-      Priority: context.Priority
+      context.Owner,
+      this,
+      context.LevelOfDetail,
+      context.Priority
     );
 
     var status = CurrentState.Update(in innerContext, deltaTime);
@@ -63,12 +55,19 @@ public sealed class StateMachine : IAutomata
       StateStatus.Success => AutomataStatus.Success,
       StateStatus.Failure => AutomataStatus.Failure,
 
-      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
+      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}")
     };
+  }
+
+  public StateStatus Update(TimeDelta deltaTime)
+  {
+    var context = new StateContext(Owner, this);
+
+    return CurrentState.Update(context, deltaTime);
   }
 }
 
-/// <summary>Represents a single state in a <see cref="StateMachine"/>.</summary>
+/// <summary>Represents a single state in a <see cref="StateMachine" />.</summary>
 public abstract record State
 {
   public StateStatus CurrentStatus { get; private set; }
@@ -110,15 +109,15 @@ public abstract record State
   protected internal abstract StateStatus OnUpdate(in StateContext context, TimeDelta deltaTime);
 }
 
-/// <summary>A <see cref="State"/> that implements some sub-<see cref="IAutomata"/>.</summary>
+/// <summary>A <see cref="State" /> that implements some sub-<see cref="IAutomata" />.</summary>
 public sealed record AutomataState(IAutomata Automata) : State
 {
   protected internal override StateStatus OnUpdate(in StateContext context, TimeDelta deltaTime)
   {
     var innerContext = new AutomataContext(
-      Owner: context.Owner,
-      LevelOfDetail: context.LevelOfDetail,
-      Priority: context.Priority
+      context.Owner,
+      context.LevelOfDetail,
+      context.Priority
     );
 
     var status = Automata.Tick(in innerContext, deltaTime);
@@ -129,7 +128,9 @@ public sealed record AutomataState(IAutomata Automata) : State
       AutomataStatus.Success => StateStatus.Success,
       AutomataStatus.Failure => StateStatus.Failure,
 
-      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}"),
+      _ => throw new InvalidOperationException($"An unrecognized status was encountered {status}")
     };
   }
 }
+
+

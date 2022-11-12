@@ -3,7 +3,7 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>The possible states for an <see cref="Actor"/>.</summary>
+/// <summary>The possible states for an <see cref="Actor" />.</summary>
 public enum ActorStatus
 {
   Unknown,
@@ -14,12 +14,12 @@ public enum ActorStatus
 
 /// <summary>An actor in the game world.</summary>
 /// <remarks>
-/// This is a hybrid Game Object/ECS model that permits fast internal iteration of ECS-bound
-/// components as well as high-level composition of game logic via classes and inheritance.
+///   This is a hybrid Game Object/ECS model that permits fast internal iteration of ECS-bound
+///   components as well as high-level composition of game logic via classes and inheritance.
 /// </remarks>
 public class Actor
 {
-  private IActorContext? context;
+  private IActorContext? _context;
 
   public Actor()
   {
@@ -28,8 +28,8 @@ public class Actor
 
   public ArenaIndex Id { get; private set; } = ArenaIndex.Invalid;
 
-  public ActorStatus Status => context?.GetStatus(Id) ?? ActorStatus.Unknown;
-  public IServiceProvider? Services => context?.Services;
+  public ActorStatus Status => _context?.GetStatus(Id) ?? ActorStatus.Unknown;
+  public IServiceProvider? Services => _context?.Services;
 
   public bool IsDestroyed => Status == ActorStatus.Destroyed;
   public bool IsActive => Status == ActorStatus.Active;
@@ -37,20 +37,31 @@ public class Actor
 
   public ActorBehaviourList Behaviours { get; }
 
-  public void Enable() => context?.Enable(Id);
-  public void Disable() => context?.Disable(Id);
-  public void Destroy() => context?.Destroy(Id);
+  public void Enable()
+  {
+    _context?.Enable(Id);
+  }
+
+  public void Disable()
+  {
+    _context?.Disable(Id);
+  }
+
+  public void Destroy()
+  {
+    _context?.Destroy(Id);
+  }
 
   internal void Connect(IActorContext context, ArenaIndex id)
   {
-    this.context = context;
+    _context = context;
 
     Id = id;
   }
 
   internal void Disconnect(IActorContext context)
   {
-    this.context = null;
+    _context = null;
 
     Id = ArenaIndex.Invalid;
   }
@@ -58,12 +69,12 @@ public class Actor
   public T Spawn<T>(T actor)
     where T : Actor
   {
-    if (context == null)
+    if (_context == null)
     {
       throw new InvalidOperationException("The actor is not part of a scene, unable to spawn child actor");
     }
 
-    return context.Spawn(actor);
+    return _context.Spawn(actor);
   }
 
   public Actor AddBehaviour(ActorBehaviour behaviour)
@@ -101,81 +112,53 @@ public class Actor
 
   protected internal virtual void OnAwake()
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnAwake();
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnAwake();
   }
 
   protected internal virtual void OnStart()
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnStart();
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnStart();
   }
 
   protected internal virtual void OnEnable()
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnEnable();
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnEnable();
   }
 
   protected internal virtual void OnBeginFrame(TimeDelta deltaTime)
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnBeginFrame(deltaTime);
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnBeginFrame(deltaTime);
   }
 
   protected internal virtual void OnInput(TimeDelta deltaTime)
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnInput(deltaTime);
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnInput(deltaTime);
   }
 
   protected internal virtual void OnUpdate(TimeDelta deltaTime)
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnUpdate(deltaTime);
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnUpdate(deltaTime);
   }
 
   protected internal virtual void OnDraw(TimeDelta deltaTime)
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnDraw(deltaTime);
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnDraw(deltaTime);
   }
 
   protected internal virtual void OnEndFrame(TimeDelta deltaTime)
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnEndFrame(deltaTime);
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnEndFrame(deltaTime);
   }
 
   protected internal virtual void OnDisable()
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnDisable();
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnDisable();
   }
 
   protected internal virtual void OnDestroy()
   {
-    foreach (var behaviour in Behaviours)
-    {
-      behaviour.OnDestroy();
-    }
+    foreach (var behaviour in Behaviours) behaviour.OnDestroy();
   }
 }
+
+

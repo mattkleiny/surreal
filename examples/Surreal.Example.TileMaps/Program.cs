@@ -4,7 +4,7 @@ var platform = new DesktopPlatform
 {
   Configuration =
   {
-    Title          = "Tile Maps",
+    Title = "Tile Maps",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true
   }
@@ -38,7 +38,7 @@ Game.Start(platform, async game =>
   var camera = new Camera
   {
     Position = new Vector2(-256f / 2f, -144 / 2f),
-    Size     = new Vector2(256, 144)
+    Size = new Vector2(256, 144)
   };
 
   paletteShift.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
@@ -52,12 +52,10 @@ Game.Start(platform, async game =>
 
     for (var y = 0; y < tileMap.Height; y++)
     for (var x = 0; x < tileMap.Width; x++)
-    {
       if (random.NextBool())
       {
         tileMap.Tiles[x, y] = Tile.Filled;
       }
-    }
   }
 
   RandomizeTileMap();
@@ -112,9 +110,13 @@ Game.Start(platform, async game =>
 
 public readonly record struct Tile(ushort Id)
 {
-  private static int nextId = 0;
-  private static ushort NextId() => (ushort)Interlocked.Increment(ref nextId);
+  private static int _nextId = 0;
 
-  public static Tile Empty  { get; } = new(Id: NextId());
-  public static Tile Filled { get; } = new(Id: NextId());
+  public static Tile Empty { get; } = new(NextId());
+  public static Tile Filled { get; } = new(NextId());
+
+  private static ushort NextId()
+  {
+    return (ushort) Interlocked.Increment(ref _nextId);
+  }
 }

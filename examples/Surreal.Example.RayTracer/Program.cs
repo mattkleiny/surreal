@@ -5,7 +5,7 @@ var platform = new DesktopPlatform
 {
   Configuration =
   {
-    Title          = "Ray Tracer",
+    Title = "Ray Tracer",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true
   }
@@ -26,20 +26,20 @@ Game.Start(platform, async game =>
   // build a ray-tracing scene
   var scene = new Scene
   {
-    Width  = buffer.Width,
+    Width = buffer.Width,
     Height = buffer.Height,
     Nodes =
     {
-      new Sphere(new(5f, -1f, -15f), 2f, new Material.Solid(Color.Blue, 0.6f)),
-      new Sphere(new(3f, 0f, -35f), 1f, new Material.Solid(Color.Green, 0.3f)),
-      new Sphere(new(3f, 2f, -20f), 1f, new Material.Solid(Color.Red, 0.3f)),
-      new Sphere(new(-5.5f, 0f, -15f), 1f, new Material.Textured(checkerboard, 0.2f)),
-      new Plane(new(0f, -4.2f, 0f), new(0f, -1f, 0f), new Material.Solid(Color.White, 0.1f)),
+      new Sphere(new Vector3(5f, -1f, -15f), 2f, new Material.Solid(Color.Blue, 0.6f)),
+      new Sphere(new Vector3(3f, 0f, -35f), 1f, new Material.Solid(Color.Green, 0.3f)),
+      new Sphere(new Vector3(3f, 2f, -20f), 1f, new Material.Solid(Color.Red, 0.3f)),
+      new Sphere(new Vector3(-5.5f, 0f, -15f), 1f, new Material.Textured(checkerboard, 0.2f)),
+      new Plane(new Vector3(0f, -4.2f, 0f), new Vector3(0f, -1f, 0f), new Material.Solid(Color.White, 0.1f))
     },
     Lights =
     {
-      new Light(new(-1f, -1f, 0f), Color.White, 1.0f),
-      new Light(new(1f, -1f, 0f), Color.White, 1.0f),
+      new Light(new Vector3(-1f, -1f, 0f), Color.White, 1.0f),
+      new Light(new Vector3(1f, -1f, 0f), Color.White, 1.0f)
     }
   };
 
@@ -51,14 +51,12 @@ Game.Start(platform, async game =>
 
       var pixels = buffer.Pixels;
 
-      for (int y = 0; y < buffer.Height; y++)
-      for (int x = 0; x < buffer.Width; x++)
-      {
+      for (var y = 0; y < buffer.Height; y++)
+      for (var x = 0; x < buffer.Width; x++)
         if (x < pixels.Width && y < pixels.Height)
         {
-          pixels[x, y] = scene.Sample(new(x, y));
+          pixels[x, y] = scene.Sample(new Point2(x, y));
         }
-      }
     });
   }
 
@@ -72,8 +70,8 @@ Game.Start(platform, async game =>
     var unitsX = buffer.Width / chunkCount;
     var unitsY = buffer.Height / chunkCount;
 
-    for (int y = 0; y < unitsY; y++)
-    for (int x = 0; x < unitsX; x++)
+    for (var y = 0; y < unitsY; y++)
+    for (var x = 0; x < unitsX; x++)
     {
       var copyX = x;
       var copyY = y;
@@ -88,14 +86,12 @@ Game.Start(platform, async game =>
 
         var pixels = buffer.Pixels;
 
-        for (int y = startY; y < endY; y++)
-        for (int x = startX; x < endX; x++)
-        {
+        for (var y = startY; y < endY; y++)
+        for (var x = startX; x < endX; x++)
           if (x < pixels.Width && y < pixels.Height)
           {
-            pixels[x, y] = scene.Sample(new(x, y));
+            pixels[x, y] = scene.Sample(new Point2(x, y));
           }
-        }
       });
     }
   }
@@ -104,9 +100,20 @@ Game.Start(platform, async game =>
 
   game.ExecuteVariableStep(_ =>
   {
-    if (keyboard.IsKeyPressed(Key.Escape)) game.Exit();
-    if (keyboard.IsKeyPressed(Key.F1)) RefreshSequentially();
-    if (keyboard.IsKeyPressed(Key.F2)) RefreshInParallel();
+    if (keyboard.IsKeyPressed(Key.Escape))
+    {
+      game.Exit();
+    }
+
+    if (keyboard.IsKeyPressed(Key.F1))
+    {
+      RefreshSequentially();
+    }
+
+    if (keyboard.IsKeyPressed(Key.F2))
+    {
+      RefreshInParallel();
+    }
 
     batch.Begin(material);
     buffer.DrawNormalized(batch);

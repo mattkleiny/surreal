@@ -10,13 +10,13 @@ namespace Surreal.Internal;
 
 internal sealed class OpenTKWindow : IDesktopWindow
 {
-  private readonly DesktopConfiguration configuration;
-  private readonly GameWindow window;
-  private bool hasPassedFirstFrame;
+  private readonly DesktopConfiguration _configuration;
+  private readonly GameWindow _window;
+  private bool _hasPassedFirstFrame;
 
   public OpenTKWindow(DesktopConfiguration configuration)
   {
-    this.configuration = configuration;
+    _configuration = configuration;
     var gameWindowSettings = new GameWindowSettings
     {
       RenderFrequency = 0,
@@ -26,21 +26,21 @@ internal sealed class OpenTKWindow : IDesktopWindow
 
     var nativeWindowSettings = new NativeWindowSettings
     {
-      APIVersion      = configuration.OpenGlVersion,
-      Title           = configuration.Title,
-      WindowBorder    = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
-      StartVisible    = !configuration.WaitForFirstFrame,
-      IsEventDriven   = configuration.IsEventDriven,
-      StartFocused    = true,
-      Size            = new Vector2i(configuration.Width, configuration.Height),
-      Flags           = GetContextFlags(),
-      Profile         = ContextProfile.Core,
+      APIVersion = configuration.OpenGlVersion,
+      Title = configuration.Title,
+      WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
+      StartVisible = !configuration.WaitForFirstFrame,
+      IsEventDriven = configuration.IsEventDriven,
+      StartFocused = true,
+      Size = new Vector2i(configuration.Width, configuration.Height),
+      Flags = GetContextFlags(),
+      Profile = ContextProfile.Core,
       NumberOfSamples = 0
     };
 
-    window = new GameWindow(gameWindowSettings, nativeWindowSettings)
+    _window = new GameWindow(gameWindowSettings, nativeWindowSettings)
     {
-      VSync     = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
+      VSync = configuration.IsVsyncEnabled ? VSyncMode.On : VSyncMode.Off,
       IsVisible = !configuration.WaitForFirstFrame
     };
 
@@ -51,102 +51,80 @@ internal sealed class OpenTKWindow : IDesktopWindow
       SetWindowIcon(image);
     }
 
-    window.Resize         += _ => Resized?.Invoke(Width, Height);
-    window.FocusedChanged += OnFocusChanged;
+    _window.Resize += _ => Resized?.Invoke(Width, Height);
+    _window.FocusedChanged += OnFocusChanged;
 
-    window.MakeCurrent();
+    _window.MakeCurrent();
   }
+
+  public KeyboardState KeyboardState => _window.KeyboardState;
+  public MouseState MouseState => _window.MouseState;
 
   public event Action<int, int>? Resized;
 
   public int Width
   {
-    get => window.Size.X;
+    get => _window.Size.X;
     set
     {
       Debug.Assert(value > 0, "value > 0");
-      window.Size = new Vector2i(value, window.Size.Y);
+      _window.Size = new Vector2i(value, _window.Size.Y);
     }
   }
 
   public int Height
   {
-    get => window.Size.Y;
+    get => _window.Size.Y;
     set
     {
       Debug.Assert(value > 0, "value > 0");
-      window.Size = new Vector2i(window.Size.X, value);
+      _window.Size = new Vector2i(_window.Size.X, value);
     }
   }
 
   public string Title
   {
-    get => window.Title;
-    set => window.Title = value;
+    get => _window.Title;
+    set => _window.Title = value;
   }
 
   public bool IsVisible
   {
-    get => window.IsVisible;
-    set => window.IsVisible = value;
+    get => _window.IsVisible;
+    set => _window.IsVisible = value;
   }
 
   public bool IsCursorVisible
   {
-    get => window.CursorVisible;
-    set => window.CursorVisible = value;
+    get => _window.CursorVisible;
+    set => _window.CursorVisible = value;
   }
 
   public bool IsEventDriven
   {
-    get => window.IsEventDriven;
-    set => window.IsEventDriven = value;
+    get => _window.IsEventDriven;
+    set => _window.IsEventDriven = value;
   }
 
   public bool IsVsyncEnabled
   {
-    get => window.VSync != VSyncMode.Off;
-    set => window.VSync = value ? VSyncMode.On : VSyncMode.Off;
+    get => _window.VSync != VSyncMode.Off;
+    set => _window.VSync = value ? VSyncMode.On : VSyncMode.Off;
   }
 
   public bool IsFocused
   {
-    get => window.IsFocused;
+    get => _window.IsFocused;
     set
     {
       if (value)
       {
-        window.Focus();
+        _window.Focus();
       }
     }
   }
 
-  public bool IsClosing => window.IsExiting;
-
-  public KeyboardState KeyboardState => window.KeyboardState;
-  public MouseState    MouseState    => window.MouseState;
-
-  public void Update()
-  {
-    if (!IsClosing)
-    {
-      window.ProcessEvents();
-    }
-  }
-
-  public void Present()
-  {
-    if (!IsClosing)
-    {
-      if (!hasPassedFirstFrame && configuration.WaitForFirstFrame)
-      {
-        window.IsVisible    = true;
-        hasPassedFirstFrame = true;
-      }
-
-      window.SwapBuffers();
-    }
-  }
+  public bool IsClosing => _window.IsExiting;
 
   public unsafe void SetWindowIcon(Image image)
   {
@@ -160,26 +138,48 @@ internal sealed class OpenTKWindow : IDesktopWindow
         new RawImage(image.Width, image.Height, pixels)
       };
 
-      GLFW.SetWindowIcon(window.WindowPtr, images);
-    }
-  }
-
-  private void OnFocusChanged(FocusedChangedEventArgs eventArgs)
-  {
-    if (!configuration.RunInBackground)
-    {
-      if (!eventArgs.IsFocused && configuration.ShowFpsInTitle)
-      {
-        window.Title = configuration.Title;
-      }
-
-      window.IsEventDriven = !eventArgs.IsFocused;
+      GLFW.SetWindowIcon(_window.WindowPtr, images);
     }
   }
 
   public void Dispose()
   {
-    window.Dispose();
+    _window.Dispose();
+  }
+
+  public void Update()
+  {
+    if (!IsClosing)
+    {
+      _window.ProcessEvents();
+    }
+  }
+
+  public void Present()
+  {
+    if (!IsClosing)
+    {
+      if (!_hasPassedFirstFrame && _configuration.WaitForFirstFrame)
+      {
+        _window.IsVisible = true;
+        _hasPassedFirstFrame = true;
+      }
+
+      _window.SwapBuffers();
+    }
+  }
+
+  private void OnFocusChanged(FocusedChangedEventArgs eventArgs)
+  {
+    if (!_configuration.RunInBackground)
+    {
+      if (!eventArgs.IsFocused && _configuration.ShowFpsInTitle)
+      {
+        _window.Title = _configuration.Title;
+      }
+
+      _window.IsEventDriven = !eventArgs.IsFocused;
+    }
   }
 
   private static ContextFlags GetContextFlags()
@@ -193,3 +193,5 @@ internal sealed class OpenTKWindow : IDesktopWindow
     return flags;
   }
 }
+
+

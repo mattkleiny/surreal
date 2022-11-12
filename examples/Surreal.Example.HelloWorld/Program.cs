@@ -2,11 +2,11 @@ var platform = new DesktopPlatform
 {
   Configuration =
   {
-    Title          = "Hello, Surreal!",
+    Title = "Hello, Surreal!",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true,
-    Width          = 256 * 6,
-    Height         = 144 * 6
+    Width = 256 * 6,
+    Height = 144 * 6
   }
 };
 
@@ -24,7 +24,7 @@ Game.Start(platform, async game =>
   var camera = new Camera
   {
     Position = Vector2.Zero,
-    Size     = new Vector2(256, 144)
+    Size = new Vector2(256, 144)
   };
 
   material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
@@ -40,11 +40,11 @@ Game.Start(platform, async game =>
 
     batch.Begin(material);
     batch.DrawText(
-      font: font,
-      text: "HELLO, WORLD!",
-      position: Vector2.Zero,
-      scale: Vector2.One,
-      color: Color.Black,
+      font,
+      "HELLO, WORLD!",
+      Vector2.Zero,
+      Vector2.One,
+      Color.Black,
       horizontalAlignment: HorizontalAlignment.Center,
       verticalAlignment: VerticalAlignment.Center
     );

@@ -9,8 +9,20 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
 
   public static Angle Zero => default;
 
-  public static Angle FromRadians(float radians) => new(radians);
-  public static Angle FromDegrees(float degrees) => new(DegreesToRadians(degrees));
+  public int CompareTo(Angle other)
+  {
+    return Radians.CompareTo(other.Radians);
+  }
+
+  public static Angle FromRadians(float radians)
+  {
+    return new Angle(radians);
+  }
+
+  public static Angle FromDegrees(float degrees)
+  {
+    return new Angle(DegreesToRadians(degrees));
+  }
 
   public static Angle Lerp(Angle a, Angle b, float t)
   {
@@ -59,12 +71,31 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
     return storage;
   }
 
-  public override string ToString() => $"{Degrees:F}°";
+  public override string ToString()
+  {
+    return $"{Degrees:F}°";
+  }
 
-  public int CompareTo(Angle other) => Radians.CompareTo(other.Radians);
+  public static bool operator <(Angle left, Angle right)
+  {
+    return left.Radians < right.Radians;
+  }
 
-  public static bool operator <(Angle left, Angle right) => left.Radians < right.Radians;
-  public static bool operator >(Angle left, Angle right) => left.Radians > right.Radians;
-  public static bool operator <=(Angle left, Angle right) => left.Radians <= right.Radians;
-  public static bool operator >=(Angle left, Angle right) => left.Radians >= right.Radians;
+  public static bool operator >(Angle left, Angle right)
+  {
+    return left.Radians > right.Radians;
+  }
+
+  public static bool operator <=(Angle left, Angle right)
+  {
+    return left.Radians <= right.Radians;
+  }
+
+  public static bool operator >=(Angle left, Angle right)
+  {
+    return left.Radians >= right.Radians;
+  }
 }
+
+
+

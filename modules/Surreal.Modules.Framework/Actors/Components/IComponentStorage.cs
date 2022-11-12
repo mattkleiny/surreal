@@ -3,13 +3,13 @@ using Surreal.Collections;
 
 namespace Surreal.Components;
 
-/// <summary>Represents generically any <see cref="IComponentStorage{T}"/> type.</summary>
+/// <summary>Represents generically any <see cref="IComponentStorage{T}" /> type.</summary>
 public interface IComponentStorage
 {
   void RemoveComponent(ArenaIndex index);
 }
 
-/// <summary>Represents storage for a component of type <see cref="T"/>.</summary>
+/// <summary>Represents storage for a component of type <see cref="T" />.</summary>
 public interface IComponentStorage<T> : IComponentStorage
   where T : notnull
 {
@@ -28,3 +28,5 @@ public interface IComponentStorage<T> : IComponentStorage
   ref T GetComponent(ArenaIndex index);
   ref T AddComponent(ArenaIndex index, Optional<T> prototype);
 }
+
+

@@ -13,10 +13,9 @@ namespace Surreal;
 /// <summary>Provides a customized AutoFixture for use in test method parameter injection.</summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Method)]
-[RequiresUnreferencedCode("Discovers specimen builders via reflection")]
 internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
 {
-  private readonly Lazy<IFixture> fixture = new(BuildFixture);
+  private readonly Lazy<IFixture> _fixture = new(BuildFixture);
 
   [SuppressMessage("Trimming", "IL2046:\'RequiresUnreferencedCodeAttribute\' annotations must match across all interface implementations or overrides.")]
   TestMethod ISimpleTestBuilder.BuildFrom(IMethodInfo method, Test? suite)
@@ -33,7 +32,7 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
 
   private TestCaseParameters BuildParameters(IMethodInfo method)
   {
-    var fixture = this.fixture.Value;
+    var fixture = _fixture.Value;
     var context = new SpecimenContext(fixture);
 
     var parameters = method.GetParameters();
@@ -71,12 +70,18 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
     fixture.Customizations.Add(new IntRangeGenerator());
     fixture.Customizations.Add(new FloatRangeGenerator());
 
-    foreach (var builder in DiscoverSpecimenBuilders())
-    {
-      fixture.Customizations.Add(builder);
-    }
+    foreach (var builder in DiscoverSpecimenBuilders()) fixture.Customizations.Add(builder);
 
     return fixture;
+  }
+
+  private static IEnumerable<ISpecimenBuilder> DiscoverSpecimenBuilders()
+  {
+    return from type in Assembly.GetExecutingAssembly().GetTypes()
+      where typeof(ISpecimenBuilder).IsAssignableFrom(type)
+      where type.GetCustomAttribute<RegisterSpecimenBuilderAttribute>() != null
+      where type.IsClass && !type.IsAbstract
+      select (ISpecimenBuilder) Activator.CreateInstance(type)!;
   }
 
   private sealed class DateOnlyGenerator : SpecimenBuilder<DateOnly>
@@ -138,39 +143,30 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
       return new FloatRange(min, max);
     }
   }
-
-  private static IEnumerable<ISpecimenBuilder> DiscoverSpecimenBuilders()
-  {
-    return from type in Assembly.GetExecutingAssembly().GetTypes()
-      where typeof(ISpecimenBuilder).IsAssignableFrom(type)
-      where type.GetCustomAttribute<RegisterSpecimenBuilderAttribute>() != null
-      where type.IsClass && !type.IsAbstract
-      select (ISpecimenBuilder) Activator.CreateInstance(type)!;
-  }
 }
 
-/// <summary>Registers the associated type as a <see cref="ISpecimenBuilder"/>.</summary>
+/// <summary>Registers the associated type as a <see cref="ISpecimenBuilder" />.</summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Class)]
 internal sealed class RegisterSpecimenBuilderAttribute : Attribute
 {
 }
 
-/// <summary>Base class for any <see cref="ISpecimenBuilder"/> for <see cref="T"/> which handles different request sources.</summary>
+/// <summary>Base class for any <see cref="ISpecimenBuilder" /> for <see cref="T" /> which handles different request sources.</summary>
 internal abstract class SpecimenBuilder<T> : ISpecimenBuilder
   where T : notnull
 {
-  protected abstract T Create(ISpecimenContext context, string? name = null);
-
   object ISpecimenBuilder.Create(object request, ISpecimenContext context)
   {
     return request switch
     {
       ParameterInfo { Name: var name, ParameterType: var type } when type == typeof(T) => Create(context, name),
-      PropertyInfo { Name: var name, PropertyType: var type } when type == typeof(T)   => Create(context, name),
-      SeededRequest { Request: Type type } when type == typeof(T)                      => Create(context),
+      PropertyInfo { Name: var name, PropertyType: var type } when type == typeof(T) => Create(context, name),
+      SeededRequest { Request: Type type } when type == typeof(T) => Create(context),
 
       _ => new NoSpecimen()
     };
   }
+
+  protected abstract T Create(ISpecimenContext context, string? name = null);
 }

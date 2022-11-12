@@ -37,3 +37,8 @@ public class EnumExtensionTests
     Four
   }
 }
+
+
+
+
+

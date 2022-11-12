@@ -42,3 +42,5 @@ public class ComponentMaskTests
     (transform | sprite | statistics).ContainsAny(transform | sprite | statistics).Should().BeTrue();
   }
 }
+
+

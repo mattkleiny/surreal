@@ -39,9 +39,9 @@ public class BufferTests
 
   private static void FillBuffer(Span<uint> span)
   {
-    for (var i = 0; i < span.Length; i++)
-    {
-      span[i] = (uint)i;
-    }
+    for (var i = 0; i < span.Length; i++) span[i] = (uint) i;
   }
 }
+
+
+

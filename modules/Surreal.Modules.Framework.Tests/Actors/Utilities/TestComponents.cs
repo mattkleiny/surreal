@@ -8,9 +8,9 @@ internal record struct Transform
 
 internal record struct Sprite
 {
-  public char Symbol;
-  public ConsoleColor ForegroundColor;
   public ConsoleColor BackgroundColor;
+  public ConsoleColor ForegroundColor;
+  public char Symbol;
 }
 
 internal record struct Statistics
@@ -18,3 +18,5 @@ internal record struct Statistics
   public int Health;
   public int Toxin;
 }
+
+

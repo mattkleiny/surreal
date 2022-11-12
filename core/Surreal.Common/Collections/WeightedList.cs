@@ -1,35 +1,45 @@
 ﻿namespace Surreal.Collections;
 
-/// <summary>A list of weighted elements of <see cref="T"/>.</summary>
+/// <summary>A list of weighted elements of <see cref="T" />.</summary>
 public sealed class WeightedList<T> : IEnumerable<T>
   where T : notnull
 {
-  private readonly List<Entry> entries = new();
-  private float totalWeight = 0f;
+  private readonly List<Entry> _entries = new();
+  private float _totalWeight = 0f;
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   /// <summary>Adds a new item to the list.</summary>
   public void Add(T item, float weight = 1f)
   {
-    totalWeight += weight;
+    _totalWeight += weight;
 
-    entries.Add(new Entry(item, totalWeight));
+    _entries.Add(new Entry(item, _totalWeight));
   }
 
   /// <summary>Clears all items from the list.</summary>
   public void Clear()
   {
-    totalWeight = 0f;
+    _totalWeight = 0f;
 
-    entries.Clear();
+    _entries.Clear();
   }
 
-  /// <summary>Selects an item from the list, or returns the given <see cref="defaultValue"/>.</summary>
+  /// <summary>Selects an item from the list, or returns the given <see cref="defaultValue" />.</summary>
   public T SelectOrDefault(T defaultValue = default!)
   {
     return SelectOrDefault(Random.Shared, defaultValue);
   }
 
-  /// <summary>Selects an item from the list, or returns the given <see cref="defaultValue"/>.</summary>
+  /// <summary>Selects an item from the list, or returns the given <see cref="defaultValue" />.</summary>
   public T SelectOrDefault(Random random, T defaultValue = default!)
   {
     if (!TrySelect(random, out var result))
@@ -49,11 +59,11 @@ public sealed class WeightedList<T> : IEnumerable<T>
   /// <summary>Attempts to select an item from the list, honoring random weights.</summary>
   public bool TrySelect(Random random, [NotNullWhen(true)] out T? result)
   {
-    var weight = random.NextDouble() * totalWeight;
+    var weight = random.NextDouble() * _totalWeight;
 
-    for (var i = 0; i < entries.Count; i++)
+    for (var i = 0; i < _entries.Count; i++)
     {
-      var entry = entries[i];
+      var entry = _entries[i];
       if (entry.Weight >= weight)
       {
         result = entry.Item;
@@ -70,43 +80,33 @@ public sealed class WeightedList<T> : IEnumerable<T>
     return new Enumerator(this);
   }
 
-  IEnumerator<T> IEnumerable<T>.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  /// <summary>A single entry in the <see cref="WeightedList{T}"/>.</summary>
+  /// <summary>A single entry in the <see cref="WeightedList{T}" />.</summary>
   private readonly record struct Entry(T Item, float Weight);
 
-  /// <summary>Allows enumerating active <see cref="T"/>s.</summary>
+  /// <summary>Allows enumerating active <see cref="T" />s.</summary>
   public struct Enumerator : IEnumerator<T>
   {
-    private readonly WeightedList<T> list;
-    private List<Entry>.Enumerator enumerator;
+    private readonly WeightedList<T> _list;
+    private List<Entry>.Enumerator _enumerator;
 
     public Enumerator(WeightedList<T> list)
       : this()
     {
-      this.list = list;
+      _list = list;
       Reset();
     }
 
-    public T Current => enumerator.Current.Item;
+    public T Current => _enumerator.Current.Item;
     object IEnumerator.Current => Current;
 
     public bool MoveNext()
     {
-      return enumerator.MoveNext();
+      return _enumerator.MoveNext();
     }
 
     public void Reset()
     {
-      enumerator = list.entries.GetEnumerator();
+      _enumerator = _list._entries.GetEnumerator();
     }
 
     public void Dispose()
@@ -115,3 +115,4 @@ public sealed class WeightedList<T> : IEnumerable<T>
     }
   }
 }
+

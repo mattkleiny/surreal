@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace Surreal.Graphics.Meshes;
 
-/// <summary>Primitive types supported by <see cref="VertexDescriptor"/>s.</summary>
+/// <summary>Primitive types supported by <see cref="VertexDescriptor" />s.</summary>
 public enum VertexType
 {
   UnsignedByte,
@@ -15,7 +15,7 @@ public enum VertexType
   Double
 }
 
-/// <summary>Associates a <see cref="VertexDescriptor"/> with a vertex field.</summary>
+/// <summary>Associates a <see cref="VertexDescriptor" /> with a vertex field.</summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute : Attribute
@@ -23,12 +23,12 @@ public sealed class VertexDescriptorAttribute : Attribute
   public VertexDescriptorAttribute(int count, VertexType type)
   {
     Count = count;
-    Type  = type;
+    Type = type;
   }
 
-  public string?    Alias { get; set; }
-  public int        Count { get; set; }
-  public VertexType Type  { get; set; }
+  public string? Alias { get; set; }
+  public int Count { get; set; }
+  public VertexType Type { get; set; }
 
   /// <summary>True if the resultant components should be normalised to (0, 1) before submission to the GPU.</summary>
   public bool ShouldNormalize { get; set; } = false;
@@ -40,21 +40,24 @@ public readonly record struct VertexDescriptor(string Name, int Offset, int Coun
 {
   public int Stride => Count * DetermineSize(Type);
 
-  private static int DetermineSize(VertexType type) => type switch
+  private static int DetermineSize(VertexType type)
   {
-    VertexType.UnsignedByte  => sizeof(byte),
-    VertexType.Short         => sizeof(short),
-    VertexType.UnsignedShort => sizeof(ushort),
-    VertexType.Int           => sizeof(int),
-    VertexType.UnsignedInt   => sizeof(uint),
-    VertexType.Float         => sizeof(float),
-    VertexType.Double        => sizeof(double),
+    return type switch
+    {
+      VertexType.UnsignedByte => sizeof(byte),
+      VertexType.Short => sizeof(short),
+      VertexType.UnsignedShort => sizeof(ushort),
+      VertexType.Int => sizeof(int),
+      VertexType.UnsignedInt => sizeof(uint),
+      VertexType.Float => sizeof(float),
+      VertexType.Double => sizeof(double),
 
-    _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-  };
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    };
+  }
 }
 
-/// <summary>Describes a set of <see cref="VertexDescriptor"/>s.</summary>
+/// <summary>Describes a set of <see cref="VertexDescriptor" />s.</summary>
 public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descriptors, int Stride)
 {
   public int Length => Descriptors.Length;
@@ -75,11 +78,11 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
     foreach (var (name, attribute) in values)
     {
       var descriptor = new VertexDescriptor(
-        Name: name,
-        Offset: stride,
-        Count: attribute.Count,
-        Type: attribute.Type,
-        ShouldNormalize: attribute.ShouldNormalize
+        name,
+        stride,
+        attribute.Count,
+        attribute.Type,
+        attribute.ShouldNormalize
       );
 
       stride += descriptor.Stride;
@@ -90,3 +93,6 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
     return new VertexDescriptorSet(builder.ToImmutable(), stride);
   }
 }
+
+
+

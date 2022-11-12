@@ -4,7 +4,7 @@ namespace Surreal.Collections;
 public sealed class MultiDictionary<TKey, TValue>
   where TKey : notnull
 {
-  private readonly Dictionary<TKey, List<TValue>> dictionary;
+  private readonly Dictionary<TKey, List<TValue>> _dictionary;
 
   public MultiDictionary()
     : this(EqualityComparer<TKey>.Default)
@@ -13,18 +13,18 @@ public sealed class MultiDictionary<TKey, TValue>
 
   public MultiDictionary(IEqualityComparer<TKey> comparer)
   {
-    dictionary = new Dictionary<TKey, List<TValue>>(comparer);
+    _dictionary = new Dictionary<TKey, List<TValue>>(comparer);
   }
 
-  public int Count => dictionary.Count;
+  public int Count => _dictionary.Count;
 
-  public IEnumerable<TKey> Keys => dictionary.Keys;
+  public IEnumerable<TKey> Keys => _dictionary.Keys;
 
   public ReadOnlySlice<TValue> this[TKey key]
   {
     get
     {
-      if (dictionary.TryGetValue(key, out var collection))
+      if (_dictionary.TryGetValue(key, out var collection))
       {
         return collection;
       }
@@ -35,7 +35,7 @@ public sealed class MultiDictionary<TKey, TValue>
 
   public bool TryGetValues(TKey key, out ReadOnlySlice<TValue> result)
   {
-    if (dictionary.TryGetValue(key, out var collection))
+    if (_dictionary.TryGetValue(key, out var collection))
     {
       result = collection;
       return true;
@@ -47,7 +47,7 @@ public sealed class MultiDictionary<TKey, TValue>
 
   public bool ContainsKey(TKey key)
   {
-    return dictionary.ContainsKey(key);
+    return _dictionary.ContainsKey(key);
   }
 
   public void Add(TKey key, TValue value)
@@ -62,35 +62,36 @@ public sealed class MultiDictionary<TKey, TValue>
 
   public void Remove(TKey key, TValue value)
   {
-    if (dictionary.TryGetValue(key, out var collection))
+    if (_dictionary.TryGetValue(key, out var collection))
     {
       collection.Remove(value);
 
       // prune empty collections
       if (collection.Count == 0)
       {
-        dictionary.Remove(key);
+        _dictionary.Remove(key);
       }
     }
   }
 
   public void RemoveAll(TKey key)
   {
-    dictionary.Remove(key);
+    _dictionary.Remove(key);
   }
 
   public void Clear()
   {
-    dictionary.Clear();
+    _dictionary.Clear();
   }
 
   private List<TValue> GetOrCreateList(TKey key)
   {
-    if (!dictionary.TryGetValue(key, out var list))
+    if (!_dictionary.TryGetValue(key, out var list))
     {
-      dictionary[key] = list = new List<TValue>();
+      _dictionary[key] = list = new List<TValue>();
     }
 
     return list;
   }
 }
+

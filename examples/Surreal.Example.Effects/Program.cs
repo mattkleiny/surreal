@@ -2,7 +2,7 @@
 {
   Configuration =
   {
-    Title          = "Screen Effects",
+    Title = "Screen Effects",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true
   }
@@ -25,7 +25,7 @@ Game.Start(platform, async game =>
   var camera = new Camera
   {
     Position = new Vector2(0f, 0f),
-    Size     = new Vector2(256, 144)
+    Size = new Vector2(256, 144)
   };
 
   material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
@@ -46,11 +46,11 @@ Game.Start(platform, async game =>
 
       batch.Begin(material);
       batch.DrawText(
-        font: font,
-        text: "SCREEN EFFECTS",
-        position: Vector2.Zero,
-        scale: Vector2.One * 1.4f,
-        color: Color.Black,
+        font,
+        "SCREEN EFFECTS",
+        Vector2.Zero,
+        Vector2.One * 1.4f,
+        Color.Black,
         horizontalAlignment: HorizontalAlignment.Center,
         verticalAlignment: VerticalAlignment.Center
       );

@@ -5,7 +5,7 @@ public class RingBufferTests
   [Test]
   public void it_should_store_elements()
   {
-    var buffer = new RingBuffer<int>(capacity: 3);
+    var buffer = new RingBuffer<int>(3);
 
     buffer.Count.Should().Be(0);
     buffer.Add(1);
@@ -21,12 +21,9 @@ public class RingBufferTests
   [Test]
   public void it_should_reuse_existing_element_spots()
   {
-    var buffer = new RingBuffer<int>(capacity: 3);
+    var buffer = new RingBuffer<int>(3);
 
-    for (var i = 0; i < 1000; i++)
-    {
-      buffer.Add(i);
-    }
+    for (var i = 0; i < 1000; i++) buffer.Add(i);
 
     buffer.Count.Should().Be(3);
   }
@@ -34,12 +31,9 @@ public class RingBufferTests
   [Test]
   public void it_should_clear()
   {
-    var buffer = new RingBuffer<int>(capacity: 3);
+    var buffer = new RingBuffer<int>(3);
 
-    for (var i = 0; i < 1000; i++)
-    {
-      buffer.Add(i);
-    }
+    for (var i = 0; i < 1000; i++) buffer.Add(i);
 
     buffer.Count.Should().Be(3);
     buffer.Clear();
@@ -49,15 +43,15 @@ public class RingBufferTests
   [Test]
   public void it_should_enumerate_in_reverse_insertion_order()
   {
-    var buffer = new RingBuffer<int>(capacity: 3);
+    var buffer = new RingBuffer<int>(3);
 
-    for (var i = 0; i < 1000; i++)
-    {
-      buffer.Add(i);
-    }
+    for (var i = 0; i < 1000; i++) buffer.Add(i);
 
     var results = buffer.ToArray();
 
     results.Should().BeEquivalentTo(new[] { 999, 998, 997 });
   }
 }
+
+
+

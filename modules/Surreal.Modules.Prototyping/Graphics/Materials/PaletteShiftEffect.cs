@@ -2,27 +2,27 @@
 
 namespace Surreal.Graphics.Materials;
 
-/// <summary>An <see cref="Effect"/> for the palette shift shader.</summary>
+/// <summary>An <see cref="Effect" /> for the palette shift shader.</summary>
 public sealed class PaletteShiftEffect : Effect
 {
-  private static MaterialProperty<Texture> PaletteTexture { get; } = new("u_palette");
-  private static MaterialProperty<int>     PaletteWidth   { get; } = new("u_paletteWidth");
-
-  private readonly Texture texture;
+  private readonly Texture _texture;
 
   public PaletteShiftEffect(Material material)
     : base(material)
   {
-    texture = new Texture(material.Server);
+    _texture = new Texture(material.Server);
 
-    Locals.SetProperty(PaletteTexture, texture, slot: 1);
+    Locals.SetProperty(PaletteTexture, _texture, 1);
   }
+
+  private static MaterialProperty<Texture> PaletteTexture { get; } = new("u_palette");
+  private static MaterialProperty<int> PaletteWidth { get; } = new("u_paletteWidth");
 
   public ColorPalette Palette
   {
     set
     {
-      texture.WriteColorPalette(value);
+      _texture.WriteColorPalette(value);
 
       Locals.SetProperty(PaletteWidth, value.Count);
     }
@@ -30,8 +30,10 @@ public sealed class PaletteShiftEffect : Effect
 
   public override void Dispose()
   {
-    texture.Dispose();
+    _texture.Dispose();
 
     base.Dispose();
   }
 }
+
+

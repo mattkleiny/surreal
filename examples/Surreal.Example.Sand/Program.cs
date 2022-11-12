@@ -2,7 +2,7 @@
 {
   Configuration =
   {
-    Title          = "Falling Sand",
+    Title = "Falling Sand",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true
   }
@@ -49,12 +49,12 @@ Game.Start(platform, async game =>
     {
       var color = palette[random.Next(1, palette.Count)];
 
-      canvas.AddSand(point, radius: 4, color);
+      canvas.AddSand(point, 4, color);
     }
 
     if (mouse.IsButtonDown(MouseButton.Right))
     {
-      canvas.DeleteSand(point, radius: 16);
+      canvas.DeleteSand(point, 16);
     }
 
     batch.Begin(material);

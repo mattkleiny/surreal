@@ -3,55 +3,21 @@
 /// <summary>A lightweight circular/ring buffer with fixed capacity.</summary>
 public sealed class RingBuffer<T> : IEnumerable<T>
 {
-  private T[] elements;
-  private int writePos;
+  private T[] _elements;
+  private int _writePos;
 
   public RingBuffer(int capacity)
   {
-    elements = new T[capacity];
-    writePos = 0;
+    _elements = new T[capacity];
+    _writePos = 0;
     Count = 0;
   }
 
   public int Count { get; private set; }
-  public int Capacity => elements.Length;
+  public int Capacity => _elements.Length;
 
-  public ref T this[Index index] => ref elements[index];
-  public ref T Last => ref elements[Math.Max(writePos - 1, 0)];
-
-  public void Add(T element)
-  {
-    elements[writePos++] = element;
-
-    if (writePos >= Capacity) writePos = 0; // wrap around ring end
-    if (Count < Capacity) Count++;          // track occupied slots
-  }
-
-  public void Clear()
-  {
-    for (var i = 0; i < elements.Length; i++)
-    {
-      elements[i] = default!; // help the GC
-    }
-
-    writePos = 0;
-    Count = 0;
-  }
-
-  public void Resize(int size)
-  {
-    if (size < elements.Length)
-    {
-      writePos = Math.Max(writePos, size - 1);
-    }
-
-    Array.Resize(ref elements, size);
-  }
-
-  public Enumerator GetEnumerator()
-  {
-    return new Enumerator(this);
-  }
+  public ref T this[Index index] => ref _elements[index];
+  public ref T Last => ref _elements[Math.Max(_writePos - 1, 0)];
 
   IEnumerator<T> IEnumerable<T>.GetEnumerator()
   {
@@ -63,34 +29,76 @@ public sealed class RingBuffer<T> : IEnumerable<T>
     return GetEnumerator();
   }
 
+  public void Add(T element)
+  {
+    _elements[_writePos++] = element;
+
+    if (_writePos >= Capacity)
+    {
+      _writePos = 0; // wrap around ring end
+    }
+
+    if (Count < Capacity)
+    {
+      Count++; // track occupied slots
+    }
+  }
+
+  public void Clear()
+  {
+    for (var i = 0; i < _elements.Length; i++) _elements[i] = default!; // help the GC
+
+    _writePos = 0;
+    Count = 0;
+  }
+
+  public void Resize(int size)
+  {
+    if (size < _elements.Length)
+    {
+      _writePos = Math.Max(_writePos, size - 1);
+    }
+
+    Array.Resize(ref _elements, size);
+  }
+
+  public Enumerator GetEnumerator()
+  {
+    return new Enumerator(this);
+  }
+
   public struct Enumerator : IEnumerator<T>
   {
-    private readonly RingBuffer<T> buffer;
-    private int currentPos;
-    private int touched;
+    private readonly RingBuffer<T> _buffer;
+    private int _currentPos;
+    private int _touched;
 
     public Enumerator(RingBuffer<T> buffer)
       : this()
     {
-      this.buffer = buffer;
+      _buffer = buffer;
       Reset();
     }
 
-    public ref T Current => ref buffer.elements[currentPos];
-    T IEnumerator<T>.Current => buffer.elements[currentPos];
+    public ref T Current => ref _buffer._elements[_currentPos];
+    T IEnumerator<T>.Current => _buffer._elements[_currentPos];
     object IEnumerator.Current => Current!;
 
     public bool MoveNext()
     {
       // wrap around the start of the buffer, iterating backwards
-      if (--currentPos < 0) currentPos = buffer.Capacity - 1;
-      return touched++ < buffer.Count;
+      if (--_currentPos < 0)
+      {
+        _currentPos = _buffer.Capacity - 1;
+      }
+
+      return _touched++ < _buffer.Count;
     }
 
     public void Reset()
     {
-      touched = 0;
-      currentPos = buffer.writePos;
+      _touched = 0;
+      _currentPos = _buffer._writePos;
     }
 
     public void Dispose()
@@ -106,10 +114,7 @@ public static class RingBufferExtensions
   {
     float total = 0;
 
-    foreach (var sample in samples)
-    {
-      total += sample;
-    }
+    foreach (var sample in samples) total += sample;
 
     return total;
   }
@@ -118,10 +123,7 @@ public static class RingBufferExtensions
   {
     var total = TimeSpan.Zero;
 
-    foreach (var sample in samples)
-    {
-      total += sample;
-    }
+    foreach (var sample in samples) total += sample;
 
     return total;
   }
@@ -168,3 +170,4 @@ public static class RingBufferExtensions
     return result;
   }
 }
+

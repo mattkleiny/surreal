@@ -4,3 +4,6 @@
 public abstract class ScriptResource : TrackedResource<ScriptResource>
 {
 }
+
+
+

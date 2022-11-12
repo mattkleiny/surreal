@@ -1,54 +1,22 @@
 ﻿namespace Surreal.Collections;
 
-/// <summary>A <see cref="Stack{T}"/> with a fixed-sized upper bound.</summary>
+/// <summary>A <see cref="Stack{T}" /> with a fixed-sized upper bound.</summary>
 public sealed class BoundedStack<T> : IEnumerable<T>
 {
-  private readonly Stack<T> stack;
-  private readonly int maxCapacity;
+  private readonly Stack<T> _stack;
 
   public BoundedStack(int capacity = 0, int maxCapacity = 32)
   {
     Debug.Assert(capacity >= 0, "capacity >= 0");
     Debug.Assert(maxCapacity >= capacity, "maxCapacity >= capacity");
 
-    stack = new Stack<T>(capacity);
+    _stack = new Stack<T>(capacity);
 
-    this.maxCapacity = maxCapacity;
+    Capacity = maxCapacity;
   }
 
-  public int Count => stack.Count;
-  public int Capacity => maxCapacity;
-
-  public bool TryPeek([MaybeNullWhen(false)] out T result)
-  {
-    return stack.TryPeek(out result);
-  }
-
-  public bool TryPush(T value)
-  {
-    if (stack.Count < maxCapacity)
-    {
-      stack.Push(value);
-      return true;
-    }
-
-    return false;
-  }
-
-  public bool TryPop([MaybeNullWhen(false)] out T result)
-  {
-    return stack.TryPop(out result);
-  }
-
-  public void Clear()
-  {
-    stack.Clear();
-  }
-
-  public Stack<T>.Enumerator GetEnumerator()
-  {
-    return stack.GetEnumerator();
-  }
+  public int Count => _stack.Count;
+  public int Capacity { get; }
 
   IEnumerator<T> IEnumerable<T>.GetEnumerator()
   {
@@ -59,34 +27,17 @@ public sealed class BoundedStack<T> : IEnumerable<T>
   {
     return GetEnumerator();
   }
-}
-
-/// <summary>A <see cref="ConcurrentStack{T}"/> with a fixed-sized upper bound.</summary>
-public sealed class BoundedConcurrentStack<T>
-{
-  private readonly ConcurrentStack<T> stack;
-  private readonly int maxCapacity;
-
-  public BoundedConcurrentStack(int maxCapacity = 32)
-  {
-    stack = new ConcurrentStack<T>();
-
-    this.maxCapacity = maxCapacity;
-  }
-
-  public int Count => stack.Count;
-  public int Capacity => maxCapacity;
 
   public bool TryPeek([MaybeNullWhen(false)] out T result)
   {
-    return stack.TryPeek(out result);
+    return _stack.TryPeek(out result);
   }
 
   public bool TryPush(T value)
   {
-    if (stack.Count < maxCapacity)
+    if (_stack.Count < Capacity)
     {
-      stack.Push(value);
+      _stack.Push(value);
       return true;
     }
 
@@ -95,11 +46,59 @@ public sealed class BoundedConcurrentStack<T>
 
   public bool TryPop([MaybeNullWhen(false)] out T result)
   {
-    return stack.TryPop(out result);
+    return _stack.TryPop(out result);
   }
 
   public void Clear()
   {
-    stack.Clear();
+    _stack.Clear();
+  }
+
+  public Stack<T>.Enumerator GetEnumerator()
+  {
+    return _stack.GetEnumerator();
   }
 }
+
+/// <summary>A <see cref="ConcurrentStack{T}" /> with a fixed-sized upper bound.</summary>
+public sealed class BoundedConcurrentStack<T>
+{
+  private readonly ConcurrentStack<T> _stack;
+
+  public BoundedConcurrentStack(int maxCapacity = 32)
+  {
+    _stack = new ConcurrentStack<T>();
+
+    Capacity = maxCapacity;
+  }
+
+  public int Count => _stack.Count;
+  public int Capacity { get; }
+
+  public bool TryPeek([MaybeNullWhen(false)] out T result)
+  {
+    return _stack.TryPeek(out result);
+  }
+
+  public bool TryPush(T value)
+  {
+    if (_stack.Count < Capacity)
+    {
+      _stack.Push(value);
+      return true;
+    }
+
+    return false;
+  }
+
+  public bool TryPop([MaybeNullWhen(false)] out T result)
+  {
+    return _stack.TryPop(out result);
+  }
+
+  public void Clear()
+  {
+    _stack.Clear();
+  }
+}
+

@@ -2,7 +2,7 @@
 
 namespace Surreal;
 
-/// <summary>The context in which an <see cref="Actor"/> lives; hooked up after spawning into a scene.</summary>
+/// <summary>The context in which an <see cref="Actor" /> lives; hooked up after spawning into a scene.</summary>
 internal interface IActorContext
 {
   IServiceProvider? Services { get; }
@@ -16,3 +16,5 @@ internal interface IActorContext
   void Disable(ArenaIndex index);
   void Destroy(ArenaIndex index);
 }
+
+

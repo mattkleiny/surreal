@@ -9,29 +9,28 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A specialization of <see cref="IPlatformHost"/> for headless environments.</summary>
+/// <summary>A specialization of <see cref="IPlatformHost" /> for headless environments.</summary>
 public interface IHeadlessPlatformHost : IPlatformHost
 {
   HeadlessKeyboardDevice Keyboard { get; }
-  HeadlessMouseDevice    Mouse    { get; }
+  HeadlessMouseDevice Mouse { get; }
 }
 
 internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
 {
+  public HeadlessAudioServer AudioServer { get; } = new();
+  public HeadlessGraphicsServer GraphicsServer { get; } = new();
+  public HeadlessInputServer InputServer { get; } = new();
   public event Action<int, int> Resized = null!;
 
-  public HeadlessAudioServer    AudioServer    { get; } = new();
-  public HeadlessGraphicsServer GraphicsServer { get; } = new();
-  public HeadlessInputServer    InputServer    { get; } = new();
-
-  public int  Width     => 1920;
-  public int  Height    => 1080;
+  public int Width => 1920;
+  public int Height => 1080;
   public bool IsVisible => true;
   public bool IsFocused => true;
   public bool IsClosing => false;
 
   public HeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
-  public HeadlessMouseDevice    Mouse    => InputServer.Mouse;
+  public HeadlessMouseDevice Mouse => InputServer.Mouse;
 
   public void RegisterServices(IServiceRegistry services)
   {
@@ -69,3 +68,5 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
     // no-op
   }
 }
+
+

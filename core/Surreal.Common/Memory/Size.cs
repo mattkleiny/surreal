@@ -12,14 +12,14 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
   public float Gigabytes => Megabytes / 1024f;
   public float Terabytes => Gigabytes / 1024f;
 
-  public override string ToString()
+  public int CompareTo(object? obj)
   {
-    if (Terabytes > 1) return $"{Terabytes:F} terabytes";
-    if (Gigabytes > 1) return $"{Gigabytes:F} gigabytes";
-    if (Megabytes > 1) return $"{Megabytes:F} megabytes";
-    if (Kilobytes > 1) return $"{Kilobytes:F} kilobytes";
+    if (ReferenceEquals(null, obj))
+    {
+      return 1;
+    }
 
-    return $"{Bytes} bytes";
+    return obj is Size other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Size)}");
   }
 
   public int CompareTo(Size other)
@@ -27,44 +27,110 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
     return Bytes.CompareTo(other.Bytes);
   }
 
-  public int CompareTo(object? obj)
+  public override string ToString()
   {
-    if (ReferenceEquals(null, obj)) return 1;
+    if (Terabytes > 1)
+    {
+      return $"{Terabytes:F} terabytes";
+    }
 
-    return obj is Size other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Size)}");
+    if (Gigabytes > 1)
+    {
+      return $"{Gigabytes:F} gigabytes";
+    }
+
+    if (Megabytes > 1)
+    {
+      return $"{Megabytes:F} megabytes";
+    }
+
+    if (Kilobytes > 1)
+    {
+      return $"{Kilobytes:F} kilobytes";
+    }
+
+    return $"{Bytes} bytes";
   }
 
-  public static Size operator +(Size a, Size b) => new(a.Bytes + b.Bytes);
-  public static Size operator -(Size a, Size b) => new(a.Bytes - b.Bytes);
+  public static Size operator +(Size a, Size b)
+  {
+    return new Size(a.Bytes + b.Bytes);
+  }
 
-  public static bool operator <(Size left, Size right) => left.Bytes < right.Bytes;
-  public static bool operator >(Size left, Size right) => left.Bytes > right.Bytes;
-  public static bool operator <=(Size left, Size right) => left.Bytes <= right.Bytes;
-  public static bool operator >=(Size left, Size right) => left.Bytes >= right.Bytes;
+  public static Size operator -(Size a, Size b)
+  {
+    return new Size(a.Bytes - b.Bytes);
+  }
 
-  public static implicit operator Size(int bytes) => new(bytes);
-  public static implicit operator int(Size size) => (int)size.Bytes;
-  public static implicit operator long(Size size) => size.Bytes;
+  public static bool operator <(Size left, Size right)
+  {
+    return left.Bytes < right.Bytes;
+  }
+
+  public static bool operator >(Size left, Size right)
+  {
+    return left.Bytes > right.Bytes;
+  }
+
+  public static bool operator <=(Size left, Size right)
+  {
+    return left.Bytes <= right.Bytes;
+  }
+
+  public static bool operator >=(Size left, Size right)
+  {
+    return left.Bytes >= right.Bytes;
+  }
+
+  public static implicit operator Size(int bytes)
+  {
+    return new Size(bytes);
+  }
+
+  public static implicit operator int(Size size)
+  {
+    return (int) size.Bytes;
+  }
+
+  public static implicit operator long(Size size)
+  {
+    return size.Bytes;
+  }
 }
 
-/// <summary>Static extensions for <see cref="Size"/>.</summary>
+/// <summary>Static extensions for <see cref="Size" />.</summary>
 public static class SizeExtensions
 {
-  public static Size Bytes(this int value) => new(value);
+  public static Size Bytes(this int value)
+  {
+    return new Size(value);
+  }
 
-  public static Size Kilobytes(this int value) => Bytes(value * 1024);
-  public static Size Megabytes(this int value) => Kilobytes(value * 1024);
-  public static Size Gigabytes(this int value) => Megabytes(value * 1024);
-  public static Size Terabytes(this int value) => Gigabytes(value * 1024);
+  public static Size Kilobytes(this int value)
+  {
+    return Bytes(value * 1024);
+  }
+
+  public static Size Megabytes(this int value)
+  {
+    return Kilobytes(value * 1024);
+  }
+
+  public static Size Gigabytes(this int value)
+  {
+    return Megabytes(value * 1024);
+  }
+
+  public static Size Terabytes(this int value)
+  {
+    return Gigabytes(value * 1024);
+  }
 
   public static Size Sum(this IEnumerable<Size> sizes)
   {
     var totalBytes = 0L;
 
-    foreach (var size in sizes)
-    {
-      totalBytes += size.Bytes;
-    }
+    foreach (var size in sizes) totalBytes += size.Bytes;
 
     return new Size(totalBytes);
   }
@@ -79,3 +145,6 @@ public static class SizeExtensions
     return Bytes(span.Length * Unsafe.SizeOf<T>());
   }
 }
+
+
+

@@ -16,3 +16,6 @@ public class ColorPaletteLoaderTests
     palette.Count.Should().Be(8);
   }
 }
+
+
+

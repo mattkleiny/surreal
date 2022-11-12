@@ -5,7 +5,7 @@ using Surreal.Collections;
 
 namespace Surreal;
 
-/// <summary>A subscriber for <see cref="Message"/>s.</summary>
+/// <summary>A subscriber for <see cref="Message" />s.</summary>
 public delegate void MessageSubscriber<T>(ref T message);
 
 /// <summary>Indicates the associated method should subscribe to a message.</summary>
@@ -128,8 +128,8 @@ public static class Message
         let messageType = parameters[0].ParameterType.GetElementType()
         select new SubscriberMethod
         {
-          Method       = method,
-          MessageType  = messageType,
+          Method = method,
+          MessageType = messageType,
           DelegateType = typeof(MessageSubscriber<>).MakeGenericType(messageType)
         };
 
@@ -143,28 +143,28 @@ public static class Message
   private record struct SubscriberMethod(MethodInfo Method, Type MessageType, Type DelegateType);
 }
 
-/// <summary>A simple channel of <see cref="T"/> messages to be sent between consumers.</summary>
+/// <summary>A simple channel of <see cref="T" /> messages to be sent between consumers.</summary>
 public sealed class MessageChannel<T> : IDisposable
 {
-  private readonly BlockingCollection<T> messages;
+  private readonly BlockingCollection<T> _messages;
 
   public MessageChannel(int capacity = int.MaxValue)
   {
-    messages = new BlockingCollection<T>(capacity);
-  }
-
-  public void Post(T message)
-  {
-    messages.Add(message);
-  }
-
-  public T Receive()
-  {
-    return messages.Take();
+    _messages = new BlockingCollection<T>(capacity);
   }
 
   public void Dispose()
   {
-    messages.Dispose();
+    _messages.Dispose();
+  }
+
+  public void Post(T message)
+  {
+    _messages.Add(message);
+  }
+
+  public T Receive()
+  {
+    return _messages.Take();
   }
 }

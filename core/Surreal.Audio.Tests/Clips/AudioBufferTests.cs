@@ -13,3 +13,4 @@ public class AudioBufferTests
     buffer.Size.Should().BeGreaterThan(1.Kilobytes());
   }
 }
+

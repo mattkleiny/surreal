@@ -3,21 +3,21 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>Describes how to create a <see cref="RenderTarget"/>.</summary>
+/// <summary>Describes how to create a <see cref="RenderTarget" />.</summary>
 public readonly record struct RenderTargetDescriptor(int Width, int Height, TextureFormat Format, TextureFilterMode FilterMode, TextureWrapMode WrapMode)
 {
-  /// <summary>A default <see cref="RenderTargetDescriptor"/> for standard purposes at 1080p.</summary>
+  /// <summary>A default <see cref="RenderTargetDescriptor" /> for standard purposes at 1080p.</summary>
   public static RenderTargetDescriptor Default { get; } = new(1920, 1080, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
 }
 
 /// <summary>Manages a frame buffer that can be rendered to.</summary>
 public sealed class RenderTarget : GraphicsResource
 {
-  private readonly IGraphicsServer server;
+  private readonly IGraphicsServer _server;
 
   public RenderTarget(IGraphicsServer server, RenderTargetDescriptor colorDescriptor)
   {
-    this.server = server;
+    _server = server;
 
     ColorAttachment = new Texture(server, colorDescriptor.Format, colorDescriptor.FilterMode, colorDescriptor.WrapMode);
     ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<Color32>.Empty);
@@ -25,10 +25,10 @@ public sealed class RenderTarget : GraphicsResource
     Handle = server.CreateFrameBuffer(ColorAttachment.Handle);
   }
 
-  public GraphicsHandle Handle          { get; }
-  public Texture        ColorAttachment { get; }
+  public GraphicsHandle Handle { get; }
+  public Texture ColorAttachment { get; }
 
-  /// <summary>Activates the <see cref="RenderTarget"/> for the duration of the given scope.</summary>
+  /// <summary>Activates the <see cref="RenderTarget" /> for the duration of the given scope.</summary>
   public RenderTargetScope ActivateForScope()
   {
     return new RenderTargetScope(this);
@@ -37,20 +37,20 @@ public sealed class RenderTarget : GraphicsResource
   /// <summary>Activates this as the primary render target.</summary>
   public void Activate()
   {
-    server.SetActiveFrameBuffer(Handle);
+    _server.SetActiveFrameBuffer(Handle);
   }
 
   /// <summary>Deactivates this as the primary render target and swaps back to teh default.</summary>
   public void Deactivate()
   {
-    server.SetDefaultFrameBuffer();
+    _server.SetDefaultFrameBuffer();
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteFrameBuffer(Handle);
+      _server.DeleteFrameBuffer(Handle);
 
       ColorAttachment.Dispose();
     }
@@ -58,21 +58,26 @@ public sealed class RenderTarget : GraphicsResource
     base.Dispose(managed);
   }
 
-  /// <summary>A scope for enabling a particular <see cref="RenderTarget"/>.</summary>
+  /// <summary>A scope for enabling a particular <see cref="RenderTarget" />.</summary>
   public readonly struct RenderTargetScope : IDisposable
   {
-    private readonly RenderTarget target;
+    private readonly RenderTarget _target;
 
     public RenderTargetScope(RenderTarget target)
     {
-      this.target = target;
+      _target = target;
 
       target.Activate();
     }
 
     public void Dispose()
     {
-      target.Deactivate();
+      _target.Deactivate();
     }
   }
 }
+
+
+
+
+

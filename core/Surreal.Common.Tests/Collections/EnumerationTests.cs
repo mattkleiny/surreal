@@ -17,8 +17,11 @@ public class EnumerationTests
   [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
   private sealed record TestValue(int Id) : Enumeration<TestValue>
   {
-    public static TestValue One   { get; } = new(1);
-    public static TestValue Two   { get; } = new(2);
+    public static TestValue One { get; } = new(1);
+    public static TestValue Two { get; } = new(2);
     public static TestValue Three { get; } = new(3);
   }
 }
+
+
+

@@ -7,17 +7,11 @@ public class SpanStackTests
   {
     var stack = new SpanStack<ushort>(stackalloc ushort[256]);
 
-    for (int i = 0; i < 256; i++)
-    {
-      stack.TryPush(100).Should().BeTrue();
-    }
+    for (var i = 0; i < 256; i++) stack.TryPush(100).Should().BeTrue();
 
     stack.TryPush(200).Should().BeFalse();
 
-    for (int i = 0; i < 256; i++)
-    {
-      stack.TryPop(out _).Should().BeTrue();
-    }
+    for (var i = 0; i < 256; i++) stack.TryPop(out _).Should().BeTrue();
 
     stack.TryPop(out _).Should().BeFalse();
   }
@@ -36,3 +30,6 @@ public class SpanStackTests
     stack[3..].Count.Should().Be(0);
   }
 }
+
+
+

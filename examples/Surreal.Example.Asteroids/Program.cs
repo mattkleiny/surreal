@@ -4,7 +4,7 @@ var platform = new DesktopPlatform
 {
   Configuration =
   {
-    Title          = "Asteroids",
+    Title = "Asteroids",
     IsVsyncEnabled = true,
     ShowFpsInTitle = true
   }
@@ -35,7 +35,7 @@ Game.Start(platform, async game =>
   var camera = new Camera
   {
     Position = Vector2.Zero,
-    Size     = new Vector2(256, 144)
+    Size = new Vector2(256, 144)
   };
 
   material.Locals.SetProperty(MaterialProperty.ProjectionView, in camera.ProjectionView);
@@ -49,23 +49,21 @@ Game.Start(platform, async game =>
     // spawn the player
     var player = scene.Spawn(new Player(canvas, keyboard, scene)
     {
-      Position        = center,
-      Color           = palette[3],
+      Position = center,
+      Color = palette[3],
       ProjectileColor = palette[4]
     });
 
     // spawn a few asteroids
-    for (int i = 0; i < 32; i++)
-    {
+    for (var i = 0; i < 32; i++)
       scene.Spawn(new Asteroid(canvas, player)
       {
         Position = center + random.NextUnitCircle() * 150f,
         Velocity = random.NextUnitCircle() * random.NextFloat(4f, 12f),
         Rotation = random.NextFloat(0f, MathF.PI),
-        Spin     = random.NextFloat(0f, 2f),
-        Color    = palette[random.NextInt(1, 2)]
+        Spin = random.NextFloat(0f, 2f),
+        Color = palette[random.NextInt(1, 2)]
       });
-    }
   }
 
   Respawn();
@@ -91,11 +89,11 @@ Game.Start(platform, async game =>
     if (canvas.IsGameOver)
     {
       batch.DrawText(
-        font: font,
-        text: "GAME OVER!",
-        position: Vector2.Zero,
-        scale: Vector2.One * 1.4f,
-        color: Color.White,
+        font,
+        "GAME OVER!",
+        Vector2.Zero,
+        Vector2.One * 1.4f,
+        Color.White,
         horizontalAlignment: HorizontalAlignment.Center,
         verticalAlignment: VerticalAlignment.Center
       );

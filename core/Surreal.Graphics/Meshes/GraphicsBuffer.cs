@@ -3,11 +3,11 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
 
-/// <summary>Different types of <see cref="GraphicsBuffer"/>s.</summary>
+/// <summary>Different types of <see cref="GraphicsBuffer" />s.</summary>
 public enum BufferType
 {
   Vertex,
-  Index,
+  Index
 }
 
 /// <summary>Different usage models for buffers.</summary>
@@ -17,35 +17,35 @@ public enum BufferUsage
   Dynamic
 }
 
-/// <summary>A buffer of data on the <see cref="IGraphicsServer"/>.</summary>
+/// <summary>A buffer of data on the <see cref="IGraphicsServer" />.</summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
   public abstract Type ElementType { get; }
 
-  public int  Length { get; protected set; }
-  public Size Size   { get; protected set; }
+  public int Length { get; protected set; }
+  public Size Size { get; protected set; }
 }
 
-/// <summary>A strongly-typed <see cref="GraphicsBuffer"/> of <see cref="T"/>.</summary>
+/// <summary>A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.</summary>
 public sealed class GraphicsBuffer<T> : GraphicsBuffer
   where T : unmanaged
 {
-  private readonly IGraphicsServer server;
+  private readonly IGraphicsServer _server;
 
   public GraphicsBuffer(IGraphicsServer server, BufferType type, BufferUsage usage = BufferUsage.Static)
   {
-    this.server = server;
+    _server = server;
 
-    Type   = type;
-    Usage  = usage;
+    Type = type;
+    Usage = usage;
     Handle = server.CreateBuffer(type);
   }
 
   public override Type ElementType => typeof(T);
 
   public GraphicsHandle Handle { get; }
-  public BufferType     Type   { get; }
-  public BufferUsage    Usage  { get; }
+  public BufferType Type { get; }
+  public BufferUsage Usage { get; }
 
   public BufferDataLease Rent()
   {
@@ -58,49 +58,52 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
       .GetOrDefault(Range.All)
       .GetOffsetAndLength(Length);
 
-    return server.ReadBufferData<T>(Handle, Type, offset, length);
+    return _server.ReadBufferData<T>(Handle, Type, offset, length);
   }
 
   public void Write(ReadOnlySpan<T> buffer)
   {
     Length = buffer.Length;
-    Size   = buffer.CalculateSize();
+    Size = buffer.CalculateSize();
 
-    server.WriteBufferData(Handle, Type, buffer, Usage);
+    _server.WriteBufferData(Handle, Type, buffer, Usage);
   }
 
   public void Write(nint offset, ReadOnlySpan<T> buffer)
   {
-    server.WriteBufferSubData(Handle, Type, offset, buffer);
+    _server.WriteBufferSubData(Handle, Type, offset, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      server.DeleteBuffer(Handle);
+      _server.DeleteBuffer(Handle);
     }
 
     base.Dispose(managed);
   }
 
-  /// <summary>Allows borrowing the <see cref="GraphicsBuffer"/> data.</summary>
+  /// <summary>Allows borrowing the <see cref="GraphicsBuffer" /> data.</summary>
   public readonly struct BufferDataLease : IMemoryOwner<T>
   {
-    private readonly GraphicsBuffer<T> buffer;
+    private readonly GraphicsBuffer<T> _buffer;
 
     public BufferDataLease(GraphicsBuffer<T> buffer)
     {
-      this.buffer = buffer;
-      Memory      = buffer.Read();
+      _buffer = buffer;
+      Memory = buffer.Read();
     }
 
     public Memory<T> Memory { get; }
-    public Span<T>   Span   => Memory.Span;
+    public Span<T> Span => Memory.Span;
 
     public void Dispose()
     {
-      buffer.Write(Memory.Span);
+      _buffer.Write(Memory.Span);
     }
   }
 }
+
+
+

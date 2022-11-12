@@ -13,13 +13,12 @@ public interface IPlatform
 /// <summary>Represents the underlying platform host for the engine.</summary>
 public interface IPlatformHost : IDisposable
 {
-  event Action<int, int> Resized;
-
-  int  Width     { get; }
-  int  Height    { get; }
+  int Width { get; }
+  int Height { get; }
   bool IsVisible { get; }
   bool IsFocused { get; }
   bool IsClosing { get; }
+  event Action<int, int> Resized;
 
   void RegisterServices(IServiceRegistry services);
   void RegisterAssetLoaders(IAssetManager manager);
@@ -37,3 +36,6 @@ public class PlatformException : Exception
   {
   }
 }
+
+
+

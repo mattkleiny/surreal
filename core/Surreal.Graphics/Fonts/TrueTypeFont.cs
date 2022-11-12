@@ -8,7 +8,7 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Fonts;
 
-/// <summary>Different weights for <see cref="TrueTypeFont"/> styles.</summary>
+/// <summary>Different weights for <see cref="TrueTypeFont" /> styles.</summary>
 public enum FontWeight
 {
   Normal,
@@ -16,7 +16,7 @@ public enum FontWeight
   Bold
 }
 
-/// <summary>Utilities for working with <see cref="TrueTypeFont"/>s.</summary>
+/// <summary>Utilities for working with <see cref="TrueTypeFont" />s.</summary>
 public static class TrueTypeFontExtensions
 {
   public static async Task<TrueTypeFont> LoadDefaultFontAsync(this IAssetManager manager)
@@ -38,97 +38,94 @@ public static class TrueTypeFontExtensions
 /// <summary>A true type font that can be rendered at arbitrary sized.</summary>
 public sealed class TrueTypeFont
 {
-  private readonly IGraphicsServer server;
-  private FontFamily family;
+  private readonly IGraphicsServer _server;
+  private FontFamily _family;
 
   internal TrueTypeFont(IGraphicsServer server, FontFamily family)
   {
-    this.server = server;
-    this.family = family;
+    _server = server;
+    _family = family;
   }
 
   public RasterFont GetFont(float size, FontWeight weight = FontWeight.Normal)
   {
-    var font = family.CreateFont(size, weight switch
+    var font = _family.CreateFont(size, weight switch
     {
       FontWeight.Normal => FontStyle.Regular,
       FontWeight.Italic => FontStyle.Italic,
-      FontWeight.Bold   => FontStyle.Bold,
+      FontWeight.Bold => FontStyle.Bold,
 
       _ => throw new ArgumentOutOfRangeException(nameof(weight), weight, null)
     });
 
-    return new RasterFont(server, font);
+    return new RasterFont(_server, font);
   }
 
-  /// <summary>A <see cref="TrueTypeFont"/> that can be rasterized at a particular size.</summary>
+  /// <summary>A <see cref="TrueTypeFont" /> that can be rasterized at a particular size.</summary>
   public sealed class RasterFont
   {
     private static readonly string AsciiCharacterSet;
+    private readonly TextOptions _options;
+
+    private readonly IGraphicsServer _server;
 
     static RasterFont()
     {
       // build default ASCII character set
       var builder = new StringBuilder();
 
-      for (int i = 0; i < 256; i++)
-      {
-        builder.Append((char) i);
-      }
+      for (var i = 0; i < 256; i++) builder.Append((char) i);
 
       AsciiCharacterSet = builder.ToString();
     }
 
-    private readonly IGraphicsServer server;
-    private readonly TextOptions options;
-
     internal RasterFont(IGraphicsServer server, Font font)
     {
-      this.server = server;
-      options     = new TextOptions(font);
+      _server = server;
+      _options = new TextOptions(font);
     }
 
     /// <summary>Measures the size of the given piece of text.</summary>
     public Rectangle MeasureSize(ReadOnlySpan<char> text)
     {
-      var size = TextMeasurer.Measure(text, options);
+      var size = TextMeasurer.Measure(text, _options);
 
       return new Rectangle(size.Left, size.Bottom, size.Right, size.Top);
     }
 
-    /// <summary>Renders this font to a new <see cref="BitmapFont"/>.</summary>
+    /// <summary>Renders this font to a new <see cref="BitmapFont" />.</summary>
     public BitmapFont ToBitmapFont()
     {
       return ToBitmapFont(AsciiCharacterSet);
     }
 
-    /// <summary>Renders this font to a new <see cref="BitmapFont"/>.</summary>
+    /// <summary>Renders this font to a new <see cref="BitmapFont" />.</summary>
     public BitmapFont ToBitmapFont(string characters)
     {
       var atlas = new TextureAtlasGlyphRenderer();
       var renderer = new TextRenderer(atlas);
 
-      renderer.RenderText(characters, options);
+      renderer.RenderText(characters, _options);
 
-      var texture = atlas.ToTexture(server, 3);
+      var texture = atlas.ToTexture(_server, 3);
       var descriptor = new BitmapFontDescriptor
       {
-        FilePath     = null,
-        Columns      = 3,
-        GlyphHeight  = 16,
-        GlyphWidth   = 16,
+        FilePath = null,
+        Columns = 3,
+        GlyphHeight = 16,
+        GlyphWidth = 16,
         GlyphPadding = 0
       };
 
-      return new BitmapFont(descriptor, texture, ownsTexture: true);
+      return new BitmapFont(descriptor, texture, true);
     }
   }
 
-  /// <summary>A <see cref="IGlyphRenderer"/> that emits to texel data in a given <see cref="Texture"/>.</summary>
+  /// <summary>A <see cref="IGlyphRenderer" /> that emits to texel data in a given <see cref="Texture" />.</summary>
   private sealed class TextureAtlasGlyphRenderer : TextureAtlasBuilder, IGlyphRenderer
   {
-    private Cell currentCell;
-    private Vector2 currentPoint;
+    private Cell _currentCell;
+    private Vector2 _currentPoint;
 
     void IGlyphRenderer.BeginText(FontRectangle bounds)
     {
@@ -136,7 +133,7 @@ public sealed class TrueTypeFont
 
     bool IGlyphRenderer.BeginGlyph(FontRectangle bounds, GlyphRendererParameters paramaters)
     {
-      currentCell = AddCell(
+      _currentCell = AddCell(
         (int) MathF.Ceiling(bounds.Width),
         (int) MathF.Ceiling(bounds.Height)
       );
@@ -150,26 +147,26 @@ public sealed class TrueTypeFont
 
     void IGlyphRenderer.MoveTo(Vector2 point)
     {
-      currentPoint = point;
+      _currentPoint = point;
     }
 
     void IGlyphRenderer.QuadraticBezierTo(Vector2 secondControlPoint, Vector2 point)
     {
-      var curve = new QuadraticBezierCurve(currentPoint, secondControlPoint, point);
+      var curve = new QuadraticBezierCurve(_currentPoint, secondControlPoint, point);
 
-      currentCell.Span.DrawCurve(curve, Color32.White);
+      _currentCell.Span.DrawCurve(curve, Color32.White);
     }
 
     void IGlyphRenderer.CubicBezierTo(Vector2 secondControlPoint, Vector2 thirdControlPoint, Vector2 point)
     {
-      var curve = new CubicBezierCurve(currentPoint, secondControlPoint, thirdControlPoint, point);
+      var curve = new CubicBezierCurve(_currentPoint, secondControlPoint, thirdControlPoint, point);
 
-      currentCell.Span.DrawCurve(curve, Color32.White);
+      _currentCell.Span.DrawCurve(curve, Color32.White);
     }
 
     void IGlyphRenderer.LineTo(Vector2 point)
     {
-      currentCell.Span.DrawLine(currentPoint, point, Color32.White);
+      _currentCell.Span.DrawLine(_currentPoint, point, Color32.White);
     }
 
     void IGlyphRenderer.EndFigure()
@@ -186,14 +183,14 @@ public sealed class TrueTypeFont
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}"/> for <see cref="TrueTypeFont"/>s.</summary>
+/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="TrueTypeFont" />s.</summary>
 public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
 {
-  private readonly IGraphicsServer server;
+  private readonly IGraphicsServer _server;
 
   public TrueTypeFontLoader(IGraphicsServer server)
   {
-    this.server = server;
+    _server = server;
   }
 
   public override async Task<TrueTypeFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
@@ -207,6 +204,9 @@ public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
     // we're expecting a single font family per file
     var family = collection.Families.Single();
 
-    return new TrueTypeFont(server, family);
+    return new TrueTypeFont(_server, family);
   }
 }
+
+
+

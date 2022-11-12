@@ -27,9 +27,9 @@ public class MessagingTests
     Assert.Pass();
   }
 
-  private record struct TestMessage()
+  private sealed record TestMessage
   {
-    public int Width  { get; set; } = 16;
-    public int Height { get; set; } = 9;
+    public int Width { get; } = 16;
+    public int Height { get; } = 9;
   }
 }

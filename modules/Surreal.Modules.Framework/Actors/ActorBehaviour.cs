@@ -3,17 +3,17 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A list of <see cref="ActorBehaviour"/>s with managed reference tracking.</summary>
+/// <summary>A list of <see cref="ActorBehaviour" />s with managed reference tracking.</summary>
 public sealed class ActorBehaviourList : ListDecorator<ActorBehaviour>
 {
-  private readonly Actor actor;
+  private readonly Actor _actor;
 
   public ActorBehaviourList(Actor actor)
   {
-    this.actor = actor;
+    _actor = actor;
   }
 
-  /// <summary>Tries to locate the first behaviour of the given type, <see cref="T"/>.</summary>
+  /// <summary>Tries to locate the first behaviour of the given type, <see cref="T" />.</summary>
   public bool TryGet<T>(out T result)
     where T : ActorBehaviour
   {
@@ -34,18 +34,18 @@ public sealed class ActorBehaviourList : ListDecorator<ActorBehaviour>
   {
     base.OnItemAdded(item);
 
-    item.Connect(actor);
+    item.Connect(_actor);
   }
 
   protected override void OnItemRemoved(ActorBehaviour item)
   {
     base.OnItemRemoved(item);
 
-    item.Disconnect(actor);
+    item.Disconnect(_actor);
   }
 }
 
-/// <summary>A behaviour is an object-oriented component that you can attach to an <see cref="Actor"/>.</summary>
+/// <summary>A behaviour is an object-oriented component that you can attach to an <see cref="Actor" />.</summary>
 public abstract class ActorBehaviour
 {
   public Actor Actor { get; private set; } = null!;
@@ -119,3 +119,5 @@ public abstract class ActorBehaviour
   {
   }
 }
+
+

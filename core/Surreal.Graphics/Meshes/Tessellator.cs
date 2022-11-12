@@ -7,16 +7,16 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>A utility for tessellating shapes into meshes of vertex geometry.</summary>
 public abstract class Tessellator
 {
-  /// <summary>The types of <see cref="Figure"/> supported.</summary>
+  /// <summary>The types of <see cref="Figure" /> supported.</summary>
   protected enum FigureType : byte
   {
     Line,
     Triangle,
     Circle,
-    Rectangle,
+    Rectangle
   }
 
-  /// <summary>A type of object to be rendered; a <see cref="Figure"/> with a clipping rect.</summary>
+  /// <summary>A type of object to be rendered; a <see cref="Figure" /> with a clipping rect.</summary>
   protected record struct ClippedFigure
   {
     public Rectangle ClippingRect;
@@ -27,11 +27,11 @@ public abstract class Tessellator
   [StructLayout(LayoutKind.Explicit)]
   protected record struct Figure
   {
-    [FieldOffset(0)] public FigureType Tag;
-    [FieldOffset(1)] public Line Line;
-    [FieldOffset(1)] public Triangle Triangle;
     [FieldOffset(1)] public Circle Circle;
+    [FieldOffset(1)] public Line Line;
     [FieldOffset(1)] public Rectangle Rectangle;
+    [FieldOffset(0)] public FigureType Tag;
+    [FieldOffset(1)] public Triangle Triangle;
   }
 
   protected record struct Line(Vector2 From, Vector2 To);
@@ -45,16 +45,16 @@ public sealed class Tessellator<TVertex> : Tessellator
 {
   // TODO: convert this into internal shape representations and then add a 'tessellation' step at the end
 
-  private readonly List<ClippedFigure> figures = new();
-  private readonly List<TVertex> vertices = new();
-  private readonly List<uint> indices = new();
+  private readonly List<ClippedFigure> _figures = new();
+  private readonly List<uint> _indices = new();
+  private readonly List<TVertex> _vertices = new();
 
-  public int  FigureCount => figures.Count;
-  public uint VertexCount => (uint) vertices.Count;
-  public uint IndexCount  => (uint) indices.Count;
+  public int FigureCount => _figures.Count;
+  public uint VertexCount => (uint) _vertices.Count;
+  public uint IndexCount => (uint) _indices.Count;
 
-  public ReadOnlySpan<TVertex> Vertices => vertices.AsSpan();
-  public ReadOnlySpan<uint>    Indices  => indices.AsSpan();
+  public ReadOnlySpan<TVertex> Vertices => _vertices.AsSpan();
+  public ReadOnlySpan<uint> Indices => _indices.AsSpan();
 
   public void BeginClipRect()
   {
@@ -68,7 +68,7 @@ public sealed class Tessellator<TVertex> : Tessellator
 
   public void AddLine(Vector2 a, Vector2 b)
   {
-    figures.Add(new ClippedFigure
+    _figures.Add(new ClippedFigure
     {
       ClippingRect = Rectangle.Empty,
       Figure = new Figure
@@ -81,18 +81,18 @@ public sealed class Tessellator<TVertex> : Tessellator
 
   public void AddVertex(TVertex vertex)
   {
-    vertices.Add(vertex);
+    _vertices.Add(vertex);
   }
 
   public void AddIndex(uint index)
   {
-    indices.Add((ushort) index);
+    _indices.Add((ushort) index);
   }
 
   public void Clear()
   {
-    vertices.Clear();
-    indices.Clear();
+    _vertices.Clear();
+    _indices.Clear();
   }
 
   public void WriteTo(Mesh<TVertex> mesh)
@@ -102,7 +102,7 @@ public sealed class Tessellator<TVertex> : Tessellator
   }
 }
 
-/// <summary>Common extensions for <see cref="Tessellator{TVertex}"/>s.</summary>
+/// <summary>Common extensions for <see cref="Tessellator{TVertex}" />s.</summary>
 public static class TessellatorExtensions
 {
   /// <summary>Adds a simple line.</summary>
@@ -175,3 +175,6 @@ public static class TessellatorExtensions
     tessellator.AddIndex(offset + 3);
   }
 }
+
+
+

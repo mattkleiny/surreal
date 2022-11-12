@@ -2,15 +2,15 @@ using Surreal.Audio.Clips;
 
 namespace Surreal.Audio;
 
-/// <summary>A no-op <see cref="IAudioServer"/> for headless environments and testing.</summary>
+/// <summary>A no-op <see cref="IAudioServer" /> for headless environments and testing.</summary>
 public sealed class HeadlessAudioServer : IAudioServer
 {
-  private int nextClipId = 0;
-  private int nextSourceId = 0;
+  private int _nextClipId = 0;
+  private int _nextSourceId = 0;
 
   public AudioHandle CreateAudioClip()
   {
-    return new AudioHandle(Interlocked.Increment(ref nextClipId));
+    return new AudioHandle(Interlocked.Increment(ref _nextClipId));
   }
 
   public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged
@@ -25,7 +25,7 @@ public sealed class HeadlessAudioServer : IAudioServer
 
   public AudioHandle CreateAudioSource()
   {
-    return new AudioHandle(Interlocked.Increment(ref nextSourceId));
+    return new AudioHandle(Interlocked.Increment(ref _nextSourceId));
   }
 
   public bool IsAudioSourcePlaying(AudioHandle handle)
@@ -58,3 +58,4 @@ public sealed class HeadlessAudioServer : IAudioServer
     // no-op
   }
 }
+

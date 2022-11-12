@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Collections;
 
-/// <summary>Represents an element in a <see cref="InterlinkedList{TNode}"/>.</summary>
+/// <summary>Represents an element in a <see cref="InterlinkedList{TNode}" />.</summary>
 public interface IInterlinkedElement<TSelf>
   where TSelf : class, IInterlinkedElement<TSelf>
 {
@@ -14,6 +14,16 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
 {
   public TNode? Head { get; private set; }
   public bool IsEmpty => Head == null;
+
+  IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   public void Add(TNode newHead)
   {
@@ -66,49 +76,38 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
 
   public Enumerator GetEnumerator()
   {
-    return new(this);
+    return new Enumerator(this);
   }
 
-  IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  /// <summary>Enumerates the <see cref="InterlinkedList{TNode}"/> from head to tail.</summary>
+  /// <summary>Enumerates the <see cref="InterlinkedList{TNode}" /> from head to tail.</summary>
   public struct Enumerator : IEnumerator<TNode>
   {
-    private readonly InterlinkedList<TNode> list;
-    private TNode? current;
+    private readonly InterlinkedList<TNode> _list;
 
     public Enumerator(InterlinkedList<TNode> list)
     {
-      this.list = list;
-      current = default;
+      _list = list;
+      Current = default;
     }
 
-    public TNode Current => current!;
-    object IEnumerator.Current => Current;
+    public TNode? Current { get; private set; }
+    object IEnumerator.Current => Current!;
 
     public bool MoveNext()
     {
-      if (current == null)
+      if (Current == null)
       {
-        current = list.Head;
-        return current != null;
+        Current = _list.Head;
+        return Current != null;
       }
 
-      current = current.Next;
-      return current != null;
+      Current = Current.Next;
+      return Current != null;
     }
 
     public void Reset()
     {
-      current = null;
+      Current = null;
     }
 
     public void Dispose()
@@ -117,3 +116,4 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
     }
   }
 }
+

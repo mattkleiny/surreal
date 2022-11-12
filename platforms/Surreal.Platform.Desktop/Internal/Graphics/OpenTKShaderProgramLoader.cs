@@ -8,17 +8,17 @@ namespace Surreal.Internal.Graphics;
 /// <summary>A single shader, unlinked to a program.</summary>
 internal sealed record OpenTKShader(ShaderType Type, string Code);
 
-/// <summary>A set of <see cref="OpenTKShader"/>s.</summary>
+/// <summary>A set of <see cref="OpenTKShader" />s.</summary>
 internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders);
 
-/// <summary>The <see cref="AssetLoader{T}"/> for GLSL <see cref="ShaderProgram"/>s.</summary>
+/// <summary>The <see cref="AssetLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.</summary>
 internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 {
-  private readonly OpenTKGraphicsServer server;
+  private readonly OpenTKGraphicsServer _server;
 
   public OpenTKShaderProgramLoader(OpenTKGraphicsServer server)
   {
-    this.server = server;
+    _server = server;
   }
 
   public override bool CanHandle(AssetLoaderContext context)
@@ -29,9 +29,9 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
   public override async Task<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-    var program = new ShaderProgram(server);
+    var program = new ShaderProgram(_server);
 
-    server.LinkShader(program.Handle, shaderSet);
+    _server.LinkShader(program.Handle, shaderSet);
     program.ReloadMetadata();
 
     if (context.IsHotReloadEnabled)
@@ -45,9 +45,9 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
   private async Task<ShaderProgram> ReloadAsync(AssetLoaderContext context, ShaderProgram program, CancellationToken cancellationToken = default)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-    var handle = server.CreateShader();
+    var handle = _server.CreateShader();
 
-    server.LinkShader(handle, shaderSet);
+    _server.LinkShader(handle, shaderSet);
     program.ReplaceShader(handle);
     program.ReloadMetadata();
 
@@ -63,10 +63,9 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
   }
 
   /// <summary>
-  /// Processes a GLSL program in the given <see cref="TextReader"/> and pre processes it with some useful features.
-  ///
-  /// In particular:
-  /// * Allow multiple shader kernels per file via a #shader_type directive.
+  ///   Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
+  ///   In particular:
+  ///   * Allow multiple shader kernels per file via a #shader_type directive.
   /// </summary>
   [VisibleForTesting]
   internal static async Task<OpenTKShaderSet> ParseCodeAsync(VirtualPath path, TextReader reader, CancellationToken cancellationToken = default)
@@ -78,8 +77,15 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     {
       if (line.Trim().StartsWith("#shader_type"))
       {
-        if (line.EndsWith("vertex")) shaderCode.Add(new Shader(ShaderType.VertexShader, new StringBuilder(sharedCode.ToString())));
-        if (line.EndsWith("fragment")) shaderCode.Add(new Shader(ShaderType.FragmentShader, new StringBuilder(sharedCode.ToString())));
+        if (line.EndsWith("vertex"))
+        {
+          shaderCode.Add(new Shader(ShaderType.VertexShader, new StringBuilder(sharedCode.ToString())));
+        }
+
+        if (line.EndsWith("fragment"))
+        {
+          shaderCode.Add(new Shader(ShaderType.FragmentShader, new StringBuilder(sharedCode.ToString())));
+        }
       }
       else if (shaderCode.Count > 0)
       {
@@ -94,6 +100,8 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return new OpenTKShaderSet(path.ToString(), shaderCode.Select(_ => new OpenTKShader(_.Type, _.Code.ToString())).ToImmutableArray());
   }
 
-  /// <summary>A mutable version of the <see cref="OpenTKShader"/> that we can build up in stages.</summary>
+  /// <summary>A mutable version of the <see cref="OpenTKShader" /> that we can build up in stages.</summary>
   private readonly record struct Shader(ShaderType Type, StringBuilder Code);
 }
+
+

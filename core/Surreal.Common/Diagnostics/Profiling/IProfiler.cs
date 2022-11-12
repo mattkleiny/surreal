@@ -9,27 +9,28 @@ public interface IProfiler
   ProfilingScope Track(string category, string task);
 }
 
-/// <summary>A scope for <see cref="IProfiler"/> operations.</summary>
+/// <summary>A scope for <see cref="IProfiler" /> operations.</summary>
 public readonly struct ProfilingScope : IDisposable
 {
-  private readonly string category;
-  private readonly string task;
-  private readonly IProfileSampler? sampler;
-  private readonly TimeStamp startTime;
+  private readonly string _category;
+  private readonly string _task;
+  private readonly IProfileSampler? _sampler;
+  private readonly TimeStamp _startTime;
 
   public ProfilingScope(string category, string task, IProfileSampler? sampler)
   {
-    this.category = category;
-    this.task = task;
-    this.sampler = sampler;
+    _category = category;
+    _task = task;
+    _sampler = sampler;
 
-    startTime = TimeStamp.Now;
+    _startTime = TimeStamp.Now;
   }
 
   public void Dispose()
   {
     var endTime = TimeStamp.Now;
 
-    sampler?.Sample(category, task, endTime - startTime);
+    _sampler?.Sample(_category, _task, endTime - _startTime);
   }
 }
+

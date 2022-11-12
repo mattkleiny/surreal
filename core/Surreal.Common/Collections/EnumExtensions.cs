@@ -10,14 +10,14 @@ public static class EnumExtensions
   public static unsafe int AsInt<TEnum>(this TEnum value)
     where TEnum : unmanaged, Enum
   {
-    return *(int*)&value;
+    return *(int*) &value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static unsafe TEnum AsEnum<TEnum>(this int value)
     where TEnum : unmanaged, Enum
   {
-    return *(TEnum*)&value;
+    return *(TEnum*) &value;
   }
 
   public static bool EqualsFast<TEnum>(this TEnum first, TEnum second)
@@ -67,10 +67,7 @@ public static class EnumExtensions
   {
     var builder = new StringBuilder();
 
-    foreach (var flag in flags.GetMaskValues())
-    {
-      builder.AppendWithSeparator(flag.ToString(), " | ");
-    }
+    foreach (var flag in flags.GetMaskValues()) builder.AppendWithSeparator(flag.ToString(), " | ");
 
     if (builder.Length == 0)
     {
@@ -83,18 +80,18 @@ public static class EnumExtensions
   public struct MaskEnumerator<TEnum> : IEnumerator<TEnum>, IEnumerable<TEnum>
     where TEnum : unmanaged, Enum
   {
-    private readonly TEnum flags;
-    private int flag;
-    private int index;
+    private readonly TEnum _flags;
+    private int _flag;
+    private int _index;
 
     public MaskEnumerator(TEnum flags)
     {
-      this.flags = flags;
-      flag = 1;
-      index = -1;
+      _flags = flags;
+      _flag = 1;
+      _index = -1;
     }
 
-    public TEnum Current => CachedEnumLookup<TEnum>.Values[index];
+    public TEnum Current => CachedEnumLookup<TEnum>.Values[_index];
     object IEnumerator.Current => Current;
 
     public bool MoveNext()
@@ -103,20 +100,17 @@ public static class EnumExtensions
       while (true)
       {
         var values = CachedEnumLookup<TEnum>.Values;
-        if (++index >= values.Length)
+        if (++_index >= values.Length)
         {
           return false;
         }
 
-        var value = values[index];
+        var value = values[_index];
         var mask = value.AsInt();
 
-        while (flag < mask)
-        {
-          flag <<= 1;
-        }
+        while (_flag < mask) _flag <<= 1;
 
-        if (flag == mask && flags.HasFlagFast(value))
+        if (_flag == mask && _flags.HasFlagFast(value))
         {
           return true;
         }
@@ -125,8 +119,8 @@ public static class EnumExtensions
 
     public void Reset()
     {
-      flag = 1;
-      index = -1;
+      _flag = 1;
+      _index = -1;
     }
 
     public void Dispose()
@@ -134,9 +128,20 @@ public static class EnumExtensions
       // no-op
     }
 
-    public MaskEnumerator<TEnum> GetEnumerator() => this;
-    IEnumerator<TEnum> IEnumerable<TEnum>.GetEnumerator() => GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public MaskEnumerator<TEnum> GetEnumerator()
+    {
+      return this;
+    }
+
+    IEnumerator<TEnum> IEnumerable<TEnum>.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
   }
 
   private static class CachedEnumLookup<TEnum>
@@ -146,3 +151,4 @@ public static class EnumExtensions
     public static ImmutableArray<TEnum> Values { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToImmutableArray();
   }
 }
+

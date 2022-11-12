@@ -3,12 +3,12 @@
 /// <summary>An asteroid that floats about and can impact the player.</summary>
 public sealed class Asteroid : GameActor
 {
-  private readonly Player player;
+  private readonly Player _player;
 
   public Asteroid(PixelCanvas canvas, Player player)
     : base(canvas, Polygon.CreateAsteroid(new FloatRange(4f, 12f)))
   {
-    this.player = player;
+    _player = player;
   }
 
   protected override void OnUpdate(TimeDelta deltaTime)
@@ -20,9 +20,9 @@ public sealed class Asteroid : GameActor
 
   private void CheckForCollisions()
   {
-    if (Bounds.Contains(player.Position) && FinalPolygon.ContainsPoint(player.Position))
+    if (Bounds.Contains(_player.Position) && FinalPolygon.ContainsPoint(_player.Position))
     {
-      Message.Publish(new PlayerHitAsteroid(player, this));
+      Message.Publish(new PlayerHitAsteroid(_player, this));
     }
   }
 
@@ -35,3 +35,5 @@ public sealed class Asteroid : GameActor
     }
   }
 }
+
+

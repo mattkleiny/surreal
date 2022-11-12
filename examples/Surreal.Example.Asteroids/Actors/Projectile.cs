@@ -3,12 +3,12 @@
 /// <summary>A projectile that can destroy asteroids.</summary>
 public sealed class Projectile : GameActor
 {
-  private readonly ActorScene scene;
+  private readonly ActorScene _scene;
 
   public Projectile(PixelCanvas canvas, ActorScene scene)
     : base(canvas, Polygon.CreateTriangle(2f))
   {
-    this.scene = scene;
+    _scene = scene;
   }
 
   public float Speed { get; set; } = 100f;
@@ -31,7 +31,7 @@ public sealed class Projectile : GameActor
 
   private void ProcessCollisions()
   {
-    foreach (var actor in scene)
+    foreach (var actor in _scene)
     {
       if (actor is Asteroid asteroid && asteroid.Bounds.Contains(Position) && asteroid.FinalPolygon.ContainsPoint(Position))
       {
@@ -49,3 +49,5 @@ public sealed class Projectile : GameActor
     }
   }
 }
+
+

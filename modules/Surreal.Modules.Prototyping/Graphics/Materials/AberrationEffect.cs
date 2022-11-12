@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Graphics.Materials;
 
-/// <summary>A <see cref="Effect"/> for the aberration shader.</summary>
+/// <summary>A <see cref="Effect" /> for the aberration shader.</summary>
 public sealed class AberrationEffect : Effect
 {
   public AberrationEffect(Material material)
@@ -14,3 +14,5 @@ public sealed class AberrationEffect : Effect
     set => Locals.SetProperty(MaterialProperty.Intensity, value);
   }
 }
+
+

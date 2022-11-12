@@ -51,3 +51,5 @@ public class OpenTKShaderProgramLoaderTests
     shaderSet.Shaders[1].Type.Should().Be(ShaderType.FragmentShader);
   }
 }
+
+

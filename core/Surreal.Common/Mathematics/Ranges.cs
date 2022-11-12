@@ -5,7 +5,10 @@ public readonly record struct IntRange(int Min, int Max)
 {
   public int Delta => Max - Min;
 
-  public override string ToString() => $"{Min} to {Max}";
+  public override string ToString()
+  {
+    return $"{Min} to {Max}";
+  }
 }
 
 /// <summary>A floating-point range.</summary>
@@ -13,24 +16,45 @@ public readonly record struct FloatRange(float Min, float Max)
 {
   public float Delta => Max - Min;
 
-  public override string ToString() => $"{Min:F} to {Max:F}";
+  public override string ToString()
+  {
+    return $"{Min:F} to {Max:F}";
+  }
 }
 
-/// <summary>A <see cref="TimeSpan"/>  range.</summary>
+/// <summary>A <see cref="TimeSpan" />  range.</summary>
 public readonly record struct TimeSpanRange(TimeSpan Min, TimeSpan Max)
 {
   public TimeSpan Delta => Max - Min;
 
-  public override string ToString() => $"{Min:F} to {Max:F}";
+  public override string ToString()
+  {
+    return $"{Min:F} to {Max:F}";
+  }
 }
 
 /// <summary>Utilities for working with ranges.</summary>
 public static class Ranges
 {
-  public static int Clamp(this int value, int min, int max) => value < min ? min : value > max ? max : value;
-  public static int Clamp(this int value, IntRange range) => Clamp(value, range.Min, range.Max);
-  public static float Clamp(this float value, float min, float max) => value < min ? min : value > max ? max : value;
-  public static float Clamp(this float value, FloatRange range) => Clamp(value, range.Min, range.Max);
+  public static int Clamp(this int value, int min, int max)
+  {
+    return value < min ? min : value > max ? max : value;
+  }
+
+  public static int Clamp(this int value, IntRange range)
+  {
+    return Clamp(value, range.Min, range.Max);
+  }
+
+  public static float Clamp(this float value, float min, float max)
+  {
+    return value < min ? min : value > max ? max : value;
+  }
+
+  public static float Clamp(this float value, FloatRange range)
+  {
+    return Clamp(value, range.Min, range.Max);
+  }
 
   public static int ConvertRange(this int value, IntRange oldRange, IntRange newRange)
   {
@@ -52,3 +76,6 @@ public static class Ranges
     return (value - oldRange.Min) * newRange.Delta / oldRange.Delta + newRange.Min;
   }
 }
+
+
+

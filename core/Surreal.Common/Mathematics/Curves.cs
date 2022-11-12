@@ -11,19 +11,29 @@ public interface IPlanarCurve
   [Pure] Vector2 SampleAt(float t);
 }
 
-/// <summary>Commonly used <see cref="Curve"/>s.</summary>
+/// <summary>Commonly used <see cref="Curve" />s.</summary>
 public static class Curves
 {
-  public static Curve Constant(float d) => _ => d;
-
   public static Curve Linear { get; } = t => t;
   public static Curve InverseLinear { get; } = t => 1f - t;
 
-  public static Curve PlanarX<T>(T curve) where T : IPlanarCurve => t => curve.SampleAt(t).X;
-  public static Curve PlanarY<T>(T curve) where T : IPlanarCurve => t => curve.SampleAt(t).Y;
+  public static Curve Constant(float d)
+  {
+    return _ => d;
+  }
+
+  public static Curve PlanarX<T>(T curve) where T : IPlanarCurve
+  {
+    return t => curve.SampleAt(t).X;
+  }
+
+  public static Curve PlanarY<T>(T curve) where T : IPlanarCurve
+  {
+    return t => curve.SampleAt(t).Y;
+  }
 }
 
-/// <summary>A quadratic bezier <see cref="IPlanarCurve"/>.</summary>
+/// <summary>A quadratic bezier <see cref="IPlanarCurve" />.</summary>
 public readonly record struct QuadraticBezierCurve(Vector2 Start, Vector2 A, Vector2 End) : IPlanarCurve
 {
   public Vector2 SampleAt(float t)
@@ -35,7 +45,7 @@ public readonly record struct QuadraticBezierCurve(Vector2 Start, Vector2 A, Vec
   }
 }
 
-/// <summary>A cubic bezier <see cref="IPlanarCurve"/>.</summary>
+/// <summary>A cubic bezier <see cref="IPlanarCurve" />.</summary>
 public readonly record struct CubicBezierCurve(Vector2 Start, Vector2 A, Vector2 B, Vector2 End) : IPlanarCurve
 {
   public Vector2 SampleAt(float t)
@@ -53,3 +63,6 @@ public readonly record struct CubicBezierCurve(Vector2 Start, Vector2 A, Vector2
            + End * t3;
   }
 }
+
+
+

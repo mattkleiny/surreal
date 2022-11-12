@@ -2,10 +2,10 @@
 
 namespace Surreal.Automata.BehaviourTrees.Composite;
 
-/// <summary>A <see cref="BehaviourComposite"/> that executes the first successful task from among children.</summary>
+/// <summary>A <see cref="BehaviourComposite" /> that executes the first successful task from among children.</summary>
 public sealed record Selector : BehaviourComposite
 {
-  private int lastIndex;
+  private int _lastIndex;
 
   public Selector(params BehaviourNode[] children)
   {
@@ -16,14 +16,14 @@ public sealed record Selector : BehaviourComposite
   {
     base.OnExit(context);
 
-    lastIndex = 0;
+    _lastIndex = 0;
   }
 
   protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, TimeDelta deltaTime)
   {
-    for (; lastIndex < Children.Count; lastIndex++)
+    for (; _lastIndex < Children.Count; _lastIndex++)
     {
-      var child = Children[lastIndex];
+      var child = Children[_lastIndex];
 
       switch (child.Update(context, deltaTime))
       {
@@ -41,3 +41,5 @@ public sealed record Selector : BehaviourComposite
     return BehaviourStatus.Failure;
   }
 }
+
+

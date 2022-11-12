@@ -15,10 +15,36 @@ public readonly record struct TimeDelta(float Seconds)
     return $"{TimeSpan.TotalMilliseconds:F}ms";
   }
 
-  public static implicit operator TimeDelta(TimeSpan timeSpan) => new(timeSpan);
-  public static implicit operator TimeDelta(float seconds) => new(seconds);
-  public static implicit operator TimeDelta(double seconds) => new((float) seconds);
-  public static implicit operator TimeSpan(TimeDelta deltaTime) => deltaTime.TimeSpan;
-  public static implicit operator float(TimeDelta deltaTime) => deltaTime.Seconds;
-  public static implicit operator double(TimeDelta deltaTime) => deltaTime.Seconds;
+  public static implicit operator TimeDelta(TimeSpan timeSpan)
+  {
+    return new TimeDelta(timeSpan);
+  }
+
+  public static implicit operator TimeDelta(float seconds)
+  {
+    return new TimeDelta(seconds);
+  }
+
+  public static implicit operator TimeDelta(double seconds)
+  {
+    return new TimeDelta((float) seconds);
+  }
+
+  public static implicit operator TimeSpan(TimeDelta deltaTime)
+  {
+    return deltaTime.TimeSpan;
+  }
+
+  public static implicit operator float(TimeDelta deltaTime)
+  {
+    return deltaTime.Seconds;
+  }
+
+  public static implicit operator double(TimeDelta deltaTime)
+  {
+    return deltaTime.Seconds;
+  }
 }
+
+
+

@@ -7,14 +7,14 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>A no-op <see cref="IGraphicsServer"/> for headless environments and testing.</summary>
+/// <summary>A no-op <see cref="IGraphicsServer" /> for headless environments and testing.</summary>
 public sealed class HeadlessGraphicsServer : IGraphicsServer
 {
-  private int nextBufferId = 0;
-  private int nextTextureId = 0;
-  private int nextMeshId = 0;
-  private int nextShaderId = 0;
-  private int nextFrameBufferId = 0;
+  private int _nextBufferId = 0;
+  private int _nextFrameBufferId = 0;
+  private int _nextMeshId = 0;
+  private int _nextShaderId = 0;
+  private int _nextTextureId = 0;
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -43,7 +43,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
 
   public GraphicsHandle CreateBuffer(BufferType type)
   {
-    return new GraphicsHandle(Interlocked.Increment(ref nextBufferId));
+    return new GraphicsHandle(Interlocked.Increment(ref _nextBufferId));
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
@@ -68,7 +68,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
-    return new GraphicsHandle(Interlocked.Increment(ref nextTextureId));
+    return new GraphicsHandle(Interlocked.Increment(ref _nextTextureId));
   }
 
   public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
@@ -118,7 +118,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
 
   public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
   {
-    return new GraphicsHandle(Interlocked.Increment(ref nextMeshId));
+    return new GraphicsHandle(Interlocked.Increment(ref _nextMeshId));
   }
 
   public void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType)
@@ -133,7 +133,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
 
   public GraphicsHandle CreateShader()
   {
-    return new GraphicsHandle(Interlocked.Increment(ref nextShaderId));
+    return new GraphicsHandle(Interlocked.Increment(ref _nextShaderId));
   }
 
   public ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
@@ -223,7 +223,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
 
   public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
   {
-    return new GraphicsHandle(Interlocked.Increment(ref nextFrameBufferId));
+    return new GraphicsHandle(Interlocked.Increment(ref _nextFrameBufferId));
   }
 
   public void SetActiveFrameBuffer(GraphicsHandle handle)
@@ -241,3 +241,6 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 }
+
+
+

@@ -9,37 +9,38 @@ namespace Surreal.Diagnostics.Logging;
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 public readonly ref struct LogInterpolator
 {
-  private readonly StringBuilder builder;
+  private readonly StringBuilder _builder;
 
   [SuppressMessage("ReSharper", "UnusedParameter.Local")]
   [SuppressMessage("Style", "IDE0060:Remove unused parameter")]
   public LogInterpolator(int literalLength, int formattedCount)
   {
-    builder = Pool<StringBuilder>.Shared.CreateOrRent();
+    _builder = Pool<StringBuilder>.Shared.CreateOrRent();
   }
 
   public void AppendLiteral(string value)
   {
-    builder.Append(value);
+    _builder.Append(value);
   }
 
   public void AppendFormatted<T>(T value)
   {
-    builder.Append(value);
+    _builder.Append(value);
   }
 
   public void AppendFormatted<T>(T value, string format)
     where T : IFormattable
   {
-    builder.Append(value.ToString(format, CultureInfo.InvariantCulture));
+    _builder.Append(value.ToString(format, CultureInfo.InvariantCulture));
   }
 
   public string GetFormattedTextAndReturnToPool()
   {
-    var result = builder.ToString();
+    var result = _builder.ToString();
 
-    Pool<StringBuilder>.Shared.Return(builder);
+    Pool<StringBuilder>.Shared.Return(_builder);
 
     return result;
   }
 }
+

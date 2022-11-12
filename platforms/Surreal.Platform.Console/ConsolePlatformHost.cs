@@ -11,7 +11,7 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A rune that can be painted to a <see cref="IConsoleGraphics"/>.</summary>
+/// <summary>A rune that can be painted to a <see cref="IConsoleGraphics" />.</summary>
 public readonly record struct Glyph(
   char Character,
   ConsoleColor ForegroundColor = ConsoleColor.White,
@@ -23,7 +23,7 @@ public readonly record struct Glyph(
 /// <summary>Allows managing the console display graphics.</summary>
 public interface IConsoleGraphics
 {
-  int Width  { get; set; }
+  int Width { get; set; }
   int Height { get; set; }
 
   void Fill(Glyph glyph);
@@ -35,33 +35,33 @@ public interface IConsoleGraphics
 /// <summary>Allows accessing console platform internals.</summary>
 public interface IConsolePlatformHost : IPlatformHost
 {
-  string  Title  { get; set; }
-  new int Width  { get; set; }
+  string Title { get; set; }
+  new int Width { get; set; }
   new int Height { get; set; }
 
   IConsoleGraphics Graphics { get; }
 }
 
-/// <summary>The <see cref="IPlatformHost"/> for <see cref="ConsolePlatform"/>.</summary>
+/// <summary>The <see cref="IPlatformHost" /> for <see cref="ConsolePlatform" />.</summary>
 [SupportedOSPlatform("windows")]
 internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphics
 {
-  private readonly ConsoleConfiguration configuration;
-  private readonly SafeFileHandle consoleHandle;
-  private readonly FrameCounter frameCounter = new();
+  private readonly ConsoleConfiguration _configuration;
+  private readonly SafeFileHandle _consoleHandle;
+  private readonly FrameCounter _frameCounter = new();
 
-  private Interop.CharInfo[] backBuffer = Array.Empty<Interop.CharInfo>();
-  private IntervalTimer frameDisplayTimer = new(1.Seconds());
+  private Interop.CharInfo[] _backBuffer = Array.Empty<Interop.CharInfo>();
+  private IntervalTimer _frameDisplayTimer = new(1.Seconds());
 
   public ConsolePlatformHost(ConsoleConfiguration configuration)
   {
-    this.configuration = configuration;
+    _configuration = configuration;
 
     Keyboard = new ConsoleKeyboardDevice();
-    Mouse    = new ConsoleMouseDevice();
+    Mouse = new ConsoleMouseDevice();
 
-    Title  = configuration.Title;
-    Width  = configuration.Width;
+    Title = configuration.Title;
+    Width = configuration.Width;
     Height = configuration.Height;
 
     Mouse.IsCursorVisible = false; // disable by default
@@ -76,18 +76,78 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
 
     Console.CancelKeyPress += (_, _) => IsClosing = true;
 
-    consoleHandle = Interop.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, FileMode.Open, 0, IntPtr.Zero);
+    _consoleHandle = Interop.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, FileMode.Open, 0, IntPtr.Zero);
 
-    if (consoleHandle.IsInvalid)
+    if (_consoleHandle.IsInvalid)
     {
       throw new InvalidOperationException("Failed to acquire handle to attached console");
     }
   }
 
-  public event Action<int, int>? Resized;
-
   private ConsoleKeyboardDevice Keyboard { get; }
-  private ConsoleMouseDevice    Mouse    { get; }
+  private ConsoleMouseDevice Mouse { get; }
+
+  unsafe void IConsoleGraphics.Flush()
+  {
+    EnsureBackBufferSize();
+
+    var rect = new Interop.SmallRect
+    {
+      Left = 0,
+      Top = 0,
+      Right = (short) Width,
+      Bottom = (short) Height
+    };
+
+    fixed (Interop.CharInfo* pointer = &_backBuffer[0])
+    {
+      var result = Interop.WriteConsoleOutputW(
+        hConsoleOutput: _consoleHandle,
+        lpBuffer: pointer,
+        dwBufferSize: new((short) Width, (short) Height),
+        dwBufferCoord: new(0, 0),
+        lpWriteRegion: ref rect
+      );
+
+      if (!result)
+      {
+        throw new Win32Exception(Marshal.GetLastWin32Error());
+      }
+    }
+  }
+
+  void IConsoleGraphics.Fill(Glyph glyph)
+  {
+    EnsureBackBufferSize();
+
+    Array.Fill(_backBuffer, new()
+    {
+      Attributes = ToColorAttribute(glyph.ForegroundColor, glyph.BackgroundColor),
+      Char = new()
+      {
+        UnicodeChar = glyph.Character
+      }
+    });
+  }
+
+  void IConsoleGraphics.Draw(int x, int y, Glyph glyph)
+  {
+    if (x < 0 || x > Width - 1) return;
+    if (y < 0 || y > Height - 1) return;
+
+    EnsureBackBufferSize();
+
+    _backBuffer[x + y * Width] = new()
+    {
+      Attributes = ToColorAttribute(glyph.ForegroundColor, glyph.BackgroundColor),
+      Char = new()
+      {
+        UnicodeChar = glyph.Character
+      }
+    };
+  }
+
+  public event Action<int, int>? Resized;
 
   public string Title
   {
@@ -140,13 +200,13 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
       Mouse.Update();
 
       // show the game's FPS in the window title
-      if (configuration.ShowFpsInTitle)
+      if (_configuration.ShowFpsInTitle)
       {
-        frameCounter.Tick(deltaTime);
+        _frameCounter.Tick(deltaTime);
 
-        if (frameDisplayTimer.Tick(deltaTime))
+        if (_frameDisplayTimer.Tick(deltaTime))
         {
-          Title = $"{configuration.Title} - {frameCounter.TicksPerSecond:F} FPS";
+          Title = $"{_configuration.Title} - {_frameCounter.TicksPerSecond:F} FPS";
         }
       }
     }
@@ -160,71 +220,16 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     }
   }
 
-  unsafe void IConsoleGraphics.Flush()
+  public void Dispose()
   {
-    EnsureBackBufferSize();
-
-    var rect = new Interop.SmallRect
-    {
-      Left   = 0,
-      Top    = 0,
-      Right  = (short) Width,
-      Bottom = (short) Height
-    };
-
-    fixed (Interop.CharInfo* pointer = &backBuffer[0])
-    {
-      var result = Interop.WriteConsoleOutputW(
-        hConsoleOutput: consoleHandle,
-        lpBuffer: pointer,
-        dwBufferSize: new((short) Width, (short) Height),
-        dwBufferCoord: new(0, 0),
-        lpWriteRegion: ref rect
-      );
-
-      if (!result)
-      {
-        throw new Win32Exception(Marshal.GetLastWin32Error());
-      }
-    }
-  }
-
-  void IConsoleGraphics.Fill(Glyph glyph)
-  {
-    EnsureBackBufferSize();
-
-    Array.Fill(backBuffer, new()
-    {
-      Attributes = ToColorAttribute(glyph.ForegroundColor, glyph.BackgroundColor),
-      Char = new()
-      {
-        UnicodeChar = glyph.Character
-      }
-    });
-  }
-
-  void IConsoleGraphics.Draw(int x, int y, Glyph glyph)
-  {
-    if (x < 0 || x > Width - 1) return;
-    if (y < 0 || y > Height - 1) return;
-
-    EnsureBackBufferSize();
-
-    backBuffer[x + y * Width] = new()
-    {
-      Attributes = ToColorAttribute(glyph.ForegroundColor, glyph.BackgroundColor),
-      Char = new()
-      {
-        UnicodeChar = glyph.Character
-      }
-    };
+    Interop.CloseHandle(_consoleHandle);
   }
 
   private void EnsureBackBufferSize()
   {
-    if (backBuffer.Length != Width * Height)
+    if (_backBuffer.Length != Width * Height)
     {
-      Array.Resize(ref backBuffer, Width * Height);
+      Array.Resize(ref _backBuffer, Width * Height);
     }
   }
 
@@ -246,16 +251,22 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     return (short) (Cast(foregroundColor, false) | Cast(backgroundColor, true));
   }
 
-  public void Dispose()
-  {
-    Interop.CloseHandle(consoleHandle);
-  }
-
-  /// <summary>A <see cref="IKeyboardDevice"/> for the Win32 console.</summary>
+  /// <summary>A <see cref="IKeyboardDevice" /> for the Win32 console.</summary>
   private sealed class ConsoleKeyboardDevice : IKeyboardDevice
   {
-    private readonly HashSet<Key> pressedLastFrame = new();
-    private readonly HashSet<Key> pressedThisFrame = new();
+    private readonly HashSet<Key> _pressedLastFrame = new();
+    private readonly HashSet<Key> _pressedThisFrame = new();
+
+    /// <summary>A mapping of <see cref="Key" /> to Win32 scan codes.</summary>
+    private static Dictionary<Key, int> ScanCodes { get; } = new()
+    {
+      [Key.Escape] = 0x1B,
+      [Key.Space] = 0x20,
+      [Key.W] = 0x57,
+      [Key.S] = 0x53,
+      [Key.A] = 0x41,
+      [Key.D] = 0x44
+    };
 
     public event Action<Key>? KeyPressed;
     public event Action<Key>? KeyReleased;
@@ -272,56 +283,44 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
 
     public bool IsKeyPressed(Key key)
     {
-      return pressedThisFrame.Contains(key) && !pressedLastFrame.Contains(key);
+      return _pressedThisFrame.Contains(key) && !_pressedLastFrame.Contains(key);
     }
 
     public bool IsKeyReleased(Key key)
     {
-      return pressedLastFrame.Contains(key) && !pressedThisFrame.Contains(key);
+      return _pressedLastFrame.Contains(key) && !_pressedThisFrame.Contains(key);
     }
 
     public void Update()
     {
       // clear the back buffer
-      pressedLastFrame.Clear();
+      _pressedLastFrame.Clear();
 
-      foreach (var key in pressedThisFrame)
+      foreach (var key in _pressedThisFrame)
       {
-        pressedLastFrame.Add(key);
+        _pressedLastFrame.Add(key);
       }
 
-      pressedThisFrame.Clear();
+      _pressedThisFrame.Clear();
 
       // update manually by checking each mapped scan code
       foreach (var key in ScanCodes.Keys)
       {
         if (IsKeyDown(key))
         {
-          pressedThisFrame.Add(key);
+          _pressedThisFrame.Add(key);
         }
       }
     }
-
-    /// <summary>A mapping of <see cref="Key"/> to Win32 scan codes.</summary>
-    private static Dictionary<Key, int> ScanCodes { get; } = new()
-    {
-      [Key.Escape] = 0x1B,
-      [Key.Space]  = 0x20,
-      [Key.W]      = 0x57,
-      [Key.S]      = 0x53,
-      [Key.A]      = 0x41,
-      [Key.D]      = 0x44
-    };
   }
 
-  /// <summary>A <see cref="IMouseDevice"/> for the Win32 console.</summary>
+  /// <summary>A <see cref="IMouseDevice" /> for the Win32 console.</summary>
   private sealed class ConsoleMouseDevice : IMouseDevice
   {
+    private Vector2 _lastPosition;
     public event Action<MouseButton>? ButtonPressed;
     public event Action<MouseButton>? ButtonReleased;
-    public event Action<Vector2>?     Moved;
-
-    private Vector2 lastPosition;
+    public event Action<Vector2>? Moved;
 
     public Vector2 Position
     {
@@ -365,8 +364,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
 
     public void Update()
     {
-      DeltaPosition = Position - lastPosition;
-      lastPosition  = Position;
+      DeltaPosition = Position - _lastPosition;
+      _lastPosition = Position;
     }
   }
 
@@ -420,6 +419,32 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     [DllImport("Kernel32.dll", SetLastError = true)]
     public static extern bool CloseHandle(SafeFileHandle handle);
 
+    public static void SetCurrentFont(string font, short fontSize = 0)
+    {
+      var handle = GetStdHandle(StandardOutputHandle);
+      var fontInfo = new FontInfo
+      {
+        cbSize = Marshal.SizeOf<FontInfo>()
+      };
+
+      if (!GetCurrentConsoleFontEx(handle, false, ref fontInfo))
+      {
+        throw new Win32Exception(Marshal.GetLastWin32Error());
+      }
+
+      fontInfo.FontIndex = 0;
+      fontInfo.FontFamily = FixedWidthTrueType;
+      fontInfo.FontName = font;
+      fontInfo.FontWeight = 400;
+      fontInfo.FontSize = fontSize > 0 ? fontSize : fontInfo.FontSize;
+
+      // Get some settings from current font.
+      if (!SetCurrentConsoleFontEx(handle, false, ref fontInfo))
+      {
+        throw new Win32Exception(Marshal.GetLastWin32Error());
+      }
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public record struct Coord(short X, short Y)
     {
@@ -463,31 +488,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
       public string FontName;
     }
-
-    public static void SetCurrentFont(string font, short fontSize = 0)
-    {
-      var handle = GetStdHandle(StandardOutputHandle);
-      var fontInfo = new FontInfo
-      {
-        cbSize = Marshal.SizeOf<FontInfo>()
-      };
-
-      if (!GetCurrentConsoleFontEx(handle, false, ref fontInfo))
-      {
-        throw new Win32Exception(Marshal.GetLastWin32Error());
-      }
-
-      fontInfo.FontIndex  = 0;
-      fontInfo.FontFamily = FixedWidthTrueType;
-      fontInfo.FontName   = font;
-      fontInfo.FontWeight = 400;
-      fontInfo.FontSize   = fontSize > 0 ? fontSize : fontInfo.FontSize;
-
-      // Get some settings from current font.
-      if (!SetCurrentConsoleFontEx(handle, false, ref fontInfo))
-      {
-        throw new Win32Exception(Marshal.GetLastWin32Error());
-      }
-    }
   }
 }
+
+

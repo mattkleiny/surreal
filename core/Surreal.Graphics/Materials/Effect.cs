@@ -2,7 +2,7 @@
 
 namespace Surreal.Graphics.Materials;
 
-/// <summary>An effect is a specially configured <see cref="Material"/>.</summary>
+/// <summary>An effect is a specially configured <see cref="Material" />.</summary>
 public abstract class Effect : IDisposable
 {
   protected Effect(Material material)
@@ -10,11 +10,11 @@ public abstract class Effect : IDisposable
     Material = material;
   }
 
-  /// <summary>The underlying <see cref="Material"/> instance.</summary>
+  /// <summary>The underlying <see cref="Material" /> instance.</summary>
   public Material Material { get; }
 
-  public IGraphicsServer     Server => Material.Server;
-  public ShaderProgram       Shader => Material.Shader;
+  public IGraphicsServer Server => Material.Server;
+  public ShaderProgram Shader => Material.Shader;
   public MaterialPropertySet Locals => Material.Locals;
 
   public BlendState Blending
@@ -28,5 +28,11 @@ public abstract class Effect : IDisposable
     Material.Dispose();
   }
 
-  public static implicit operator Material(Effect decorator) => decorator.Material;
+  public static implicit operator Material(Effect decorator)
+  {
+    return decorator.Material;
+  }
 }
+
+
+

@@ -2,10 +2,10 @@
 
 namespace Surreal.Automata.BehaviourTrees.Composite;
 
-/// <summary>A <see cref="BehaviourComposite"/> that executes nodes in order.</summary>
+/// <summary>A <see cref="BehaviourComposite" /> that executes nodes in order.</summary>
 public sealed record Sequence : BehaviourComposite
 {
-  private int lastIndex;
+  private int _lastIndex;
 
   public Sequence(params BehaviourNode[] children)
   {
@@ -16,14 +16,14 @@ public sealed record Sequence : BehaviourComposite
   {
     base.OnExit(context);
 
-    lastIndex = 0;
+    _lastIndex = 0;
   }
 
   protected internal override BehaviourStatus OnUpdate(in BehaviourContext context, TimeDelta deltaTime)
   {
-    for (; lastIndex < Children.Count; lastIndex++)
+    for (; _lastIndex < Children.Count; _lastIndex++)
     {
-      var child = Children[lastIndex];
+      var child = Children[_lastIndex];
 
       switch (child.Update(context, deltaTime))
       {
@@ -38,3 +38,5 @@ public sealed record Sequence : BehaviourComposite
     return BehaviourStatus.Success;
   }
 }
+
+

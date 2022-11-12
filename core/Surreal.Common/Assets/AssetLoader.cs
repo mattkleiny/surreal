@@ -6,7 +6,7 @@ namespace Surreal.Assets;
 public delegate Task<T> AssetChangedHandler<T>(AssetLoaderContext context, T existingAsset, CancellationToken cancellationToken)
   where T : notnull;
 
-/// <summary>Context for <see cref="IAssetLoader"/> operations.</summary>
+/// <summary>Context for <see cref="IAssetLoader" /> operations.</summary>
 public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manager)
 {
   public Type Type => Id.Type;
@@ -20,7 +20,7 @@ public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manag
   {
     return Manager.SubscribeToChanges(Id, Path, async (context, existingAsset, cancellationToken) =>
     {
-      return await handler(context, (T)existingAsset, cancellationToken);
+      return await handler(context, (T) existingAsset, cancellationToken);
     });
   }
 
@@ -39,7 +39,7 @@ public interface IAssetLoader
   Task<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
 }
 
-/// <summary>Base class for any <see cref="IAssetLoader"/> implementation.</summary>
+/// <summary>Base class for any <see cref="IAssetLoader" /> implementation.</summary>
 public abstract class AssetLoader<T> : IAssetLoader
   where T : notnull
 {
@@ -48,38 +48,25 @@ public abstract class AssetLoader<T> : IAssetLoader
     return context.Type == typeof(T);
   }
 
-  public abstract Task<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
-
   async Task<object> IAssetLoader.LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     return await LoadAsync(context, cancellationToken);
   }
+
+  public abstract Task<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
 }
 
-/// <summary>Base class for any <see cref="IAssetLoader"/> implementation.</summary>
+/// <summary>Base class for any <see cref="IAssetLoader" /> implementation.</summary>
 public abstract class AssetLoader<T, TSettings> : IAssetLoader
   where T : notnull
   where TSettings : AssetSettings<T>, new()
 {
   public TSettings Settings { get; set; } = new();
 
-  /// <summary>Gets the <see cref="TSettings"/> for the given asset context.</summary>
-  public TSettings GetAssetParameters(AssetLoaderContext context)
-  {
-    if (context.Manager.TryGetSettings<T>(context.Path, out var settings))
-    {
-      return (TSettings)settings;
-    }
-
-    return Settings;
-  }
-
   public virtual bool CanHandle(AssetLoaderContext context)
   {
     return context.Type == typeof(T);
   }
-
-  public abstract Task<T> LoadAsync(AssetLoaderContext context, TSettings settings, CancellationToken cancellationToken);
 
   async Task<object> IAssetLoader.LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
@@ -87,4 +74,18 @@ public abstract class AssetLoader<T, TSettings> : IAssetLoader
 
     return await LoadAsync(context, settings, cancellationToken);
   }
+
+  /// <summary>Gets the <see cref="TSettings" /> for the given asset context.</summary>
+  public TSettings GetAssetParameters(AssetLoaderContext context)
+  {
+    if (context.Manager.TryGetSettings<T>(context.Path, out var settings))
+    {
+      return (TSettings) settings;
+    }
+
+    return Settings;
+  }
+
+  public abstract Task<T> LoadAsync(AssetLoaderContext context, TSettings settings, CancellationToken cancellationToken);
 }
+
