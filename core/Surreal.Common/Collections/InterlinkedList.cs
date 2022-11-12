@@ -91,6 +91,8 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
     }
 
     public TNode? Current { get; private set; }
+
+    TNode IEnumerator<TNode>.Current => Current!;
     object IEnumerator.Current => Current!;
 
     public bool MoveNext()
@@ -116,4 +118,3 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
     }
   }
 }
-

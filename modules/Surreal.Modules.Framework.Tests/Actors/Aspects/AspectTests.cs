@@ -1,7 +1,7 @@
-﻿using Surreal.Components;
-using Surreal.Utilities;
+﻿using Surreal.Actors.Components;
+using Surreal.Actors.Utilities;
 
-namespace Surreal.Aspects;
+namespace Surreal.Actors.Aspects;
 
 public class AspectTests
 {
@@ -22,5 +22,6 @@ public class AspectTests
     aspect.IsInterestedIn(transform | sprite | statistics).Should().BeFalse();
   }
 }
+
 
 

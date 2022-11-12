@@ -1,7 +1,7 @@
 ﻿using Surreal.Collections;
 using Surreal.Timing;
 
-namespace Surreal;
+namespace Surreal.Actors;
 
 /// <summary>A list of <see cref="ActorBehaviour" />s with managed reference tracking.</summary>
 public sealed class ActorBehaviourList : ListDecorator<ActorBehaviour>
@@ -119,5 +119,6 @@ public abstract class ActorBehaviour
   {
   }
 }
+
 
 

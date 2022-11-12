@@ -1,6 +1,6 @@
-﻿using Surreal.Components;
+﻿using Surreal.Actors.Components;
 
-namespace Surreal.Aspects;
+namespace Surreal.Actors.Aspects;
 
 /// <summary>Describes a union of component types for use in component queries.</summary>
 public readonly record struct Aspect(ComponentMask Includes = default, ComponentMask Excludes = default, ComponentMask OneOf = default)
@@ -40,6 +40,7 @@ public readonly record struct Aspect(ComponentMask Includes = default, Component
     return true;
   }
 }
+
 
 
 

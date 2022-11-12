@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal;
+namespace Surreal.Actors;
 
 public class ActorSceneTests
 {
@@ -78,5 +78,6 @@ public class ActorSceneTests
     actor.Received(1).OnDestroy();
   }
 }
+
 
 

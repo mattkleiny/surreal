@@ -1,4 +1,4 @@
-﻿namespace Surreal.Components;
+﻿namespace Surreal.Actors.Components;
 
 /// <summary>A type of a component, with a shared unique identifier to represent it.</summary>
 public readonly record struct ComponentType(Type Type, int Id, ComponentMask Mask)
@@ -43,5 +43,6 @@ public readonly record struct ComponentType(Type Type, int Id, ComponentMask Mas
     }
   }
 }
+
 
 

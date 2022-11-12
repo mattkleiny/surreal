@@ -2,7 +2,7 @@
 using Surreal.Collections;
 using Surreal.Timing;
 
-namespace Surreal;
+namespace Surreal.Actors;
 
 /// <summary>A scene of managed <see cref="Actor" />s.</summary>
 public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
@@ -258,6 +258,7 @@ public sealed class ActorScene : IEnumerable<Actor>, IActorContext, IDisposable
     }
   }
 }
+
 
 
 

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Surreal.Collections;
 
-namespace Surreal.Components;
+namespace Surreal.Actors.Components;
 
 /// <summary>Represents generically any <see cref="IComponentStorage{T}" /> type.</summary>
 public interface IComponentStorage
@@ -15,6 +15,7 @@ public interface IComponentStorage<T> : IComponentStorage
 {
   ref T GetOrCreateComponent(ArenaIndex index, Optional<T> prototype)
   {
+#pragma warning disable CS8619
     ref var component = ref GetComponent(index);
 
     if (Unsafe.IsNullRef(ref component))
@@ -23,10 +24,9 @@ public interface IComponentStorage<T> : IComponentStorage
     }
 
     return ref component;
+#pragma warning restore CS8619
   }
 
   ref T GetComponent(ArenaIndex index);
   ref T AddComponent(ArenaIndex index, Optional<T> prototype);
 }
-
-

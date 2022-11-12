@@ -1,4 +1,4 @@
-﻿namespace Surreal.Utilities;
+﻿namespace Surreal.Actors.Utilities;
 
 internal record struct Transform
 {
@@ -18,5 +18,6 @@ internal record struct Statistics
   public int Health;
   public int Toxin;
 }
+
 
 

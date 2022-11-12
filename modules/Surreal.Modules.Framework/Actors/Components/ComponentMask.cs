@@ -1,4 +1,4 @@
-namespace Surreal.Components;
+namespace Surreal.Actors.Components;
 
 /// <summary>A mask for a component, with a shared unique identifier to represent it.</summary>
 public readonly record struct ComponentMask(BigInteger Mask)
@@ -74,5 +74,6 @@ public readonly record struct ComponentMask(BigInteger Mask)
     return new ComponentMask(left.Mask ^ right.Mask);
   }
 }
+
 
 

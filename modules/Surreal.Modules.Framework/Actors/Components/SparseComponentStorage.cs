@@ -1,6 +1,6 @@
 ﻿using Surreal.Collections;
 
-namespace Surreal.Components;
+namespace Surreal.Actors.Components;
 
 /// <summary>A sparsely packed <see cref="IComponentStorage{T}" />.</summary>
 public sealed class SparseComponentStorage<T> : IComponentStorage<T>
@@ -25,5 +25,6 @@ public sealed class SparseComponentStorage<T> : IComponentStorage<T>
     _components.Remove(index);
   }
 }
+
 
 

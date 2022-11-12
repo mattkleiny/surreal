@@ -1,6 +1,6 @@
-﻿using Surreal.Utilities;
+﻿using Surreal.Actors.Utilities;
 
-namespace Surreal.Components;
+namespace Surreal.Actors.Components;
 
 public class ComponentMaskTests
 {
@@ -42,5 +42,6 @@ public class ComponentMaskTests
     (transform | sprite | statistics).ContainsAny(transform | sprite | statistics).Should().BeTrue();
   }
 }
+
 
 

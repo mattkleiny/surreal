@@ -1,6 +1,6 @@
 ﻿using Surreal.Collections;
 
-namespace Surreal.Components;
+namespace Surreal.Actors.Components;
 
 public record struct TestComponent(Vector2 Position = default, float Rotation = 0f)
 {
@@ -58,5 +58,6 @@ public class DenseComponentStorageTests : ComponentStorageTestCase<DenseComponen
 public class SparseComponentStorageTests : ComponentStorageTestCase<SparseComponentStorage<TestComponent>>
 {
 }
+
 
 

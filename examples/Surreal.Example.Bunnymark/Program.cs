@@ -88,38 +88,41 @@ Game.Start(platform, async game =>
   });
 });
 
-public record struct Bunny
+namespace Surreal
 {
-  public Vector2 Position;
-  public Vector2 Velocity;
-
-  public void Update(TimeDelta deltaTime)
+  public record struct Bunny
   {
-    Position += Velocity * deltaTime * 100f;
+    public Vector2 Position;
+    public Vector2 Velocity;
 
-    CheckIfOffScreen();
-  }
-
-  private void CheckIfOffScreen()
-  {
-    if (Velocity.X < 0f && Position.X < -960f)
+    public void Update(TimeDelta deltaTime)
     {
-      Position.X = 960f; // left
+      Position += Velocity * deltaTime * 100f;
+
+      CheckIfOffScreen();
     }
 
-    if (Velocity.Y < 0f && Position.Y < -540f)
+    private void CheckIfOffScreen()
     {
-      Position.Y = 540f; // top
-    }
+      if (Velocity.X < 0f && Position.X < -960f)
+      {
+        Position.X = 960f; // left
+      }
 
-    if (Velocity.X > 0f && Position.X > 960f)
-    {
-      Position.X = -960f; // right
-    }
+      if (Velocity.Y < 0f && Position.Y < -540f)
+      {
+        Position.Y = 540f; // top
+      }
 
-    if (Velocity.Y > 0f && Position.Y > 540f)
-    {
-      Position.Y = -540f; // bottom
+      if (Velocity.X > 0f && Position.X > 960f)
+      {
+        Position.X = -960f; // right
+      }
+
+      if (Velocity.Y > 0f && Position.Y > 540f)
+      {
+        Position.Y = -540f; // bottom
+      }
     }
   }
 }

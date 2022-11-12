@@ -108,15 +108,18 @@ Game.Start(platform, async game =>
   });
 });
 
-public readonly record struct Tile(ushort Id)
+namespace Surreal
 {
-  private static int _nextId = 0;
-
-  public static Tile Empty { get; } = new(NextId());
-  public static Tile Filled { get; } = new(NextId());
-
-  private static ushort NextId()
+  public readonly record struct Tile(ushort Id)
   {
-    return (ushort) Interlocked.Increment(ref _nextId);
+    private static int _nextId = 0;
+
+    public static Tile Empty { get; } = new(NextId());
+    public static Tile Filled { get; } = new(NextId());
+
+    private static ushort NextId()
+    {
+      return (ushort) Interlocked.Increment(ref _nextId);
+    }
   }
 }

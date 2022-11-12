@@ -1,7 +1,7 @@
 ﻿using Surreal.Collections;
 using Surreal.Timing;
 
-namespace Surreal;
+namespace Surreal.Actors;
 
 /// <summary>The possible states for an <see cref="Actor" />.</summary>
 public enum ActorStatus
@@ -160,5 +160,6 @@ public class Actor
     foreach (var behaviour in Behaviours) behaviour.OnDestroy();
   }
 }
+
 
 

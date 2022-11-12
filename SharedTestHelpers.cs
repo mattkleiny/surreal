@@ -75,6 +75,7 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
     return fixture;
   }
 
+  [SuppressMessage("Trimming", "IL2026:Members annotated with \'RequiresUnreferencedCodeAttribute\' require dynamic access otherwise can break functionality when trimming application code")]
   private static IEnumerable<ISpecimenBuilder> DiscoverSpecimenBuilders()
   {
     return from type in Assembly.GetExecutingAssembly().GetTypes()
