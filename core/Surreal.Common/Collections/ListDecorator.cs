@@ -2,7 +2,9 @@
 
 #pragma warning disable CA1710
 
-/// <summary>Base class for any custom collection of <see cref="T" /> that supports decorating default behaviour.</summary>
+/// <summary>
+/// Base class for any custom collection of <see cref="T" /> that supports decorating default behaviour.
+/// </summary>
 public abstract class ListDecorator<T> : ICollection<T>
 {
   protected List<T> Items { get; } = new();
@@ -72,4 +74,3 @@ public abstract class ListDecorator<T> : ICollection<T>
     return Items.GetEnumerator();
   }
 }
-

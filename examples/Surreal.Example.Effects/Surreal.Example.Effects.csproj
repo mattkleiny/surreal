@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>An example of screen effects in Surreal.</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
-  </ItemGroup>
-</Project>

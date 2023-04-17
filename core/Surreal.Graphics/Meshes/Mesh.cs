@@ -5,7 +5,9 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
 
-/// <summary>Different types of supported primitive shapes for meshes.</summary>
+/// <summary>
+/// Different types of supported primitive shapes for meshes.
+/// </summary>
 public enum MeshType
 {
   Points,
@@ -15,12 +17,16 @@ public enum MeshType
   Triangles
 }
 
-/// <summary>Abstracts over all possible <see cref="Mesh{TVertex}" /> types.</summary>
+/// <summary>
+/// Abstracts over all possible <see cref="Mesh{TVertex}" /> types.
+/// </summary>
 public abstract class Mesh : GraphicsResource, IHasSizeEstimate
 {
   public abstract Size Size { get; }
 
-  /// <summary>Convenience method for building <see cref="Mesh{TVertex}" />s with a <see cref="Tessellator{TVertex}" />.</summary>
+  /// <summary>
+  /// Convenience method for building <see cref="Mesh{TVertex}" />s with a <see cref="Tessellator{TVertex}" />.
+  /// </summary>
   public static Mesh<TVertex> Create<TVertex>(IGraphicsServer server, Action<Tessellator<TVertex>> builder)
     where TVertex : unmanaged
   {
@@ -31,7 +37,9 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
     return mesh;
   }
 
-  /// <summary>Builds a simple triangle <see cref="Mesh" />.</summary>
+  /// <summary>
+  /// Builds a simple triangle <see cref="Mesh" />.
+  /// </summary>
   public static Mesh<Vertex2> CreateTriangle(IGraphicsServer server, float size = 1f)
   {
     return Create<Vertex2>(server, tessellator =>
@@ -44,7 +52,9 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
     });
   }
 
-  /// <summary>Builds a simple quad <see cref="Mesh" /> quad.</summary>
+  /// <summary>
+  /// Builds a simple quad <see cref="Mesh" /> quad.
+  /// </summary>
   public static Mesh<Vertex2> CreateQuad(IGraphicsServer server, float size = 1f)
   {
     return Create<Vertex2>(server, tessellator =>
@@ -58,7 +68,9 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
     });
   }
 
-  /// <summary>Builds a simple circle <see cref="Mesh" />.</summary>
+  /// <summary>
+  /// Builds a simple circle <see cref="Mesh" />.
+  /// </summary>
   public static Mesh<Vertex2> CreateCircle(IGraphicsServer server, float radius = 1f, int segments = 16)
   {
     return Create<Vertex2>(server, tessellator =>
@@ -86,25 +98,37 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
     });
   }
 
-  /// <summary>Draws the mesh with the given <see cref="ShaderProgram" />.</summary>
+  /// <summary>
+  /// Draws the mesh with the given <see cref="ShaderProgram" />.
+  /// </summary>
   public abstract void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles);
 
-  /// <summary>Draws the mesh with the given <see cref="ShaderProgram" /> and primitive counts.</summary>
+  /// <summary>
+  /// Draws the mesh with the given <see cref="ShaderProgram" /> and primitive counts.
+  /// </summary>
   public abstract void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles);
 
-  /// <summary>Draws the mesh with the given <see cref="Material" />.</summary>
+  /// <summary>
+  /// Draws the mesh with the given <see cref="Material" />.
+  /// </summary>
   public abstract void Draw(Material material, MeshType type = MeshType.Triangles);
 
-  /// <summary>Draws the mesh with the given <see cref="Material" /> and primitive counts.</summary>
+  /// <summary>
+  /// Draws the mesh with the given <see cref="Material" /> and primitive counts.
+  /// </summary>
   public abstract void Draw(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles);
 }
 
-/// <summary>A mesh with a strongly-typed vertex type, <see cref="TVertex" />.</summary>
+/// <summary>
+/// A mesh with a strongly-typed vertex type, <see cref="TVertex" />.
+/// </summary>
 [DebuggerDisplay("Mesh with {Vertices.Length} vertices and {Indices.Length} indices")]
 public sealed class Mesh<TVertex> : Mesh
   where TVertex : unmanaged
 {
-  /// <summary>Descriptors are statically shared amongst all <see cref="TVertex" />.</summary>
+  /// <summary>
+  /// Descriptors are statically shared amongst all <see cref="TVertex" />.
+  /// </summary>
   private static readonly VertexDescriptorSet VertexDescriptors = VertexDescriptorSet.Create<TVertex>();
 
   private readonly IGraphicsServer _server;
@@ -188,6 +212,3 @@ public sealed class Mesh<TVertex> : Mesh
     base.Dispose(managed);
   }
 }
-
-
-

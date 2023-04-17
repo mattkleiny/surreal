@@ -7,14 +7,16 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>A no-op <see cref="IGraphicsServer" /> for headless environments and testing.</summary>
+/// <summary>
+/// A no-op <see cref="IGraphicsServer" /> for headless environments and testing.
+/// </summary>
 public sealed class HeadlessGraphicsServer : IGraphicsServer
 {
-  private int _nextBufferId = 0;
-  private int _nextFrameBufferId = 0;
-  private int _nextMeshId = 0;
-  private int _nextShaderId = 0;
-  private int _nextTextureId = 0;
+  private int _nextBufferId;
+  private int _nextFrameBufferId;
+  private int _nextMeshId;
+  private int _nextShaderId;
+  private int _nextTextureId;
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -241,6 +243,3 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 }
-
-
-

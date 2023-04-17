@@ -6,7 +6,9 @@ using static Surreal.Mathematics.Maths;
 
 namespace Surreal.Graphics.Meshes;
 
-/// <summary>An efficient batch of geometric primitives for rendering to the GPU.</summary>
+/// <summary>
+/// An efficient batch of geometric primitives for rendering to the GPU.
+/// </summary>
 public sealed class GeometryBatch : IDisposable
 {
   private const int DefaultVertexCount = 64;
@@ -136,7 +138,7 @@ public sealed class GeometryBatch : IDisposable
 
     for (var i = 0; i < resolution; i++)
     {
-      var x = (float) i / resolution;
+      var x = (float)i / resolution;
 
       points.Add(curve.SampleAt(x));
     }
@@ -201,6 +203,3 @@ public sealed class GeometryBatch : IDisposable
     _vertexCount = 0;
   }
 }
-
-
-

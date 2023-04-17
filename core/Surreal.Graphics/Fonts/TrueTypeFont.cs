@@ -8,7 +8,9 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Fonts;
 
-/// <summary>Different weights for <see cref="TrueTypeFont" /> styles.</summary>
+/// <summary>
+/// Different weights for <see cref="TrueTypeFont" /> styles.
+/// </summary>
 public enum FontWeight
 {
   Normal,
@@ -16,7 +18,9 @@ public enum FontWeight
   Bold
 }
 
-/// <summary>Utilities for working with <see cref="TrueTypeFont" />s.</summary>
+/// <summary>
+/// Utilities for working with <see cref="TrueTypeFont" />s.
+/// </summary>
 public static class TrueTypeFontExtensions
 {
   public static async Task<TrueTypeFont> LoadDefaultFontAsync(this IAssetManager manager)
@@ -35,7 +39,9 @@ public static class TrueTypeFontExtensions
   }
 }
 
-/// <summary>A true type font that can be rendered at arbitrary sized.</summary>
+/// <summary>
+/// A true type font that can be rendered at arbitrary sized.
+/// </summary>
 public sealed class TrueTypeFont
 {
   private readonly IGraphicsServer _server;
@@ -61,7 +67,9 @@ public sealed class TrueTypeFont
     return new RasterFont(_server, font);
   }
 
-  /// <summary>A <see cref="TrueTypeFont" /> that can be rasterized at a particular size.</summary>
+  /// <summary>
+  /// A <see cref="TrueTypeFont" /> that can be rasterized at a particular size.
+  /// </summary>
   public sealed class RasterFont
   {
     private static readonly string AsciiCharacterSet;
@@ -74,7 +82,7 @@ public sealed class TrueTypeFont
       // build default ASCII character set
       var builder = new StringBuilder();
 
-      for (var i = 0; i < 256; i++) builder.Append((char) i);
+      for (var i = 0; i < 256; i++) builder.Append((char)i);
 
       AsciiCharacterSet = builder.ToString();
     }
@@ -85,7 +93,9 @@ public sealed class TrueTypeFont
       _options = new TextOptions(font);
     }
 
-    /// <summary>Measures the size of the given piece of text.</summary>
+    /// <summary>
+    /// Measures the size of the given piece of text.
+    /// </summary>
     public Rectangle MeasureSize(ReadOnlySpan<char> text)
     {
       var size = TextMeasurer.Measure(text, _options);
@@ -93,13 +103,17 @@ public sealed class TrueTypeFont
       return new Rectangle(size.Left, size.Bottom, size.Right, size.Top);
     }
 
-    /// <summary>Renders this font to a new <see cref="BitmapFont" />.</summary>
+    /// <summary>
+    /// Renders this font to a new <see cref="BitmapFont" />.
+    /// </summary>
     public BitmapFont ToBitmapFont()
     {
       return ToBitmapFont(AsciiCharacterSet);
     }
 
-    /// <summary>Renders this font to a new <see cref="BitmapFont" />.</summary>
+    /// <summary>
+    /// Renders this font to a new <see cref="BitmapFont" />.
+    /// </summary>
     public BitmapFont ToBitmapFont(string characters)
     {
       var atlas = new TextureAtlasGlyphRenderer();
@@ -121,7 +135,9 @@ public sealed class TrueTypeFont
     }
   }
 
-  /// <summary>A <see cref="IGlyphRenderer" /> that emits to texel data in a given <see cref="Texture" />.</summary>
+  /// <summary>
+  /// A <see cref="IGlyphRenderer" /> that emits to texel data in a given <see cref="Texture" />.
+  /// </summary>
   private sealed class TextureAtlasGlyphRenderer : TextureAtlasBuilder, IGlyphRenderer
   {
     private Cell _currentCell;
@@ -134,8 +150,8 @@ public sealed class TrueTypeFont
     bool IGlyphRenderer.BeginGlyph(FontRectangle bounds, GlyphRendererParameters paramaters)
     {
       _currentCell = AddCell(
-        (int) MathF.Ceiling(bounds.Width),
-        (int) MathF.Ceiling(bounds.Height)
+        (int)MathF.Ceiling(bounds.Width),
+        (int)MathF.Ceiling(bounds.Height)
       );
 
       return true;
@@ -183,7 +199,9 @@ public sealed class TrueTypeFont
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="TrueTypeFont" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="TrueTypeFont" />s.
+/// </summary>
 public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
 {
   private readonly IGraphicsServer _server;
@@ -207,6 +225,3 @@ public sealed class TrueTypeFontLoader : AssetLoader<TrueTypeFont>
     return new TrueTypeFont(_server, family);
   }
 }
-
-
-

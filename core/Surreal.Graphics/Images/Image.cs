@@ -9,7 +9,9 @@ using Size = Surreal.Memory.Size;
 
 namespace Surreal.Graphics.Images;
 
-/// <summary>An image of colored pixels.</summary>
+/// <summary>
+/// An image of colored pixels.
+/// </summary>
 [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
 public sealed class Image : IDisposable
 {
@@ -110,14 +112,18 @@ public sealed class Image : IDisposable
     await _image.SaveAsPngAsync(stream);
   }
 
-  /// <summary>Swaps the underlying image content, for hot-reloading.</summary>
+  /// <summary>
+  /// Swaps the underlying image content, for hot-reloading.
+  /// </summary>
   internal void ReplaceImage(Image other)
   {
     _image = other._image;
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="Image" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="Image" />s.
+/// </summary>
 public sealed class ImageLoader : AssetLoader<Image>
 {
   private static ImmutableHashSet<string> Extensions { get; } = ImmutableHashSet.Create(".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga");
@@ -146,6 +152,3 @@ public sealed class ImageLoader : AssetLoader<Image>
     return image;
   }
 }
-
-
-

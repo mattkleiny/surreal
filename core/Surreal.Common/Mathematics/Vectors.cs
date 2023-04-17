@@ -5,7 +5,9 @@ namespace Surreal.Mathematics;
 #pragma warning disable S1104
 #pragma warning disable S2328
 
-/// <summary>An integral point in 2-space.</summary>
+/// <summary>
+/// An integral point in 2-space.
+/// </summary>
 [StructLayout(LayoutKind.Sequential)]
 public record struct Point2(int X, int Y)
 {
@@ -88,13 +90,15 @@ public record struct Point2(int X, int Y)
   public static implicit operator Point2(Vector2 vector)
   {
     return new Point2(
-      (int) MathF.Floor(vector.X),
-      (int) MathF.Floor(vector.Y)
+      (int)MathF.Floor(vector.X),
+      (int)MathF.Floor(vector.Y)
     );
   }
 }
 
-/// <summary>An integral point in 3-space.</summary>
+/// <summary>
+/// An integral point in 3-space.
+/// </summary>
 [StructLayout(LayoutKind.Sequential)]
 public record struct Point3(int X, int Y, int Z)
 {
@@ -174,14 +178,16 @@ public record struct Point3(int X, int Y, int Z)
   public static implicit operator Point3(Vector3 vector)
   {
     return new Point3(
-      (int) MathF.Floor(vector.X),
-      (int) MathF.Floor(vector.Y),
-      (int) MathF.Floor(vector.Z)
+      (int)MathF.Floor(vector.X),
+      (int)MathF.Floor(vector.Y),
+      (int)MathF.Floor(vector.Z)
     );
   }
 }
 
-/// <summary>An integral point in 4-space.</summary>
+/// <summary>
+/// An integral point in 4-space.
+/// </summary>
 [StructLayout(LayoutKind.Sequential)]
 public record struct Point4(int X, int Y, int Z, int W)
 {
@@ -260,6 +266,3 @@ public record struct Point4(int X, int Y, int Z, int W)
     return new Point4(value.Item1, value.Item2, value.Item3, value.Item4);
   }
 }
-
-
-

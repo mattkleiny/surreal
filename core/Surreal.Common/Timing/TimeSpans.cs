@@ -1,6 +1,8 @@
 namespace Surreal.Timing;
 
-/// <summary>Static extensions for <see cref="TimeSpan" />s.</summary>
+/// <summary>
+/// Static extensions for <see cref="TimeSpan" />s.
+/// </summary>
 public static class TimeSpanExtensions
 {
   public static TimeSpan Milliseconds(this int interval)
@@ -53,6 +55,3 @@ public static class TimeSpanExtensions
     return TimeSpan.FromDays(interval);
   }
 }
-
-
-

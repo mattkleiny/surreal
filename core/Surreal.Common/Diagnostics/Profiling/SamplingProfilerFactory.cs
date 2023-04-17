@@ -1,12 +1,16 @@
 ﻿namespace Surreal.Diagnostics.Profiling;
 
-/// <summary>A sampler for <see cref="IProfiler" /> operations.</summary>
+/// <summary>
+/// A sampler for <see cref="IProfiler" /> operations.
+/// </summary>
 public interface IProfileSampler
 {
   void Sample(string category, string task, TimeSpan duration);
 }
 
-/// <summary>A <see cref="IProfilerFactory" /> that builds <see cref="SamplingProfiler" />s.</summary>
+/// <summary>
+/// A <see cref="IProfilerFactory" /> that builds <see cref="SamplingProfiler" />s.
+/// </summary>
 public sealed class SamplingProfilerFactory : IProfilerFactory
 {
   private readonly IProfileSampler _sampler;
@@ -21,7 +25,9 @@ public sealed class SamplingProfilerFactory : IProfilerFactory
     return new SamplingProfiler(_sampler, category);
   }
 
-  /// <summary>A <see cref="IProfiler" /> for <see cref="SamplingProfiler" />s.</summary>
+  /// <summary>
+  /// A <see cref="IProfiler" /> for <see cref="SamplingProfiler" />s.
+  /// </summary>
   private sealed class SamplingProfiler : IProfiler
   {
     private readonly string _category;
@@ -44,4 +50,3 @@ public sealed class SamplingProfilerFactory : IProfilerFactory
     }
   }
 }
-

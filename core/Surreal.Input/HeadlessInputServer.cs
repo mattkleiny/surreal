@@ -3,7 +3,9 @@ using Surreal.Input.Mouse;
 
 namespace Surreal.Input;
 
-/// <summary>A no-op <see cref="IInputServer" /> for headless environments and testing.</summary>
+/// <summary>
+/// A no-op <see cref="IInputServer" /> for headless environments and testing.
+/// </summary>
 public sealed class HeadlessInputServer : IInputServer
 {
   private readonly List<IInputDevice> _devices = new();
@@ -25,6 +27,3 @@ public sealed class HeadlessInputServer : IInputServer
     Mouse.Update();
   }
 }
-
-
-

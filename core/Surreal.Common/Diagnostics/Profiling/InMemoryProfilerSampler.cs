@@ -4,7 +4,9 @@ using Surreal.IO;
 
 namespace Surreal.Diagnostics.Profiling;
 
-/// <summary>A <see cref="IProfileSampler" /> that records profiling results to an in-memory buffer.</summary>
+/// <summary>
+/// A <see cref="IProfileSampler" /> that records profiling results to an in-memory buffer.
+/// </summary>
 public sealed class InMemoryProfilerSampler : IProfileSampler
 {
   private static readonly ILog Log = LogFactory.GetLog<InMemoryProfilerSampler>();
@@ -23,7 +25,9 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     Samplers.GetSampler(category, task).Record(duration);
   }
 
-  /// <summary>Exports the results to the given CSV file.</summary>
+  /// <summary>
+  /// Exports the results to the given CSV file.
+  /// </summary>
   public async ValueTask ExportToCsvAsync(VirtualPath path)
   {
     await using var stream = await path.OpenOutputStreamAsync();
@@ -43,7 +47,9 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     }
   }
 
-  /// <summary>A sampler that records details about an operation.</summary>
+  /// <summary>
+  /// A sampler that records details about an operation.
+  /// </summary>
   public sealed class Sampler : IEnumerable<TimeSpan>
   {
     private readonly RingBuffer<TimeSpan> _samples;
@@ -91,7 +97,9 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     }
   }
 
-  /// <summary>A collection of <see cref="Sampler" />s.</summary>
+  /// <summary>
+  /// A collection of <see cref="Sampler" />s.
+  /// </summary>
   public sealed class SamplerCollection : IEnumerable<Sampler>
   {
     private readonly int _sampleCount;
@@ -125,4 +133,3 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     }
   }
 }
-

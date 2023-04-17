@@ -11,7 +11,9 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A rune that can be painted to a <see cref="IConsoleGraphics" />.</summary>
+/// <summary>
+/// A rune that can be painted to a <see cref="IConsoleGraphics" />.
+/// </summary>
 public readonly record struct Glyph(
   char Character,
   ConsoleColor ForegroundColor = ConsoleColor.White,
@@ -20,7 +22,9 @@ public readonly record struct Glyph(
   public static implicit operator Glyph(char character) => new(character);
 }
 
-/// <summary>Allows managing the console display graphics.</summary>
+/// <summary>
+/// Allows managing the console display graphics.
+/// </summary>
 public interface IConsoleGraphics
 {
   int Width { get; set; }
@@ -32,7 +36,9 @@ public interface IConsoleGraphics
   void Flush();
 }
 
-/// <summary>Allows accessing console platform internals.</summary>
+/// <summary>
+/// Allows accessing console platform internals.
+/// </summary>
 public interface IConsolePlatformHost : IPlatformHost
 {
   string Title { get; set; }
@@ -42,7 +48,9 @@ public interface IConsolePlatformHost : IPlatformHost
   IConsoleGraphics Graphics { get; }
 }
 
-/// <summary>The <see cref="IPlatformHost" /> for <see cref="ConsolePlatform" />.</summary>
+/// <summary>
+/// The <see cref="IPlatformHost" /> for <see cref="ConsolePlatform" />.
+/// </summary>
 [SupportedOSPlatform("windows")]
 internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphics
 {
@@ -95,8 +103,8 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     {
       Left = 0,
       Top = 0,
-      Right = (short) Width,
-      Bottom = (short) Height
+      Right = (short)Width,
+      Bottom = (short)Height
     };
 
     fixed (Interop.CharInfo* pointer = &_backBuffer[0])
@@ -104,7 +112,7 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
       var result = Interop.WriteConsoleOutputW(
         hConsoleOutput: _consoleHandle,
         lpBuffer: pointer,
-        dwBufferSize: new((short) Width, (short) Height),
+        dwBufferSize: new((short)Width, (short)Height),
         dwBufferCoord: new(0, 0),
         lpWriteRegion: ref rect
       );
@@ -238,26 +246,30 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
   {
     static int Cast(ConsoleColor color, bool isBackground)
     {
-      var colorAttribute = (color & ~ConsoleColor.White) == ConsoleColor.Black ? (short) color : throw new InvalidOperationException();
+      var colorAttribute = (color & ~ConsoleColor.White) == ConsoleColor.Black ? (short)color : throw new InvalidOperationException();
 
       if (isBackground)
       {
-        colorAttribute = (short) (colorAttribute << 4);
+        colorAttribute = (short)(colorAttribute << 4);
       }
 
       return colorAttribute;
     }
 
-    return (short) (Cast(foregroundColor, false) | Cast(backgroundColor, true));
+    return (short)(Cast(foregroundColor, false) | Cast(backgroundColor, true));
   }
 
-  /// <summary>A <see cref="IKeyboardDevice" /> for the Win32 console.</summary>
+  /// <summary>
+  /// A <see cref="IKeyboardDevice" /> for the Win32 console.
+  /// </summary>
   private sealed class ConsoleKeyboardDevice : IKeyboardDevice
   {
     private readonly HashSet<Key> _pressedLastFrame = new();
     private readonly HashSet<Key> _pressedThisFrame = new();
 
-    /// <summary>A mapping of <see cref="Key" /> to Win32 scan codes.</summary>
+    /// <summary>
+    /// A mapping of <see cref="Key" /> to Win32 scan codes.
+    /// </summary>
     private static Dictionary<Key, int> ScanCodes { get; } = new()
     {
       [Key.Escape] = 0x1B,
@@ -314,7 +326,9 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     }
   }
 
-  /// <summary>A <see cref="IMouseDevice" /> for the Win32 console.</summary>
+  /// <summary>
+  /// A <see cref="IMouseDevice" /> for the Win32 console.
+  /// </summary>
   private sealed class ConsoleMouseDevice : IMouseDevice
   {
     private Vector2 _lastPosition;
@@ -369,7 +383,9 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     }
   }
 
-  /// <summary>Native interop for Win32 consoles</summary>
+  /// <summary>
+  /// Native interop for Win32 consoles
+  /// </summary>
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   private static class Interop
   {
@@ -455,15 +471,21 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     [StructLayout(LayoutKind.Explicit)]
     public struct CharUnion
     {
-      [FieldOffset(0)] public ushort UnicodeChar;
-      [FieldOffset(0)] public byte AsciiChar;
+      [FieldOffset(0)]
+      public ushort UnicodeChar;
+
+      [FieldOffset(0)]
+      public byte AsciiChar;
     }
 
     [StructLayout(LayoutKind.Explicit)]
     public struct CharInfo
     {
-      [FieldOffset(0)] public CharUnion Char;
-      [FieldOffset(2)] public short Attributes;
+      [FieldOffset(0)]
+      public CharUnion Char;
+
+      [FieldOffset(2)]
+      public short Attributes;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -490,5 +512,3 @@ internal sealed class ConsolePlatformHost : IConsolePlatformHost, IConsoleGraphi
     }
   }
 }
-
-

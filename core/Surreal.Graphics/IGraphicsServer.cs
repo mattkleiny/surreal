@@ -7,7 +7,9 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>An opaque handle to a resource in the underling <see cref="IGraphicsServer" /> implementation.</summary>
+/// <summary>
+/// An opaque handle to a resource in the underling <see cref="IGraphicsServer" /> implementation.
+/// </summary>
 public readonly record struct GraphicsHandle(nint Id)
 {
   public static GraphicsHandle None => default;
@@ -19,16 +21,18 @@ public readonly record struct GraphicsHandle(nint Id)
 
   public static implicit operator int(GraphicsHandle handle)
   {
-    return (int) handle.Id;
+    return (int)handle.Id;
   }
 
   public static implicit operator uint(GraphicsHandle handle)
   {
-    return (uint) handle.Id;
+    return (uint)handle.Id;
   }
 }
 
-/// <summary>An abstraction over the different types of graphics servers available.</summary>
+/// <summary>
+/// An abstraction over the different types of graphics servers available.
+/// </summary>
 public interface IGraphicsServer
 {
   // intrinsics
@@ -88,6 +92,3 @@ public interface IGraphicsServer
   void SetDefaultFrameBuffer();
   void DeleteFrameBuffer(GraphicsHandle handle);
 }
-
-
-

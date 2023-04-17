@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Collections;
 
-/// <summary>A <see cref="Queue{T}" /> with a fixed-sized upper bound.</summary>
+/// <summary>
+/// A <see cref="Queue{T}" /> with a fixed-sized upper bound.
+/// </summary>
 public sealed class BoundedQueue<T> : IEnumerable<T>
 {
   private readonly Queue<T> _queue;
@@ -60,7 +62,10 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
   }
 }
 
-/// <summary>A <see cref="ConcurrentQueue{T}" /> with a fixed-sized upper bound.</summary>
+/// <summary>
+/// A <see cref="ConcurrentQueue{T}" /> with a fixed-sized upper bound.
+/// </summary>
+[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix")]
 public sealed class BoundedConcurrentQueue<T>
 {
   private readonly ConcurrentQueue<T> _queue;
@@ -101,4 +106,3 @@ public sealed class BoundedConcurrentQueue<T>
     _queue.Clear();
   }
 }
-

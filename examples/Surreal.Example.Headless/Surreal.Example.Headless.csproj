@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>A super basic example of headless execution with Surreal.</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Headless\Surreal.Platform.Headless.csproj" />
-  </ItemGroup>
-</Project>

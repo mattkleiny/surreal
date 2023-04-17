@@ -2,13 +2,17 @@
 
 namespace Surreal.Diagnostics.Profiling;
 
-/// <summary>A factory for <see cref="IProfiler" />s.</summary>
+/// <summary>
+/// A factory for <see cref="IProfiler" />s.
+/// </summary>
 public interface IProfilerFactory
 {
   IProfiler GetProfiler(string category);
 }
 
-/// <summary>Entry point for <see cref="IProfilerFactory" />s.</summary>
+/// <summary>
+/// Entry point for <see cref="IProfilerFactory" />s.
+/// </summary>
 public static class ProfilerFactory
 {
   public static IProfilerFactory Current { get; set; } = NullProfilerFactory.Instance;
@@ -28,7 +32,9 @@ public static class ProfilerFactory
     return new LazyProfiler(category);
   }
 
-  /// <summary>A <see cref="IProfiler" /> that lazily acquires the <see cref="IProfiler" /> target.</summary>
+  /// <summary>
+  /// A <see cref="IProfiler" /> that lazily acquires the <see cref="IProfiler" /> target.
+  /// </summary>
   private sealed class LazyProfiler : IProfiler
   {
     private readonly Lazy<IProfiler> _profiler;
@@ -49,7 +55,9 @@ public static class ProfilerFactory
     }
   }
 
-  /// <summary>A <see cref="IProfilerFactory" /> that does nothing.</summary>
+  /// <summary>
+  /// A <see cref="IProfilerFactory" /> that does nothing.
+  /// </summary>
   [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
   private sealed class NullProfilerFactory : IProfilerFactory
   {
@@ -60,7 +68,9 @@ public static class ProfilerFactory
       return new NullProfiler();
     }
 
-    /// <summary>A no-op <see cref="IProfiler" />.</summary>
+    /// <summary>
+    /// A no-op <see cref="IProfiler" />.
+    /// </summary>
     private sealed class NullProfiler : IProfiler
     {
       public ProfilingScope Track(string task)
@@ -75,4 +85,3 @@ public static class ProfilerFactory
     }
   }
 }
-

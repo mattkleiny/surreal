@@ -5,13 +5,19 @@ using Surreal.IO;
 
 namespace Surreal.Internal.Graphics;
 
-/// <summary>A single shader, unlinked to a program.</summary>
+/// <summary>
+/// A single shader, unlinked to a program.
+/// </summary>
 internal sealed record OpenTKShader(ShaderType Type, string Code);
 
-/// <summary>A set of <see cref="OpenTKShader" />s.</summary>
+/// <summary>
+/// A set of <see cref="OpenTKShader" />s.
+/// </summary>
 internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders);
 
-/// <summary>The <see cref="AssetLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.
+/// </summary>
 internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
 {
   private readonly OpenTKGraphicsServer _server;
@@ -100,8 +106,8 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return new OpenTKShaderSet(path.ToString(), shaderCode.Select(_ => new OpenTKShader(_.Type, _.Code.ToString())).ToImmutableArray());
   }
 
-  /// <summary>A mutable version of the <see cref="OpenTKShader" /> that we can build up in stages.</summary>
+  /// <summary>
+  /// A mutable version of the <see cref="OpenTKShader" /> that we can build up in stages.
+  /// </summary>
   private readonly record struct Shader(ShaderType Type, StringBuilder Code);
 }
-
-

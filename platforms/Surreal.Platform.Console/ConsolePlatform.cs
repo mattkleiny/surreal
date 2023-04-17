@@ -2,7 +2,9 @@
 
 namespace Surreal;
 
-/// <summary>Configuration for the <see cref="ConsolePlatform" />.</summary>
+/// <summary>
+/// Configuration for the <see cref="ConsolePlatform" />.
+/// </summary>
 public sealed record ConsoleConfiguration
 {
   public string Title { get; set; } = "Surreal";
@@ -11,14 +13,20 @@ public sealed record ConsoleConfiguration
   public string Font { get; set; } = "Courier New";
   public short FontSize { get; set; } = 7;
 
-  /// <summary>Periodically add the FPS to the console title?</summary>
-  public bool ShowFpsInTitle { get; set; } = false;
+  /// <summary>
+  /// Periodically add the FPS to the console title?
+  /// </summary>
+  public bool ShowFpsInTitle { get; set; }
 
-  /// <summary>A time limit on frames per second.</summary>
+  /// <summary>
+  /// A time limit on frames per second.
+  /// </summary>
   public TimeSpan TargetDeltaTime { get; set; } = 16.Milliseconds();
 }
 
-/// <summary>A <see cref="IPlatform" /> for console-only desktop environments.</summary>
+/// <summary>
+/// A <see cref="IPlatform" /> for console-only desktop environments.
+/// </summary>
 public sealed class ConsolePlatform : IPlatform
 {
   public ConsoleConfiguration Configuration { get; } = new();
@@ -33,5 +41,3 @@ public sealed class ConsolePlatform : IPlatform
     return new ConsolePlatformHost(Configuration);
   }
 }
-
-

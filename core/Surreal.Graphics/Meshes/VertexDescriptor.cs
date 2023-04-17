@@ -3,7 +3,9 @@ using JetBrains.Annotations;
 
 namespace Surreal.Graphics.Meshes;
 
-/// <summary>Primitive types supported by <see cref="VertexDescriptor" />s.</summary>
+/// <summary>
+/// Primitive types supported by <see cref="VertexDescriptor" />s.
+/// </summary>
 public enum VertexType
 {
   UnsignedByte,
@@ -15,7 +17,9 @@ public enum VertexType
   Double
 }
 
-/// <summary>Associates a <see cref="VertexDescriptor" /> with a vertex field.</summary>
+/// <summary>
+/// Associates a <see cref="VertexDescriptor" /> with a vertex field.
+/// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute : Attribute
@@ -30,11 +34,15 @@ public sealed class VertexDescriptorAttribute : Attribute
   public int Count { get; set; }
   public VertexType Type { get; set; }
 
-  /// <summary>True if the resultant components should be normalised to (0, 1) before submission to the GPU.</summary>
-  public bool ShouldNormalize { get; set; } = false;
+  /// <summary>
+  /// True if the resultant components should be normalised to (0, 1) before submission to the GPU.
+  /// </summary>
+  public bool ShouldNormalize { get; set; }
 }
 
-/// <summary>Describes a single vertex.</summary>
+/// <summary>
+/// Describes a single vertex.
+/// </summary>
 [DebuggerDisplay("{Name}: {Count}")]
 public readonly record struct VertexDescriptor(string Name, int Offset, int Count, VertexType Type, bool ShouldNormalize)
 {
@@ -57,7 +65,9 @@ public readonly record struct VertexDescriptor(string Name, int Offset, int Coun
   }
 }
 
-/// <summary>Describes a set of <see cref="VertexDescriptor" />s.</summary>
+/// <summary>
+/// Describes a set of <see cref="VertexDescriptor" />s.
+/// </summary>
 public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descriptors, int Stride)
 {
   public int Length => Descriptors.Length;
@@ -93,6 +103,3 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
     return new VertexDescriptorSet(builder.ToImmutable(), stride);
   }
 }
-
-
-

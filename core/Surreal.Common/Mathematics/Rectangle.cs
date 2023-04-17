@@ -2,7 +2,9 @@
 
 // TODO: make the coordinate system consistent across the project
 
-/// <summary>A bounding rectangle in 2-space.</summary>
+/// <summary>
+/// A bounding rectangle in 2-space.
+/// </summary>
 public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)
 {
   public Rectangle(Vector2 min, Vector2 max)
@@ -43,7 +45,9 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     return $"Rectangle ({Left}, {Top}, {Right}, {Bottom})";
   }
 
-  /// <summary>Clamps the bounding rect to the given range.</summary>
+  /// <summary>
+  /// Clamps the bounding rect to the given range.
+  /// </summary>
   public Rectangle Clamp(float minX, float minY, float maxX, float maxY)
   {
     return new Rectangle(
@@ -70,7 +74,9 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
            vector.Y <= Bottom;
   }
 
-  /// <summary>Allows enumerating points in a <see cref="Rectangle" />.</summary>
+  /// <summary>
+  /// Allows enumerating points in a <see cref="Rectangle" />.
+  /// </summary>
   public struct PointEnumerator : IEnumerable<Point2>, IEnumerator<Point2>
   {
     private readonly Point2 _bottomLeft;
@@ -122,6 +128,3 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     }
   }
 }
-
-
-

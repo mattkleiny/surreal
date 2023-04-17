@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Diagnostics.Logging;
 
-/// <summary>A <see cref="ILogFactory" /> that composes multiple other <see cref="ILogFactory" />s.</summary>
+/// <summary>
+/// A <see cref="ILogFactory" /> that composes multiple other <see cref="ILogFactory" />s.
+/// </summary>
 public sealed class CompositeLogFactory : ILogFactory
 {
   private readonly ILogFactory[] _factories;
@@ -15,7 +17,9 @@ public sealed class CompositeLogFactory : ILogFactory
     return new CompositeLog(_factories.Select(factory => factory.GetLog(category)));
   }
 
-  /// <summary>A <see cref="ILog" /> that delegates to multiple other <see cref="ILog" />s.</summary>
+  /// <summary>
+  /// A <see cref="ILog" /> that delegates to multiple other <see cref="ILog" />s.
+  /// </summary>
   private sealed class CompositeLog : ILog
   {
     private readonly ILog[] _logs;
@@ -69,4 +73,3 @@ public sealed class CompositeLogFactory : ILogFactory
     }
   }
 }
-

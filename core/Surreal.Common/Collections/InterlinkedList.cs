@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Collections;
 
-/// <summary>Represents an element in a <see cref="InterlinkedList{TNode}" />.</summary>
+/// <summary>
+/// Represents an element in a <see cref="InterlinkedList{TNode}" />.
+/// </summary>
 public interface IInterlinkedElement<TSelf>
   where TSelf : class, IInterlinkedElement<TSelf>
 {
@@ -8,7 +10,9 @@ public interface IInterlinkedElement<TSelf>
   TSelf? Next { get; set; }
 }
 
-/// <summary>A linked list where each node contains pointers to/from each other, in-structure.</summary>
+/// <summary>
+/// A linked list where each node contains pointers to/from each other, in-structure.
+/// </summary>
 public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
   where TNode : class, IInterlinkedElement<TNode>
 {
@@ -79,7 +83,9 @@ public sealed class InterlinkedList<TNode> : IEnumerable<TNode>
     return new Enumerator(this);
   }
 
-  /// <summary>Enumerates the <see cref="InterlinkedList{TNode}" /> from head to tail.</summary>
+  /// <summary>
+  /// Enumerates the <see cref="InterlinkedList{TNode}" /> from head to tail.
+  /// </summary>
   public struct Enumerator : IEnumerator<TNode>
   {
     private readonly InterlinkedList<TNode> _list;

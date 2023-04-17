@@ -2,7 +2,9 @@
 
 namespace Surreal.Mathematics;
 
-/// <summary>Extensions for <see cref="Random" />.</summary>
+/// <summary>
+/// Extensions for <see cref="Random" />.
+/// </summary>
 public static class RandomExtensions
 {
   public static int NextInt(this Random random)
@@ -17,7 +19,7 @@ public static class RandomExtensions
 
   public static float NextFloat(this Random random)
   {
-    return (float) random.NextDouble();
+    return (float)random.NextDouble();
   }
 
   public static float NextFloat(this Random random, float min, float max)
@@ -67,7 +69,7 @@ public static class RandomExtensions
 
   public static Color32 NextColor32(this Random random)
   {
-    return new Color32((byte) random.NextInt(0, 255), (byte) random.NextInt(0, 255), (byte) random.NextInt(0, 255));
+    return new Color32((byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255));
   }
 
   public static Point2 NextPoint2(this Random random, int min, int max)
@@ -140,6 +142,3 @@ public static class RandomExtensions
     return result;
   }
 }
-
-
-

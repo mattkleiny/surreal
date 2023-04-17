@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Diagnostics.Logging;
 
-/// <summary>A <see cref="ILogFactory" /> that writes to the given <see cref="TextWriter" />.</summary>
+/// <summary>
+/// A <see cref="ILogFactory" /> that writes to the given <see cref="TextWriter" />.
+/// </summary>
 public sealed class TextWriterLogFactory : ILogFactory
 {
   private readonly LogFormatter _formatter;
@@ -24,7 +26,9 @@ public sealed class TextWriterLogFactory : ILogFactory
     return new TextWriterLog(_writer, category, _minLevel, _formatter);
   }
 
-  /// <summary>A <see cref="ILog" /> that writes to a <see cref="TextWriter" />.</summary>
+  /// <summary>
+  /// A <see cref="ILog" /> that writes to a <see cref="TextWriter" />.
+  /// </summary>
   private sealed class TextWriterLog : ILog
   {
     private readonly string _category;
@@ -56,4 +60,3 @@ public sealed class TextWriterLogFactory : ILogFactory
     }
   }
 }
-

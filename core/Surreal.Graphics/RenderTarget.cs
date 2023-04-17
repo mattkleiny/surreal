@@ -3,14 +3,20 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>Describes how to create a <see cref="RenderTarget" />.</summary>
+/// <summary>
+/// Describes how to create a <see cref="RenderTarget" />.
+/// </summary>
 public readonly record struct RenderTargetDescriptor(int Width, int Height, TextureFormat Format, TextureFilterMode FilterMode, TextureWrapMode WrapMode)
 {
-  /// <summary>A default <see cref="RenderTargetDescriptor" /> for standard purposes at 1080p.</summary>
+  /// <summary>
+  /// A default <see cref="RenderTargetDescriptor" /> for standard purposes at 1080p.
+  /// </summary>
   public static RenderTargetDescriptor Default { get; } = new(1920, 1080, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
 }
 
-/// <summary>Manages a frame buffer that can be rendered to.</summary>
+/// <summary>
+/// Manages a frame buffer that can be rendered to.
+/// </summary>
 public sealed class RenderTarget : GraphicsResource
 {
   private readonly IGraphicsServer _server;
@@ -28,19 +34,25 @@ public sealed class RenderTarget : GraphicsResource
   public GraphicsHandle Handle { get; }
   public Texture ColorAttachment { get; }
 
-  /// <summary>Activates the <see cref="RenderTarget" /> for the duration of the given scope.</summary>
+  /// <summary>
+  /// Activates the <see cref="RenderTarget" /> for the duration of the given scope.
+  /// </summary>
   public RenderTargetScope ActivateForScope()
   {
     return new RenderTargetScope(this);
   }
 
-  /// <summary>Activates this as the primary render target.</summary>
+  /// <summary>
+  /// Activates this as the primary render target.
+  /// </summary>
   public void Activate()
   {
     _server.SetActiveFrameBuffer(Handle);
   }
 
-  /// <summary>Deactivates this as the primary render target and swaps back to teh default.</summary>
+  /// <summary>
+  /// Deactivates this as the primary render target and swaps back to teh default.
+  /// </summary>
   public void Deactivate()
   {
     _server.SetDefaultFrameBuffer();
@@ -58,7 +70,9 @@ public sealed class RenderTarget : GraphicsResource
     base.Dispose(managed);
   }
 
-  /// <summary>A scope for enabling a particular <see cref="RenderTarget" />.</summary>
+  /// <summary>
+  /// A scope for enabling a particular <see cref="RenderTarget" />.
+  /// </summary>
   public readonly struct RenderTargetScope : IDisposable
   {
     private readonly RenderTarget _target;
@@ -76,8 +90,3 @@ public sealed class RenderTarget : GraphicsResource
     }
   }
 }
-
-
-
-
-

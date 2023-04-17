@@ -2,14 +2,18 @@
 
 namespace Surreal.Diagnostics.Profiling;
 
-/// <summary>A component capable of recording profiling information.</summary>
+/// <summary>
+/// A component capable of recording profiling information.
+/// </summary>
 public interface IProfiler
 {
   ProfilingScope Track(string task);
   ProfilingScope Track(string category, string task);
 }
 
-/// <summary>A scope for <see cref="IProfiler" /> operations.</summary>
+/// <summary>
+/// A scope for <see cref="IProfiler" /> operations.
+/// </summary>
 public readonly struct ProfilingScope : IDisposable
 {
   private readonly string _category;
@@ -33,4 +37,3 @@ public readonly struct ProfilingScope : IDisposable
     _sampler?.Sample(_category, _task, endTime - _startTime);
   }
 }
-

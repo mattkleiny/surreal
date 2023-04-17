@@ -1,6 +1,8 @@
 namespace Surreal.Mathematics;
 
-/// <summary>Axis combinations in euclidean space.</summary>
+/// <summary>
+/// Axis combinations in euclidean space.
+/// </summary>
 [Flags]
 public enum Axis
 {
@@ -9,6 +11,3 @@ public enum Axis
   Horizontal = 1 << 1,
   All = Vertical | Horizontal
 }
-
-
-

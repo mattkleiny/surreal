@@ -2,13 +2,17 @@
 
 namespace Surreal.Diagnostics.Logging;
 
-/// <summary>A factory for <see cref="ILog" />s.</summary>
+/// <summary>
+/// A factory for <see cref="ILog" />s.
+/// </summary>
 public interface ILogFactory
 {
   ILog GetLog(string category);
 }
 
-/// <summary>Entry point for <see cref="ILogFactory" />s.</summary>
+/// <summary>
+/// Entry point for <see cref="ILogFactory" />s.
+/// </summary>
 public static class LogFactory
 {
   public static ILogFactory Current { get; set; } = NullLogFactory.Instance;
@@ -28,7 +32,9 @@ public static class LogFactory
     return new LazyLog(category);
   }
 
-  /// <summary>A <see cref="ILog" /> that lazily acquires the <see cref="ILog" /> target.</summary>
+  /// <summary>
+  /// A <see cref="ILog" /> that lazily acquires the <see cref="ILog" /> target.
+  /// </summary>
   private sealed class LazyLog : ILog
   {
     private readonly Lazy<ILog> _log;
@@ -54,7 +60,9 @@ public static class LogFactory
     }
   }
 
-  /// <summary>A no-op <see cref="ILogFactory" />.</summary>
+  /// <summary>
+  /// A no-op <see cref="ILogFactory" />.
+  /// </summary>
   [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
   private sealed class NullLogFactory : ILogFactory
   {
@@ -65,7 +73,9 @@ public static class LogFactory
       return new NullLog();
     }
 
-    /// <summary>A <see cref="ILog" /> that does nothing.</summary>
+    /// <summary>
+    /// A <see cref="ILog" /> that does nothing.
+    /// </summary>
     private sealed class NullLog : ILog
     {
       public bool IsLevelEnabled(LogLevel level)
@@ -85,5 +95,3 @@ public static class LogFactory
     }
   }
 }
-
-

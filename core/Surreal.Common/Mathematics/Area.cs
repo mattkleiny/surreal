@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Mathematics;
 
-/// <summary>An area in 2-space.</summary>
+/// <summary>
+/// An area in 2-space.
+/// </summary>
 public readonly record struct Area(float Width, float Height)
 {
   public float Total => Width * Height;
@@ -50,6 +52,3 @@ public readonly record struct Area(float Width, float Height)
     return new Area(a.Width / b.Width, a.Height / b.Height);
   }
 }
-
-
-

@@ -39,8 +39,4 @@
     <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Timing" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\modules\Surreal.Modules.Prototyping\Surreal.Modules.Prototyping.csproj" />
-  </ItemGroup>
 </Project>

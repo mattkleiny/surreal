@@ -3,10 +3,14 @@ using Surreal.Memory;
 
 namespace Surreal.Mathematics;
 
-/// <summary>Utilities for generating distance fields.</summary>
+/// <summary>
+/// Utilities for generating distance fields.
+/// </summary>
 public static class DistanceFields
 {
-  /// <summary>Converts the given grid of <see cref="Color32" /> into a distance field.</summary>
+  /// <summary>
+  /// Converts the given grid of <see cref="Color32" /> into a distance field.
+  /// </summary>
   public static void GenerateInPlace(SpanGrid<Color32> grid, int spread = 8)
   {
     var bitmap = new Grid<bool>(grid.Width, grid.Height);
@@ -27,13 +31,17 @@ public static class DistanceFields
     }
   }
 
-  /// <summary>Determines if the given <see cref="color" /> is inside a shape on the image.</summary>
+  /// <summary>
+  /// Determines if the given <see cref="color" /> is inside a shape on the image.
+  /// </summary>
   private static bool IsInsideShape(Color32 color)
   {
     return (color.R >= 128 || color.G >= 128 || color.B >= 128) && color.A >= 128;
   }
 
-  /// <summary>Computes the signed distance to the nearest edge in a given <see cref="bitmap" />.</summary>
+  /// <summary>
+  /// Computes the signed distance to the nearest edge in a given <see cref="bitmap" />.
+  /// </summary>
   private static float FindSignedDistance(Grid<bool> bitmap, int centerX, int centerY, int spread)
   {
     var width = bitmap.Width;
@@ -66,7 +74,9 @@ public static class DistanceFields
     return sign * Math.Min(closestDist, spread);
   }
 
-  /// <summary>Computes the equivalent alpha representation as a fall-off based on <see cref="signedDistance" />.</summary>
+  /// <summary>
+  /// Computes the equivalent alpha representation as a fall-off based on <see cref="signedDistance" />.
+  /// </summary>
   private static float DistanceToAlpha(float signedDistance, int spread)
   {
     var alpha = 0.5f + 0.5f * (signedDistance / spread);
@@ -74,7 +84,9 @@ public static class DistanceFields
     return alpha.Clamp(0f, 1f);
   }
 
-  /// <summary>Computes square distance between two integral points.</summary>
+  /// <summary>
+  /// Computes square distance between two integral points.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static int SquareDist(int x1, int y1, int x2, int y2)
   {
@@ -84,6 +96,3 @@ public static class DistanceFields
     return dx * dx + dy * dy;
   }
 }
-
-
-

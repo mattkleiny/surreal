@@ -5,7 +5,9 @@ using Surreal.Memory;
 
 namespace Surreal.Audio.Clips;
 
-/// <summary>A buffer of waveform data for use in audio playback.</summary>
+/// <summary>
+/// A buffer of waveform data for use in audio playback.
+/// </summary>
 public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
 {
   private readonly IDisposableBuffer<byte> _buffer;
@@ -36,7 +38,9 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="AudioBuffer" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="AudioBuffer" />s.
+/// </summary>
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
   public override async Task<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
@@ -70,7 +74,9 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
   }
 }
 
-/// <summary>Indicates an attempt to us an unsupported audio format.</summary>
+/// <summary>
+/// Indicates an attempt to us an unsupported audio format.
+/// </summary>
 public sealed class UnsupportedAudioFormatException : Exception
 {
   public UnsupportedAudioFormatException(string message)
@@ -78,4 +84,3 @@ public sealed class UnsupportedAudioFormatException : Exception
   {
   }
 }
-

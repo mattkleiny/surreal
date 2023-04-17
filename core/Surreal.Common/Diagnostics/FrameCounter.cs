@@ -3,7 +3,9 @@ using Surreal.Timing;
 
 namespace Surreal.Diagnostics;
 
-/// <summary>A utility which counts frames per second.</summary>
+/// <summary>
+/// A utility which counts frames per second.
+/// </summary>
 public sealed class FrameCounter
 {
   private readonly RingBuffer<TimeSpan> _samples;
@@ -21,4 +23,3 @@ public sealed class FrameCounter
     _samples.Add(deltaTime);
   }
 }
-

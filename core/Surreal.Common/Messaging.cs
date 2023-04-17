@@ -5,17 +5,23 @@ using Surreal.Collections;
 
 namespace Surreal;
 
-/// <summary>A subscriber for <see cref="Message" />s.</summary>
+/// <summary>
+/// A subscriber for <see cref="Message" />s.
+/// </summary>
 public delegate void MessageSubscriber<T>(ref T message);
 
-/// <summary>Indicates the associated method should subscribe to a message.</summary>
+/// <summary>
+/// Indicates the associated method should subscribe to a message.
+/// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class MessageSubscriberAttribute : Attribute
 {
 }
 
-/// <summary>A simple message bus that allows communication amongst disconnected clients.</summary>
+/// <summary>
+/// A simple message bus that allows communication amongst disconnected clients.
+/// </summary>
 public static class Message
 {
   private static readonly MultiDictionary<Type, Delegate> Subscribers = new();
@@ -139,11 +145,15 @@ public static class Message
     return MethodCache.GetOrAdd(target.GetType(), DiscoverWithReflection);
   }
 
-  /// <summary>Represents a reflected subscriber method.</summary>
+  /// <summary>
+  /// Represents a reflected subscriber method.
+  /// </summary>
   private record struct SubscriberMethod(MethodInfo Method, Type MessageType, Type DelegateType);
 }
 
-/// <summary>A simple channel of <see cref="T" /> messages to be sent between consumers.</summary>
+/// <summary>
+/// A simple channel of <see cref="T" /> messages to be sent between consumers.
+/// </summary>
 public sealed class MessageChannel<T> : IDisposable
 {
   private readonly BlockingCollection<T> _messages;

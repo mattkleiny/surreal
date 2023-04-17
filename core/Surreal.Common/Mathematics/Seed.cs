@@ -1,6 +1,8 @@
 namespace Surreal.Mathematics;
 
-/// <summary>A seed for the random number generator.</summary>
+/// <summary>
+/// A seed for the random number generator.
+/// </summary>
 public readonly record struct Seed(int Value)
 {
   public static Seed Default => default;
@@ -26,6 +28,3 @@ public readonly record struct Seed(int Value)
     return $"<{Value}>";
   }
 }
-
-
-

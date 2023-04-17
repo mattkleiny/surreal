@@ -3,7 +3,9 @@ using Surreal.Memory;
 
 namespace Surreal.IO;
 
-/// <summary>A <see cref="FileSystem" /> for the host operating system.</summary>
+/// <summary>
+/// A <see cref="FileSystem" /> for the host operating system.
+/// </summary>
 public sealed class LocalFileSystem : FileSystem
 {
   private const string Separator = "/";
@@ -120,6 +122,3 @@ public sealed class LocalFileSystem : FileSystem
     }
   }
 }
-
-
-

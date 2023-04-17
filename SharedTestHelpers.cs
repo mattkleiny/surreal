@@ -10,7 +10,9 @@ using Surreal.Mathematics;
 
 namespace Surreal;
 
-/// <summary>Provides a customized AutoFixture for use in test method parameter injection.</summary>
+/// <summary>
+/// Provides a customized AutoFixture for use in test method parameter injection.
+/// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Method)]
 internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
@@ -82,7 +84,7 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
       where typeof(ISpecimenBuilder).IsAssignableFrom(type)
       where type.GetCustomAttribute<RegisterSpecimenBuilderAttribute>() != null
       where type.IsClass && !type.IsAbstract
-      select (ISpecimenBuilder) Activator.CreateInstance(type)!;
+      select (ISpecimenBuilder)Activator.CreateInstance(type)!;
   }
 
   private sealed class DateOnlyGenerator : SpecimenBuilder<DateOnly>
@@ -146,14 +148,18 @@ internal class AutoTestAttribute : Attribute, ISimpleTestBuilder, IImplyFixture
   }
 }
 
-/// <summary>Registers the associated type as a <see cref="ISpecimenBuilder" />.</summary>
+/// <summary>
+/// Registers the associated type as a <see cref="ISpecimenBuilder" />.
+/// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Class)]
 internal sealed class RegisterSpecimenBuilderAttribute : Attribute
 {
 }
 
-/// <summary>Base class for any <see cref="ISpecimenBuilder" /> for <see cref="T" /> which handles different request sources.</summary>
+/// <summary>
+/// Base class for any <see cref="ISpecimenBuilder" /> for <see cref="T" /> which handles different request sources.
+/// </summary>
 internal abstract class SpecimenBuilder<T> : ISpecimenBuilder
   where T : notnull
 {

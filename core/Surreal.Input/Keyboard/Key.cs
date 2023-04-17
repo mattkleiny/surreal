@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Input.Keyboard;
 
-/// <summary>A single key on a <see cref="IKeyboardDevice" />.</summary>
+/// <summary>
+/// A single key on a <see cref="IKeyboardDevice" />.
+/// </summary>
 public enum Key : ushort
 {
   F1,
@@ -28,6 +30,3 @@ public enum Key : ushort
   LeftShift,
   Tab
 }
-
-
-

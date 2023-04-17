@@ -19,7 +19,9 @@ using Vector4 = System.Numerics.Vector4;
 
 namespace Surreal.Internal.Graphics;
 
-/// <summary>The <see cref="IGraphicsServer" /> for the OpenTK backend (OpenGL).</summary>
+/// <summary>
+/// The <see cref="IGraphicsServer" /> for the OpenTK backend (OpenGL).
+/// </summary>
 internal sealed class OpenTKGraphicsServer : IGraphicsServer
 {
   public void SetViewportSize(Viewport viewport)
@@ -365,14 +367,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       var attribute = descriptors[index];
 
       GL.VertexAttribPointer(
-        (uint) index,
+        (uint)index,
         attribute.Count,
         ConvertVertexType(attribute.Type),
         attribute.ShouldNormalize,
         descriptors.Stride,
         attribute.Offset
       );
-      GL.EnableVertexAttribArray((uint) index);
+      GL.EnableVertexAttribArray((uint)index);
     }
 
     GL.BindVertexArray(VertexArrayHandle.Zero);
@@ -433,7 +435,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
       GL.GetActiveAttrib(
         program,
-        (uint) index,
+        (uint)index,
         int.MaxValue,
         ref length,
         ref size,
@@ -482,7 +484,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
       GL.GetActiveUniform(
         program,
-        (uint) index,
+        (uint)index,
         int.MaxValue,
         ref length,
         ref size,
@@ -582,7 +584,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
-    GL.ActiveTexture(TextureUnit.Texture0 + (uint) samplerSlot);
+    GL.ActiveTexture(TextureUnit.Texture0 + (uint)samplerSlot);
     GL.BindTexture(TextureTarget.Texture2d, new TextureHandle(texture));
     GL.ProgramUniform1i(new ProgramHandle(handle), location, samplerSlot);
   }
@@ -685,16 +687,16 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return format switch
     {
       // integral
-      TextureFormat.R8 => (int) All.R8,
-      TextureFormat.Rg8 => (int) All.Rg8,
-      TextureFormat.Rgb8 => (int) All.Rgb8,
-      TextureFormat.Rgba8 => (int) All.Rgba8,
+      TextureFormat.R8 => (int)All.R8,
+      TextureFormat.Rg8 => (int)All.Rg8,
+      TextureFormat.Rgb8 => (int)All.Rgb8,
+      TextureFormat.Rgba8 => (int)All.Rgba8,
 
       // floating
-      TextureFormat.R => (int) All.R,
-      TextureFormat.Rg => (int) All.Rg,
-      TextureFormat.Rgb => (int) All.Rgb,
-      TextureFormat.Rgba => (int) All.Rgba,
+      TextureFormat.R => (int)All.R,
+      TextureFormat.Rg => (int)All.Rg,
+      TextureFormat.Rgb => (int)All.Rgb,
+      TextureFormat.Rgba => (int)All.Rgba,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
@@ -817,8 +819,8 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return filterMode switch
     {
-      TextureFilterMode.Point => (int) All.Nearest,
-      TextureFilterMode.Linear => (int) All.Linear,
+      TextureFilterMode.Point => (int)All.Nearest,
+      TextureFilterMode.Linear => (int)All.Linear,
 
       _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
     };
@@ -828,12 +830,10 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
   {
     return wrapMode switch
     {
-      TextureWrapMode.Clamp => (int) All.ClampToEdge,
-      TextureWrapMode.Repeat => (int) All.MirroredRepeat,
+      TextureWrapMode.Clamp => (int)All.ClampToEdge,
+      TextureWrapMode.Repeat => (int)All.MirroredRepeat,
 
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };
   }
 }
-
-

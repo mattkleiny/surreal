@@ -3,7 +3,9 @@ using Surreal.Memory;
 
 namespace Surreal.IO;
 
-/// <summary>A <see cref="FileSystem" /> that uses embed assembly resources.</summary>
+/// <summary>
+/// A <see cref="FileSystem" /> that uses embed assembly resources.
+/// </summary>
 public sealed class ResourceFileSystem : FileSystem
 {
   private const string Separator = "/";
@@ -84,6 +86,3 @@ public sealed class ResourceNotFoundException : Exception
   {
   }
 }
-
-
-

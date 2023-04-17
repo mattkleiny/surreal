@@ -3,7 +3,9 @@ using Surreal.Memory;
 
 namespace Surreal;
 
-/// <summary>An application resource that can be deterministically destroyed.</summary>
+/// <summary>
+/// An application resource that can be deterministically destroyed.
+/// </summary>
 public abstract class Resource : IDisposable
 {
   public bool IsDisposed { get; private set; }
@@ -29,7 +31,9 @@ public abstract class Resource : IDisposable
   }
 }
 
-/// <summary>A <see cref="Resource" /> with global tracking in a static <see cref="InterlinkedList{TNode}" />.</summary>
+/// <summary>
+/// A <see cref="Resource" /> with global tracking in a static <see cref="InterlinkedList{TNode}" />.
+/// </summary>
 public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSelf>
   where TSelf : TrackedResource<TSelf>
 {
@@ -37,7 +41,7 @@ public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSe
 
   protected TrackedResource()
   {
-    Track((TSelf) this);
+    Track((TSelf)this);
   }
 
   public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
@@ -74,10 +78,9 @@ public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSe
   {
     if (managed)
     {
-      Forget((TSelf) this);
+      Forget((TSelf)this);
     }
 
     base.Dispose(managed);
   }
 }
-

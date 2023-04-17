@@ -1,6 +1,8 @@
 namespace Surreal.Diagnostics.Logging;
 
-/// <summary>A <see cref="ILogFactory" /> that writes to the built-in .NET <see cref="Debug" /> console.</summary>
+/// <summary>
+/// A <see cref="ILogFactory" /> that writes to the built-in .NET <see cref="Debug" /> console.
+/// </summary>
 public sealed class DebugLogFactory : ILogFactory
 {
   private readonly LogFormatter _formatter;
@@ -22,7 +24,9 @@ public sealed class DebugLogFactory : ILogFactory
     return new DebugLog(category, _minLevel, _formatter);
   }
 
-  /// <summary>A <see cref="ILog" /> that writes to <see cref="Debug" />.</summary>
+  /// <summary>
+  /// A <see cref="ILog" /> that writes to <see cref="Debug" />.
+  /// </summary>
   private sealed class DebugLog : ILog
   {
     private readonly string _category;
@@ -52,5 +56,3 @@ public sealed class DebugLogFactory : ILogFactory
     }
   }
 }
-
-

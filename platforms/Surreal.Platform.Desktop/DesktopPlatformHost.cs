@@ -19,13 +19,17 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A specialization of <see cref="IPlatformHost" /> for desktop environments.</summary>
+/// <summary>
+/// A specialization of <see cref="IPlatformHost" /> for desktop environments.
+/// </summary>
 public interface IDesktopPlatformHost : IPlatformHost
 {
   IDesktopWindow PrimaryWindow { get; }
 }
 
-/// <summary>Allows access to the platform's window.</summary>
+/// <summary>
+/// Allows access to the platform's window.
+/// </summary>
 public interface IDesktopWindow : IDisposable
 {
   string Title { get; set; }
@@ -40,7 +44,9 @@ public interface IDesktopWindow : IDisposable
   bool IsClosing { get; }
   event Action<int, int> Resized;
 
-  /// <summary>Sets the window icon to the given image.</summary>
+  /// <summary>
+  /// Sets the window icon to the given image.
+  /// </summary>
   void SetWindowIcon(Image image);
 }
 
@@ -152,5 +158,3 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     GraphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
   }
 }
-
-

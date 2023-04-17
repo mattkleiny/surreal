@@ -2,7 +2,9 @@ using Surreal.Memory;
 
 namespace Surreal.Audio.Clips;
 
-/// <summary>Contains information on audio sampling rate for use in audio calculations.</summary>
+/// <summary>
+/// Contains information on audio sampling rate for use in audio calculations.
+/// </summary>
 public readonly record struct AudioSampleRate(int Frequency, int Channels, int BitsPerSample)
 {
   public static AudioSampleRate Standard => new(44_100, 2, 16);
@@ -12,7 +14,7 @@ public readonly record struct AudioSampleRate(int Frequency, int Channels, int B
 
   public Size CalculateSize(TimeSpan duration)
   {
-    return (int) Math.Ceiling(duration.TotalSeconds * BytesPerSecond);
+    return (int)Math.Ceiling(duration.TotalSeconds * BytesPerSecond);
   }
 
   public override string ToString()
@@ -20,4 +22,3 @@ public readonly record struct AudioSampleRate(int Frequency, int Channels, int B
     return $"{Frequency:N0} hz * {Channels} channels * {BitsPerSample} bits per sample = {BitsPerSecond}bps";
   }
 }
-

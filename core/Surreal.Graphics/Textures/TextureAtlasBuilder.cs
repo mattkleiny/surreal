@@ -4,14 +4,18 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
 
-/// <summary>A utility for building texture atlases from raw pixels.</summary>
+/// <summary>
+/// A utility for building texture atlases from raw pixels.
+/// </summary>
 public class TextureAtlasBuilder
 {
   // TODO: work on this
 
   private readonly Queue<Cell> _cells = new();
 
-  /// <summary>Adds a new cell to a <see cref="TextureAtlasBuilder" />.</summary>
+  /// <summary>
+  /// Adds a new cell to a <see cref="TextureAtlasBuilder" />.
+  /// </summary>
   public Cell AddCell(int width, int height)
   {
     var cell = new Cell(width, height);
@@ -21,7 +25,9 @@ public class TextureAtlasBuilder
     return cell;
   }
 
-  /// <summary>Converts the <see cref="TextureAtlasBuilder" /> to a grid of <see cref="Color" />.</summary>
+  /// <summary>
+  /// Converts the <see cref="TextureAtlasBuilder" /> to a grid of <see cref="Color" />.
+  /// </summary>
   public Grid<Color32> ToGrid(int stride)
   {
     var totalWidth = _cells.Sum(_ => _.Width);
@@ -37,7 +43,9 @@ public class TextureAtlasBuilder
     return result;
   }
 
-  /// <summary>Converts the <see cref="TextureAtlasBuilder" /> to a single <see cref="Image" />.</summary>
+  /// <summary>
+  /// Converts the <see cref="TextureAtlasBuilder" /> to a single <see cref="Image" />.
+  /// </summary>
   public Image ToImage(int stride)
   {
     var totalWidth = _cells.Sum(_ => _.Width);
@@ -53,7 +61,9 @@ public class TextureAtlasBuilder
     return image;
   }
 
-  /// <summary>Converts the <see cref="TextureAtlasBuilder" /> to a single <see cref="Texture" />.</summary>
+  /// <summary>
+  /// Converts the <see cref="TextureAtlasBuilder" /> to a single <see cref="Texture" />.
+  /// </summary>
   public Texture ToTexture(IGraphicsServer server, int stride)
   {
     var texture = new Texture(server);
@@ -64,7 +74,9 @@ public class TextureAtlasBuilder
     return texture;
   }
 
-  /// <summary>Converts the result and writes to the given <see cref="SpanGrid{T}" />.</summary>
+  /// <summary>
+  /// Converts the result and writes to the given <see cref="SpanGrid{T}" />.
+  /// </summary>
   private void ToSpan(SpanGrid<Color32> target)
   {
     var offsetX = 0;
@@ -83,7 +95,9 @@ public class TextureAtlasBuilder
     }
   }
 
-  /// <summary>A single cell in a <see cref="TextureAtlasBuilder" />.</summary>
+  /// <summary>
+  /// A single cell in a <see cref="TextureAtlasBuilder" />.
+  /// </summary>
   public readonly struct Cell
   {
     private readonly Grid<Color32> _pixels;
@@ -99,6 +113,3 @@ public class TextureAtlasBuilder
     public SpanGrid<Color32> Span => _pixels.Span;
   }
 }
-
-
-

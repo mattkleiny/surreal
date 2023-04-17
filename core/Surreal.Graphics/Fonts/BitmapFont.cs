@@ -6,21 +6,27 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Fonts;
 
-/// <summary>Horizontal alignments for text rendering.</summary>
+/// <summary>
+/// Horizontal alignments for text rendering.
+/// </summary>
 public enum HorizontalAlignment
 {
   Left,
   Center
 }
 
-/// <summary>Vertical alignments for text rendering.</summary>
+/// <summary>
+/// Vertical alignments for text rendering.
+/// </summary>
 public enum VerticalAlignment
 {
   Top,
   Center
 }
 
-/// <summary>Utilities for working with <see cref="BitmapFont" />s.</summary>
+/// <summary>
+/// Utilities for working with <see cref="BitmapFont" />s.
+/// </summary>
 public static class BitmapFontExtensions
 {
   public static async Task<BitmapFont> LoadDefaultBitmapFontAsync(this IAssetManager manager)
@@ -28,19 +34,25 @@ public static class BitmapFontExtensions
     return await manager.LoadAssetAsync<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
   }
 
-  /// <summary>Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.</summary>
+  /// <summary>
+  /// Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.
+  /// </summary>
   public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position)
   {
     DrawText(batch, font, text, position, Color.White);
   }
 
-  /// <summary>Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.</summary>
+  /// <summary>
+  /// Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.
+  /// </summary>
   public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color)
   {
     DrawText(batch, font, text, position, Vector2.One, color);
   }
 
-  /// <summary>Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.</summary>
+  /// <summary>
+  /// Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.
+  /// </summary>
   public static void DrawText(
     this SpriteBatch batch,
     BitmapFont font,
@@ -93,7 +105,9 @@ public static class BitmapFontExtensions
   }
 }
 
-/// <summary>Describes the structure of a <see cref="BitmapFont" />.</summary>
+/// <summary>
+/// Describes the structure of a <see cref="BitmapFont" />.
+/// </summary>
 internal sealed record BitmapFontDescriptor
 {
   public string? FilePath { get; set; }
@@ -103,7 +117,9 @@ internal sealed record BitmapFontDescriptor
   public int Columns { get; set; }
 }
 
-/// <summary>A font represented as small bitmaps.</summary>
+/// <summary>
+/// A font represented as small bitmaps.
+/// </summary>
 public sealed class BitmapFont : IDisposable
 {
   private readonly BitmapFontDescriptor _descriptor;
@@ -127,7 +143,9 @@ public sealed class BitmapFont : IDisposable
     }
   }
 
-  /// <summary>Measures the width of the given piece of text in the underlying font.</summary>
+  /// <summary>
+  /// Measures the width of the given piece of text in the underlying font.
+  /// </summary>
   public Rectangle MeasureSize(string text)
   {
     var lineCount = 0;
@@ -176,7 +194,9 @@ public sealed class BitmapFont : IDisposable
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="BitmapFont" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="BitmapFont" />s.
+/// </summary>
 public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
 {
   public override async Task<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
@@ -204,6 +224,3 @@ public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
     return descriptorPath.ChangeExtension("png");
   }
 }
-
-
-

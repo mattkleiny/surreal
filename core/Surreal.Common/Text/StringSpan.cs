@@ -2,7 +2,9 @@
 
 namespace Surreal.Text;
 
-/// <summary>Represents a span of a <see cref="string" />.</summary>
+/// <summary>
+/// Represents a span of a <see cref="string" />.
+/// </summary>
 public readonly record struct StringSpan(string? Source, int Offset, int Length)
 {
   public StringSpan(string source)
@@ -10,7 +12,9 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
   {
   }
 
-  /// <summary>Accesses a single character in the span.</summary>
+  /// <summary>
+  /// Accesses a single character in the span.
+  /// </summary>
   public char this[Index index]
   {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -27,7 +31,9 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     }
   }
 
-  /// <summary>Accesses a range of characters in the span.</summary>
+  /// <summary>
+  /// Accesses a range of characters in the span.
+  /// </summary>
   public StringSpan this[Range range]
   {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,7 +56,9 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     return ToSpan().SequenceEqual(other.ToSpan());
   }
 
-  /// <summary>Splits a string at the first instance of the given character, yielding the left and right halves.</summary>
+  /// <summary>
+  /// Splits a string at the first instance of the given character, yielding the left and right halves.
+  /// </summary>
   public static (StringSpan Left, StringSpan Right) Split(string input, string separator)
   {
     if (!TrySplit(input, separator, out var result))
@@ -61,7 +69,9 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     return result;
   }
 
-  /// <summary>Splits a string at the first instance of the given character, yielding the left and right halves.</summary>
+  /// <summary>
+  /// Splits a string at the first instance of the given character, yielding the left and right halves.
+  /// </summary>
   public static bool TrySplit(string input, string separator, out (StringSpan Left, StringSpan Right) result)
   {
     var index = input.IndexOf(separator, StringComparison.Ordinal);
@@ -78,14 +88,18 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     return false;
   }
 
-  /// <summary>Returns the next character from the start of the span.</summary>
+  /// <summary>
+  /// Returns the next character from the start of the span.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public char Peek()
   {
     return Length > 1 ? this[1] : '\0';
   }
 
-  /// <summary>Determines if the next character matches the given token.</summary>
+  /// <summary>
+  /// Determines if the next character matches the given token.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public bool Match(char token)
   {
@@ -124,7 +138,9 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
   }
 }
 
-/// <summary>General purpose extensions for <see cref="StringSpan" />s.</summary>
+/// <summary>
+/// General purpose extensions for <see cref="StringSpan" />s.
+/// </summary>
 public static class StringSpanExtensions
 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -145,7 +161,9 @@ public static class StringSpanExtensions
     return new StringSpan(source, offset, length);
   }
 
-  /// <summary>Consumes all of the next contiguous digits in the span.</summary>
+  /// <summary>
+  /// Consumes all of the next contiguous digits in the span.
+  /// </summary>
   public static StringSpan ConsumeNumeric(this StringSpan span)
   {
     var offset = 1;
@@ -163,7 +181,9 @@ public static class StringSpanExtensions
     return span[..offset];
   }
 
-  /// <summary>Consumes all of the next contiguous digits, including decimal places in the span.</summary>
+  /// <summary>
+  /// Consumes all of the next contiguous digits, including decimal places in the span.
+  /// </summary>
   public static StringSpan ConsumeNumericWithFractions(this StringSpan span)
   {
     var offset = 1;
@@ -191,7 +211,9 @@ public static class StringSpanExtensions
     return span[..offset];
   }
 
-  /// <summary>Consumes all alpha-numeric characters in the span</summary>
+  /// <summary>
+  /// Consumes all alpha-numeric characters in the span
+  /// </summary>
   public static StringSpan ConsumeAlphaNumeric(this StringSpan span)
   {
     var offset = 1;
@@ -211,7 +233,9 @@ public static class StringSpanExtensions
     return span[..offset];
   }
 
-  /// <summary>Consumes all alpha-numeric characters in the span</summary>
+  /// <summary>
+  /// Consumes all alpha-numeric characters in the span
+  /// </summary>
   public static StringSpan ConsumeAny(this StringSpan span, HashSet<char> characters)
   {
     var offset = 1;
@@ -229,7 +253,9 @@ public static class StringSpanExtensions
     return span[..offset];
   }
 
-  /// <summary>Consumes all of the given characters from the span.</summary>
+  /// <summary>
+  /// Consumes all of the given characters from the span.
+  /// </summary>
   public static StringSpan ConsumeWhile(this StringSpan span, char token)
   {
     var offset = 1;
@@ -247,7 +273,9 @@ public static class StringSpanExtensions
     return span[..offset];
   }
 
-  /// <summary>Consumes all characters until the given token is detected.</summary>
+  /// <summary>
+  /// Consumes all characters until the given token is detected.
+  /// </summary>
   public static StringSpan ConsumeUntil(this StringSpan span, char token)
   {
     var offset = 1;
@@ -283,6 +311,3 @@ public static class StringSpanExtensions
     return builder.ToString();
   }
 }
-
-
-

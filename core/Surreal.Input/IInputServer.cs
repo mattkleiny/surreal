@@ -1,6 +1,8 @@
 namespace Surreal.Input;
 
-/// <summary>Manages <see cref="IInputDevice" />s.</summary>
+/// <summary>
+/// Manages <see cref="IInputDevice" />s.
+/// </summary>
 public interface IInputServer
 {
   IEnumerable<IInputDevice> Devices { get; }
@@ -36,7 +38,9 @@ public interface IInputServer
   }
 }
 
-/// <summary>Indicates an <see cref="IInputDevice" /> is not available.</summary>
+/// <summary>
+/// Indicates an <see cref="IInputDevice" /> is not available.
+/// </summary>
 public class DeviceNotFoundException : Exception
 {
   public DeviceNotFoundException(string message)
@@ -44,6 +48,3 @@ public class DeviceNotFoundException : Exception
   {
   }
 }
-
-
-

@@ -2,16 +2,23 @@ using JetBrains.Annotations;
 
 namespace Surreal.Mathematics;
 
-/// <summary>Describes a 1d curve over a normalised parameter, T.</summary>
+/// <summary>
+/// Describes a 1d curve over a normalised parameter, T.
+/// </summary>
 public delegate float Curve(float t);
 
-/// <summary>A planar curve that can be sampled at a point in 2-space.</summary>
+/// <summary>
+/// A planar curve that can be sampled at a point in 2-space.
+/// </summary>
 public interface IPlanarCurve
 {
-  [Pure] Vector2 SampleAt(float t);
+  [Pure]
+  Vector2 SampleAt(float t);
 }
 
-/// <summary>Commonly used <see cref="Curve" />s.</summary>
+/// <summary>
+/// Commonly used <see cref="Curve" />s.
+/// </summary>
 public static class Curves
 {
   public static Curve Linear { get; } = t => t;
@@ -33,7 +40,9 @@ public static class Curves
   }
 }
 
-/// <summary>A quadratic bezier <see cref="IPlanarCurve" />.</summary>
+/// <summary>
+/// A quadratic bezier <see cref="IPlanarCurve" />.
+/// </summary>
 public readonly record struct QuadraticBezierCurve(Vector2 Start, Vector2 A, Vector2 End) : IPlanarCurve
 {
   public Vector2 SampleAt(float t)
@@ -45,7 +54,9 @@ public readonly record struct QuadraticBezierCurve(Vector2 Start, Vector2 A, Vec
   }
 }
 
-/// <summary>A cubic bezier <see cref="IPlanarCurve" />.</summary>
+/// <summary>
+/// A cubic bezier <see cref="IPlanarCurve" />.
+/// </summary>
 public readonly record struct CubicBezierCurve(Vector2 Start, Vector2 A, Vector2 B, Vector2 End) : IPlanarCurve
 {
   public Vector2 SampleAt(float t)
@@ -63,6 +74,3 @@ public readonly record struct CubicBezierCurve(Vector2 Start, Vector2 A, Vector2
            + End * t3;
   }
 }
-
-
-

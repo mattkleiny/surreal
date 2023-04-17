@@ -3,7 +3,9 @@ using Surreal.Mathematics;
 
 namespace Surreal.Memory;
 
-/// <summary>A <see cref="Span{T}" /> that is interpreted as a grid.</summary>
+/// <summary>
+/// A <see cref="Span{T}" /> that is interpreted as a grid.
+/// </summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
 public readonly ref struct SpanGrid<T>
 {
@@ -79,7 +81,9 @@ public readonly ref struct SpanGrid<T>
   }
 }
 
-/// <summary>A <see cref="ReadOnlySpan{T}" /> that is interpreted as a grid.</summary>
+/// <summary>
+/// A <see cref="ReadOnlySpan{T}" /> that is interpreted as a grid.
+/// </summary>
 [DebuggerDisplay("ReadOnlySpanGrid {Length} elements ({Width}x{Height})")]
 public readonly ref struct ReadOnlySpanGrid<T>
 {
@@ -135,26 +139,34 @@ public readonly ref struct ReadOnlySpanGrid<T>
   }
 }
 
-/// <summary>Static extensions for dealing with <see cref="SpanGrid{T}" />s.</summary>
+/// <summary>
+/// Static extensions for dealing with <see cref="SpanGrid{T}" />s.
+/// </summary>
 public static class SpanGridExtensions
 {
   public delegate TOut Painter<in TIn, out TOut>(int x, int y, TIn value);
 
-  /// <summary>Converts a <see cref="Span{T}" /> to a <see cref="SpanGrid{T}" /> with the given stride between rows.</summary>
+  /// <summary>
+  /// Converts a <see cref="Span{T}" /> to a <see cref="SpanGrid{T}" /> with the given stride between rows.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static SpanGrid<T> ToGrid<T>(this Span<T> span, int stride)
   {
     return new SpanGrid<T>(span, stride);
   }
 
-  /// <summary>Converts a <see cref="ReadOnlySpan{T}" /> to a <see cref="ReadOnlySpanGrid{T}" /> with the given stride between rows.</summary>
+  /// <summary>
+  /// Converts a <see cref="ReadOnlySpan{T}" /> to a <see cref="ReadOnlySpanGrid{T}" /> with the given stride between rows.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySpanGrid<T> ToReadOnlyGrid<T>(this ReadOnlySpan<T> span, int stride)
   {
     return new ReadOnlySpanGrid<T>(span, stride);
   }
 
-  /// <summary>Draws a circle in the grid.</summary>
+  /// <summary>
+  /// Draws a circle in the grid.
+  /// </summary>
   public static void DrawCircle<T>(this SpanGrid<T> grid, Point2 center, int radius, T value)
   {
     var rectangle = Rectangle.Create(center, new Point2(radius, radius));
@@ -170,7 +182,9 @@ public static class SpanGridExtensions
     }
   }
 
-  /// <summary>Draws a rectangle in the grid.</summary>
+  /// <summary>
+  /// Draws a rectangle in the grid.
+  /// </summary>
   public static void DrawRectangle<T>(this SpanGrid<T> grid, Point2 center, Point2 size, T value)
   {
     var rectangle = Rectangle.Create(center, size);
@@ -179,13 +193,17 @@ public static class SpanGridExtensions
     foreach (var point in clamped.Points) grid[point] = value;
   }
 
-  /// <summary>Draws a rectangle in the grid.</summary>
+  /// <summary>
+  /// Draws a rectangle in the grid.
+  /// </summary>
   public static void DrawRectangle<T>(this SpanGrid<T> grid, Rectangle rectangle, T value)
   {
     foreach (var point in rectangle.Points) grid[point] = value;
   }
 
-  /// <summary>Draws a line in the grid.</summary>
+  /// <summary>
+  /// Draws a line in the grid.
+  /// </summary>
   public static void DrawLine<T>(this SpanGrid<T> grid, Point2 from, Point2 to, T value)
   {
     // bresenham line algorithm
@@ -220,7 +238,9 @@ public static class SpanGridExtensions
     }
   }
 
-  /// <summary>Draws a strip of lines in the grid.</summary>
+  /// <summary>
+  /// Draws a strip of lines in the grid.
+  /// </summary>
   public static void DrawLineStrip<T>(this SpanGrid<T> grid, ReadOnlySpan<Point2> positions, T value)
   {
     for (var i = 1; i < positions.Length; i++)
@@ -232,7 +252,9 @@ public static class SpanGridExtensions
     }
   }
 
-  /// <summary>Draws a curve in the grid.</summary>
+  /// <summary>
+  /// Draws a curve in the grid.
+  /// </summary>
   public static void DrawCurve<T, TCurve>(this SpanGrid<T> grid, TCurve curve, T value, int samples = 16)
     where TCurve : IPlanarCurve
   {
@@ -244,7 +266,9 @@ public static class SpanGridExtensions
     grid.DrawLineStrip(positions.ToSpan(), value);
   }
 
-  /// <summary>Paints this grid onto another via a given <see cref="painter" /> function.</summary>
+  /// <summary>
+  /// Paints this grid onto another via a given <see cref="painter" /> function.
+  /// </summary>
   public static void PaintTo<TIn, TOut>(this SpanGrid<TIn> from, SpanGrid<TOut> to, Painter<TIn, TOut> painter)
   {
     for (var y = 0; y < from.Height; y++)
@@ -252,7 +276,9 @@ public static class SpanGridExtensions
       to[x, y] = painter(x, y, from[x, y]);
   }
 
-  /// <summary>Converts the grid to a string, using the given <see cref="painter" /> function.</summary>
+  /// <summary>
+  /// Converts the grid to a string, using the given <see cref="painter" /> function.
+  /// </summary>
   public static string ToString<T>(this SpanGrid<T> grid, Painter<T?, char> painter)
   {
     var builder = new StringBuilder();
@@ -276,6 +302,3 @@ public static class SpanGridExtensions
     return builder.ToString();
   }
 }
-
-
-

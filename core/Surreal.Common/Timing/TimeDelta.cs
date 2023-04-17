@@ -1,10 +1,12 @@
 ﻿namespace Surreal.Timing;
 
-/// <summary>Represents a change in time, most commonly represented as seconds.</summary>
+/// <summary>
+/// Represents a change in time, most commonly represented as seconds.
+/// </summary>
 public readonly record struct TimeDelta(float Seconds)
 {
   public TimeDelta(TimeSpan timeSpan)
-    : this((float) timeSpan.TotalSeconds)
+    : this((float)timeSpan.TotalSeconds)
   {
   }
 
@@ -27,7 +29,7 @@ public readonly record struct TimeDelta(float Seconds)
 
   public static implicit operator TimeDelta(double seconds)
   {
-    return new TimeDelta((float) seconds);
+    return new TimeDelta((float)seconds);
   }
 
   public static implicit operator TimeSpan(TimeDelta deltaTime)
@@ -45,6 +47,3 @@ public readonly record struct TimeDelta(float Seconds)
     return deltaTime.Seconds;
   }
 }
-
-
-

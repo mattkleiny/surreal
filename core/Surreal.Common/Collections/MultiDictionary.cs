@@ -1,6 +1,8 @@
 namespace Surreal.Collections;
 
-/// <summary>A dictionary with multiple values per key.</summary>
+/// <summary>
+/// A dictionary with multiple values per key.
+/// </summary>
 public sealed class MultiDictionary<TKey, TValue>
   where TKey : notnull
 {
@@ -94,4 +96,3 @@ public sealed class MultiDictionary<TKey, TValue>
     return list;
   }
 }
-

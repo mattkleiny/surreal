@@ -2,7 +2,9 @@
 
 namespace Surreal.Mathematics;
 
-/// <summary>Possible cardinal directions.</summary>
+/// <summary>
+/// Possible cardinal directions.
+/// </summary>
 [Flags]
 public enum Direction : byte
 {
@@ -14,10 +16,14 @@ public enum Direction : byte
   All = North | East | South | West
 }
 
-/// <summary>Extensions for <see cref="Direction" /> and co.</summary>
+/// <summary>
+/// Extensions for <see cref="Direction" /> and co.
+/// </summary>
 public static class DirectionExtensions
 {
-  /// <summary>Converts a <see cref="Direction" /> to a <see cref="Point2" />.</summary>
+  /// <summary>
+  /// Converts a <see cref="Direction" /> to a <see cref="Point2" />.
+  /// </summary>
   public static Point2 ToPoint2(this Direction direction)
   {
     var result = Point2.Zero;
@@ -45,7 +51,9 @@ public static class DirectionExtensions
     return result;
   }
 
-  /// <summary>Converts a <see cref="Direction" /> to a <see cref="Vector2" />.</summary>
+  /// <summary>
+  /// Converts a <see cref="Direction" /> to a <see cref="Vector2" />.
+  /// </summary>
   public static Vector2 ToVector2(this Direction direction)
   {
     var result = Vector2.Zero;
@@ -73,6 +81,3 @@ public static class DirectionExtensions
     return result;
   }
 }
-
-
-

@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Mathematics;
 
-/// <summary>An integral range.</summary>
+/// <summary>
+/// An integral range.
+/// </summary>
 public readonly record struct IntRange(int Min, int Max)
 {
   public int Delta => Max - Min;
@@ -11,7 +13,9 @@ public readonly record struct IntRange(int Min, int Max)
   }
 }
 
-/// <summary>A floating-point range.</summary>
+/// <summary>
+/// A floating-point range.
+/// </summary>
 public readonly record struct FloatRange(float Min, float Max)
 {
   public float Delta => Max - Min;
@@ -22,7 +26,9 @@ public readonly record struct FloatRange(float Min, float Max)
   }
 }
 
-/// <summary>A <see cref="TimeSpan" />  range.</summary>
+/// <summary>
+/// A <see cref="TimeSpan" />  range.
+/// </summary>
 public readonly record struct TimeSpanRange(TimeSpan Min, TimeSpan Max)
 {
   public TimeSpan Delta => Max - Min;
@@ -33,7 +39,9 @@ public readonly record struct TimeSpanRange(TimeSpan Min, TimeSpan Max)
   }
 }
 
-/// <summary>Utilities for working with ranges.</summary>
+/// <summary>
+/// Utilities for working with ranges.
+/// </summary>
 public static class Ranges
 {
   public static int Clamp(this int value, int min, int max)
@@ -76,6 +84,3 @@ public static class Ranges
     return (value - oldRange.Min) * newRange.Delta / oldRange.Delta + newRange.Min;
   }
 }
-
-
-

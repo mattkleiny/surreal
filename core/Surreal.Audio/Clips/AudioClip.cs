@@ -3,7 +3,9 @@ using Surreal.Memory;
 
 namespace Surreal.Audio.Clips;
 
-/// <summary>A clip of audio that can be played back via an audio device.</summary>
+/// <summary>
+/// A clip of audio that can be played back via an audio device.
+/// </summary>
 public sealed class AudioClip : AudioResource, IHasSizeEstimate
 {
   private readonly IAudioServer _server;
@@ -41,7 +43,9 @@ public sealed class AudioClip : AudioResource, IHasSizeEstimate
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="AudioClip" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="AudioClip" />s.
+/// </summary>
 public sealed class AudioClipLoader : AssetLoader<AudioClip>
 {
   private readonly IAudioServer _server;
@@ -61,4 +65,3 @@ public sealed class AudioClipLoader : AssetLoader<AudioClip>
     return clip;
   }
 }
-

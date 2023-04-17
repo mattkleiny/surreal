@@ -3,7 +3,9 @@ using Surreal.Memory;
 
 namespace Surreal.IO;
 
-/// <summary>Represents some virtual file system.</summary>
+/// <summary>
+/// Represents some virtual file system.
+/// </summary>
 public interface IFileSystem
 {
   ISet<string> Schemes { get; }
@@ -34,7 +36,9 @@ public interface IFileSystem
   ValueTask<Stream> OpenOutputStreamAsync(string path);
 }
 
-/// <summary>A registry for <see cref="IFileSystem" />s.</summary>
+/// <summary>
+/// A registry for <see cref="IFileSystem" />s.
+/// </summary>
 public interface IFileSystemRegistry
 {
   IFileSystem? GetByScheme(string scheme);
@@ -45,10 +49,14 @@ public interface IFileSystemRegistry
   void Clear();
 }
 
-/// <summary>Allows watching <see cref="Path" />s for changes.</summary>
+/// <summary>
+/// Allows watching <see cref="Path" />s for changes.
+/// </summary>
 public interface IPathWatcher : IDisposable
 {
-  /// <summary>The <see cref="VirtualPath" /> being watched.</summary>
+  /// <summary>
+  /// The <see cref="VirtualPath" /> being watched.
+  /// </summary>
   VirtualPath FilePath { get; }
 
   event Action<VirtualPath> Created;
@@ -56,7 +64,9 @@ public interface IPathWatcher : IDisposable
   event Action<VirtualPath> Deleted;
 }
 
-/// <summary>Base class for any <see cref="IFileSystem" />.</summary>
+/// <summary>
+/// Base class for any <see cref="IFileSystem" />.
+/// </summary>
 public abstract class FileSystem : IFileSystem
 {
   protected FileSystem(params string[] schemes)
@@ -171,6 +181,3 @@ public abstract class FileSystem : IFileSystem
     }
   }
 }
-
-
-

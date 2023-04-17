@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>A fun little sand simulation in Surreal.</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
-  </ItemGroup>
-</Project>

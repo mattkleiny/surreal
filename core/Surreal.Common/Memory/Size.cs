@@ -2,7 +2,9 @@
 
 namespace Surreal.Memory;
 
-/// <summary>Represents a measure of bytes, convertible to other representations.</summary>
+/// <summary>
+/// Represents a measure of bytes, convertible to other representations.
+/// </summary>
 public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
 {
   public static readonly Size Zero = new(0);
@@ -89,7 +91,7 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
 
   public static implicit operator int(Size size)
   {
-    return (int) size.Bytes;
+    return (int)size.Bytes;
   }
 
   public static implicit operator long(Size size)
@@ -98,7 +100,9 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
   }
 }
 
-/// <summary>Static extensions for <see cref="Size" />.</summary>
+/// <summary>
+/// Static extensions for <see cref="Size" />.
+/// </summary>
 public static class SizeExtensions
 {
   public static Size Bytes(this int value)
@@ -145,6 +149,3 @@ public static class SizeExtensions
     return Bytes(span.Length * Unsafe.SizeOf<T>());
   }
 }
-
-
-

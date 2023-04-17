@@ -4,7 +4,9 @@ using Surreal.IO;
 
 namespace Surreal.Text;
 
-/// <summary>Base class for C-style language parsers with internal tokenization support for common structures and recursive descent parsing.</summary>
+/// <summary>
+/// Base class for C-style language parsers with internal tokenization support for common structures and recursive descent parsing.
+/// </summary>
 public abstract class Parser<T>
 {
   public ValueTask<T> ParseAsync(VirtualPath path, CancellationToken cancellationToken = default)
@@ -54,7 +56,7 @@ public abstract class Parser<T>
     {
       cancellationToken.ThrowIfCancellationRequested();
 
-      var text = await reader.ReadLineAsync();
+      var text = await reader.ReadLineAsync(cancellationToken);
       if (text == null)
       {
         break;
@@ -211,7 +213,9 @@ public abstract class Parser<T>
     }
   }
 
-  /// <summary>Different kinds of <see cref="Token" />s that can be parsed.</summary>
+  /// <summary>
+  /// Different kinds of <see cref="Token" />s that can be parsed.
+  /// </summary>
   protected enum TokenType
   {
     // single character tokens
@@ -252,7 +256,9 @@ public abstract class Parser<T>
     Comment
   }
 
-  /// <summary>Encodes a single token in the parser.</summary>
+  /// <summary>
+  /// Encodes a single token in the parser.
+  /// </summary>
   protected readonly record struct Token(
     TokenType Type,
     LinePosition Position,
@@ -260,7 +266,9 @@ public abstract class Parser<T>
     object? Literal = null
   );
 
-  /// <summary>A position of a token in it's source text.</summary>
+  /// <summary>
+  /// A position of a token in it's source text.
+  /// </summary>
   protected readonly record struct LinePosition(int Line, int Column)
   {
     public override string ToString()
@@ -269,7 +277,9 @@ public abstract class Parser<T>
     }
   }
 
-  /// <summary>Indicates an error whilst parsing.</summary>
+  /// <summary>
+  /// Indicates an error whilst parsing.
+  /// </summary>
   protected sealed class ParseException : Exception
   {
     public ParseException(Token token, string message)
@@ -288,7 +298,9 @@ public abstract class Parser<T>
     public StringSpan Span { get; }
   }
 
-  /// <summary>Base class for a recursive descent parse context.</summary>
+  /// <summary>
+  /// Base class for a recursive descent parse context.
+  /// </summary>
   protected abstract class ParserContext
   {
     private readonly Queue<Token> _tokens;
@@ -394,10 +406,14 @@ public abstract class Parser<T>
     }
   }
 
-  /// <summary>Commonly used <see cref="IncludeHandler" />s.</summary>
+  /// <summary>
+  /// Commonly used <see cref="IncludeHandler" />s.
+  /// </summary>
   protected static class IncludeHandlers
   {
-    /// <summary>A standard <see cref="IncludeHandler" /> that delegates back to the given <see cref="Parser{T}" /> and caches the result internally.</summary>
+    /// <summary>
+    /// A standard <see cref="IncludeHandler" /> that delegates back to the given <see cref="Parser{T}" /> and caches the result internally.
+    /// </summary>
     public static IncludeHandler Static()
     {
       var includesByPath = new ConcurrentDictionary<VirtualPath, T>();
@@ -413,16 +429,17 @@ public abstract class Parser<T>
       };
     }
 
-    /// <summary>A <see cref="IncludeHandler" /> implementation that delegates back to the asset system via the given <see cref="IAssetManager" />.</summary>
+    /// <summary>
+    /// A <see cref="IncludeHandler" /> implementation that delegates back to the asset system via the given <see cref="IAssetManager" />.
+    /// </summary>
     public static IncludeHandler FromAssets(IAssetManager manager)
     {
-      return async (_, path, cancellationToken) =>
-      {
-        return await manager.LoadAssetAsync<T>(path, cancellationToken);
-      };
+      return async (_, path, cancellationToken) => { return await manager.LoadAssetAsync<T>(path, cancellationToken); };
     }
   }
 
-  /// <summary>A delegate which loads a value from some inclusion source.</summary>
+  /// <summary>
+  /// A delegate which loads a value from some inclusion source.
+  /// </summary>
   protected delegate ValueTask<T> IncludeHandler(Parser<T> parser, VirtualPath path, CancellationToken cancellationToken = default);
 }

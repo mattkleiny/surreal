@@ -6,7 +6,9 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Shaders;
 
-/// <summary>Different kinds of uniform values supported on a <see cref="ShaderProgram" />.</summary>
+/// <summary>
+/// Different kinds of uniform values supported on a <see cref="ShaderProgram" />.
+/// </summary>
 public enum UniformType
 {
   Integer,
@@ -23,13 +25,19 @@ public enum UniformType
   Texture
 }
 
-/// <summary>Metadata about attributes in a <see cref="ShaderProgram" />.</summary>
+/// <summary>
+/// Metadata about attributes in a <see cref="ShaderProgram" />.
+/// </summary>
 public readonly record struct AttributeMetadata(string Name, int Location, int Length, int Count, UniformType Type);
 
-/// <summary>Metadata about uniforms in a <see cref="ShaderProgram" />.</summary>
+/// <summary>
+/// Metadata about uniforms in a <see cref="ShaderProgram" />.
+/// </summary>
 public readonly record struct UniformMetadata(string Name, int Location, int Length, int Count, UniformType Type);
 
-/// <summary>Utilities for <see cref="ShaderProgram" />s.</summary>
+/// <summary>
+/// Utilities for <see cref="ShaderProgram" />s.
+/// </summary>
 public static class ShaderProgramExtensions
 {
   public static async Task<Material> LoadDefaultWireMaterialAsync(this IAssetManager manager)
@@ -43,7 +51,9 @@ public static class ShaderProgramExtensions
   }
 }
 
-/// <summary>A low-level shader program on the GPU.</summary>
+/// <summary>
+/// A low-level shader program on the GPU.
+/// </summary>
 public sealed class ShaderProgram : GraphicsResource
 {
   public ShaderProgram(IGraphicsServer server)
@@ -166,7 +176,9 @@ public sealed class ShaderProgram : GraphicsResource
     }
   }
 
-  /// <summary>Deletes and replaces the old shader with a new one.</summary>
+  /// <summary>
+  /// Deletes and replaces the old shader with a new one.
+  /// </summary>
   public void ReplaceShader(GraphicsHandle newHandle)
   {
     Server.DeleteShader(Handle);
@@ -174,7 +186,9 @@ public sealed class ShaderProgram : GraphicsResource
     Handle = newHandle;
   }
 
-  /// <summary>Updates the attribute/uniform metadata for the shader.</summary>
+  /// <summary>
+  /// Updates the attribute/uniform metadata for the shader.
+  /// </summary>
   public void ReloadMetadata()
   {
     Attributes = Server.GetShaderAttributeMetadata(Handle);
@@ -191,6 +205,3 @@ public sealed class ShaderProgram : GraphicsResource
     base.Dispose(managed);
   }
 }
-
-
-

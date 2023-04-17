@@ -2,7 +2,9 @@
 
 namespace Surreal.Mathematics;
 
-/// <summary>A floating-point representation of color.</summary>
+/// <summary>
+/// A floating-point representation of color.
+/// </summary>
 [StructLayout(LayoutKind.Sequential)]
 public record struct Color(float R, float G, float B, float A = 1f)
 {
@@ -120,7 +122,9 @@ public record struct Color(float R, float G, float B, float A = 1f)
   }
 }
 
-/// <summary>A 32-bit representation of color.</summary>
+/// <summary>
+/// A 32-bit representation of color.
+/// </summary>
 [StructLayout(LayoutKind.Sequential)]
 public record struct Color32(byte R, byte G, byte B, byte A = 255)
 {
@@ -142,21 +146,21 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
   public static Color32 Lerp(Color32 a, Color32 b, float t)
   {
     return new Color32(
-      (byte) Maths.Lerp(a.R, b.R, t),
-      (byte) Maths.Lerp(a.G, b.G, t),
-      (byte) Maths.Lerp(a.B, b.B, t),
-      (byte) Maths.Lerp(a.A, b.A, t)
+      (byte)Maths.Lerp(a.R, b.R, t),
+      (byte)Maths.Lerp(a.G, b.G, t),
+      (byte)Maths.Lerp(a.B, b.B, t),
+      (byte)Maths.Lerp(a.A, b.A, t)
     );
   }
 
   public readonly Color32 Lighten(byte amount)
   {
-    return new Color32((byte) (R + amount), (byte) (G + amount), (byte) (B + amount));
+    return new Color32((byte)(R + amount), (byte)(G + amount), (byte)(B + amount));
   }
 
   public readonly Color32 Darken(byte amount)
   {
-    return new Color32((byte) (R - amount), (byte) (G - amount), (byte) (B - amount));
+    return new Color32((byte)(R - amount), (byte)(G - amount), (byte)(B - amount));
   }
 
   public override string ToString()
@@ -166,42 +170,42 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
 
   public static Color32 operator +(Color32 a, Color32 b)
   {
-    return new Color32((byte) (a.R + b.R), (byte) (a.G + b.G), (byte) (a.B + b.B), (byte) (a.A + b.A));
+    return new Color32((byte)(a.R + b.R), (byte)(a.G + b.G), (byte)(a.B + b.B), (byte)(a.A + b.A));
   }
 
   public static Color32 operator -(Color32 a, Color32 b)
   {
-    return new Color32((byte) (a.R - b.R), (byte) (a.G - b.G), (byte) (a.B - b.B), (byte) (a.A - b.A));
+    return new Color32((byte)(a.R - b.R), (byte)(a.G - b.G), (byte)(a.B - b.B), (byte)(a.A - b.A));
   }
 
   public static Color32 operator *(Color32 a, Color32 b)
   {
-    return new Color32((byte) (a.R * b.R), (byte) (a.G * b.G), (byte) (a.B * b.B), (byte) (a.A * b.A));
+    return new Color32((byte)(a.R * b.R), (byte)(a.G * b.G), (byte)(a.B * b.B), (byte)(a.A * b.A));
   }
 
   public static Color32 operator /(Color32 a, Color32 b)
   {
-    return new Color32((byte) (a.R / b.R), (byte) (a.G / b.G), (byte) (a.B / b.B), (byte) (a.A / b.A));
+    return new Color32((byte)(a.R / b.R), (byte)(a.G / b.G), (byte)(a.B / b.B), (byte)(a.A / b.A));
   }
 
   public static Color32 operator *(Color32 a, int scalar)
   {
-    return new Color32((byte) (a.R * scalar), (byte) (a.G * scalar), (byte) (a.B * scalar), (byte) (a.A * scalar));
+    return new Color32((byte)(a.R * scalar), (byte)(a.G * scalar), (byte)(a.B * scalar), (byte)(a.A * scalar));
   }
 
   public static Color32 operator /(Color32 a, int scalar)
   {
-    return new Color32((byte) (a.R / scalar), (byte) (a.G / scalar), (byte) (a.B / scalar), (byte) (a.A / scalar));
+    return new Color32((byte)(a.R / scalar), (byte)(a.G / scalar), (byte)(a.B / scalar), (byte)(a.A / scalar));
   }
 
   public static explicit operator Color32(Point3 vector)
   {
-    return new Color32((byte) vector.X, (byte) vector.Y, (byte) vector.Z);
+    return new Color32((byte)vector.X, (byte)vector.Y, (byte)vector.Z);
   }
 
   public static explicit operator Color32(Point4 vector)
   {
-    return new Color32((byte) vector.X, (byte) vector.Y, (byte) vector.Z, (byte) vector.W);
+    return new Color32((byte)vector.X, (byte)vector.Y, (byte)vector.Z, (byte)vector.W);
   }
 
   public static explicit operator Point3(Color32 color)
@@ -216,14 +220,11 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
 
   public static implicit operator Color32(Color color)
   {
-    var r = (byte) (color.R * 255.0f);
-    var g = (byte) (color.G * 255.0f);
-    var b = (byte) (color.B * 255.0f);
-    var a = (byte) (color.A * 255.0f);
+    var r = (byte)(color.R * 255.0f);
+    var g = (byte)(color.G * 255.0f);
+    var b = (byte)(color.B * 255.0f);
+    var a = (byte)(color.A * 255.0f);
 
     return new Color32(r, g, b, a);
   }
 }
-
-
-

@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Diagnostics.Logging;
 
-/// <summary>A <see cref="ILogFactory" /> that writes to the built-in .NET <see cref="Trace" /> console.</summary>
+/// <summary>
+/// A <see cref="ILogFactory" /> that writes to the built-in .NET <see cref="Trace" /> console.
+/// </summary>
 public sealed class TraceLogFactory : ILogFactory
 {
   private readonly LogFormatter _formatter;
@@ -22,7 +24,9 @@ public sealed class TraceLogFactory : ILogFactory
     return new TraceLog(category, _minLevel, _formatter);
   }
 
-  /// <summary>A <see cref="ILog" /> that writes to <see cref="Trace" />.</summary>
+  /// <summary>
+  /// A <see cref="ILog" /> that writes to <see cref="Trace" />.
+  /// </summary>
   private sealed class TraceLog : ILog
   {
     private readonly string _category;
@@ -52,4 +56,3 @@ public sealed class TraceLogFactory : ILogFactory
     }
   }
 }
-

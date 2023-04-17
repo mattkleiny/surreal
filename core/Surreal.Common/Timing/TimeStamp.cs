@@ -1,6 +1,8 @@
 namespace Surreal.Timing;
 
-/// <summary>A precision timestamp evaluated using native APIs.</summary>
+/// <summary>
+/// A precision timestamp evaluated using native APIs.
+/// </summary>
 public readonly record struct TimeStamp(long Ticks) : IComparable<TimeStamp>
 {
   public static TimeStamp Min => new(long.MinValue);
@@ -44,6 +46,3 @@ public readonly record struct TimeStamp(long Ticks) : IComparable<TimeStamp>
     return new TimeSpan(checked(left.Ticks - right.Ticks));
   }
 }
-
-
-

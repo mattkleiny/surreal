@@ -4,7 +4,9 @@ using static Surreal.Graphics.Materials.MaterialPropertySet;
 
 namespace Surreal.Graphics.Materials;
 
-/// <summary>Different kinds of blends.</summary>
+/// <summary>
+/// Different kinds of blends.
+/// </summary>
 public enum BlendMode
 {
   SourceColor,
@@ -17,14 +19,18 @@ public enum BlendMode
   OneMinusTargetAlpha
 }
 
-/// <summary>State blending operation.</summary>
+/// <summary>
+/// State blending operation.
+/// </summary>
 public readonly record struct BlendState(bool IsEnabled, BlendMode Source, BlendMode Target)
 {
   public static BlendState Disabled { get; } = default(BlendState) with { IsEnabled = false };
   public static BlendState OneMinusSourceAlpha { get; } = new(true, BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
 }
 
-/// <summary>A material is a configuration of the graphics state and properties used for rendering.</summary>
+/// <summary>
+/// A material is a configuration of the graphics state and properties used for rendering.
+/// </summary>
 [DebuggerDisplay("Material (Uniforms {Locals.Uniforms.Count}, Samplers {Locals.Samplers.Count})")]
 public sealed class Material : GraphicsResource
 {
@@ -37,22 +43,34 @@ public sealed class Material : GraphicsResource
     Shader = shader;
   }
 
-  /// <summary>Global properties shared amongst all <see cref="Material" />s.</summary>
+  /// <summary>
+  /// Global properties shared amongst all <see cref="Material" />s.
+  /// </summary>
   public static MaterialPropertySet Globals { get; } = new();
 
-  /// <summary>The underlying <see cref="IGraphicsServer" />.</summary>
+  /// <summary>
+  /// The underlying <see cref="IGraphicsServer" />.
+  /// </summary>
   public IGraphicsServer Server => Shader.Server;
 
-  /// <summary>The associated <see cref="ShaderProgram" /> for the material.</summary>
+  /// <summary>
+  /// The associated <see cref="ShaderProgram" /> for the material.
+  /// </summary>
   public ShaderProgram Shader { get; }
 
-  /// <summary>The properties associated with this material.</summary>
+  /// <summary>
+  /// The properties associated with this material.
+  /// </summary>
   public MaterialPropertySet Locals { get; } = new();
 
-  /// <summary>The desired <see cref="BlendState" /> for this material.</summary>
+  /// <summary>
+  /// The desired <see cref="BlendState" /> for this material.
+  /// </summary>
   public BlendState Blending { get; set; } = BlendState.OneMinusSourceAlpha;
 
-  /// <summary>Applies the material properties to the underlying shader.</summary>
+  /// <summary>
+  /// Applies the material properties to the underlying shader.
+  /// </summary>
   public void Apply(IGraphicsServer server)
   {
     // bind the shader
@@ -117,7 +135,9 @@ public sealed class Material : GraphicsResource
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="Material" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="Material" />s.
+/// </summary>
 public sealed class MaterialLoader : AssetLoader<Material>
 {
   public override async Task<Material> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
@@ -125,6 +145,3 @@ public sealed class MaterialLoader : AssetLoader<Material>
     return new Material(await context.LoadAsync<ShaderProgram>(context.Path, cancellationToken));
   }
 }
-
-
-

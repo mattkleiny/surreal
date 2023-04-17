@@ -4,7 +4,9 @@ using Surreal.Collections;
 
 namespace Surreal.Diagnostics.Logging;
 
-/// <summary>Allows pooled and deferred interpolated string construction in messages.</summary>
+/// <summary>
+/// Allows pooled and deferred interpolated string construction in messages.
+/// </summary>
 [InterpolatedStringHandler]
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
 public readonly ref struct LogInterpolator
@@ -43,4 +45,3 @@ public readonly ref struct LogInterpolator
     return result;
   }
 }
-

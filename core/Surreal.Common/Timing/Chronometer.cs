@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Timing;
 
-/// <summary>A stop watch using a precision <see cref="TimeStamp" />.</summary>
+/// <summary>
+/// A stop watch using a precision <see cref="TimeStamp" />.
+/// </summary>
 public sealed class Chronometer
 {
   private TimeStamp _lastTime = TimeStamp.Now;
@@ -23,6 +25,3 @@ public sealed class Chronometer
     return new TimeDelta(delta);
   }
 }
-
-
-

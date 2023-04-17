@@ -3,21 +3,27 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
 
-/// <summary>Different types of <see cref="GraphicsBuffer" />s.</summary>
+/// <summary>
+/// Different types of <see cref="GraphicsBuffer" />s.
+/// </summary>
 public enum BufferType
 {
   Vertex,
   Index
 }
 
-/// <summary>Different usage models for buffers.</summary>
+/// <summary>
+/// Different usage models for buffers.
+/// </summary>
 public enum BufferUsage
 {
   Static,
   Dynamic
 }
 
-/// <summary>A buffer of data on the <see cref="IGraphicsServer" />.</summary>
+/// <summary>
+/// A buffer of data on the <see cref="IGraphicsServer" />.
+/// </summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
   public abstract Type ElementType { get; }
@@ -26,7 +32,9 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
   public Size Size { get; protected set; }
 }
 
-/// <summary>A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.</summary>
+/// <summary>
+/// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.
+/// </summary>
 public sealed class GraphicsBuffer<T> : GraphicsBuffer
   where T : unmanaged
 {
@@ -84,7 +92,9 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
     base.Dispose(managed);
   }
 
-  /// <summary>Allows borrowing the <see cref="GraphicsBuffer" /> data.</summary>
+  /// <summary>
+  /// Allows borrowing the <see cref="GraphicsBuffer" /> data.
+  /// </summary>
   public readonly struct BufferDataLease : IMemoryOwner<T>
   {
     private readonly GraphicsBuffer<T> _buffer;
@@ -104,6 +114,3 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
     }
   }
 }
-
-
-

@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Input.Mouse;
 
-/// <summary>A mouse <see cref="IInputDevice" />.</summary>
+/// <summary>
+/// A mouse <see cref="IInputDevice" />.
+/// </summary>
 public interface IMouseDevice : IInputDevice
 {
   Vector2 Position { get; }
@@ -18,6 +20,3 @@ public interface IMouseDevice : IInputDevice
   bool IsButtonPressed(MouseButton button);
   bool IsButtonReleased(MouseButton button);
 }
-
-
-

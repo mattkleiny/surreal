@@ -4,7 +4,9 @@ using Surreal.Memory;
 
 namespace Surreal.IO;
 
-/// <summary>Static extensions for working with <see cref="VirtualPath" />s.</summary>
+/// <summary>
+/// Static extensions for working with <see cref="VirtualPath" />s.
+/// </summary>
 public static class VirtualPathExtensions
 {
   private static readonly Encoding DefaultEncoding = Encoding.UTF8;
@@ -176,7 +178,7 @@ public static class VirtualPathExtensions
     await using var stream = await path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream, encoding ?? DefaultEncoding);
 
-    return await reader.ReadToEndAsync();
+    return await reader.ReadToEndAsync(cancellationToken);
   }
 
   public static void WriteAllText(this VirtualPath path, string text, Encoding? encoding = default)
@@ -267,6 +269,3 @@ public static class VirtualPathExtensions
     return result;
   }
 }
-
-
-

@@ -6,25 +6,37 @@ using Surreal.IO;
 
 namespace Surreal.Memory;
 
-/// <summary>Represents a buffer of data of <see cref="T" />.</summary>
+/// <summary>
+/// Represents a buffer of data of <see cref="T" />.
+/// </summary>
 public interface IBuffer<T>
 {
-  /// <summary>The underlying <see cref="Memory{T}" /> representing the buffer data.</summary>
+  /// <summary>
+  /// The underlying <see cref="Memory{T}" /> representing the buffer data.
+  /// </summary>
   Memory<T> Memory { get; }
 
-  /// <summary>The underlying <see cref="Span{T}" /> representing the buffer data.</summary>
+  /// <summary>
+  /// The underlying <see cref="Span{T}" /> representing the buffer data.
+  /// </summary>
   Span<T> Span { get; }
 
-  /// <summary>Resizes the underlying buffer storage.</summary>
+  /// <summary>
+  /// Resizes the underlying buffer storage.
+  /// </summary>
   void Resize(int newLength);
 }
 
-/// <summary>A <see cref="IBuffer{T}" /> that can be deterministically disposed.</summary>
+/// <summary>
+/// A <see cref="IBuffer{T}" /> that can be deterministically disposed.
+/// </summary>
 public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable
 {
 }
 
-/// <summary>Static factories for <see cref="IBuffer{T}" />s.</summary>
+/// <summary>
+/// Static factories for <see cref="IBuffer{T}" />s.
+/// </summary>
 public static class Buffers
 {
   public static IBuffer<T> Allocate<T>(int length)
@@ -49,7 +61,9 @@ public static class Buffers
     return new MappedBuffer<T>(path, offset, length);
   }
 
-  /// <summary>A buffer backed by a managed array.</summary>
+  /// <summary>
+  /// A buffer backed by a managed array.
+  /// </summary>
   private sealed class ManagedBuffer<T> : IBuffer<T>
   {
     private T[] _elements;
@@ -68,7 +82,9 @@ public static class Buffers
     }
   }
 
-  /// <summary>A buffer backed by a pinned array.</summary>
+  /// <summary>
+  /// A buffer backed by a pinned array.
+  /// </summary>
   private sealed class PinnedBuffer<T> : IBuffer<T>
   {
     private readonly T[] _elements;
@@ -89,7 +105,9 @@ public static class Buffers
     }
   }
 
-  /// <summary>A buffer backed by native memory.</summary>
+  /// <summary>
+  /// A buffer backed by native memory.
+  /// </summary>
   [SuppressMessage("Reliability", "CA2015:Do not define finalizers for types derived from MemoryManager<T>")]
   private sealed unsafe class NativeBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
@@ -104,15 +122,15 @@ public static class Buffers
       _length = length;
 
       _buffer = zeroFill
-        ? NativeMemory.AllocZeroed((nuint) length, (nuint) Unsafe.SizeOf<T>())
-        : NativeMemory.Alloc((nuint) length, (nuint) Unsafe.SizeOf<T>());
+        ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
+        : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
     }
 
     public Span<T> Span => GetSpan();
 
     public void Resize(int newLength)
     {
-      _buffer = NativeMemory.Realloc(_buffer, (nuint) newLength);
+      _buffer = NativeMemory.Realloc(_buffer, (nuint)newLength);
     }
 
     Memory<T> IBuffer<T>.Memory => base.Memory;
@@ -159,7 +177,9 @@ public static class Buffers
     }
   }
 
-  /// <summary>A <see cref="IDisposableBuffer{T}" /> for memory mapped files.</summary>
+  /// <summary>
+  /// A <see cref="IDisposableBuffer{T}" /> for memory mapped files.
+  /// </summary>
   private sealed unsafe class MappedBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
@@ -195,7 +215,7 @@ public static class Buffers
     {
       CheckNotDisposed();
 
-      return new Span<T>(_pointer, (int) _accessor.Capacity);
+      return new Span<T>(_pointer, (int)_accessor.Capacity);
     }
 
     public override MemoryHandle Pin(int elementIndex = 0)
@@ -231,6 +251,3 @@ public static class Buffers
     }
   }
 }
-
-
-

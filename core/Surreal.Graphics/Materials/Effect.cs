@@ -2,7 +2,9 @@
 
 namespace Surreal.Graphics.Materials;
 
-/// <summary>An effect is a specially configured <see cref="Material" />.</summary>
+/// <summary>
+/// An effect is a specially configured <see cref="Material" />.
+/// </summary>
 public abstract class Effect : IDisposable
 {
   protected Effect(Material material)
@@ -10,7 +12,9 @@ public abstract class Effect : IDisposable
     Material = material;
   }
 
-  /// <summary>The underlying <see cref="Material" /> instance.</summary>
+  /// <summary>
+  /// The underlying <see cref="Material" /> instance.
+  /// </summary>
   public Material Material { get; }
 
   public IGraphicsServer Server => Material.Server;
@@ -33,6 +37,3 @@ public abstract class Effect : IDisposable
     return decorator.Material;
   }
 }
-
-
-

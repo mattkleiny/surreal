@@ -3,27 +3,33 @@ using JetBrains.Annotations;
 
 namespace Surreal;
 
-/// <summary>Abstractions over service lifetime scopes.</summary>
+/// <summary>
+/// Abstractions over service lifetime scopes.
+/// </summary>
 public enum ServiceLifetime
 {
   Transient,
   Singleton
 }
 
-/// <summary>A module for service registrations.</summary>
+/// <summary>
+/// A module for service registrations.
+/// </summary>
 public interface IServiceModule
 {
   void RegisterServices(IServiceRegistry services);
 }
 
-/// <summary>A registry for services.</summary>
+/// <summary>
+/// A registry for services.
+/// </summary>
 public interface IServiceRegistry : IServiceProvider, IDisposable
 {
   object Activate(Type type);
 
   T Activate<T>()
   {
-    return (T) Activate(typeof(T));
+    return (T)Activate(typeof(T));
   }
 
   void RegisterService(ServiceLifetime lifetime, Type serviceType, Type implementationType);
@@ -67,13 +73,17 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
     ReplaceService(typeof(TService), implementation);
   }
 
-  /// <summary>Adds the given <see cref="IServiceModule" /> to the registry.</summary>
+  /// <summary>
+  /// Adds the given <see cref="IServiceModule" /> to the registry.
+  /// </summary>
   void AddModule(IServiceModule module)
   {
     module.RegisterServices(this);
   }
 
-  /// <summary>Registers all of the <see cref="RegisterServiceAttribute" />-annotated types in the given assembly.</summary>
+  /// <summary>
+  /// Registers all of the <see cref="RegisterServiceAttribute" />-annotated types in the given assembly.
+  /// </summary>
   [RequiresUnreferencedCode("Discovers services via reflection")]
   void AddAssemblyServices(Assembly assembly)
   {
@@ -86,7 +96,9 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
   }
 }
 
-/// <summary>A simple default <see cref="IServiceRegistry" /> implementation.</summary>
+/// <summary>
+/// A simple default <see cref="IServiceRegistry" /> implementation.
+/// </summary>
 public sealed class ServiceRegistry : IServiceRegistry
 {
   private readonly ConcurrentDictionary<Type, Func<object>> _activatorsByType = new();
@@ -192,12 +204,14 @@ public sealed class ServiceRegistry : IServiceRegistry
   }
 }
 
-/// <summary>Static extension methods for <see cref="IServiceProvider" /> and related.</summary>
+/// <summary>
+/// Static extension methods for <see cref="IServiceProvider" /> and related.
+/// </summary>
 public static class ServicesExtensions
 {
   public static T? GetService<T>(this IServiceProvider provider)
   {
-    return (T?) provider.GetService(typeof(T));
+    return (T?)provider.GetService(typeof(T));
   }
 
   public static IEnumerable<T> GetServices<T>(this IServiceProvider provider)
@@ -226,7 +240,7 @@ public static class ServicesExtensions
 
     if (service != null)
     {
-      result = (T) service;
+      result = (T)service;
       return true;
     }
 
@@ -235,7 +249,9 @@ public static class ServicesExtensions
   }
 }
 
-/// <summary>Exports a type as the implementation of some service, for use in auto-discovery.</summary>
+/// <summary>
+/// Exports a type as the implementation of some service, for use in auto-discovery.
+/// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class RegisterServiceAttribute : Attribute
@@ -254,7 +270,9 @@ public sealed class RegisterServiceAttribute : Attribute
   }
 }
 
-/// <summary>Indicates a service is not available.</summary>
+/// <summary>
+/// Indicates a service is not available.
+/// </summary>
 public class ServiceNotFoundException : Exception
 {
   public ServiceNotFoundException(string message)
@@ -262,6 +280,3 @@ public class ServiceNotFoundException : Exception
   {
   }
 }
-
-
-

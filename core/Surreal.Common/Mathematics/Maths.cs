@@ -1,21 +1,23 @@
 namespace Surreal.Mathematics;
 
-/// <summary>Common used mathematical utilities.</summary>
+/// <summary>
+/// Common used mathematical utilities.
+/// </summary>
 public static class Maths
 {
   public static float DegreesToRadians(float degrees)
   {
-    return (float) (degrees * (Math.PI / 180));
+    return (float)(degrees * (Math.PI / 180));
   }
 
   public static float RadiansToDegrees(float radians)
   {
-    return (float) (radians * (180 / Math.PI));
+    return (float)(radians * (180 / Math.PI));
   }
 
   public static int Lerp(int a, int b, float t)
   {
-    return (int) (a + t * (b - a));
+    return (int)(a + t * (b - a));
   }
 
   public static float Lerp(float a, float b, float t)
@@ -30,17 +32,17 @@ public static class Maths
 
   public static int CeilToInt(float value)
   {
-    return (int) MathF.Ceiling(value);
+    return (int)MathF.Ceiling(value);
   }
 
   public static int FloorToInt(float value)
   {
-    return (int) MathF.Floor(value);
+    return (int)MathF.Floor(value);
   }
 
   public static int RoundToInt(float value)
   {
-    return (int) MathF.Round(value);
+    return (int)MathF.Round(value);
   }
 
   public static int Wrap(int value, int lower, int upper)
@@ -53,6 +55,3 @@ public static class Maths
     return lower + (value - lower) % (upper - lower);
   }
 }
-
-
-

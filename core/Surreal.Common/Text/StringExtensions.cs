@@ -1,6 +1,8 @@
 namespace Surreal.Text;
 
-/// <summary>General purpose string extensions.</summary>
+/// <summary>
+/// General purpose string extensions.
+/// </summary>
 public static class StringExtensions
 {
   public static StringBuilder AppendIndent(this StringBuilder builder, int indentLevel)
@@ -37,6 +39,3 @@ public static class StringExtensions
     return index == -1 ? value : value[..index];
   }
 }
-
-
-

@@ -5,7 +5,9 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics;
 
-/// <summary>A palette of <see cref="Color32" />s, with span and range support.</summary>
+/// <summary>
+/// A palette of <see cref="Color32" />s, with span and range support.
+/// </summary>
 public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IReadOnlyList<Color32>
 {
   private readonly Color32[] _colors = _colors;
@@ -15,13 +17,19 @@ public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IR
   {
   }
 
-  /// <summary>Allows accessing the palette as a <see cref="Span{T}" />.</summary>
+  /// <summary>
+  /// Allows accessing the palette as a <see cref="Span{T}" />.
+  /// </summary>
   public ReadOnlySpan<Color32> Span => _colors;
 
-  /// <summary>Accesses a single color of the <see cref="ColorPalette" />.</summary>
+  /// <summary>
+  /// Accesses a single color of the <see cref="ColorPalette" />.
+  /// </summary>
   public Color32 this[Index index] => _colors[Offset + index.GetOffset(Count)];
 
-  /// <summary>Accesses a sub-range of the <see cref="ColorPalette" />.</summary>
+  /// <summary>
+  /// Accesses a sub-range of the <see cref="ColorPalette" />.
+  /// </summary>
   public ColorPalette this[Range range]
   {
     get
@@ -32,7 +40,9 @@ public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IR
     }
   }
 
-  /// <summary>Accesses a single color of the <see cref="ColorPalette" />.</summary>
+  /// <summary>
+  /// Accesses a single color of the <see cref="ColorPalette" />.
+  /// </summary>
   public Color32 this[int index] => _colors[Offset + index];
 
   IEnumerator<Color32> IEnumerable<Color32>.GetEnumerator()
@@ -50,7 +60,9 @@ public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IR
     return new Enumerator(this);
   }
 
-  /// <summary>Enumerates the <see cref="ColorPalette" />.</summary>
+  /// <summary>
+  /// Enumerates the <see cref="ColorPalette" />.
+  /// </summary>
   public struct Enumerator : IEnumerator<Color32>
   {
     private readonly ColorPalette _palette;
@@ -82,7 +94,9 @@ public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IR
   }
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="ColorPalette" />s.s</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="ColorPalette" />s.s
+/// </summary>
 public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
   public override async Task<ColorPalette> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
@@ -90,17 +104,17 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream);
 
-    if (await reader.ReadLineAsync() != "JASC-PAL")
+    if (await reader.ReadLineAsync(cancellationToken) != "JASC-PAL")
     {
       throw new FormatException($"Failed to recognize the palette file {context.Path}");
     }
 
-    if (await reader.ReadLineAsync() != "0100")
+    if (await reader.ReadLineAsync(cancellationToken) != "0100")
     {
       throw new FormatException($"Failed to recognize the palette file {context.Path}");
     }
 
-    var rawCount = await reader.ReadLineAsync();
+    var rawCount = await reader.ReadLineAsync(cancellationToken);
     if (rawCount == null)
     {
       throw new FormatException($"Expected a count row in palette file {context.Path}");
@@ -111,7 +125,7 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 
     for (var i = 0; i < colors.Length; i++)
     {
-      var line = await reader.ReadLineAsync();
+      var line = await reader.ReadLineAsync(cancellationToken);
       if (line == null)
       {
         throw new FormatException($"Expected a palette entry in row {i} of palette file {context.Path}");
@@ -133,8 +147,3 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
     return new ColorPalette(colors);
   }
 }
-
-
-
-
-

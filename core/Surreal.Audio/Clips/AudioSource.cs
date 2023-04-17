@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Audio.Clips;
 
-/// <summary>An audio source allows <see cref="AudioClip" />s to be played.</summary>
+/// <summary>
+/// An audio source allows <see cref="AudioClip" />s to be played.
+/// </summary>
 public sealed class AudioSource : AudioResource
 {
   private readonly IAudioServer _server;
@@ -58,4 +60,3 @@ public sealed class AudioSource : AudioResource
     base.Dispose(managed);
   }
 }
-

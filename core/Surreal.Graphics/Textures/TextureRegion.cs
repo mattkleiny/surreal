@@ -2,7 +2,9 @@
 
 namespace Surreal.Graphics.Textures;
 
-/// <summary>Describes a sub-region of a parent <see cref="Texture" />.</summary>
+/// <summary>
+/// Describes a sub-region of a parent <see cref="Texture" />.
+/// </summary>
 [DebuggerDisplay("TextureRegion {Texture} at {Offset} with size {Size}")]
 public readonly record struct TextureRegion(Texture? Texture)
 {
@@ -16,12 +18,14 @@ public readonly record struct TextureRegion(Texture? Texture)
   public int Width => Size.X;
   public int Height => Size.Y;
 
-  /// <summary>Computes the UV rectangle for the texture region.</summary>
+  /// <summary>
+  /// Computes the UV rectangle for the texture region.
+  /// </summary>
   public Rectangle UV => new(
-    (float) Offset.X / Texture?.Width ?? 1,
-    (float) Offset.Y / Texture?.Height ?? 1,
-    (float) (Offset.X + Size.X) / Texture?.Width ?? 1,
-    (float) (Offset.Y + Size.Y) / Texture?.Height ?? 1
+    (float)Offset.X / Texture?.Width ?? 1,
+    (float)Offset.Y / Texture?.Height ?? 1,
+    (float)(Offset.X + Size.X) / Texture?.Width ?? 1,
+    (float)(Offset.Y + Size.Y) / Texture?.Height ?? 1
   );
 
   public static implicit operator TextureRegion(Texture texture)
@@ -29,6 +33,3 @@ public readonly record struct TextureRegion(Texture? Texture)
     return texture.ToRegion();
   }
 }
-
-
-

@@ -2,7 +2,9 @@
 
 namespace Surreal.Collections;
 
-/// <summary>A structured enumeration with support for lookups and complex objects.</summary>
+/// <summary>
+/// A structured enumeration with support for lookups and complex objects.
+/// </summary>
 [RequiresUnreferencedCode("Discovers types via reflection")]
 public abstract record Enumeration<T>
   where T : Enumeration<T>
@@ -17,11 +19,10 @@ public abstract record Enumeration<T>
     {
       if (property.PropertyType == typeof(T))
       {
-        builder.Add((T) property.GetValue(null)!);
+        builder.Add((T)property.GetValue(null)!);
       }
     }
 
     return builder.ToImmutable();
   }
 }
-

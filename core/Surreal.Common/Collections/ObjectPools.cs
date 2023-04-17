@@ -1,13 +1,17 @@
 ﻿namespace Surreal.Collections;
 
-/// <summary>Permits an object to respond to pool callbacks.</summary>
+/// <summary>
+/// Permits an object to respond to pool callbacks.
+/// </summary>
 public interface IPoolAware
 {
   void OnRent();
   void OnReturn();
 }
 
-/// <summary>A pool of objects of type, <see cref="T" />.</summary>
+/// <summary>
+/// A pool of objects of type, <see cref="T" />.
+/// </summary>
 public sealed class Pool<T>
 {
   private readonly Func<T> _factory;
@@ -19,7 +23,9 @@ public sealed class Pool<T>
     _instances = new BoundedConcurrentQueue<T>(maxCapacity);
   }
 
-  /// <summary>A shared pool for instances of type, <see cref="T" />.</summary>
+  /// <summary>
+  /// A shared pool for instances of type, <see cref="T" />.
+  /// </summary>
   public static Pool<T> Shared { get; } = new(Activator.CreateInstance<T>);
 
   public T CreateOrRent()
@@ -69,7 +75,9 @@ public sealed class Pool<T>
   }
 }
 
-/// <summary>A generically pooled <see cref="List{T}" />.</summary>
+/// <summary>
+/// A generically pooled <see cref="List{T}" />.
+/// </summary>
 public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware
 {
   private readonly List<T> _list = new(0);
@@ -126,4 +134,3 @@ public sealed class PooledList<T> : IEnumerable<T>, IDisposable, IPoolAware
     return _list.GetEnumerator();
   }
 }
-

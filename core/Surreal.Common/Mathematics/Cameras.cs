@@ -1,10 +1,12 @@
 ﻿namespace Surreal.Mathematics;
 
-/// <summary>A camera which allows computation of view-projection matrices from source information.</summary>
+/// <summary>
+/// A camera which allows computation of view-projection matrices from source information.
+/// </summary>
 public sealed class Camera
 {
   private float _farPlane = 100f;
-  private float _nearPlane = 0f;
+  private float _nearPlane;
   private Vector2 _position = Vector2.Zero;
   private Matrix4x4 _projection = Matrix4x4.Identity;
   private Matrix4x4 _projectionView = Matrix4x4.Identity;
@@ -64,6 +66,3 @@ public sealed class Camera
     _projectionView = _view * _projection;
   }
 }
-
-
-

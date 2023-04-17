@@ -9,7 +9,9 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Sprites;
 
-/// <summary>A batched mesh of sprites for rendering to the GPU.</summary>
+/// <summary>
+/// A batched mesh of sprites for rendering to the GPU.
+/// </summary>
 public sealed class SpriteBatch : IDisposable
 {
   private const int DefaultSpriteCount = 200;
@@ -37,7 +39,9 @@ public sealed class SpriteBatch : IDisposable
 
   public IGraphicsServer Server { get; }
 
-  /// <summary>The <see cref="MaterialProperty{T}" /> to bind textures to.</summary>
+  /// <summary>
+  /// The <see cref="MaterialProperty{T}" /> to bind textures to.
+  /// </summary>
   public MaterialProperty<Texture> TextureProperty { get; set; } = MaterialProperty.Texture;
 
   public void Dispose()
@@ -145,23 +149,26 @@ public sealed class SpriteBatch : IDisposable
 
     for (int i = 0, j = 0; i < indexCount; i += 6, j += 4)
     {
-      indices[i + 0] = (uint) j;
-      indices[i + 1] = (uint) (j + 1);
-      indices[i + 2] = (uint) (j + 2);
-      indices[i + 3] = (uint) (j + 2);
-      indices[i + 4] = (uint) (j + 3);
-      indices[i + 5] = (uint) j;
+      indices[i + 0] = (uint)j;
+      indices[i + 1] = (uint)(j + 1);
+      indices[i + 2] = (uint)(j + 2);
+      indices[i + 3] = (uint)(j + 2);
+      indices[i + 4] = (uint)(j + 3);
+      indices[i + 5] = (uint)j;
     }
 
     _mesh.Indices.Write(indices);
   }
 
-  /// <summary>A common 2d vertex type for primitive shapes.</summary>
+  /// <summary>
+  /// A common 2d vertex type for primitive shapes.
+  /// </summary>
   [StructLayout(LayoutKind.Sequential)]
   private record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
   {
     [VertexDescriptor(4, VertexType.Float)]
     public Color Color = Color;
+
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 Position = Position;
 
@@ -169,6 +176,3 @@ public sealed class SpriteBatch : IDisposable
     public Vector2 UV = UV;
   }
 }
-
-
-

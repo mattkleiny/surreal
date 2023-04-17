@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Collections;
 
-/// <summary>A lightweight circular/ring buffer with fixed capacity.</summary>
+/// <summary>
+/// A lightweight circular/ring buffer with fixed capacity.
+/// </summary>
 public sealed class RingBuffer<T> : IEnumerable<T>
 {
   private T[] _elements;
@@ -170,4 +172,3 @@ public static class RingBufferExtensions
     return result;
   }
 }
-

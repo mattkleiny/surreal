@@ -6,7 +6,9 @@ using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Materials;
 
-/// <summary>Standard purpose <see cref="MaterialProperty{T}" />s.</summary>
+/// <summary>
+/// Standard purpose <see cref="MaterialProperty{T}" />s.
+/// </summary>
 public static class MaterialProperty
 {
   public static MaterialProperty<Texture> Texture { get; } = new("u_texture");
@@ -14,11 +16,15 @@ public static class MaterialProperty
   public static MaterialProperty<float> Intensity { get; } = new("u_intensity");
 }
 
-/// <summary>A strongly typed property name that can be used in a <see cref="Material" />.</summary>
+/// <summary>
+/// A strongly typed property name that can be used in a <see cref="Material" />.
+/// </summary>
 [SuppressMessage("ReSharper", "UnusedTypeParameter")]
 public readonly record struct MaterialProperty<T>(string Name);
 
-/// <summary>A collection of properties that can be attached to a <see cref="Material" />.</summary>
+/// <summary>
+/// A collection of properties that can be attached to a <see cref="Material" />.
+/// </summary>
 /// <remarks>This collection is not thread-safe.</remarks>
 public sealed class MaterialPropertySet
 {
@@ -115,7 +121,7 @@ public sealed class MaterialPropertySet
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Type = UniformType.Point3;
-    uniform.Value.Point4 = (Point4) color;
+    uniform.Value.Point4 = (Point4)color;
   }
 
   public ref Vector2 GetProperty(MaterialProperty<Vector2> property)
@@ -174,7 +180,7 @@ public sealed class MaterialPropertySet
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
     uniform.Type = UniformType.Vector4;
-    uniform.Value.Vector4 = (Vector4) color;
+    uniform.Value.Vector4 = (Vector4)color;
   }
 
   public ref Quaternion GetProperty(MaterialProperty<Quaternion> property)
@@ -243,21 +249,27 @@ public sealed class MaterialPropertySet
     sampler.TextureSlot = slot;
   }
 
-  /// <summary>Clear all properties from the collection.</summary>
+  /// <summary>
+  /// Clear all properties from the collection.
+  /// </summary>
   public void Clear()
   {
     Uniforms.Clear();
     Samplers.Clear();
   }
 
-  /// <summary>A uniform value that can be bound to an underlying shader program.</summary>
+  /// <summary>
+  /// A uniform value that can be bound to an underlying shader program.
+  /// </summary>
   internal record struct Uniform
   {
     public UniformType Type;
     public UniformValue Value;
   }
 
-  /// <summary>A sampler value that can be bound to an underlying shader program.</summary>
+  /// <summary>
+  /// A sampler value that can be bound to an underlying shader program.
+  /// </summary>
   internal record struct Sampler
   {
     public TextureFilterMode MagFilter;
@@ -269,23 +281,43 @@ public sealed class MaterialPropertySet
     public TextureWrapMode WrapMode;
   }
 
-  /// <summary>A single value for a <see cref="Uniform" />, packed into a union.</summary>
+  /// <summary>
+  /// A single value for a <see cref="Uniform" />, packed into a union.
+  /// </summary>
   [StructLayout(LayoutKind.Explicit)]
   internal record struct UniformValue
   {
-    [FieldOffset(0)] public float Float;
-    [FieldOffset(0)] public int Integer;
-    [FieldOffset(0)] public Matrix3x2 Matrix3x2;
-    [FieldOffset(0)] public Matrix4x4 Matrix4x4;
-    [FieldOffset(0)] public Point2 Point2;
-    [FieldOffset(0)] public Point3 Point3;
-    [FieldOffset(0)] public Point4 Point4;
-    [FieldOffset(0)] public Quaternion Quaternion;
-    [FieldOffset(0)] public Vector2 Vector2;
-    [FieldOffset(0)] public Vector3 Vector3;
-    [FieldOffset(0)] public Vector4 Vector4;
+    [FieldOffset(0)]
+    public float Float;
+
+    [FieldOffset(0)]
+    public int Integer;
+
+    [FieldOffset(0)]
+    public Matrix3x2 Matrix3x2;
+
+    [FieldOffset(0)]
+    public Matrix4x4 Matrix4x4;
+
+    [FieldOffset(0)]
+    public Point2 Point2;
+
+    [FieldOffset(0)]
+    public Point3 Point3;
+
+    [FieldOffset(0)]
+    public Point4 Point4;
+
+    [FieldOffset(0)]
+    public Quaternion Quaternion;
+
+    [FieldOffset(0)]
+    public Vector2 Vector2;
+
+    [FieldOffset(0)]
+    public Vector3 Vector3;
+
+    [FieldOffset(0)]
+    public Vector4 Vector4;
   }
 }
-
-
-

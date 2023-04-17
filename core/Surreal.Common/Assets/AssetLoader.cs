@@ -2,11 +2,15 @@
 
 namespace Surreal.Assets;
 
-/// <summary>A callback for when assets change, allowing transparent reload of asset contents.</summary>
+/// <summary>
+/// A callback for when assets change, allowing transparent reload of asset contents.
+/// </summary>
 public delegate Task<T> AssetChangedHandler<T>(AssetLoaderContext context, T existingAsset, CancellationToken cancellationToken)
   where T : notnull;
 
-/// <summary>Context for <see cref="IAssetLoader" /> operations.</summary>
+/// <summary>
+/// Context for <see cref="IAssetLoader" /> operations.
+/// </summary>
 public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manager)
 {
   public Type Type => Id.Type;
@@ -14,24 +18,27 @@ public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manag
 
   public bool IsHotReloadEnabled => Manager.IsHotReloadEnabled;
 
-  /// <summary>Listens for changes in the associated asset.</summary>
+  /// <summary>
+  /// Listens for changes in the associated asset.
+  /// </summary>
   public IDisposable SubscribeToChanges<T>(AssetChangedHandler<T> handler)
     where T : notnull
   {
-    return Manager.SubscribeToChanges(Id, Path, async (context, existingAsset, cancellationToken) =>
-    {
-      return await handler(context, (T) existingAsset, cancellationToken);
-    });
+    return Manager.SubscribeToChanges(Id, Path, async (context, existingAsset, cancellationToken) => { return await handler(context, (T)existingAsset, cancellationToken); });
   }
 
-  /// <summary>Loads a dependent asset from the associated manager.</summary>
+  /// <summary>
+  /// Loads a dependent asset from the associated manager.
+  /// </summary>
   public Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
     return Manager.LoadAssetAsync<T>(path, cancellationToken);
   }
 }
 
-/// <summary>Allows loading assets from storage.</summary>
+/// <summary>
+/// Allows loading assets from storage.
+/// </summary>
 public interface IAssetLoader
 {
   bool CanHandle(AssetLoaderContext context);
@@ -39,7 +46,9 @@ public interface IAssetLoader
   Task<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
 }
 
-/// <summary>Base class for any <see cref="IAssetLoader" /> implementation.</summary>
+/// <summary>
+/// Base class for any <see cref="IAssetLoader" /> implementation.
+/// </summary>
 public abstract class AssetLoader<T> : IAssetLoader
   where T : notnull
 {
@@ -56,7 +65,9 @@ public abstract class AssetLoader<T> : IAssetLoader
   public abstract Task<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
 }
 
-/// <summary>Base class for any <see cref="IAssetLoader" /> implementation.</summary>
+/// <summary>
+/// Base class for any <see cref="IAssetLoader" /> implementation.
+/// </summary>
 public abstract class AssetLoader<T, TSettings> : IAssetLoader
   where T : notnull
   where TSettings : AssetSettings<T>, new()
@@ -75,12 +86,14 @@ public abstract class AssetLoader<T, TSettings> : IAssetLoader
     return await LoadAsync(context, settings, cancellationToken);
   }
 
-  /// <summary>Gets the <see cref="TSettings" /> for the given asset context.</summary>
+  /// <summary>
+  /// Gets the <see cref="TSettings" /> for the given asset context.
+  /// </summary>
   public TSettings GetAssetParameters(AssetLoaderContext context)
   {
     if (context.Manager.TryGetSettings<T>(context.Path, out var settings))
     {
-      return (TSettings) settings;
+      return (TSettings)settings;
     }
 
     return Settings;
@@ -88,4 +101,3 @@ public abstract class AssetLoader<T, TSettings> : IAssetLoader
 
   public abstract Task<T> LoadAsync(AssetLoaderContext context, TSettings settings, CancellationToken cancellationToken);
 }
-

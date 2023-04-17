@@ -2,7 +2,9 @@
 
 namespace Surreal;
 
-/// <summary>Associates metadata with a type for use in editors/etc.</summary>
+/// <summary>
+/// Associates metadata with a type for use in editors/etc.
+/// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class EditorDescriptionAttribute : Attribute
@@ -12,11 +14,10 @@ public sealed class EditorDescriptionAttribute : Attribute
   public string? Category { get; init; }
 }
 
-/// <summary>Indicates the associated type is made more visible for testing purposes, only.</summary>
+/// <summary>
+/// Indicates the associated type is made more visible for testing purposes, only.
+/// </summary>
 [AttributeUsage(AttributeTargets.All)]
 public sealed class VisibleForTestingAttribute : Attribute
 {
 }
-
-
-

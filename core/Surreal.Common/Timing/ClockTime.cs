@@ -2,7 +2,9 @@
 
 namespace Surreal.Timing;
 
-/// <summary>A range of <see cref="ClockTime" />s for scheduling.</summary>
+/// <summary>
+/// A range of <see cref="ClockTime" />s for scheduling.
+/// </summary>
 public readonly record struct ClockTimeRange(ClockTime Start, ClockTime End)
 {
   public static ClockTimeRange Nothing => new(default, default);
@@ -14,7 +16,9 @@ public readonly record struct ClockTimeRange(ClockTime Start, ClockTime End)
   }
 }
 
-/// <summary>Represents a discrete time in a 24 hour clock with hours, minutes and seconds.</summary>
+/// <summary>
+/// Represents a discrete time in a 24 hour clock with hours, minutes and seconds.
+/// </summary>
 public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
 {
   private const int TicksPerSecond = 1;
@@ -117,6 +121,3 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
     return totalSeconds * TicksPerSecond;
   }
 }
-
-
-

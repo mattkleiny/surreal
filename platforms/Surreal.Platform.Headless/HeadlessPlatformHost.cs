@@ -9,7 +9,9 @@ using Surreal.Timing;
 
 namespace Surreal;
 
-/// <summary>A specialization of <see cref="IPlatformHost" /> for headless environments.</summary>
+/// <summary>
+/// A specialization of <see cref="IPlatformHost" /> for headless environments.
+/// </summary>
 public interface IHeadlessPlatformHost : IPlatformHost
 {
   HeadlessKeyboardDevice Keyboard { get; }
@@ -68,5 +70,3 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
     // no-op
   }
 }
-
-

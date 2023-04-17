@@ -3,10 +3,14 @@ using Surreal.IO;
 
 namespace Surreal.Assets;
 
-/// <summary>Base class for settings for a particular type of asset.</summary>
+/// <summary>
+/// Base class for settings for a particular type of asset.
+/// </summary>
 public abstract record AssetSettings<T>;
 
-/// <summary>Represents uniquely some asset type at a given path.</summary>
+/// <summary>
+/// Represents uniquely some asset type at a given path.
+/// </summary>
 public readonly record struct AssetId(Type Type, VirtualPath Path)
 {
   public override string ToString()
@@ -15,7 +19,9 @@ public readonly record struct AssetId(Type Type, VirtualPath Path)
   }
 }
 
-/// <summary>Allows managing assets.</summary>
+/// <summary>
+/// Allows managing assets.
+/// </summary>
 public interface IAssetManager : IDisposable
 {
   bool IsHotReloadEnabled { get; }
@@ -32,7 +38,9 @@ public interface IAssetManager : IDisposable
   IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
 }
 
-/// <summary>The default <see cref="IAssetManager" /> implementation.</summary>
+/// <summary>
+/// The default <see cref="IAssetManager" /> implementation.
+/// </summary>
 public sealed class AssetManager : IAssetManager
 {
   private static readonly ILog Log = LogFactory.GetLog<AssetManager>();
@@ -55,7 +63,7 @@ public sealed class AssetManager : IAssetManager
 
     if (_settingsById.TryGetValue(id, out var settings))
     {
-      results = (AssetSettings<T>) settings;
+      results = (AssetSettings<T>)settings;
       return true;
     }
 
@@ -76,7 +84,7 @@ public sealed class AssetManager : IAssetManager
 
     if (_assetsById.TryGetValue(id, out var asset))
     {
-      result = (T) asset;
+      result = (T)asset;
       return true;
     }
 
@@ -107,7 +115,7 @@ public sealed class AssetManager : IAssetManager
       _assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
-    return (T) asset;
+    return (T)asset;
   }
 
   public IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
@@ -197,7 +205,9 @@ public sealed class AssetManager : IAssetManager
     _watchers.Clear();
   }
 
-  /// <summary>Attempts to locate a valid loader for the given type.</summary>
+  /// <summary>
+  /// Attempts to locate a valid loader for the given type.
+  /// </summary>
   private bool TryGetLoader(AssetLoaderContext context, [NotNullWhen(true)] out IAssetLoader? result)
   {
     for (var i = 0; i < _loaders.Count; i++)
@@ -215,7 +225,9 @@ public sealed class AssetManager : IAssetManager
   }
 }
 
-/// <summary>Denotes the given asset type is not supported by the manager.</summary>
+/// <summary>
+/// Denotes the given asset type is not supported by the manager.
+/// </summary>
 public sealed class UnsupportedAssetException : Exception
 {
   public UnsupportedAssetException(string message)
@@ -223,4 +235,3 @@ public sealed class UnsupportedAssetException : Exception
   {
   }
 }
-

@@ -6,7 +6,9 @@ using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
 
-/// <summary>Formats for a <see cref="Texture" />.</summary>
+/// <summary>
+/// Formats for a <see cref="Texture" />.
+/// </summary>
 public enum TextureFormat
 {
   R8,
@@ -19,21 +21,27 @@ public enum TextureFormat
   Rgba
 }
 
-/// <summary>Wrapping modes for a <see cref="Texture" />.</summary>
+/// <summary>
+/// Wrapping modes for a <see cref="Texture" />.
+/// </summary>
 public enum TextureWrapMode
 {
   Clamp,
   Repeat
 }
 
-/// <summary>Filter modes for a <see cref="Texture" />.</summary>
+/// <summary>
+/// Filter modes for a <see cref="Texture" />.
+/// </summary>
 public enum TextureFilterMode
 {
   Point,
   Linear
 }
 
-/// <summary>A texture that can be uploaded to the GPU.</summary>
+/// <summary>
+/// A texture that can be uploaded to the GPU.
+/// </summary>
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
 public sealed class Texture : GraphicsResource, IHasSizeEstimate
 {
@@ -81,7 +89,9 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
 
   public Size Size { get; private set; }
 
-  /// <summary>Creates a colored 1x1 texture.</summary>
+  /// <summary>
+  /// Creates a colored 1x1 texture.
+  /// </summary>
   public static Texture CreateColored(IGraphicsServer server, Color color, TextureFormat format = TextureFormat.Rgba8)
   {
     var texture = new Texture(server, format);
@@ -91,7 +101,9 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     return texture;
   }
 
-  /// <summary>Creates a texture from random noise.</summary>
+  /// <summary>
+  /// Creates a texture from random noise.
+  /// </summary>
   public static Texture CreateNoise(IGraphicsServer server, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8)
   {
     var texture = new Texture(server, format);
@@ -180,7 +192,9 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
     base.Dispose(managed);
   }
 
-  /// <summary>Allows borrowing the texture's data.</summary>
+  /// <summary>
+  /// Allows borrowing the texture's data.
+  /// </summary>
   public readonly struct TextureDataLease<T> : IMemoryOwner<T>
     where T : unmanaged
   {
@@ -202,7 +216,9 @@ public sealed class Texture : GraphicsResource, IHasSizeEstimate
   }
 }
 
-/// <summary>Settings for <see cref="Texture" />s.</summary>
+/// <summary>
+/// Settings for <see cref="Texture" />s.
+/// </summary>
 public sealed record TextureSettings : AssetSettings<Texture>
 {
   public TextureFormat Format { get; init; } = TextureFormat.Rgba8;
@@ -210,7 +226,9 @@ public sealed record TextureSettings : AssetSettings<Texture>
   public TextureWrapMode WrapMode { get; init; } = TextureWrapMode.Clamp;
 }
 
-/// <summary>The <see cref="AssetLoader{T}" /> for <see cref="Texture" />s.</summary>
+/// <summary>
+/// The <see cref="AssetLoader{T}" /> for <see cref="Texture" />s.
+/// </summary>
 public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
 {
   private readonly IGraphicsServer _server;
@@ -244,6 +262,3 @@ public sealed class TextureLoader : AssetLoader<Texture, TextureSettings>
     return texture;
   }
 }
-
-
-

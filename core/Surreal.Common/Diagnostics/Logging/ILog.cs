@@ -1,6 +1,8 @@
 ﻿namespace Surreal.Diagnostics.Logging;
 
-/// <summary>Different logging levels for <see cref="ILog" /> calls.</summary>
+/// <summary>
+/// Different logging levels for <see cref="ILog" /> calls.
+/// </summary>
 public enum LogLevel
 {
   Trace = 0,
@@ -10,7 +12,9 @@ public enum LogLevel
   Fatal = 4
 }
 
-/// <summary>A component capable of logging messages to some target.</summary>
+/// <summary>
+/// A component capable of logging messages to some target.
+/// </summary>
 public interface ILog
 {
   bool IsLevelEnabled(LogLevel level);
@@ -158,4 +162,3 @@ public interface ILog
     }
   }
 }
-

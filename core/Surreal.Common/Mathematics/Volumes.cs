@@ -1,6 +1,8 @@
 namespace Surreal.Mathematics;
 
-/// <summary>A volume in 3-space.</summary>
+/// <summary>
+/// A volume in 3-space.
+/// </summary>
 public readonly record struct Volume(float Width, float Height, float Depth)
 {
   public float Total => Width * Height * Depth;
@@ -50,6 +52,3 @@ public readonly record struct Volume(float Width, float Height, float Depth)
     return new Volume(a.Width / b.Width, a.Height / b.Height, a.Depth / b.Depth);
   }
 }
-
-
-

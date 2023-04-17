@@ -1,6 +1,8 @@
 namespace Surreal.Memory;
 
-/// <summary>A <see cref="Span{T}" /> that is operated like a <see cref="List{T}" />.</summary>
+/// <summary>
+/// A <see cref="Span{T}" /> that is operated like a <see cref="List{T}" />.
+/// </summary>
 [DebuggerDisplay("SpanList {Count}/{Capacity}")]
 public ref struct SpanList<T>
 {
@@ -67,6 +69,3 @@ public ref struct SpanList<T>
     return list.ToSpan();
   }
 }
-
-
-

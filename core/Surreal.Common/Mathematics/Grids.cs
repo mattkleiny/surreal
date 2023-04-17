@@ -2,7 +2,9 @@
 
 namespace Surreal.Mathematics;
 
-/// <summary>A dense 2d grid of <see cref="T" />.</summary>
+/// <summary>
+/// A dense 2d grid of <see cref="T" />.
+/// </summary>
 public sealed class Grid<T> : IEnumerable<T>
 {
   private readonly T[] _elements;
@@ -62,7 +64,9 @@ public sealed class Grid<T> : IEnumerable<T>
     return new Enumerator(this);
   }
 
-  /// <summary>Custom enumerator for <see cref="Grid{T}" />s.</summary>
+  /// <summary>
+  /// Custom enumerator for <see cref="Grid{T}" />s.
+  /// </summary>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly Grid<T> _grid;
@@ -94,7 +98,9 @@ public sealed class Grid<T> : IEnumerable<T>
   }
 }
 
-/// <summary>A sparse 2d grid of <see cref="T" />.</summary>
+/// <summary>
+/// A sparse 2d grid of <see cref="T" />.
+/// </summary>
 public sealed class SparseGrid<T> : IEnumerable<T>
 {
   private readonly Dictionary<Point2, T> _items = new();
@@ -149,6 +155,3 @@ public sealed class SparseGrid<T> : IEnumerable<T>
     return _items.Values.GetEnumerator();
   }
 }
-
-
-

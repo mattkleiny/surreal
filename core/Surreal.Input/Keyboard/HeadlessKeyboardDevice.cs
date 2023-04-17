@@ -1,6 +1,8 @@
 namespace Surreal.Input.Keyboard;
 
-/// <summary>A headless <see cref="IKeyboardDevice" />.</summary>
+/// <summary>
+/// A headless <see cref="IKeyboardDevice" />.
+/// </summary>
 public sealed class HeadlessKeyboardDevice : IKeyboardDevice
 {
   private readonly HashSet<Key> _pressedKeys = new();
@@ -48,6 +50,3 @@ public sealed class HeadlessKeyboardDevice : IKeyboardDevice
   {
   }
 }
-
-
-

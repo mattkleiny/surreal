@@ -2,7 +2,9 @@ using System.Runtime.CompilerServices;
 
 namespace Surreal.Collections;
 
-/// <summary>A slice of a <see cref="List{T}" />.</summary>
+/// <summary>
+/// A slice of a <see cref="List{T}" />.
+/// </summary>
 public readonly struct Slice<T> : IEnumerable<T>
 {
   public static Slice<T> Empty => default;
@@ -69,7 +71,9 @@ public readonly struct Slice<T> : IEnumerable<T>
     return new ReadOnlySlice<T>(slice._list, slice.Offset, slice.Length);
   }
 
-  /// <summary>An enumerator for a <see cref="Slice{T}" />.</summary>
+  /// <summary>
+  /// An enumerator for a <see cref="Slice{T}" />.
+  /// </summary>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly Slice<T> _slice;
@@ -102,7 +106,9 @@ public readonly struct Slice<T> : IEnumerable<T>
   }
 }
 
-/// <summary>A read-only <see cref="Slice{T}" /> variant.</summary>
+/// <summary>
+/// A read-only <see cref="Slice{T}" /> variant.
+/// </summary>
 public readonly struct ReadOnlySlice<T> : IEnumerable<T>
 {
   public static ReadOnlySlice<T> Empty => default;
@@ -165,7 +171,9 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
     return new ReadOnlySlice<T>(list);
   }
 
-  /// <summary>An enumerator for <see cref="ReadOnlySlice{T}" />.</summary>
+  /// <summary>
+  /// An enumerator for <see cref="ReadOnlySlice{T}" />.
+  /// </summary>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly ReadOnlySlice<T> _slice;
@@ -198,28 +206,35 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
   }
 }
 
-/// <summary>Commonly used extensions for <see cref="Slice{T}" /> and <see cref="ReadOnlySlice{T}" />.</summary>
+/// <summary>
+/// Commonly used extensions for <see cref="Slice{T}" /> and <see cref="ReadOnlySlice{T}" />.
+/// </summary>
 public static class SliceExtensions
 {
-  /// <summary>Converts the given list to a slice.</summary>
+  /// <summary>
+  /// Converts the given list to a slice.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Slice<T> AsSlice<T>(this List<T> list)
   {
     return list;
   }
 
-  /// <summary>Converts the given list to a read-only slice.</summary>
+  /// <summary>
+  /// Converts the given list to a read-only slice.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list)
   {
     return list;
   }
 
-  /// <summary>Swaps two elements in-place inside the slice.</summary>
+  /// <summary>
+  /// Swaps two elements in-place inside the slice.
+  /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Swap<T>(this Slice<T> slice, int fromIndex, int toIndex)
   {
     (slice[fromIndex], slice[toIndex]) = (slice[toIndex], slice[fromIndex]);
   }
 }
-

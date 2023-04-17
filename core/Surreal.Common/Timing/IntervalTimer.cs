@@ -1,6 +1,8 @@
 namespace Surreal.Timing;
 
-/// <summary>A stack-allocated interval timer.</summary>
+/// <summary>
+/// A stack-allocated interval timer.
+/// </summary>
 public struct IntervalTimer
 {
   private readonly TimeSpan _interval;
@@ -32,6 +34,3 @@ public struct IntervalTimer
     _accumulator = 0f;
   }
 }
-
-
-
