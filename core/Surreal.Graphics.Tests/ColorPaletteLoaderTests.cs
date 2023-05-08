@@ -1,4 +1,5 @@
 ﻿using Surreal.Assets;
+using Surreal.Colors;
 
 namespace Surreal.Graphics;
 
@@ -16,6 +17,3 @@ public class ColorPaletteLoaderTests
     palette.Count.Should().Be(8);
   }
 }
-
-
-

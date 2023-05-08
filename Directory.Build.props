@@ -18,24 +18,18 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Surreal</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
 
     <!-- analysis and warnings -->
-    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
-    <NoWarn>CS0067;CS0414;CS0436</NoWarn>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
   </PropertyGroup>
 
+  <!-- conveniences for all projects -->
   <ItemGroup>
-    <!-- shared usings for all projects -->
-    <Using Include="System.Collections" />
-    <Using Include="System.Collections.Concurrent" />
-    <Using Include="System.Collections.Generic" />
-    <Using Include="System.Collections.Immutable" />
-    <Using Include="System.Diagnostics" />
-    <Using Include="System.Diagnostics.CodeAnalysis" />
-    <Using Include="System.Numerics" />
-    <Using Include="System.Text" />
+    <!-- annotations for JetBrains IDEs; private to each assembly -->
+    <Using Include="JetBrains.Annotations" />
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="all" />
 
     <!-- automatically copy assets and embed resources -->
     <Content Include="$(ProjectDir)\Assets\**"
@@ -43,10 +37,7 @@
              Condition="!$(ProjectName.EndsWith('Common'))" />
     <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
 
-    <!-- link shared code into all assemblies -->
-    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="all" />
-
-    <!-- make internals automatically visible to associated projectd and NSubstitute -->
+    <!-- make internals automatically visible to associated projects and nsubstitute/etc -->
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(ProjectName).Tests</_Parameter1>
     </AssemblyAttribute>
@@ -58,11 +49,23 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- conveniences for .NET projects -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net7'))">
+    <!-- shared usings for all projects -->
+    <Using Include="System.Collections" />
+    <Using Include="System.Collections.Concurrent" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Collections.Immutable" />
+    <Using Include="System.Diagnostics" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Numerics" />
+    <Using Include="System.Text" />
+  </ItemGroup>
+
   <!-- test project configuration -->
   <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.17.0" />
@@ -77,11 +80,6 @@
     <Using Include="NUnit.Framework" />
     <Using Include="NSubstitute" />
     <Using Include="FluentAssertions" />
-
-    <!-- link shared code into test assemblies -->
-    <Compile Include="$(MSBuildProjectDirectory)..\..\..\SharedTestHelpers.cs">
-      <Link>Shared\SharedTestHelpers.cs</Link>
-    </Compile>
   </ItemGroup>
 
   <!-- benchmark project configuration -->
@@ -91,7 +89,6 @@
     <IsTrimmable>false</IsTrimmable>
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
-
   <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
 

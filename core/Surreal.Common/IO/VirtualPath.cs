@@ -30,15 +30,9 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
     return new VirtualPath("local", uri);
   }
 
-  public override string ToString()
-  {
-    return $"{Scheme}://{Target}";
-  }
+  public override string ToString() => $"{Scheme}://{Target}";
 
-  public static implicit operator VirtualPath(string uri)
-  {
-    return Parse(uri);
-  }
+  public static implicit operator VirtualPath(string uri) => Parse(uri);
 
   /// <summary>
   /// The <see cref="TypeConverter" /> for <see cref="VirtualPath" />s.

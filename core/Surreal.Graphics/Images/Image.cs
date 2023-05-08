@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Surreal.Assets;
+using Surreal.Colors;
 using Surreal.IO;
-using Surreal.Mathematics;
 using Surreal.Memory;
 using Size = Surreal.Memory.Size;
 
@@ -25,12 +24,6 @@ public sealed class Image : IDisposable
     _image = new Image<Rgba32>(width, height);
   }
 
-  public Image(ReadOnlySpanGrid<Color32> pixels)
-    : this(pixels.Width, pixels.Height)
-  {
-    pixels.ToReadOnlySpan().CopyTo(Pixels);
-  }
-
   private Image(Image<Rgba32> image)
   {
     _image = image;
@@ -40,7 +33,7 @@ public sealed class Image : IDisposable
   public int Height => _image.Height;
   public Size Size => Pixels.ToSpan().CalculateSize();
 
-  public SpanGrid<Color32> Pixels
+  public SpanGrid<ColorB> Pixels
   {
     get
     {
@@ -49,9 +42,9 @@ public sealed class Image : IDisposable
         throw new InvalidOperationException("The image span is not contiguous, unable to access pixels!");
       }
 
-      var pixels = MemoryMarshal.Cast<Rgba32, Color32>(span);
+      var pixels = MemoryMarshal.Cast<Rgba32, ColorB>(span);
 
-      return new SpanGrid<Color32>(pixels, Width);
+      return new SpanGrid<ColorB>(pixels, Width);
     }
   }
 
@@ -86,8 +79,8 @@ public sealed class Image : IDisposable
     // load the image
     var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
     if (image is Image<Rgba32> rgba)
-      // we're already in the right format
     {
+      // we're already in the right format
       return new Image(rgba);
     }
 
@@ -118,37 +111,5 @@ public sealed class Image : IDisposable
   internal void ReplaceImage(Image other)
   {
     _image = other._image;
-  }
-}
-
-/// <summary>
-/// The <see cref="AssetLoader{T}" /> for <see cref="Image" />s.
-/// </summary>
-public sealed class ImageLoader : AssetLoader<Image>
-{
-  private static ImmutableHashSet<string> Extensions { get; } = ImmutableHashSet.Create(".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga");
-
-  public override bool CanHandle(AssetLoaderContext context)
-  {
-    return base.CanHandle(context) && Extensions.Contains(context.Path.Extension);
-  }
-
-  public override async Task<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
-  {
-    var image = await Image.LoadAsync(context.Path);
-
-    if (context.IsHotReloadEnabled)
-    {
-      context.SubscribeToChanges<Image>(ReloadAsync);
-    }
-
-    return image;
-  }
-
-  private static async Task<Image> ReloadAsync(AssetLoaderContext context, Image image, CancellationToken cancellationToken = default)
-  {
-    image.ReplaceImage(await Image.LoadAsync(context.Path));
-
-    return image;
   }
 }

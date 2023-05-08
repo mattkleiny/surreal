@@ -16,6 +16,9 @@ public struct IntervalTimer
     _accumulator = 0f;
   }
 
+  /// <summary>
+  /// Advances the timer and returns true if the interval has elapsed.
+  /// </summary>
   public bool Tick(TimeDelta deltaTime)
   {
     _accumulator += deltaTime;
@@ -29,6 +32,9 @@ public struct IntervalTimer
     return false;
   }
 
+  /// <summary>
+  /// Resets the timer.
+  /// </summary>
   public void Reset()
   {
     _accumulator = 0f;

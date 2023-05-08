@@ -7,7 +7,10 @@ public class SpanListTests
   {
     var list = new SpanList<ushort>(stackalloc ushort[256]);
 
-    for (var i = 0; i < 256; i++) list.Add(100);
+    for (var i = 0; i < 256; i++)
+    {
+      list.Add(100);
+    }
 
     list.Count.Should().Be(256);
   }
@@ -26,6 +29,3 @@ public class SpanListTests
     list[3..].Count.Should().Be(0);
   }
 }
-
-
-

@@ -4,19 +4,11 @@ using Surreal.IO;
 namespace Surreal.Assets;
 
 /// <summary>
-/// Base class for settings for a particular type of asset.
-/// </summary>
-public abstract record AssetSettings<T>;
-
-/// <summary>
 /// Represents uniquely some asset type at a given path.
 /// </summary>
 public readonly record struct AssetId(Type Type, VirtualPath Path)
 {
-  public override string ToString()
-  {
-    return Path.ToString();
-  }
+  public override string ToString() => Path.ToString();
 }
 
 /// <summary>
@@ -27,9 +19,6 @@ public interface IAssetManager : IDisposable
   bool IsHotReloadEnabled { get; }
 
   void AddLoader(IAssetLoader loader);
-
-  void AddSettings<T>(VirtualPath path, AssetSettings<T> settings);
-  bool TryGetSettings<T>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<T>? results);
 
   bool IsAssetLoaded<T>(VirtualPath path);
   bool TryGetAsset<T>(VirtualPath path, [NotNullWhen(true)] out T? result);
@@ -47,7 +36,6 @@ public sealed class AssetManager : IAssetManager
   private readonly Dictionary<AssetId, object> _assetsById = new();
 
   private readonly List<IAssetLoader> _loaders = new();
-  private readonly Dictionary<AssetId, object> _settingsById = new();
   private readonly List<IPathWatcher> _watchers = new();
 
   public bool IsHotReloadEnabled { get; set; } = true;
@@ -55,20 +43,6 @@ public sealed class AssetManager : IAssetManager
   public void AddLoader(IAssetLoader loader)
   {
     _loaders.Add(loader);
-  }
-
-  public bool TryGetSettings<T>(VirtualPath path, [NotNullWhen(true)] out AssetSettings<T>? results)
-  {
-    var id = new AssetId(typeof(T), path);
-
-    if (_settingsById.TryGetValue(id, out var settings))
-    {
-      results = (AssetSettings<T>)settings;
-      return true;
-    }
-
-    results = default;
-    return false;
   }
 
   public bool IsAssetLoaded<T>(VirtualPath path)
@@ -90,13 +64,6 @@ public sealed class AssetManager : IAssetManager
 
     result = default;
     return false;
-  }
-
-  public void AddSettings<T>(VirtualPath path, AssetSettings<T> settings)
-  {
-    var id = new AssetId(typeof(T), path);
-
-    _settingsById[id] = settings;
   }
 
   public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)

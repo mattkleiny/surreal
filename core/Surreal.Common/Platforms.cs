@@ -1,5 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.IO;
+using Surreal.Services;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -17,12 +18,13 @@ public interface IPlatform
 /// </summary>
 public interface IPlatformHost : IDisposable
 {
+  event Action<int, int> Resized;
+
   int Width { get; }
   int Height { get; }
   bool IsVisible { get; }
   bool IsFocused { get; }
   bool IsClosing { get; }
-  event Action<int, int> Resized;
 
   void RegisterServices(IServiceRegistry services);
   void RegisterAssetLoaders(IAssetManager manager);

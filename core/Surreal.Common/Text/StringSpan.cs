@@ -7,6 +7,38 @@ namespace Surreal.Text;
 /// </summary>
 public readonly record struct StringSpan(string? Source, int Offset, int Length)
 {
+  /// <summary>
+  /// Splits a string at the first instance of the given character, yielding the left and right halves.
+  /// </summary>
+  public static (StringSpan Left, StringSpan Right) Split(string input, string separator)
+  {
+    if (!TrySplit(input, separator, out var result))
+    {
+      throw new ArgumentException("The given string was not able to be split", nameof(input));
+    }
+
+    return result;
+  }
+
+  /// <summary>
+  /// Splits a string at the first instance of the given character, yielding the left and right halves.
+  /// </summary>
+  public static bool TrySplit(string input, string separator, out (StringSpan Left, StringSpan Right) result)
+  {
+    var index = input.IndexOf(separator, StringComparison.Ordinal);
+    if (index > -1)
+    {
+      var left = input.AsStringSpan(0, index);
+      var right = input.AsStringSpan(index + separator.Length);
+
+      result = (left, right);
+      return true;
+    }
+
+    result = default;
+    return false;
+  }
+
   public StringSpan(string source)
     : this(source, 0, source.Length)
   {
@@ -56,59 +88,8 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     return ToSpan().SequenceEqual(other.ToSpan());
   }
 
-  /// <summary>
-  /// Splits a string at the first instance of the given character, yielding the left and right halves.
-  /// </summary>
-  public static (StringSpan Left, StringSpan Right) Split(string input, string separator)
-  {
-    if (!TrySplit(input, separator, out var result))
-    {
-      throw new ArgumentException("The given string was not able to be split", nameof(input));
-    }
-
-    return result;
-  }
-
-  /// <summary>
-  /// Splits a string at the first instance of the given character, yielding the left and right halves.
-  /// </summary>
-  public static bool TrySplit(string input, string separator, out (StringSpan Left, StringSpan Right) result)
-  {
-    var index = input.IndexOf(separator, StringComparison.Ordinal);
-    if (index > -1)
-    {
-      var left = input.AsStringSpan(0, index);
-      var right = input.AsStringSpan(index + separator.Length);
-
-      result = (left, right);
-      return true;
-    }
-
-    result = default;
-    return false;
-  }
-
-  /// <summary>
-  /// Returns the next character from the start of the span.
-  /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public char Peek()
-  {
-    return Length > 1 ? this[1] : '\0';
-  }
-
-  /// <summary>
-  /// Determines if the next character matches the given token.
-  /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public bool Match(char token)
-  {
-    return Peek() == token;
-  }
-
   public override int GetHashCode()
   {
-    // hash code is based on the individual characters of the span.</summary>
     return string.GetHashCode(ToSpan());
   }
 
@@ -122,20 +103,9 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     return Source?.AsSpan(Offset, Length).ToString() ?? string.Empty;
   }
 
-  public static implicit operator StringSpan(string value)
-  {
-    return new StringSpan(value);
-  }
-
-  public static implicit operator StringSpan(ReadOnlySpan<char> value)
-  {
-    return new StringSpan(value.ToString());
-  }
-
-  public static implicit operator ReadOnlySpan<char>(StringSpan span)
-  {
-    return span.ToSpan();
-  }
+  public static implicit operator StringSpan(string value) => new(value);
+  public static implicit operator StringSpan(ReadOnlySpan<char> value) => new(value.ToString());
+  public static implicit operator ReadOnlySpan<char>(StringSpan span) => span.ToSpan();
 }
 
 /// <summary>
@@ -159,155 +129,5 @@ public static class StringSpanExtensions
   public static StringSpan AsStringSpan(this string source, int offset, int length)
   {
     return new StringSpan(source, offset, length);
-  }
-
-  /// <summary>
-  /// Consumes all of the next contiguous digits in the span.
-  /// </summary>
-  public static StringSpan ConsumeNumeric(this StringSpan span)
-  {
-    var offset = 1;
-
-    for (var i = 1; i < span.Length; i++)
-    {
-      if (!char.IsDigit(span[i]))
-      {
-        break;
-      }
-
-      offset++;
-    }
-
-    return span[..offset];
-  }
-
-  /// <summary>
-  /// Consumes all of the next contiguous digits, including decimal places in the span.
-  /// </summary>
-  public static StringSpan ConsumeNumericWithFractions(this StringSpan span)
-  {
-    var offset = 1;
-    var hasFraction = false;
-
-    for (var i = 1; i < span.Length; i++)
-    {
-      if (span[i] == '.')
-      {
-        if (hasFraction)
-        {
-          break;
-        }
-
-        hasFraction = true;
-      }
-      else if (!char.IsDigit(span[i]))
-      {
-        break;
-      }
-
-      offset++;
-    }
-
-    return span[..offset];
-  }
-
-  /// <summary>
-  /// Consumes all alpha-numeric characters in the span
-  /// </summary>
-  public static StringSpan ConsumeAlphaNumeric(this StringSpan span)
-  {
-    var offset = 1;
-
-    for (var i = 1; i < span.Length; i++)
-    {
-      var character = span[i];
-
-      if (!char.IsLetterOrDigit(character) && character != '_')
-      {
-        break;
-      }
-
-      offset++;
-    }
-
-    return span[..offset];
-  }
-
-  /// <summary>
-  /// Consumes all alpha-numeric characters in the span
-  /// </summary>
-  public static StringSpan ConsumeAny(this StringSpan span, HashSet<char> characters)
-  {
-    var offset = 1;
-
-    for (var i = 1; i < span.Length; i++)
-    {
-      if (!characters.Contains(span[i]))
-      {
-        break;
-      }
-
-      offset++;
-    }
-
-    return span[..offset];
-  }
-
-  /// <summary>
-  /// Consumes all of the given characters from the span.
-  /// </summary>
-  public static StringSpan ConsumeWhile(this StringSpan span, char token)
-  {
-    var offset = 1;
-
-    for (var i = 1; i < span.Length; i++)
-    {
-      if (span[i] != token)
-      {
-        break;
-      }
-
-      offset++;
-    }
-
-    return span[..offset];
-  }
-
-  /// <summary>
-  /// Consumes all characters until the given token is detected.
-  /// </summary>
-  public static StringSpan ConsumeUntil(this StringSpan span, char token)
-  {
-    var offset = 1;
-
-    for (var i = 1; i < span.Length; i++)
-    {
-      offset++;
-
-      if (span[i] == token)
-      {
-        break;
-      }
-    }
-
-    return span[..offset];
-  }
-
-  public static string Highlight(this StringSpan span, string leftTerminal, string rightTerminal)
-  {
-    if (span.Source == null)
-    {
-      return string.Empty;
-    }
-
-    var builder = new StringBuilder();
-
-    builder.Append(span.Source[..span.Offset]);
-    builder.Append(leftTerminal);
-    builder.Append(span.ToString());
-    builder.Append(rightTerminal);
-    builder.Append(span.Source[(span.Offset + span.Length)..]);
-
-    return builder.ToString();
   }
 }

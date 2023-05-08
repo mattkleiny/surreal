@@ -15,10 +15,12 @@ public sealed class HeadlessKeyboardDevice : IKeyboardDevice
       if (value)
       {
         _pressedKeys.Add(key);
+        KeyPressed?.Invoke(key);
       }
       else
       {
         _pressedKeys.Remove(key);
+        KeyReleased?.Invoke(key);
       }
     }
   }
@@ -44,9 +46,5 @@ public sealed class HeadlessKeyboardDevice : IKeyboardDevice
   public bool IsKeyReleased(Key key)
   {
     return !_pressedKeys.Contains(key);
-  }
-
-  public void Update()
-  {
   }
 }

@@ -42,11 +42,6 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
   public int Minutes => Ticks / TicksPerMinute % 60;
   public int Seconds => Ticks / TicksPerSecond % 60;
 
-  public int CompareTo(ClockTime other)
-  {
-    return Ticks.CompareTo(other.Ticks);
-  }
-
   public static ClockTime Parse(string raw)
   {
     if (!TryParse(raw, out var time))
@@ -88,30 +83,14 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
     return true;
   }
 
-  public override string ToString()
-  {
-    return $"{Hours:00}:{Minutes:00}:{Seconds:00}";
-  }
+  public override string ToString() => $"{Hours:00}:{Minutes:00}:{Seconds:00}";
 
-  public static bool operator <(ClockTime left, ClockTime right)
-  {
-    return left.Ticks < right.Ticks;
-  }
+  public int CompareTo(ClockTime other) => Ticks.CompareTo(other.Ticks);
 
-  public static bool operator >(ClockTime left, ClockTime right)
-  {
-    return left.Ticks > right.Ticks;
-  }
-
-  public static bool operator <=(ClockTime left, ClockTime right)
-  {
-    return left.Ticks <= right.Ticks;
-  }
-
-  public static bool operator >=(ClockTime left, ClockTime right)
-  {
-    return left.Ticks >= right.Ticks;
-  }
+  public static bool operator <(ClockTime left, ClockTime right) => left.Ticks < right.Ticks;
+  public static bool operator >(ClockTime left, ClockTime right) => left.Ticks > right.Ticks;
+  public static bool operator <=(ClockTime left, ClockTime right) => left.Ticks <= right.Ticks;
+  public static bool operator >=(ClockTime left, ClockTime right) => left.Ticks >= right.Ticks;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static int CalculateTicks(int hour, int minute, int second)

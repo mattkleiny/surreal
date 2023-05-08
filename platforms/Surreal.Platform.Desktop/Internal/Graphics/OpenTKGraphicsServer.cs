@@ -3,6 +3,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
@@ -62,7 +63,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     }
   }
 
-  public void ClearColorBuffer(Color color)
+  public void ClearColorBuffer(ColorF color)
   {
     GL.ClearColor(color.R, color.G, color.B, color.A);
     GL.Clear(ClearBufferMask.ColorBufferBit);
@@ -418,14 +419,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return new GraphicsHandle(shader.Handle);
   }
 
-  public unsafe ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
+  public unsafe ReadOnlySlice<ShaderAttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
   {
     var program = new ProgramHandle(handle);
     var count = 0;
 
     GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
 
-    var results = new AttributeMetadata[count];
+    var results = new ShaderAttributeMetadata[count];
 
     for (var index = 0; index < count; index++)
     {
@@ -447,7 +448,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
         continue;
       }
 
-      results[index] = new AttributeMetadata(name, index, length, size, type switch
+      results[index] = new ShaderAttributeMetadata(name, index, length, size, type switch
       {
         AttributeType.Int => UniformType.Integer,
         AttributeType.Float => UniformType.Float,
@@ -467,14 +468,14 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
     return results;
   }
 
-  public unsafe ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
+  public unsafe ReadOnlySlice<ShaderUniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
   {
     var program = new ProgramHandle(handle);
     var count = 0;
 
     GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
 
-    var results = new UniformMetadata[count];
+    var results = new ShaderUniformMetadata[count];
 
     for (var index = 0; index < count; index++)
     {
@@ -498,7 +499,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
 
       var location = GL.GetUniformLocation(program, name);
 
-      results[index] = new UniformMetadata(name, location, length, size, type switch
+      results[index] = new ShaderUniformMetadata(name, location, length, size, type switch
       {
         OpenTK.Graphics.OpenGL.UniformType.Int => UniformType.Integer,
         OpenTK.Graphics.OpenGL.UniformType.Float => UniformType.Float,
@@ -720,7 +721,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       return (PixelFormat.Rgb, PixelType.UnsignedByte);
     }
 
-    if (type == typeof(Color32))
+    if (type == typeof(ColorB))
     {
       return (PixelFormat.Rgba, PixelType.UnsignedByte);
     }
@@ -746,7 +747,7 @@ internal sealed class OpenTKGraphicsServer : IGraphicsServer
       return (PixelFormat.Rgba, PixelType.Float);
     }
 
-    if (type == typeof(Color))
+    if (type == typeof(ColorF))
     {
       return (PixelFormat.Rgba, PixelType.Float);
     }

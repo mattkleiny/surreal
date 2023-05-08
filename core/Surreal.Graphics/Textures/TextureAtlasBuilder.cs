@@ -1,5 +1,6 @@
-﻿using Surreal.Graphics.Images;
-using Surreal.Mathematics;
+﻿using Surreal.Colors;
+using Surreal.Graphics.Images;
+using Surreal.Grids;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
@@ -26,9 +27,9 @@ public class TextureAtlasBuilder
   }
 
   /// <summary>
-  /// Converts the <see cref="TextureAtlasBuilder" /> to a grid of <see cref="Color" />.
+  /// Converts the <see cref="TextureAtlasBuilder" /> to a grid of <see cref="ColorF" />.
   /// </summary>
-  public Grid<Color32> ToGrid(int stride)
+  public Grid<ColorB> ToGrid(int stride)
   {
     var totalWidth = _cells.Sum(_ => _.Width);
     var maxHeight = _cells.Max(_ => _.Height);
@@ -36,7 +37,7 @@ public class TextureAtlasBuilder
     var width = totalWidth / stride;
     var height = maxHeight * (_cells.Count / stride);
 
-    var result = new Grid<Color32>(width, height);
+    var result = new Grid<ColorB>(width, height);
 
     ToSpan(result.Span);
 
@@ -69,7 +70,7 @@ public class TextureAtlasBuilder
     var texture = new Texture(server);
     var grid = ToGrid(stride);
 
-    texture.WritePixels<Color32>(grid.Width, grid.Height, grid.Span);
+    texture.WritePixels<ColorB>(grid.Width, grid.Height, grid.Span);
 
     return texture;
   }
@@ -77,7 +78,7 @@ public class TextureAtlasBuilder
   /// <summary>
   /// Converts the result and writes to the given <see cref="SpanGrid{T}" />.
   /// </summary>
-  private void ToSpan(SpanGrid<Color32> target)
+  private void ToSpan(SpanGrid<ColorB> target)
   {
     var offsetX = 0;
     var offsetY = 0;
@@ -100,16 +101,16 @@ public class TextureAtlasBuilder
   /// </summary>
   public readonly struct Cell
   {
-    private readonly Grid<Color32> _pixels;
+    private readonly Grid<ColorB> _pixels;
 
     public Cell(int width, int height)
     {
-      _pixels = new Grid<Color32>(width, height);
+      _pixels = new Grid<ColorB>(width, height);
     }
 
     public int Width => _pixels.Width;
     public int Height => _pixels.Height;
 
-    public SpanGrid<Color32> Span => _pixels.Span;
+    public SpanGrid<ColorB> Span => _pixels.Span;
   }
 }

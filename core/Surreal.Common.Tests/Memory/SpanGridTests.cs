@@ -12,9 +12,8 @@ public class SpanGridTests
 
     for (var y = 0; y < grid.Height; y++)
     for (var x = 0; x < grid.Width; x++)
+    {
       grid[x, y] = 100;
+    }
   }
 }
-
-
-

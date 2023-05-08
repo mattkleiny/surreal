@@ -1,6 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Shaders;
-using static Surreal.Graphics.Materials.MaterialPropertySet;
+using static Surreal.Graphics.Materials.MaterialPropertyCollection;
 
 namespace Surreal.Graphics.Materials;
 
@@ -31,7 +31,7 @@ public readonly record struct BlendState(bool IsEnabled, BlendMode Source, Blend
 /// <summary>
 /// A material is a configuration of the graphics state and properties used for rendering.
 /// </summary>
-[DebuggerDisplay("Material (Uniforms {Locals.Uniforms.Count}, Samplers {Locals.Samplers.Count})")]
+[DebuggerDisplay("Material (Uniforms {Properties.Uniforms.Count}, Samplers {Locals.Samplers.Count})")]
 public sealed class Material : GraphicsResource
 {
   private readonly bool _ownsShader;
@@ -42,11 +42,6 @@ public sealed class Material : GraphicsResource
 
     Shader = shader;
   }
-
-  /// <summary>
-  /// Global properties shared amongst all <see cref="Material" />s.
-  /// </summary>
-  public static MaterialPropertySet Globals { get; } = new();
 
   /// <summary>
   /// The underlying <see cref="IGraphicsServer" />.
@@ -61,7 +56,7 @@ public sealed class Material : GraphicsResource
   /// <summary>
   /// The properties associated with this material.
   /// </summary>
-  public MaterialPropertySet Locals { get; } = new();
+  public MaterialPropertyCollection Properties { get; } = new();
 
   /// <summary>
   /// The desired <see cref="BlendState" /> for this material.
@@ -76,13 +71,9 @@ public sealed class Material : GraphicsResource
     // bind the shader
     server.SetActiveShader(Shader.Handle);
 
-    // apply globals
-    ApplyUniforms(Globals.Uniforms);
-    ApplySamplers(Globals.Samplers);
-
     // apply locals
-    ApplyUniforms(Locals.Uniforms);
-    ApplySamplers(Locals.Samplers);
+    ApplyUniforms(Properties.Uniforms);
+    ApplySamplers(Properties.Samplers);
 
     // apply blend state
     server.SetBlendState(Blending);

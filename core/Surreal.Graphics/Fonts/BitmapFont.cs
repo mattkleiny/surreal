@@ -1,7 +1,7 @@
 ﻿using Surreal.Assets;
+using Surreal.Colors;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
-using Surreal.IO;
 using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Fonts;
@@ -39,13 +39,13 @@ public static class BitmapFontExtensions
   /// </summary>
   public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position)
   {
-    DrawText(batch, font, text, position, Color.White);
+    DrawText(batch, font, text, position, ColorF.White);
   }
 
   /// <summary>
   /// Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.
   /// </summary>
-  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color)
+  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, ColorF color)
   {
     DrawText(batch, font, text, position, Vector2.One, color);
   }
@@ -59,7 +59,7 @@ public static class BitmapFontExtensions
     string text,
     Vector2 position,
     Vector2 scale,
-    Color color,
+    ColorF color,
     float angle = 0f,
     HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left,
     VerticalAlignment verticalAlignment = VerticalAlignment.Top
@@ -191,36 +191,5 @@ public sealed class BitmapFont : IDisposable
         _descriptor.GlyphHeight
       )
     };
-  }
-}
-
-/// <summary>
-/// The <see cref="AssetLoader{T}" /> for <see cref="BitmapFont" />s.
-/// </summary>
-public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
-{
-  public override async Task<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
-  {
-    var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
-
-    var imagePath = GetImagePath(context.Path, descriptor);
-    var texture = await context.LoadAsync<Texture>(imagePath, cancellationToken);
-
-    return new BitmapFont(descriptor, texture);
-  }
-
-  private static VirtualPath GetImagePath(VirtualPath descriptorPath, BitmapFontDescriptor descriptor)
-  {
-    if (descriptor.FilePath != null)
-    {
-      if (Path.IsPathRooted(descriptor.FilePath))
-      {
-        return descriptor.FilePath;
-      }
-
-      return descriptorPath.GetDirectory().Resolve(descriptor.FilePath);
-    }
-
-    return descriptorPath.ChangeExtension("png");
   }
 }

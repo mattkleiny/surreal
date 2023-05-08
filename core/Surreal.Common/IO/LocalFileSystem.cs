@@ -77,6 +77,9 @@ public sealed class LocalFileSystem : FileSystem
     return new PathWatcher(path.GetDirectory(), path);
   }
 
+  /// <summary>
+  /// The <see cref="IPathWatcher"/> implementation for <see cref="LocalFileSystem"/>.
+  /// </summary>
   private sealed class PathWatcher : IPathWatcher
   {
     private readonly FileSystemWatcher _watcher;

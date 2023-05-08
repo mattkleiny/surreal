@@ -1,4 +1,6 @@
-﻿namespace Surreal.Mathematics;
+﻿using System.Runtime.CompilerServices;
+
+namespace Surreal.Mathematics;
 
 /// <summary>
 /// An integral range.
@@ -44,26 +46,31 @@ public readonly record struct TimeSpanRange(TimeSpan Min, TimeSpan Max)
 /// </summary>
 public static class Ranges
 {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static int Clamp(this int value, int min, int max)
   {
     return value < min ? min : value > max ? max : value;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static int Clamp(this int value, IntRange range)
   {
     return Clamp(value, range.Min, range.Max);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static float Clamp(this float value, float min, float max)
   {
     return value < min ? min : value > max ? max : value;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static float Clamp(this float value, FloatRange range)
   {
     return Clamp(value, range.Min, range.Max);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static int ConvertRange(this int value, IntRange oldRange, IntRange newRange)
   {
     if (oldRange.Delta == 0)
@@ -74,6 +81,7 @@ public static class Ranges
     return (value - oldRange.Min) * newRange.Delta / oldRange.Delta + newRange.Min;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static float ConvertRange(this float value, FloatRange oldRange, FloatRange newRange)
   {
     if (Math.Abs(oldRange.Delta) < float.Epsilon)

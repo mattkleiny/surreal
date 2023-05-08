@@ -8,11 +8,17 @@ public readonly record struct Seed(int Value)
   public static Seed Default => default;
   public static Seed Randomized => new(Random.Shared.Next());
 
+  /// <summary>
+  /// Creates a seed from a string.
+  /// </summary>
   public static Seed FromString(string value)
   {
     return new Seed(value.GetHashCode());
   }
 
+  /// <summary>
+  /// Creates a <see cref="Random"/> number generator from the seed.
+  /// </summary>
   public Random ToRandom()
   {
     if (Value == 0)
@@ -23,8 +29,5 @@ public readonly record struct Seed(int Value)
     return new Random(Value);
   }
 
-  public override string ToString()
-  {
-    return $"<{Value}>";
-  }
+  public override string ToString() => $"<{Value}>";
 }

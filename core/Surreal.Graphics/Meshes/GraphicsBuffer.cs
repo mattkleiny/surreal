@@ -1,5 +1,4 @@
-﻿using System.Buffers;
-using Surreal.Memory;
+﻿using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
 
@@ -55,11 +54,6 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
   public BufferType Type { get; }
   public BufferUsage Usage { get; }
 
-  public BufferDataLease Rent()
-  {
-    return new BufferDataLease(this);
-  }
-
   public Memory<T> Read(Optional<Range> range = default)
   {
     var (offset, length) = range
@@ -90,27 +84,5 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
     }
 
     base.Dispose(managed);
-  }
-
-  /// <summary>
-  /// Allows borrowing the <see cref="GraphicsBuffer" /> data.
-  /// </summary>
-  public readonly struct BufferDataLease : IMemoryOwner<T>
-  {
-    private readonly GraphicsBuffer<T> _buffer;
-
-    public BufferDataLease(GraphicsBuffer<T> buffer)
-    {
-      _buffer = buffer;
-      Memory = buffer.Read();
-    }
-
-    public Memory<T> Memory { get; }
-    public Span<T> Span => Memory.Span;
-
-    public void Dispose()
-    {
-      _buffer.Write(Memory.Span);
-    }
   }
 }

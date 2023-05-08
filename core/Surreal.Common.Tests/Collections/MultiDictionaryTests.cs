@@ -12,7 +12,7 @@ public class MultiDictionaryTests
     dictionary.Add(2, "Test 3");
     dictionary.Add(2, "Test 4");
 
-    dictionary.Count.Should().Be(2);
+    dictionary.KeyCount.Should().Be(2);
   }
 
   [Test]
@@ -25,13 +25,10 @@ public class MultiDictionaryTests
     dictionary.Add(2, "Test 3");
     dictionary.Add(2, "Test 4");
 
-    dictionary.Count.Should().Be(2);
+    dictionary.KeyCount.Should().Be(2);
 
     dictionary.Remove(1, "Test 2");
 
-    dictionary.Count.Should().Be(2);
+    dictionary.KeyCount.Should().Be(2);
   }
 }
-
-
-

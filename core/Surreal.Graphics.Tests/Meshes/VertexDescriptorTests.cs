@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Surreal.Mathematics;
+using Surreal.Colors;
 
 namespace Surreal.Graphics.Meshes;
 
@@ -31,9 +31,6 @@ public sealed class VertexDescriptorTests
     public Vector3 Position;
 
     [VertexDescriptor(4, VertexType.Float)]
-    public Color Color;
+    public ColorF Color;
   }
 }
-
-
-

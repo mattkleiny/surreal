@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 namespace Surreal.Mathematics;
 
 /// <summary>
@@ -12,7 +10,9 @@ public delegate float Curve(float t);
 /// </summary>
 public interface IPlanarCurve
 {
-  [Pure]
+  /// <summary>
+  /// Samples the curve at the given point.
+  /// </summary>
   Vector2 SampleAt(float t);
 }
 
@@ -23,21 +23,13 @@ public static class Curves
 {
   public static Curve Linear { get; } = t => t;
   public static Curve InverseLinear { get; } = t => 1f - t;
+  public static Curve Constant(float d) => _ => d;
 
-  public static Curve Constant(float d)
-  {
-    return _ => d;
-  }
+  public static Curve PlanarX<T>(T curve)
+    where T : IPlanarCurve => t => curve.SampleAt(t).X;
 
-  public static Curve PlanarX<T>(T curve) where T : IPlanarCurve
-  {
-    return t => curve.SampleAt(t).X;
-  }
-
-  public static Curve PlanarY<T>(T curve) where T : IPlanarCurve
-  {
-    return t => curve.SampleAt(t).Y;
-  }
+  public static Curve PlanarY<T>(T curve)
+    where T : IPlanarCurve => t => curve.SampleAt(t).Y;
 }
 
 /// <summary>

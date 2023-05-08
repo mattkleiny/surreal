@@ -20,16 +20,6 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
   public int Count => _queue.Count;
   public int Capacity { get; }
 
-  IEnumerator<T> IEnumerable<T>.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
   public bool TryPeek([MaybeNullWhen(false)] out T result)
   {
     return _queue.TryPeek(out result);
@@ -60,49 +50,14 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
   {
     return _queue.GetEnumerator();
   }
-}
 
-/// <summary>
-/// A <see cref="ConcurrentQueue{T}" /> with a fixed-sized upper bound.
-/// </summary>
-[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix")]
-public sealed class BoundedConcurrentQueue<T>
-{
-  private readonly ConcurrentQueue<T> _queue;
-
-  public BoundedConcurrentQueue(int maxCapacity = 32)
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
   {
-    _queue = new ConcurrentQueue<T>();
-
-    Capacity = maxCapacity;
+    return GetEnumerator();
   }
 
-  public int Count => _queue.Count;
-  public int Capacity { get; }
-
-  public bool TryPeek([MaybeNullWhen(false)] out T result)
+  IEnumerator IEnumerable.GetEnumerator()
   {
-    return _queue.TryPeek(out result);
-  }
-
-  public bool TryEnqueue(T value)
-  {
-    if (_queue.Count < Capacity)
-    {
-      _queue.Enqueue(value);
-      return true;
-    }
-
-    return false;
-  }
-
-  public bool TryDequeue([MaybeNullWhen(false)] out T result)
-  {
-    return _queue.TryDequeue(out result);
-  }
-
-  public void Clear()
-  {
-    _queue.Clear();
+    return GetEnumerator();
   }
 }

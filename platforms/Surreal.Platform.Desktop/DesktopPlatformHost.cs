@@ -1,6 +1,7 @@
 using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
+using Surreal.Colors;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
@@ -15,6 +16,7 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
 using Surreal.IO;
+using Surreal.Services;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -32,6 +34,8 @@ public interface IDesktopPlatformHost : IPlatformHost
 /// </summary>
 public interface IDesktopWindow : IDisposable
 {
+  event Action<int, int> Resized;
+
   string Title { get; set; }
   int Width { get; set; }
   int Height { get; set; }
@@ -42,7 +46,6 @@ public interface IDesktopWindow : IDisposable
   bool IsCursorVisible { get; set; }
   bool IsEventDriven { get; set; }
   bool IsClosing { get; }
-  event Action<int, int> Resized;
 
   /// <summary>
   /// Sets the window icon to the given image.
@@ -55,7 +58,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   private readonly DesktopConfiguration _configuration;
 
   private readonly FrameCounter _frameCounter = new();
-  private IntervalTimer _frameDisplayTimer = new(1.Seconds());
+  private IntervalTimer _frameDisplayTimer = new(TimeSpan.FromSeconds(1));
 
   public DesktopPlatformHost(DesktopConfiguration configuration)
   {
@@ -89,14 +92,14 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public void RegisterServices(IServiceRegistry services)
   {
-    services.AddSingleton<IPlatformHost>(this);
-    services.AddSingleton<IDesktopPlatformHost>(this);
-    services.AddSingleton<IDesktopWindow>(Window);
-    services.AddSingleton<IAudioServer>(AudioServer);
-    services.AddSingleton<IGraphicsServer>(GraphicsServer);
-    services.AddSingleton<IInputServer>(InputServer);
-    services.AddSingleton<IKeyboardDevice>(InputServer.Keyboard);
-    services.AddSingleton<IMouseDevice>(InputServer.Mouse);
+    services.AddService<IPlatformHost>(this);
+    services.AddService<IDesktopPlatformHost>(this);
+    services.AddService<IDesktopWindow>(Window);
+    services.AddService<IAudioServer>(AudioServer);
+    services.AddService<IGraphicsServer>(GraphicsServer);
+    services.AddService<IInputServer>(InputServer);
+    services.AddService<IKeyboardDevice>(InputServer.Keyboard);
+    services.AddService<IMouseDevice>(InputServer.Mouse);
   }
 
   public void RegisterAssetLoaders(IAssetManager manager)
@@ -104,7 +107,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioServer));
     manager.AddLoader(new BitmapFontLoader());
-    manager.AddLoader(new TrueTypeFontLoader(GraphicsServer));
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());

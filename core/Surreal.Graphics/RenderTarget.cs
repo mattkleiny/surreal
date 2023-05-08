@@ -1,18 +1,7 @@
-﻿using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
+﻿using Surreal.Colors;
+using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics;
-
-/// <summary>
-/// Describes how to create a <see cref="RenderTarget" />.
-/// </summary>
-public readonly record struct RenderTargetDescriptor(int Width, int Height, TextureFormat Format, TextureFilterMode FilterMode, TextureWrapMode WrapMode)
-{
-  /// <summary>
-  /// A default <see cref="RenderTargetDescriptor" /> for standard purposes at 1080p.
-  /// </summary>
-  public static RenderTargetDescriptor Default { get; } = new(1920, 1080, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
-}
 
 /// <summary>
 /// Manages a frame buffer that can be rendered to.
@@ -26,7 +15,7 @@ public sealed class RenderTarget : GraphicsResource
     _server = server;
 
     ColorAttachment = new Texture(server, colorDescriptor.Format, colorDescriptor.FilterMode, colorDescriptor.WrapMode);
-    ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<Color32>.Empty);
+    ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<ColorB>.Empty);
 
     Handle = server.CreateFrameBuffer(ColorAttachment.Handle);
   }

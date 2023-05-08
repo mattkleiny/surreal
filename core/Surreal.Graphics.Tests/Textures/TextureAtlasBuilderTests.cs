@@ -1,4 +1,4 @@
-﻿using Surreal.Mathematics;
+﻿using Surreal.Colors;
 
 namespace Surreal.Graphics.Textures;
 
@@ -9,18 +9,15 @@ public class TextureAtlasBuilderTests
   {
     var builder = new TextureAtlasBuilder();
 
-    builder.AddCell(16, 16).Span.Fill(Color32.Red);
-    builder.AddCell(16, 16).Span.Fill(Color32.Green);
-    builder.AddCell(16, 16).Span.Fill(Color32.Blue);
-    builder.AddCell(16, 16).Span.Fill(Color32.Yellow);
-    builder.AddCell(16, 16).Span.Fill(Color32.Cyan);
-    builder.AddCell(16, 16).Span.Fill(Color32.Magenta);
+    builder.AddCell(16, 16).Span.Fill(ColorB.Red);
+    builder.AddCell(16, 16).Span.Fill(ColorB.Green);
+    builder.AddCell(16, 16).Span.Fill(ColorB.Blue);
+    builder.AddCell(16, 16).Span.Fill(ColorB.Yellow);
+    builder.AddCell(16, 16).Span.Fill(ColorB.Cyan);
+    builder.AddCell(16, 16).Span.Fill(ColorB.Magenta);
 
     var result = builder.ToImage(3);
 
     await result.SaveAsync("output.png");
   }
 }
-
-
-

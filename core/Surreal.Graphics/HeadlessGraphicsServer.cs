@@ -1,4 +1,5 @@
 ﻿using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -28,7 +29,7 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     // no-op
   }
 
-  public void ClearColorBuffer(Color color)
+  public void ClearColorBuffer(ColorF color)
   {
     // no-op
   }
@@ -138,14 +139,14 @@ public sealed class HeadlessGraphicsServer : IGraphicsServer
     return new GraphicsHandle(Interlocked.Increment(ref _nextShaderId));
   }
 
-  public ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
+  public ReadOnlySlice<ShaderAttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
   {
-    return ReadOnlySlice<AttributeMetadata>.Empty;
+    return ReadOnlySlice<ShaderAttributeMetadata>.Empty;
   }
 
-  public ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
+  public ReadOnlySlice<ShaderUniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
   {
-    return ReadOnlySlice<UniformMetadata>.Empty;
+    return ReadOnlySlice<ShaderUniformMetadata>.Empty;
   }
 
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)

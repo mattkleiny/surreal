@@ -10,10 +10,7 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputType>WinExe</OutputType>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishTrimmed>true</PublishTrimmed>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <PublishSingleFile>true</PublishSingleFile>
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +31,6 @@
     <Using Include="Surreal.Input" />
     <Using Include="Surreal.Input.Keyboard" />
     <Using Include="Surreal.Input.Mouse" />
-    <Using Include="Surreal.Input.Touch" />
     <Using Include="Surreal.Mathematics" />
     <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Timing" />

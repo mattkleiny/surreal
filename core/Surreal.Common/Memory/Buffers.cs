@@ -126,23 +126,23 @@ public static class Buffers
         : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
     }
 
+    ~NativeBuffer()
+    {
+      Dispose(false);
+    }
+
     public Span<T> Span => GetSpan();
+
+    Memory<T> IBuffer<T>.Memory => base.Memory;
 
     public void Resize(int newLength)
     {
       _buffer = NativeMemory.Realloc(_buffer, (nuint)newLength);
     }
 
-    Memory<T> IBuffer<T>.Memory => base.Memory;
-
-    ~NativeBuffer()
-    {
-      Dispose(false);
-    }
-
     public override Span<T> GetSpan()
     {
-      CheckNotDisposed();
+      ObjectDisposedException.ThrowIf(_isDisposed, this);
 
       return new Span<T>(_buffer, _length);
     }
@@ -164,15 +164,6 @@ public static class Buffers
         NativeMemory.Free(_buffer);
 
         _isDisposed = true;
-      }
-    }
-
-    [Conditional("DEBUG")]
-    private void CheckNotDisposed()
-    {
-      if (_isDisposed)
-      {
-        throw new ObjectDisposedException(nameof(NativeBuffer<T>));
       }
     }
   }
@@ -213,7 +204,7 @@ public static class Buffers
 
     public override Span<T> GetSpan()
     {
-      CheckNotDisposed();
+      ObjectDisposedException.ThrowIf(_isDisposed, this);
 
       return new Span<T>(_pointer, (int)_accessor.Capacity);
     }
@@ -238,15 +229,6 @@ public static class Buffers
         _file.Dispose();
 
         _isDisposed = true;
-      }
-    }
-
-    [Conditional("DEBUG")]
-    private void CheckNotDisposed()
-    {
-      if (_isDisposed)
-      {
-        throw new ObjectDisposedException(nameof(MappedBuffer<T>));
       }
     }
   }

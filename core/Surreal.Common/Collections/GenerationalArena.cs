@@ -57,16 +57,6 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     }
   }
 
-  IEnumerator<T> IEnumerable<T>.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
   /// <summary>
   /// Determines if the given index is contained in the arena.
   /// </summary>
@@ -164,6 +154,16 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     return new Enumerator(this);
   }
 
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
   /// <summary>
   /// Manages a single entry in the <see cref="GenerationalArena{T}" />.
   /// </summary>
@@ -198,10 +198,12 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     public bool MoveNext()
     {
       while (++_index < _arena._entries.Length)
+      {
         if (_arena._entries[_index].IsOccupied)
         {
           return true;
         }
+      }
 
       return false;
     }

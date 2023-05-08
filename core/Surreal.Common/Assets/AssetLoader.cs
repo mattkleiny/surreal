@@ -13,10 +13,28 @@ public delegate Task<T> AssetChangedHandler<T>(AssetLoaderContext context, T exi
 /// </summary>
 public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manager)
 {
+  /// <summary>
+  /// The type of the asset being loaded.
+  /// </summary>
   public Type Type => Id.Type;
+
+  /// <summary>
+  /// The path of the asset being loaded.
+  /// </summary>
   public VirtualPath Path => Id.Path;
 
+  /// <summary>
+  /// True if hot reload is enabled on the asset manager.
+  /// </summary>
   public bool IsHotReloadEnabled => Manager.IsHotReloadEnabled;
+
+  /// <summary>
+  /// Loads a dependent asset from the manager.
+  /// </summary>
+  public Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    return Manager.LoadAssetAsync<T>(path, cancellationToken);
+  }
 
   /// <summary>
   /// Listens for changes in the associated asset.
@@ -24,15 +42,12 @@ public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manag
   public IDisposable SubscribeToChanges<T>(AssetChangedHandler<T> handler)
     where T : notnull
   {
-    return Manager.SubscribeToChanges(Id, Path, async (context, existingAsset, cancellationToken) => { return await handler(context, (T)existingAsset, cancellationToken); });
-  }
+    return Manager.SubscribeToChanges(Id, Path, async (context, existingAsset, cancellationToken) =>
+    {
+      var newAsset = await handler(context, (T)existingAsset, cancellationToken);
 
-  /// <summary>
-  /// Loads a dependent asset from the associated manager.
-  /// </summary>
-  public Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    return Manager.LoadAssetAsync<T>(path, cancellationToken);
+      return newAsset;
+    });
   }
 }
 
@@ -41,8 +56,14 @@ public readonly record struct AssetLoaderContext(AssetId Id, IAssetManager Manag
 /// </summary>
 public interface IAssetLoader
 {
+  /// <summary>
+  /// Determines if the loader can handle the given asset.
+  /// </summary>
   bool CanHandle(AssetLoaderContext context);
 
+  /// <summary>
+  /// Loads an asset from storage.
+  /// </summary>
   Task<object> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
 }
 
@@ -63,41 +84,4 @@ public abstract class AssetLoader<T> : IAssetLoader
   }
 
   public abstract Task<T> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken);
-}
-
-/// <summary>
-/// Base class for any <see cref="IAssetLoader" /> implementation.
-/// </summary>
-public abstract class AssetLoader<T, TSettings> : IAssetLoader
-  where T : notnull
-  where TSettings : AssetSettings<T>, new()
-{
-  public TSettings Settings { get; set; } = new();
-
-  public virtual bool CanHandle(AssetLoaderContext context)
-  {
-    return context.Type == typeof(T);
-  }
-
-  async Task<object> IAssetLoader.LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
-  {
-    var settings = GetAssetParameters(context);
-
-    return await LoadAsync(context, settings, cancellationToken);
-  }
-
-  /// <summary>
-  /// Gets the <see cref="TSettings" /> for the given asset context.
-  /// </summary>
-  public TSettings GetAssetParameters(AssetLoaderContext context)
-  {
-    if (context.Manager.TryGetSettings<T>(context.Path, out var settings))
-    {
-      return (TSettings)settings;
-    }
-
-    return Settings;
-  }
-
-  public abstract Task<T> LoadAsync(AssetLoaderContext context, TSettings settings, CancellationToken cancellationToken);
 }

@@ -1,4 +1,4 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Colors;
 
 namespace Surreal.Mathematics;
 
@@ -62,14 +62,14 @@ public static class RandomExtensions
     return new Seed(random.Next());
   }
 
-  public static Color NextColor(this Random random)
+  public static ColorF NextColor(this Random random)
   {
-    return new Color(random.NextFloat(), random.NextFloat(), random.NextFloat());
+    return new ColorF(random.NextFloat(), random.NextFloat(), random.NextFloat());
   }
 
-  public static Color32 NextColor32(this Random random)
+  public static ColorB NextColor32(this Random random)
   {
-    return new Color32((byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255));
+    return new ColorB((byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255));
   }
 
   public static Point2 NextPoint2(this Random random, int min, int max)
@@ -110,35 +110,5 @@ public static class RandomExtensions
   public static Vector3 NextUnitSphere(this Random random)
   {
     return new Vector3(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f), random.NextFloat(-1f, 1f));
-  }
-
-  public static TEnum NextEnum<TEnum>(this Random random)
-    where TEnum : unmanaged, Enum
-  {
-    var values = EnumExtensions.GetEnumValues<TEnum>();
-
-    var min = values[0].AsInt();
-    var max = values[^1].AsInt();
-
-    return random.Next(min, max).AsEnum<TEnum>();
-  }
-
-  public static TEnum NextEnumMask<TEnum>(this Random random, TEnum mask)
-    where TEnum : unmanaged, Enum
-  {
-    var result = default(TEnum);
-    var enumerator = mask.GetMaskValues();
-
-    while (enumerator.MoveNext())
-    {
-      result = enumerator.Current;
-
-      if (result.AsInt() != 0 && random.NextBool())
-      {
-        break;
-      }
-    }
-
-    return result;
   }
 }

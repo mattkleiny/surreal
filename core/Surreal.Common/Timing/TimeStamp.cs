@@ -11,38 +11,13 @@ public readonly record struct TimeStamp(long Ticks) : IComparable<TimeStamp>
 
   public TimeSpan ElapsedTime => Now - this;
 
-  public int CompareTo(TimeStamp other)
-  {
-    return Ticks.CompareTo(other.Ticks);
-  }
+  public int CompareTo(TimeStamp other) => Ticks.CompareTo(other.Ticks);
 
-  public static bool operator <(TimeStamp left, TimeStamp right)
-  {
-    return left.CompareTo(right) < 0;
-  }
+  public static bool operator <(TimeStamp left, TimeStamp right) => left.Ticks < right.Ticks;
+  public static bool operator >(TimeStamp left, TimeStamp right) => left.Ticks > right.Ticks;
+  public static bool operator <=(TimeStamp left, TimeStamp right) => left.Ticks <= right.Ticks;
+  public static bool operator >=(TimeStamp left, TimeStamp right) => left.Ticks >= right.Ticks;
 
-  public static bool operator >(TimeStamp left, TimeStamp right)
-  {
-    return left.CompareTo(right) > 0;
-  }
-
-  public static bool operator <=(TimeStamp left, TimeStamp right)
-  {
-    return left.CompareTo(right) <= 0;
-  }
-
-  public static bool operator >=(TimeStamp left, TimeStamp right)
-  {
-    return left.CompareTo(right) >= 0;
-  }
-
-  public static TimeSpan operator +(TimeStamp left, TimeStamp right)
-  {
-    return new TimeSpan(checked(left.Ticks + right.Ticks));
-  }
-
-  public static TimeSpan operator -(TimeStamp left, TimeStamp right)
-  {
-    return new TimeSpan(checked(left.Ticks - right.Ticks));
-  }
+  public static TimeSpan operator +(TimeStamp left, TimeStamp right) => new(checked(left.Ticks + right.Ticks));
+  public static TimeSpan operator -(TimeStamp left, TimeStamp right) => new(checked(left.Ticks - right.Ticks));
 }

@@ -14,7 +14,6 @@ public readonly struct Optional<T>
   public T? Value { get; }
 
   public bool IsSome { get; }
-
   public bool IsNone => !IsSome;
 
   public T GetOrDefault(T defaultValue)

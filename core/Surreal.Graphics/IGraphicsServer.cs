@@ -1,4 +1,5 @@
 ﻿using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -8,29 +9,6 @@ using Surreal.Mathematics;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// An opaque handle to a resource in the underling <see cref="IGraphicsServer" /> implementation.
-/// </summary>
-public readonly record struct GraphicsHandle(nint Id)
-{
-  public static GraphicsHandle None => default;
-
-  public static implicit operator nint(GraphicsHandle handle)
-  {
-    return handle.Id;
-  }
-
-  public static implicit operator int(GraphicsHandle handle)
-  {
-    return (int)handle.Id;
-  }
-
-  public static implicit operator uint(GraphicsHandle handle)
-  {
-    return (uint)handle.Id;
-  }
-}
-
-/// <summary>
 /// An abstraction over the different types of graphics servers available.
 /// </summary>
 public interface IGraphicsServer
@@ -38,7 +16,7 @@ public interface IGraphicsServer
   // intrinsics
   void SetViewportSize(Viewport viewport);
   void SetBlendState(BlendState state);
-  void ClearColorBuffer(Color color);
+  void ClearColorBuffer(ColorF color);
   void ClearDepthBuffer();
   void FlushToDevice();
 
@@ -68,8 +46,8 @@ public interface IGraphicsServer
 
   // shaders
   GraphicsHandle CreateShader();
-  ReadOnlySlice<AttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle);
-  ReadOnlySlice<UniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle);
+  ReadOnlySlice<ShaderAttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle);
+  ReadOnlySlice<ShaderUniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle);
   int GetShaderUniformLocation(GraphicsHandle handle, string name);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
   void SetShaderUniform(GraphicsHandle handle, int location, float value);

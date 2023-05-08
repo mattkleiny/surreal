@@ -7,6 +7,19 @@
 /// </summary>
 public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)
 {
+  /// <summary>
+  /// Creates a rectangle from the given coordinates.
+  /// </summary>
+  public static Rectangle Create(Vector2 center, Vector2 size)
+  {
+    var left = center.X - size.X / 2f;
+    var top = center.Y - size.Y / 2f;
+    var right = center.X + size.X / 2f;
+    var bottom = center.Y + size.Y / 2f;
+
+    return new Rectangle(left, top, right, bottom);
+  }
+
   public Rectangle(Vector2 min, Vector2 max)
     : this(min.X, max.Y, max.X, min.Y)
   {
@@ -28,22 +41,7 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
   public Vector2 BottomLeft => new(Left, Bottom);
   public Vector2 BottomRight => new(Right, Bottom);
 
-  public PointEnumerator Points => new(TopLeft, Maths.CeilToInt(Width), Maths.CeilToInt(Height));
-
-  public static Rectangle Create(Vector2 center, Vector2 size)
-  {
-    var left = center.X - size.X / 2f;
-    var top = center.Y - size.Y / 2f;
-    var right = center.X + size.X / 2f;
-    var bottom = center.Y + size.Y / 2f;
-
-    return new Rectangle(left, top, right, bottom);
-  }
-
-  public override string ToString()
-  {
-    return $"Rectangle ({Left}, {Top}, {Right}, {Bottom})";
-  }
+  public override string ToString() => $"Rectangle ({Left}, {Top}, {Right}, {Bottom})";
 
   /// <summary>
   /// Clamps the bounding rect to the given range.
@@ -58,6 +56,9 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     );
   }
 
+  /// <summary>
+  /// Determines if the given point is contained within the rectangle.
+  /// </summary>
   public bool Contains(Point2 point)
   {
     return point.X >= Left &&
@@ -66,65 +67,14 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
            point.Y <= Bottom;
   }
 
+  /// <summary>
+  /// Determines if the given point is contained within the rectangle.
+  /// </summary>
   public bool Contains(Vector2 vector)
   {
     return vector.X >= Left &&
            vector.X <= Right &&
            vector.Y >= Top &&
            vector.Y <= Bottom;
-  }
-
-  /// <summary>
-  /// Allows enumerating points in a <see cref="Rectangle" />.
-  /// </summary>
-  public struct PointEnumerator : IEnumerable<Point2>, IEnumerator<Point2>
-  {
-    private readonly Point2 _bottomLeft;
-    private readonly int _width;
-    private readonly int _height;
-    private int _offset;
-
-    public PointEnumerator(Point2 bottomLeft, int width, int height)
-    {
-      _bottomLeft = bottomLeft;
-      _width = width;
-      _height = height;
-      _offset = -1;
-
-      Reset();
-    }
-
-    public Point2 Current => _bottomLeft + new Point2(_offset % _width, _offset / _width);
-    object IEnumerator.Current => Current;
-
-    public bool MoveNext()
-    {
-      return ++_offset < _width * _height;
-    }
-
-    public void Reset()
-    {
-      _offset = -1;
-    }
-
-    public void Dispose()
-    {
-      // no-op
-    }
-
-    public PointEnumerator GetEnumerator()
-    {
-      return this;
-    }
-
-    IEnumerator<Point2> IEnumerable<Point2>.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
   }
 }

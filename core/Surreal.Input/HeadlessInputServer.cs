@@ -20,10 +20,4 @@ public sealed class HeadlessInputServer : IInputServer
   public HeadlessMouseDevice Mouse { get; } = new();
 
   public IEnumerable<IInputDevice> Devices => _devices;
-
-  public void Update()
-  {
-    Keyboard.Update();
-    Mouse.Update();
-  }
 }

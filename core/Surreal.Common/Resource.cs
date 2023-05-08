@@ -32,12 +32,12 @@ public abstract class Resource : IDisposable
 }
 
 /// <summary>
-/// A <see cref="Resource" /> with global tracking in a static <see cref="InterlinkedList{TNode}" />.
+/// A <see cref="Resource" /> with global tracking in a static <see cref="IntrusiveLinkedList{TNode}" />.
 /// </summary>
-public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSelf>
+public abstract class TrackedResource<TSelf> : Resource, IIntrusiveLinkedListNode<TSelf>
   where TSelf : TrackedResource<TSelf>
 {
-  private static readonly InterlinkedList<TSelf> All = new();
+  private static readonly IntrusiveLinkedList<TSelf> All = new();
 
   protected TrackedResource()
   {
@@ -45,9 +45,6 @@ public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSe
   }
 
   public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
-
-  TSelf? IInterlinkedElement<TSelf>.Previous { get; set; }
-  TSelf? IInterlinkedElement<TSelf>.Next { get; set; }
 
   public static Size GetSizeEstimate<T>()
     where T : IHasSizeEstimate
@@ -83,4 +80,7 @@ public abstract class TrackedResource<TSelf> : Resource, IInterlinkedElement<TSe
 
     base.Dispose(managed);
   }
+
+  TSelf? IIntrusiveLinkedListNode<TSelf>.Previous { get; set; }
+  TSelf? IIntrusiveLinkedListNode<TSelf>.Next { get; set; }
 }

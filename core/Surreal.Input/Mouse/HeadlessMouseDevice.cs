@@ -6,6 +6,7 @@ namespace Surreal.Input.Mouse;
 public sealed class HeadlessMouseDevice : IMouseDevice
 {
   private readonly HashSet<MouseButton> _pressedButtons = new();
+  private Vector2 _position = new(0, 0);
 
   public bool this[MouseButton button]
   {
@@ -15,10 +16,12 @@ public sealed class HeadlessMouseDevice : IMouseDevice
       if (value)
       {
         _pressedButtons.Add(button);
+        ButtonPressed?.Invoke(button);
       }
       else
       {
         _pressedButtons.Remove(button);
+        ButtonReleased?.Invoke(button);
       }
     }
   }
@@ -27,9 +30,18 @@ public sealed class HeadlessMouseDevice : IMouseDevice
   public event Action<MouseButton>? ButtonReleased;
   public event Action<Vector2>? Moved;
 
-  public Vector2 Position { get; set; } = new(0, 0);
+  public Vector2 Position
+  {
+    get => _position;
+    set
+    {
+      _position = value;
+      Moved?.Invoke(value);
+    }
+  }
+
   public Vector2 NormalisedPosition => Position;
-  public Vector2 DeltaPosition => new(0, 0);
+  public Vector2 DeltaPosition => Vector2.Zero;
 
   public bool IsCursorVisible { get; set; } = true;
 
@@ -51,9 +63,5 @@ public sealed class HeadlessMouseDevice : IMouseDevice
   public bool IsButtonReleased(MouseButton button)
   {
     return false;
-  }
-
-  public void Update()
-  {
   }
 }

@@ -1,6 +1,4 @@
-using Surreal.Assets;
 using Surreal.Collections;
-using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
@@ -28,28 +26,24 @@ public enum UniformType
 /// <summary>
 /// Metadata about attributes in a <see cref="ShaderProgram" />.
 /// </summary>
-public readonly record struct AttributeMetadata(string Name, int Location, int Length, int Count, UniformType Type);
+public sealed record ShaderAttributeMetadata(
+  string Name,
+  int Location,
+  int Length,
+  int Count,
+  UniformType Type
+);
 
 /// <summary>
 /// Metadata about uniforms in a <see cref="ShaderProgram" />.
 /// </summary>
-public readonly record struct UniformMetadata(string Name, int Location, int Length, int Count, UniformType Type);
-
-/// <summary>
-/// Utilities for <see cref="ShaderProgram" />s.
-/// </summary>
-public static class ShaderProgramExtensions
-{
-  public static async Task<Material> LoadDefaultWireMaterialAsync(this IAssetManager manager)
-  {
-    return await manager.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/wire.glsl");
-  }
-
-  public static async Task<Material> LoadDefaultSpriteMaterialAsync(this IAssetManager manager)
-  {
-    return await manager.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/shaders/sprite.glsl");
-  }
-}
+public sealed record ShaderUniformMetadata(
+  string Name,
+  int Location,
+  int Length,
+  int Count,
+  UniformType Type
+);
 
 /// <summary>
 /// A low-level shader program on the GPU.
@@ -65,8 +59,15 @@ public sealed class ShaderProgram : GraphicsResource
   public IGraphicsServer Server { get; }
   public GraphicsHandle Handle { get; private set; }
 
-  public ReadOnlySlice<AttributeMetadata> Attributes { get; private set; } = ReadOnlySlice<AttributeMetadata>.Empty;
-  public ReadOnlySlice<UniformMetadata> Uniforms { get; private set; } = ReadOnlySlice<UniformMetadata>.Empty;
+  /// <summary>
+  /// The attributes in the shader.
+  /// </summary>
+  public ReadOnlySlice<ShaderAttributeMetadata> Attributes { get; private set; } = ReadOnlySlice<ShaderAttributeMetadata>.Empty;
+
+  /// <summary>
+  /// The uniforms in the shader.
+  /// </summary>
+  public ReadOnlySlice<ShaderUniformMetadata> Uniforms { get; private set; } = ReadOnlySlice<ShaderUniformMetadata>.Empty;
 
   public int GetUniformLocation(string name)
   {

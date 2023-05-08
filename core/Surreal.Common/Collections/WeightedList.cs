@@ -9,16 +9,6 @@ public sealed class WeightedList<T> : IEnumerable<T>
   private readonly List<Entry> _entries = new();
   private float _totalWeight;
 
-  IEnumerator<T> IEnumerable<T>.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
   /// <summary>
   /// Adds a new item to the list.
   /// </summary>
@@ -94,10 +84,15 @@ public sealed class WeightedList<T> : IEnumerable<T>
     return new Enumerator(this);
   }
 
-  /// <summary>
-  /// A single entry in the <see cref="WeightedList{T}" />.
-  /// </summary>
-  private readonly record struct Entry(T Item, float Weight);
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
 
   /// <summary>
   /// Allows enumerating active <see cref="T" />s.
@@ -132,4 +127,9 @@ public sealed class WeightedList<T> : IEnumerable<T>
       // no-op
     }
   }
+
+  /// <summary>
+  /// A single entry in the <see cref="WeightedList{T}" />.
+  /// </summary>
+  private readonly record struct Entry(T Item, float Weight);
 }

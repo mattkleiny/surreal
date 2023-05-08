@@ -21,16 +21,6 @@ public sealed class RingBuffer<T> : IEnumerable<T>
   public ref T this[Index index] => ref _elements[index];
   public ref T Last => ref _elements[Math.Max(_writePos - 1, 0)];
 
-  IEnumerator<T> IEnumerable<T>.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
   public void Add(T element)
   {
     _elements[_writePos++] = element;
@@ -67,6 +57,16 @@ public sealed class RingBuffer<T> : IEnumerable<T>
   public Enumerator GetEnumerator()
   {
     return new Enumerator(this);
+  }
+
+  IEnumerator<T> IEnumerable<T>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
   }
 
   public struct Enumerator : IEnumerator<T>
@@ -110,6 +110,9 @@ public sealed class RingBuffer<T> : IEnumerable<T>
   }
 }
 
+/// <summary>
+/// Extension methods for <see cref="RingBuffer{T}"/>.
+/// </summary>
 public static class RingBufferExtensions
 {
   public static float FastSum(this RingBuffer<float> samples)

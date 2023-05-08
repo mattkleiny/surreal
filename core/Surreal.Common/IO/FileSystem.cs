@@ -167,12 +167,18 @@ public abstract class FileSystem : IFileSystem
 
     public void Add(IFileSystem system)
     {
-      foreach (var scheme in system.Schemes) _fileSystemByScheme[scheme] = system;
+      foreach (var scheme in system.Schemes)
+      {
+        _fileSystemByScheme[scheme] = system;
+      }
     }
 
     public void Remove(IFileSystem system)
     {
-      foreach (var scheme in system.Schemes) _fileSystemByScheme.Remove(scheme);
+      foreach (var scheme in system.Schemes)
+      {
+        _fileSystemByScheme.Remove(scheme);
+      }
     }
 
     public void Clear()

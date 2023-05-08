@@ -18,9 +18,38 @@ public sealed class MultiDictionary<TKey, TValue>
     _dictionary = new Dictionary<TKey, List<TValue>>(comparer);
   }
 
-  public int Count => _dictionary.Count;
+  /// <summary>
+  /// The total number of keys in the dictionary.
+  /// </summary>
+  public int KeyCount => _dictionary.Count;
 
+  /// <summary>
+  /// The total number of values in the dictionary.
+  /// </summary>
+  public int ValueCount
+  {
+    get
+    {
+      var count = 0;
+
+      foreach (var value in _dictionary.Values)
+      {
+        count += value.Count;
+      }
+
+      return count;
+    }
+  }
+
+  /// <summary>
+  /// The keys of the dictionary.
+  /// </summary>
   public IEnumerable<TKey> Keys => _dictionary.Keys;
+
+  /// <summary>
+  /// The values of the dictionary.
+  /// </summary>
+  public IEnumerable<TValue> Values => _dictionary.Values.SelectMany(_ => _);
 
   public ReadOnlySlice<TValue> this[TKey key]
   {

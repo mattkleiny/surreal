@@ -1,5 +1,3 @@
-using static Surreal.Mathematics.Maths;
-
 namespace Surreal.Mathematics;
 
 /// <summary>
@@ -7,30 +5,27 @@ namespace Surreal.Mathematics;
 /// </summary>
 public readonly record struct Angle(float Radians) : IComparable<Angle>
 {
-  public float Degrees => RadiansToDegrees(Radians);
-
   public static Angle Zero => default;
 
-  public int CompareTo(Angle other)
-  {
-    return Radians.CompareTo(other.Radians);
-  }
-
+  /// <summary>
+  /// Creates an angle from radians.
+  /// </summary>
   public static Angle FromRadians(float radians)
   {
     return new Angle(radians);
   }
 
+  /// <summary>
+  /// Creates an angle from degrees.
+  /// </summary>
   public static Angle FromDegrees(float degrees)
   {
-    return new Angle(DegreesToRadians(degrees));
+    return new Angle(Maths.DegreesToRadians(degrees));
   }
 
-  public static Angle Lerp(Angle a, Angle b, float t)
-  {
-    return FromRadians(Maths.Lerp(a.Radians, b.Radians, t));
-  }
-
+  /// <summary>
+  /// Returns the angle between two vectors.
+  /// </summary>
   public static Angle Between(Vector2 a, Vector2 b)
   {
     var dot = Vector2.Dot(a, b);
@@ -43,6 +38,9 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
     return FromRadians(radians);
   }
 
+  /// <summary>
+  /// Returns the angle between two vectors.
+  /// </summary>
   public static Angle Between(Vector3 a, Vector3 b)
   {
     var dot = Vector3.Dot(a, b);
@@ -55,6 +53,9 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
     return FromRadians(radians);
   }
 
+  /// <summary>
+  /// Sweeps a circle of the given radius around the origin, returning the points in the given storage.
+  /// </summary>
   public Span<Vector2> SweepArc(float radius, Span<Vector2> storage)
   {
     var theta = 0f;
@@ -73,28 +74,28 @@ public readonly record struct Angle(float Radians) : IComparable<Angle>
     return storage;
   }
 
-  public override string ToString()
+  /// <summary>
+  /// Converts the angle to degrees.
+  /// </summary>
+  public float Degrees => Maths.RadiansToDegrees(Radians);
+
+  /// <summary>
+  /// Interpolates between two angles.
+  /// </summary>
+  public static Angle Lerp(Angle a, Angle b, float t)
   {
-    return $"{Degrees:F}°";
+    return FromRadians(Maths.Lerp(a.Radians, b.Radians, t));
   }
 
-  public static bool operator <(Angle left, Angle right)
+  public int CompareTo(Angle other)
   {
-    return left.Radians < right.Radians;
+    return Radians.CompareTo(other.Radians);
   }
 
-  public static bool operator >(Angle left, Angle right)
-  {
-    return left.Radians > right.Radians;
-  }
+  public override string ToString() => $"{Degrees:F}°";
 
-  public static bool operator <=(Angle left, Angle right)
-  {
-    return left.Radians <= right.Radians;
-  }
-
-  public static bool operator >=(Angle left, Angle right)
-  {
-    return left.Radians >= right.Radians;
-  }
+  public static bool operator <(Angle left, Angle right) => left.Radians < right.Radians;
+  public static bool operator >(Angle left, Angle right) => left.Radians > right.Radians;
+  public static bool operator <=(Angle left, Angle right) => left.Radians <= right.Radians;
+  public static bool operator >=(Angle left, Angle right) => left.Radians >= right.Radians;
 }

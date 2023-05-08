@@ -1,10 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Sprites;
@@ -69,16 +69,16 @@ public sealed class SpriteBatch : IDisposable
 
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
   {
-    Draw(region, position, size, Color.White);
+    Draw(region, position, size, ColorF.White);
   }
 
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, ColorF color)
   {
     Draw(region, position, size, 0f, color);
   }
 
   [SkipLocalsInit]
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, ColorF color)
   {
     if (region.Texture == null)
     {
@@ -134,7 +134,7 @@ public sealed class SpriteBatch : IDisposable
     // bind the appropriate texture
     if (_lastTexture != null)
     {
-      _material.Locals.SetProperty(TextureProperty, _lastTexture);
+      _material.Properties.SetProperty(TextureProperty, _lastTexture);
     }
 
     _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
@@ -164,10 +164,10 @@ public sealed class SpriteBatch : IDisposable
   /// A common 2d vertex type for primitive shapes.
   /// </summary>
   [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
+  private record struct Vertex2(Vector2 Position, ColorF Color, Vector2 UV)
   {
     [VertexDescriptor(4, VertexType.Float)]
-    public Color Color = Color;
+    public ColorF Color = Color;
 
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 Position = Position;

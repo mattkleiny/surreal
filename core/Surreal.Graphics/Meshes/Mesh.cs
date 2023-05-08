@@ -1,6 +1,6 @@
-﻿using Surreal.Graphics.Materials;
+﻿using Surreal.Colors;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
-using Surreal.Mathematics;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
@@ -45,9 +45,9 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
     return Create<Vertex2>(server, tessellator =>
     {
       tessellator.AddTriangle(
-        new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 0f)),
-        new Vertex2(new Vector2(0f, size), Color.White, new Vector2(0.5f, 1f)),
-        new Vertex2(new Vector2(size, -size), Color.White, new Vector2(1f, 0f))
+        new Vertex2(new Vector2(-size, -size), ColorF.White, new Vector2(0f, 0f)),
+        new Vertex2(new Vector2(0f, size), ColorF.White, new Vector2(0.5f, 1f)),
+        new Vertex2(new Vector2(size, -size), ColorF.White, new Vector2(1f, 0f))
       );
     });
   }
@@ -60,10 +60,10 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
     return Create<Vertex2>(server, tessellator =>
     {
       tessellator.AddQuad(
-        new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 1f)),
-        new Vertex2(new Vector2(-size, size), Color.White, new Vector2(0f, 0f)),
-        new Vertex2(new Vector2(size, size), Color.White, new Vector2(1f, 0f)),
-        new Vertex2(new Vector2(size, -size), Color.White, new Vector2(1f, 1f))
+        new Vertex2(new Vector2(-size, -size), ColorF.White, new Vector2(0f, 1f)),
+        new Vertex2(new Vector2(-size, size), ColorF.White, new Vector2(0f, 0f)),
+        new Vertex2(new Vector2(size, size), ColorF.White, new Vector2(1f, 0f)),
+        new Vertex2(new Vector2(size, -size), ColorF.White, new Vector2(1f, 1f))
       );
     });
   }
@@ -91,7 +91,7 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
         var u = (cos + 1f) / 2f;
         var v = (sin + 1f) / 2f;
 
-        vertices.Add(new Vertex2(new Vector2(x, y), Color.White, new Vector2(u, v)));
+        vertices.Add(new Vertex2(new Vector2(x, y), ColorF.White, new Vector2(u, v)));
       }
 
       tessellator.AddTriangleFan(vertices);

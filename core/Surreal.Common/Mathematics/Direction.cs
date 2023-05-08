@@ -28,25 +28,10 @@ public static class DirectionExtensions
   {
     var result = Point2.Zero;
 
-    if (direction.HasFlagFast(Direction.North))
-    {
-      result.Y += 1;
-    }
-
-    if (direction.HasFlagFast(Direction.South))
-    {
-      result.Y -= 1;
-    }
-
-    if (direction.HasFlagFast(Direction.East))
-    {
-      result.X -= 1;
-    }
-
-    if (direction.HasFlagFast(Direction.West))
-    {
-      result.X += 1;
-    }
+    if (direction.HasFlagFast(Direction.North)) result.Y += 1;
+    if (direction.HasFlagFast(Direction.South)) result.Y -= 1;
+    if (direction.HasFlagFast(Direction.East)) result.X -= 1;
+    if (direction.HasFlagFast(Direction.West)) result.X += 1;
 
     return result;
   }
@@ -58,25 +43,10 @@ public static class DirectionExtensions
   {
     var result = Vector2.Zero;
 
-    if (direction.HasFlagFast(Direction.North))
-    {
-      result.Y += 1;
-    }
-
-    if (direction.HasFlagFast(Direction.South))
-    {
-      result.Y -= 1;
-    }
-
-    if (direction.HasFlagFast(Direction.East))
-    {
-      result.X -= 1;
-    }
-
-    if (direction.HasFlagFast(Direction.West))
-    {
-      result.X += 1;
-    }
+    if (direction.HasFlagFast(Direction.North)) result.Y += 1;
+    if (direction.HasFlagFast(Direction.South)) result.Y -= 1;
+    if (direction.HasFlagFast(Direction.East)) result.X -= 1;
+    if (direction.HasFlagFast(Direction.West)) result.X += 1;
 
     return result;
   }
