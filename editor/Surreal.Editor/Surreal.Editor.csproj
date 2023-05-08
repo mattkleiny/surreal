@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <OutputType>WinExe</OutputType>
     <Description>The editor host for the Surreal project.</Description>
+    <RootNamespace>Surreal.Editor</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.19" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.19" />
+  </ItemGroup>
 </Project>
