@@ -14,7 +14,7 @@ public sealed class ImageLoader : AssetLoader<Image>
     return base.CanHandle(context) && Extensions.Contains(context.Path.Extension);
   }
 
-  public override async Task<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  protected override async Task<Image> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var image = await Image.LoadAsync(context.Path);
 

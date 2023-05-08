@@ -27,7 +27,7 @@ public sealed class TextureLoader : AssetLoader<Texture>
 
   public TextureLoaderSettings Settings { get; init; } = new();
 
-  public override async Task<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  protected override async Task<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(_server, Settings.Format, Settings.FilterMode, Settings.WrapMode);

@@ -9,7 +9,7 @@ namespace Surreal.Audio.Clips;
 /// </summary>
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
-  public override async Task<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  protected override async Task<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 

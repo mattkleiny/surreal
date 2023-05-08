@@ -32,7 +32,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return base.CanHandle(context) && context.Path.Extension == ".glsl";
   }
 
-  public override async Task<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  protected override async Task<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
     var program = new ShaderProgram(_server);

@@ -9,7 +9,7 @@ namespace Surreal.Graphics.Fonts;
 /// </summary>
 public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
 {
-  public override async Task<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  protected override async Task<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
 

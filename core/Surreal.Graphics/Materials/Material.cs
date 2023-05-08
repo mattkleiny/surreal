@@ -131,7 +131,7 @@ public sealed class Material : GraphicsResource
 /// </summary>
 public sealed class MaterialLoader : AssetLoader<Material>
 {
-  public override async Task<Material> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  protected override async Task<Material> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
   {
     return new Material(await context.LoadAsync<ShaderProgram>(context.Path, cancellationToken));
   }
