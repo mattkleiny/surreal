@@ -17,8 +17,10 @@ public sealed class AudioClip : AudioResource, IHasSizeEstimate
   }
 
   public AudioHandle Handle { get; }
+
   public TimeSpan Duration { get; private set; } = TimeSpan.Zero;
   public AudioSampleRate Rate { get; private set; } = AudioSampleRate.Standard;
+
   public Size Size { get; private set; } = Size.Zero;
 
   public void Write<T>(TimeSpan duration, AudioSampleRate rate, ReadOnlySpan<T> buffer)

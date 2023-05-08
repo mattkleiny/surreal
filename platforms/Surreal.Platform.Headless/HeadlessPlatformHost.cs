@@ -1,10 +1,10 @@
-using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.IO;
+using Surreal.Resources;
 using Surreal.Services;
 using Surreal.Timing;
 
@@ -47,7 +47,7 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
     services.AddService<IMouseDevice>(InputServer.Mouse);
   }
 
-  public void RegisterAssetLoaders(IAssetManager manager)
+  public void RegisterAssetLoaders(IResourceManager manager)
   {
     // no-op
   }

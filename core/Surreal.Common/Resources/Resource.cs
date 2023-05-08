@@ -1,10 +1,10 @@
 ﻿using Surreal.Collections;
 using Surreal.Memory;
 
-namespace Surreal;
+namespace Surreal.Resources;
 
 /// <summary>
-/// An application resource that can be deterministically destroyed.
+/// An application resource that can be managed and unloaded.
 /// </summary>
 public abstract class Resource : IDisposable
 {

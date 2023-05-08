@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Surreal.Memory;
+﻿using Surreal.Memory;
 
 namespace Surreal.IO;
 

@@ -1,83 +1,71 @@
 ﻿using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 
-namespace Surreal.Assets;
+namespace Surreal.Resources;
 
 /// <summary>
-/// Represents uniquely some asset type at a given path.
+/// Represents uniquely some resource type at a given path.
 /// </summary>
-public readonly record struct AssetId(Type Type, VirtualPath Path)
+public readonly record struct ResourceId(Type Type, VirtualPath Path)
 {
   public override string ToString() => Path.ToString();
 }
 
 /// <summary>
-/// Allows managing assets.
+/// Allows managing resources.
 /// </summary>
-public interface IAssetManager : IDisposable
+public interface IResourceManager : IDisposable
 {
+  /// <summary>
+  /// Determines if hot reload is enabled.
+  /// </summary>
   bool IsHotReloadEnabled { get; }
 
-  void AddLoader(IAssetLoader loader);
+  /// <summary>
+  /// Adds a loader to the resource manager.
+  /// </summary>
+  void AddLoader(IResourceLoader loader);
 
-  bool IsAssetLoaded<T>(VirtualPath path);
-  bool TryGetAsset<T>(VirtualPath path, [NotNullWhen(true)] out T? result);
-  Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  /// <summary>
+  /// Loads the resource at the given path.
+  /// </summary>
+  Task<T> LoadResourceAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
 
-  IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler);
+  /// <summary>
+  /// Subscribes to changes in the given resource at the given path.
+  /// </summary>
+  IDisposable SubscribeToChanges(ResourceId id, ResourceChangeListener<object> handler);
 }
 
 /// <summary>
-/// The default <see cref="IAssetManager" /> implementation.
+/// The default <see cref="IResourceManager" /> implementation.
 /// </summary>
-public sealed class AssetManager : IAssetManager
+public sealed class ResourceManager : IResourceManager
 {
-  private static readonly ILog Log = LogFactory.GetLog<AssetManager>();
-  private readonly Dictionary<AssetId, object> _assetsById = new();
+  private static readonly ILog Log = LogFactory.GetLog<ResourceManager>();
 
-  private readonly List<IAssetLoader> _loaders = new();
+  private readonly Dictionary<ResourceId, object> _assetsById = new();
+  private readonly List<IResourceLoader> _loaders = new();
   private readonly List<IPathWatcher> _watchers = new();
 
   public bool IsHotReloadEnabled { get; set; } = true;
 
-  public void AddLoader(IAssetLoader loader)
+  public void AddLoader(IResourceLoader loader)
   {
     _loaders.Add(loader);
   }
 
-  public bool IsAssetLoaded<T>(VirtualPath path)
+  public async Task<T> LoadResourceAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    var id = new AssetId(typeof(T), path);
-
-    return _assetsById.ContainsKey(id);
-  }
-
-  public bool TryGetAsset<T>(VirtualPath path, [NotNullWhen(true)] out T? result)
-  {
-    var id = new AssetId(typeof(T), path);
-
-    if (_assetsById.TryGetValue(id, out var asset))
-    {
-      result = (T)asset;
-      return true;
-    }
-
-    result = default;
-    return false;
-  }
-
-  public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    var id = new AssetId(typeof(T), path);
-    var context = new AssetLoaderContext(id, this);
+    var id = new ResourceId(typeof(T), path);
+    var context = new ResourceContext(id, this);
 
     if (!TryGetLoader(context, out var loader))
     {
-      throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.Type.Name}");
+      throw new UnsupportedResourceException($"An unsupported asset type was requested: {context.Type.Name}");
     }
 
     if (!_assetsById.TryGetValue(id, out var asset))
-      // we'll continue asynchronously on the main thread
     {
       _assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }
@@ -85,10 +73,10 @@ public sealed class AssetManager : IAssetManager
     return (T)asset;
   }
 
-  public IDisposable SubscribeToChanges(AssetId id, VirtualPath path, AssetChangedHandler<object> handler)
+  public IDisposable SubscribeToChanges(ResourceId id, ResourceChangeListener<object> handler)
   {
     // not all file systems support listening for changes
-    if (!path.SupportsWatching())
+    if (!id.Path.SupportsWatching())
     {
       return Disposables.Null;
     }
@@ -96,10 +84,10 @@ public sealed class AssetManager : IAssetManager
     // we'll serialize top-level change notifications down to listeners
     var modificationLock = new object();
 
-    // dispatches path change events to particular handlers.
+    // dispatches path change events to particular handlersW
     async void OnPathModified(VirtualPath changedPath)
     {
-      if (changedPath != path)
+      if (changedPath != id.Path)
       {
         return; // there's a bit of multiplexing going on here
       }
@@ -111,7 +99,7 @@ public sealed class AssetManager : IAssetManager
       {
         if (_assetsById.TryGetValue(id, out var asset))
         {
-          var context = new AssetLoaderContext(id, this);
+          var context = new ResourceContext(id, this);
 
           _assetsById[id] = await handler(context, asset, CancellationToken.None);
         }
@@ -129,7 +117,7 @@ public sealed class AssetManager : IAssetManager
     // TODO: wire this up inside an 'asset' container, allowing it to manage internal state
     // TODO: free watchers and listeners when the associated asset goes away
 
-    var watcher = path.Watch();
+    var watcher = id.Path.Watch();
 
     watcher.Created += OnPathModified;
     watcher.Modified += OnPathModified;
@@ -175,7 +163,7 @@ public sealed class AssetManager : IAssetManager
   /// <summary>
   /// Attempts to locate a valid loader for the given type.
   /// </summary>
-  private bool TryGetLoader(AssetLoaderContext context, [NotNullWhen(true)] out IAssetLoader? result)
+  private bool TryGetLoader(ResourceContext context, [NotNullWhen(true)] out IResourceLoader? result)
   {
     for (var i = 0; i < _loaders.Count; i++)
     {
@@ -193,11 +181,11 @@ public sealed class AssetManager : IAssetManager
 }
 
 /// <summary>
-/// Denotes the given asset type is not supported by the manager.
+/// Denotes the given resource type is not supported by the manager.
 /// </summary>
-public sealed class UnsupportedAssetException : Exception
+public sealed class UnsupportedResourceException : Exception
 {
-  public UnsupportedAssetException(string message)
+  public UnsupportedResourceException(string message)
     : base(message)
   {
   }

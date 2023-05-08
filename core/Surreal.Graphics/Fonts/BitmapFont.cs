@@ -1,8 +1,8 @@
-﻿using Surreal.Assets;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
+using Surreal.Resources;
 
 namespace Surreal.Graphics.Fonts;
 
@@ -29,9 +29,9 @@ public enum VerticalAlignment
 /// </summary>
 public static class BitmapFontExtensions
 {
-  public static async Task<BitmapFont> LoadDefaultBitmapFontAsync(this IAssetManager manager)
+  public static async Task<BitmapFont> LoadDefaultBitmapFontAsync(this IResourceManager manager)
   {
-    return await manager.LoadAssetAsync<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
+    return await manager.LoadResourceAsync<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
   }
 
   /// <summary>

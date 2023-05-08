@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Runtime.CompilerServices;
-using Surreal.Collections;
+﻿using Surreal.Collections;
 
 namespace Surreal.Diagnostics.Logging;
 

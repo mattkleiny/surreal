@@ -1,5 +1,4 @@
 ﻿using System.IO.MemoryMappedFiles;
-using System.Text.Json;
 using Surreal.Memory;
 
 namespace Surreal.IO;

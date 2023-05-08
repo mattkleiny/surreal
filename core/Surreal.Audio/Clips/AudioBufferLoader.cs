@@ -1,15 +1,15 @@
 ﻿using NAudio.Wave;
-using Surreal.Assets;
 using Surreal.IO;
+using Surreal.Resources;
 
 namespace Surreal.Audio.Clips;
 
 /// <summary>
-/// The <see cref="AssetLoader{T}" /> for <see cref="AudioBuffer" />s.
+/// The <see cref="ResourceLoader{T}" /> for <see cref="AudioBuffer" />s.
 /// </summary>
-public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
+public sealed class AudioBufferLoader : ResourceLoader<AudioBuffer>
 {
-  protected override async Task<AudioBuffer> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<AudioBuffer> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
 

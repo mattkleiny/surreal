@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using System.Runtime.CompilerServices;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 /// <summary>
 /// A safe index into an item in an <see cref="GenerationalArena{T}" />.

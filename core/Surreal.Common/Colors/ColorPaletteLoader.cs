@@ -1,15 +1,14 @@
-﻿using System.Globalization;
-using Surreal.Assets;
-using Surreal.IO;
+﻿using Surreal.IO;
+using Surreal.Resources;
 
 namespace Surreal.Colors;
 
 /// <summary>
-/// The <see cref="AssetLoader{T}" /> for <see cref="ColorPalette" />s.s
+/// The <see cref="ResourceLoader{T}" /> for <see cref="ColorPalette" />s.s
 /// </summary>
-public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
+public sealed class ColorPaletteLoader : ResourceLoader<ColorPalette>
 {
-  protected override async Task<ColorPalette> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<ColorPalette> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream);

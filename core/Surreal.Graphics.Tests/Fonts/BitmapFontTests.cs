@@ -1,8 +1,8 @@
-﻿using Surreal.Assets;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
+using Surreal.Resources;
 
 namespace Surreal.Graphics.Fonts;
 
@@ -13,13 +13,13 @@ public class BitmapFontTests
   {
     var server = new HeadlessGraphicsServer();
 
-    using var manager = new AssetManager();
+    using var manager = new ResourceManager();
 
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new TextureLoader(server));
     manager.AddLoader(new ImageLoader());
 
-    var font = await manager.LoadAssetAsync<BitmapFont>("Assets/fonts/IBM.font");
+    var font = await manager.LoadResourceAsync<BitmapFont>("Assets/fonts/IBM.font");
 
     font.Should().NotBeNull();
   }
@@ -29,14 +29,14 @@ public class BitmapFontTests
   {
     var server = new HeadlessGraphicsServer();
 
-    using var manager = new AssetManager();
+    using var manager = new ResourceManager();
     using var batch = new SpriteBatch(server, 128);
 
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new TextureLoader(server));
     manager.AddLoader(new ImageLoader());
 
-    var font = await manager.LoadAssetAsync<BitmapFont>("Assets/fonts/IBM.font");
+    var font = await manager.LoadResourceAsync<BitmapFont>("Assets/fonts/IBM.font");
 
     batch.DrawText(font, "This is a test", Vector2.Zero, Vector2.One, ColorF.White);
   }

@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using Surreal.Assets;
 using Surreal.Graphics.Shaders;
 using Surreal.IO;
+using Surreal.Resources;
 
 namespace Surreal.Internal.Graphics;
 
@@ -16,9 +16,9 @@ internal sealed record OpenTKShader(ShaderType Type, string Code);
 internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader> Shaders);
 
 /// <summary>
-/// The <see cref="AssetLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.
+/// The <see cref="ResourceLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.
 /// </summary>
-internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
+internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
 {
   private readonly OpenTKGraphicsServer _server;
 
@@ -27,12 +27,12 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     _server = server;
   }
 
-  public override bool CanHandle(AssetLoaderContext context)
+  public override bool CanHandle(ResourceContext context)
   {
     return base.CanHandle(context) && context.Path.Extension == ".glsl";
   }
 
-  protected override async Task<ShaderProgram> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<ShaderProgram> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
     var program = new ShaderProgram(_server);
@@ -48,7 +48,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return program;
   }
 
-  private async Task<ShaderProgram> ReloadAsync(AssetLoaderContext context, ShaderProgram program, CancellationToken cancellationToken = default)
+  private async Task<ShaderProgram> ReloadAsync(ResourceContext context, ShaderProgram program, CancellationToken cancellationToken = default)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
     var handle = _server.CreateShader();
@@ -60,7 +60,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
     return program;
   }
 
-  private static async Task<OpenTKShaderSet> LoadShaderSetAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  private static async Task<OpenTKShaderSet> LoadShaderSetAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -69,9 +69,7 @@ internal sealed class OpenTKShaderProgramLoader : AssetLoader<ShaderProgram>
   }
 
   /// <summary>
-  ///   Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
-  ///   In particular:
-  ///   * Allow multiple shader kernels per file via a #shader_type directive.
+  /// Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
   /// </summary>
   [VisibleForTesting]
   internal static async Task<OpenTKShaderSet> ParseCodeAsync(VirtualPath path, TextReader reader, CancellationToken cancellationToken = default)

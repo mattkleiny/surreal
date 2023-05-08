@@ -1,15 +1,15 @@
-﻿using Surreal.Assets;
-using Surreal.Graphics.Textures;
+﻿using Surreal.Graphics.Textures;
 using Surreal.IO;
+using Surreal.Resources;
 
 namespace Surreal.Graphics.Fonts;
 
 /// <summary>
-/// The <see cref="AssetLoader{T}" /> for <see cref="BitmapFont" />s.
+/// The <see cref="ResourceLoader{T}" /> for <see cref="BitmapFont" />s.
 /// </summary>
-public sealed class BitmapFontLoader : AssetLoader<BitmapFont>
+public sealed class BitmapFontLoader : ResourceLoader<BitmapFont>
 {
-  protected override async Task<BitmapFont> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<BitmapFont> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     var descriptor = await context.Path.DeserializeJsonAsync<BitmapFontDescriptor>(cancellationToken);
 

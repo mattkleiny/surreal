@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Surreal.IO;
+﻿namespace Surreal.IO;
 
 /// <summary>
 /// Extensions related to <see cref="TextReader"/>.

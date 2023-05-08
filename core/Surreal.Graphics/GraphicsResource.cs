@@ -1,6 +1,7 @@
 ﻿using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Memory;
+using Surreal.Resources;
 
 namespace Surreal.Graphics;
 

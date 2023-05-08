@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 /// <summary>
 /// A structured enumeration with support for lookups and complex objects.

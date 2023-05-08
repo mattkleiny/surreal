@@ -1,5 +1,6 @@
 using Surreal.Audio.Clips;
 using Surreal.Memory;
+using Surreal.Resources;
 
 namespace Surreal.Audio;
 

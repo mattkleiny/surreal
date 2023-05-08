@@ -1,5 +1,5 @@
-﻿using Surreal.Assets;
-using Surreal.Graphics.Shaders;
+﻿using Surreal.Graphics.Shaders;
+using Surreal.Resources;
 using static Surreal.Graphics.Materials.MaterialPropertyCollection;
 
 namespace Surreal.Graphics.Materials;
@@ -127,11 +127,11 @@ public sealed class Material : GraphicsResource
 }
 
 /// <summary>
-/// The <see cref="AssetLoader{T}" /> for <see cref="Material" />s.
+/// The <see cref="ResourceLoader{T}" /> for <see cref="Material" />s.
 /// </summary>
-public sealed class MaterialLoader : AssetLoader<Material>
+public sealed class MaterialLoader : ResourceLoader<Material>
 {
-  protected override async Task<Material> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<Material> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     return new Material(await context.LoadAsync<ShaderProgram>(context.Path, cancellationToken));
   }

@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Surreal.Services;
+﻿namespace Surreal.Services;
 
 /// <summary>
 /// A registry for services.

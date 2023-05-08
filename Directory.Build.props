@@ -34,8 +34,9 @@
     <!-- automatically copy assets and embed resources -->
     <Content Include="$(ProjectDir)\Assets\**"
              CopyToOutputDirectory="PreserveNewest"
-             Condition="!$(ProjectName.EndsWith('Common'))" />
-    <EmbeddedResource Include="$(ProjectDir)\Resources\**" />
+             Condition="!$(ProjectName.StartsWith('Surreal.Common'))" />
+    <EmbeddedResource Include="$(ProjectDir)\Resources\**"
+                      Condition="!$(ProjectName.StartsWith('Surreal.Common'))" />
 
     <!-- make internals automatically visible to associated projects and nsubstitute/etc -->
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
@@ -49,20 +50,30 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <!-- conveniences for .NET projects -->
+  <!-- conveniences for core projects -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net7'))">
-    <!-- shared usings for all projects -->
     <Using Include="System.Collections" />
     <Using Include="System.Collections.Concurrent" />
     <Using Include="System.Collections.Generic" />
     <Using Include="System.Collections.Immutable" />
+    <Using Include="System.Collections.ObjectModel" />
+    <Using Include="System.ComponentModel" />
     <Using Include="System.Diagnostics" />
     <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Globalization" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Linq.Expressions" />
+    <Using Include="System.Net" />
     <Using Include="System.Numerics" />
+    <Using Include="System.Reflection" />
+    <Using Include="System.Runtime.CompilerServices" />
+    <Using Include="System.Security" />
     <Using Include="System.Text" />
+    <Using Include="System.Text.Json" />
+    <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 
-  <!-- test project configuration -->
+  <!-- conveniences for test projects -->
   <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -76,13 +87,12 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Include="FluentAssertions" Version="6.0.0" />
 
-    <!-- shared usings for test projects -->
     <Using Include="NUnit.Framework" />
     <Using Include="NSubstitute" />
     <Using Include="FluentAssertions" />
   </ItemGroup>
 
-  <!-- benchmark project configuration -->
+  <!-- conveniences for benchmark projects -->
   <PropertyGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
@@ -92,7 +102,6 @@
   <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
 
-    <!-- shared usings for benchmark projects -->
     <Using Include="BenchmarkDotNet" />
     <Using Include="BenchmarkDotNet.Attributes" />
     <Using Include="BenchmarkDotNet.Running" />

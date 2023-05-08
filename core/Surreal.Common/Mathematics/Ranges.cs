@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Surreal.Mathematics;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>
 /// An integral range.

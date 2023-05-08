@@ -1,4 +1,3 @@
-using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Audio.Clips;
 using Surreal.Colors;
@@ -16,6 +15,7 @@ using Surreal.Internal.Audio;
 using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
 using Surreal.IO;
+using Surreal.Resources;
 using Surreal.Services;
 using Surreal.Timing;
 
@@ -102,7 +102,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IMouseDevice>(InputServer.Mouse);
   }
 
-  public void RegisterAssetLoaders(IAssetManager manager)
+  public void RegisterAssetLoaders(IResourceManager manager)
   {
     manager.AddLoader(new AudioBufferLoader());
     manager.AddLoader(new AudioClipLoader(AudioServer));

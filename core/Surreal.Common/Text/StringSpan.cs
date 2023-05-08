@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Surreal.Text;
+﻿namespace Surreal.Text;
 
 /// <summary>
 /// Represents a span of a <see cref="string" />.

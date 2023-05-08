@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Surreal.Diagnostics.Logging;
+﻿namespace Surreal.Diagnostics.Logging;
 
 /// <summary>
 /// Formats log messages with the given details.

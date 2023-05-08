@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using OpenTK.Graphics;
+﻿using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Surreal.Collections;

@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Surreal.Editor.Projects;
 
 namespace Surreal.Editor;
 
@@ -13,10 +12,7 @@ public partial class App : Application
   /// <summary>
   /// The current project.
   /// </summary>
-  public Project CurrentProject { get; private set; } = new(
-    Path.Combine(Environment.CurrentDirectory, "Assets"),
-    Path.Combine(Environment.CurrentDirectory, "Target")
-  );
+  public Project CurrentProject { get; } = new(Environment.CurrentDirectory);
 
   public override void Initialize()
   {
@@ -29,7 +25,7 @@ public partial class App : Application
     {
       desktop.MainWindow = new MainWindow
       {
-        DataContext = CurrentProject
+        Project = CurrentProject
       };
     }
 

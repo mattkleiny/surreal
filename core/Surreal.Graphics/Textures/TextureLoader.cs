@@ -1,5 +1,5 @@
-﻿using Surreal.Assets;
-using Surreal.Graphics.Images;
+﻿using Surreal.Graphics.Images;
+using Surreal.Resources;
 
 namespace Surreal.Graphics.Textures;
 
@@ -14,9 +14,9 @@ public sealed record TextureLoaderSettings
 }
 
 /// <summary>
-/// The <see cref="AssetLoader{T}" /> for <see cref="Texture" />s.
+/// The <see cref="ResourceLoader{T}" /> for <see cref="Texture" />s.
 /// </summary>
-public sealed class TextureLoader : AssetLoader<Texture>
+public sealed class TextureLoader : ResourceLoader<Texture>
 {
   private readonly IGraphicsServer _server;
 
@@ -27,7 +27,7 @@ public sealed class TextureLoader : AssetLoader<Texture>
 
   public TextureLoaderSettings Settings { get; init; } = new();
 
-  protected override async Task<Texture> LoadAsync(AssetLoaderContext context, CancellationToken cancellationToken)
+  public override async Task<Texture> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(_server, Settings.Format, Settings.FilterMode, Settings.WrapMode);
@@ -42,7 +42,7 @@ public sealed class TextureLoader : AssetLoader<Texture>
     return texture;
   }
 
-  private static async Task<Texture> ReloadAsync(AssetLoaderContext context, Texture texture, CancellationToken cancellationToken = default)
+  private static async Task<Texture> ReloadAsync(ResourceContext context, Texture texture, CancellationToken cancellationToken = default)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
 

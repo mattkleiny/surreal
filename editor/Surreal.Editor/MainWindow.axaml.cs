@@ -7,4 +7,18 @@ namespace Surreal.Editor;
 /// </summary>
 public partial class MainWindow : Window
 {
+  private Project? _project;
+
+  public Project? Project
+  {
+    get => _project;
+    set
+    {
+      _project = value;
+
+      Title = value != null
+        ? $"Surreal Editor ({value.RootPath})"
+        : "Surreal Editor (no open project)";
+    }
+  }
 }

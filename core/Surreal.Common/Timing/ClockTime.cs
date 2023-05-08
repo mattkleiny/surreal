@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Surreal.Timing;
+﻿namespace Surreal.Timing;
 
 /// <summary>
 /// A range of <see cref="ClockTime" />s for scheduling.

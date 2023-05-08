@@ -1,6 +1,5 @@
 ﻿using System.Buffers;
 using System.IO.MemoryMappedFiles;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Surreal.IO;
 
