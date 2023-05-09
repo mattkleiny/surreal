@@ -31,7 +31,7 @@ public readonly record struct BlendState(bool IsEnabled, BlendMode Source, Blend
 /// <summary>
 /// A material is a configuration of the graphics state and properties used for rendering.
 /// </summary>
-[DebuggerDisplay("Material (Uniforms {Properties.Uniforms.Count}, Samplers {Locals.Samplers.Count})")]
+[DebuggerDisplay("Material (Uniforms {Properties.Uniforms.Count}, Samplers {Properties.Samplers.Count})")]
 public sealed class Material : GraphicsResource
 {
   private readonly bool _ownsShader;

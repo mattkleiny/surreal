@@ -5,13 +5,13 @@
 /// </summary>
 public readonly struct Optional<T>
 {
-  public Optional(T? value, bool hasValue)
+  public Optional(T value, bool hasValue)
   {
     Value = value;
     IsSome = hasValue;
   }
 
-  public T? Value { get; }
+  public T Value { get; }
 
   public bool IsSome { get; }
   public bool IsNone => !IsSome;
@@ -20,7 +20,7 @@ public readonly struct Optional<T>
   {
     if (IsSome)
     {
-      return Value!;
+      return Value;
     }
 
     return defaultValue;

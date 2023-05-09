@@ -36,6 +36,9 @@ public sealed class SpriteBatch : IDisposable
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
+  /// <summary>
+  /// The underlying <see cref="IGraphicsServer" />.
+  /// </summary>
   public IGraphicsServer Server { get; }
 
   /// <summary>
@@ -57,7 +60,6 @@ public sealed class SpriteBatch : IDisposable
   public void Begin(Material material)
   {
     _vertexCount = 0; // reset vertex pointer
-
     _material = material;
   }
 

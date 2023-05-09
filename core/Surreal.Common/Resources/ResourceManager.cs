@@ -44,7 +44,7 @@ public sealed class ResourceManager : IResourceManager
 {
   private static readonly ILog Log = LogFactory.GetLog<ResourceManager>();
 
-  private readonly Dictionary<ResourceId, object> _assetsById = new();
+  private readonly Dictionary<ResourceId, object> _resourcesById = new();
   private readonly List<IResourceLoader> _loaders = new();
   private readonly List<IPathWatcher> _watchers = new();
 
@@ -65,9 +65,9 @@ public sealed class ResourceManager : IResourceManager
       throw new UnsupportedResourceException($"An unsupported asset type was requested: {context.Type.Name}");
     }
 
-    if (!_assetsById.TryGetValue(id, out var asset))
+    if (!_resourcesById.TryGetValue(id, out var asset))
     {
-      _assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
+      _resourcesById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
     return (T)asset;
@@ -97,11 +97,11 @@ public sealed class ResourceManager : IResourceManager
       Monitor.Enter(modificationLock);
       try
       {
-        if (_assetsById.TryGetValue(id, out var asset))
+        if (_resourcesById.TryGetValue(id, out var asset))
         {
           var context = new ResourceContext(id, this);
 
-          _assetsById[id] = await handler(context, asset, CancellationToken.None);
+          _resourcesById[id] = await handler(context, asset, CancellationToken.None);
         }
       }
       catch (Exception exception)
@@ -137,7 +137,7 @@ public sealed class ResourceManager : IResourceManager
 
   public void Dispose()
   {
-    foreach (var asset in _assetsById.Values)
+    foreach (var asset in _resourcesById.Values)
     {
       if (asset is IDisposable disposable)
       {
@@ -155,7 +155,7 @@ public sealed class ResourceManager : IResourceManager
 
     foreach (var watcher in _watchers) watcher.Dispose();
 
-    _assetsById.Clear();
+    _resourcesById.Clear();
     _loaders.Clear();
     _watchers.Clear();
   }

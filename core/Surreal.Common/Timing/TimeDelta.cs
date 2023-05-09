@@ -5,6 +5,10 @@
 /// </summary>
 public readonly record struct TimeDelta(float Seconds)
 {
+  public static readonly TimeDelta Zero = new(0);
+  public static readonly TimeDelta One = new(1);
+  public static readonly TimeDelta Default = new(1f / 60f);
+
   public TimeDelta(TimeSpan timeSpan)
     : this((float)timeSpan.TotalSeconds)
   {

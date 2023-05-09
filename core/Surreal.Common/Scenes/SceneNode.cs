@@ -5,34 +5,13 @@
 /// </summary>
 public interface ISceneNode
 {
-  /// <summary>
-  /// Invoked when the node is parented to another node.
-  /// </summary>
   void OnParented(ISceneNode node);
-
-  /// <summary>
-  /// Invoked when the node is unparented from another node.
-  /// </summary>
   void OnUnparented();
 
-  /// <summary>
-  /// Invoked when the node is enabled.
-  /// </summary>
   void OnEnable();
-
-  /// <summary>
-  /// Invoked when the node is disabled.
-  /// </summary>
   void OnDisable();
 
-  /// <summary>
-  /// Invoked when the node is updated.
-  /// </summary>
   void OnUpdate();
-
-  /// <summary>
-  /// Invoked when the node is rendered.
-  /// </summary>
   void OnRender();
 }
 
@@ -41,6 +20,8 @@ public interface ISceneNode
 /// </summary>
 public sealed class SceneNode : IDisposable, ISceneNode
 {
+  private ISceneNode? _parent;
+
   public SceneNode()
   {
     Children = new SceneNodeCollection(this);
@@ -50,7 +31,23 @@ public sealed class SceneNode : IDisposable, ISceneNode
   /// <summary>
   /// The current parent of the node.
   /// </summary>
-  public ISceneNode? Parent { get; private set; }
+  public ISceneNode? Parent
+  {
+    get => _parent;
+    set
+    {
+      if (_parent == value) return;
+
+      if (value != null)
+      {
+        OnParented(value);
+      }
+      else
+      {
+        OnUnparented();
+      }
+    }
+  }
 
   /// <summary>
   /// The child nodes of the node.
