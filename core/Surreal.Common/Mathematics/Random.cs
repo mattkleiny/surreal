@@ -62,12 +62,12 @@ public static class RandomExtensions
     return new Seed(random.Next());
   }
 
-  public static ColorF NextColor(this Random random)
+  public static ColorF NextColorF(this Random random)
   {
     return new ColorF(random.NextFloat(), random.NextFloat(), random.NextFloat());
   }
 
-  public static ColorB NextColor32(this Random random)
+  public static ColorB NextColorB(this Random random)
   {
     return new ColorB((byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255), (byte)random.NextInt(0, 255));
   }

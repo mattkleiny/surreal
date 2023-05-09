@@ -4,5 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+    <ProjectReference Include="..\Surreal.Prototyping\Surreal.Prototyping.csproj" />
   </ItemGroup>
 </Project>

@@ -18,6 +18,7 @@
     <Using Include="Surreal.Audio" />
     <Using Include="Surreal.Audio.Clips" />
     <Using Include="Surreal.Collections" />
+    <Using Include="Surreal.Colors" />
     <Using Include="Surreal.Diagnostics" />
     <Using Include="Surreal.Diagnostics.Logging" />
     <Using Include="Surreal.Graphics" />
@@ -33,6 +34,7 @@
     <Using Include="Surreal.Input.Mouse" />
     <Using Include="Surreal.Mathematics" />
     <Using Include="Surreal.Memory" />
+    <Using Include="Surreal.Services" />
     <Using Include="Surreal.Timing" />
   </ItemGroup>
 </Project>
