@@ -65,17 +65,17 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     _configuration = configuration;
 
     Window = new OpenTKWindow(configuration);
-    AudioServer = new OpenTKAudioServer();
-    GraphicsServer = new OpenTKGraphicsServer();
-    InputServer = new OpenTKInputServer(Window);
+    AudioBackend = new OpenTKAudioBackend();
+    GraphicsBackend = new OpenTKGraphicsBackend();
+    InputBackend = new OpenTKInputBackend(Window);
 
     Resized += OnResized;
   }
 
   public OpenTKWindow Window { get; }
-  public OpenTKAudioServer AudioServer { get; }
-  public OpenTKGraphicsServer GraphicsServer { get; }
-  public OpenTKInputServer InputServer { get; }
+  public OpenTKAudioBackend AudioBackend { get; }
+  public OpenTKGraphicsBackend GraphicsBackend { get; }
+  public OpenTKInputBackend InputBackend { get; }
 
   public event Action<int, int> Resized
   {
@@ -95,23 +95,21 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IPlatformHost>(this);
     services.AddService<IDesktopPlatformHost>(this);
     services.AddService<IDesktopWindow>(Window);
-    services.AddService<IAudioServer>(AudioServer);
-    services.AddService<IGraphicsServer>(GraphicsServer);
-    services.AddService<IInputServer>(InputServer);
-    services.AddService<IKeyboardDevice>(InputServer.Keyboard);
-    services.AddService<IMouseDevice>(InputServer.Mouse);
+    services.AddService<IAudioBackend>(AudioBackend);
+    services.AddService<IGraphicsBackend>(GraphicsBackend);
+    services.AddService<IInputBackend>(InputBackend);
+    services.AddService<IKeyboardDevice>(InputBackend.Keyboard);
+    services.AddService<IMouseDevice>(InputBackend.Mouse);
   }
 
   public void RegisterAssetLoaders(IResourceManager manager)
   {
     manager.AddLoader(new AudioBufferLoader());
-    manager.AddLoader(new AudioClipLoader(AudioServer));
+    manager.AddLoader(new AudioClipLoader(AudioBackend));
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new ColorPaletteLoader());
     manager.AddLoader(new ImageLoader());
     manager.AddLoader(new MaterialLoader());
-    manager.AddLoader(new OpenTKShaderProgramLoader(GraphicsServer));
-    manager.AddLoader(new TextureLoader(GraphicsServer));
   }
 
   public void RegisterFileSystems(IFileSystemRegistry registry)
@@ -124,7 +122,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     if (!IsClosing)
     {
       Window.Update();
-      InputServer.Update();
+      InputBackend.Update();
 
       // show the game's FPS in the window title
       if (_configuration.ShowFpsInTitle)
@@ -149,7 +147,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public void Dispose()
   {
-    AudioServer.Dispose();
+    AudioBackend.Dispose();
     Window.Dispose();
   }
 
@@ -157,6 +155,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   private void OnResized(int width, int height)
   {
-    GraphicsServer.SetViewportSize(new Viewport(0, 0, width, height));
+    GraphicsBackend.SetViewportSize(new Viewport(0, 0, width, height));
   }
 }

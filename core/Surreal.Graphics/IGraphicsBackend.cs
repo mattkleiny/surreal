@@ -9,9 +9,9 @@ using Surreal.Mathematics;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// An abstraction over the different types of graphics servers available.
+/// An abstraction over the different types of graphics backends available.
 /// </summary>
-public interface IGraphicsServer
+public interface IGraphicsBackend
 {
   // intrinsics
   void SetViewportSize(Viewport viewport);

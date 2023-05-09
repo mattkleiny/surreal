@@ -45,7 +45,7 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
 
     Type = type;
     Usage = usage;
-    Handle = server.CreateBuffer(type);
+    Handle = server.Backend.CreateBuffer(type);
   }
 
   public override Type ElementType => typeof(T);
@@ -60,7 +60,7 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
       .GetOrDefault(Range.All)
       .GetOffsetAndLength(Length);
 
-    return _server.ReadBufferData<T>(Handle, Type, offset, length);
+    return _server.Backend.ReadBufferData<T>(Handle, Type, offset, length);
   }
 
   public void Write(ReadOnlySpan<T> buffer)
@@ -68,19 +68,19 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
     Length = buffer.Length;
     Size = buffer.CalculateSize();
 
-    _server.WriteBufferData(Handle, Type, buffer, Usage);
+    _server.Backend.WriteBufferData(Handle, Type, buffer, Usage);
   }
 
   public void Write(nint offset, ReadOnlySpan<T> buffer)
   {
-    _server.WriteBufferSubData(Handle, Type, offset, buffer);
+    _server.Backend.WriteBufferSubData(Handle, Type, offset, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      _server.DeleteBuffer(Handle);
+      _server.Backend.DeleteBuffer(Handle);
     }
 
     base.Dispose(managed);

@@ -140,7 +140,7 @@ public sealed class Mesh<TVertex> : Mesh
     Vertices = new GraphicsBuffer<TVertex>(server, BufferType.Vertex, usage);
     Indices = new GraphicsBuffer<uint>(server, BufferType.Index, usage);
 
-    Handle = server.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
+    Handle = server.Backend.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
   }
 
   public GraphicsHandle Handle { get; }
@@ -172,7 +172,7 @@ public sealed class Mesh<TVertex> : Mesh
   {
     material.Apply(_server); // TODO: put this in a better place (material batching?)
 
-    _server.DrawMesh(
+    _server.Backend.DrawMesh(
       Handle,
       vertexCount,
       indexCount,
@@ -188,9 +188,9 @@ public sealed class Mesh<TVertex> : Mesh
 
   public override void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
   {
-    _server.SetActiveShader(shader.Handle);
+    _server.Backend.SetActiveShader(shader.Handle);
 
-    _server.DrawMesh(
+    _server.Backend.DrawMesh(
       Handle,
       vertexCount,
       indexCount,
@@ -203,7 +203,7 @@ public sealed class Mesh<TVertex> : Mesh
   {
     if (managed)
     {
-      _server.DeleteMesh(Handle);
+      _server.Backend.DeleteMesh(Handle);
 
       Vertices.Dispose();
       Indices.Dispose();

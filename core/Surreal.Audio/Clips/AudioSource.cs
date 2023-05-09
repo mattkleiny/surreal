@@ -5,20 +5,20 @@
 /// </summary>
 public sealed class AudioSource : AudioResource
 {
-  private readonly IAudioServer _server;
+  private readonly IAudioBackend _backend;
   private bool _isLooping;
   private float _volume;
 
-  public AudioSource(IAudioServer server)
+  public AudioSource(IAudioBackend backend)
   {
-    _server = server;
+    _backend = backend;
 
-    Handle = server.CreateAudioSource();
+    Handle = backend.CreateAudioSource();
   }
 
   public AudioHandle Handle { get; }
 
-  public bool IsPlaying => _server.IsAudioSourcePlaying(Handle);
+  public bool IsPlaying => _backend.IsAudioSourcePlaying(Handle);
 
   public float Volume
   {
@@ -26,7 +26,7 @@ public sealed class AudioSource : AudioResource
     set
     {
       _volume = value;
-      _server.SetAudioSourceVolume(Handle, value);
+      _backend.SetAudioSourceVolume(Handle, value);
     }
   }
 
@@ -36,25 +36,25 @@ public sealed class AudioSource : AudioResource
     set
     {
       _isLooping = value;
-      _server.SetAudioSourceLooping(Handle, value);
+      _backend.SetAudioSourceLooping(Handle, value);
     }
   }
 
   public void Play(AudioClip clip)
   {
-    _server.PlayAudioSource(Handle, clip.Handle);
+    _backend.PlayAudioSource(Handle, clip.Handle);
   }
 
   public void Stop()
   {
-    _server.StopAudioSource(Handle);
+    _backend.StopAudioSource(Handle);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      _server.DeleteAudioSource(Handle);
+      _backend.DeleteAudioSource(Handle);
     }
 
     base.Dispose(managed);

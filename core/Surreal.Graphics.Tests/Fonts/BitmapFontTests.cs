@@ -11,8 +11,7 @@ public class BitmapFontTests
   [Test]
   public async Task it_should_load_a_bitmap_font()
   {
-    var server = new HeadlessGraphicsServer();
-
+    using var server = GraphicsServer.CreateHeadless();
     using var manager = new ResourceManager();
 
     manager.AddLoader(new BitmapFontLoader());
@@ -27,8 +26,7 @@ public class BitmapFontTests
   [Test]
   public async Task it_should_draw_to_a_sprite_batch()
   {
-    var server = new HeadlessGraphicsServer();
-
+    using var server = GraphicsServer.CreateHeadless();
     using var manager = new ResourceManager();
     using var batch = new SpriteBatch(server, 128);
 

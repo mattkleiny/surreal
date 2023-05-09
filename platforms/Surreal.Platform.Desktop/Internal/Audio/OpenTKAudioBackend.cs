@@ -3,7 +3,7 @@ using Surreal.Audio.Clips;
 
 namespace Surreal.Internal.Audio;
 
-internal sealed class OpenTKAudioServer : IAudioServer, IDisposable
+internal sealed class OpenTKAudioBackend : IAudioBackend, IDisposable
 {
   private nint _nextAudioClipId;
   private nint _nextAudioSourceId;

@@ -8,7 +8,9 @@ public class RenderContextManagerTests
   [Test]
   public void it_should_notify_on_use_when_acquiring_render_context()
   {
-    using var manager = new RenderContextManager(new HeadlessGraphicsServer(), new ResourceManager());
+    using var server = GraphicsServer.CreateHeadless();
+    using var resources = new ResourceManager();
+    using var manager = new RenderContextManager(server, resources);
 
     var context = Substitute.For<IRenderContext>();
     var frame = new RenderFrame { DeltaTime = TimeDelta.Default };
@@ -26,7 +28,9 @@ public class RenderContextManagerTests
   [Test]
   public void it_should_notify_on_frame_before_acquiring_context()
   {
-    using var manager = new RenderContextManager(new HeadlessGraphicsServer(), new ResourceManager());
+    using var server = GraphicsServer.CreateHeadless();
+    using var resources = new ResourceManager();
+    using var manager = new RenderContextManager(server, resources);
 
     var context = Substitute.For<IRenderContext>();
     var frame = new RenderFrame { DeltaTime = TimeDelta.Default };

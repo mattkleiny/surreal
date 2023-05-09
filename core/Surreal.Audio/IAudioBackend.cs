@@ -3,9 +3,9 @@ using Surreal.Audio.Clips;
 namespace Surreal.Audio;
 
 /// <summary>
-/// Represents the audio subsystem.
+/// An abstraction over the different types of audio backends available.
 /// </summary>
-public interface IAudioServer
+public interface IAudioBackend
 {
   // audio clips
   AudioHandle CreateAudioClip();

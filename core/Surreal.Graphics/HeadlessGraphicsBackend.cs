@@ -11,7 +11,7 @@ namespace Surreal.Graphics;
 /// <summary>
 /// A no-op <see cref="IGraphicsServer" /> for headless environments and testing.
 /// </summary>
-public sealed class HeadlessGraphicsServer : IGraphicsServer
+public sealed class HeadlessGraphicsBackend : IGraphicsBackend
 {
   private int _nextBufferId;
   private int _nextFrameBufferId;

@@ -69,14 +69,14 @@ public sealed class Material : GraphicsResource
   public void Apply(IGraphicsServer server)
   {
     // bind the shader
-    server.SetActiveShader(Shader.Handle);
+    server.Backend.SetActiveShader(Shader.Handle);
 
     // apply locals
     ApplyUniforms(Properties.Uniforms);
     ApplySamplers(Properties.Samplers);
 
     // apply blend state
-    server.SetBlendState(Blending);
+    server.Backend.SetBlendState(Blending);
   }
 
   private void ApplyUniforms(Dictionary<string, Uniform> uniforms)

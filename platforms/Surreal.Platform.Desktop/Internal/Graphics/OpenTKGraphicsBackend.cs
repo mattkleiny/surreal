@@ -22,7 +22,7 @@ namespace Surreal.Internal.Graphics;
 /// <summary>
 /// The <see cref="IGraphicsServer" /> for the OpenTK backend (OpenGL).
 /// </summary>
-internal sealed class OpenTKGraphicsServer : IGraphicsServer
+internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
 {
   public void SetViewportSize(Viewport viewport)
   {

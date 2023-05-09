@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Audio;
 
 /// <summary>
-/// An opaque handle to a resource in the underling <see cref="IAudioServer" /> implementation.
+/// An opaque handle to a resource in the underling <see cref="IAudioBackend" /> implementation.
 /// </summary>
 public readonly record struct AudioHandle(nint Id)
 {

@@ -17,7 +17,7 @@ public sealed class RenderTarget : GraphicsResource
     ColorAttachment = new Texture(server, colorDescriptor.Format, colorDescriptor.FilterMode, colorDescriptor.WrapMode);
     ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<ColorB>.Empty);
 
-    Handle = server.CreateFrameBuffer(ColorAttachment.Handle);
+    Handle = server.Backend.CreateFrameBuffer(ColorAttachment.Handle);
   }
 
   public GraphicsHandle Handle { get; }
@@ -36,7 +36,7 @@ public sealed class RenderTarget : GraphicsResource
   /// </summary>
   public void Activate()
   {
-    _server.SetActiveFrameBuffer(Handle);
+    _server.Backend.SetActiveFrameBuffer(Handle);
   }
 
   /// <summary>
@@ -44,14 +44,14 @@ public sealed class RenderTarget : GraphicsResource
   /// </summary>
   public void Deactivate()
   {
-    _server.SetDefaultFrameBuffer();
+    _server.Backend.SetDefaultFrameBuffer();
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      _server.DeleteFrameBuffer(Handle);
+      _server.Backend.DeleteFrameBuffer(Handle);
 
       ColorAttachment.Dispose();
     }

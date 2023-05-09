@@ -21,9 +21,9 @@ public interface IHeadlessPlatformHost : IPlatformHost
 
 internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
 {
-  public HeadlessAudioServer AudioServer { get; } = new();
-  public HeadlessGraphicsServer GraphicsServer { get; } = new();
-  public HeadlessInputServer InputServer { get; } = new();
+  public HeadlessAudioBackend AudioBackend { get; } = new();
+  public HeadlessGraphicsBackend GraphicsBackend { get; } = new();
+  public HeadlessInputBackend InputBackend { get; } = new();
 
   public event Action<int, int>? Resized;
 
@@ -33,18 +33,18 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
   public bool IsFocused => true;
   public bool IsClosing => false;
 
-  public HeadlessKeyboardDevice Keyboard => InputServer.Keyboard;
-  public HeadlessMouseDevice Mouse => InputServer.Mouse;
+  public HeadlessKeyboardDevice Keyboard => InputBackend.Keyboard;
+  public HeadlessMouseDevice Mouse => InputBackend.Mouse;
 
   public void RegisterServices(IServiceRegistry services)
   {
     services.AddService<IPlatformHost>(this);
     services.AddService<IHeadlessPlatformHost>(this);
-    services.AddService<IAudioServer>(AudioServer);
-    services.AddService<IGraphicsServer>(GraphicsServer);
-    services.AddService<IInputServer>(InputServer);
-    services.AddService<IKeyboardDevice>(InputServer.Keyboard);
-    services.AddService<IMouseDevice>(InputServer.Mouse);
+    services.AddService<IAudioBackend>(AudioBackend);
+    services.AddService<IGraphicsBackend>(GraphicsBackend);
+    services.AddService<IInputBackend>(InputBackend);
+    services.AddService<IKeyboardDevice>(InputBackend.Keyboard);
+    services.AddService<IMouseDevice>(InputBackend.Mouse);
   }
 
   public void RegisterAssetLoaders(IResourceManager manager)

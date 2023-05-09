@@ -24,8 +24,8 @@ public sealed record GameConfiguration
   /// </summary>
   public Action<GameTime, IGraphicsServer> Tick { get; init; } = (_, graphics) =>
   {
-    graphics.ClearColorBuffer(ColorF.Black);
-    graphics.FlushToDevice();
+    graphics.Backend.ClearColorBuffer(ColorF.Black);
+    graphics.Backend.FlushToDevice();
   };
 }
 

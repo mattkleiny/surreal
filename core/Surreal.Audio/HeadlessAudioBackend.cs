@@ -3,9 +3,9 @@ using Surreal.Audio.Clips;
 namespace Surreal.Audio;
 
 /// <summary>
-/// A no-op <see cref="IAudioServer" /> for headless environments and testing.
+/// A no-op <see cref="IAudioBackend" /> for headless environments and testing.
 /// </summary>
-public sealed class HeadlessAudioServer : IAudioServer
+public sealed class HeadlessAudioBackend : IAudioBackend
 {
   private int _nextClipId;
   private int _nextSourceId;

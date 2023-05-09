@@ -7,17 +7,17 @@ namespace Surreal.Audio.Clips;
 /// </summary>
 public sealed class AudioClipLoader : ResourceLoader<AudioClip>
 {
-  private readonly IAudioServer _server;
+  private readonly IAudioBackend _backend;
 
-  public AudioClipLoader(IAudioServer server)
+  public AudioClipLoader(IAudioBackend backend)
   {
-    _server = server;
+    _backend = backend;
   }
 
   public override async Task<AudioClip> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     var buffer = await context.LoadAsync<AudioBuffer>(context.Path, cancellationToken);
-    var clip = new AudioClip(_server);
+    var clip = new AudioClip(_backend);
 
     clip.Write<byte>(buffer.Duration, buffer.Rate, buffer.Span);
 

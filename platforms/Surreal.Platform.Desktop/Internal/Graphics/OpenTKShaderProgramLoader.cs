@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using Surreal.Graphics;
 using Surreal.Graphics.Shaders;
 using Surreal.IO;
 using Surreal.Resources;
@@ -20,9 +21,9 @@ internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader>
 /// </summary>
 internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
 {
-  private readonly OpenTKGraphicsServer _server;
+  private readonly IGraphicsServer _server;
 
-  public OpenTKShaderProgramLoader(OpenTKGraphicsServer server)
+  public OpenTKShaderProgramLoader(IGraphicsServer server)
   {
     _server = server;
   }
@@ -37,7 +38,9 @@ internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
     var program = new ShaderProgram(_server);
 
-    _server.LinkShader(program.Handle, shaderSet);
+    var backend = (OpenTKGraphicsBackend)_server.Backend;
+
+    backend.LinkShader(program.Handle, shaderSet);
     program.ReloadMetadata();
 
     if (context.IsHotReloadEnabled)
@@ -51,9 +54,11 @@ internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
   private async Task<ShaderProgram> ReloadAsync(ResourceContext context, ShaderProgram program, CancellationToken cancellationToken = default)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-    var handle = _server.CreateShader();
+    var handle = _server.Backend.CreateShader();
 
-    _server.LinkShader(handle, shaderSet);
+    var backend = (OpenTKGraphicsBackend)_server.Backend;
+
+    backend.LinkShader(handle, shaderSet);
     program.ReplaceShader(handle);
     program.ReloadMetadata();
 
