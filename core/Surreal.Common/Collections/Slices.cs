@@ -202,10 +202,22 @@ public static class SliceExtensions
   public static Slice<T> AsSlice<T>(this List<T> list) => list;
 
   /// <summary>
+  /// Converts the given list to a slice.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Slice<T> AsSlice<T>(this List<T> list, int offset, int length) => new(list, offset, length);
+
+  /// <summary>
   /// Converts the given list to a read-only slice.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list) => list;
+
+  /// <summary>
+  /// Converts the given list to a read-only slice.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list, int offset, int length) => new(list, offset, length);
 
   /// <summary>
   /// Swaps two elements in-place inside the slice.

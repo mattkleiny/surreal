@@ -56,7 +56,6 @@
     <Using Include="System.Collections.Concurrent" />
     <Using Include="System.Collections.Generic" />
     <Using Include="System.Collections.Immutable" />
-    <Using Include="System.Collections.ObjectModel" />
     <Using Include="System.ComponentModel" />
     <Using Include="System.Diagnostics" />
     <Using Include="System.Diagnostics.CodeAnalysis" />

@@ -28,7 +28,7 @@ public abstract record Enumeration<T>
 /// <summary>
 /// Extensions methods for enums.
 /// </summary>
-public static class EnumExtensions
+public static class EnumerationExtensions
 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static unsafe int AsInt<TEnum>(this TEnum value)

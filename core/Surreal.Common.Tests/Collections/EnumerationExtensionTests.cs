@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Collections;
 
-public class EnumExtensionTests
+public class EnumerationExtensionTests
 {
   [Test]
   public void it_should_cast_to_int()
@@ -37,8 +37,3 @@ public class EnumExtensionTests
     Four
   }
 }
-
-
-
-
-
