@@ -1,4 +1,6 @@
-﻿namespace Surreal.Scenes;
+﻿using Surreal.Graphics.Rendering;
+
+namespace Surreal;
 
 /// <summary>
 /// A graph of <see cref="SceneNode"/>s.
@@ -10,24 +12,24 @@ public sealed class SceneGraph : IDisposable
   /// </summary>
   public SceneNode Root { get; } = new();
 
-  public void OnEnable()
+  public void Enable()
   {
     Root.OnEnable();
   }
 
-  public void OnDisable()
+  public void Disable()
   {
     Root.OnDisable();
   }
 
-  public void OnUpdate()
+  public void Update()
   {
     Root.OnUpdate();
   }
 
-  public void OnRender()
+  public void Render(in RenderFrame frame, IRenderContextManager manager)
   {
-    Root.OnRender();
+    Root.OnRender(in frame, manager);
   }
 
   public void Dispose()

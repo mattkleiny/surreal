@@ -1,9 +1,11 @@
-﻿namespace Surreal.Scenes;
+﻿using Surreal.Graphics.Rendering;
+
+namespace Surreal;
 
 /// <summary>
 /// A component that can be attached to a <see cref="SceneNode"/>.
 /// </summary>
-public interface ISceneComponent
+public interface ISceneComponent : IDisposable
 {
   void OnAttach(ISceneNode node);
   void OnDetach(ISceneNode node);
@@ -12,7 +14,7 @@ public interface ISceneComponent
   void OnDisable(ISceneNode node);
 
   void OnUpdate(ISceneNode node);
-  void OnRender(ISceneNode node);
+  void OnRender(ISceneNode node, in RenderFrame frame, IRenderContextManager manager);
 }
 
 /// <summary>
@@ -49,7 +51,11 @@ public abstract class SceneComponent : ISceneComponent
   {
   }
 
-  public virtual void OnRender(ISceneNode node)
+  public virtual void OnRender(ISceneNode node, in RenderFrame frame, IRenderContextManager manager)
+  {
+  }
+
+  public virtual void Dispose()
   {
   }
 }

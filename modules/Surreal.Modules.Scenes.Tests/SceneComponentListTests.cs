@@ -1,6 +1,6 @@
-﻿namespace Surreal.Scenes;
+﻿namespace Surreal;
 
-public class SceneComponentCollectionTests
+public class SceneComponentListTests
 {
   [Test]
   public void it_should_notify_when_attaching()
@@ -8,9 +8,9 @@ public class SceneComponentCollectionTests
     var node = Substitute.For<ISceneNode>();
     var component = Substitute.For<ISceneComponent>();
 
-    var collection = new SceneComponentCollection(node);
+    var list = new SceneComponentList(node);
 
-    collection.Add(component);
+    list.Add(component);
 
     component.Received().OnAttach(node);
   }
@@ -21,10 +21,10 @@ public class SceneComponentCollectionTests
     var node = Substitute.For<ISceneNode>();
     var component = Substitute.For<ISceneComponent>();
 
-    var collection = new SceneComponentCollection(node);
+    var list = new SceneComponentList(node);
 
-    collection.Add(component);
-    collection.Remove(component);
+    list.Add(component);
+    list.Remove(component);
 
     component.Received().OnDetach(node);
   }

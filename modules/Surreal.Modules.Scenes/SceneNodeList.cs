@@ -1,15 +1,15 @@
 ﻿using Surreal.Collections;
 
-namespace Surreal.Scenes;
+namespace Surreal;
 
 /// <summary>
 /// A collection of <see cref="SceneNode"/>s.
 /// </summary>
-public sealed class SceneNodeCollection : Collection<ISceneNode>
+public sealed class SceneNodeList : Collection<ISceneNode>
 {
   private readonly ISceneNode _node;
 
-  public SceneNodeCollection(ISceneNode node)
+  public SceneNodeList(ISceneNode node)
   {
     _node = node;
   }

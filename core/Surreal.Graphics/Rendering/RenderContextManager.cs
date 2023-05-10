@@ -4,9 +4,51 @@ using Surreal.Resources;
 namespace Surreal.Graphics.Rendering;
 
 /// <summary>
-/// A manager for <see cref="IRenderContext"/>s.
+/// Represents a manager for <see cref="IRenderContext"/>s.
 /// </summary>
-public sealed class RenderContextManager : IDisposable
+public interface IRenderContextManager
+{
+  /// <summary>
+  /// Adds a <see cref="IRenderContext"/> to the manager.
+  /// </summary>
+  void AddContext<T>(T context) where T : IRenderContext;
+
+  /// <summary>
+  /// Adds a context to the manager via the given <see cref="IRenderContextDescriptor"/>.
+  /// </summary>
+  Task AddContextAsync(IRenderContextDescriptor descriptor, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Notifies the manager that a new frame is beginning.
+  /// </summary>
+  void OnBeginFrame(in RenderFrame frame);
+
+  /// <summary>
+  /// Notifies the manager that the current frame is ending.
+  /// </summary>
+  void OnEndFrame(in RenderFrame frame);
+
+  /// <summary>
+  /// Attempts to acquire a context of the given type from the manager;
+  /// if successful, returns a scoped reference to the context.
+  /// <para/>
+  /// The scoped reference will call <see cref="IRenderContext.OnBeginUse"/>
+  /// and <see cref="IRenderContext.OnEndUse"/> when it is created and disposed.
+  /// </summary>
+  bool TryAcquireContext<TContext>(in RenderFrame frame, out RenderContextManager.RenderContextScope<TContext> result)
+    where TContext : IRenderContext;
+
+  /// <summary>
+  /// Attempts to acquire a context of the given type from the manager. If unsuccessful, throws an exception.
+  /// </summary>
+  RenderContextManager.RenderContextScope<TContext> AcquireContext<TContext>(in RenderFrame frame)
+    where TContext : IRenderContext;
+}
+
+/// <summary>
+/// The default <see cref="IRenderContextManager"/> implementation.
+/// </summary>
+public sealed class RenderContextManager : IRenderContextManager, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 

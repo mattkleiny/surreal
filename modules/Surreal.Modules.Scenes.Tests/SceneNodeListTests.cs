@@ -1,6 +1,6 @@
-﻿namespace Surreal.Scenes;
+﻿namespace Surreal;
 
-public class SceneNodeCollectionTests
+public class SceneNodeListTests
 {
   [Test]
   public void it_should_notify_when_parenting()
@@ -8,9 +8,9 @@ public class SceneNodeCollectionTests
     var parent = Substitute.For<ISceneNode>();
     var child = Substitute.For<ISceneNode>();
 
-    var collection = new SceneNodeCollection(parent);
+    var list = new SceneNodeList(parent);
 
-    collection.Add(child);
+    list.Add(child);
 
     child.Received().OnParented(parent);
   }
@@ -21,10 +21,10 @@ public class SceneNodeCollectionTests
     var parent = Substitute.For<ISceneNode>();
     var child = Substitute.For<ISceneNode>();
 
-    var collection = new SceneNodeCollection(parent);
+    var list = new SceneNodeList(parent);
 
-    collection.Add(child);
-    collection.Remove(child);
+    list.Add(child);
+    list.Remove(child);
 
     child.Received().OnUnparented();
   }

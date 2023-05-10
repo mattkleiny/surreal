@@ -1,9 +1,11 @@
-﻿namespace Surreal.Scenes;
+﻿using Surreal.Graphics.Rendering;
+
+namespace Surreal;
 
 /// <summary>
 /// A node in a <see cref="SceneGraph"/>.
 /// </summary>
-public interface ISceneNode
+public interface ISceneNode : IDisposable
 {
   void OnParented(ISceneNode node);
   void OnUnparented();
@@ -12,20 +14,20 @@ public interface ISceneNode
   void OnDisable();
 
   void OnUpdate();
-  void OnRender();
+  void OnRender(in RenderFrame frame, IRenderContextManager manager);
 }
 
 /// <summary>
 /// Convenience class for implementing <see cref="ISceneNode"/>.
 /// </summary>
-public sealed class SceneNode : IDisposable, ISceneNode
+public sealed class SceneNode : ISceneNode
 {
   private ISceneNode? _parent;
 
   public SceneNode()
   {
-    Children = new SceneNodeCollection(this);
-    Components = new SceneComponentCollection(this);
+    Children = new SceneNodeList(this);
+    Components = new SceneComponentList(this);
   }
 
   /// <summary>
@@ -36,15 +38,18 @@ public sealed class SceneNode : IDisposable, ISceneNode
     get => _parent;
     set
     {
-      if (_parent == value) return;
+      if (_parent != value)
+      {
+        _parent = value;
 
-      if (value != null)
-      {
-        OnParented(value);
-      }
-      else
-      {
-        OnUnparented();
+        if (value != null)
+        {
+          OnParented(value);
+        }
+        else
+        {
+          OnUnparented();
+        }
       }
     }
   }
@@ -52,12 +57,12 @@ public sealed class SceneNode : IDisposable, ISceneNode
   /// <summary>
   /// The child nodes of the node.
   /// </summary>
-  public SceneNodeCollection Children { get; }
+  public SceneNodeList Children { get; }
 
   /// <summary>
   /// The components of the node.
   /// </summary>
-  public SceneComponentCollection Components { get; }
+  public SceneComponentList Components { get; }
 
   public void OnParented(ISceneNode node)
   {
@@ -113,16 +118,16 @@ public sealed class SceneNode : IDisposable, ISceneNode
     }
   }
 
-  public void OnRender()
+  public void OnRender(in RenderFrame frame, IRenderContextManager manager)
   {
     foreach (var component in Components)
     {
-      component.OnRender(this);
+      component.OnRender(this, in frame, manager);
     }
 
     foreach (var child in Children)
     {
-      child.OnRender();
+      child.OnRender(in frame, manager);
     }
   }
 
@@ -130,10 +135,12 @@ public sealed class SceneNode : IDisposable, ISceneNode
   {
     foreach (var component in Components)
     {
-      if (component is IDisposable disposable)
-      {
-        disposable.Dispose();
-      }
+      component.Dispose();
+    }
+
+    foreach (var child in Children)
+    {
+      child.Dispose();
     }
 
     Components.Clear();

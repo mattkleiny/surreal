@@ -1,4 +1,7 @@
-﻿namespace Surreal.Scenes;
+﻿using Surreal.Graphics.Rendering;
+using Surreal.Timing;
+
+namespace Surreal;
 
 public class SceneNodeTest
 {
@@ -51,11 +54,13 @@ public class SceneNodeTest
     var child2 = Substitute.For<ISceneNode>();
 
     var node = new SceneNode { Children = { child1, child2 } };
+    var manager = Substitute.For<IRenderContextManager>();
+    var frame = new RenderFrame { DeltaTime = TimeDelta.Default };
 
-    node.OnRender();
+    node.OnRender(in frame, manager);
 
-    child1.Received().OnRender();
-    child2.Received().OnRender();
+    child1.Received().OnRender(in frame, manager);
+    child2.Received().OnRender(in frame, manager);
   }
 
   [Test]
@@ -107,10 +112,12 @@ public class SceneNodeTest
     var component2 = Substitute.For<ISceneComponent>();
 
     var node = new SceneNode { Components = { component1, component2 } };
+    var manager = Substitute.For<IRenderContextManager>();
+    var frame = new RenderFrame { DeltaTime = TimeDelta.Default };
 
-    node.OnRender();
+    node.OnRender(in frame, manager);
 
-    component1.Received().OnRender(node);
-    component2.Received().OnRender(node);
+    component1.Received().OnRender(node, in frame, manager);
+    component2.Received().OnRender(node, in frame, manager);
   }
 }
