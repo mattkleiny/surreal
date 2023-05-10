@@ -836,4 +836,9 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
     };
   }
+
+  public void Dispose()
+  {
+    // no-op
+  }
 }

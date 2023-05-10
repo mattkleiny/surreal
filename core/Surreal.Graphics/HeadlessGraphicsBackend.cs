@@ -243,4 +243,9 @@ public sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
     // no-op
   }
+
+  public void Dispose()
+  {
+    // no-op
+  }
 }

@@ -3,6 +3,7 @@ namespace Surreal.Collections;
 /// <summary>
 /// A slice of a <see cref="List{T}" />.
 /// </summary>
+[DebuggerDisplay("Slice ({Length} items)")]
 public readonly struct Slice<T> : IEnumerable<T>
 {
   public static Slice<T> Empty => default;
@@ -100,6 +101,7 @@ public readonly struct Slice<T> : IEnumerable<T>
 /// <summary>
 /// A read-only <see cref="Slice{T}" /> variant.
 /// </summary>
+[DebuggerDisplay("ReadOnlySlice ({Length} items)")]
 public readonly struct ReadOnlySlice<T> : IEnumerable<T>
 {
   public static ReadOnlySlice<T> Empty => default;
@@ -202,7 +204,7 @@ public static class SliceExtensions
   public static Slice<T> AsSlice<T>(this List<T> list) => list;
 
   /// <summary>
-  /// Converts the given list to a slice.
+  /// Converts the given list to a slice with the given offset and length.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Slice<T> AsSlice<T>(this List<T> list, int offset, int length) => new(list, offset, length);
@@ -214,7 +216,7 @@ public static class SliceExtensions
   public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list) => list;
 
   /// <summary>
-  /// Converts the given list to a read-only slice.
+  /// Converts the given list to a read-only slice with the given offset and length.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list, int offset, int length) => new(list, offset, length);

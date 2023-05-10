@@ -11,6 +11,11 @@ public interface IGraphicsServer : IDisposable
   /// The underlying graphics backend.
   /// </summary>
   IGraphicsBackend Backend { get; }
+
+  /// <summary>
+  /// The active <see cref="IRenderPipeline"/>.
+  /// </summary>
+  IRenderPipeline? Pipeline { get; set; }
 }
 
 /// <summary>
@@ -18,29 +23,35 @@ public interface IGraphicsServer : IDisposable
 /// </summary>
 public sealed class GraphicsServer : IGraphicsServer
 {
+  private IRenderPipeline? _pipeline;
+
   /// <summary>
   /// Creates a new <see cref="GraphicsServer"/> with a <see cref="HeadlessGraphicsBackend"/>.
   /// </summary>
-  public static GraphicsServer CreateHeadless()
+  public static GraphicsServer CreateHeadless() => new()
   {
-    return new GraphicsServer { Backend = new HeadlessGraphicsBackend() };
-  }
+    Backend = new HeadlessGraphicsBackend()
+  };
 
-  /// <summary>
-  /// The underlying graphics backend.
-  /// </summary>
   public required IGraphicsBackend Backend { get; init; }
 
-  /// <summary>
-  /// The per-scene render pipeline.
-  /// </summary>
-  public IRenderPipeline RenderPipeline { get; set; }
+  public IRenderPipeline? Pipeline
+  {
+    get => _pipeline;
+    set
+    {
+      if (_pipeline != value)
+      {
+        _pipeline?.Dispose();
+        _pipeline = value;
+        _pipeline?.Initialize();
+      }
+    }
+  }
 
   public void Dispose()
   {
-    if (Backend is IDisposable disposable)
-    {
-      disposable.Dispose();
-    }
+    Pipeline?.Dispose();
+    Backend.Dispose();
   }
 }
