@@ -3,20 +3,13 @@
 /// <summary>
 /// An audio source allows <see cref="AudioClip" />s to be played.
 /// </summary>
-public sealed class AudioSource : AudioResource
+public sealed class AudioSource(IAudioBackend backend) : AudioResource
 {
-  private readonly IAudioBackend _backend;
+  private readonly IAudioBackend _backend = backend;
   private bool _isLooping;
   private float _volume;
 
-  public AudioSource(IAudioBackend backend)
-  {
-    _backend = backend;
-
-    Handle = backend.CreateAudioSource();
-  }
-
-  public AudioHandle Handle { get; }
+  public AudioHandle Handle { get; } = backend.CreateAudioSource();
 
   public bool IsPlaying => _backend.IsAudioSourcePlaying(Handle);
 

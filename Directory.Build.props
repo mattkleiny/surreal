@@ -12,31 +12,33 @@
 
   <PropertyGroup>
     <!-- core build properties -->
-    <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>11</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Surreal</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
 
     <!-- analysis and warnings -->
-    <AnalysisLevel>latest-recommended</AnalysisLevel>
-    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610</WarningsAsErrors>
+    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>
+    <NoWarn>CA2255</NoWarn>
   </PropertyGroup>
 
   <!-- conveniences for all projects -->
   <ItemGroup>
     <!-- annotations for JetBrains IDEs; private to each assembly -->
-    <Using Include="JetBrains.Annotations" />
-    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="all" />
+    <Using Include="JetBrains.Annotations"/>
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="all"/>
 
     <!-- automatically copy assets and embed resources -->
     <Content Include="$(ProjectDir)\Assets\**"
              CopyToOutputDirectory="PreserveNewest"
-             Condition="!$(ProjectName.StartsWith('Surreal.Common'))" />
+             Condition="!$(ProjectName.StartsWith('Surreal.Common'))"/>
     <EmbeddedResource Include="$(ProjectDir)\Resources\**"
-                      Condition="!$(ProjectName.StartsWith('Surreal.Common'))" />
+                      Condition="!$(ProjectName.StartsWith('Surreal.Common'))"/>
 
     <!-- make internals automatically visible to associated projects and nsubstitute/etc -->
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
@@ -51,25 +53,25 @@
   </ItemGroup>
 
   <!-- conveniences for core projects -->
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net7'))">
-    <Using Include="System.Collections" />
-    <Using Include="System.Collections.Concurrent" />
-    <Using Include="System.Collections.Generic" />
-    <Using Include="System.Collections.Immutable" />
-    <Using Include="System.ComponentModel" />
-    <Using Include="System.Diagnostics" />
-    <Using Include="System.Diagnostics.CodeAnalysis" />
-    <Using Include="System.Globalization" />
-    <Using Include="System.Linq" />
-    <Using Include="System.Linq.Expressions" />
-    <Using Include="System.Net" />
-    <Using Include="System.Numerics" />
-    <Using Include="System.Reflection" />
-    <Using Include="System.Runtime.CompilerServices" />
-    <Using Include="System.Security" />
-    <Using Include="System.Text" />
-    <Using Include="System.Text.Json" />
-    <Using Include="System.Text.Json.Serialization" />
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net8'))">
+    <Using Include="System.Collections"/>
+    <Using Include="System.Collections.Concurrent"/>
+    <Using Include="System.Collections.Generic"/>
+    <Using Include="System.Collections.Immutable"/>
+    <Using Include="System.ComponentModel"/>
+    <Using Include="System.Diagnostics"/>
+    <Using Include="System.Diagnostics.CodeAnalysis"/>
+    <Using Include="System.Globalization"/>
+    <Using Include="System.Linq"/>
+    <Using Include="System.Linq.Expressions"/>
+    <Using Include="System.Net"/>
+    <Using Include="System.Numerics"/>
+    <Using Include="System.Reflection"/>
+    <Using Include="System.Runtime.CompilerServices"/>
+    <Using Include="System.Security"/>
+    <Using Include="System.Text"/>
+    <Using Include="System.Text.Json"/>
+    <Using Include="System.Text.Json.Serialization"/>
   </ItemGroup>
 
   <!-- conveniences for test projects -->
@@ -77,18 +79,18 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
-    <PackageReference Include="AutoFixture" Version="4.17.0" />
-    <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.17.0" />
-    <PackageReference Include="coverlet.collector" Version="3.0.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
-    <PackageReference Include="NSubstitute" Version="4.2.2" />
-    <PackageReference Include="NUnit" Version="3.13.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
-    <PackageReference Include="FluentAssertions" Version="6.0.0" />
+    <PackageReference Include="AutoFixture" Version="4.17.0"/>
+    <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.17.0"/>
+    <PackageReference Include="coverlet.collector" Version="3.0.3"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0"/>
+    <PackageReference Include="NSubstitute" Version="4.2.2"/>
+    <PackageReference Include="NUnit" Version="3.13.2"/>
+    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0"/>
+    <PackageReference Include="FluentAssertions" Version="6.0.0"/>
 
-    <Using Include="NUnit.Framework" />
-    <Using Include="NSubstitute" />
-    <Using Include="FluentAssertions" />
+    <Using Include="NUnit.Framework"/>
+    <Using Include="NSubstitute"/>
+    <Using Include="FluentAssertions"/>
   </ItemGroup>
 
   <!-- conveniences for benchmark projects -->
@@ -99,10 +101,10 @@
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
   <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1"/>
 
-    <Using Include="BenchmarkDotNet" />
-    <Using Include="BenchmarkDotNet.Attributes" />
-    <Using Include="BenchmarkDotNet.Running" />
+    <Using Include="BenchmarkDotNet"/>
+    <Using Include="BenchmarkDotNet.Attributes"/>
+    <Using Include="BenchmarkDotNet.Running"/>
   </ItemGroup>
 </Project>

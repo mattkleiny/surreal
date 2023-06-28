@@ -12,16 +12,10 @@ public interface IPoolAware
 /// <summary>
 /// A pool of objects of type, <see cref="T" />.
 /// </summary>
-public sealed class Pool<T>
+public sealed class Pool<T>(Func<T> factory, int maxCapacity = 32)
 {
-  private readonly Func<T> _factory;
-  private readonly BoundedConcurrentQueue<T> _instances;
-
-  public Pool(Func<T> factory, int maxCapacity = 32)
-  {
-    _factory = factory;
-    _instances = new BoundedConcurrentQueue<T>(maxCapacity);
-  }
+  private readonly Func<T> _factory = factory;
+  private readonly BoundedConcurrentQueue<T> _instances = new(maxCapacity);
 
   /// <summary>
   /// A shared pool for instances of type, <see cref="T" />.

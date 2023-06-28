@@ -16,7 +16,7 @@ public sealed class ImageLoader : ResourceLoader<Image>
 
   public override async Task<Image> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
-    var image = await Image.LoadAsync(context.Path);
+    var image = await Image.LoadAsync(context.Path, cancellationToken);
 
     if (context.IsHotReloadEnabled)
     {
@@ -28,7 +28,9 @@ public sealed class ImageLoader : ResourceLoader<Image>
 
   private static async Task<Image> ReloadAsync(ResourceContext context, Image image, CancellationToken cancellationToken = default)
   {
-    image.ReplaceImage(await Image.LoadAsync(context.Path));
+    var replacement = await Image.LoadAsync(context.Path, cancellationToken);
+
+    image.ReplaceImage(replacement);
 
     return image;
   }

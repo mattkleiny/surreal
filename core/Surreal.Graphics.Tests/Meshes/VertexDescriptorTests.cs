@@ -31,6 +31,6 @@ public sealed class VertexDescriptorTests
     public Vector3 Position;
 
     [VertexDescriptor(4, VertexType.Float)]
-    public ColorF Color;
+    public Color Color;
   }
 }

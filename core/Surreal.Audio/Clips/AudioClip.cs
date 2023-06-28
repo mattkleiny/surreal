@@ -5,18 +5,11 @@ namespace Surreal.Audio.Clips;
 /// <summary>
 /// A clip of audio that can be played back via an audio device.
 /// </summary>
-public sealed class AudioClip : AudioResource, IHasSizeEstimate
+public sealed class AudioClip(IAudioBackend backend) : AudioResource, IHasSizeEstimate
 {
-  private readonly IAudioBackend _backend;
+  private readonly IAudioBackend _backend = backend;
 
-  public AudioClip(IAudioBackend backend)
-  {
-    _backend = backend;
-
-    Handle = backend.CreateAudioClip();
-  }
-
-  public AudioHandle Handle { get; }
+  public AudioHandle Handle { get; } = backend.CreateAudioClip();
 
   public TimeSpan Duration { get; private set; } = TimeSpan.Zero;
   public AudioSampleRate Rate { get; private set; } = AudioSampleRate.Standard;

@@ -6,35 +6,25 @@
 [RenderPipeline("Deferred")]
 public sealed class DeferredRenderPipeline : MultiPassRenderPipeline
 {
-  public DeferredRenderPipeline(IGraphicsServer server)
+  public DeferredRenderPipeline(IGraphicsContext context)
   {
-    Passes.Add(new ColorBufferPass(server));
-    Passes.Add(new ShadowStencilPass(server));
+    Passes.Add(new ColorBufferPass(context));
+    Passes.Add(new ShadowStencilPass(context));
   }
 
   /// <summary>
   /// A <see cref="RenderPass"/> that collects color data.
   /// </summary>
-  private sealed class ColorBufferPass : RenderPass
+  private sealed class ColorBufferPass(IGraphicsContext context) : RenderPass
   {
-    private readonly IGraphicsServer _server;
-
-    public ColorBufferPass(IGraphicsServer server)
-    {
-      _server = server;
-    }
+    private readonly IGraphicsContext _context = context;
   }
 
   /// <summary>
   /// A <see cref="RenderPass"/> that collects stenciled shadow map data.
   /// </summary>
-  private sealed class ShadowStencilPass : RenderPass
+  private sealed class ShadowStencilPass(IGraphicsContext context) : RenderPass
   {
-    private readonly IGraphicsServer _server;
-
-    public ShadowStencilPass(IGraphicsServer server)
-    {
-      _server = server;
-    }
+    private readonly IGraphicsContext _context = context;
   }
 }

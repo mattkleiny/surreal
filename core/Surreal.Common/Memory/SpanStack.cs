@@ -4,18 +4,11 @@
 /// A <see cref="Span{T}" /> that is operated like a <see cref="Stack{T}" />.
 /// </summary>
 [DebuggerDisplay("SpanStack {Count}/{Capacity}")]
-public ref struct SpanStack<T>
+public ref struct SpanStack<T>(Span<T> storage)
 {
-  private readonly Span<T> _storage;
+  private readonly Span<T> _storage = storage;
 
-  public SpanStack(Span<T> storage)
-  {
-    _storage = storage;
-
-    Count = 0;
-  }
-
-  public int Count { get; private set; }
+  public int Count { get; private set; } = 0;
   public int Capacity => _storage.Length;
 
   public ref T this[Index index] => ref _storage[index];

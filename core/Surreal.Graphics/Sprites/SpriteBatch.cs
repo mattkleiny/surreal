@@ -23,23 +23,23 @@ public sealed class SpriteBatch : IDisposable
   private Material? _material;
   private int _vertexCount;
 
-  public SpriteBatch(IGraphicsServer server, int spriteCount = DefaultSpriteCount)
+  public SpriteBatch(IGraphicsContext context, int spriteCount = DefaultSpriteCount)
   {
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount <= MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-    Server = server;
+    Context = context;
 
     _vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
-    _mesh = new Mesh<Vertex2>(server);
+    _mesh = new Mesh<Vertex2>(context);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
   /// <summary>
-  /// The underlying <see cref="IGraphicsServer" />.
+  /// The underlying <see cref="IGraphicsContext" />.
   /// </summary>
-  public IGraphicsServer Server { get; }
+  public IGraphicsContext Context { get; }
 
   /// <summary>
   /// The <see cref="MaterialProperty{T}" /> to bind textures to.
@@ -70,16 +70,16 @@ public sealed class SpriteBatch : IDisposable
 
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
   {
-    Draw(region, position, size, ColorF.White);
+    Draw(region, position, size, Color.White);
   }
 
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, ColorF color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
   {
     Draw(region, position, size, 0f, color);
   }
 
   [SkipLocalsInit]
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, ColorF color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
   {
     if (region.Texture == null)
     {
@@ -165,10 +165,10 @@ public sealed class SpriteBatch : IDisposable
   /// A common 2d vertex type for primitive shapes.
   /// </summary>
   [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex2(Vector2 Position, ColorF Color, Vector2 UV)
+  private record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
   {
     [VertexDescriptor(4, VertexType.Float)]
-    public ColorF Color = Color;
+    public Color Color = Color;
 
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 Position = Position;

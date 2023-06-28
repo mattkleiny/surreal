@@ -8,14 +8,9 @@ namespace Surreal.Graphics.Rendering;
 /// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class RenderPipelineAttribute : Attribute
+public sealed class RenderPipelineAttribute(string name) : Attribute
 {
-  public string Name { get; }
-
-  public RenderPipelineAttribute(string name)
-  {
-    Name = name;
-  }
+  public string Name { get; } = name;
 }
 
 /// <summary>

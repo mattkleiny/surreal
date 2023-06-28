@@ -16,7 +16,7 @@ public interface IGraphicsBackend : IDisposable
   // intrinsics
   void SetViewportSize(Viewport viewport);
   void SetBlendState(BlendState state);
-  void ClearColorBuffer(ColorF color);
+  void ClearColorBuffer(Color color);
   void ClearDepthBuffer();
   void FlushToDevice();
 

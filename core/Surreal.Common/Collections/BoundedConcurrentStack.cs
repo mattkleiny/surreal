@@ -3,19 +3,12 @@
 /// <summary>
 /// A <see cref="ConcurrentStack{T}" /> with a fixed-sized upper bound.
 /// </summary>
-public sealed class BoundedConcurrentStack<T>
+public sealed class BoundedConcurrentStack<T>(int maxCapacity = 32)
 {
-  private readonly ConcurrentStack<T> _stack;
-
-  public BoundedConcurrentStack(int maxCapacity = 32)
-  {
-    _stack = new ConcurrentStack<T>();
-
-    Capacity = maxCapacity;
-  }
+  private readonly ConcurrentStack<T> _stack = new();
 
   public int Count => _stack.Count;
-  public int Capacity { get; }
+  public int Capacity { get; } = maxCapacity;
 
   public bool TryPeek([MaybeNullWhen(false)] out T result)
   {

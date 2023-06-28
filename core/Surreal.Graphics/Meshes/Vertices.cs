@@ -7,10 +7,10 @@ namespace Surreal.Graphics.Meshes;
 /// A common 2d vertex type for primitive shapes.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public record struct Vertex2(Vector2 Position, ColorF Color, Vector2 UV)
+public record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
 {
   [VertexDescriptor(4, VertexType.Float)]
-  public ColorF Color = Color;
+  public Color Color = Color;
 
   [VertexDescriptor(2, VertexType.Float)]
   public Vector2 Position = Position;
@@ -23,10 +23,10 @@ public record struct Vertex2(Vector2 Position, ColorF Color, Vector2 UV)
 /// A common 3d vertex type for primitive shapes.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public record struct Vertex3(Vector3 Position, ColorF Color, Vector2 UV)
+public record struct Vertex3(Vector3 Position, Color Color, Vector2 UV)
 {
   [VertexDescriptor(4, VertexType.Float)]
-  public ColorF Color = Color;
+  public Color Color = Color;
 
   [VertexDescriptor(3, VertexType.Float)]
   public Vector3 Position = Position;
@@ -54,17 +54,11 @@ public enum VertexType
 /// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Field)]
-public sealed class VertexDescriptorAttribute : Attribute
+public sealed class VertexDescriptorAttribute(int count, VertexType type) : Attribute
 {
-  public VertexDescriptorAttribute(int count, VertexType type)
-  {
-    Count = count;
-    Type = type;
-  }
-
   public string? Alias { get; set; }
-  public int Count { get; set; }
-  public VertexType Type { get; set; }
+  public int Count { get; set; } = count;
+  public VertexType Type { get; set; } = type;
 
   /// <summary>
   /// True if the resultant components should be normalised to (0, 1) before submission to the GPU.
@@ -76,7 +70,8 @@ public sealed class VertexDescriptorAttribute : Attribute
 /// Describes a single vertex.
 /// </summary>
 [DebuggerDisplay("{Name}: {Count}")]
-public readonly record struct VertexDescriptor(string Name, int Offset, int Count, VertexType Type, bool ShouldNormalize)
+public readonly record struct VertexDescriptor(string Name, int Offset, int Count, VertexType Type,
+  bool ShouldNormalize)
 {
   public int Stride => Count * DetermineSize(Type);
 

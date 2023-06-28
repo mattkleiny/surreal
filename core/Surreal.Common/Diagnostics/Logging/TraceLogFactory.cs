@@ -3,20 +3,14 @@
 /// <summary>
 /// A <see cref="ILogFactory" /> that writes to the built-in .NET <see cref="Trace" /> console.
 /// </summary>
-public sealed class TraceLogFactory : ILogFactory
+public sealed class TraceLogFactory(LogLevel minLevel, LogFormatter formatter) : ILogFactory
 {
-  private readonly LogFormatter _formatter;
-  private readonly LogLevel _minLevel;
+  private readonly LogFormatter _formatter = formatter;
+  private readonly LogLevel _minLevel = minLevel;
 
   public TraceLogFactory(LogLevel minLevel)
     : this(minLevel, LogFormatters.Default())
   {
-  }
-
-  public TraceLogFactory(LogLevel minLevel, LogFormatter formatter)
-  {
-    _minLevel = minLevel;
-    _formatter = formatter;
   }
 
   public ILog GetLog(string category)
@@ -27,18 +21,11 @@ public sealed class TraceLogFactory : ILogFactory
   /// <summary>
   /// A <see cref="ILog" /> that writes to <see cref="Trace" />.
   /// </summary>
-  private sealed class TraceLog : ILog
+  private sealed class TraceLog(string category, LogLevel minLevel, LogFormatter formatter) : ILog
   {
-    private readonly string _category;
-    private readonly LogFormatter _formatter;
-    private readonly LogLevel _minLevel;
-
-    public TraceLog(string category, LogLevel minLevel, LogFormatter formatter)
-    {
-      _category = category;
-      _minLevel = minLevel;
-      _formatter = formatter;
-    }
+    private readonly string _category = category;
+    private readonly LogFormatter _formatter = formatter;
+    private readonly LogLevel _minLevel = minLevel;
 
     public bool IsLevelEnabled(LogLevel level)
     {

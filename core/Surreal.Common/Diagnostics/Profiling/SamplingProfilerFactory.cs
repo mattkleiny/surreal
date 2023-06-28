@@ -11,14 +11,9 @@ public interface IProfileSampler
 /// <summary>
 /// A <see cref="IProfilerFactory" /> that builds <see cref="SamplingProfiler" />s.
 /// </summary>
-public sealed class SamplingProfilerFactory : IProfilerFactory
+public sealed class SamplingProfilerFactory(IProfileSampler sampler) : IProfilerFactory
 {
-  private readonly IProfileSampler _sampler;
-
-  public SamplingProfilerFactory(IProfileSampler sampler)
-  {
-    _sampler = sampler;
-  }
+  private readonly IProfileSampler _sampler = sampler;
 
   public IProfiler GetProfiler(string category)
   {
@@ -28,16 +23,10 @@ public sealed class SamplingProfilerFactory : IProfilerFactory
   /// <summary>
   /// A <see cref="IProfiler" /> for <see cref="SamplingProfiler" />s.
   /// </summary>
-  private sealed class SamplingProfiler : IProfiler
+  private sealed class SamplingProfiler(IProfileSampler sampler, string category) : IProfiler
   {
-    private readonly string _category;
-    private readonly IProfileSampler _sampler;
-
-    public SamplingProfiler(IProfileSampler sampler, string category)
-    {
-      _sampler = sampler;
-      _category = category;
-    }
+    private readonly string _category = category;
+    private readonly IProfileSampler _sampler = sampler;
 
     public ProfilingScope Track(string task)
     {

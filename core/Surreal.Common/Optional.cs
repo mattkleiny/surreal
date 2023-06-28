@@ -3,20 +3,11 @@
 /// <summary>
 /// An optional type for <see cref="T" />.
 /// </summary>
-public readonly struct Optional<T>
+public readonly record struct Optional<T>(T Value, bool IsSome)
 {
-  public Optional(T value, bool hasValue)
-  {
-    Value = value;
-    IsSome = hasValue;
-  }
+  public readonly bool IsNone => !IsSome;
 
-  public T Value { get; }
-
-  public bool IsSome { get; }
-  public bool IsNone => !IsSome;
-
-  public T GetOrDefault(T defaultValue)
+  public readonly T GetOrDefault(T defaultValue)
   {
     if (IsSome)
     {

@@ -3,22 +3,15 @@
 /// <summary>
 /// A <see cref="ILogFactory" /> that writes to the given <see cref="TextWriter" />.
 /// </summary>
-public sealed class TextWriterLogFactory : ILogFactory
+public sealed class TextWriterLogFactory(TextWriter writer, LogLevel minLevel, LogFormatter formatter) : ILogFactory
 {
-  private readonly LogFormatter _formatter;
-  private readonly LogLevel _minLevel;
-  private readonly TextWriter _writer;
+  private readonly LogFormatter _formatter = formatter;
+  private readonly LogLevel _minLevel = minLevel;
+  private readonly TextWriter _writer = writer;
 
   public TextWriterLogFactory(TextWriter writer, LogLevel minLevel)
     : this(writer, minLevel, LogFormatters.Default())
   {
-  }
-
-  public TextWriterLogFactory(TextWriter writer, LogLevel minLevel, LogFormatter formatter)
-  {
-    _writer = writer;
-    _minLevel = minLevel;
-    _formatter = formatter;
   }
 
   public ILog GetLog(string category)
@@ -29,20 +22,13 @@ public sealed class TextWriterLogFactory : ILogFactory
   /// <summary>
   /// A <see cref="ILog" /> that writes to a <see cref="TextWriter" />.
   /// </summary>
-  private sealed class TextWriterLog : ILog
+  private sealed class TextWriterLog
+    (TextWriter writer, string category, LogLevel minLevel, LogFormatter formatter) : ILog
   {
-    private readonly string _category;
-    private readonly LogFormatter _formatter;
-    private readonly LogLevel _minLevel;
-    private readonly TextWriter _writer;
-
-    public TextWriterLog(TextWriter writer, string category, LogLevel minLevel, LogFormatter formatter)
-    {
-      _writer = writer;
-      _category = category;
-      _minLevel = minLevel;
-      _formatter = formatter;
-    }
+    private readonly string _category = category;
+    private readonly LogFormatter _formatter = formatter;
+    private readonly LogLevel _minLevel = minLevel;
+    private readonly TextWriter _writer = writer;
 
     public bool IsLevelEnabled(LogLevel level)
     {

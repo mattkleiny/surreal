@@ -22,9 +22,9 @@ public sealed record GameConfiguration
   /// <summary>
   /// The render function for the game.
   /// </summary>
-  public Action<GameTime, IGraphicsServer> Tick { get; init; } = (_, graphics) =>
+  public Action<GameTime, IGraphicsContext> Tick { get; init; } = (_, graphics) =>
   {
-    graphics.Backend.ClearColorBuffer(ColorF.Black);
+    graphics.Backend.ClearColorBuffer(Color.Black);
     graphics.Backend.FlushToDevice();
   };
 }
@@ -44,7 +44,7 @@ public static class Game
 
     host.RegisterServices(registry);
 
-    var graphics = registry.GetRequiredService<IGraphicsServer>();
+    using var graphics = new GraphicsContext(registry.GetRequiredService<IGraphicsBackend>());
 
     var clock = new TimeDeltaClock();
     var startTime = TimeStamp.Now;

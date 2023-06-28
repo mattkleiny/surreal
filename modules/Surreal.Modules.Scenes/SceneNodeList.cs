@@ -5,14 +5,9 @@ namespace Surreal;
 /// <summary>
 /// A collection of <see cref="SceneNode"/>s.
 /// </summary>
-public sealed class SceneNodeList : Collection<ISceneNode>
+public sealed class SceneNodeList(ISceneNode node) : Collection<ISceneNode>
 {
-  private readonly ISceneNode _node;
-
-  public SceneNodeList(ISceneNode node)
-  {
-    _node = node;
-  }
+  private readonly ISceneNode _node = node;
 
   protected override void OnItemAdded(ISceneNode item)
   {

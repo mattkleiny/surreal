@@ -3,7 +3,7 @@ using Surreal.Input.Keyboard;
 
 namespace Surreal.Internal.Input;
 
-internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
+internal sealed class OpenTKKeyboardDevice(OpenTKWindow window) : IKeyboardDevice
 {
   private static readonly Dictionary<Key, Keys> Lookup = new()
   {
@@ -32,15 +32,8 @@ internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
     [Key.Tilde] = Keys.GraveAccent,
     [Key.Tab] = Keys.Tab
   };
-  private readonly KeyboardState _keyboardState;
-  private readonly OpenTKWindow _window;
-
-  public OpenTKKeyboardDevice(OpenTKWindow window)
-  {
-    _window = window;
-
-    _keyboardState = window.KeyboardState;
-  }
+  private readonly KeyboardState _keyboardState = window.KeyboardState;
+  private readonly OpenTKWindow _window = window;
 
   public event Action<Key> KeyPressed = null!;
   public event Action<Key> KeyReleased = null!;
@@ -85,5 +78,3 @@ internal sealed class OpenTKKeyboardDevice : IKeyboardDevice
     }
   }
 }
-
-

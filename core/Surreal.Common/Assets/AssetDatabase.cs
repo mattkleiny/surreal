@@ -6,16 +6,10 @@ namespace Surreal.Assets;
 /// <summary>
 /// An asset database is a collection of files and folders that are used to create a game.
 /// </summary>
-public class AssetDatabase
+public class AssetDatabase(string sourcePath, string targetPath)
 {
-  public AssetDatabase(string sourcePath, string targetPath)
-  {
-    SourcePath = sourcePath;
-    TargetPath = targetPath;
-  }
-
-  public string SourcePath { get; }
-  public string TargetPath { get; }
+  public string SourcePath { get; } = sourcePath;
+  public string TargetPath { get; } = targetPath;
 
   /// <summary>
   /// The <see cref="IAssetImporter"/>s that are used to import assets into the database.

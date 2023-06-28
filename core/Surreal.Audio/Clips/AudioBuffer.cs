@@ -5,20 +5,12 @@ namespace Surreal.Audio.Clips;
 /// <summary>
 /// A buffer of waveform data for use in audio playback.
 /// </summary>
-public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
+public sealed class AudioBuffer(TimeSpan duration, AudioSampleRate rate) : AudioResource, IHasSizeEstimate
 {
-  private readonly IDisposableBuffer<byte> _buffer;
+  private readonly IDisposableBuffer<byte> _buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
 
-  public AudioBuffer(TimeSpan duration, AudioSampleRate rate)
-  {
-    Duration = duration;
-    Rate = rate;
-
-    _buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
-  }
-
-  public TimeSpan Duration { get; }
-  public AudioSampleRate Rate { get; }
+  public TimeSpan Duration { get; } = duration;
+  public AudioSampleRate Rate { get; } = rate;
 
   public Memory<byte> Memory => _buffer.Memory;
   public Span<byte> Span => _buffer.Span;
@@ -38,10 +30,4 @@ public sealed class AudioBuffer : AudioResource, IHasSizeEstimate
 /// <summary>
 /// Indicates an attempt to us an unsupported audio format.
 /// </summary>
-public sealed class UnsupportedAudioFormatException : Exception
-{
-  public UnsupportedAudioFormatException(string message)
-    : base(message)
-  {
-  }
-}
+public sealed class UnsupportedAudioFormatException(string message) : Exception(message);

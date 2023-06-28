@@ -9,21 +9,16 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>
 /// An efficient batch of geometric primitives for rendering to the GPU.
 /// </summary>
-public sealed class GeometryBatch : IDisposable
+public sealed class GeometryBatch
+  (IGraphicsContext context, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
 {
   private const int DefaultVertexCount = 64;
-  private readonly Mesh<Vertex2> _mesh;
+  private readonly Mesh<Vertex2> _mesh = new(context);
 
-  private readonly IDisposableBuffer<Vertex2> _vertices;
+  private readonly IDisposableBuffer<Vertex2> _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
 
   private Material? _material;
   private int _vertexCount;
-
-  public GeometryBatch(IGraphicsServer server, int maximumVertexCount = DefaultVertexCount)
-  {
-    _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
-    _mesh = new Mesh<Vertex2>(server);
-  }
 
   public void Dispose()
   {
@@ -43,62 +38,62 @@ public sealed class GeometryBatch : IDisposable
     _material = material;
   }
 
-  public void DrawPoint(Vector2 position, ColorF color)
+  public void DrawPoint(Vector2 position, Color color)
   {
     DrawPrimitive(stackalloc[] { position }, color, MeshType.Points);
   }
 
-  public void DrawLine(Vector2 from, Vector2 to, ColorF color)
+  public void DrawLine(Vector2 from, Vector2 to, Color color)
   {
     DrawPrimitive(stackalloc[] { from, to }, color, MeshType.Lines);
   }
 
-  public void DrawLines(ReadOnlySpan<Vector2> points, ColorF color)
+  public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
   {
     DrawPrimitive(points, color, MeshType.Lines);
   }
 
-  public void DrawLineLoop(ReadOnlySpan<Vector2> points, ColorF color)
+  public void DrawLineLoop(ReadOnlySpan<Vector2> points, Color color)
   {
     DrawPrimitive(points, color, MeshType.LineLoop);
   }
 
-  public void DrawLineStrip(ReadOnlySpan<Vector2> points, ColorF color)
+  public void DrawLineStrip(ReadOnlySpan<Vector2> points, Color color)
   {
     DrawPrimitive(points, color, MeshType.LineStrip);
   }
 
-  public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, ColorF color)
+  public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
   {
     DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.Triangles);
   }
 
-  public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, ColorF color)
+  public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
   {
     DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.LineLoop);
   }
 
-  public void DrawSolidQuad(Rectangle rectangle, ColorF color)
+  public void DrawSolidQuad(Rectangle rectangle, Color color)
   {
     DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.Triangles);
   }
 
-  public void DrawSolidQuad(Vector2 center, Vector2 size, ColorF color)
+  public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
   {
     DrawQuad(center, size, color, MeshType.Triangles);
   }
 
-  public void DrawWireQuad(Rectangle rectangle, ColorF color)
+  public void DrawWireQuad(Rectangle rectangle, Color color)
   {
     DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.LineLoop);
   }
 
-  public void DrawWireQuad(Vector2 center, Vector2 size, ColorF color)
+  public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
   {
     DrawQuad(center, size, color, MeshType.LineLoop);
   }
 
-  public void DrawCircle(Vector2 center, float radius, ColorF color, int segments = 16)
+  public void DrawCircle(Vector2 center, float radius, Color color, int segments = 16)
   {
     var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
     var increment = 360f / segments;
@@ -114,7 +109,7 @@ public sealed class GeometryBatch : IDisposable
     DrawLineLoop(points, color);
   }
 
-  public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, ColorF color, int segments = 16)
+  public void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16)
   {
     var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
     var length = endAngle - startAngle;
@@ -131,7 +126,7 @@ public sealed class GeometryBatch : IDisposable
     DrawLineStrip(points, color);
   }
 
-  public void DrawCurve<TCurve>(TCurve curve, ColorF color, int resolution)
+  public void DrawCurve<TCurve>(TCurve curve, Color color, int resolution)
     where TCurve : IPlanarCurve
   {
     var points = new SpanList<Vector2>(stackalloc Vector2[resolution]);
@@ -146,7 +141,7 @@ public sealed class GeometryBatch : IDisposable
     DrawLineStrip(points.ToSpan(), color);
   }
 
-  private void DrawQuad(Vector2 center, Vector2 size, ColorF color, MeshType type)
+  private void DrawQuad(Vector2 center, Vector2 size, Color color, MeshType type)
   {
     var halfWidth = size.X / 2f;
     var halfHeight = size.Y / 2f;
@@ -174,7 +169,7 @@ public sealed class GeometryBatch : IDisposable
     );
   }
 
-  public void DrawPrimitive(ReadOnlySpan<Vector2> points, ColorF color, MeshType type)
+  public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, MeshType type)
   {
     var destination = new SpanList<Vertex2>(_vertices.Span[_vertexCount..points.Length]);
 

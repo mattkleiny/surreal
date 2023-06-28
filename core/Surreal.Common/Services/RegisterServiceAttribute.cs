@@ -5,14 +5,9 @@
 /// </summary>
 [MeansImplicitUse]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class RegisterServiceAttribute : Attribute
+public sealed class RegisterServiceAttribute(Type? serviceType = null) : Attribute
 {
-  public RegisterServiceAttribute(Type? serviceType = null)
-  {
-    ServiceType = serviceType;
-  }
-
-  public Type? ServiceType { get; }
+  public Type? ServiceType { get; } = serviceType;
 
   public void RegisterService(Type type, IServiceRegistry registry)
   {

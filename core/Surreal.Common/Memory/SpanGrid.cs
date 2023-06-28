@@ -6,23 +6,15 @@ namespace Surreal.Memory;
 /// A <see cref="Span{T}" /> that is interpreted as a grid.
 /// </summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
-public readonly ref struct SpanGrid<T>
+public readonly ref struct SpanGrid<T>(Span<T> storage, int stride)
 {
   public static SpanGrid<T> Empty => default;
 
-  private readonly Span<T> _storage;
+  private readonly Span<T> _storage = storage;
 
-  public SpanGrid(Span<T> storage, int stride)
-  {
-    _storage = storage;
-    Width = stride;
+  public int Width { get; } = stride;
 
-    Height = stride > 0 ? storage.Length / stride : 0;
-  }
-
-  public int Width { get; }
-
-  public int Height { get; }
+  public int Height { get; } = stride > 0 ? storage.Length / stride : 0;
   public int Length => _storage.Length;
 
   public ref T this[Point2 position] => ref this[position.X, position.Y];
@@ -84,23 +76,15 @@ public readonly ref struct SpanGrid<T>
 /// A <see cref="ReadOnlySpan{T}" /> that is interpreted as a grid.
 /// </summary>
 [DebuggerDisplay("ReadOnlySpanGrid {Length} elements ({Width}x{Height})")]
-public readonly ref struct ReadOnlySpanGrid<T>
+public readonly ref struct ReadOnlySpanGrid<T>(ReadOnlySpan<T> storage, int stride)
 {
   public static ReadOnlySpanGrid<T> Empty => default;
 
-  private readonly ReadOnlySpan<T> _storage;
+  private readonly ReadOnlySpan<T> _storage = storage;
 
-  public ReadOnlySpanGrid(ReadOnlySpan<T> storage, int stride)
-  {
-    _storage = storage;
-    Width = stride;
+  public int Width { get; } = stride;
 
-    Height = stride > 0 ? storage.Length / stride : 0;
-  }
-
-  public int Width { get; }
-
-  public int Height { get; }
+  public int Height { get; } = stride > 0 ? storage.Length / stride : 0;
   public int Length => _storage.Length;
 
   public T this[Point2 position] => this[position.X, position.Y];

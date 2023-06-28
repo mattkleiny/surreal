@@ -8,16 +8,16 @@ namespace Surreal.Graphics;
 /// </summary>
 public sealed class RenderTarget : GraphicsResource
 {
-  private readonly IGraphicsServer _server;
+  private readonly IGraphicsContext _context;
 
-  public RenderTarget(IGraphicsServer server, RenderTargetDescriptor colorDescriptor)
+  public RenderTarget(IGraphicsContext context, RenderTargetDescriptor colorDescriptor)
   {
-    _server = server;
+    _context = context;
 
-    ColorAttachment = new Texture(server, colorDescriptor.Format, colorDescriptor.FilterMode, colorDescriptor.WrapMode);
-    ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<ColorB>.Empty);
+    ColorAttachment = new Texture(context, colorDescriptor.Format, colorDescriptor.FilterMode, colorDescriptor.WrapMode);
+    ColorAttachment.WritePixels(colorDescriptor.Width, colorDescriptor.Height, ReadOnlySpan<Color32>.Empty);
 
-    Handle = server.Backend.CreateFrameBuffer(ColorAttachment.Handle);
+    Handle = context.Backend.CreateFrameBuffer(ColorAttachment.Handle);
   }
 
   public GraphicsHandle Handle { get; }
@@ -36,7 +36,7 @@ public sealed class RenderTarget : GraphicsResource
   /// </summary>
   public void Activate()
   {
-    _server.Backend.SetActiveFrameBuffer(Handle);
+    _context.Backend.SetActiveFrameBuffer(Handle);
   }
 
   /// <summary>
@@ -44,14 +44,14 @@ public sealed class RenderTarget : GraphicsResource
   /// </summary>
   public void Deactivate()
   {
-    _server.Backend.SetDefaultFrameBuffer();
+    _context.Backend.SetDefaultFrameBuffer();
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      _server.Backend.DeleteFrameBuffer(Handle);
+      _context.Backend.DeleteFrameBuffer(Handle);
 
       ColorAttachment.Dispose();
     }

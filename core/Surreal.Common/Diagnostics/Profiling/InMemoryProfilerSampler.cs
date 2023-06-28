@@ -50,20 +50,12 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
   /// <summary>
   /// A sampler that records details about an operation.
   /// </summary>
-  public sealed class Sampler : IEnumerable<TimeSpan>
+  public sealed class Sampler(string category, string task, int sampleCount) : IEnumerable<TimeSpan>
   {
-    private readonly RingBuffer<TimeSpan> _samples;
+    private readonly RingBuffer<TimeSpan> _samples = new(sampleCount);
 
-    public Sampler(string category, string task, int sampleCount)
-    {
-      Category = category;
-      Task = task;
-
-      _samples = new RingBuffer<TimeSpan>(sampleCount);
-    }
-
-    public string Category { get; }
-    public string Task { get; }
+    public string Category { get; } = category;
+    public string Task { get; } = task;
 
     public TimeSpan Maximum => _samples.FastMax();
     public TimeSpan Minimum => _samples.FastMin();

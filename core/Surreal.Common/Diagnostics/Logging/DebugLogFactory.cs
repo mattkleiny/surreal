@@ -3,20 +3,14 @@ namespace Surreal.Diagnostics.Logging;
 /// <summary>
 /// A <see cref="ILogFactory" /> that writes to the built-in .NET <see cref="Debug" /> console.
 /// </summary>
-public sealed class DebugLogFactory : ILogFactory
+public sealed class DebugLogFactory(LogLevel minLevel, LogFormatter formatter) : ILogFactory
 {
-  private readonly LogFormatter _formatter;
-  private readonly LogLevel _minLevel;
+  private readonly LogFormatter _formatter = formatter;
+  private readonly LogLevel _minLevel = minLevel;
 
   public DebugLogFactory(LogLevel minLevel)
     : this(minLevel, LogFormatters.Default())
   {
-  }
-
-  public DebugLogFactory(LogLevel minLevel, LogFormatter formatter)
-  {
-    _minLevel = minLevel;
-    _formatter = formatter;
   }
 
   public ILog GetLog(string category)
@@ -27,18 +21,11 @@ public sealed class DebugLogFactory : ILogFactory
   /// <summary>
   /// A <see cref="ILog" /> that writes to <see cref="Debug" />.
   /// </summary>
-  private sealed class DebugLog : ILog
+  private sealed class DebugLog(string category, LogLevel minLevel, LogFormatter formatter) : ILog
   {
-    private readonly string _category;
-    private readonly LogFormatter _formatter;
-    private readonly LogLevel _minLevel;
-
-    public DebugLog(string category, LogLevel minLevel, LogFormatter formatter)
-    {
-      _category = category;
-      _minLevel = minLevel;
-      _formatter = formatter;
-    }
+    private readonly string _category = category;
+    private readonly LogFormatter _formatter = formatter;
+    private readonly LogLevel _minLevel = minLevel;
 
     public bool IsLevelEnabled(LogLevel level)
     {

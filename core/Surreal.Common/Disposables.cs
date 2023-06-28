@@ -21,14 +21,9 @@ public static class Disposables
   /// <summary>
   /// An anonymous, delegate-based <see cref="IDisposable" /> implementation.
   /// </summary>
-  private sealed class AnonymousDisposable : IDisposable
+  private sealed class AnonymousDisposable(Action action) : IDisposable
   {
-    private readonly Action _action;
-
-    public AnonymousDisposable(Action action)
-    {
-      _action = action;
-    }
+    private readonly Action _action = action;
 
     public void Dispose()
     {

@@ -48,19 +48,14 @@ public interface IRenderContextManager
 /// <summary>
 /// The default <see cref="IRenderContextManager"/> implementation.
 /// </summary>
-public sealed class RenderContextManager : IRenderContextManager, IDisposable
+public sealed class RenderContextManager
+  (IGraphicsContext graphicsContext, IResourceManager resourceManager) : IRenderContextManager, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 
   private readonly Dictionary<Type, IRenderContext> _contexts = new();
-  private readonly IGraphicsServer _graphicsServer;
-  private readonly IResourceManager _resourceManager;
-
-  public RenderContextManager(IGraphicsServer graphicsServer, IResourceManager resourceManager)
-  {
-    _graphicsServer = graphicsServer;
-    _resourceManager = resourceManager;
-  }
+  private readonly IGraphicsContext _graphicsContext = graphicsContext;
+  private readonly IResourceManager _resourceManager = resourceManager;
 
   public void AddContext<T>(T context)
     where T : IRenderContext
@@ -74,7 +69,7 @@ public sealed class RenderContextManager : IRenderContextManager, IDisposable
   {
     Log.Trace($"Registering render context descriptor {descriptor.GetType()}");
 
-    var context = await descriptor.BuildContextAsync(_graphicsServer, _resourceManager, cancellationToken);
+    var context = await descriptor.BuildContextAsync(_graphicsContext, _resourceManager, cancellationToken);
 
     _contexts.Add(context.GetType(), context);
   }

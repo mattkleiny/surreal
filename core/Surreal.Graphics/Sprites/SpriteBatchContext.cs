@@ -9,23 +9,17 @@ namespace Surreal.Graphics.Sprites;
 /// <summary>
 /// A <see cref="RenderContext"/> for sprite rendering.
 /// </summary>
-public sealed class SpriteContext : RenderContext
+public sealed class SpriteContext(IGraphicsContext context, Material material) : RenderContext
 {
-  public SpriteContext(IGraphicsServer server, Material material)
-  {
-    Material = material;
-    SpriteBatch = new SpriteBatch(server);
-  }
-
   /// <summary>
   /// The <see cref="Material"/> used for rendering.
   /// </summary>
-  public Material Material { get; }
+  public Material Material { get; } = material;
 
   /// <summary>
   /// The <see cref="SpriteBatch"/> used by this context.
   /// </summary>
-  public SpriteBatch SpriteBatch { get; }
+  public SpriteBatch SpriteBatch { get; } = new(context);
 
   public override void OnBeginFrame(in RenderFrame frame)
   {
@@ -70,14 +64,16 @@ public sealed class SpriteContextDescriptor : IRenderContextDescriptor
   /// </summary>
   public Optional<ColorPalette> ColorPalette { get; init; }
 
-  public async Task<IRenderContext> BuildContextAsync(IGraphicsServer server, IResourceManager resources, CancellationToken cancellationToken)
+  public async Task<IRenderContext> BuildContextAsync(IGraphicsContext context, IResourceManager resources,
+    CancellationToken cancellationToken)
   {
-    var material = await ResolveMaterialAsync(server, resources, cancellationToken);
+    var material = await ResolveMaterialAsync(context, resources, cancellationToken);
 
-    return new SpriteContext(server, material);
+    return new SpriteContext(context, material);
   }
 
-  private async Task<Material> ResolveMaterialAsync(IGraphicsServer server, IResourceManager resources, CancellationToken cancellationToken)
+  private async Task<Material> ResolveMaterialAsync(IGraphicsContext context, IResourceManager resources,
+    CancellationToken cancellationToken)
   {
     if (Material.IsNone)
     {

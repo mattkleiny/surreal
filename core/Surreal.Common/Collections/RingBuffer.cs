@@ -3,19 +3,12 @@
 /// <summary>
 /// A lightweight circular/ring buffer with fixed capacity.
 /// </summary>
-public sealed class RingBuffer<T> : IEnumerable<T>
+public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
 {
-  private T[] _elements;
-  private int _writePos;
+  private T[] _elements = new T[capacity];
+  private int _writePos = 0;
 
-  public RingBuffer(int capacity)
-  {
-    _elements = new T[capacity];
-    _writePos = 0;
-    Count = 0;
-  }
-
-  public int Count { get; private set; }
+  public int Count { get; private set; } = 0;
   public int Capacity => _elements.Length;
 
   public ref T this[Index index] => ref _elements[index];

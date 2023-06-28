@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Graphics;
 
 /// <summary>
-/// An opaque handle to a resource in the underling <see cref="IGraphicsServer" /> implementation.
+/// An opaque handle to a resource in the underling <see cref="IGraphicsContext" /> implementation.
 /// </summary>
 public readonly record struct GraphicsHandle(nint Id)
 {

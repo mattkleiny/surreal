@@ -86,17 +86,11 @@ public sealed class IntrusiveLinkedList<TNode> : IEnumerable<TNode>
   /// <summary>
   /// Enumerates the <see cref="IntrusiveLinkedList{TNode}" /> from head to tail.
   /// </summary>
-  public struct Enumerator : IEnumerator<TNode>
+  public struct Enumerator(IntrusiveLinkedList<TNode> list) : IEnumerator<TNode>
   {
-    private readonly IntrusiveLinkedList<TNode> _list;
+    private readonly IntrusiveLinkedList<TNode> _list = list;
 
-    public Enumerator(IntrusiveLinkedList<TNode> list)
-    {
-      _list = list;
-      Current = default;
-    }
-
-    public TNode? Current { get; private set; }
+    public TNode? Current { get; private set; } = default;
 
     TNode IEnumerator<TNode>.Current => Current!;
     object IEnumerator.Current => Current!;

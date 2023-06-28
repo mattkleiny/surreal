@@ -21,7 +21,7 @@ public enum BufferUsage
 }
 
 /// <summary>
-/// A buffer of data on the <see cref="IGraphicsServer" />.
+/// A buffer of data on the <see cref="IGraphicsContext" />.
 /// </summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
@@ -34,25 +34,17 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 /// <summary>
 /// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.
 /// </summary>
-public sealed class GraphicsBuffer<T> : GraphicsBuffer
+public sealed class GraphicsBuffer<T>
+  (IGraphicsContext context, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
   where T : unmanaged
 {
-  private readonly IGraphicsServer _server;
-
-  public GraphicsBuffer(IGraphicsServer server, BufferType type, BufferUsage usage = BufferUsage.Static)
-  {
-    _server = server;
-
-    Type = type;
-    Usage = usage;
-    Handle = server.Backend.CreateBuffer(type);
-  }
+  private readonly IGraphicsContext _context = context;
 
   public override Type ElementType => typeof(T);
 
-  public GraphicsHandle Handle { get; }
-  public BufferType Type { get; }
-  public BufferUsage Usage { get; }
+  public GraphicsHandle Handle { get; } = context.Backend.CreateBuffer(type);
+  public BufferType Type { get; } = type;
+  public BufferUsage Usage { get; } = usage;
 
   public Memory<T> Read(Optional<Range> range = default)
   {
@@ -60,7 +52,7 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
       .GetOrDefault(Range.All)
       .GetOffsetAndLength(Length);
 
-    return _server.Backend.ReadBufferData<T>(Handle, Type, offset, length);
+    return _context.Backend.ReadBufferData<T>(Handle, Type, offset, length);
   }
 
   public void Write(ReadOnlySpan<T> buffer)
@@ -68,19 +60,19 @@ public sealed class GraphicsBuffer<T> : GraphicsBuffer
     Length = buffer.Length;
     Size = buffer.CalculateSize();
 
-    _server.Backend.WriteBufferData(Handle, Type, buffer, Usage);
+    _context.Backend.WriteBufferData(Handle, Type, buffer, Usage);
   }
 
   public void Write(nint offset, ReadOnlySpan<T> buffer)
   {
-    _server.Backend.WriteBufferSubData(Handle, Type, offset, buffer);
+    _context.Backend.WriteBufferSubData(Handle, Type, offset, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      _server.Backend.DeleteBuffer(Handle);
+      _context.Backend.DeleteBuffer(Handle);
     }
 
     base.Dispose(managed);

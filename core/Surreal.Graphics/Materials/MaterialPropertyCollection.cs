@@ -101,7 +101,7 @@ public sealed class MaterialPropertyCollection
     uniform.Value.Point4 = value;
   }
 
-  public void SetProperty(MaterialProperty<ColorB> property, ColorB color)
+  public void SetProperty(MaterialProperty<Color32> property, Color32 color)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 
@@ -160,7 +160,7 @@ public sealed class MaterialPropertyCollection
     uniform.Value.Vector4 = value;
   }
 
-  public void SetProperty(MaterialProperty<ColorF> property, ColorF color)
+  public void SetProperty(MaterialProperty<Color> property, Color color)
   {
     ref var uniform = ref Uniforms.GetOrCreateRef(property.Name);
 

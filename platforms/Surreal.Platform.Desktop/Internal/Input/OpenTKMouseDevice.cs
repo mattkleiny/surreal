@@ -4,17 +4,10 @@ using MouseButton = Surreal.Input.Mouse.MouseButton;
 
 namespace Surreal.Internal.Input;
 
-internal sealed class OpenTKMouseDevice : IMouseDevice
+internal sealed class OpenTKMouseDevice(OpenTKWindow window) : IMouseDevice
 {
-  private readonly MouseState _mouseState;
-  private readonly OpenTKWindow _window;
-
-  public OpenTKMouseDevice(OpenTKWindow window)
-  {
-    _window = window;
-
-    _mouseState = window.MouseState;
-  }
+  private readonly MouseState _mouseState = window.MouseState;
+  private readonly OpenTKWindow _window = window;
 
   public event Action<MouseButton>? ButtonPressed;
   public event Action<MouseButton>? ButtonReleased;
@@ -108,5 +101,3 @@ internal sealed class OpenTKMouseDevice : IMouseDevice
     }
   }
 }
-
-

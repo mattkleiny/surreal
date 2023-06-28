@@ -31,9 +31,16 @@ public sealed class Image : IDisposable
 
   public int Width => _image.Width;
   public int Height => _image.Height;
+
+  /// <summary>
+  /// The size of the image, in bytes.
+  /// </summary>
   public Size Size => Pixels.ToSpan().CalculateSize();
 
-  public SpanGrid<ColorB> Pixels
+  /// <summary>
+  /// The underlying pixel data in the image.
+  /// </summary>
+  public SpanGrid<Color32> Pixels
   {
     get
     {
@@ -42,9 +49,9 @@ public sealed class Image : IDisposable
         throw new InvalidOperationException("The image span is not contiguous, unable to access pixels!");
       }
 
-      var pixels = MemoryMarshal.Cast<Rgba32, ColorB>(span);
+      var pixels = MemoryMarshal.Cast<Rgba32, Color32>(span);
 
-      return new SpanGrid<ColorB>(pixels, Width);
+      return new SpanGrid<Color32>(pixels, Width);
     }
   }
 
@@ -53,6 +60,9 @@ public sealed class Image : IDisposable
     _image.Dispose();
   }
 
+  /// <summary>
+  /// Loads an image from the given path.
+  /// </summary>
   public static Image Load(VirtualPath path)
   {
     using var stream = path.OpenInputStream();
@@ -60,24 +70,27 @@ public sealed class Image : IDisposable
     // load the image
     var image = SixLabors.ImageSharp.Image.Load(stream);
     if (image is Image<Rgba32> rgba)
-      // we're already in the right format
     {
+      // we're already in the right format
       return new Image(rgba);
     }
 
-    // we need to convert to RGBA
     using (image)
     {
+      // we need to convert to RGBA
       return new Image(image.CloneAs<Rgba32>());
     }
   }
 
-  public static async ValueTask<Image> LoadAsync(VirtualPath path)
+  /// <summary>
+  /// Asynchronously loads an image from the given path.
+  /// </summary>
+  public static async ValueTask<Image> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 
     // load the image
-    var image = await SixLabors.ImageSharp.Image.LoadAsync(stream);
+    var image = await SixLabors.ImageSharp.Image.LoadAsync(Configuration.Default, stream, cancellationToken);
     if (image is Image<Rgba32> rgba)
     {
       // we're already in the right format
@@ -91,6 +104,9 @@ public sealed class Image : IDisposable
     }
   }
 
+  /// <summary>
+  /// Saves the image to the given path.
+  /// </summary>
   public void Save(VirtualPath path)
   {
     using var stream = path.OpenOutputStream();
@@ -98,15 +114,18 @@ public sealed class Image : IDisposable
     _image.SaveAsPng(stream);
   }
 
-  public async ValueTask SaveAsync(VirtualPath path)
+  /// <summary>
+  /// Asynchronously saves the image to the given path.
+  /// </summary>
+  public async ValueTask SaveAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenOutputStreamAsync();
 
-    await _image.SaveAsPngAsync(stream);
+    await _image.SaveAsPngAsync(stream, cancellationToken);
   }
 
   /// <summary>
-  /// Swaps the underlying image content, for hot-reloading.
+  /// Swaps the underlying image content; for hot-reloading.
   /// </summary>
   internal void ReplaceImage(Image other)
   {

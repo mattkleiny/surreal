@@ -30,7 +30,7 @@ public sealed class ColorPaletteLoader : ResourceLoader<ColorPalette>
     }
 
     var count = int.Parse(rawCount, CultureInfo.InvariantCulture);
-    var colors = new ColorB[count];
+    var colors = new Color32[count];
 
     for (var i = 0; i < colors.Length; i++)
     {
@@ -50,7 +50,7 @@ public sealed class ColorPaletteLoader : ResourceLoader<ColorPalette>
         throw new FormatException($"Expected 3 but received {raw.Length} color values on row {i}");
       }
 
-      colors[i] = new ColorB(raw[0], raw[1], raw[2]);
+      colors[i] = new Color32(raw[0], raw[1], raw[2]);
     }
 
     return new ColorPalette(colors);

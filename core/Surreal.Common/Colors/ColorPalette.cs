@@ -1,13 +1,13 @@
 ﻿namespace Surreal.Colors;
 
 /// <summary>
-/// A palette of <see cref="ColorB" />s, with span and range support.
+/// A palette of <see cref="Color32" />s, with span and range support.
 /// </summary>
-public sealed record ColorPalette(ColorB[] _colors, int Offset, int Count) : IReadOnlyList<ColorB>
+public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IReadOnlyList<Color32>
 {
-  private readonly ColorB[] _colors = _colors;
+  private readonly Color32[] _colors = _colors;
 
-  public ColorPalette(ColorB[] colors)
+  public ColorPalette(Color32[] colors)
     : this(colors, 0, colors.Length)
   {
   }
@@ -15,12 +15,12 @@ public sealed record ColorPalette(ColorB[] _colors, int Offset, int Count) : IRe
   /// <summary>
   /// Allows accessing the palette as a <see cref="Span{T}" />.
   /// </summary>
-  public ReadOnlySpan<ColorB> Span => _colors;
+  public ReadOnlySpan<Color32> Span => _colors;
 
   /// <summary>
   /// Accesses a single color of the <see cref="ColorPalette" />.
   /// </summary>
-  public ColorB this[Index index] => _colors[Offset + index.GetOffset(Count)];
+  public Color32 this[Index index] => _colors[Offset + index.GetOffset(Count)];
 
   /// <summary>
   /// Accesses a sub-range of the <see cref="ColorPalette" />.
@@ -38,9 +38,9 @@ public sealed record ColorPalette(ColorB[] _colors, int Offset, int Count) : IRe
   /// <summary>
   /// Accesses a single color of the <see cref="ColorPalette" />.
   /// </summary>
-  public ColorB this[int index] => _colors[Offset + index];
+  public Color32 this[int index] => _colors[Offset + index];
 
-  IEnumerator<ColorB> IEnumerable<ColorB>.GetEnumerator()
+  IEnumerator<Color32> IEnumerable<Color32>.GetEnumerator()
   {
     return GetEnumerator();
   }
@@ -58,18 +58,12 @@ public sealed record ColorPalette(ColorB[] _colors, int Offset, int Count) : IRe
   /// <summary>
   /// Enumerates the <see cref="ColorPalette" />.
   /// </summary>
-  public struct Enumerator : IEnumerator<ColorB>
+  public struct Enumerator(ColorPalette palette) : IEnumerator<Color32>
   {
-    private readonly ColorPalette _palette;
-    private int _index;
+    private readonly ColorPalette _palette = palette;
+    private int _index = -1;
 
-    public Enumerator(ColorPalette palette)
-    {
-      _palette = palette;
-      _index = -1;
-    }
-
-    public ColorB Current => _palette[_index];
+    public Color32 Current => _palette[_index];
     object IEnumerator.Current => Current;
 
     public bool MoveNext()

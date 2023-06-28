@@ -9,7 +9,7 @@ using Surreal.Mathematics;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// A no-op <see cref="IGraphicsServer" /> for headless environments and testing.
+/// A no-op <see cref="IGraphicsContext" /> for headless environments and testing.
 /// </summary>
 public sealed class HeadlessGraphicsBackend : IGraphicsBackend
 {
@@ -29,7 +29,7 @@ public sealed class HeadlessGraphicsBackend : IGraphicsBackend
     // no-op
   }
 
-  public void ClearColorBuffer(ColorF color)
+  public void ClearColorBuffer(Color color)
   {
     // no-op
   }

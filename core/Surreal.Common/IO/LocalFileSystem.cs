@@ -6,14 +6,9 @@ namespace Surreal.IO;
 /// <summary>
 /// A <see cref="FileSystem" /> for the host operating system.
 /// </summary>
-public sealed class LocalFileSystem : FileSystem
+public sealed class LocalFileSystem() : FileSystem("local")
 {
   private const string Separator = "/";
-
-  public LocalFileSystem()
-    : base("local")
-  {
-  }
 
   public override bool SupportsWatcher => true;
   public override bool SupportsMemoryMapping => true;

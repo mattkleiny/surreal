@@ -1,5 +1,4 @@
 ﻿using Surreal.Graphics.Shaders;
-using Surreal.Resources;
 using static Surreal.Graphics.Materials.MaterialPropertyCollection;
 
 namespace Surreal.Graphics.Materials;
@@ -25,33 +24,28 @@ public enum BlendMode
 public readonly record struct BlendState(bool IsEnabled, BlendMode Source, BlendMode Target)
 {
   public static BlendState Disabled { get; } = default(BlendState) with { IsEnabled = false };
-  public static BlendState OneMinusSourceAlpha { get; } = new(true, BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
+
+  public static BlendState OneMinusSourceAlpha { get; } =
+    new(true, BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
 }
 
 /// <summary>
 /// A material is a configuration of the graphics state and properties used for rendering.
 /// </summary>
 [DebuggerDisplay("Material (Uniforms {Properties.Uniforms.Count}, Samplers {Properties.Samplers.Count})")]
-public sealed class Material : GraphicsResource
+public sealed class Material(ShaderProgram shader, bool ownsShader = true) : GraphicsResource
 {
-  private readonly bool _ownsShader;
-
-  public Material(ShaderProgram shader, bool ownsShader = true)
-  {
-    _ownsShader = ownsShader;
-
-    Shader = shader;
-  }
+  private readonly bool _ownsShader = ownsShader;
 
   /// <summary>
-  /// The underlying <see cref="IGraphicsServer" />.
+  /// The underlying <see cref="IGraphicsContext" />.
   /// </summary>
-  public IGraphicsServer Server => Shader.Server;
+  public IGraphicsContext Context => Shader.Context;
 
   /// <summary>
   /// The associated <see cref="ShaderProgram" /> for the material.
   /// </summary>
-  public ShaderProgram Shader { get; }
+  public ShaderProgram Shader { get; } = shader;
 
   /// <summary>
   /// The properties associated with this material.
@@ -66,17 +60,17 @@ public sealed class Material : GraphicsResource
   /// <summary>
   /// Applies the material properties to the underlying shader.
   /// </summary>
-  public void Apply(IGraphicsServer server)
+  public void Apply(IGraphicsContext context)
   {
     // bind the shader
-    server.Backend.SetActiveShader(Shader.Handle);
+    context.Backend.SetActiveShader(Shader.Handle);
 
     // apply locals
     ApplyUniforms(Properties.Uniforms);
     ApplySamplers(Properties.Samplers);
 
     // apply blend state
-    server.Backend.SetBlendState(Blending);
+    context.Backend.SetBlendState(Blending);
   }
 
   private void ApplyUniforms(Dictionary<string, Uniform> uniforms)
@@ -123,16 +117,5 @@ public sealed class Material : GraphicsResource
     }
 
     base.Dispose(managed);
-  }
-}
-
-/// <summary>
-/// The <see cref="ResourceLoader{T}" /> for <see cref="Material" />s.
-/// </summary>
-public sealed class MaterialLoader : ResourceLoader<Material>
-{
-  public override async Task<Material> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
-  {
-    return new Material(await context.LoadAsync<ShaderProgram>(context.Path, cancellationToken));
   }
 }

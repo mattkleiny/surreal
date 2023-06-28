@@ -5,7 +5,7 @@ public class RenderPipelineTests
   [Test]
   public void it_should_work()
   {
-    using var graphics = GraphicsServer.CreateHeadless();
+    using var graphics = GraphicsContext.CreateHeadless();
     using var pipeline = new DeferredRenderPipeline(graphics);
 
     var cameras = new[]

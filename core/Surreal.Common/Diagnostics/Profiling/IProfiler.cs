@@ -14,21 +14,12 @@ public interface IProfiler
 /// <summary>
 /// A scope for <see cref="IProfiler" /> operations.
 /// </summary>
-public readonly struct ProfilingScope : IDisposable
+public readonly struct ProfilingScope(string category, string task, IProfileSampler? sampler) : IDisposable
 {
-  private readonly string _category;
-  private readonly string _task;
-  private readonly IProfileSampler? _sampler;
-  private readonly TimeStamp _startTime;
-
-  public ProfilingScope(string category, string task, IProfileSampler? sampler)
-  {
-    _category = category;
-    _task = task;
-    _sampler = sampler;
-
-    _startTime = TimeStamp.Now;
-  }
+  private readonly string _category = category;
+  private readonly string _task = task;
+  private readonly IProfileSampler? _sampler = sampler;
+  private readonly TimeStamp _startTime = TimeStamp.Now;
 
   public void Dispose()
   {

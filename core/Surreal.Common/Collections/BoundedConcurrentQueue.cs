@@ -3,19 +3,12 @@
 /// <summary>
 /// A <see cref="ConcurrentQueue{T}" /> with a fixed-sized upper bound.
 /// </summary>
-public sealed class BoundedConcurrentQueue<T>
+public sealed class BoundedConcurrentQueue<T>(int maxCapacity = 32)
 {
-  private readonly ConcurrentQueue<T> _queue;
-
-  public BoundedConcurrentQueue(int maxCapacity = 32)
-  {
-    _queue = new ConcurrentQueue<T>();
-
-    Capacity = maxCapacity;
-  }
+  private readonly ConcurrentQueue<T> _queue = new();
 
   public int Count => _queue.Count;
-  public int Capacity { get; }
+  public int Capacity { get; } = maxCapacity;
 
   public bool TryPeek([MaybeNullWhen(false)] out T result)
   {

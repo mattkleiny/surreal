@@ -5,14 +5,9 @@ namespace Surreal.Audio.Clips;
 /// <summary>
 /// The <see cref="ResourceLoader{T}" /> for <see cref="AudioClip" />s.
 /// </summary>
-public sealed class AudioClipLoader : ResourceLoader<AudioClip>
+public sealed class AudioClipLoader(IAudioBackend backend) : ResourceLoader<AudioClip>
 {
-  private readonly IAudioBackend _backend;
-
-  public AudioClipLoader(IAudioBackend backend)
-  {
-    _backend = backend;
-  }
+  private readonly IAudioBackend _backend = backend;
 
   public override async Task<AudioClip> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {

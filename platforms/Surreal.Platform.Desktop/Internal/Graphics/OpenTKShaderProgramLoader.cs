@@ -19,14 +19,9 @@ internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader>
 /// <summary>
 /// The <see cref="ResourceLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.
 /// </summary>
-internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
+internal sealed class OpenTKShaderProgramLoader(IGraphicsContext context) : ResourceLoader<ShaderProgram>
 {
-  private readonly IGraphicsServer _server;
-
-  public OpenTKShaderProgramLoader(IGraphicsServer server)
-  {
-    _server = server;
-  }
+  private readonly IGraphicsContext _context = context;
 
   public override bool CanHandle(ResourceContext context)
   {
@@ -36,9 +31,9 @@ internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
   public override async Task<ShaderProgram> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-    var program = new ShaderProgram(_server);
+    var program = new ShaderProgram(_context);
 
-    var backend = (OpenTKGraphicsBackend)_server.Backend;
+    var backend = (OpenTKGraphicsBackend)_context.Backend;
 
     backend.LinkShader(program.Handle, shaderSet);
     program.ReloadMetadata();
@@ -51,12 +46,13 @@ internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
     return program;
   }
 
-  private async Task<ShaderProgram> ReloadAsync(ResourceContext context, ShaderProgram program, CancellationToken cancellationToken = default)
+  private async Task<ShaderProgram> ReloadAsync(ResourceContext context, ShaderProgram program,
+    CancellationToken cancellationToken = default)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-    var handle = _server.Backend.CreateShader();
+    var handle = _context.Backend.CreateShader();
 
-    var backend = (OpenTKGraphicsBackend)_server.Backend;
+    var backend = (OpenTKGraphicsBackend)_context.Backend;
 
     backend.LinkShader(handle, shaderSet);
     program.ReplaceShader(handle);
@@ -65,7 +61,8 @@ internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
     return program;
   }
 
-  private static async Task<OpenTKShaderSet> LoadShaderSetAsync(ResourceContext context, CancellationToken cancellationToken)
+  private static async Task<OpenTKShaderSet> LoadShaderSetAsync(ResourceContext context,
+    CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -77,7 +74,8 @@ internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
   /// Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
   /// </summary>
   [VisibleForTesting]
-  internal static async Task<OpenTKShaderSet> ParseCodeAsync(VirtualPath path, TextReader reader, CancellationToken cancellationToken = default)
+  internal static async Task<OpenTKShaderSet> ParseCodeAsync(VirtualPath path, TextReader reader,
+    CancellationToken cancellationToken = default)
   {
     var sharedCode = new StringBuilder();
     var shaderCode = new List<Shader>();
@@ -106,7 +104,8 @@ internal sealed class OpenTKShaderProgramLoader : ResourceLoader<ShaderProgram>
       }
     }
 
-    return new OpenTKShaderSet(path.ToString(), shaderCode.Select(_ => new OpenTKShader(_.Type, _.Code.ToString())).ToImmutableArray());
+    return new OpenTKShaderSet(path.ToString(),
+      shaderCode.Select(_ => new OpenTKShader(_.Type, _.Code.ToString())).ToImmutableArray());
   }
 
   /// <summary>

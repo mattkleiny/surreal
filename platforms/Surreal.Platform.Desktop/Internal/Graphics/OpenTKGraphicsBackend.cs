@@ -20,7 +20,7 @@ using Vector4 = System.Numerics.Vector4;
 namespace Surreal.Internal.Graphics;
 
 /// <summary>
-/// The <see cref="IGraphicsServer" /> for the OpenTK backend (OpenGL).
+/// The <see cref="IGraphicsContext" /> for the OpenTK backend (OpenGL).
 /// </summary>
 internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
 {
@@ -62,7 +62,7 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     }
   }
 
-  public void ClearColorBuffer(ColorF color)
+  public void ClearColorBuffer(Color color)
   {
     GL.ClearColor(color.R, color.G, color.B, color.A);
     GL.Clear(ClearBufferMask.ColorBufferBit);
@@ -720,7 +720,7 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
       return (PixelFormat.Rgb, PixelType.UnsignedByte);
     }
 
-    if (type == typeof(ColorB))
+    if (type == typeof(Color32))
     {
       return (PixelFormat.Rgba, PixelType.UnsignedByte);
     }
@@ -746,7 +746,7 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
       return (PixelFormat.Rgba, PixelType.Float);
     }
 
-    if (type == typeof(ColorF))
+    if (type == typeof(Color))
     {
       return (PixelFormat.Rgba, PixelType.Float);
     }

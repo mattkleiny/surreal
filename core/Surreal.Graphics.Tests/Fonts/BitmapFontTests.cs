@@ -11,7 +11,7 @@ public class BitmapFontTests
   [Test]
   public async Task it_should_load_a_bitmap_font()
   {
-    using var server = GraphicsServer.CreateHeadless();
+    using var server = GraphicsContext.CreateHeadless();
     using var manager = new ResourceManager();
 
     manager.AddLoader(new BitmapFontLoader());
@@ -26,7 +26,7 @@ public class BitmapFontTests
   [Test]
   public async Task it_should_draw_to_a_sprite_batch()
   {
-    using var server = GraphicsServer.CreateHeadless();
+    using var server = GraphicsContext.CreateHeadless();
     using var manager = new ResourceManager();
     using var batch = new SpriteBatch(server, 128);
 
@@ -36,6 +36,6 @@ public class BitmapFontTests
 
     var font = await manager.LoadResourceAsync<BitmapFont>("Assets/fonts/IBM.font");
 
-    batch.DrawText(font, "This is a test", Vector2.Zero, Vector2.One, ColorF.White);
+    batch.DrawText(font, "This is a test", Vector2.Zero, Vector2.One, Color.White);
   }
 }

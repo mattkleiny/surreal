@@ -59,6 +59,7 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
 
   public void BeginFrame(TimeDelta deltaTime)
   {
+    // no-op
   }
 
   public void EndFrame(TimeDelta deltaTime)

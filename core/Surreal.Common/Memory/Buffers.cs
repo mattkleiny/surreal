@@ -63,14 +63,9 @@ public static class Buffers
   /// <summary>
   /// A buffer backed by a managed array.
   /// </summary>
-  private sealed class ManagedBuffer<T> : IBuffer<T>
+  private sealed class ManagedBuffer<T>(int length) : IBuffer<T>
   {
-    private T[] _elements;
-
-    public ManagedBuffer(int length)
-    {
-      _elements = new T[length];
-    }
+    private T[] _elements = new T[length];
 
     public Memory<T> Memory => _elements;
     public Span<T> Span => _elements;
@@ -84,16 +79,11 @@ public static class Buffers
   /// <summary>
   /// A buffer backed by a pinned array.
   /// </summary>
-  private sealed class PinnedBuffer<T> : IBuffer<T>
+  private sealed class PinnedBuffer<T>(int length, bool zeroFill) : IBuffer<T>
   {
-    private readonly T[] _elements;
-
-    public PinnedBuffer(int length, bool zeroFill)
-    {
-      _elements = zeroFill
-        ? GC.AllocateArray<T>(length, true)
-        : GC.AllocateUninitializedArray<T>(length, true);
-    }
+    private readonly T[] _elements = zeroFill
+      ? GC.AllocateArray<T>(length, true)
+      : GC.AllocateUninitializedArray<T>(length, true);
 
     public Memory<T> Memory => _elements;
     public Span<T> Span => _elements;
@@ -108,22 +98,15 @@ public static class Buffers
   /// A buffer backed by native memory.
   /// </summary>
   [SuppressMessage("Reliability", "CA2015:Do not define finalizers for types derived from MemoryManager<T>")]
-  private sealed unsafe class NativeBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
+  private sealed unsafe class NativeBuffer<T>(int length, bool zeroFill) : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
-    private readonly int _length;
-    private void* _buffer;
+    private readonly int _length = length;
+    private void* _buffer = zeroFill
+      ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
+      : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
 
     private bool _isDisposed;
-
-    public NativeBuffer(int length, bool zeroFill)
-    {
-      _length = length;
-
-      _buffer = zeroFill
-        ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
-        : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
-    }
 
     ~NativeBuffer()
     {

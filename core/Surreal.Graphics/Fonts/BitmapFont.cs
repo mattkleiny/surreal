@@ -39,13 +39,13 @@ public static class BitmapFontExtensions
   /// </summary>
   public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position)
   {
-    DrawText(batch, font, text, position, ColorF.White);
+    DrawText(batch, font, text, position, Color.White);
   }
 
   /// <summary>
   /// Draws text on the given <see cref="SpriteBatch" /> with the given <see cref="BitmapFont" />.
   /// </summary>
-  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, ColorF color)
+  public static void DrawText(this SpriteBatch batch, BitmapFont font, string text, Vector2 position, Color color)
   {
     DrawText(batch, font, text, position, Vector2.One, color);
   }
@@ -59,7 +59,7 @@ public static class BitmapFontExtensions
     string text,
     Vector2 position,
     Vector2 scale,
-    ColorF color,
+    Color color,
     float angle = 0f,
     HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left,
     VerticalAlignment verticalAlignment = VerticalAlignment.Top

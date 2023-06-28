@@ -3,14 +3,9 @@
 /// <summary>
 /// A <see cref="ILogFactory" /> that composes multiple other <see cref="ILogFactory" />s.
 /// </summary>
-public sealed class CompositeLogFactory : ILogFactory
+public sealed class CompositeLogFactory(params ILogFactory[] factories) : ILogFactory
 {
-  private readonly ILogFactory[] _factories;
-
-  public CompositeLogFactory(params ILogFactory[] factories)
-  {
-    _factories = factories;
-  }
+  private readonly ILogFactory[] _factories = factories;
 
   public ILog GetLog(string category)
   {
@@ -20,14 +15,9 @@ public sealed class CompositeLogFactory : ILogFactory
   /// <summary>
   /// A <see cref="ILog" /> that delegates to multiple other <see cref="ILog" />s.
   /// </summary>
-  private sealed class CompositeLog : ILog
+  private sealed class CompositeLog(IEnumerable<ILog> logs) : ILog
   {
-    private readonly ILog[] _logs;
-
-    public CompositeLog(IEnumerable<ILog> logs)
-    {
-      _logs = logs.ToArray();
-    }
+    private readonly ILog[] _logs = Enumerable.ToArray<ILog>(logs);
 
     public bool IsLevelEnabled(LogLevel level)
     {

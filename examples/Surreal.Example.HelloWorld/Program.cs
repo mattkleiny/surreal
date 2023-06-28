@@ -16,8 +16,8 @@ Game.Start(new GameConfiguration
   },
   Tick = (time, server) =>
   {
-    var color = ColorF.Lerp(color1, color2, Maths.PingPong(time.TotalTime));
+    var color = Color.Lerp(color1, color2, Maths.PingPong(time.TotalTime));
 
-    server.Backend.ClearColorBuffer(color);
+    server.Backend.ClearDepthBuffer();
   }
 });
