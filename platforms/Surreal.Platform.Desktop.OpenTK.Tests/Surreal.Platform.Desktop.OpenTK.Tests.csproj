@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Platform.Desktop.OpenTK\Surreal.Platform.Desktop.OpenTK.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTK" Version="5.0.0-pre.7"/>
+  </ItemGroup>
+</Project>

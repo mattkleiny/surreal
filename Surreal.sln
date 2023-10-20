@@ -26,11 +26,8 @@ ProjectSection(SolutionItems) = preProject
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{B9125AD4-8943-45DC-993A-5D1B179F9041}"
-	ProjectSection(SolutionItems) = preProject
-		platforms\Directory.Build.props = platforms\Directory.Build.props
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop", "platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj", "{1C10B675-E06F-4B79-A094-428F0B9B7EDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.OpenTK", "platforms\Surreal.Platform.Desktop.OpenTK\Surreal.Platform.Desktop.OpenTK.csproj", "{1C10B675-E06F-4B79-A094-428F0B9B7EDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Audio", "core\Surreal.Audio\Surreal.Audio.csproj", "{D3E70339-84C6-4CE0-A7EE-8C7E5BBB7CDB}"
 EndProject
@@ -46,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Graphics.Tests", "c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Input", "core\Surreal.Input\Surreal.Input.csproj", "{8B633986-CBB1-4AF1-9024-64647C547651}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.Tests", "platforms\Surreal.Platform.Desktop.Tests\Surreal.Platform.Desktop.Tests.csproj", "{5E542B1D-AA4F-459B-A665-07D1EF7A38DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.OpenTK.Tests", "platforms\Surreal.Platform.Desktop.OpenTK.Tests\Surreal.Platform.Desktop.OpenTK.Tests.csproj", "{5E542B1D-AA4F-459B-A665-07D1EF7A38DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}"
 EndProject
@@ -69,6 +66,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor.Tests", "editor\Surreal.Editor.Tests\Surreal.Editor.Tests.csproj", "{43C18284-AD7B-4BBD-BDD4-F5A84A599288}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Analyzers", "core\Surreal.Analyzers\Surreal.Analyzers.csproj", "{C4F0D565-745B-4A29-9B73-04947B74D839}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.Silk", "platforms\Surreal.Platform.Desktop.Silk\Surreal.Platform.Desktop.Silk.csproj", "{3ACDEBAF-04A9-4601-9B35-6332EFC10514}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.Silk.Tests", "platforms\Surreal.Platform.Desktop.Silk.Tests\Surreal.Platform.Desktop.Silk.Tests.csproj", "{8DB8A3B2-64A3-4994-A429-0960C1EBDC74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desktop", "Desktop", "{4884AA64-0599-4592-8DD0-0AC36A7121B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +151,14 @@ Global
 		{C4F0D565-745B-4A29-9B73-04947B74D839}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4F0D565-745B-4A29-9B73-04947B74D839}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4F0D565-745B-4A29-9B73-04947B74D839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ACDEBAF-04A9-4601-9B35-6332EFC10514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ACDEBAF-04A9-4601-9B35-6332EFC10514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ACDEBAF-04A9-4601-9B35-6332EFC10514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ACDEBAF-04A9-4601-9B35-6332EFC10514}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DB8A3B2-64A3-4994-A429-0960C1EBDC74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DB8A3B2-64A3-4994-A429-0960C1EBDC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DB8A3B2-64A3-4994-A429-0960C1EBDC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DB8A3B2-64A3-4994-A429-0960C1EBDC74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,8 +169,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7570FF55-0C5D-4E52-BE67-ED3307EAD128} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{DDEB73C7-6BB8-4F6F-822B-FDD77637B89D} = {55E402DD-18E3-4E9F-A516-A1694A0BC86D}
-		{1C10B675-E06F-4B79-A094-428F0B9B7EDA} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
-		{5E542B1D-AA4F-459B-A665-07D1EF7A38DC} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
 			{D3E70339-84C6-4CE0-A7EE-8C7E5BBB7CDB} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{E82F5C61-EF99-427E-9E35-D293D5D7D064} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{96F58BD8-0DFE-41D3-9730-9EF016FEAD15} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
@@ -176,5 +185,10 @@ Global
 		{FDB53833-6AF8-458E-AAA9-CF531A277704} = {3E08F624-2496-4B8C-B6A7-AA09E990ABFF}
 		{43C18284-AD7B-4BBD-BDD4-F5A84A599288} = {1E288146-6AEB-4601-AD70-A006A99C5588}
 		{C4F0D565-745B-4A29-9B73-04947B74D839} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{4884AA64-0599-4592-8DD0-0AC36A7121B4} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
+		{1C10B675-E06F-4B79-A094-428F0B9B7EDA} = {4884AA64-0599-4592-8DD0-0AC36A7121B4}
+		{5E542B1D-AA4F-459B-A665-07D1EF7A38DC} = {4884AA64-0599-4592-8DD0-0AC36A7121B4}
+		{3ACDEBAF-04A9-4601-9B35-6332EFC10514} = {4884AA64-0599-4592-8DD0-0AC36A7121B4}
+		{8DB8A3B2-64A3-4994-A429-0960C1EBDC74} = {4884AA64-0599-4592-8DD0-0AC36A7121B4}
 	EndGlobalSection
 EndGlobal

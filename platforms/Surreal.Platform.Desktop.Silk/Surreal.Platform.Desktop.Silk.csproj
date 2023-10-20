@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>A Surreal platform implementation for headless execution.</Description>
+    <Description>A Surreal platform implementation for desktop environments using Silk .NET.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.Core" Version="2.17.1"/>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />

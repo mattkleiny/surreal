@@ -3,7 +3,7 @@
     <Description>A super basic example of bootstrapping with Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
-    <ProjectReference Include="..\Surreal.Prototyping\Surreal.Prototyping.csproj" />
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop.OpenTK\Surreal.Platform.Desktop.OpenTK.csproj"/>
+    <ProjectReference Include="..\Surreal.Prototyping\Surreal.Prototyping.csproj"/>
   </ItemGroup>
 </Project>

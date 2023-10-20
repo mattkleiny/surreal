@@ -5,7 +5,6 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
-    <ApplicationIcon>../../platforms/Surreal.Platform.Desktop/Resources/icons/surreal.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -20,6 +20,7 @@
     <RootNamespace>Surreal</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationIcon>$(MSBuildThisFileDirectory)/surreal.ico</ApplicationIcon>
 
     <!-- analysis and warnings -->
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>

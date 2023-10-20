@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>A Surreal platform implementation for desktop environments.</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="OpenTK" Version="5.0.0-pre.7" PrivateAssets="compile" />
-  </ItemGroup>
-</Project>

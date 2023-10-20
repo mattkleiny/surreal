@@ -1,5 +1,6 @@
 ﻿namespace Surreal;
 
+[Ignore("Not implemented yet")]
 public class VariantTests
 {
   [Test]

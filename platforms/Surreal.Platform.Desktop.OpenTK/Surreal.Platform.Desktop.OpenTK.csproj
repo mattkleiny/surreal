@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>A Surreal platform implementation for headless execution.</Description>
+    <Description>A Surreal platform implementation for desktop environments using OpenTK.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTK" Version="5.0.0-pre.7" PrivateAssets="compile"/>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
