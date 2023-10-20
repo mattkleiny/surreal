@@ -1,4 +1,6 @@
-﻿using Silk.NET.Maths;
+﻿using Silk.NET.Input;
+using Silk.NET.Maths;
+using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using Surreal.Graphics.Images;
 
@@ -26,7 +28,13 @@ internal sealed class SilkWindow : IDesktopWindow
     _window.Resize += OnWindowResized;
 
     _window.Initialize();
+
+    OpenGL = _window.CreateOpenGL();
+    Input = _window.CreateInput();
   }
+
+  public GL OpenGL { get; }
+  public IInputContext Input { get; }
 
   public event Action<int, int>? Resized;
 
@@ -104,6 +112,8 @@ internal sealed class SilkWindow : IDesktopWindow
 
   public void Dispose()
   {
+    Input.Dispose();
+
     _window.Reset();
     _window.Dispose();
   }

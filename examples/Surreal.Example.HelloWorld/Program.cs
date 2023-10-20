@@ -14,10 +14,10 @@ Game.Start(new GameConfiguration
       Height = 144 * 6
     }
   },
-  Tick = (time, server) =>
+  Tick = (time, graphics) =>
   {
     var color = Color.Lerp(color1, color2, Maths.PingPong(time.TotalTime));
 
-    server.Backend.ClearColorBuffer(color);
+    graphics.Backend.ClearColorBuffer(color);
   }
 });

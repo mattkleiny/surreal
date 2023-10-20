@@ -1,4 +1,5 @@
-﻿using Surreal.Collections;
+﻿using Silk.NET.OpenGL;
+using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics;
 using Surreal.Graphics.Materials;
@@ -6,13 +7,15 @@ using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
+using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Internal.Graphics;
 
-internal sealed class SilkGraphicsBackend : IGraphicsBackend
+internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 {
   public void SetViewportSize(Viewport viewport)
   {
+    gl.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
   }
 
   public void SetBlendState(BlendState state)
@@ -22,16 +25,19 @@ internal sealed class SilkGraphicsBackend : IGraphicsBackend
 
   public void ClearColorBuffer(Color color)
   {
+    gl.ClearColor(color.R, color.G, color.B, color.A);
+    gl.Clear(ClearBufferMask.ColorBufferBit);
   }
 
   public void ClearDepthBuffer()
   {
-    throw new NotImplementedException();
+    gl.ClearDepth(1.0f);
+    gl.Clear(ClearBufferMask.DepthBufferBit);
   }
 
   public void FlushToDevice()
   {
-    throw new NotImplementedException();
+    gl.Flush();
   }
 
   public GraphicsHandle CreateBuffer(BufferType type)

@@ -3,4 +3,4 @@
 /// <summary>
 /// A viewport size for camera rendering.
 /// </summary>
-public readonly record struct Viewport(int X, int Y, int Width, int Height);
+public readonly record struct Viewport(int X, int Y, uint Width, uint Height);

@@ -6,10 +6,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
-using Surreal.Graphics.Textures;
 using Surreal.Input;
-using Surreal.Input.Keyboard;
-using Surreal.Input.Mouse;
 using Surreal.Internal;
 using Surreal.Internal.Audio;
 using Surreal.Internal.Graphics;
@@ -77,6 +74,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public OpenTKGraphicsBackend GraphicsBackend { get; }
   public OpenTKInputBackend InputBackend { get; }
 
+  IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
+
   public event Action<int, int> Resized
   {
     add => Window.Resized += value;
@@ -98,8 +97,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IAudioBackend>(AudioBackend);
     services.AddService<IGraphicsBackend>(GraphicsBackend);
     services.AddService<IInputBackend>(InputBackend);
-    services.AddService<IKeyboardDevice>(InputBackend.Keyboard);
-    services.AddService<IMouseDevice>(InputBackend.Mouse);
   }
 
   public void RegisterAssetLoaders(IResourceManager manager)
@@ -151,10 +148,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     Window.Dispose();
   }
 
-  IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
-
   private void OnResized(int width, int height)
   {
-    GraphicsBackend.SetViewportSize(new Viewport(0, 0, width, height));
+    GraphicsBackend.SetViewportSize(new Viewport(0, 0, (uint)width, (uint)height));
   }
 }

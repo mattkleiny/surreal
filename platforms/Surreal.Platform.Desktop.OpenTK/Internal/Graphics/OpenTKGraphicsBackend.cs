@@ -26,7 +26,7 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
 {
   public void SetViewportSize(Viewport viewport)
   {
-    GL.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
+    GL.Viewport(viewport.X, viewport.Y, (int)viewport.Width, (int)viewport.Height);
   }
 
   public void SetBlendState(BlendState state)
@@ -297,7 +297,8 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     }
   }
 
-  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+    where T : unmanaged
   {
     var texture = new TextureHandle(handle);
 

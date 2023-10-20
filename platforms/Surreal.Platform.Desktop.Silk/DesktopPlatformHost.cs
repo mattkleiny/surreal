@@ -62,8 +62,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
     Window = new SilkWindow(configuration);
     AudioBackend = new SilkAudioBackend();
-    GraphicsBackend = new SilkGraphicsBackend();
-    InputBackend = new SilkInputBackend();
+    GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
+    InputBackend = new SilkInputBackend(Window);
 
     Resized += OnResized;
   }
@@ -72,6 +72,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public SilkAudioBackend AudioBackend { get; }
   public SilkGraphicsBackend GraphicsBackend { get; }
   public SilkInputBackend InputBackend { get; }
+
+  IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
 
   public event Action<int, int> Resized
   {
@@ -94,8 +96,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IAudioBackend>(AudioBackend);
     services.AddService<IGraphicsBackend>(GraphicsBackend);
     services.AddService<IInputBackend>(InputBackend);
-    // services.AddService<IKeyboardDevice>(InputBackend.Keyboard);
-    // services.AddService<IMouseDevice>(InputBackend.Mouse);
   }
 
   public void RegisterAssetLoaders(IResourceManager manager)
@@ -145,10 +145,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     Window.Dispose();
   }
 
-  IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
-
   private void OnResized(int width, int height)
   {
-    GraphicsBackend.SetViewportSize(new Viewport(0, 0, width, height));
+    GraphicsBackend.SetViewportSize(new Viewport(0, 0, (uint)width, (uint)height));
   }
 }
