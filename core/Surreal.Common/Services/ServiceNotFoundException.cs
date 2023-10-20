@@ -3,4 +3,4 @@
 /// <summary>
 /// Indicates a service is not available.
 /// </summary>
-public class ServiceNotFoundException(string message) : Exception(message);
+public class ServiceNotFoundException(string message) : ApplicationException(message);

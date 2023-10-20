@@ -183,4 +183,4 @@ public sealed class ResourceManager : IResourceManager
 /// <summary>
 /// Denotes the given resource type is not supported by the manager.
 /// </summary>
-public sealed class UnsupportedResourceException(string message) : Exception(message);
+public sealed class UnsupportedResourceException(string message) : ApplicationException(message);

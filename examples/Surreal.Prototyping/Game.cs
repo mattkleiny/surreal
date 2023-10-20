@@ -1,6 +1,11 @@
 ﻿namespace Surreal;
 
 /// <summary>
+/// A callback for the main game loop.
+/// </summary>
+public delegate void TickDelegate(GameTime time, IGraphicsContext graphics);
+
+/// <summary>
 /// A timing snapshot for the main game loop.
 /// </summary>
 public readonly record struct GameTime
@@ -20,9 +25,9 @@ public sealed record GameConfiguration
   public required IPlatform Platform { get; init; }
 
   /// <summary>
-  /// The render function for the game.
+  /// The <see cref="TickDelegate"/> for the game.
   /// </summary>
-  public Action<GameTime, IGraphicsContext> Tick { get; init; } = (_, graphics) =>
+  public TickDelegate Tick { get; init; } = (_, graphics) =>
   {
     graphics.Backend.ClearColorBuffer(Color.Black);
     graphics.Backend.FlushToDevice();
@@ -62,7 +67,7 @@ public static class Game
 
       host.BeginFrame(deltaTime);
 
-      configuration.Tick.Invoke(gameTime, graphics);
+      configuration.Tick(gameTime, graphics);
 
       host.EndFrame(deltaTime);
     }

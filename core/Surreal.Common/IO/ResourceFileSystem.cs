@@ -81,4 +81,4 @@ public sealed class ResourceFileSystem : FileSystem
 /// <summary>
 /// Indicates a resource was not found in the <see cref="ResourceFileSystem"/>.
 /// </summary>
-public sealed class ResourceNotFoundException(string message) : Exception(message);
+public sealed class ResourceNotFoundException(string message) : ApplicationException(message);

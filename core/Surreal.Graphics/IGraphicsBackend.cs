@@ -11,7 +11,7 @@ namespace Surreal.Graphics;
 /// <summary>
 /// An abstraction over the different types of graphics backends available.
 /// </summary>
-public interface IGraphicsBackend : IDisposable
+public interface IGraphicsBackend
 {
   // intrinsics
   void SetViewportSize(Viewport viewport);

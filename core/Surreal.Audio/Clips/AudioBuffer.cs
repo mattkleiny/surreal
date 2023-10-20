@@ -30,4 +30,4 @@ public sealed class AudioBuffer(TimeSpan duration, AudioSampleRate rate) : Audio
 /// <summary>
 /// Indicates an attempt to us an unsupported audio format.
 /// </summary>
-public sealed class UnsupportedAudioFormatException(string message) : Exception(message);
+public sealed class UnsupportedAudioFormatException(string message) : ApplicationException(message);

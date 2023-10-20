@@ -37,4 +37,4 @@ public interface IPlatformHost : IDisposable
 /// <summary>
 /// Indicates an error in the platform error of the application.
 /// </summary>
-public class PlatformException(string message, Exception? innerException = null) : Exception(message, innerException);
+public class PlatformException(string message, Exception? innerException = null) : ApplicationException(message, innerException);

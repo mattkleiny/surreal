@@ -3,4 +3,4 @@
 /// <summary>
 /// Indicates an <see cref="IInputDevice" /> is not available.
 /// </summary>
-public class DeviceNotFoundException(string message) : Exception(message);
+public class DeviceNotFoundException(string message) : ApplicationException(message);
