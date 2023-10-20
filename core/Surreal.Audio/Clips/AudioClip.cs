@@ -7,13 +7,9 @@ namespace Surreal.Audio.Clips;
 /// </summary>
 public sealed class AudioClip(IAudioBackend backend) : AudioResource, IHasSizeEstimate
 {
-  private readonly IAudioBackend _backend = backend;
-
   public AudioHandle Handle { get; } = backend.CreateAudioClip();
-
   public TimeSpan Duration { get; private set; } = TimeSpan.Zero;
   public AudioSampleRate Rate { get; private set; } = AudioSampleRate.Standard;
-
   public Size Size { get; private set; } = Size.Zero;
 
   public void Write<T>(TimeSpan duration, AudioSampleRate rate, ReadOnlySpan<T> buffer)
@@ -23,14 +19,14 @@ public sealed class AudioClip(IAudioBackend backend) : AudioResource, IHasSizeEs
     Rate = rate;
     Size = buffer.CalculateSize();
 
-    _backend.WriteAudioClipData(Handle, rate, buffer);
+    backend.WriteAudioClipData(Handle, rate, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      _backend.DeleteAudioClip(Handle);
+      backend.DeleteAudioClip(Handle);
     }
 
     base.Dispose(managed);

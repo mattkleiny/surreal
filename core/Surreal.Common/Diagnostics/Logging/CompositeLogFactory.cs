@@ -5,11 +5,9 @@
 /// </summary>
 public sealed class CompositeLogFactory(params ILogFactory[] factories) : ILogFactory
 {
-  private readonly ILogFactory[] _factories = factories;
-
   public ILog GetLog(string category)
   {
-    return new CompositeLog(_factories.Select(factory => factory.GetLog(category)));
+    return new CompositeLog(factories.Select(factory => factory.GetLog(category)));
   }
 
   /// <summary>

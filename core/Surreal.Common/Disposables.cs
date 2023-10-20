@@ -23,11 +23,9 @@ public static class Disposables
   /// </summary>
   private sealed class AnonymousDisposable(Action action) : IDisposable
   {
-    private readonly Action _action = action;
-
     public void Dispose()
     {
-      _action.Invoke();
+      action.Invoke();
     }
   }
 }

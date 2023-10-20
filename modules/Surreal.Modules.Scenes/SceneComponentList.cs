@@ -7,18 +7,16 @@ namespace Surreal;
 /// </summary>
 public sealed class SceneComponentList(ISceneNode node) : Collection<ISceneComponent>
 {
-  private readonly ISceneNode _node = node;
-
   protected override void OnItemAdded(ISceneComponent item)
   {
-    item.OnAttach(_node);
+    item.OnAttach(node);
 
     base.OnItemAdded(item);
   }
 
   protected override void OnItemRemoved(ISceneComponent item)
   {
-    item.OnDetach(_node);
+    item.OnDetach(node);
 
     base.OnItemRemoved(item);
   }

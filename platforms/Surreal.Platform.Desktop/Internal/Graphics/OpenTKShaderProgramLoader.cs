@@ -19,10 +19,8 @@ internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader>
 /// <summary>
 /// The <see cref="ResourceLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.
 /// </summary>
-internal sealed class OpenTKShaderProgramLoader(IGraphicsContext context) : ResourceLoader<ShaderProgram>
+internal sealed class OpenTKShaderProgramLoader(IGraphicsContext graphics) : ResourceLoader<ShaderProgram>
 {
-  private readonly IGraphicsContext _context = context;
-
   public override bool CanHandle(ResourceContext context)
   {
     return base.CanHandle(context) && context.Path.Extension == ".glsl";
@@ -31,9 +29,8 @@ internal sealed class OpenTKShaderProgramLoader(IGraphicsContext context) : Reso
   public override async Task<ShaderProgram> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-    var program = new ShaderProgram(_context);
-
-    var backend = (OpenTKGraphicsBackend)_context.Backend;
+    var program = new ShaderProgram(graphics);
+    var backend = (OpenTKGraphicsBackend)graphics.Backend;
 
     backend.LinkShader(program.Handle, shaderSet);
     program.ReloadMetadata();
@@ -50,9 +47,9 @@ internal sealed class OpenTKShaderProgramLoader(IGraphicsContext context) : Reso
     CancellationToken cancellationToken = default)
   {
     var shaderSet = await LoadShaderSetAsync(context, cancellationToken);
-    var handle = _context.Backend.CreateShader();
+    var handle = graphics.Backend.CreateShader();
 
-    var backend = (OpenTKGraphicsBackend)_context.Backend;
+    var backend = (OpenTKGraphicsBackend)graphics.Backend;
 
     backend.LinkShader(handle, shaderSet);
     program.ReplaceShader(handle);
@@ -104,8 +101,7 @@ internal sealed class OpenTKShaderProgramLoader(IGraphicsContext context) : Reso
       }
     }
 
-    return new OpenTKShaderSet(path.ToString(),
-      shaderCode.Select(_ => new OpenTKShader(_.Type, _.Code.ToString())).ToImmutableArray());
+    return new OpenTKShaderSet(path.ToString(), shaderCode.Select(_ => new OpenTKShader(_.Type, _.Code.ToString())).ToImmutableArray());
   }
 
   /// <summary>

@@ -4,6 +4,7 @@
 /// A <see cref="Span{T}" /> that is operated like a <see cref="Stack{T}" />.
 /// </summary>
 [DebuggerDisplay("SpanStack {Count}/{Capacity}")]
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
 public ref struct SpanStack<T>(Span<T> storage)
 {
   private readonly Span<T> _storage = storage;

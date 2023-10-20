@@ -88,8 +88,6 @@ public sealed class IntrusiveLinkedList<TNode> : IEnumerable<TNode>
   /// </summary>
   public struct Enumerator(IntrusiveLinkedList<TNode> list) : IEnumerator<TNode>
   {
-    private readonly IntrusiveLinkedList<TNode> _list = list;
-
     public TNode? Current { get; private set; } = default;
 
     TNode IEnumerator<TNode>.Current => Current!;
@@ -99,7 +97,7 @@ public sealed class IntrusiveLinkedList<TNode> : IEnumerable<TNode>
     {
       if (Current == null)
       {
-        Current = _list.Head;
+        Current = list.Head;
         return Current != null;
       }
 

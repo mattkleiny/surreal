@@ -4,6 +4,7 @@ namespace Surreal.Memory;
 /// A <see cref="Span{T}" /> that is operated like a <see cref="List{T}" />.
 /// </summary>
 [DebuggerDisplay("SpanList {Count}/{Capacity}")]
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
 public ref struct SpanList<T>(Span<T> storage)
 {
   private readonly Span<T> _storage = storage;

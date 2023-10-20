@@ -32,8 +32,8 @@ internal sealed class OpenTKKeyboardDevice(OpenTKWindow window) : IKeyboardDevic
     [Key.Tilde] = Keys.GraveAccent,
     [Key.Tab] = Keys.Tab
   };
+
   private readonly KeyboardState _keyboardState = window.KeyboardState;
-  private readonly OpenTKWindow _window = window;
 
   public event Action<Key> KeyPressed = null!;
   public event Action<Key> KeyReleased = null!;
@@ -61,7 +61,7 @@ internal sealed class OpenTKKeyboardDevice(OpenTKWindow window) : IKeyboardDevic
   public void Update()
   {
     // only capture state if the window is focused
-    if (_window.IsFocused)
+    if (window.IsFocused)
     {
       foreach (var (key, _) in Lookup)
       {

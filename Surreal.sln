@@ -66,6 +66,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Scenes", "m
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Modules.Scenes.Tests", "modules\Surreal.Modules.Scenes.Tests\Surreal.Modules.Scenes.Tests.csproj", "{FDB53833-6AF8-458E-AAA9-CF531A277704}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor.Tests", "editor\Surreal.Editor.Tests\Surreal.Editor.Tests.csproj", "{43C18284-AD7B-4BBD-BDD4-F5A84A599288}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Analyzers", "core\Surreal.Analyzers\Surreal.Analyzers.csproj", "{C4F0D565-745B-4A29-9B73-04947B74D839}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +140,14 @@ Global
 		{FDB53833-6AF8-458E-AAA9-CF531A277704}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDB53833-6AF8-458E-AAA9-CF531A277704}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDB53833-6AF8-458E-AAA9-CF531A277704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43C18284-AD7B-4BBD-BDD4-F5A84A599288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43C18284-AD7B-4BBD-BDD4-F5A84A599288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43C18284-AD7B-4BBD-BDD4-F5A84A599288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43C18284-AD7B-4BBD-BDD4-F5A84A599288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4F0D565-745B-4A29-9B73-04947B74D839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F0D565-745B-4A29-9B73-04947B74D839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F0D565-745B-4A29-9B73-04947B74D839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F0D565-745B-4A29-9B73-04947B74D839}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -162,5 +174,7 @@ Global
 		{7D5D5A9A-0181-4592-9446-E46C15DB9723} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{199C2C02-5154-4F64-B085-430FEB2467F5} = {3E08F624-2496-4B8C-B6A7-AA09E990ABFF}
 		{FDB53833-6AF8-458E-AAA9-CF531A277704} = {3E08F624-2496-4B8C-B6A7-AA09E990ABFF}
+		{43C18284-AD7B-4BBD-BDD4-F5A84A599288} = {1E288146-6AEB-4601-AD70-A006A99C5588}
+		{C4F0D565-745B-4A29-9B73-04947B74D839} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 	EndGlobalSection
 EndGlobal

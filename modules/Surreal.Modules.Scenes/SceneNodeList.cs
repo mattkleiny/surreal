@@ -7,11 +7,9 @@ namespace Surreal;
 /// </summary>
 public sealed class SceneNodeList(ISceneNode node) : Collection<ISceneNode>
 {
-  private readonly ISceneNode _node = node;
-
   protected override void OnItemAdded(ISceneNode item)
   {
-    item.OnParented(_node);
+    item.OnParented(node);
 
     base.OnItemAdded(item);
   }

@@ -60,15 +60,14 @@ public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IR
   /// </summary>
   public struct Enumerator(ColorPalette palette) : IEnumerator<Color32>
   {
-    private readonly ColorPalette _palette = palette;
     private int _index = -1;
 
-    public Color32 Current => _palette[_index];
+    public Color32 Current => palette[_index];
     object IEnumerator.Current => Current;
 
     public bool MoveNext()
     {
-      return ++_index < _palette.Count;
+      return ++_index < palette.Count;
     }
 
     public void Reset()

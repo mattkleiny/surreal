@@ -14,7 +14,6 @@ public interface IPoolAware
 /// </summary>
 public sealed class Pool<T>(Func<T> factory, int maxCapacity = 32)
 {
-  private readonly Func<T> _factory = factory;
   private readonly BoundedConcurrentQueue<T> _instances = new(maxCapacity);
 
   /// <summary>
@@ -26,7 +25,7 @@ public sealed class Pool<T>(Func<T> factory, int maxCapacity = 32)
   {
     if (!_instances.TryDequeue(out var result))
     {
-      result = _factory();
+      result = factory();
     }
 
     switch (result)

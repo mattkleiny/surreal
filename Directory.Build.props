@@ -19,12 +19,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Surreal</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <IsAotCompatible>true</IsAotCompatible>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
 
     <!-- analysis and warnings -->
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>
-    <NoWarn>CA2255</NoWarn>
+    <NoWarn>CS0067</NoWarn>
   </PropertyGroup>
 
   <!-- conveniences for all projects -->
@@ -37,6 +36,7 @@
     <Content Include="$(ProjectDir)\Assets\**"
              CopyToOutputDirectory="PreserveNewest"
              Condition="!$(ProjectName.StartsWith('Surreal.Common'))"/>
+
     <EmbeddedResource Include="$(ProjectDir)\Resources\**"
                       Condition="!$(ProjectName.StartsWith('Surreal.Common'))"/>
 
@@ -50,9 +50,17 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
     </AssemblyAttribute>
+
+    <!-- automatically reference analyzers -->
+    <ProjectReference
+      Include="$(MSBuildThisFileDirectory)\core\Surreal.Analyzers\Surreal.Analyzers.csproj"
+      PrivateAssets="all"
+      ReferenceOutputAssembly="false"
+      OutputItemType="Analyzer"
+      Condition="$(ProjectName) != 'Surreal.Analyzers'"/>
   </ItemGroup>
 
-  <!-- conveniences for core projects -->
+  <!-- conveniences for .NET projects -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8'))">
     <Using Include="System.Collections"/>
     <Using Include="System.Collections.Concurrent"/>
@@ -74,9 +82,30 @@
     <Using Include="System.Text.Json.Serialization"/>
   </ItemGroup>
 
+  <!-- conveniences for .NET Standard projects -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
+    <!-- common usings for all projects -->
+    <Using Include="System.Collections"/>
+    <Using Include="System.Collections.Concurrent"/>
+    <Using Include="System.ComponentModel"/>
+    <Using Include="System.Diagnostics"/>
+    <Using Include="System.Diagnostics.CodeAnalysis"/>
+    <Using Include="System.Globalization"/>
+    <Using Include="System.Linq"/>
+    <Using Include="System.Linq.Expressions"/>
+    <Using Include="System.Net"/>
+    <Using Include="System.Numerics"/>
+    <Using Include="System.Reflection"/>
+    <Using Include="System.Runtime.CompilerServices"/>
+    <Using Include="System.Security"/>
+    <Using Include="System.Text"/>
+  </ItemGroup>
+
   <!-- conveniences for test projects -->
   <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <IsPackable>false</IsPackable>
+    <PackRelease>false</PackRelease>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <PackageReference Include="AutoFixture" Version="4.17.0"/>
@@ -91,6 +120,9 @@
     <Using Include="NUnit.Framework"/>
     <Using Include="NSubstitute"/>
     <Using Include="FluentAssertions"/>
+
+    <!-- automatically exclude test projects from code coverage -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
   </ItemGroup>
 
   <!-- conveniences for benchmark projects -->
@@ -106,5 +138,8 @@
     <Using Include="BenchmarkDotNet"/>
     <Using Include="BenchmarkDotNet.Attributes"/>
     <Using Include="BenchmarkDotNet.Running"/>
+
+    <!-- automatically exclude benchmark projects from code coverage -->
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
   </ItemGroup>
 </Project>

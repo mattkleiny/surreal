@@ -16,16 +16,14 @@ public sealed record TextureLoaderSettings
 /// <summary>
 /// The <see cref="ResourceLoader{T}" /> for <see cref="Texture" />s.
 /// </summary>
-public sealed class TextureLoader(IGraphicsContext context) : ResourceLoader<Texture>
+public sealed class TextureLoader(IGraphicsContext graphics) : ResourceLoader<Texture>
 {
-  private readonly IGraphicsContext _context = context;
-
   public TextureLoaderSettings Settings { get; init; } = new();
 
   public override async Task<Texture> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(_context, Settings.Format, Settings.FilterMode, Settings.WrapMode);
+    var texture = new Texture(graphics, Settings.Format, Settings.FilterMode, Settings.WrapMode);
 
     texture.WritePixels(image);
 

@@ -13,11 +13,9 @@ public interface IProfileSampler
 /// </summary>
 public sealed class SamplingProfilerFactory(IProfileSampler sampler) : IProfilerFactory
 {
-  private readonly IProfileSampler _sampler = sampler;
-
   public IProfiler GetProfiler(string category)
   {
-    return new SamplingProfiler(_sampler, category);
+    return new SamplingProfiler(sampler, category);
   }
 
   /// <summary>
@@ -25,17 +23,14 @@ public sealed class SamplingProfilerFactory(IProfileSampler sampler) : IProfiler
   /// </summary>
   private sealed class SamplingProfiler(IProfileSampler sampler, string category) : IProfiler
   {
-    private readonly string _category = category;
-    private readonly IProfileSampler _sampler = sampler;
-
     public ProfilingScope Track(string task)
     {
-      return Track(_category, task);
+      return Track(category, task);
     }
 
     public ProfilingScope Track(string category, string task)
     {
-      return new ProfilingScope(category, task, _sampler);
+      return new ProfilingScope(category, task, sampler);
     }
   }
 }

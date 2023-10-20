@@ -38,25 +38,25 @@ public enum VariantType : byte
 public readonly struct Variant
 {
   [FieldOffset(0)] private readonly VariantType _type;
-  [FieldOffset(1)] private readonly bool _bool;
-  [FieldOffset(1)] private readonly byte _byte;
-  [FieldOffset(1)] private readonly short _short;
-  [FieldOffset(1)] private readonly ushort _ushort;
-  [FieldOffset(1)] private readonly int _int;
-  [FieldOffset(1)] private readonly uint _uint;
-  [FieldOffset(1)] private readonly long _long;
-  [FieldOffset(1)] private readonly ulong _ulong;
-  [FieldOffset(1)] private readonly float _float;
-  [FieldOffset(1)] private readonly double _double;
-  [FieldOffset(1)] private readonly decimal _decimal;
-  [FieldOffset(1)] private readonly Vector2 _vector2;
-  [FieldOffset(1)] private readonly Vector3 _vector3;
-  [FieldOffset(1)] private readonly Vector4 _vector4;
-  [FieldOffset(1)] private readonly Quaternion _quaternion;
-  [FieldOffset(1)] private readonly Color _color;
-  [FieldOffset(1)] private readonly Color32 _color32;
-  [FieldOffset(1)] private readonly object? _object;
-  [FieldOffset(1)] private readonly Array? _array;
+  [FieldOffset(4)] private readonly bool _bool;
+  [FieldOffset(4)] private readonly byte _byte;
+  [FieldOffset(4)] private readonly short _short;
+  [FieldOffset(4)] private readonly ushort _ushort;
+  [FieldOffset(4)] private readonly int _int;
+  [FieldOffset(4)] private readonly uint _uint;
+  [FieldOffset(4)] private readonly long _long;
+  [FieldOffset(4)] private readonly ulong _ulong;
+  [FieldOffset(4)] private readonly float _float;
+  [FieldOffset(4)] private readonly double _double;
+  [FieldOffset(4)] private readonly decimal _decimal;
+  [FieldOffset(4)] private readonly Vector2 _vector2;
+  [FieldOffset(4)] private readonly Vector3 _vector3;
+  [FieldOffset(4)] private readonly Vector4 _vector4;
+  [FieldOffset(4)] private readonly Quaternion _quaternion;
+  [FieldOffset(4)] private readonly Color _color;
+  [FieldOffset(4)] private readonly Color32 _color32;
+  [FieldOffset(4)] private readonly object? _object;
+  [FieldOffset(4)] private readonly Array? _array;
 
   /// <summary>
   /// Creates a new <see cref="Variant"/> from a <see cref="object"/>.

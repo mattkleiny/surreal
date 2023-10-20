@@ -3,13 +3,14 @@
     <OutputType>WinExe</OutputType>
     <Description>The editor host for the Surreal project.</Description>
     <RootNamespace>Surreal.Editor</RootNamespace>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.19" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.19" />
+    <PackageReference Include="Avalonia" Version="0.10.19"/>
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.19"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
-    <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj"/>
+    <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj"/>
   </ItemGroup>
 </Project>

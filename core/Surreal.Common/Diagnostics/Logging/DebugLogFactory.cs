@@ -5,9 +5,6 @@ namespace Surreal.Diagnostics.Logging;
 /// </summary>
 public sealed class DebugLogFactory(LogLevel minLevel, LogFormatter formatter) : ILogFactory
 {
-  private readonly LogFormatter _formatter = formatter;
-  private readonly LogLevel _minLevel = minLevel;
-
   public DebugLogFactory(LogLevel minLevel)
     : this(minLevel, LogFormatters.Default())
   {
@@ -15,7 +12,7 @@ public sealed class DebugLogFactory(LogLevel minLevel, LogFormatter formatter) :
 
   public ILog GetLog(string category)
   {
-    return new DebugLog(category, _minLevel, _formatter);
+    return new DebugLog(category, minLevel, formatter);
   }
 
   /// <summary>
@@ -23,23 +20,19 @@ public sealed class DebugLogFactory(LogLevel minLevel, LogFormatter formatter) :
   /// </summary>
   private sealed class DebugLog(string category, LogLevel minLevel, LogFormatter formatter) : ILog
   {
-    private readonly string _category = category;
-    private readonly LogFormatter _formatter = formatter;
-    private readonly LogLevel _minLevel = minLevel;
-
     public bool IsLevelEnabled(LogLevel level)
     {
-      return level >= _minLevel;
+      return level >= minLevel;
     }
 
     public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
-      Debug.WriteLine(_formatter(_category, level, message, exception));
+      Debug.WriteLine(formatter(category, level, message, exception));
     }
 
     public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
     {
-      Debug.WriteLine(_formatter(_category, level, handler.GetFormattedTextAndReturnToPool(), exception));
+      Debug.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool(), exception));
     }
   }
 }

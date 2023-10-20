@@ -6,6 +6,7 @@ namespace Surreal.Memory;
 /// A <see cref="Span{T}" /> that is interpreted as a grid.
 /// </summary>
 [DebuggerDisplay("SpanGrid {Length} elements ({Width}x{Height})")]
+[SuppressMessage("ReSharper", "ReplaceWithPrimaryConstructorParameter")]
 public readonly ref struct SpanGrid<T>(Span<T> storage, int stride)
 {
   public static SpanGrid<T> Empty => default;

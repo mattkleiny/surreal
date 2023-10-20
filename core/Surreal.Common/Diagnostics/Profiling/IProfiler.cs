@@ -16,15 +16,12 @@ public interface IProfiler
 /// </summary>
 public readonly struct ProfilingScope(string category, string task, IProfileSampler? sampler) : IDisposable
 {
-  private readonly string _category = category;
-  private readonly string _task = task;
-  private readonly IProfileSampler? _sampler = sampler;
   private readonly TimeStamp _startTime = TimeStamp.Now;
 
   public void Dispose()
   {
     var endTime = TimeStamp.Now;
 
-    _sampler?.Sample(_category, _task, endTime - _startTime);
+    sampler?.Sample(category, task, endTime - _startTime);
   }
 }

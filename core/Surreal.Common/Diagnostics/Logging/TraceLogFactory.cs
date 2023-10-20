@@ -5,9 +5,6 @@
 /// </summary>
 public sealed class TraceLogFactory(LogLevel minLevel, LogFormatter formatter) : ILogFactory
 {
-  private readonly LogFormatter _formatter = formatter;
-  private readonly LogLevel _minLevel = minLevel;
-
   public TraceLogFactory(LogLevel minLevel)
     : this(minLevel, LogFormatters.Default())
   {
@@ -15,7 +12,7 @@ public sealed class TraceLogFactory(LogLevel minLevel, LogFormatter formatter) :
 
   public ILog GetLog(string category)
   {
-    return new TraceLog(category, _minLevel, _formatter);
+    return new TraceLog(category, minLevel, formatter);
   }
 
   /// <summary>
@@ -23,23 +20,19 @@ public sealed class TraceLogFactory(LogLevel minLevel, LogFormatter formatter) :
   /// </summary>
   private sealed class TraceLog(string category, LogLevel minLevel, LogFormatter formatter) : ILog
   {
-    private readonly string _category = category;
-    private readonly LogFormatter _formatter = formatter;
-    private readonly LogLevel _minLevel = minLevel;
-
     public bool IsLevelEnabled(LogLevel level)
     {
-      return level >= _minLevel;
+      return level >= minLevel;
     }
 
     public void WriteMessage(LogLevel level, string message, Exception? exception = null)
     {
-      Trace.WriteLine(_formatter(_category, level, message, exception));
+      Trace.WriteLine(formatter(category, level, message, exception));
     }
 
     public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
     {
-      Trace.WriteLine(_formatter(_category, level, handler.GetFormattedTextAndReturnToPool(), exception));
+      Trace.WriteLine(formatter(category, level, handler.GetFormattedTextAndReturnToPool(), exception));
     }
   }
 }

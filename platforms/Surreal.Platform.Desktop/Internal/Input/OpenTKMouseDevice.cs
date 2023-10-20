@@ -7,20 +7,19 @@ namespace Surreal.Internal.Input;
 internal sealed class OpenTKMouseDevice(OpenTKWindow window) : IMouseDevice
 {
   private readonly MouseState _mouseState = window.MouseState;
-  private readonly OpenTKWindow _window = window;
 
   public event Action<MouseButton>? ButtonPressed;
   public event Action<MouseButton>? ButtonReleased;
   public event Action<Vector2>? Moved;
 
   public Vector2 Position => new(_mouseState.X, _mouseState.Y);
-  public Vector2 NormalisedPosition => new(_mouseState.X / _window.Width, _mouseState.Y / _window.Height);
+  public Vector2 NormalisedPosition => new(_mouseState.X / window.Width, _mouseState.Y / window.Height);
   public Vector2 DeltaPosition => new(_mouseState.X - _mouseState.PreviousX, _mouseState.Y - _mouseState.PreviousY);
 
   public bool IsCursorVisible
   {
-    get => _window.IsCursorVisible;
-    set => _window.IsCursorVisible = value;
+    get => window.IsCursorVisible;
+    set => window.IsCursorVisible = value;
   }
 
   public bool IsButtonDown(MouseButton button)
@@ -45,7 +44,7 @@ internal sealed class OpenTKMouseDevice(OpenTKWindow window) : IMouseDevice
 
   public void Update()
   {
-    if (_window.IsFocused)
+    if (window.IsFocused)
     {
       // press events
       if (IsButtonPressed(MouseButton.Left))

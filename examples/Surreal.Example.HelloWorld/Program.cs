@@ -18,6 +18,6 @@ Game.Start(new GameConfiguration
   {
     var color = Color.Lerp(color1, color2, Maths.PingPong(time.TotalTime));
 
-    server.Backend.ClearDepthBuffer();
+    server.Backend.ClearColorBuffer(color);
   }
 });

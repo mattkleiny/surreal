@@ -101,7 +101,6 @@ public static class Buffers
   private sealed unsafe class NativeBuffer<T>(int length, bool zeroFill) : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
-    private readonly int _length = length;
     private void* _buffer = zeroFill
       ? NativeMemory.AllocZeroed((nuint)length, (nuint)Unsafe.SizeOf<T>())
       : NativeMemory.Alloc((nuint)length, (nuint)Unsafe.SizeOf<T>());
@@ -126,7 +125,7 @@ public static class Buffers
     {
       ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-      return new Span<T>(_buffer, _length);
+      return new Span<T>(_buffer, length);
     }
 
     public override MemoryHandle Pin(int elementIndex = 0)

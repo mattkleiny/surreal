@@ -35,8 +35,6 @@ public readonly record struct BlendState(bool IsEnabled, BlendMode Source, Blend
 [DebuggerDisplay("Material (Uniforms {Properties.Uniforms.Count}, Samplers {Properties.Samplers.Count})")]
 public sealed class Material(ShaderProgram shader, bool ownsShader = true) : GraphicsResource
 {
-  private readonly bool _ownsShader = ownsShader;
-
   /// <summary>
   /// The underlying <see cref="IGraphicsContext" />.
   /// </summary>
@@ -111,7 +109,7 @@ public sealed class Material(ShaderProgram shader, bool ownsShader = true) : Gra
 
   protected override void Dispose(bool managed)
   {
-    if (managed && _ownsShader)
+    if (managed && ownsShader)
     {
       Shader.Dispose();
     }
