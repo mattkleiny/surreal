@@ -1,7 +1,6 @@
 ﻿using Silk.NET.OpenGL;
 using Surreal.Collections;
 using Surreal.Colors;
-using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -9,7 +8,7 @@ using Surreal.Graphics.Textures;
 using Surreal.Maths;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
-namespace Surreal.Internal.Graphics;
+namespace Surreal.Graphics;
 
 internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 {

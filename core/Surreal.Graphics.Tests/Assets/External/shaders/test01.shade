@@ -1,6 +1,6 @@
 // A simple sprite shader, for testing purposes.
 
-#include "resx://Surreal.Graphics/Resources/shaders/common.shade";
+#include "resx://Surreal.Graphics/Assets/External/Embedded/shaders/common.shade";
 
 #shader_type sprite;
 

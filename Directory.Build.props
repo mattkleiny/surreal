@@ -21,6 +21,7 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ApplicationIcon>$(MSBuildThisFileDirectory)/surreal.ico</ApplicationIcon>
+    <IsAotCompatible>true</IsAotCompatible>
 
     <!-- analysis and warnings -->
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>
@@ -33,13 +34,9 @@
     <Using Include="JetBrains.Annotations"/>
     <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="all"/>
 
-    <!-- automatically copy assets and embed resources -->
-    <Content Include="$(ProjectDir)\Assets\**"
-             CopyToOutputDirectory="PreserveNewest"
-             Condition="!$(ProjectName.StartsWith('Surreal.Common'))"/>
-
-    <EmbeddedResource Include="$(ProjectDir)\Resources\**"
-                      Condition="!$(ProjectName.StartsWith('Surreal.Common'))"/>
+    <!-- automatically copy external and embedded assets -->
+    <Content Include="$(ProjectDir)\Assets\External\**" CopyToOutputDirectory="PreserveNewest"/>
+    <EmbeddedResource Include="$(ProjectDir)\Assets\Embedded\**"/>
 
     <!-- make internals automatically visible to associated projects and nsubstitute/etc -->
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">

@@ -5,7 +5,7 @@ namespace Surreal.Audio.Clips;
 public class AudioBufferLoaderTests
 {
   [Test]
-  [TestCase("Assets/audio/test.wav")]
+  [TestCase("Assets/External/audio/test.wav")]
   public async Task it_should_load_an_audio_buffer(string path)
   {
     using var manager = new ResourceManager();

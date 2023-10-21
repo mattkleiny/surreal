@@ -12,7 +12,7 @@ public class ColorPaletteLoaderTests
 
     manager.AddLoader(new ColorPaletteLoader());
 
-    var palette = await manager.LoadResourceAsync<ColorPalette>("Assets/palettes/low-8.pal");
+    var palette = await manager.LoadResourceAsync<ColorPalette>("Assets/External/palettes/low-8.pal");
 
     palette.Count.Should().Be(8);
   }

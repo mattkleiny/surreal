@@ -31,7 +31,7 @@ public static class BitmapFontExtensions
 {
   public static async Task<BitmapFont> LoadDefaultBitmapFontAsync(this IResourceManager manager)
   {
-    return await manager.LoadResourceAsync<BitmapFont>("resx://Surreal.Graphics/Resources/fonts/IBM.font");
+    return await manager.LoadResourceAsync<BitmapFont>("resx://Surreal.Graphics/Resources/Embedded/fonts/IBM.font");
   }
 
   /// <summary>

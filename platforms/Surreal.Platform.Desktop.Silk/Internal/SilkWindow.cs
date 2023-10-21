@@ -4,7 +4,7 @@ using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using Surreal.Graphics.Images;
 
-namespace Surreal.Internal;
+namespace Surreal;
 
 internal sealed class SilkWindow : IDesktopWindow
 {

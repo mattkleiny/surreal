@@ -2,7 +2,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using Surreal.Input.Mouse;
 using MouseButton = Surreal.Input.Mouse.MouseButton;
 
-namespace Surreal.Internal.Input;
+namespace Surreal.Input;
 
 internal sealed class OpenTKMouseDevice(OpenTKWindow window) : IMouseDevice
 {

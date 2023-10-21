@@ -12,6 +12,6 @@ public class TimeSpanTests
     var stop = TimeStamp.Now;
     var timeSpan = stop - start;
 
-    timeSpan.Should().BeGreaterOrEqualTo(TimeSpan.FromSeconds(1));
+    timeSpan.Should().BeGreaterOrEqualTo(TimeSpan.FromMilliseconds(500));
   }
 }

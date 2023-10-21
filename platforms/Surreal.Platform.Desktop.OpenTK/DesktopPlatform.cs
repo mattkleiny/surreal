@@ -17,7 +17,7 @@ public sealed record DesktopConfiguration
   public bool ShowFpsInTitle { get; set; } = true;
   public bool RunInBackground { get; set; }
   public Version OpenGlVersion { get; set; } = new(3, 3, 0);
-  public VirtualPath? IconPath { get; set; } = "resx://Surreal/Resources/icons/surreal.png";
+  public VirtualPath? IconPath { get; set; } = "resx://Surreal/Assets/Embedded/surreal.png";
 }
 
 /// <summary>

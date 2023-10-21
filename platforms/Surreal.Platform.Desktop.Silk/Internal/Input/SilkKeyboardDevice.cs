@@ -2,7 +2,7 @@
 using Surreal.Input.Keyboard;
 using Key = Surreal.Input.Keyboard.Key;
 
-namespace Surreal.Internal.Input;
+namespace Surreal.Input;
 
 internal sealed class SilkKeyboardDevice(IKeyboard keyboard) : IKeyboardDevice
 {

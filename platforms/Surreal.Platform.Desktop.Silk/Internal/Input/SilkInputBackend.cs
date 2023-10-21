@@ -1,8 +1,6 @@
 ﻿using Silk.NET.Input;
-using Surreal.Input;
-using IInputDevice = Surreal.Input.IInputDevice;
 
-namespace Surreal.Internal.Input;
+namespace Surreal.Input;
 
 internal sealed class SilkInputBackend(SilkWindow window) : IInputBackend, IDisposable
 {

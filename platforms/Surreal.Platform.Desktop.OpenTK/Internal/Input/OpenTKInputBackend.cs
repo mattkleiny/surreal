@@ -1,6 +1,4 @@
-using Surreal.Input;
-
-namespace Surreal.Internal.Input;
+namespace Surreal.Input;
 
 internal sealed class OpenTKInputBackend : IInputBackend
 {

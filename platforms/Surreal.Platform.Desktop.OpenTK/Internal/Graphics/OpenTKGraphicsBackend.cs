@@ -3,7 +3,6 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Surreal.Collections;
 using Surreal.Colors;
-using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
@@ -17,7 +16,7 @@ using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
-namespace Surreal.Internal.Graphics;
+namespace Surreal.Graphics;
 
 /// <summary>
 /// The <see cref="IGraphicsContext" /> for the OpenTK backend (OpenGL).

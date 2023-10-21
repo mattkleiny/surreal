@@ -16,7 +16,7 @@ public sealed record DesktopConfiguration
   public bool WaitForFirstFrame { get; set; } = true;
   public bool ShowFpsInTitle { get; set; } = true;
   public bool RunInBackground { get; set; }
-  public VirtualPath? IconPath { get; set; } = "resx://Surreal/Resources/icons/surreal.png";
+  public VirtualPath? IconPath { get; set; } = "resx://Surreal/Assets/Embedded/surreal.png";
 }
 
 /// <summary>

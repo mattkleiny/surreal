@@ -1,7 +1,6 @@
-using Surreal.Audio;
 using Surreal.Audio.Clips;
 
-namespace Surreal.Internal.Audio;
+namespace Surreal.Audio;
 
 internal sealed class OpenTKAudioBackend : IAudioBackend, IDisposable
 {

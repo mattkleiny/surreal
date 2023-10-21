@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace Surreal.Internal.Graphics;
+namespace Surreal.Graphics;
 
 public class OpenTKShaderProgramLoaderTests
 {
@@ -51,5 +51,3 @@ public class OpenTKShaderProgramLoaderTests
     shaderSet.Shaders[1].Type.Should().Be(ShaderType.FragmentShader);
   }
 }
-
-

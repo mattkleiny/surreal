@@ -6,7 +6,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using Image = Surreal.Graphics.Images.Image;
 using RawImage = OpenTK.Windowing.GraphicsLibraryFramework.Image;
 
-namespace Surreal.Internal;
+namespace Surreal;
 
 internal sealed class OpenTKWindow : IDesktopWindow
 {

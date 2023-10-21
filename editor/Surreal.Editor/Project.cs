@@ -1,5 +1,4 @@
-﻿using Surreal.Assets;
-using Surreal.Editor.Importers;
+﻿using Surreal.Editor.Assets;
 
 namespace Surreal.Editor;
 
@@ -8,27 +7,14 @@ namespace Surreal.Editor;
 /// </summary>
 public sealed class Project
 {
-  /// <summary>
-  /// A project is a collection of files and folders that are used to create a game.
-  /// </summary>
   public Project(string rootPath)
   {
     RootPath = rootPath;
     SourcePath = Path.GetFullPath(Path.Combine(rootPath, "Assets"));
     TargetPath = Path.GetFullPath(Path.Combine(rootPath, "Resources"));
+    Assets = new AssetDatabase(SourcePath, TargetPath);
 
-    Assets = new AssetDatabase(SourcePath, TargetPath)
-    {
-      Importers =
-      {
-        new BitmapFontImporter(),
-        new GlslShaderProgramImporter(),
-        new ImageImporter(),
-        new TextureImporter()
-      }
-    };
-
-    Assets.RefreshAsync(); // don't await; initial refresh
+    Task.Run(Assets.RefreshAsync);
   }
 
   public string RootPath { get; }

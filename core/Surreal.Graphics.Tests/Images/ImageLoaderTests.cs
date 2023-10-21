@@ -5,7 +5,7 @@ namespace Surreal.Graphics.Images;
 public class ImageLoaderTests
 {
   [Test]
-  [TestCase("Assets/images/test.png")]
+  [TestCase("Assets/External/images/test.png")]
   public async Task it_should_load_an_image(string path)
   {
     using var manager = new ResourceManager();

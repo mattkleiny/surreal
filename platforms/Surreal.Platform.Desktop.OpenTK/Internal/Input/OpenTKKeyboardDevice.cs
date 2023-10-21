@@ -1,7 +1,7 @@
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Surreal.Input.Keyboard;
 
-namespace Surreal.Internal.Input;
+namespace Surreal.Input;
 
 internal sealed class OpenTKKeyboardDevice(OpenTKWindow window) : IKeyboardDevice
 {

@@ -1,10 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using Surreal.Graphics;
 using Surreal.Graphics.Shaders;
 using Surreal.IO;
 using Surreal.Resources;
 
-namespace Surreal.Internal.Graphics;
+namespace Surreal.Graphics;
 
 /// <summary>
 /// A single shader, unlinked to a program.

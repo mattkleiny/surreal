@@ -3,6 +3,9 @@
     <RootNamespace>Surreal.Audio</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj" />
+    <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\"/>
   </ItemGroup>
 </Project>

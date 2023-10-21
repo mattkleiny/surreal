@@ -4,9 +4,12 @@
     <RootNamespace>Surreal.Graphics</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />
+    <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\"/>
   </ItemGroup>
 </Project>
