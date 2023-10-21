@@ -106,7 +106,7 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   /// <summary>
   /// Draws the mesh with the given <see cref="ShaderProgram" /> and primitive counts.
   /// </summary>
-  public abstract void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles);
+  public abstract void Draw(ShaderProgram shader, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles);
 
   /// <summary>
   /// Draws the mesh with the given <see cref="Material" />.
@@ -116,7 +116,7 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   /// <summary>
   /// Draws the mesh with the given <see cref="Material" /> and primitive counts.
   /// </summary>
-  public abstract void Draw(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles);
+  public abstract void Draw(Material material, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles);
 }
 
 /// <summary>
@@ -163,7 +163,7 @@ public sealed class Mesh<TVertex> : Mesh
     Draw(material, Vertices.Length, Indices.Length, type);
   }
 
-  public override void Draw(Material material, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
+  public override void Draw(Material material, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles)
   {
     material.Apply(_context); // TODO: put this in a better place (material batching?)
 
@@ -181,7 +181,7 @@ public sealed class Mesh<TVertex> : Mesh
     Draw(shader, Vertices.Length, Indices.Length, type);
   }
 
-  public override void Draw(ShaderProgram shader, int vertexCount, int indexCount, MeshType type = MeshType.Triangles)
+  public override void Draw(ShaderProgram shader, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles)
   {
     _context.Backend.SetActiveShader(shader.Handle);
 

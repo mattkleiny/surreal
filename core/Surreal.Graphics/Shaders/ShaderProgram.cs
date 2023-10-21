@@ -1,4 +1,3 @@
-using Surreal.Collections;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 
@@ -26,24 +25,12 @@ public enum UniformType
 /// <summary>
 /// Metadata about attributes in a <see cref="ShaderProgram" />.
 /// </summary>
-public sealed record ShaderAttributeMetadata(
-  string Name,
-  int Location,
-  int Length,
-  int Count,
-  UniformType Type
-);
+public sealed record ShaderAttributeMetadata(string Name, int Location, int Length, int Count, UniformType Type);
 
 /// <summary>
 /// Metadata about uniforms in a <see cref="ShaderProgram" />.
 /// </summary>
-public sealed record ShaderUniformMetadata(
-  string Name,
-  int Location,
-  int Length,
-  int Count,
-  UniformType Type
-);
+public sealed record ShaderUniformMetadata(string Name, int Location, int Length, int Count, UniformType Type);
 
 /// <summary>
 /// A low-level shader program on the GPU.
@@ -52,18 +39,6 @@ public sealed class ShaderProgram(GraphicsContext context) : GraphicsResource
 {
   public GraphicsContext Context { get; } = context;
   public GraphicsHandle Handle { get; private set; } = context.Backend.CreateShader();
-
-  /// <summary>
-  /// The attributes in the shader.
-  /// </summary>
-  public ReadOnlySlice<ShaderAttributeMetadata> Attributes { get; private set; } =
-    ReadOnlySlice<ShaderAttributeMetadata>.Empty;
-
-  /// <summary>
-  /// The uniforms in the shader.
-  /// </summary>
-  public ReadOnlySlice<ShaderUniformMetadata> Uniforms { get; private set; } =
-    ReadOnlySlice<ShaderUniformMetadata>.Empty;
 
   public int GetUniformLocation(string name)
   {
@@ -181,15 +156,6 @@ public sealed class ShaderProgram(GraphicsContext context) : GraphicsResource
     Context.Backend.DeleteShader(Handle);
 
     Handle = newHandle;
-  }
-
-  /// <summary>
-  /// Updates the attribute/uniform metadata for the shader.
-  /// </summary>
-  public void ReloadMetadata()
-  {
-    Attributes = Context.Backend.GetShaderAttributeMetadata(Handle);
-    Uniforms = Context.Backend.GetShaderUniformMetadata(Handle);
   }
 
   protected override void Dispose(bool managed)

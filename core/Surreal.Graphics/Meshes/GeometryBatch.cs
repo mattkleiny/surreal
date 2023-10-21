@@ -193,7 +193,7 @@ public sealed class GeometryBatch
     }
 
     _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
-    _mesh.Draw(_material, _vertexCount, 0, type);
+    _mesh.Draw(_material, (uint)_vertexCount, 0, type);
 
     _vertexCount = 0;
   }

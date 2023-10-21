@@ -32,7 +32,6 @@ internal sealed class OpenTKShaderProgramLoader(GraphicsContext graphics) : Reso
     var backend = (OpenTKGraphicsBackend)graphics.Backend;
 
     backend.LinkShader(program.Handle, shaderSet);
-    program.ReloadMetadata();
 
     if (context.IsHotReloadEnabled)
     {
@@ -52,7 +51,6 @@ internal sealed class OpenTKShaderProgramLoader(GraphicsContext graphics) : Reso
 
     backend.LinkShader(handle, shaderSet);
     program.ReplaceShader(handle);
-    program.ReloadMetadata();
 
     return program;
   }

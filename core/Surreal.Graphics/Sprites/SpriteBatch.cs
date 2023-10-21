@@ -144,7 +144,7 @@ public sealed class SpriteBatch : IDisposable
     }
 
     _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
-    _mesh.Draw(_material, _vertexCount, indexCount);
+    _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
 
     _vertexCount = 0;
   }

@@ -70,10 +70,9 @@ public sealed class VertexDescriptorAttribute(int count, VertexType type) : Attr
 /// Describes a single vertex.
 /// </summary>
 [DebuggerDisplay("{Name}: {Count}")]
-public readonly record struct VertexDescriptor(string Name, int Offset, int Count, VertexType Type,
-  bool ShouldNormalize)
+public readonly record struct VertexDescriptor(string Name, uint Offset, int Count, VertexType Type, bool ShouldNormalize)
 {
-  public int Stride => Count * DetermineSize(Type);
+  public uint Stride => (uint)(Count * DetermineSize(Type));
 
   private static int DetermineSize(VertexType type)
   {
@@ -95,7 +94,7 @@ public readonly record struct VertexDescriptor(string Name, int Offset, int Coun
 /// <summary>
 /// Describes a set of <see cref="VertexDescriptor" />s.
 /// </summary>
-public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descriptors, int Stride)
+public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descriptors, uint Stride)
 {
   public int Length => Descriptors.Length;
 
@@ -110,7 +109,7 @@ public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descri
       .Select(member => (member.Name, member.GetCustomAttribute<VertexDescriptorAttribute>()!));
 
     var builder = ImmutableArray.CreateBuilder<VertexDescriptor>();
-    var stride = 0;
+    var stride = 0u;
 
     foreach (var (name, attribute) in values)
     {

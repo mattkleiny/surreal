@@ -27,7 +27,7 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
   public abstract Type ElementType { get; }
 
-  public int Length { get; protected set; }
+  public uint Length { get; protected set; }
   public Size Size { get; protected set; }
 }
 
@@ -47,14 +47,14 @@ public sealed class GraphicsBuffer<T>(GraphicsContext context, BufferType type, 
   {
     var (offset, length) = range
       .GetOrDefault(Range.All)
-      .GetOffsetAndLength(Length);
+      .GetOffsetAndLength((int)Length);
 
     return context.Backend.ReadBufferData<T>(Handle, Type, offset, length);
   }
 
   public void Write(ReadOnlySpan<T> buffer)
   {
-    Length = buffer.Length;
+    Length = (uint)buffer.Length;
     Size = buffer.CalculateSize();
 
     context.Backend.WriteBufferData(Handle, Type, buffer, Usage);

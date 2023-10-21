@@ -1,9 +1,7 @@
 ﻿using Silk.NET.OpenGL;
-using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
@@ -158,129 +156,147 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     throw new NotImplementedException();
   }
 
-  public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
+  public unsafe GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
   {
-    throw new NotImplementedException();
+    var array = gl.GenVertexArray();
+
+    gl.BindVertexArray(array);
+
+    gl.BindBuffer(BufferTargetARB.ArrayBuffer, vertices);
+    gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, indices);
+
+    // N.B: assumes ordered in the order they appear in location binding
+    for (var index = 0; index < descriptors.Length; index++)
+    {
+      var attribute = descriptors[index];
+
+      gl.VertexAttribPointer(
+        (uint)index,
+        attribute.Count,
+        ConvertVertexType(attribute.Type),
+        attribute.ShouldNormalize,
+        descriptors.Stride,
+        (void*)attribute.Offset
+      );
+      gl.EnableVertexAttribArray((uint)index);
+    }
+
+    gl.BindVertexArray(0);
+
+    return new GraphicsHandle(array);
   }
 
-  public void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
   {
-    throw new NotImplementedException();
+    gl.BindVertexArray(mesh);
+
+    var primitiveType = ConvertMeshType(meshType);
+
+    if (indexCount > 0)
+    {
+      var elementType = ConvertElementType(indexType);
+
+      gl.DrawElements(primitiveType, indexCount, elementType, 0);
+    }
+    else
+    {
+      gl.DrawArrays(primitiveType, 0, vertexCount);
+    }
+
+    gl.BindVertexArray(0);
   }
 
   public void DeleteMesh(GraphicsHandle handle)
   {
-    throw new NotImplementedException();
+    gl.DeleteVertexArray(handle);
   }
 
   public GraphicsHandle CreateShader()
   {
-    throw new NotImplementedException();
-  }
-
-  public ReadOnlySlice<ShaderAttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
-  {
-    throw new NotImplementedException();
-  }
-
-  public ReadOnlySlice<ShaderUniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
-  {
-    throw new NotImplementedException();
+    return new GraphicsHandle(gl.CreateProgram());
   }
 
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)
   {
-    throw new NotImplementedException();
+    return gl.GetUniformLocation(handle, name);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform1(handle, location, value);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, float value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform1(handle, location, value);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point2 value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform2(handle, location, value.X, value.Y);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point3 value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform3(handle, location, value.X, value.Y, value.Z);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point4 value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform4(handle, location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform2(handle, location, value.X, value.Y);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform3(handle, location, value.X, value.Y, value.Z);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform4(handle, location, value.X, value.Y, value.Z, value.W);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value)
   {
-    throw new NotImplementedException();
+    gl.ProgramUniform4(handle, location, value.X, value.Y, value.Z, value.W);
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
+  public unsafe void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
   {
-    throw new NotImplementedException();
+    fixed (float* pointer = &value.M11)
+    {
+      gl.ProgramUniformMatrix3x2(handle, location, 1, transpose: true, pointer);
+    }
   }
 
-  public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
+  public unsafe void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
   {
-    throw new NotImplementedException();
+    fixed (float* pointer = &value.M11)
+    {
+      gl.ProgramUniformMatrix4(handle, location, 1, transpose: true, pointer);
+    }
   }
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
-    throw new NotImplementedException();
+    gl.ActiveTexture(TextureUnit.Texture0 + samplerSlot);
+    gl.BindTexture(TextureTarget.Texture2D, texture);
+    gl.ProgramUniform1(handle, location, samplerSlot);
   }
 
   public void SetActiveShader(GraphicsHandle handle)
   {
-    throw new NotImplementedException();
+    gl.UseProgram(handle);
   }
 
   public void DeleteShader(GraphicsHandle handle)
   {
-    throw new NotImplementedException();
-  }
-
-  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
-  {
-    throw new NotImplementedException();
-  }
-
-  public void SetActiveFrameBuffer(GraphicsHandle handle)
-  {
-    throw new NotImplementedException();
-  }
-
-  public void SetDefaultFrameBuffer()
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DeleteFrameBuffer(GraphicsHandle handle)
-  {
-    throw new NotImplementedException();
+    gl.DeleteProgram(handle);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -293,5 +309,47 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static VertexAttribPointerType ConvertVertexType(VertexType attributeType)
+  {
+    return attributeType switch
+    {
+      VertexType.UnsignedByte => VertexAttribPointerType.UnsignedByte,
+      VertexType.Short => VertexAttribPointerType.Short,
+      VertexType.UnsignedShort => VertexAttribPointerType.UnsignedShort,
+      VertexType.Int => VertexAttribPointerType.Int,
+      VertexType.UnsignedInt => VertexAttribPointerType.UnsignedInt,
+      VertexType.Float => VertexAttribPointerType.Float,
+      VertexType.Double => VertexAttribPointerType.Double,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(attributeType), attributeType, null)
+    };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static PrimitiveType ConvertMeshType(MeshType meshType)
+  {
+    return meshType switch
+    {
+      MeshType.Points => PrimitiveType.Points,
+      MeshType.Lines => PrimitiveType.Lines,
+      MeshType.LineStrip => PrimitiveType.LineStrip,
+      MeshType.LineLoop => PrimitiveType.LineLoop,
+      MeshType.Triangles => PrimitiveType.Triangles,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(meshType), meshType, null)
+    };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static DrawElementsType ConvertElementType(Type type)
+  {
+    if (type == typeof(byte)) return DrawElementsType.UnsignedByte;
+    if (type == typeof(uint)) return DrawElementsType.UnsignedInt;
+    if (type == typeof(ushort)) return DrawElementsType.UnsignedShort;
+
+    throw new InvalidOperationException($"An unrecognized index type was provided: {type}");
   }
 }

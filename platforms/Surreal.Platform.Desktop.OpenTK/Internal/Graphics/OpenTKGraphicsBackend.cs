@@ -1,17 +1,14 @@
 ﻿using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 using Matrix3x2 = System.Numerics.Matrix3x2;
 using Quaternion = System.Numerics.Quaternion;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
-using UniformType = Surreal.Graphics.Shaders.UniformType;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
@@ -372,8 +369,8 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
         attribute.Count,
         ConvertVertexType(attribute.Type),
         attribute.ShouldNormalize,
-        descriptors.Stride,
-        attribute.Offset
+        (int)descriptors.Stride,
+        (int)attribute.Offset
       );
       GL.EnableVertexAttribArray((uint)index);
     }
@@ -383,7 +380,7 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     return new GraphicsHandle(array.Handle);
   }
 
-  public void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
   {
     var array = new VertexArrayHandle(mesh);
 
@@ -395,11 +392,11 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     {
       var elementType = ConvertElementType(indexType);
 
-      GL.DrawElements(primitiveType, indexCount, elementType, 0);
+      GL.DrawElements(primitiveType, (int)indexCount, elementType, 0);
     }
     else
     {
-      GL.DrawArrays(primitiveType, 0, vertexCount);
+      GL.DrawArrays(primitiveType, 0, (int)vertexCount);
     }
 
     GL.BindVertexArray(VertexArrayHandle.Zero);
@@ -417,106 +414,6 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     var shader = GL.CreateProgram();
 
     return new GraphicsHandle(shader.Handle);
-  }
-
-  public unsafe ReadOnlySlice<ShaderAttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
-  {
-    var program = new ProgramHandle(handle);
-    var count = 0;
-
-    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
-
-    var results = new ShaderAttributeMetadata[count];
-
-    for (var index = 0; index < count; index++)
-    {
-      var length = 0;
-      var size = 0;
-      var type = default(AttributeType);
-
-      GL.GetActiveAttrib(
-        program,
-        (uint)index,
-        int.MaxValue,
-        ref length,
-        ref size,
-        ref type,
-        out var name
-      );
-      if (string.IsNullOrEmpty(name))
-      {
-        continue;
-      }
-
-      results[index] = new ShaderAttributeMetadata(name, index, length, size, type switch
-      {
-        AttributeType.Int => UniformType.Integer,
-        AttributeType.Float => UniformType.Float,
-        AttributeType.IntVec2 => UniformType.Point2,
-        AttributeType.IntVec3 => UniformType.Point3,
-        AttributeType.FloatVec2 => UniformType.Vector2,
-        AttributeType.FloatVec3 => UniformType.Vector3,
-        AttributeType.FloatVec4 => UniformType.Vector4,
-        AttributeType.FloatMat3x2 => UniformType.Matrix3X2,
-        AttributeType.FloatMat4 => UniformType.Matrix4X4,
-        AttributeType.Sampler2d => UniformType.Texture,
-
-        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
-      });
-    }
-
-    return results;
-  }
-
-  public unsafe ReadOnlySlice<ShaderUniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
-  {
-    var program = new ProgramHandle(handle);
-    var count = 0;
-
-    GL.GetProgramiv(program, ProgramPropertyARB.ActiveUniforms, &count);
-
-    var results = new ShaderUniformMetadata[count];
-
-    for (var index = 0; index < count; index++)
-    {
-      var length = 0;
-      var size = 0;
-      var type = default(OpenTK.Graphics.OpenGL.UniformType);
-
-      GL.GetActiveUniform(
-        program,
-        (uint)index,
-        int.MaxValue,
-        ref length,
-        ref size,
-        ref type,
-        out var name
-      );
-      if (string.IsNullOrEmpty(name))
-      {
-        continue;
-      }
-
-      var location = GL.GetUniformLocation(program, name);
-
-      results[index] = new ShaderUniformMetadata(name, location, length, size, type switch
-      {
-        OpenTK.Graphics.OpenGL.UniformType.Int => UniformType.Integer,
-        OpenTK.Graphics.OpenGL.UniformType.Float => UniformType.Float,
-        OpenTK.Graphics.OpenGL.UniformType.IntVec2 => UniformType.Point2,
-        OpenTK.Graphics.OpenGL.UniformType.IntVec3 => UniformType.Point3,
-        OpenTK.Graphics.OpenGL.UniformType.FloatVec2 => UniformType.Vector2,
-        OpenTK.Graphics.OpenGL.UniformType.FloatVec3 => UniformType.Vector3,
-        OpenTK.Graphics.OpenGL.UniformType.FloatVec4 => UniformType.Vector4,
-        OpenTK.Graphics.OpenGL.UniformType.FloatMat3x2 => UniformType.Matrix3X2,
-        OpenTK.Graphics.OpenGL.UniformType.FloatMat4 => UniformType.Matrix4X4,
-        OpenTK.Graphics.OpenGL.UniformType.Sampler2d => UniformType.Texture,
-
-        _ => throw new InvalidOperationException($"An unexpected type was encountered: {type}")
-      });
-    }
-
-    return results;
   }
 
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)
@@ -600,40 +497,6 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     var program = new ProgramHandle(handle);
 
     GL.DeleteProgram(program);
-  }
-
-  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
-  {
-    var framebuffer = GL.GenFramebuffer();
-
-    GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
-    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2d, new TextureHandle(colorAttachment), 0);
-
-    if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferStatus.FramebufferComplete)
-    {
-      throw new GraphicsException("The frame buffer is incomplete; are the texture formats compatible?");
-    }
-
-    GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);
-
-    return new GraphicsHandle(framebuffer.Handle);
-  }
-
-  public void SetActiveFrameBuffer(GraphicsHandle handle)
-  {
-    GL.BindFramebuffer(FramebufferTarget.Framebuffer, new FramebufferHandle(handle));
-  }
-
-  public void SetDefaultFrameBuffer()
-  {
-    GL.BindFramebuffer(FramebufferTarget.Framebuffer, FramebufferHandle.Zero);
-  }
-
-  public void DeleteFrameBuffer(GraphicsHandle handle)
-  {
-    var framebuffer = new FramebufferHandle(handle);
-
-    GL.DeleteFramebuffer(framebuffer);
   }
 
   public void LinkShader(GraphicsHandle handle, OpenTKShaderSet shaderSet)

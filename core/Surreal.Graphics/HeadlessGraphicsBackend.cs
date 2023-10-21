@@ -1,8 +1,6 @@
-﻿using Surreal.Collections;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 
@@ -133,7 +131,7 @@ public sealed class HeadlessGraphicsBackend : IGraphicsBackend
     return new GraphicsHandle(Interlocked.Increment(ref _nextMeshId));
   }
 
-  public void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
   {
     // no-op
   }
@@ -146,16 +144,6 @@ public sealed class HeadlessGraphicsBackend : IGraphicsBackend
   public GraphicsHandle CreateShader()
   {
     return new GraphicsHandle(Interlocked.Increment(ref _nextShaderId));
-  }
-
-  public ReadOnlySlice<ShaderAttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle)
-  {
-    return ReadOnlySlice<ShaderAttributeMetadata>.Empty;
-  }
-
-  public ReadOnlySlice<ShaderUniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle)
-  {
-    return ReadOnlySlice<ShaderUniformMetadata>.Empty;
   }
 
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)
@@ -229,26 +217,6 @@ public sealed class HeadlessGraphicsBackend : IGraphicsBackend
   }
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
-  {
-    // no-op
-  }
-
-  public GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment)
-  {
-    return new GraphicsHandle(Interlocked.Increment(ref _nextFrameBufferId));
-  }
-
-  public void SetActiveFrameBuffer(GraphicsHandle handle)
-  {
-    // no-op
-  }
-
-  public void SetDefaultFrameBuffer()
-  {
-    // no-op
-  }
-
-  public void DeleteFrameBuffer(GraphicsHandle handle)
   {
     // no-op
   }

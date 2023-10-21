@@ -1,8 +1,6 @@
-﻿using Surreal.Collections;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 
@@ -61,13 +59,11 @@ public interface IGraphicsBackend
 
   // meshes
   GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors);
-  void DrawMesh(GraphicsHandle mesh, int vertexCount, int indexCount, MeshType meshType, Type indexType);
+  void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType);
   void DeleteMesh(GraphicsHandle handle);
 
   // shaders
   GraphicsHandle CreateShader();
-  ReadOnlySlice<ShaderAttributeMetadata> GetShaderAttributeMetadata(GraphicsHandle handle);
-  ReadOnlySlice<ShaderUniformMetadata> GetShaderUniformMetadata(GraphicsHandle handle);
   int GetShaderUniformLocation(GraphicsHandle handle, string name);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
   void SetShaderUniform(GraphicsHandle handle, int location, float value);
@@ -85,8 +81,4 @@ public interface IGraphicsBackend
   void DeleteShader(GraphicsHandle handle);
 
   // frame buffers
-  GraphicsHandle CreateFrameBuffer(GraphicsHandle colorAttachment);
-  void SetActiveFrameBuffer(GraphicsHandle handle);
-  void SetDefaultFrameBuffer();
-  void DeleteFrameBuffer(GraphicsHandle handle);
 }
