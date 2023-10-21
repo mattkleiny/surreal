@@ -35,7 +35,7 @@ public sealed record ShaderUniformMetadata(string Name, int Location, int Length
 /// <summary>
 /// A low-level shader program on the GPU.
 /// </summary>
-public sealed class ShaderProgram(GraphicsContext context) : GraphicsResource
+public sealed class ShaderProgram(GraphicsContext context) : GraphicsAsset
 {
   public GraphicsContext Context { get; } = context;
   public GraphicsHandle Handle { get; private set; } = context.Backend.CreateShader();

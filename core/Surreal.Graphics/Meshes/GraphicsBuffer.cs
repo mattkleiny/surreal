@@ -23,7 +23,7 @@ public enum BufferUsage
 /// <summary>
 /// A buffer of data on the <see cref="GraphicsContext" />.
 /// </summary>
-public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
+public abstract class GraphicsBuffer : GraphicsAsset, IHasSizeEstimate
 {
   public abstract Type ElementType { get; }
 

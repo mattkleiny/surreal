@@ -4,11 +4,11 @@ using Surreal.Resources;
 namespace Surreal.Colors;
 
 /// <summary>
-/// The <see cref="ResourceLoader{T}" /> for <see cref="ColorPalette" />s.s
+/// The <see cref="AssetLoader{T}" /> for <see cref="ColorPalette" />s.s
 /// </summary>
-public sealed class ColorPaletteLoader : ResourceLoader<ColorPalette>
+public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
-  public override async Task<ColorPalette> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
+  public override async Task<ColorPalette> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream);

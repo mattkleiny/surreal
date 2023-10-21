@@ -3,7 +3,7 @@
 /// <summary>
 /// Abstracts over a service registry, allowing different IoC container depending on game host.
 /// </summary>
-public interface IServiceRegistry : IServiceProvider, IDisposable
+public interface IServiceRegistry : IServiceProvider
 {
   /// <summary>
   /// Registers a service.
@@ -14,7 +14,7 @@ public interface IServiceRegistry : IServiceProvider, IDisposable
 /// <summary>
 /// A simple default <see cref="IServiceRegistry" /> implementation.
 /// </summary>
-public sealed class ServiceRegistry : IServiceRegistry
+public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 {
   private readonly ConcurrentDictionary<Type, object> _instances = new();
 

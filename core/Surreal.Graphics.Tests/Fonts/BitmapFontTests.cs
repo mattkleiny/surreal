@@ -13,13 +13,13 @@ public class BitmapFontTests
   {
     var context = GraphicsContext.Headless;
 
-    using var manager = new ResourceManager();
+    using var manager = new AssetManager();
 
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new TextureLoader(context));
     manager.AddLoader(new ImageLoader());
 
-    var font = await manager.LoadResourceAsync<BitmapFont>("Assets/External/fonts/IBM.font");
+    var font = await manager.LoadAssetAsync<BitmapFont>("Assets/External/fonts/IBM.font");
 
     font.Should().NotBeNull();
   }
@@ -29,14 +29,14 @@ public class BitmapFontTests
   {
     var context = GraphicsContext.Headless;
 
-    using var manager = new ResourceManager();
+    using var manager = new AssetManager();
     using var batch = new SpriteBatch(context, 128);
 
     manager.AddLoader(new BitmapFontLoader());
     manager.AddLoader(new TextureLoader(context));
     manager.AddLoader(new ImageLoader());
 
-    var font = await manager.LoadResourceAsync<BitmapFont>("Assets/External/fonts/IBM.font");
+    var font = await manager.LoadAssetAsync<BitmapFont>("Assets/External/fonts/IBM.font");
 
     batch.DrawText(font, "This is a test", Vector2.Zero, Vector2.One, Color.White);
   }

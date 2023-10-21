@@ -5,4 +5,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Textures\" />
+  </ItemGroup>
 </Project>

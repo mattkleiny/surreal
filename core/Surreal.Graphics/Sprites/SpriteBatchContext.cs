@@ -64,20 +64,20 @@ public sealed class SpriteContextDescriptor : IRenderContextDescriptor
   /// </summary>
   public Optional<ColorPalette> ColorPalette { get; init; }
 
-  public async Task<IRenderContext> BuildContextAsync(GraphicsContext context, IResourceManager resources,
+  public async Task<IRenderContext> BuildContextAsync(GraphicsContext context, AssetManager assets,
     CancellationToken cancellationToken)
   {
-    var material = await ResolveMaterialAsync(context, resources, cancellationToken);
+    var material = await ResolveMaterialAsync(context, assets, cancellationToken);
 
     return new SpriteContext(context, material);
   }
 
-  private async Task<Material> ResolveMaterialAsync(GraphicsContext context, IResourceManager resources,
+  private async Task<Material> ResolveMaterialAsync(GraphicsContext context, AssetManager assets,
     CancellationToken cancellationToken)
   {
     if (!Material.HasValue)
     {
-      return await resources.LoadDefaultSpriteMaterialAsync(cancellationToken);
+      return await assets.LoadDefaultSpriteMaterialAsync(cancellationToken);
     }
 
     return Material.Value;

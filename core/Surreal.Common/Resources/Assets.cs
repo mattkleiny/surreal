@@ -4,10 +4,15 @@ using Surreal.Memory;
 namespace Surreal.Resources;
 
 /// <summary>
-/// An application resource that can be managed and unloaded.
+/// An application asset that can be managed and unloaded.
 /// </summary>
-public abstract class Resource : IDisposable
+public abstract class Asset : IDisposable
 {
+  ~Asset()
+  {
+    Dispose(false);
+  }
+
   public bool IsDisposed { get; private set; }
 
   public void Dispose()
@@ -21,31 +26,27 @@ public abstract class Resource : IDisposable
     }
   }
 
-  ~Resource()
-  {
-    Dispose(false);
-  }
-
   protected virtual void Dispose(bool managed)
   {
   }
 }
 
 /// <summary>
-/// A <see cref="Resource" /> with global tracking in a static <see cref="IntrusiveLinkedList{TNode}" />.
+/// A <see cref="Asset" /> with global tracking in a static <see cref="IntrusiveLinkedList{TNode}" />.
 /// </summary>
-public abstract class TrackedResource<TSelf> : Resource, IIntrusiveLinkedListNode<TSelf>
-  where TSelf : TrackedResource<TSelf>
+public abstract class TrackedAsset<TSelf> : Asset, IIntrusiveLinkedListNode<TSelf>
+  where TSelf : TrackedAsset<TSelf>
 {
   private static readonly IntrusiveLinkedList<TSelf> All = new();
 
-  protected TrackedResource()
-  {
-    Track((TSelf)this);
-  }
-
+  /// <summary>
+  /// The total size of all tracked assets.
+  /// </summary>
   public static Size TotalAllocatedSize => GetSizeEstimate<IHasSizeEstimate>();
 
+  /// <summary>
+  /// Gets the total size of all tracked assets of the given type.
+  /// </summary>
   public static Size GetSizeEstimate<T>()
     where T : IHasSizeEstimate
   {
@@ -55,19 +56,24 @@ public abstract class TrackedResource<TSelf> : Resource, IIntrusiveLinkedListNod
     }
   }
 
-  private static void Track(TSelf resource)
+  protected TrackedAsset()
+  {
+    Track((TSelf)this);
+  }
+
+  private static void Track(TSelf asset)
   {
     lock (All)
     {
-      All.Add(resource);
+      All.Add(asset);
     }
   }
 
-  private static void Forget(TSelf resource)
+  private static void Forget(TSelf asset)
   {
     lock (All)
     {
-      All.Remove(resource);
+      All.Remove(asset);
     }
   }
 

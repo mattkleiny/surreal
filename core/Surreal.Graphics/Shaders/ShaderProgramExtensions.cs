@@ -8,13 +8,13 @@ namespace Surreal.Graphics.Shaders;
 /// </summary>
 public static class ShaderProgramExtensions
 {
-  public static async Task<Material> LoadDefaultWireMaterialAsync(this IResourceManager manager, CancellationToken cancellationToken = default)
+  public static async Task<Material> LoadDefaultWireMaterialAsync(this AssetManager manager, CancellationToken cancellationToken = default)
   {
-    return await manager.LoadResourceAsync<Material>("resx://Surreal.Graphics/Resources/Embedded/shaders/wire.glsl", cancellationToken);
+    return await manager.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/Embedded/shaders/wire.glsl", cancellationToken);
   }
 
-  public static async Task<Material> LoadDefaultSpriteMaterialAsync(this IResourceManager manager, CancellationToken cancellationToken = default)
+  public static async Task<Material> LoadDefaultSpriteMaterialAsync(this AssetManager manager, CancellationToken cancellationToken = default)
   {
-    return await manager.LoadResourceAsync<Material>("resx://Surreal.Graphics/Resources/Embedded/shaders/sprite.glsl", cancellationToken);
+    return await manager.LoadAssetAsync<Material>("resx://Surreal.Graphics/Resources/Embedded/shaders/sprite.glsl", cancellationToken);
   }
 }

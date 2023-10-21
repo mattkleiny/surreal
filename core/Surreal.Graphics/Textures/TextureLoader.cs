@@ -14,31 +14,16 @@ public sealed record TextureLoaderSettings
 }
 
 /// <summary>
-/// The <see cref="ResourceLoader{T}" /> for <see cref="Texture" />s.
+/// The <see cref="AssetLoader{T}" /> for <see cref="Texture" />s.
 /// </summary>
-public sealed class TextureLoader(GraphicsContext graphics) : ResourceLoader<Texture>
+public sealed class TextureLoader(GraphicsContext graphics) : AssetLoader<Texture>
 {
   public TextureLoaderSettings Settings { get; init; } = new();
 
-  public override async Task<Texture> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
+  public override async Task<Texture> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(graphics, Settings.Format, Settings.FilterMode, Settings.WrapMode);
-
-    texture.WritePixels(image);
-
-    if (context.IsHotReloadEnabled)
-    {
-      context.SubscribeToChanges<Texture>(ReloadAsync);
-    }
-
-    return texture;
-  }
-
-  private static async Task<Texture> ReloadAsync(ResourceContext context, Texture texture,
-    CancellationToken cancellationToken = default)
-  {
-    var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
 
     texture.WritePixels(image);
 

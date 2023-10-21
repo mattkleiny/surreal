@@ -7,7 +7,7 @@ namespace Surreal.Audio;
 /// <summary>
 /// A resource in the audio subsystem.
 /// </summary>
-public abstract class AudioResource : TrackedResource<AudioResource>
+public abstract class AudioAsset : TrackedAsset<AudioAsset>
 {
   public static Size AllocatedBufferSize => GetSizeEstimate<AudioBuffer>();
   public static Size AllocatedClipSize => GetSizeEstimate<AudioClip>();

@@ -8,7 +8,7 @@ public class RenderContextManagerTests
   [Test]
   public void it_should_notify_on_use_when_acquiring_render_context()
   {
-    using var resources = new ResourceManager();
+    using var resources = new AssetManager();
     using var manager = new RenderContextManager(GraphicsContext.Headless, resources);
 
     var context = Substitute.For<IRenderContext>();
@@ -29,7 +29,7 @@ public class RenderContextManagerTests
   {
     var graphics = GraphicsContext.Headless;
 
-    using var resources = new ResourceManager();
+    using var resources = new AssetManager();
     using var manager = new RenderContextManager(graphics, resources);
 
     var context = Substitute.For<IRenderContext>();

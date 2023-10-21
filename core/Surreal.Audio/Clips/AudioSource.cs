@@ -3,7 +3,7 @@
 /// <summary>
 /// An audio source allows <see cref="AudioClip" />s to be played.
 /// </summary>
-public sealed class AudioSource(IAudioBackend backend) : AudioResource
+public sealed class AudioSource(IAudioBackend backend) : AudioAsset
 {
   private bool _isLooping;
   private float _volume;

@@ -4,11 +4,11 @@ using Surreal.Resources;
 namespace Surreal.Graphics.Materials;
 
 /// <summary>
-/// The <see cref="ResourceLoader{T}" /> for <see cref="Material" />s.
+/// The <see cref="AssetLoader{T}" /> for <see cref="Material" />s.
 /// </summary>
-public sealed class MaterialLoader : ResourceLoader<Material>
+public sealed class MaterialLoader : AssetLoader<Material>
 {
-  public override async Task<Material> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
+  public override async Task<Material> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
     var shaderProgram = await context.LoadAsync<ShaderProgram>(context.Path, cancellationToken);
 

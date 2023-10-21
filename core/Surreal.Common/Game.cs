@@ -26,6 +26,11 @@ public sealed record GameConfiguration
   /// The <see cref="IGameHost"/> for the game.
   /// </summary>
   public required IGameHost Host { get; init; }
+
+  /// <summary>
+  /// A set of all <see cref="IAssetLoader"/>s to use for the game.
+  /// </summary>
+  public List<IAssetLoader> AssetLoaders { get; } = new();
 }
 
 /// <summary>
@@ -51,9 +56,9 @@ public static class Game
   public static IEventBus Events => Host.Events;
 
   /// <summary>
-  /// The top-level <see cref="IResourceProvider"/> for the game.
+  /// The top-level <see cref="IAssetProvider"/> for the game.
   /// </summary>
-  public static IResourceProvider Resources => Host.Resources;
+  public static AssetManager Assets => Host.Assets;
 
   /// <summary>
   /// The top-level <see cref="IServiceProvider"/> for the game.
@@ -65,13 +70,15 @@ public static class Game
   /// </summary>
   public static void Start(GameConfiguration configuration)
   {
+    using var platform = configuration.Platform.BuildHost(configuration.Host);
     using var host = configuration.Host;
-    using var platform = configuration.Platform.BuildHost(host);
 
     Host = host;
 
     try
     {
+      host.Initialize(configuration);
+
       var clock = new DeltaTimeClock();
       var startTime = TimeStamp.Now;
 

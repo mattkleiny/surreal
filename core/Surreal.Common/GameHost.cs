@@ -14,9 +14,9 @@ public interface IGameHost : IDisposable
   IEventBus Events { get; }
 
   /// <summary>
-  /// The top-level <see cref="IResourceProvider"/> for the game.
+  /// The top-level <see cref="AssetManager"/> for the game.
   /// </summary>
-  IResourceProvider Resources { get; }
+  AssetManager Assets { get; }
 
   /// <summary>
   /// The top-level <see cref="IServiceProvider"/> for the game.
@@ -27,6 +27,12 @@ public interface IGameHost : IDisposable
   /// True if the host wants to close.
   /// </summary>
   bool IsClosing { get; }
+
+  /// <summary>
+  /// Initialize the game.
+  /// </summary>
+  /// <param name="configuration"></param>
+  void Initialize(GameConfiguration configuration);
 
   /// <summary>
   /// Executes the main game loop.
@@ -40,11 +46,6 @@ public interface IGameHost : IDisposable
 public abstract class GameHost : IGameHost
 {
   /// <summary>
-  /// A callback for setting up a game.
-  /// </summary>
-  public delegate GameTickDelegate GameSetupDelegate();
-
-  /// <summary>
   /// A callback for ticking a game.
   /// </summary>
   public delegate void GameTickDelegate(GameTime time);
@@ -52,22 +53,20 @@ public abstract class GameHost : IGameHost
   /// <summary>
   /// Creates a new <see cref="GameHost"/> instance using a delegate-based approach.
   /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static GameHost Create(GameSetupDelegate setupDelegate)
-  {
-    return new DelegateGameHost(setupDelegate);
-  }
+  public static GameHost Create(Func<GameTickDelegate> setupDelegate)
+    => Create(() => Task.FromResult(setupDelegate()));
 
-  protected GameHost()
-  {
-    Events.SubscribeAll(this);
-  }
+  /// <summary>
+  /// Creates a new <see cref="GameHost"/> instance using a delegate-based approach.
+  /// </summary>
+  public static GameHost Create(Func<Task<GameTickDelegate>> setupDelegate)
+    => new DelegateGameHost(setupDelegate);
 
   /// <inheritdoc/>
   public IEventBus Events { get; } = new EventBus();
 
   /// <inheritdoc/>
-  public IResourceProvider Resources => throw new NotImplementedException();
+  public AssetManager Assets { get; } = new();
 
   /// <inheritdoc/>
   public IServiceRegistry Services { get; } = new ServiceRegistry();
@@ -76,25 +75,36 @@ public abstract class GameHost : IGameHost
   public bool IsClosing => false;
 
   /// <inheritdoc/>
+  public abstract void Initialize(GameConfiguration configuration);
+
+  /// <inheritdoc/>
   public abstract void Tick(GameTime time);
 
   public virtual void Dispose()
   {
-    Events.UnsubscribeAll(this);
-    Services.Dispose();
+    Assets.Dispose();
+
+    if (Services is IDisposable disposable)
+    {
+      disposable.Dispose();
+    }
   }
 
   /// <summary>
   /// An anonymous <see cref="GameHost"/> implementation.
   /// </summary>
-  private sealed class DelegateGameHost(GameSetupDelegate setupDelegate) : GameHost
+  private sealed class DelegateGameHost(Func<Task<GameTickDelegate>> setupDelegate) : GameHost
   {
     private GameTickDelegate? _tickDelegate;
 
+    public override void Initialize(GameConfiguration configuration)
+    {
+      _tickDelegate = setupDelegate().Result;
+    }
+
     public override void Tick(GameTime time)
     {
-      _tickDelegate ??= setupDelegate();
-      _tickDelegate(time);
+      _tickDelegate!(time);
     }
   }
 }

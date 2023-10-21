@@ -29,9 +29,9 @@ public enum VerticalAlignment
 /// </summary>
 public static class BitmapFontExtensions
 {
-  public static async Task<BitmapFont> LoadDefaultBitmapFontAsync(this IResourceManager manager)
+  public static async Task<BitmapFont> LoadDefaultBitmapFontAsync(this AssetManager manager)
   {
-    return await manager.LoadResourceAsync<BitmapFont>("resx://Surreal.Graphics/Resources/Embedded/fonts/IBM.font");
+    return await manager.LoadAssetAsync<BitmapFont>("resx://Surreal.Graphics/Resources/Embedded/fonts/IBM.font");
   }
 
   /// <summary>

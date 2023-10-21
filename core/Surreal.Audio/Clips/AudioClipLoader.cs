@@ -3,11 +3,11 @@
 namespace Surreal.Audio.Clips;
 
 /// <summary>
-/// The <see cref="ResourceLoader{T}" /> for <see cref="AudioClip" />s.
+/// The <see cref="AssetLoader{T}" /> for <see cref="AudioClip" />s.
 /// </summary>
-public sealed class AudioClipLoader(IAudioBackend backend) : ResourceLoader<AudioClip>
+public sealed class AudioClipLoader(IAudioBackend backend) : AssetLoader<AudioClip>
 {
-  public override async Task<AudioClip> LoadAsync(ResourceContext context, CancellationToken cancellationToken)
+  public override async Task<AudioClip> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
     var buffer = await context.LoadAsync<AudioBuffer>(context.Path, cancellationToken);
     var clip = new AudioClip(backend);
