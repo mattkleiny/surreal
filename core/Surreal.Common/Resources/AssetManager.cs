@@ -1,6 +1,12 @@
-﻿using Surreal.IO;
+﻿using Surreal.Diagnostics.Logging;
+using Surreal.IO;
 
 namespace Surreal.Resources;
+
+/// <summary>
+/// Denotes the given asset type is not supported by the manager.
+/// </summary>
+public sealed class UnsupportedAssetException(string message) : ApplicationException(message);
 
 /// <summary>
 /// Represents uniquely some resource type at a given path.
@@ -15,12 +21,15 @@ public readonly record struct AssetId(Type Type, VirtualPath Path)
 /// </summary>
 public sealed class AssetManager : IAssetProvider, IDisposable
 {
+  private static readonly ILog Log = LogFactory.GetLog<AssetManager>();
+
   private readonly Dictionary<AssetId, object> _assetsById = new();
   private readonly List<IAssetLoader> _loaders = new();
-  private readonly List<IPathWatcher> _watchers = new();
 
   public void AddLoader(IAssetLoader loader)
   {
+    Log.Trace($"Registering asset loader {loader.GetType().Name}");
+
     _loaders.Add(loader);
   }
 
@@ -31,11 +40,13 @@ public sealed class AssetManager : IAssetProvider, IDisposable
 
     if (!TryGetLoader(context, out var loader))
     {
-      throw new UnsupportedResourceException($"An unsupported asset type was requested: {context.Type.Name}");
+      throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.Type.Name}");
     }
 
     if (!_assetsById.TryGetValue(id, out var asset))
     {
+      Log.Trace($"Loading asset {id.Path}");
+
       _assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }
 
@@ -52,19 +63,8 @@ public sealed class AssetManager : IAssetProvider, IDisposable
       }
     }
 
-    foreach (var loader in _loaders)
-    {
-      if (loader is IDisposable disposable)
-      {
-        disposable.Dispose();
-      }
-    }
-
-    foreach (var watcher in _watchers) watcher.Dispose();
-
     _assetsById.Clear();
     _loaders.Clear();
-    _watchers.Clear();
   }
 
   /// <summary>
@@ -86,8 +86,3 @@ public sealed class AssetManager : IAssetProvider, IDisposable
     return false;
   }
 }
-
-/// <summary>
-/// Denotes the given resource type is not supported by the manager.
-/// </summary>
-public sealed class UnsupportedResourceException(string message) : ApplicationException(message);

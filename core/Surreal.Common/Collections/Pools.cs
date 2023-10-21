@@ -71,6 +71,7 @@ public sealed class PooledList<T> : List<T>, IDisposable
   /// <summary>
   /// A shared pool for instances of type, <see cref="PooledList{T}" />.
   /// </summary>
+  [SuppressMessage("ReSharper", "RedundantSuppressNullableWarningExpression")]
   private static Pool<PooledList<T>> Shared { get; } = new(() => new PooledList<T>(Shared!), maxCapacity: 1000);
 
   /// <summary>

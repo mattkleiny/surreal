@@ -7,12 +7,11 @@ using Surreal.Maths;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// A no-op <see cref="GraphicsContext" /> for headless environments and testing.
+/// A no-op <see cref="IGraphicsBackend" /> for headless environments and testing.
 /// </summary>
-public sealed class HeadlessGraphicsBackend : IGraphicsBackend
+internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 {
   private int _nextBufferId;
-  private int _nextFrameBufferId;
   private int _nextMeshId;
   private int _nextShaderId;
   private int _nextTextureId;

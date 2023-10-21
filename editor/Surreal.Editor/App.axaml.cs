@@ -7,7 +7,7 @@ namespace Surreal.Editor;
 /// <summary>
 /// Root class for the editor application.
 /// </summary>
-public partial class App : Application
+public class App : Application
 {
   /// <summary>
   /// The current project.

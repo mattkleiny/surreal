@@ -37,7 +37,10 @@ public abstract class Asset : IDisposable
 public abstract class TrackedAsset<TSelf> : Asset, IIntrusiveLinkedListNode<TSelf>
   where TSelf : TrackedAsset<TSelf>
 {
-  private static readonly IntrusiveLinkedList<TSelf> All = new();
+  /// <summary>
+  /// All of the <see cref="TSelf"/> assets.
+  /// </summary>
+  public static IntrusiveLinkedList<TSelf> All { get; } = new();
 
   /// <summary>
   /// The total size of all tracked assets.
@@ -52,7 +55,7 @@ public abstract class TrackedAsset<TSelf> : Asset, IIntrusiveLinkedListNode<TSel
   {
     lock (All)
     {
-      return All.OfType<T>().Select(_ => _.Size).Sum();
+      return All.OfType<T>().Select(x => x.Size).Sum();
     }
   }
 

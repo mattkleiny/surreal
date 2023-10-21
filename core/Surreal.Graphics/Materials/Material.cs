@@ -36,9 +36,9 @@ public readonly record struct BlendState(bool IsEnabled, BlendMode Source, Blend
 public sealed class Material(ShaderProgram shader, bool ownsShader = true) : GraphicsAsset
 {
   /// <summary>
-  /// The underlying <see cref="GraphicsContext" />.
+  /// The underlying <see cref="IGraphicsBackend" />.
   /// </summary>
-  public GraphicsContext Context => Shader.Context;
+  public IGraphicsBackend Backend => Shader.Backend;
 
   /// <summary>
   /// The associated <see cref="ShaderProgram" /> for the material.
@@ -58,17 +58,17 @@ public sealed class Material(ShaderProgram shader, bool ownsShader = true) : Gra
   /// <summary>
   /// Applies the material properties to the underlying shader.
   /// </summary>
-  public void Apply(GraphicsContext context)
+  public void Apply(IGraphicsBackend backend)
   {
     // bind the shader
-    context.Backend.SetActiveShader(Shader.Handle);
+    backend.SetActiveShader(Shader.Handle);
 
     // apply locals
     ApplyUniforms(Properties.Uniforms);
     ApplySamplers(Properties.Samplers);
 
     // apply blend state
-    context.Backend.SetBlendState(Blending);
+    backend.SetBlendState(Blending);
   }
 
   private void ApplyUniforms(Dictionary<string, Uniform> uniforms)

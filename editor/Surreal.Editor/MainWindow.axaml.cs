@@ -5,7 +5,7 @@ namespace Surreal.Editor;
 /// <summary>
 /// The main window for the editor.
 /// </summary>
-public partial class MainWindow : Window
+public class MainWindow : Window
 {
   private Project? _project;
 

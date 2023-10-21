@@ -7,9 +7,17 @@ namespace Surreal.Audio;
 /// </summary>
 public interface IAudioBackend
 {
+  /// <summary>
+  /// A no-op <see cref="IAudioBackend" /> for headless environments and testing.
+  /// </summary>
+  static IAudioBackend Headless { get; } = new HeadlessAudioBackend();
+
   // audio clips
   AudioHandle CreateAudioClip();
-  void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged;
+
+  void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
+    where T : unmanaged;
+
   void DeleteAudioClip(AudioHandle clip);
 
   // audio sources

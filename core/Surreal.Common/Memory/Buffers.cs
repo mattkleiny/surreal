@@ -29,9 +29,7 @@ public interface IBuffer<T>
 /// <summary>
 /// A <see cref="IBuffer{T}" /> that can be deterministically disposed.
 /// </summary>
-public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable
-{
-}
+public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable;
 
 /// <summary>
 /// Static factories for <see cref="IBuffer{T}" />s.

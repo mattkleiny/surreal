@@ -9,7 +9,7 @@ public sealed class ResourceFileSystem : FileSystem
 {
   private const string Separator = "/";
 
-  public ResourceFileSystem(params Assembly[] assemblies)
+  public ResourceFileSystem()
     : base("resource", "resources", "embedded", "resx")
   {
   }

@@ -6,19 +6,19 @@
 public readonly record struct AudioHandle(nint Id)
 {
   public static AudioHandle None => default;
+  public static AudioHandle Invalid => new(-1);
 
-  public static implicit operator nint(AudioHandle handle)
+  public AudioHandle(uint Id)
+    : this((nint)Id)
   {
-    return handle.Id;
   }
 
-  public static implicit operator int(AudioHandle handle)
+  public AudioHandle(int Id)
+    : this((nint)Id)
   {
-    return (int)handle.Id;
   }
 
-  public static implicit operator uint(AudioHandle handle)
-  {
-    return (uint)handle.Id;
-  }
+  public static implicit operator nint(AudioHandle handle) => handle.Id;
+  public static implicit operator int(AudioHandle handle) => (int)handle.Id;
+  public static implicit operator uint(AudioHandle handle) => (uint)handle.Id;
 }

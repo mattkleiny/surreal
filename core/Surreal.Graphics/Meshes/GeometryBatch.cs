@@ -9,11 +9,10 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>
 /// An efficient batch of geometric primitives for rendering to the GPU.
 /// </summary>
-public sealed class GeometryBatch
-  (GraphicsContext context, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
+public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
 {
   private const int DefaultVertexCount = 64;
-  private readonly Mesh<Vertex2> _mesh = new(context);
+  private readonly Mesh<Vertex2> _mesh = new(backend);
 
   private readonly IDisposableBuffer<Vertex2> _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
 
@@ -100,8 +99,8 @@ public sealed class GeometryBatch
 
     for (var theta = 0f; theta < 360f; theta += increment)
     {
-      var x = radius * MathF.Cos(Maths.MathE.DegreesToRadians(theta)) + center.X;
-      var y = radius * MathF.Sin(Maths.MathE.DegreesToRadians(theta)) + center.Y;
+      var x = radius * MathF.Cos(MathE.DegreesToRadians(theta)) + center.X;
+      var y = radius * MathF.Sin(MathE.DegreesToRadians(theta)) + center.Y;
 
       points.Add(new Vector2(x, y));
     }
@@ -117,8 +116,8 @@ public sealed class GeometryBatch
 
     for (var theta = startAngle; theta < endAngle; theta += increment)
     {
-      var x = radius * MathF.Cos(Maths.MathE.DegreesToRadians(theta)) + center.X;
-      var y = radius * MathF.Sin(Maths.MathE.DegreesToRadians(theta)) + center.Y;
+      var x = radius * MathF.Cos(MathE.DegreesToRadians(theta)) + center.X;
+      var y = radius * MathF.Sin(MathE.DegreesToRadians(theta)) + center.Y;
 
       points.Add(new Vector2(x, y));
     }

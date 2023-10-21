@@ -41,7 +41,7 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
       }
 
       var raw = line.Split(' ')
-        .Select(_ => _.Trim())
+        .Select(x => x.Trim())
         .Select(byte.Parse)
         .ToArray();
 

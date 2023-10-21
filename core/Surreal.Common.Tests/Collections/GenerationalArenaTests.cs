@@ -17,5 +17,8 @@ public class GenerationalArenaTests
 
     id4.Id.Should().Be(id2.Id);
     id4.Generation.Should().NotBe(id2.Generation);
+
+    id1.Should().NotBe(id2);
+    id1.Should().NotBe(id3);
   }
 }

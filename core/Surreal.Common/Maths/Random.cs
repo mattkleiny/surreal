@@ -89,14 +89,6 @@ public static class RandomExtensions
     => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f), random.NextFloat(-1f, 1f));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Vector3 NextXZUnitCircle(this Random random)
-    => new(random.NextFloat(-1, 1f), 0f, random.NextFloat(-1f, 1f));
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Vector3 NextXYUnitCircle(this Random random)
-    => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f), 0f);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static T Next<T>(this Random random)
     where T : IFromRandom<T> => T.FromRandom(random);
 }

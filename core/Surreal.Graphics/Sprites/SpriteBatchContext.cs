@@ -9,7 +9,7 @@ namespace Surreal.Graphics.Sprites;
 /// <summary>
 /// A <see cref="RenderContext"/> for sprite rendering.
 /// </summary>
-public sealed class SpriteContext(GraphicsContext context, Material material) : RenderContext
+public sealed class SpriteContext(IGraphicsBackend backend, Material material) : RenderContext
 {
   /// <summary>
   /// The <see cref="Material"/> used for rendering.
@@ -19,7 +19,7 @@ public sealed class SpriteContext(GraphicsContext context, Material material) : 
   /// <summary>
   /// The <see cref="SpriteBatch"/> used by this context.
   /// </summary>
-  public SpriteBatch SpriteBatch { get; } = new(context);
+  public SpriteBatch SpriteBatch { get; } = new(backend);
 
   public override void OnBeginFrame(in RenderFrame frame)
   {
@@ -64,16 +64,14 @@ public sealed class SpriteContextDescriptor : IRenderContextDescriptor
   /// </summary>
   public Optional<ColorPalette> ColorPalette { get; init; }
 
-  public async Task<IRenderContext> BuildContextAsync(GraphicsContext context, AssetManager assets,
-    CancellationToken cancellationToken)
+  public async Task<IRenderContext> BuildContextAsync(IGraphicsBackend backend, AssetManager assets, CancellationToken cancellationToken)
   {
-    var material = await ResolveMaterialAsync(context, assets, cancellationToken);
+    var material = await ResolveMaterialAsync(assets, cancellationToken);
 
-    return new SpriteContext(context, material);
+    return new SpriteContext(backend, material);
   }
 
-  private async Task<Material> ResolveMaterialAsync(GraphicsContext context, AssetManager assets,
-    CancellationToken cancellationToken)
+  private async Task<Material> ResolveMaterialAsync(AssetManager assets, CancellationToken cancellationToken)
   {
     if (!Material.HasValue)
     {

@@ -6,7 +6,7 @@ namespace Surreal.Input;
 /// <summary>
 /// A no-op <see cref="IInputBackend" /> for headless environments and testing.
 /// </summary>
-public sealed class HeadlessInputBackend : IInputBackend
+internal sealed class HeadlessInputBackend : IInputBackend
 {
   private readonly List<IInputDevice> _devices = new();
 

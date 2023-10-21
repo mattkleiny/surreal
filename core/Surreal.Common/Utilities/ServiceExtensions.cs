@@ -23,7 +23,6 @@ public class RegisterServiceAttribute(Type? serviceType = null) : Attribute
   public virtual void RegisterService(IServiceRegistry registry, Type implementationType)
   {
     var instance = Activator.CreateInstance(implementationType);
-
     if (instance == null)
     {
       throw new InvalidOperationException($"Unable to active service of type {implementationType}");

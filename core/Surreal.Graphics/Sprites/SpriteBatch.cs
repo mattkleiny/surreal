@@ -23,28 +23,23 @@ public sealed class SpriteBatch : IDisposable
   private Material? _material;
   private int _vertexCount;
 
-  public SpriteBatch(int spriteCount = DefaultSpriteCount)
-    : this(GraphicsContext.Default, spriteCount)
-  {
-  }
-
-  public SpriteBatch(GraphicsContext context, int spriteCount = DefaultSpriteCount)
+  public SpriteBatch(IGraphicsBackend backend, int spriteCount = DefaultSpriteCount)
   {
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount <= MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
 
-    Context = context;
+    Backend = backend;
 
     _vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
-    _mesh = new Mesh<Vertex2>(context);
+    _mesh = new Mesh<Vertex2>(backend);
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
 
   /// <summary>
-  /// The underlying <see cref="GraphicsContext" />.
+  /// The underlying <see cref="IGraphicsBackend" />.
   /// </summary>
-  public GraphicsContext Context { get; }
+  public IGraphicsBackend Backend { get; }
 
   /// <summary>
   /// The <see cref="MaterialProperty{T}" /> to bind textures to.

@@ -53,7 +53,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     Window = new SilkWindow(configuration);
     AudioBackend = new SilkAudioBackend();
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
-    InputBackend = new SilkInputBackend(Window);
+    InputBackend = new SilkInputBackend();
 
     Resized += OnResized;
 

@@ -27,10 +27,10 @@ public abstract class Mesh : GraphicsAsset, IHasSizeEstimate
   /// <summary>
   /// Convenience method for building <see cref="Mesh{TVertex}" />s with a <see cref="Tessellator{TVertex}" />.
   /// </summary>
-  public static Mesh<TVertex> Create<TVertex>(GraphicsContext context, Action<Tessellator<TVertex>> builder)
+  public static Mesh<TVertex> Create<TVertex>(IGraphicsBackend backend, Action<Tessellator<TVertex>> builder)
     where TVertex : unmanaged
   {
-    var mesh = new Mesh<TVertex>(context);
+    var mesh = new Mesh<TVertex>(backend);
 
     mesh.Tessellate(builder);
 
@@ -40,9 +40,9 @@ public abstract class Mesh : GraphicsAsset, IHasSizeEstimate
   /// <summary>
   /// Builds a simple triangle <see cref="Mesh" />.
   /// </summary>
-  public static Mesh<Vertex2> CreateTriangle(GraphicsContext context, float size = 1f)
+  public static Mesh<Vertex2> CreateTriangle(IGraphicsBackend backend, float size = 1f)
   {
-    return Create<Vertex2>(context, tessellator =>
+    return Create<Vertex2>(backend, tessellator =>
     {
       tessellator.AddTriangle(
         new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 0f)),
@@ -55,9 +55,9 @@ public abstract class Mesh : GraphicsAsset, IHasSizeEstimate
   /// <summary>
   /// Builds a simple quad <see cref="Mesh" /> quad.
   /// </summary>
-  public static Mesh<Vertex2> CreateQuad(GraphicsContext context, float size = 1f)
+  public static Mesh<Vertex2> CreateQuad(IGraphicsBackend backend, float size = 1f)
   {
-    return Create<Vertex2>(context, tessellator =>
+    return Create<Vertex2>(backend, tessellator =>
     {
       tessellator.AddQuad(
         new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 1f)),
@@ -71,9 +71,9 @@ public abstract class Mesh : GraphicsAsset, IHasSizeEstimate
   /// <summary>
   /// Builds a simple circle <see cref="Mesh" />.
   /// </summary>
-  public static Mesh<Vertex2> CreateCircle(GraphicsContext context, float radius = 1f, int segments = 16)
+  public static Mesh<Vertex2> CreateCircle(IGraphicsBackend backend, float radius = 1f, int segments = 16)
   {
-    return Create<Vertex2>(context, tessellator =>
+    return Create<Vertex2>(backend, tessellator =>
     {
       var vertices = new SpanList<Vertex2>(stackalloc Vertex2[segments]);
       var theta = 0f;
@@ -131,16 +131,16 @@ public sealed class Mesh<TVertex> : Mesh
   /// </summary>
   private static readonly VertexDescriptorSet VertexDescriptors = VertexDescriptorSet.Create<TVertex>();
 
-  private readonly GraphicsContext _context;
+  private readonly IGraphicsBackend _backend;
 
-  public Mesh(GraphicsContext context, BufferUsage usage = BufferUsage.Static)
+  public Mesh(IGraphicsBackend backend, BufferUsage usage = BufferUsage.Static)
   {
-    _context = context;
+    _backend = backend;
 
-    Vertices = new GraphicsBuffer<TVertex>(context, BufferType.Vertex, usage);
-    Indices = new GraphicsBuffer<uint>(context, BufferType.Index, usage);
+    Vertices = new GraphicsBuffer<TVertex>(backend, BufferType.Vertex, usage);
+    Indices = new GraphicsBuffer<uint>(backend, BufferType.Index, usage);
 
-    Handle = context.Backend.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
+    Handle = backend.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
   }
 
   public GraphicsHandle Handle { get; }
@@ -165,9 +165,9 @@ public sealed class Mesh<TVertex> : Mesh
 
   public override void Draw(Material material, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles)
   {
-    material.Apply(_context); // TODO: put this in a better place (material batching?)
+    material.Apply(_backend); // TODO: put this in a better place (material batching?)
 
-    _context.Backend.DrawMesh(
+    _backend.DrawMesh(
       Handle,
       vertexCount,
       indexCount,
@@ -183,9 +183,9 @@ public sealed class Mesh<TVertex> : Mesh
 
   public override void Draw(ShaderProgram shader, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles)
   {
-    _context.Backend.SetActiveShader(shader.Handle);
+    _backend.SetActiveShader(shader.Handle);
 
-    _context.Backend.DrawMesh(
+    _backend.DrawMesh(
       Handle,
       vertexCount,
       indexCount,
@@ -198,7 +198,7 @@ public sealed class Mesh<TVertex> : Mesh
   {
     if (managed)
     {
-      _context.Backend.DeleteMesh(Handle);
+      _backend.DeleteMesh(Handle);
 
       Vertices.Dispose();
       Indices.Dispose();

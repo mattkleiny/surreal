@@ -44,7 +44,7 @@ public sealed class MultiDictionary<TKey, TValue>(IEqualityComparer<TKey> compar
   /// <summary>
   /// The values of the dictionary.
   /// </summary>
-  public IEnumerable<TValue> Values => _dictionary.Values.SelectMany(_ => _);
+  public IEnumerable<TValue> Values => _dictionary.Values.SelectMany(x => x);
 
   public ReadOnlySlice<TValue> this[TKey key]
   {

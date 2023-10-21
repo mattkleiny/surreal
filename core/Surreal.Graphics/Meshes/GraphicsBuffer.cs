@@ -21,7 +21,7 @@ public enum BufferUsage
 }
 
 /// <summary>
-/// A buffer of data on the <see cref="GraphicsContext" />.
+/// A buffer of data on the <see cref="IGraphicsBackend" />.
 /// </summary>
 public abstract class GraphicsBuffer : GraphicsAsset, IHasSizeEstimate
 {
@@ -34,12 +34,12 @@ public abstract class GraphicsBuffer : GraphicsAsset, IHasSizeEstimate
 /// <summary>
 /// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.
 /// </summary>
-public sealed class GraphicsBuffer<T>(GraphicsContext context, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
+public sealed class GraphicsBuffer<T>(IGraphicsBackend backend, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
   where T : unmanaged
 {
   public override Type ElementType => typeof(T);
 
-  public GraphicsHandle Handle { get; } = context.Backend.CreateBuffer(type);
+  public GraphicsHandle Handle { get; } = backend.CreateBuffer(type);
   public BufferType Type { get; } = type;
   public BufferUsage Usage { get; } = usage;
 
@@ -49,7 +49,7 @@ public sealed class GraphicsBuffer<T>(GraphicsContext context, BufferType type, 
       .GetOrDefault(Range.All)
       .GetOffsetAndLength((int)Length);
 
-    return context.Backend.ReadBufferData<T>(Handle, Type, offset, length);
+    return backend.ReadBufferData<T>(Handle, Type, offset, length);
   }
 
   public void Write(ReadOnlySpan<T> buffer)
@@ -57,19 +57,19 @@ public sealed class GraphicsBuffer<T>(GraphicsContext context, BufferType type, 
     Length = (uint)buffer.Length;
     Size = buffer.CalculateSize();
 
-    context.Backend.WriteBufferData(Handle, Type, buffer, Usage);
+    backend.WriteBufferData(Handle, Type, buffer, Usage);
   }
 
   public void Write(nint offset, ReadOnlySpan<T> buffer)
   {
-    context.Backend.WriteBufferSubData(Handle, Type, offset, buffer);
+    backend.WriteBufferSubData(Handle, Type, offset, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      context.Backend.DeleteBuffer(Handle);
+      backend.DeleteBuffer(Handle);
     }
 
     base.Dispose(managed);

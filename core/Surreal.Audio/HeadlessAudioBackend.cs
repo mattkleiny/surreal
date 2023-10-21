@@ -5,7 +5,7 @@ namespace Surreal.Audio;
 /// <summary>
 /// A no-op <see cref="IAudioBackend" /> for headless environments and testing.
 /// </summary>
-public sealed class HeadlessAudioBackend : IAudioBackend
+internal sealed class HeadlessAudioBackend : IAudioBackend
 {
   private int _nextClipId;
   private int _nextSourceId;

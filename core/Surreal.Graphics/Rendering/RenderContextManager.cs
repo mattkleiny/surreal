@@ -49,7 +49,7 @@ public interface IRenderContextManager
 /// <summary>
 /// The default <see cref="IRenderContextManager"/> implementation.
 /// </summary>
-public sealed class RenderContextManager(GraphicsContext graphicsContext, AssetManager assetManager) : IRenderContextManager, IDisposable
+public sealed class RenderContextManager(IGraphicsBackend backend, AssetManager assetManager) : IRenderContextManager, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 
@@ -67,7 +67,7 @@ public sealed class RenderContextManager(GraphicsContext graphicsContext, AssetM
   {
     Log.Trace($"Registering render context descriptor {descriptor.GetType()}");
 
-    var context = await descriptor.BuildContextAsync(graphicsContext, assetManager, cancellationToken);
+    var context = await descriptor.BuildContextAsync(backend, assetManager, cancellationToken);
 
     _contexts.Add(context.GetType(), context);
   }

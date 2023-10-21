@@ -1,4 +1,6 @@
-﻿using Surreal.Resources;
+﻿using Surreal.Diagnostics.Logging;
+using Surreal.Diagnostics.Profiling;
+using Surreal.Resources;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -26,11 +28,6 @@ public sealed record GameConfiguration
   /// The <see cref="IGameHost"/> for the game.
   /// </summary>
   public required IGameHost Host { get; init; }
-
-  /// <summary>
-  /// A set of all <see cref="IAssetLoader"/>s to use for the game.
-  /// </summary>
-  public List<IAssetLoader> AssetLoaders { get; } = new();
 }
 
 /// <summary>
@@ -70,6 +67,9 @@ public static class Game
   /// </summary>
   public static void Start(GameConfiguration configuration)
   {
+    LogFactory.Current = new TextWriterLogFactory(Console.Out, LogLevel.Trace);
+    ProfilerFactory.Current = new SamplingProfilerFactory(new InMemoryProfilerSampler());
+
     using var platform = configuration.Platform.BuildHost(configuration.Host);
     using var host = configuration.Host;
 

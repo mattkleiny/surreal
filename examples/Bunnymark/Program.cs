@@ -13,25 +13,28 @@
   },
   Host = GameHost.Create(async () =>
   {
+    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
+
     Game.Assets.AddLoader(new ImageLoader());
-    Game.Assets.AddLoader(new TextureLoader(GraphicsContext.Default));
+    Game.Assets.AddLoader(new TextureLoader(graphics));
 
-    using var batch = new SpriteBatch();
-
+    using var batch = new SpriteBatch(graphics);
     var bunnies = new List<Bunny>();
-    var sprite = await Game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
 
-    return time =>
+    await Game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
+
+    return _ =>
     {
+      // update bunnies
       foreach (ref var bunny in bunnies.AsSpan())
       {
-        // TODO: update bunnies
+        bunny.Position += Vector2.UnitY;
       }
 
-      foreach (ref var bunny in bunnies.AsSpan())
-      {
-        // TODO: draw bunnies
-      }
+      // // draw bunnies
+      // foreach (ref var bunny in bunnies.AsSpan())
+      // {
+      // }
     };
   })
 });

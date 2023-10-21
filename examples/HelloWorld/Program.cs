@@ -13,15 +13,16 @@ Game.Start(new GameConfiguration
   },
   Host = GameHost.Create(() =>
   {
+    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
+
     var color1 = Random.Shared.Next<Color>();
     var color2 = Random.Shared.Next<Color>();
 
     return time =>
     {
-      var context = GraphicsContext.Default;
       var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
 
-      context.Backend.ClearColorBuffer(color);
+      graphics.ClearColorBuffer(color);
     };
   })
 });

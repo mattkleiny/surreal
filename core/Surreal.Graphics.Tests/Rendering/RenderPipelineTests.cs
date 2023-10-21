@@ -5,9 +5,7 @@ public class RenderPipelineTests
   [Test]
   public void it_should_work()
   {
-    var context = GraphicsContext.Headless;
-
-    using var pipeline = new DeferredRenderPipeline(context);
+    using var pipeline = new DeferredRenderPipeline(IGraphicsBackend.Headless);
 
     var cameras = new[]
     {

@@ -10,7 +10,7 @@ namespace Surreal.Graphics;
 /// </summary>
 public abstract class GraphicsAsset : TrackedAsset<GraphicsAsset>
 {
-  public static Size AllocatedBufferSize => GetSizeEstimate<GraphicsBuffer>();
-  public static Size AllocatedTextureSize => GetSizeEstimate<Texture>();
-  public static Size AllocatedMeshSize => GetSizeEstimate<Mesh>();
+  public static Size TotalBufferSize => GetSizeEstimate<GraphicsBuffer>();
+  public static Size TotalTextureSize => GetSizeEstimate<Texture>();
+  public static Size TotalMeshSize => GetSizeEstimate<Mesh>();
 }

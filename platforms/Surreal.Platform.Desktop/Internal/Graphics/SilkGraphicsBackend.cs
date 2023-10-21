@@ -165,8 +165,6 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
 
     gl.BindTexture(TextureTarget.Texture2D, handle);
-    gl.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
-    gl.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
 
     fixed (T* pointer = buffer)
     {

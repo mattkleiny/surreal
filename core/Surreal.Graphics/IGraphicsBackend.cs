@@ -11,6 +11,11 @@ namespace Surreal.Graphics;
 /// </summary>
 public interface IGraphicsBackend
 {
+  /// <summary>
+  /// A no-op <see cref="IGraphicsBackend" /> for headless environments and testing.
+  /// </summary>
+  static IGraphicsBackend Headless { get; } = new HeadlessGraphicsBackend();
+
   // intrinsics
   void SetViewportSize(Viewport viewport);
   void SetBlendState(BlendState state);

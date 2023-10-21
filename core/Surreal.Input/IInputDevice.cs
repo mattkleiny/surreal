@@ -3,6 +3,4 @@
 /// <summary>
 /// An input device on the platform.
 /// </summary>
-public interface IInputDevice
-{
-}
+public interface IInputDevice;

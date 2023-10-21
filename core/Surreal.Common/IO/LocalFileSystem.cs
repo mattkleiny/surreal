@@ -22,7 +22,7 @@ public sealed class LocalFileSystem() : FileSystem("local")
   {
     return Directory
       .GetFiles(path, wildcard, SearchOption.AllDirectories)
-      .Select(_ => new VirtualPath("local", _))
+      .Select(x => new VirtualPath("local", x))
       .ToArray();
   }
 

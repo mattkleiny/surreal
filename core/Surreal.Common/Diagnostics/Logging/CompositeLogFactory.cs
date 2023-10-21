@@ -15,7 +15,7 @@ public sealed class CompositeLogFactory(params ILogFactory[] factories) : ILogFa
   /// </summary>
   private sealed class CompositeLog(IEnumerable<ILog> logs) : ILog
   {
-    private readonly ILog[] _logs = logs.ToArray<ILog>();
+    private readonly ILog[] _logs = logs.ToArray();
 
     public bool IsLevelEnabled(LogLevel level)
     {

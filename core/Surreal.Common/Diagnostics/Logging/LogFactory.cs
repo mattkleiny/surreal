@@ -45,14 +45,9 @@ public static class LogFactory
   /// <summary>
   /// A <see cref="ILog" /> that lazily acquires the <see cref="ILog" /> target.
   /// </summary>
-  private sealed class LazyLog : ILog
+  private sealed class LazyLog(string category) : ILog
   {
-    private readonly Lazy<ILog> _log;
-
-    public LazyLog(string category)
-    {
-      _log = new Lazy<ILog>(() => Current.GetLog(category));
-    }
+    private readonly Lazy<ILog> _log = new(() => Current.GetLog(category));
 
     public bool IsLevelEnabled(LogLevel level)
     {

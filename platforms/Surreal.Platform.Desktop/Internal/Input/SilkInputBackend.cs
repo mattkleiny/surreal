@@ -1,22 +1,10 @@
-﻿using Silk.NET.Input;
+﻿namespace Surreal.Input;
 
-namespace Surreal.Input;
-
-internal sealed class SilkInputBackend(SilkWindow window) : IInputBackend, IDisposable
+internal sealed class SilkInputBackend : IInputBackend, IDisposable
 {
-  public IEnumerable<IInputDevice> Devices { get; } = CreateInputDevices(window.Input);
+  public IEnumerable<IInputDevice> Devices { get; } = Enumerable.Empty<IInputDevice>();
 
   public void Dispose()
   {
-  }
-
-  private static List<IInputDevice> CreateInputDevices(IInputContext context)
-  {
-    var results = new List<IInputDevice>();
-
-    results.AddRange(context.Keyboards.Select(keyboard => new SilkKeyboardDevice(keyboard)));
-    results.AddRange(context.Mice.Select(mouse => new SilkMouseDevice(mouse)));
-
-    return results;
   }
 }

@@ -11,7 +11,7 @@ public class BitmapFontTests
   [Test]
   public async Task it_should_load_a_bitmap_font()
   {
-    var context = GraphicsContext.Headless;
+    var context = IGraphicsBackend.Headless;
 
     using var manager = new AssetManager();
 
@@ -27,7 +27,7 @@ public class BitmapFontTests
   [Test]
   public async Task it_should_draw_to_a_sprite_batch()
   {
-    var context = GraphicsContext.Headless;
+    var context = IGraphicsBackend.Headless;
 
     using var manager = new AssetManager();
     using var batch = new SpriteBatch(context, 128);

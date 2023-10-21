@@ -41,11 +41,11 @@ public enum TextureFilterMode
 /// A texture that can be uploaded to the GPU.
 /// </summary>
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
-public sealed class Texture(GraphicsContext context, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : GraphicsAsset, IHasSizeEstimate
+public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : GraphicsAsset, IHasSizeEstimate
 {
   public int Width { get; private set; }
   public int Height { get; private set; }
-  public GraphicsHandle Handle { get; } = context.Backend.CreateTexture(filterMode, wrapMode);
+  public GraphicsHandle Handle { get; } = backend.CreateTexture(filterMode, wrapMode);
   public TextureFormat Format { get; set; } = format;
 
   public TextureFilterMode FilterMode
@@ -54,7 +54,7 @@ public sealed class Texture(GraphicsContext context, TextureFormat format, Textu
     set
     {
       filterMode = value;
-      context.Backend.SetTextureFilterMode(Handle, value);
+      backend.SetTextureFilterMode(Handle, value);
     }
   }
 
@@ -64,7 +64,7 @@ public sealed class Texture(GraphicsContext context, TextureFormat format, Textu
     set
     {
       wrapMode = value;
-      context.Backend.SetTextureWrapMode(Handle, value);
+      backend.SetTextureWrapMode(Handle, value);
     }
   }
 
@@ -73,9 +73,9 @@ public sealed class Texture(GraphicsContext context, TextureFormat format, Textu
   /// <summary>
   /// Creates a colored 1x1 texture.
   /// </summary>
-  public static Texture CreateColored(GraphicsContext context, Color color, TextureFormat format = TextureFormat.Rgba8)
+  public static Texture CreateColored(IGraphicsBackend backend, Color color, TextureFormat format = TextureFormat.Rgba8)
   {
-    var texture = new Texture(context, format, TextureFilterMode.Point, TextureWrapMode.Clamp);
+    var texture = new Texture(backend, format, TextureFilterMode.Point, TextureWrapMode.Clamp);
 
     texture.WritePixels<Color>(1, 1, stackalloc Color[] { color });
 
@@ -85,9 +85,9 @@ public sealed class Texture(GraphicsContext context, TextureFormat format, Textu
   /// <summary>
   /// Creates a texture from random noise.
   /// </summary>
-  public static Texture CreateNoise(GraphicsContext context, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8)
+  public static Texture CreateNoise(IGraphicsBackend backend, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8)
   {
-    var texture = new Texture(context, format, TextureFilterMode.Point, TextureWrapMode.Clamp);
+    var texture = new Texture(backend, format, TextureFilterMode.Point, TextureWrapMode.Clamp);
     var random = seed.ToRandom();
 
     var pixels = new SpanGrid<Color>(new Color[width * height], width);
@@ -113,25 +113,25 @@ public sealed class Texture(GraphicsContext context, TextureFormat format, Textu
   public Memory<T> ReadPixels<T>()
     where T : unmanaged
   {
-    return context.Backend.ReadTextureData<T>(Handle);
+    return backend.ReadTextureData<T>(Handle);
   }
 
   public void ReadPixels<T>(Span<T> buffer)
     where T : unmanaged
   {
-    context.Backend.ReadTextureData(Handle, buffer);
+    backend.ReadTextureData(Handle, buffer);
   }
 
   public Memory<T> ReadPixelsSub<T>(int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    return context.Backend.ReadTextureSubData<T>(Handle, offsetX, offsetY, (uint)width, (uint)height);
+    return backend.ReadTextureSubData<T>(Handle, offsetX, offsetY, (uint)width, (uint)height);
   }
 
   public void ReadPixelsSub<T>(Span<T> buffer, int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    context.Backend.ReadTextureSubData(Handle, buffer, offsetX, offsetY, (uint)width, (uint)height);
+    backend.ReadTextureSubData(Handle, buffer, offsetX, offsetY, (uint)width, (uint)height);
   }
 
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
@@ -141,13 +141,13 @@ public sealed class Texture(GraphicsContext context, TextureFormat format, Textu
     Height = height;
     Size = pixels.CalculateSize();
 
-    context.Backend.WriteTextureData(Handle, (uint)width, (uint)height, pixels, Format);
+    backend.WriteTextureData(Handle, (uint)width, (uint)height, pixels, Format);
   }
 
   public void WritePixelsSub<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    context.Backend.WriteTextureSubData(Handle, offsetX, offsetY, (uint)width, (uint)height, pixels, Format);
+    backend.WriteTextureSubData(Handle, offsetX, offsetY, (uint)width, (uint)height, pixels, Format);
   }
 
   public void WritePixels(Image image)
@@ -161,7 +161,7 @@ public sealed class Texture(GraphicsContext context, TextureFormat format, Textu
   {
     if (managed)
     {
-      context.Backend.DeleteTexture(Handle);
+      backend.DeleteTexture(Handle);
     }
 
     base.Dispose(managed);

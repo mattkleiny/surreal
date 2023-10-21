@@ -6,9 +6,9 @@
 public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
 {
   private T[] _elements = new T[capacity];
-  private int _writePos = 0;
+  private int _writePos;
 
-  public int Count { get; private set; } = 0;
+  public int Count { get; private set; }
   public int Capacity => _elements.Length;
 
   /// <summary>

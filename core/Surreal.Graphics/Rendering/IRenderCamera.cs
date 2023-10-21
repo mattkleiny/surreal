@@ -5,10 +5,7 @@ namespace Surreal.Graphics.Rendering;
 /// <summary>
 /// Represents an object that has been culled by a camera.
 /// </summary>
-public readonly struct CulledObject
-{
-  public readonly ushort Id;
-}
+public readonly struct CulledObject;
 
 /// <summary>
 /// Represents a kind of camera that can be used to render a scene.
