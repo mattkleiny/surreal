@@ -130,7 +130,7 @@
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
   <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.1"/>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.9"/>
 
     <Using Include="BenchmarkDotNet"/>
     <Using Include="BenchmarkDotNet.Attributes"/>

@@ -3,7 +3,7 @@
 namespace Surreal.Scripting;
 
 /// <summary>
-/// A language supported by a <see cref="IScriptBackend" />.
+/// A language supported that supports scripting.
 /// </summary>
 public interface IScriptLanguage
 {
