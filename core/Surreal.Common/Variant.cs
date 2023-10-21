@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using Surreal.Colors;
-using Color = System.Drawing.Color;
 
 namespace Surreal;
 
@@ -32,234 +31,246 @@ public enum VariantType : byte
 }
 
 /// <summary>
-/// A variant type that can hold any type of common data.
+/// A union of all possible <see cref="Variant"/> primitive values.
 /// </summary>
-[StructLayout(LayoutKind.Explicit)]
+[StructLayout(LayoutKind.Explicit, Size = 16)]
+internal struct VariantValue
+{
+  [FieldOffset(0)] public bool Bool;
+  [FieldOffset(0)] public byte Byte;
+  [FieldOffset(0)] public short Short;
+  [FieldOffset(0)] public ushort Ushort;
+  [FieldOffset(0)] public int Int;
+  [FieldOffset(0)] public uint Uint;
+  [FieldOffset(0)] public long Long;
+  [FieldOffset(0)] public ulong Ulong;
+  [FieldOffset(0)] public float Float;
+  [FieldOffset(0)] public double Double;
+  [FieldOffset(0)] public decimal Decimal;
+  [FieldOffset(0)] public Vector2 Vector2;
+  [FieldOffset(0)] public Vector3 Vector3;
+  [FieldOffset(0)] public Vector4 Vector4;
+  [FieldOffset(0)] public Quaternion Quaternion;
+  [FieldOffset(0)] public Color Color;
+  [FieldOffset(0)] public Color32 Color32;
+}
+
+/// <summary>
+/// A variant type that can hold any type of common data in at most 16 bytes.
+/// </summary>
 public readonly struct Variant
 {
-  [FieldOffset(0)] private readonly VariantType _type;
-  [FieldOffset(4)] private readonly bool _bool;
-  [FieldOffset(4)] private readonly byte _byte;
-  [FieldOffset(4)] private readonly short _short;
-  [FieldOffset(4)] private readonly ushort _ushort;
-  [FieldOffset(4)] private readonly int _int;
-  [FieldOffset(4)] private readonly uint _uint;
-  [FieldOffset(4)] private readonly long _long;
-  [FieldOffset(4)] private readonly ulong _ulong;
-  [FieldOffset(4)] private readonly float _float;
-  [FieldOffset(4)] private readonly double _double;
-  [FieldOffset(4)] private readonly decimal _decimal;
-  [FieldOffset(4)] private readonly Vector2 _vector2;
-  [FieldOffset(4)] private readonly Vector3 _vector3;
-  [FieldOffset(4)] private readonly Vector4 _vector4;
-  [FieldOffset(4)] private readonly Quaternion _quaternion;
-  [FieldOffset(4)] private readonly Color _color;
-  [FieldOffset(4)] private readonly Color32 _color32;
-  [FieldOffset(4)] private readonly object? _object;
-  [FieldOffset(4)] private readonly Array? _array;
+  private readonly VariantValue _value;
+  private readonly object? _object;
 
   /// <summary>
   /// Creates a new <see cref="Variant"/> from a <see cref="object"/>.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Variant From(object value)
-  {
-    return new Variant(value);
-  }
+  public static Variant From(object value) => new(value);
+
+  /// <summary>
+  /// The type of the <see cref="Variant"/>.
+  /// </summary>
+  public VariantType Type { get; }
+
+  #region Constructors
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(bool value)
   {
-    _type = VariantType.Bool;
-    _bool = value;
+    Type = VariantType.Bool;
+    _value.Bool = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(byte value)
   {
-    _type = VariantType.Byte;
-    _byte = value;
+    Type = VariantType.Byte;
+    _value.Byte = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(short value)
   {
-    _type = VariantType.Short;
-    _short = value;
+    Type = VariantType.Short;
+    _value.Short = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(ushort value)
   {
-    _type = VariantType.Ushort;
-    _ushort = value;
+    Type = VariantType.Ushort;
+    _value.Ushort = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(int value)
   {
-    _type = VariantType.Int;
-    _int = value;
+    Type = VariantType.Int;
+    _value.Int = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(uint value)
   {
-    _type = VariantType.Uint;
-    _uint = value;
+    Type = VariantType.Uint;
+    _value.Uint = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(long value)
   {
-    _type = VariantType.Long;
-    _long = value;
+    Type = VariantType.Long;
+    _value.Long = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(ulong value)
   {
-    _type = VariantType.Ulong;
-    _ulong = value;
+    Type = VariantType.Ulong;
+    _value.Ulong = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(float value)
   {
-    _type = VariantType.Float;
-    _float = value;
+    Type = VariantType.Float;
+    _value.Float = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(double value)
   {
-    _type = VariantType.Double;
-    _double = value;
+    Type = VariantType.Double;
+    _value.Double = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(decimal value)
   {
-    _type = VariantType.Decimal;
-    _decimal = value;
+    Type = VariantType.Decimal;
+    _value.Decimal = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(Vector2 value)
   {
-    _type = VariantType.Vector2;
-    _vector2 = value;
+    Type = VariantType.Vector2;
+    _value.Vector2 = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(Vector3 value)
   {
-    _type = VariantType.Vector3;
-    _vector3 = value;
+    Type = VariantType.Vector3;
+    _value.Vector3 = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(Vector4 value)
   {
-    _type = VariantType.Vector4;
-    _vector4 = value;
+    Type = VariantType.Vector4;
+    _value.Vector4 = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(Quaternion value)
   {
-    _type = VariantType.Quaternion;
-    _quaternion = value;
+    Type = VariantType.Quaternion;
+    _value.Quaternion = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(Color value)
   {
-    _type = VariantType.Color;
-    _color = value;
+    Type = VariantType.Color;
+    _value.Color = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(Color32 value)
   {
-    _type = VariantType.Color32;
-    _color32 = value;
+    Type = VariantType.Color32;
+    _value.Color32 = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(string value)
   {
-    _type = VariantType.String;
+    Type = VariantType.String;
     _object = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(object value)
   {
-    _type = VariantType.Object;
+    Type = VariantType.Object;
     _object = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private Variant(Array value)
   {
-    _type = VariantType.Array;
-    _array = value;
+    Type = VariantType.Array;
+    _object = value;
   }
 
-  public VariantType Type => _type;
+  #endregion
+
+  #region Explicit Conversions
 
   // explicit conversion
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public bool AsBool() => _bool;
+  public bool AsBool() => _value.Bool;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public byte AsByte() => _byte;
+  public byte AsByte() => _value.Byte;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public short AsShort() => _short;
+  public short AsShort() => _value.Short;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public ushort AsUshort() => _ushort;
+  public ushort AsUshort() => _value.Ushort;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public int AsInt() => _int;
+  public int AsInt() => _value.Int;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public uint AsUint() => _uint;
+  public uint AsUint() => _value.Uint;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public long AsLong() => _long;
+  public long AsLong() => _value.Long;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public ulong AsUlong() => _ulong;
+  public ulong AsUlong() => _value.Ulong;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public float AsFloat() => _float;
+  public float AsFloat() => _value.Float;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public double AsDouble() => _double;
+  public double AsDouble() => _value.Double;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public decimal AsDecimal() => _decimal;
+  public decimal AsDecimal() => _value.Decimal;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Vector2 AsVector2() => _vector2;
+  public Vector2 AsVector2() => _value.Vector2;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Vector3 AsVector3() => _vector3;
+  public Vector3 AsVector3() => _value.Vector3;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Vector4 AsVector4() => _vector4;
+  public Vector4 AsVector4() => _value.Vector4;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Quaternion AsQuaternion() => _quaternion;
+  public Quaternion AsQuaternion() => _value.Quaternion;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Color AsColor() => _color;
+  public Color AsColor() => _value.Color;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Color32 AsColor32() => _color32;
+  public Color32 AsColor32() => _value.Color32;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public string? AsString() => _object as string;
@@ -268,10 +279,15 @@ public readonly struct Variant
   public object? AsObject() => _object;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Array? AsArray() => _array;
+  public Array? AsArray() => _object as Array;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public T? As<T>() where T : class => _object as T;
+  public T? As<T>()
+    where T : class => _object as T;
+
+  #endregion
+
+  #region Implicit Conversions
 
   // implicit conversion
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -330,4 +346,6 @@ public readonly struct Variant
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator Variant(Array value) => new(value);
+
+  #endregion
 }
