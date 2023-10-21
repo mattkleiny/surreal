@@ -17,7 +17,18 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public void SetBlendState(BlendState state)
   {
-    throw new NotImplementedException();
+    if (state.IsEnabled)
+    {
+      var sFactor = ConvertBlendFactor(state.Source);
+      var dFactor = ConvertBlendFactor(state.Target);
+
+      gl.Enable(EnableCap.Blend);
+      gl.BlendFunc(sFactor, dFactor);
+    }
+    else
+    {
+      gl.Disable(EnableCap.Blend);
+    }
   }
 
   public void ClearColorBuffer(Color color)
@@ -52,7 +63,12 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
     fixed (T* pointer = result)
     {
-      gl.GetBufferSubData(kind, offset * sizeof(T), (uint)(length * sizeof(T)), pointer);
+      gl.GetBufferSubData(
+        target: kind,
+        offset: offset * sizeof(T),
+        size: (uint)(length * sizeof(T)),
+        data: pointer
+      );
     }
 
     return result;
@@ -102,58 +118,195 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
-    throw new NotImplementedException();
+    var texture = gl.GenTexture();
+
+    gl.BindTexture(TextureTarget.Texture2D, texture);
+
+    var textureFilterMode = ConvertTextureFilterMode(filterMode);
+    var textureWrapMode = ConvertTextureWrapMode(wrapMode);
+
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.GenerateMipmapSgis, 0);
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, textureFilterMode);
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, textureFilterMode);
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, textureWrapMode);
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, textureWrapMode);
+
+    return new GraphicsHandle(texture);
   }
 
-  public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
+  public unsafe Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
     where T : unmanaged
   {
-    throw new NotImplementedException();
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+    gl.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
+    gl.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
+
+    var results = new T[width * height];
+
+    fixed (T* pointer = results)
+    {
+      gl.GetTexImage(
+        target: TextureTarget.Texture2D,
+        level: mipLevel,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
+      );
+    }
+
+    return results;
   }
 
-  public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
+  public unsafe void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
     where T : unmanaged
   {
-    throw new NotImplementedException();
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+    gl.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out int width);
+    gl.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out int height);
+
+    fixed (T* pointer = buffer)
+    {
+      gl.GetTexImage(
+        target: TextureTarget.Texture2D,
+        level: mipLevel,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
+      );
+    }
   }
 
-  public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+  public unsafe Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
     where T : unmanaged
   {
-    throw new NotImplementedException();
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+
+    var results = new T[width * height];
+
+    fixed (T* pointer = results)
+    {
+      gl.GetTextureSubImage(
+        texture: handle,
+        level: mipLevel,
+        xoffset: offsetX,
+        yoffset: offsetY,
+        zoffset: 0,
+        width: width,
+        height: height,
+        depth: 1,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer,
+        bufSize: (uint)results.Length
+      );
+    }
+
+    return results;
   }
 
-  public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+  public unsafe void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
     where T : unmanaged
   {
-    throw new NotImplementedException();
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+
+    fixed (T* pointer = buffer)
+    {
+      gl.GetTextureSubImage(
+        texture: handle,
+        level: mipLevel,
+        xoffset: offsetX,
+        yoffset: offsetY,
+        zoffset: 0,
+        width: width,
+        height: height,
+        depth: 1,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer,
+        bufSize: (uint)buffer.Length
+      );
+    }
   }
 
-  public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+  public unsafe void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
     where T : unmanaged
   {
-    throw new NotImplementedException();
+    var internalFormat = GetInternalFormat(format);
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+
+    fixed (T* pointer = pixels)
+    {
+      gl.TexImage2D(
+        target: TextureTarget.Texture2D,
+        level: mipLevel,
+        internalformat: internalFormat,
+        width: width,
+        height: height,
+        border: 0,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
+      );
+    }
   }
 
-  public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format,
+    int mipLevel = 0)
     where T : unmanaged
   {
-    throw new NotImplementedException();
+    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
+
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+
+    fixed (T* pointer = pixels)
+    {
+      gl.TexSubImage2D(
+        TextureTarget.Texture2D,
+        mipLevel,
+        width: width,
+        height: height,
+        xoffset: offsetX,
+        yoffset: offsetY,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
+      );
+    }
   }
 
   public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
   {
-    throw new NotImplementedException();
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+
+    var textureFilterMode = ConvertTextureFilterMode(mode);
+
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, textureFilterMode);
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, textureFilterMode);
   }
 
   public void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode)
   {
-    throw new NotImplementedException();
+    gl.BindTexture(TextureTarget.Texture2D, handle);
+
+    var textureWrapMode = ConvertTextureWrapMode(mode);
+
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, textureWrapMode);
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, textureWrapMode);
   }
 
   public void DeleteTexture(GraphicsHandle handle)
   {
-    throw new NotImplementedException();
+    gl.DeleteTexture(handle);
   }
 
   public unsafe GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
@@ -171,12 +324,12 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
       var attribute = descriptors[index];
 
       gl.VertexAttribPointer(
-        (uint)index,
-        attribute.Count,
-        ConvertVertexType(attribute.Type),
-        attribute.ShouldNormalize,
-        descriptors.Stride,
-        (void*)attribute.Offset
+        index: (uint)index,
+        size: attribute.Count,
+        type: ConvertVertexType(attribute.Type),
+        normalized: attribute.ShouldNormalize,
+        stride: descriptors.Stride,
+        pointer: (void*)attribute.Offset
       );
       gl.EnableVertexAttribArray((uint)index);
     }
@@ -300,6 +453,24 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static BlendingFactor ConvertBlendFactor(BlendMode mode)
+  {
+    return mode switch
+    {
+      BlendMode.SourceColor => BlendingFactor.SrcColor,
+      BlendMode.TargetColor => BlendingFactor.DstColor,
+      BlendMode.SourceAlpha => BlendingFactor.SrcAlpha,
+      BlendMode.TargetAlpha => BlendingFactor.DstAlpha,
+      BlendMode.OneMinusSourceColor => BlendingFactor.OneMinusSrcAlpha,
+      BlendMode.OneMinusTargetColor => BlendingFactor.OneMinusDstColor,
+      BlendMode.OneMinusSourceAlpha => BlendingFactor.OneMinusSrcAlpha,
+      BlendMode.OneMinusTargetAlpha => BlendingFactor.OneMinusDstAlpha,
+
+      _ => throw new InvalidOperationException($"An unexpected blend mode was specified {mode}")
+    };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static BufferTargetARB ConvertBufferType(BufferType type)
   {
     return type switch
@@ -309,6 +480,65 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static int ConvertTextureFilterMode(TextureFilterMode filterMode)
+  {
+    return filterMode switch
+    {
+      TextureFilterMode.Point => (int)GLEnum.Nearest,
+      TextureFilterMode.Linear => (int)GLEnum.Linear,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
+    };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static int ConvertTextureWrapMode(TextureWrapMode wrapMode)
+  {
+    return wrapMode switch
+    {
+      TextureWrapMode.Clamp => (int)GLEnum.ClampToEdge,
+      TextureWrapMode.Repeat => (int)GLEnum.MirroredRepeat,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)
+    };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static int GetInternalFormat(TextureFormat format)
+  {
+    return format switch
+    {
+      // integral
+      TextureFormat.R8 => (int)GLEnum.R8,
+      TextureFormat.Rgb8 => (int)GLEnum.Rgb8,
+      TextureFormat.Rgba8 => (int)GLEnum.Rgba8,
+
+      // floating
+      TextureFormat.R => (int)GLEnum.Red,
+      TextureFormat.Rgb => (int)GLEnum.Rgb,
+      TextureFormat.Rgba => (int)GLEnum.Rgba,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+    };
+  }
+
+  private static (PixelFormat Format, PixelType Type) GetPixelFormatAndType(Type type)
+  {
+    // integral
+    if (type == typeof(byte)) return (PixelFormat.Red, PixelType.UnsignedByte);
+    if (type == typeof(Point3)) return (PixelFormat.Rgb, PixelType.UnsignedByte);
+    if (type == typeof(Color32)) return (PixelFormat.Rgba, PixelType.UnsignedByte);
+
+    // floating
+    if (type == typeof(float)) return (PixelFormat.Red, PixelType.Float);
+    if (type == typeof(Vector3)) return (PixelFormat.Rgb, PixelType.Float);
+    if (type == typeof(Vector4)) return (PixelFormat.Rgba, PixelType.Float);
+    if (type == typeof(Color)) return (PixelFormat.Rgba, PixelType.Float);
+
+    throw new InvalidOperationException($"An unrecognized pixel type was provided: {type}");
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -343,7 +573,6 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     };
   }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static DrawElementsType ConvertElementType(Type type)
   {
     if (type == typeof(byte)) return DrawElementsType.UnsignedByte;

@@ -210,7 +210,7 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     }
   }
 
-  public unsafe Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+  public unsafe Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
     where T : unmanaged
   {
     var texture = new TextureHandle(handle);
@@ -223,16 +223,16 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     fixed (T* pointer = results)
     {
       GL.GetTextureSubImage(
-        texture,
-        mipLevel,
-        offsetX,
-        offsetY,
-        0,
-        width,
-        height,
-        1,
-        pixelFormat,
-        pixelType,
+        texture: texture,
+        level: mipLevel,
+        xoffset: offsetX,
+        yoffset: offsetY,
+        zoffset: 0,
+        width: (int)width,
+        height: (int)height,
+        depth: 1,
+        format: pixelFormat,
+        type: pixelType,
         pixels: pointer,
         bufSize: results.Length
       );
@@ -241,7 +241,7 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     return results;
   }
 
-  public unsafe void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+  public unsafe void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
     where T : unmanaged
   {
     var texture = new TextureHandle(handle);
@@ -252,23 +252,23 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     fixed (T* pointer = buffer)
     {
       GL.GetTextureSubImage(
-        texture,
-        mipLevel,
-        offsetX,
-        offsetY,
-        0,
-        width,
-        height,
-        1,
-        pixelFormat,
-        pixelType,
+        texture: texture,
+        level: mipLevel,
+        xoffset: offsetX,
+        yoffset: offsetY,
+        zoffset: 0,
+        width: (int)width,
+        height: (int)height,
+        depth: 1,
+        format: pixelFormat,
+        type: pixelType,
         pixels: pointer,
         bufSize: buffer.Length
       );
     }
   }
 
-  public unsafe void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel)
+  public unsafe void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel)
     where T : unmanaged
   {
     var texture = new TextureHandle(handle);
@@ -281,20 +281,21 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     fixed (T* pointer = pixels)
     {
       GL.TexImage2D(
-        TextureTarget.Texture2d,
-        mipLevel,
-        internalFormat,
-        width,
-        height,
-        0,
-        pixelFormat,
-        pixelType,
-        pointer
+        target: TextureTarget.Texture2d,
+        level: mipLevel,
+        internalformat: internalFormat,
+        width: (int)width,
+        height: (int)height,
+        border: 0,
+        format: pixelFormat,
+        type: pixelType,
+        pixels: pointer
       );
     }
   }
 
-  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format,
+    int mipLevel = 0)
     where T : unmanaged
   {
     var texture = new TextureHandle(handle);
@@ -306,10 +307,10 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     fixed (T* pointer = pixels)
     {
       GL.TexSubImage2D(
-        TextureTarget.Texture2d,
-        mipLevel,
-        width: width,
-        height: height,
+        target: TextureTarget.Texture2d,
+        level: mipLevel,
+        width: (int)width,
+        height: (int)height,
         xoffset: offsetX,
         yoffset: offsetY,
         format: pixelFormat,
@@ -552,13 +553,11 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     {
       // integral
       TextureFormat.R8 => (int)All.R8,
-      TextureFormat.Rg8 => (int)All.Rg8,
       TextureFormat.Rgb8 => (int)All.Rgb8,
       TextureFormat.Rgba8 => (int)All.Rgba8,
 
       // floating
       TextureFormat.R => (int)All.R,
-      TextureFormat.Rg => (int)All.Rg,
       TextureFormat.Rgb => (int)All.Rgb,
       TextureFormat.Rgba => (int)All.Rgba,
 

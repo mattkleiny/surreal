@@ -11,11 +11,9 @@ namespace Surreal.Graphics.Textures;
 public enum TextureFormat
 {
   R8,
-  Rg8,
   Rgb8,
   Rgba8,
   R,
-  Rg,
   Rgb,
   Rgba
 }
@@ -42,19 +40,19 @@ public enum TextureFilterMode
 /// A texture that can be uploaded to the GPU.
 /// </summary>
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
-public sealed class Texture(GraphicsContext context,
+public sealed class Texture(
+  GraphicsContext context,
   TextureFormat format = TextureFormat.Rgba8,
   TextureFilterMode filterMode = TextureFilterMode.Point,
-  TextureWrapMode wrapMode = TextureWrapMode.Clamp) : GraphicsResource, IHasSizeEstimate
+  TextureWrapMode wrapMode = TextureWrapMode.Clamp
+) : GraphicsResource, IHasSizeEstimate
 {
   private TextureFilterMode _filterMode = TextureFilterMode.Point;
   private TextureWrapMode _wrapMode = TextureWrapMode.Clamp;
 
   public GraphicsContext Context { get; } = context;
-
   public int Width { get; private set; }
   public int Height { get; private set; }
-
   public GraphicsHandle Handle { get; } = context.Backend.CreateTexture(filterMode, wrapMode);
   public TextureFormat Format { get; set; } = format;
 
@@ -136,13 +134,13 @@ public sealed class Texture(GraphicsContext context,
   public Memory<T> ReadPixelsSub<T>(int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    return Context.Backend.ReadTextureSubData<T>(Handle, offsetX, offsetY, width, height);
+    return Context.Backend.ReadTextureSubData<T>(Handle, offsetX, offsetY, (uint)width, (uint)height);
   }
 
   public void ReadPixelsSub<T>(Span<T> buffer, int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    Context.Backend.ReadTextureSubData(Handle, buffer, offsetX, offsetY, width, height);
+    Context.Backend.ReadTextureSubData(Handle, buffer, offsetX, offsetY, (uint)width, (uint)height);
   }
 
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
@@ -152,13 +150,13 @@ public sealed class Texture(GraphicsContext context,
     Height = height;
     Size = pixels.CalculateSize();
 
-    Context.Backend.WriteTextureData(Handle, width, height, pixels, Format);
+    Context.Backend.WriteTextureData(Handle, (uint)width, (uint)height, pixels, Format);
   }
 
   public void WritePixelsSub<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    Context.Backend.WriteTextureSubData(Handle, offsetX, offsetY, width, height, pixels, Format);
+    Context.Backend.WriteTextureSubData(Handle, offsetX, offsetY, (uint)width, (uint)height, pixels, Format);
   }
 
   public void WritePixels(Image image)
