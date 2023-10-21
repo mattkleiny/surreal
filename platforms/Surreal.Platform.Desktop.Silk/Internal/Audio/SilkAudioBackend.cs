@@ -10,7 +10,8 @@ internal sealed class SilkAudioBackend : IAudioBackend
     throw new NotImplementedException();
   }
 
-  public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged
+  public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
+    where T : unmanaged
   {
     throw new NotImplementedException();
   }

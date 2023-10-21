@@ -193,5 +193,3 @@ internal sealed class OpenTKWindow : IDesktopWindow
     return flags;
   }
 }
-
-

@@ -54,17 +54,20 @@ public sealed class HeadlessGraphicsBackend : IGraphicsBackend
     // no-op
   }
 
-  public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length) where T : unmanaged
+  public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
+    where T : unmanaged
   {
     return Memory<T>.Empty;
   }
 
-  public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged
+  public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
+    where T : unmanaged
   {
     // no-op
   }
 
-  public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data) where T : unmanaged
+  public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data)
+    where T : unmanaged
   {
     // no-op
   }
@@ -74,32 +77,38 @@ public sealed class HeadlessGraphicsBackend : IGraphicsBackend
     return new GraphicsHandle(Interlocked.Increment(ref _nextTextureId));
   }
 
-  public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
+  public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
+    where T : unmanaged
   {
     return Memory<T>.Empty;
   }
 
-  public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0) where T : unmanaged
+  public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
+    where T : unmanaged
   {
     // no-op
   }
 
-  public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged
   {
     return Memory<T>.Empty;
   }
 
-  public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged
   {
     // no-op
   }
 
-  public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+    where T : unmanaged
   {
     // no-op
   }
 
-  public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+    where T : unmanaged
   {
     // no-op
   }

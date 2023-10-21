@@ -42,27 +42,65 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public GraphicsHandle CreateBuffer(BufferType type)
   {
-    throw new NotImplementedException();
+    return new GraphicsHandle(gl.GenBuffer());
   }
 
-  public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, int length) where T : unmanaged
+  public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
+    where T : unmanaged
   {
-    throw new NotImplementedException();
+    var kind = ConvertBufferType(type);
+    var result = new T[length];
+
+    gl.BindBuffer(kind, handle);
+
+    fixed (T* pointer = result)
+    {
+      gl.GetBufferSubData(kind, offset * sizeof(T), (uint)(length * sizeof(T)), pointer);
+    }
+
+    return result;
   }
 
-  public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged
+
+  public unsafe void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
+    where T : unmanaged
   {
-    throw new NotImplementedException();
+    var kind = ConvertBufferType(type);
+    var bytes = (uint)(data.Length * sizeof(T));
+
+    var bufferUsage = usage switch
+    {
+      BufferUsage.Static => BufferUsageARB.StaticDraw,
+      BufferUsage.Dynamic => BufferUsageARB.DynamicDraw,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(usage), usage, null)
+    };
+
+    gl.BindBuffer(kind, handle);
+
+    fixed (T* pointer = data)
+    {
+      gl.BufferData(kind, bytes, pointer, bufferUsage);
+    }
   }
 
-  public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, ReadOnlySpan<T> data) where T : unmanaged
+  public unsafe void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, ReadOnlySpan<T> data)
+    where T : unmanaged
   {
-    throw new NotImplementedException();
+    var kind = ConvertBufferType(type);
+    var bytes = (uint)(data.Length * sizeof(T));
+
+    gl.BindBuffer(kind, handle);
+
+    fixed (T* pointer = data)
+    {
+      gl.BufferSubData(kind, offset, bytes, pointer);
+    }
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
   {
-    throw new NotImplementedException();
+    gl.DeleteBuffer(handle);
   }
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
@@ -70,27 +108,32 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     throw new NotImplementedException();
   }
 
-  public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
+  public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
+    where T : unmanaged
   {
     throw new NotImplementedException();
   }
 
-  public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0) where T : unmanaged
+  public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
+    where T : unmanaged
   {
     throw new NotImplementedException();
   }
 
-  public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged
   {
     throw new NotImplementedException();
   }
 
-  public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged
+  public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged
   {
     throw new NotImplementedException();
   }
 
-  public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
+  public void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+    where T : unmanaged
   {
     throw new NotImplementedException();
   }
@@ -243,5 +286,17 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public void Dispose()
   {
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static BufferTargetARB ConvertBufferType(BufferType type)
+  {
+    return type switch
+    {
+      BufferType.Vertex => BufferTargetARB.ArrayBuffer,
+      BufferType.Index => BufferTargetARB.ElementArrayBuffer,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+    };
   }
 }

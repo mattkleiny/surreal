@@ -6,19 +6,19 @@
 public readonly record struct GraphicsHandle(nint Id)
 {
   public static GraphicsHandle None => default;
+  public static GraphicsHandle Invalid => new(-1);
 
-  public static implicit operator nint(GraphicsHandle handle)
+  public GraphicsHandle(uint Id)
+    : this((nint)Id)
   {
-    return handle.Id;
   }
 
-  public static implicit operator int(GraphicsHandle handle)
+  public GraphicsHandle(int Id)
+    : this((nint)Id)
   {
-    return (int)handle.Id;
   }
 
-  public static implicit operator uint(GraphicsHandle handle)
-  {
-    return (uint)handle.Id;
-  }
+  public static implicit operator nint(GraphicsHandle handle) => handle.Id;
+  public static implicit operator int(GraphicsHandle handle) => (int)handle.Id;
+  public static implicit operator uint(GraphicsHandle handle) => (uint)handle.Id;
 }

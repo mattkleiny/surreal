@@ -132,7 +132,8 @@ internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
     }
   }
 
-  public unsafe void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data) where T : unmanaged
+  public unsafe void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data)
+    where T : unmanaged
   {
     var buffer = new BufferHandle(handle);
     var kind = ConvertBufferType(type);
