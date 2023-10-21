@@ -15,14 +15,13 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
     return new AudioHandle(Interlocked.Increment(ref _nextClipId));
   }
 
-  public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged
+  public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
+    where T : unmanaged
   {
-    // no-op
   }
 
   public void DeleteAudioClip(AudioHandle clip)
   {
-    // no-op
   }
 
   public AudioHandle CreateAudioSource()
@@ -37,26 +36,21 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
 
   public void PlayAudioSource(AudioHandle source, AudioHandle clip)
   {
-    // no-op
   }
 
   public void StopAudioSource(AudioHandle source)
   {
-    // no-op
   }
 
   public void SetAudioSourceVolume(AudioHandle source, float value)
   {
-    // no-op
   }
 
   public void SetAudioSourceLooping(AudioHandle source, bool value)
   {
-    // no-op
   }
 
   public void DeleteAudioSource(AudioHandle source)
   {
-    // no-op
   }
 }

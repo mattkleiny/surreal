@@ -33,17 +33,30 @@ public readonly record struct BlendState(BlendMode Source, BlendMode Target)
 public readonly record struct MaterialProperty<T>(string Name);
 
 /// <summary>
+/// Indicates that a <see cref="MaterialProperty{T}"/> does not exist on a material.
+/// </summary>
+public sealed class InvalidMaterialPropertyException(string? message = "An invalid material property was specified") : ApplicationException(message);
+
+/// <summary>
 /// A set of <see cref="MaterialProperty{T}" />s in a <see cref="Material" />.
 /// </summary>
 [DebuggerDisplay("MaterialPropertySet ({_uniforms.Count} uniforms)")]
-public sealed class MaterialPropertySet
+public sealed class MaterialPropertySet : IEnumerable<KeyValuePair<string, Variant>>
 {
   private readonly Dictionary<string, Variant> _uniforms = new();
 
   /// <summary>
+  /// Determines if the material contains the given property.
+  /// </summary>
+  public bool Contains<T>(MaterialProperty<T> property)
+  {
+    return _uniforms.ContainsKey(property.Name);
+  }
+
+  /// <summary>
   /// Attempts to get a uniform property from the material.
   /// </summary>
-  public bool TryGetUniform<T>(MaterialProperty<T> property, out T value)
+  public bool TryGetProperty<T>(MaterialProperty<T> property, out T value)
   {
     if (_uniforms.TryGetValue(property.Name, out var variant))
     {
@@ -56,18 +69,59 @@ public sealed class MaterialPropertySet
   }
 
   /// <summary>
+  /// Attempts to get a uniform property from the material, returning a default value if it does not exist.
+  /// </summary>
+  public T GetPropertyOrDefault<T>(MaterialProperty<T> property, T defaultValue = default!)
+  {
+    if (!TryGetProperty(property, out var value))
+    {
+      return defaultValue;
+    }
+
+    return value;
+  }
+
+  /// <summary>
+  /// Attempts to get a uniform property from the material, throwing if it does not exist.
+  /// </summary>
+  public T GetPropertyOrThrow<T>(MaterialProperty<T> property, T defaultValue = default!)
+  {
+    if (!TryGetProperty(property, out var value))
+    {
+      throw new InvalidMaterialPropertyException($"Unable to locate uniform {property.Name}");
+    }
+
+    return value;
+  }
+
+  /// <summary>
   /// Sets a uniform property on the material.
   /// </summary>
-  public void SetUniform<T>(MaterialProperty<T> property, T value)
+  public void SetProperty<T>(MaterialProperty<T> property, T value)
   {
     _uniforms[property.Name] = Variant.From(value);
+  }
+
+  public Dictionary<string, Variant>.Enumerator GetEnumerator()
+  {
+    return _uniforms.GetEnumerator();
+  }
+
+  IEnumerator<KeyValuePair<string, Variant>> IEnumerable<KeyValuePair<string, Variant>>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
   }
 }
 
 /// <summary>
 /// A material is a configuration of the graphics state and properties used for rendering.
 /// </summary>
-public sealed class Material(ShaderProgram shader, bool ownsShader = true) : GraphicsAsset
+public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, bool ownsShader = true) : GraphicsAsset
 {
   /// <summary>
   /// The associated <see cref="ShaderProgram" /> for the material.
@@ -87,14 +141,16 @@ public sealed class Material(ShaderProgram shader, bool ownsShader = true) : Gra
   /// <summary>
   /// Applies the material properties to the underlying shader.
   /// </summary>
-  public void Apply(IGraphicsBackend backend)
+  public void ApplyMaterial()
   {
     // bind the shader
     backend.SetActiveShader(Shader.Handle);
 
-    // apply locals
-    // ApplyUniforms(Properties.Uniforms);
-    // ApplySamplers(Properties.Samplers);
+    // apply shader properties
+    foreach (var (name, value) in Properties)
+    {
+      shader.SetUniform(name, value);
+    }
 
     // apply blend state
     backend.SetBlendState(BlendState);
@@ -105,7 +161,9 @@ public sealed class Material(ShaderProgram shader, bool ownsShader = true) : Gra
   /// </summary>
   public void DrawFullscreenQuad()
   {
-    throw new NotImplementedException();
+    ApplyMaterial();
+
+    // TODO: draw fullscreen quad
   }
 
   protected override void Dispose(bool managed)

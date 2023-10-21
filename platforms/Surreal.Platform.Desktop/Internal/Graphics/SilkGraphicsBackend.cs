@@ -382,6 +382,11 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.ProgramUniform1(handle, location, value);
   }
 
+  public void SetShaderUniform(GraphicsHandle handle, int location, double value)
+  {
+    gl.ProgramUniform1(handle, location, value);
+  }
+
   public void SetShaderUniform(GraphicsHandle handle, int location, Point2 value)
   {
     gl.ProgramUniform2(handle, location, value.X, value.Y);
@@ -410,6 +415,16 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value)
   {
     gl.ProgramUniform4(handle, location, value.X, value.Y, value.Z, value.W);
+  }
+
+  public void SetShaderUniform(GraphicsHandle handle, int location, Color value)
+  {
+    gl.ProgramUniform4(handle, location, value.R, value.G, value.B, value.A);
+  }
+
+  public void SetShaderUniform(GraphicsHandle handle, int location, Color32 value)
+  {
+    gl.ProgramUniform4(handle, location, value.R, value.G, value.B, value.A);
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value)

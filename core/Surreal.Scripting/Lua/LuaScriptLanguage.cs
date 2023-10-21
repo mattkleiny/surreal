@@ -48,7 +48,7 @@ public sealed class LuaScriptLanguage : IScriptLanguage, IDisposable
 
     result = args =>
     {
-      var arguments = args.Select(a => a.ToObject()).ToArray();
+      var arguments = args.Select(a => a.Value).ToArray();
       var results = function.Call(arguments);
 
       if (results.Length > 0)

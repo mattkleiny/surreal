@@ -8,11 +8,11 @@ public class MaterialTests
     var backend = Substitute.For<IGraphicsBackend>();
 
     using var shader = new ShaderProgram(backend);
-    using var material = new Material(shader);
+    using var material = new Material(backend, shader);
 
     material.BlendState = BlendState.OneMinusSourceAlpha;
 
-    material.Apply(backend);
+    material.ApplyMaterial();
 
     backend.Received().SetActiveShader(Arg.Any<GraphicsHandle>());
     backend.Received().SetBlendState(material.BlendState);
@@ -24,7 +24,7 @@ public class MaterialTests
     var backend = Substitute.For<IGraphicsBackend>();
 
     using var shader = new ShaderProgram(backend);
-    var material = new Material(shader, ownsShader: true)
+    var material = new Material(backend, shader, ownsShader: true)
     {
       BlendState = BlendState.OneMinusSourceAlpha
     };
@@ -40,7 +40,7 @@ public class MaterialTests
     var backend = Substitute.For<IGraphicsBackend>();
 
     using var shader = new ShaderProgram(backend);
-    var material = new Material(shader, ownsShader: false)
+    var material = new Material(backend, shader, ownsShader: false)
     {
       BlendState = BlendState.OneMinusSourceAlpha
     };

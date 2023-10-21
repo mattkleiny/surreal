@@ -22,15 +22,15 @@ public class PixelCanvas : IDisposable
     var shader = new ShaderProgram(backend);
 
     _pixels = new DenseGrid<Color32>(width, height);
-    _material = new Material(shader)
+    _material = new Material(backend, shader)
     {
       BlendState = BlendState.OneMinusSourceAlpha
     };
 
     _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
 
-    _material.Properties.SetUniform(ProjectionView, Matrix4x4.Identity);
-    _material.Properties.SetUniform(Texture, _texture);
+    _material.Properties.SetProperty(ProjectionView, Matrix4x4.Identity);
+    _material.Properties.SetProperty(Texture, _texture);
   }
 
   /// <summary>
@@ -51,7 +51,7 @@ public class PixelCanvas : IDisposable
   /// <summary>
   /// Draws the canvas to the screen as a fullscreen quad.
   /// </summary>
-  public void Draw()
+  public void DrawFullscreenQuad()
   {
     _texture.WritePixels<Color32>(_pixels.Width, _pixels.Height, _pixels.AsSpan());
     _material.DrawFullscreenQuad();

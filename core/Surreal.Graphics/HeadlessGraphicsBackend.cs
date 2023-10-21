@@ -18,27 +18,22 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public void SetViewportSize(Viewport viewport)
   {
-    // no-op
   }
 
   public void SetBlendState(BlendState? state)
   {
-    // no-op
   }
 
   public void ClearColorBuffer(Color color)
   {
-    // no-op
   }
 
   public void ClearDepthBuffer()
   {
-    // no-op
   }
 
   public void FlushToDevice()
   {
-    // no-op
   }
 
   public GraphicsHandle CreateBuffer(BufferType type)
@@ -48,7 +43,6 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public void DeleteBuffer(GraphicsHandle handle)
   {
-    // no-op
   }
 
   public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
@@ -60,13 +54,11 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
     where T : unmanaged
   {
-    // no-op
   }
 
   public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data)
     where T : unmanaged
   {
-    // no-op
   }
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
@@ -83,7 +75,6 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
     where T : unmanaged
   {
-    // no-op
   }
 
   public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
@@ -95,34 +86,28 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
     where T : unmanaged
   {
-    // no-op
   }
 
   public void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
     where T : unmanaged
   {
-    // no-op
   }
 
   public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
     where T : unmanaged
   {
-    // no-op
   }
 
   public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
   {
-    // no-op
   }
 
   public void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode)
   {
-    // no-op
   }
 
   public void DeleteTexture(GraphicsHandle handle)
   {
-    // no-op
   }
 
   public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
@@ -132,12 +117,10 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
   {
-    // no-op
   }
 
   public void DeleteMesh(GraphicsHandle handle)
   {
-    // no-op
   }
 
   public GraphicsHandle CreateShader()
@@ -152,76 +135,73 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public void SetActiveShader(GraphicsHandle handle)
   {
-    // no-op
   }
 
   public void DeleteShader(GraphicsHandle handle)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, float value)
   {
-    // no-op
+  }
+
+  public void SetShaderUniform(GraphicsHandle handle, int location, double value)
+  {
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point2 value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point3 value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Point4 value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value)
   {
-    // no-op
+  }
+
+  public void SetShaderUniform(GraphicsHandle handle, int location, Color value)
+  {
+  }
+
+  public void SetShaderUniform(GraphicsHandle handle, int location, Color32 value)
+  {
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
   {
-    // no-op
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
   {
-    // no-op
   }
 
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
   {
-    // no-op
   }
 
   public void Dispose()
   {
-    // no-op
   }
 }

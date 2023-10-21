@@ -100,12 +100,15 @@ public interface IGraphicsBackend
   int GetShaderUniformLocation(GraphicsHandle handle, string name);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
   void SetShaderUniform(GraphicsHandle handle, int location, float value);
+  void SetShaderUniform(GraphicsHandle handle, int location, double value);
   void SetShaderUniform(GraphicsHandle handle, int location, Point2 value);
   void SetShaderUniform(GraphicsHandle handle, int location, Point3 value);
   void SetShaderUniform(GraphicsHandle handle, int location, Point4 value);
   void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value);
   void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value);
   void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Color value);
+  void SetShaderUniform(GraphicsHandle handle, int location, Color32 value);
   void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value);
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value);
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value);

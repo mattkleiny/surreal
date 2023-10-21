@@ -12,7 +12,7 @@ public class SpriteBatchTests
 
     using var batch = new SpriteBatch(backend);
     using var shader = new ShaderProgram(backend);
-    using var material = new Material(shader);
+    using var material = new Material(backend, shader);
     using var texture1 = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
 
     var flushCount = 0;
@@ -40,7 +40,7 @@ public class SpriteBatchTests
 
     using var batch = new SpriteBatch(backend);
     using var shader = new ShaderProgram(backend);
-    using var material = new Material(shader);
+    using var material = new Material(backend, shader);
     using var texture1 = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
     using var texture2 = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
 

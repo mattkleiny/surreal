@@ -203,4 +203,13 @@ public class VariantTests
     test.AsObject().Should().Be(value);
     test.As<ServiceRegistry>().Should().Be(value);
   }
+
+  [Test]
+  public void it_should_convert_matrix4x4()
+  {
+    Variant test = Variant.From(Matrix4x4.Identity);
+
+    test.Type.Should().Be(VariantType.Object);
+    test.AsObject().Should().Be(Matrix4x4.Identity);
+  }
 }

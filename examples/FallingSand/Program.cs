@@ -13,9 +13,14 @@ Game.Start(new GameConfiguration
   },
   Host = GameHost.Create(() =>
   {
+    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
+    var canvas = new PixelCanvas(graphics, 256, 144);
+
     return _ =>
     {
-      // TODO: implement me
+      graphics.ClearColorBuffer(Color.Black);
+
+      canvas.DrawFullscreenQuad();
     };
   })
 });
