@@ -18,17 +18,50 @@ public enum BlendMode
 /// <summary>
 /// State blending operation.
 /// </summary>
-public readonly record struct BlendState(bool IsEnabled, BlendMode Source, BlendMode Target)
+public readonly record struct BlendState(BlendMode Source, BlendMode Target)
 {
-  /// <summary>
-  /// A disabled blend state.
-  /// </summary>
-  public static BlendState Disabled { get; } = default(BlendState) with { IsEnabled = false };
-
   /// <summary>
   /// A default blend state that uses <see cref="BlendMode.OneMinusSourceAlpha" />.
   /// </summary>
-  public static BlendState OneMinusSourceAlpha { get; } = new(true, BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
+  public static BlendState OneMinusSourceAlpha { get; } = new(BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
+}
+
+/// <summary>
+/// A property of a <see cref="Material" />.
+/// </summary>
+[SuppressMessage("ReSharper", "UnusedTypeParameter")]
+public readonly record struct MaterialProperty<T>(string Name);
+
+/// <summary>
+/// A set of <see cref="MaterialProperty{T}" />s in a <see cref="Material" />.
+/// </summary>
+[DebuggerDisplay("MaterialPropertySet ({_uniforms.Count} uniforms)")]
+public sealed class MaterialPropertySet
+{
+  private readonly Dictionary<string, Variant> _uniforms = new();
+
+  /// <summary>
+  /// Attempts to get a uniform property from the material.
+  /// </summary>
+  public bool TryGetUniform<T>(MaterialProperty<T> property, out T value)
+  {
+    if (_uniforms.TryGetValue(property.Name, out var variant))
+    {
+      value = variant.As<T>();
+      return true;
+    }
+
+    value = default!;
+    return false;
+  }
+
+  /// <summary>
+  /// Sets a uniform property on the material.
+  /// </summary>
+  public void SetUniform<T>(MaterialProperty<T> property, T value)
+  {
+    _uniforms[property.Name] = Variant.From(value);
+  }
 }
 
 /// <summary>
@@ -42,9 +75,14 @@ public sealed class Material(ShaderProgram shader, bool ownsShader = true) : Gra
   public ShaderProgram Shader { get; } = shader;
 
   /// <summary>
-  /// The desired <see cref="BlendState" /> for this material.
+  /// The desired <see cref="Materials.BlendState" /> for this material.
   /// </summary>
-  public BlendState Blending { get; set; } = BlendState.OneMinusSourceAlpha;
+  public BlendState? BlendState { get; set; }
+
+  /// <summary>
+  /// The properties of the material.
+  /// </summary>
+  public MaterialPropertySet Properties { get; } = new();
 
   /// <summary>
   /// Applies the material properties to the underlying shader.
@@ -59,7 +97,15 @@ public sealed class Material(ShaderProgram shader, bool ownsShader = true) : Gra
     // ApplySamplers(Properties.Samplers);
 
     // apply blend state
-    backend.SetBlendState(Blending);
+    backend.SetBlendState(BlendState);
+  }
+
+  /// <summary>
+  /// Draws a fullscreen quad with the material.
+  /// </summary>
+  public void DrawFullscreenQuad()
+  {
+    throw new NotImplementedException();
   }
 
   protected override void Dispose(bool managed)

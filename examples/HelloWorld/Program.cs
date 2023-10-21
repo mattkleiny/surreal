@@ -17,7 +17,6 @@ Game.Start(new GameConfiguration
 
     var color1 = Random.Shared.Next<Color>();
     var color2 = Random.Shared.Next<Color>();
-
     return time =>
     {
       var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));

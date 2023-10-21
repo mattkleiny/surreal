@@ -67,6 +67,15 @@ public sealed class DenseGrid<T> : IEnumerable<T>
     Array.Fill(_elements, value);
   }
 
+  /// <summary>
+  /// Returns a <see cref="Span{T}" /> of the grid's elements.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Span<T> AsSpan()
+  {
+    return _elements;
+  }
+
   public Enumerator GetEnumerator()
   {
     return new Enumerator(this);

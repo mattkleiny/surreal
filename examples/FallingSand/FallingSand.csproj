@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A simple falling sand simulation using Surreal</Description>
+  </PropertyGroup>
+</Project>

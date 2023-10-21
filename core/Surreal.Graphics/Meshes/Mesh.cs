@@ -151,12 +151,12 @@ public sealed class Mesh<TVertex> : Mesh
   public GraphicsHandle Handle { get; }
 
   /// <summary>
-  /// The <see cref="GraphicsBuffer{TVertex}" /> for the vertices.
+  /// The <see cref="GraphicsBuffer" /> for the vertices.
   /// </summary>
   public GraphicsBuffer<TVertex> Vertices { get; }
 
   /// <summary>
-  /// The <see cref="GraphicsBuffer{uint}" /> for the indices.
+  /// The <see cref="GraphicsBuffer" /> for the indices.
   /// </summary>
   public GraphicsBuffer<uint> Indices { get; }
 

@@ -15,12 +15,12 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
   }
 
-  public void SetBlendState(BlendState state)
+  public void SetBlendState(BlendState? state)
   {
-    if (state.IsEnabled)
+    if (state != null)
     {
-      var sFactor = ConvertBlendFactor(state.Source);
-      var dFactor = ConvertBlendFactor(state.Target);
+      var sFactor = ConvertBlendFactor(state.Value.Source);
+      var dFactor = ConvertBlendFactor(state.Value.Target);
 
       gl.Enable(EnableCap.Blend);
       gl.BlendFunc(sFactor, dFactor);

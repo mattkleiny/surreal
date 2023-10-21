@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A simple fractal renderer using Surreal</Description>
+  </PropertyGroup>
+</Project>

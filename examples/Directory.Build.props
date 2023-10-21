@@ -21,12 +21,9 @@
     <Using Include="Surreal.Diagnostics"/>
     <Using Include="Surreal.Diagnostics.Logging"/>
     <Using Include="Surreal.Graphics"/>
-    <Using Include="Surreal.Graphics.Fonts"/>
     <Using Include="Surreal.Graphics.Images"/>
     <Using Include="Surreal.Graphics.Materials"/>
     <Using Include="Surreal.Graphics.Meshes"/>
-    <Using Include="Surreal.Graphics.Shaders"/>
-    <Using Include="Surreal.Graphics.Sprites"/>
     <Using Include="Surreal.Graphics.Textures"/>
     <Using Include="Surreal.Input"/>
     <Using Include="Surreal.Input.Keyboard"/>

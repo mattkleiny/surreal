@@ -5,7 +5,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Audio\Surreal.Audio.csproj"/>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\"/>
-  </ItemGroup>
 </Project>

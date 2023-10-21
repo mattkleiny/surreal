@@ -1,4 +1,6 @@
-﻿using Silk.NET.Input;
+﻿using System.Runtime.InteropServices;
+using Silk.NET.Core;
+using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
@@ -9,7 +11,7 @@ namespace Surreal;
 internal sealed class SilkWindow : IDesktopWindow
 {
   private readonly IWindow _window;
-  private bool _isFocused;
+  private bool _isFocused = true;
 
   public SilkWindow(DesktopConfiguration configuration)
   {
@@ -28,6 +30,13 @@ internal sealed class SilkWindow : IDesktopWindow
     _window.Resize += OnWindowResized;
 
     _window.Initialize();
+
+    if (configuration.IconPath.HasValue)
+    {
+      using var image = Image.Load(configuration.IconPath.Value);
+
+      SetWindowIcon(image);
+    }
 
     OpenGL = _window.CreateOpenGL();
     Input = _window.CreateInput();
@@ -89,14 +98,19 @@ internal sealed class SilkWindow : IDesktopWindow
 
   public void SetWindowIcon(Image image)
   {
-    throw new NotImplementedException();
+    var rgba = MemoryMarshal.AsBytes(image.Pixels.ToReadOnlySpan());
+
+    _window.SetWindowIcon(new[]
+    {
+      new RawImage(image.Width, image.Height, rgba.ToArray())
+    });
   }
 
   public void Update()
   {
     _window.DoEvents();
 
-    if (!_window.IsClosing)
+    if (!IsClosing)
     {
       _window.DoUpdate();
     }
@@ -104,7 +118,7 @@ internal sealed class SilkWindow : IDesktopWindow
 
   public void Present()
   {
-    if (!_window.IsClosing)
+    if (!IsClosing)
     {
       _window.DoRender();
     }

@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Graphics drivers for Surreal.</Description>
-    <RootNamespace>Surreal.Graphics</RootNamespace>
+    <Description>Scripting drivers for Surreal.</Description>
+    <RootNamespace>Surreal.Scripting</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" PrivateAssets="compile"/>
+    <PackageReference Include="NLua" Version="1.6.3" PrivateAssets="compile"/>
   </ItemGroup>
 </Project>

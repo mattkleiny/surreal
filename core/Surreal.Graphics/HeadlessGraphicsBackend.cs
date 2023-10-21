@@ -21,7 +21,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
     // no-op
   }
 
-  public void SetBlendState(BlendState state)
+  public void SetBlendState(BlendState? state)
   {
     // no-op
   }

@@ -24,6 +24,7 @@ public interface IDesktopWindow : IDisposable
   event Action<int, int> Resized;
 
   string Title { get; set; }
+
   int Width { get; set; }
   int Height { get; set; }
 

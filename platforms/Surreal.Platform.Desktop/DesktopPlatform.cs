@@ -13,7 +13,6 @@ public sealed record DesktopConfiguration
   public bool IsResizable { get; set; } = true;
   public bool IsVsyncEnabled { get; set; } = true;
   public bool IsEventDriven { get; set; }
-  public bool WaitForFirstFrame { get; set; } = true;
   public bool ShowFpsInTitle { get; set; } = true;
   public bool RunInBackground { get; set; }
   public VirtualPath? IconPath { get; set; } = "resx://Surreal/Assets/Embedded/surreal.png";
