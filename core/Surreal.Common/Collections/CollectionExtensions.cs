@@ -8,48 +8,32 @@ namespace Surreal.Collections;
 public static class CollectionExtensions
 {
   /// <summary>
-  /// Determines if the given <see cref="IEnumerable{T}" /> is null or empty.
-  /// </summary>
-  public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source)
-  {
-    return source is null || !source.Any();
-  }
-
-  /// <summary>
   /// Converts the given <see cref="List{T}" /> to a <see cref="Span{T}" />.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Span<T> AsSpan<T>(this List<T> list)
-  {
-    return CollectionsMarshal.AsSpan(list);
-  }
+    => CollectionsMarshal.AsSpan(list);
 
   /// <summary>
   /// Converts the given <see cref="List{T}" /> to a <see cref="Span{T}" /> with the given offset and length.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Span<T> AsSpan<T>(this List<T> list, int offset, int length)
-  {
-    return CollectionsMarshal.AsSpan(list).Slice(offset, length);
-  }
+    => CollectionsMarshal.AsSpan(list).Slice(offset, length);
 
   /// <summary>
   /// Converts the given <see cref="List{T}" /> to a <see cref="ReadOnlySpan{T}" />.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySpan<T> AsReadOnlySpan<T>(this List<T> list)
-  {
-    return CollectionsMarshal.AsSpan(list);
-  }
+    => CollectionsMarshal.AsSpan(list);
 
   /// <summary>
   /// Converts the given <see cref="List{T}" /> to a <see cref="ReadOnlySpan{T}" /> with the given offset and length.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySpan<T> AsReadOnlySpan<T>(this List<T> list, int offset, int length)
-  {
-    return CollectionsMarshal.AsSpan(list).Slice(offset, length);
-  }
+    => CollectionsMarshal.AsSpan(list).Slice(offset, length);
 
   /// <summary>
   /// Swaps two elements in-place inside the array.
