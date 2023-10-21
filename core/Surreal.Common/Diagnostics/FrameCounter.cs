@@ -13,7 +13,7 @@ public sealed class FrameCounter(int sampleCount = 100)
   public double TotalFrameTime => _samples.FastSum().TotalSeconds;
   public double TicksPerSecond => _samples.Count / TotalFrameTime;
 
-  public void Tick(TimeDelta deltaTime)
+  public void Tick(DeltaTime deltaTime)
   {
     _samples.Add(deltaTime);
   }

@@ -1,6 +1,4 @@
-﻿using Surreal.Text;
-
-namespace Surreal.Diagnostics.Profiling;
+﻿namespace Surreal.Diagnostics.Profiling;
 
 /// <summary>
 /// A factory for <see cref="IProfiler" />s.
@@ -24,12 +22,24 @@ public static class ProfilerFactory
 
   public static IProfiler GetProfiler(Type type)
   {
-    return GetProfiler(type.GetFullNameWithoutGenerics());
+    return GetProfiler(GetFullNameWithoutGenerics(type));
   }
 
   public static IProfiler GetProfiler(string category)
   {
     return new LazyProfiler(category);
+  }
+
+  private static string GetFullNameWithoutGenerics(Type type)
+  {
+    static string RemoveGenerics(string value)
+    {
+      var index = value.IndexOf('`');
+
+      return index == -1 ? value : value[..index];
+    }
+
+    return RemoveGenerics(type.FullName ?? string.Empty);
   }
 
   /// <summary>

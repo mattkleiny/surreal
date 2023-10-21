@@ -22,6 +22,3 @@ public class EnumerationTests
     public static TestValue Three { get; } = new(3);
   }
 }
-
-
-

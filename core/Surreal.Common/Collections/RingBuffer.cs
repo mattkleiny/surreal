@@ -11,7 +11,14 @@ public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
   public int Count { get; private set; } = 0;
   public int Capacity => _elements.Length;
 
+  /// <summary>
+  /// Accesses the element at the given index.
+  /// </summary>
   public ref T this[Index index] => ref _elements[index];
+
+  /// <summary>
+  /// Accesses the last element in the buffer.
+  /// </summary>
   public ref T Last => ref _elements[Math.Max(_writePos - 1, 0)];
 
   public void Add(T element)
@@ -62,6 +69,9 @@ public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
     return GetEnumerator();
   }
 
+  /// <summary>
+  /// A custom <see cref="IEnumerator{T}"/> for <see cref="RingBuffer{T}"/>.
+  /// </summary>
   public struct Enumerator : IEnumerator<T>
   {
     private readonly RingBuffer<T> _buffer;
@@ -108,29 +118,88 @@ public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
 /// </summary>
 public static class RingBufferExtensions
 {
-  public static float FastSum(this RingBuffer<float> samples)
+  /// <summary>
+  /// Efficiently calculates the sum of a <see cref="RingBuffer{T}"/> of <see cref="INumber{T}"/>s.
+  /// </summary>
+  public static T FastSum<T>(this RingBuffer<T> samples)
+    where T : INumber<T>
   {
-    float total = 0;
+    var total = T.Zero;
 
-    foreach (var sample in samples) total += sample;
+    foreach (var sample in samples)
+    {
+      total += sample;
+    }
 
     return total;
   }
 
+  /// <summary>
+  /// Efficiently calculates the average of a <see cref="RingBuffer{T}"/> of <see cref="INumber{T}"/>s.
+  /// </summary>
+  public static T FastAverage<T>(this RingBuffer<T> samples)
+    where T : INumber<T>
+  {
+    return samples.FastSum() / T.CreateTruncating(samples.Count);
+  }
+
+
+  /// <summary>
+  /// Efficiently calculates the min of a <see cref="RingBuffer{T}"/> of <see cref="INumber{T}"/>s.
+  /// </summary>
+  public static T FastMin<T>(this RingBuffer<T> samples)
+    where T : INumber<T>
+  {
+    var result = T.CreateTruncating(double.MaxValue);
+
+    foreach (var sample in samples)
+    {
+      if (sample < result)
+      {
+        result = sample;
+      }
+    }
+
+    return result;
+  }
+
+  /// <summary>
+  /// Efficiently calculates the max of a <see cref="RingBuffer{T}"/> of <see cref="INumber{T}"/>s.
+  /// </summary>
+  public static T FastMax<T>(this RingBuffer<T> samples)
+    where T : INumber<T>
+  {
+    var result = T.Zero;
+
+    foreach (var sample in samples)
+    {
+      if (sample > result)
+      {
+        result = sample;
+      }
+    }
+
+    return result;
+  }
+
+  /// <summary>
+  /// Efficiently calculates the sum of a <see cref="RingBuffer{T}"/> of <see cref="TimeSpan"/>s.
+  /// </summary>
   public static TimeSpan FastSum(this RingBuffer<TimeSpan> samples)
   {
     var total = TimeSpan.Zero;
 
-    foreach (var sample in samples) total += sample;
+    foreach (var sample in samples)
+    {
+      total += sample;
+    }
 
     return total;
   }
 
-  public static float FastAverage(this RingBuffer<float> samples)
-  {
-    return samples.FastSum() / samples.Count;
-  }
-
+  /// <summary>
+  /// Efficiently calculates the average of a <see cref="RingBuffer{T}"/> of <see cref="TimeSpan"/>s.
+  /// </summary>
   public static TimeSpan FastAverage(this RingBuffer<TimeSpan> samples)
   {
     var averageTicks = FastSum(samples).Ticks / samples.Count;
@@ -138,6 +207,9 @@ public static class RingBufferExtensions
     return TimeSpan.FromTicks(averageTicks);
   }
 
+  /// <summary>
+  /// Efficiently calculates the min of a <see cref="RingBuffer{T}"/> of <see cref="TimeSpan"/>s.
+  /// </summary>
   public static TimeSpan FastMin(this RingBuffer<TimeSpan> samples)
   {
     var result = TimeSpan.MaxValue;
@@ -153,6 +225,9 @@ public static class RingBufferExtensions
     return result;
   }
 
+  /// <summary>
+  /// Efficiently calculates the max of a <see cref="RingBuffer{T}"/> of <see cref="TimeSpan"/>s.
+  /// </summary>
   public static TimeSpan FastMax(this RingBuffer<TimeSpan> samples)
   {
     var result = TimeSpan.MinValue;

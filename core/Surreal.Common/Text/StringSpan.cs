@@ -113,19 +113,13 @@ public static class StringSpanExtensions
 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static StringSpan AsStringSpan(this string source)
-  {
-    return new StringSpan(source, 0, source.Length);
-  }
+    => new(source, 0, source.Length);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static StringSpan AsStringSpan(this string source, int offset)
-  {
-    return new StringSpan(source, offset, source.Length - offset);
-  }
+    => new(source, offset, source.Length - offset);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static StringSpan AsStringSpan(this string source, int offset, int length)
-  {
-    return new StringSpan(source, offset, length);
-  }
+    => new(source, offset, length);
 }

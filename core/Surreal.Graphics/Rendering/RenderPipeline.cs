@@ -34,7 +34,7 @@ public interface IRenderPipeline : IDisposable
 /// </summary>
 public abstract class RenderPipeline : IRenderPipeline
 {
-  private readonly TimeDeltaClock _clock = new();
+  private readonly DeltaTimeClock _clock = new();
 
   public void Render(ReadOnlySlice<IRenderCamera> cameras)
   {

@@ -4,7 +4,7 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
+using Surreal.Maths;
 
 namespace Surreal.Graphics;
 
@@ -22,19 +22,39 @@ public interface IGraphicsBackend
 
   // buffers
   GraphicsHandle CreateBuffer(BufferType type);
-  Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length) where T : unmanaged;
-  void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged;
-  void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data) where T : unmanaged;
+
+  Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
+    where T : unmanaged;
+
+  void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
+    where T : unmanaged;
+
+  void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data)
+    where T : unmanaged;
+
   void DeleteBuffer(GraphicsHandle handle);
 
   // textures
   GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode);
-  Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged;
-  void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0) where T : unmanaged;
-  Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged;
-  void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0) where T : unmanaged;
-  void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
-  void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
+
+  Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
+    where T : unmanaged;
+
+  void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
+    where T : unmanaged;
+
+  Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged;
+
+  void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, int width, int height, int mipLevel = 0)
+    where T : unmanaged;
+
+  void WriteTextureData<T>(GraphicsHandle handle, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+    where T : unmanaged;
+
+  void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+    where T : unmanaged;
+
   void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode);
   void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode);
   void DeleteTexture(GraphicsHandle handle);

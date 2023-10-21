@@ -7,5 +7,5 @@ namespace Surreal.Graphics.Rendering;
 /// </summary>
 public readonly record struct RenderFrame
 {
-  public required TimeDelta DeltaTime { get; init; }
+  public required DeltaTime DeltaTime { get; init; }
 }

@@ -1,7 +1,7 @@
 ﻿using Surreal.Colors;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
+using Surreal.Maths;
 using Surreal.Resources;
 
 namespace Surreal.Graphics.Fonts;

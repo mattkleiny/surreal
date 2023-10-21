@@ -1,5 +1,5 @@
-var color1 = Random.Shared.NextColorF();
-var color2 = Random.Shared.NextColorF();
+var color1 = Random.Shared.Next<Color>();
+var color2 = Random.Shared.Next<Color>();
 
 Game.Start(new GameConfiguration
 {
@@ -16,7 +16,7 @@ Game.Start(new GameConfiguration
   },
   Tick = (time, graphics) =>
   {
-    var color = Color.Lerp(color1, color2, Maths.PingPong(time.TotalTime));
+    var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
 
     graphics.Backend.ClearColorBuffer(color);
   }

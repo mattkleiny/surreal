@@ -17,19 +17,21 @@ public struct IntervalTimer
   }
 
   /// <summary>
+  /// Determines if the given duration has passed on the timer.
+  /// </summary>
+  public readonly bool HasPassed(TimeSpan duration)
+  {
+    return _accumulator >= duration.TotalSeconds;
+  }
+
+  /// <summary>
   /// Advances the timer and returns true if the interval has elapsed.
   /// </summary>
-  public bool Tick(TimeDelta deltaTime)
+  public bool Tick(DeltaTime deltaTime)
   {
     _accumulator += deltaTime;
 
-    if (_accumulator >= _interval.TotalSeconds)
-    {
-      _accumulator = 0f;
-      return true;
-    }
-
-    return false;
+    return _accumulator >= _interval.TotalSeconds;
   }
 
   /// <summary>

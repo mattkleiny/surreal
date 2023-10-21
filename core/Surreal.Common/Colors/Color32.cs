@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Surreal.Mathematics;
+using Surreal.Maths;
 
 namespace Surreal.Colors;
 
@@ -7,7 +7,7 @@ namespace Surreal.Colors;
 /// A 32-bit representation of color.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public record struct Color32(byte R, byte G, byte B, byte A = 255)
+public record struct Color32(byte R, byte G, byte B, byte A = 255) : IFromRandom<Color32>, IInterpolated<Color32>
 {
   public static readonly Color32 Black = new(0, 0, 0);
   public static readonly Color32 Red = new(255, 0, 0);
@@ -25,15 +25,28 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255)
   public byte A = A;
 
   /// <summary>
+  /// Creates a new random color.
+  /// </summary>
+  public static Color32 FromRandom(Random random)
+  {
+    return new Color(
+      random.NextByte(),
+      random.NextByte(),
+      random.NextByte(),
+      A: 255
+    );
+  }
+
+  /// <summary>
   /// Interpolates between two colors.
   /// </summary>
   public static Color32 Lerp(Color32 a, Color32 b, float t)
   {
     return new Color32(
-      (byte)Maths.Lerp(a.R, b.R, t),
-      (byte)Maths.Lerp(a.G, b.G, t),
-      (byte)Maths.Lerp(a.B, b.B, t),
-      (byte)Maths.Lerp(a.A, b.A, t)
+      (byte)MathE.Lerp(a.R, b.R, t),
+      (byte)MathE.Lerp(a.G, b.G, t),
+      (byte)MathE.Lerp(a.B, b.B, t),
+      (byte)MathE.Lerp(a.A, b.A, t)
     );
   }
 

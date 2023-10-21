@@ -3,7 +3,8 @@ namespace Surreal.Collections;
 /// <summary>
 /// A dictionary with multiple values per key.
 /// </summary>
-public sealed class MultiDictionary<TKey, TValue>(IEqualityComparer<TKey> comparer) where TKey : notnull
+public sealed class MultiDictionary<TKey, TValue>(IEqualityComparer<TKey> comparer)
+  where TKey : notnull
 {
   private readonly Dictionary<TKey, List<TValue>> _dictionary = new Dictionary<TKey, List<TValue>>(comparer);
 

@@ -1,4 +1,4 @@
-﻿using Surreal.Mathematics;
+﻿using Surreal.Maths;
 
 namespace Surreal.Graphics.Textures;
 

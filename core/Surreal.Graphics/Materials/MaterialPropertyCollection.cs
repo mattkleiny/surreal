@@ -3,7 +3,7 @@ using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
+using Surreal.Maths;
 
 namespace Surreal.Graphics.Materials;
 

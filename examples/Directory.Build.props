@@ -31,10 +31,10 @@
     <Using Include="Surreal.Input"/>
     <Using Include="Surreal.Input.Keyboard"/>
     <Using Include="Surreal.Input.Mouse"/>
-    <Using Include="Surreal.Mathematics"/>
+    <Using Include="Surreal.Maths"/>
     <Using Include="Surreal.Memory"/>
-    <Using Include="Surreal.Services"/>
     <Using Include="Surreal.Timing"/>
+    <Using Include="Surreal.Utilities"/>
 
     <!-- automatically exclude example projects from code coverage -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>

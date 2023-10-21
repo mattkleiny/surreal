@@ -60,7 +60,10 @@ public readonly struct Slice<T> : IEnumerable<T>
     return GetEnumerator();
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator Slice<T>(List<T> list) => new(list);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator ReadOnlySlice<T>(Slice<T> slice) => new(slice._list, slice.Offset, slice.Length);
 
   /// <summary>
@@ -154,7 +157,10 @@ public readonly struct ReadOnlySlice<T> : IEnumerable<T>
     return GetEnumerator();
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator ReadOnlySlice<T>(T[] array) => new(array);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator ReadOnlySlice<T>(List<T> list) => new(list);
 
   /// <summary>
@@ -201,32 +207,62 @@ public static class SliceExtensions
   /// Converts the given list to a slice.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Slice<T> AsSlice<T>(this List<T> list) => list;
+  public static Slice<T> AsSlice<T>(this List<T> list)
+    => list;
 
   /// <summary>
   /// Converts the given list to a slice with the given offset and length.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Slice<T> AsSlice<T>(this List<T> list, int offset, int length) => new(list, offset, length);
+  public static Slice<T> AsSlice<T>(this List<T> list, int offset, int length)
+    => new(list, offset, length);
 
   /// <summary>
   /// Converts the given list to a read-only slice.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list) => list;
+  public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list)
+    => list;
 
   /// <summary>
   /// Converts the given list to a read-only slice with the given offset and length.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list, int offset, int length) => new(list, offset, length);
+  public static ReadOnlySlice<T> AsReadOnlySlice<T>(this List<T> list, int offset, int length)
+    => new(list, offset, length);
+
+  /// <summary>
+  /// Converts the given enumerable to a slice.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Slice<T> ToSlice<T>(this IEnumerable<T> enumerable)
+    => enumerable.ToList().AsSlice();
+
+  /// <summary>
+  /// Converts the given enumerable to a slice with the given offset and length.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Slice<T> ToSlice<T>(this IEnumerable<T> enumerable, int offset, int length)
+    => enumerable.ToList().AsSlice(offset, length);
+
+  /// <summary>
+  /// Converts the given enumerable to a read-only slice.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IEnumerable<T> enumerable)
+    => enumerable.ToList().AsReadOnlySlice();
+
+  /// <summary>
+  /// Converts the given enumerable to a read-only slice with the given offset and length.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ReadOnlySlice<T> ToReadOnlySlice<T>(this IEnumerable<T> enumerable, int offset, int length)
+    => enumerable.ToList().AsReadOnlySlice(offset, length);
 
   /// <summary>
   /// Swaps two elements in-place inside the slice.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Swap<T>(this Slice<T> slice, int fromIndex, int toIndex)
-  {
-    (slice[fromIndex], slice[toIndex]) = (slice[toIndex], slice[fromIndex]);
-  }
+    => (slice[fromIndex], slice[toIndex]) = (slice[toIndex], slice[fromIndex]);
 }

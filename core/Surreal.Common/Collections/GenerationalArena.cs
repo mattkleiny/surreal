@@ -25,34 +25,15 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   where T : notnull
 {
   private Entry[] _entries = Array.Empty<Entry>();
+  private int _count;
   private uint _generation = 1;
   private bool _hasDirtyGeneration;
-
   private uint _nextIndex;
 
-  // TODO: have a better indexer, maybe use an option type or something?
   /// <summary>
-  /// Accesses a single item in the arena.
+  /// The number of items in the arena.
   /// </summary>
-  public ref T this[ArenaIndex index]
-  {
-    get
-    {
-      var offset = index.Offset;
-
-      if (offset < _entries.Length)
-      {
-        ref var entry = ref _entries[offset];
-
-        if (index.Generation == entry.Generation)
-        {
-          return ref entry.Value;
-        }
-      }
-
-      return ref Unsafe.NullRef<T>();
-    }
-  }
+  public int Count => _count;
 
   /// <summary>
   /// Determines if the given index is contained in the arena.
@@ -70,21 +51,6 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   }
 
   /// <summary>
-  /// Inserts an entry into the arena with the given fixed <see cref="ArenaIndex" />.
-  /// </summary>
-  public void Insert(ArenaIndex index, T value)
-  {
-    var offset = index.Offset;
-
-    if (offset >= _entries.Length)
-    {
-      Array.Resize(ref _entries, offset + 1);
-    }
-
-    _entries[offset] = new Entry(value, index.Generation);
-  }
-
-  /// <summary>
   /// Adds a new item to the arena and returns it's <see cref="ArenaIndex" />.
   /// </summary>
   public ArenaIndex Add(T value)
@@ -92,6 +58,7 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     var index = AllocateIndex();
 
     _entries[index.Offset] = new Entry(value, index.Generation);
+    _count += 1;
 
     return index;
   }
@@ -107,13 +74,42 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
     {
       entry = default;
 
+      _count -= 1;
       _hasDirtyGeneration = true;
     }
   }
 
   /// <summary>
-  ///   Allocates a new <see cref="ArenaIndex" /> either by finding the first free spot in the list
-  ///   or allocating new space.
+  /// Attempts to remove the item at the given index from the arena.
+  /// </summary>
+  public bool TryRemove(ArenaIndex index, [MaybeNullWhen(false)] out T result)
+  {
+    ref var entry = ref _entries[index.Id - 1];
+
+    if (entry.Generation == index.Generation)
+    {
+      result = entry.Value;
+      entry = default;
+
+      _count -= 1;
+      _hasDirtyGeneration = true;
+
+      return true;
+    }
+
+    result = default;
+    return false;
+  }
+
+  /// <summary>
+  /// Clears all items from the arena.
+  /// </summary>
+  public void Clear()
+  {
+  }
+
+  /// <summary>
+  /// Allocates a new <see cref="ArenaIndex" /> either by finding the first free spot in the list or allocating new space.
   /// </summary>
   private ArenaIndex AllocateIndex()
   {
@@ -168,9 +164,20 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
   private record struct Entry(T Value, uint Generation)
   {
-    public uint Generation = Generation;
-    public bool IsOccupied = true;
+    /// <summary>
+    /// The value of the entry.
+    /// </summary>
     public T Value = Value;
+
+    /// <summary>
+    /// True if the entry is occupied.
+    /// </summary>
+    public bool IsOccupied = true;
+
+    /// <summary>
+    /// The generation that the entry was created in.
+    /// </summary>
+    public uint Generation = Generation;
   }
 
   /// <summary>

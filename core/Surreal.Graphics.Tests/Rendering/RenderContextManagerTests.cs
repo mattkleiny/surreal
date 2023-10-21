@@ -13,7 +13,7 @@ public class RenderContextManagerTests
     using var manager = new RenderContextManager(server, resources);
 
     var context = Substitute.For<IRenderContext>();
-    var frame = new RenderFrame { DeltaTime = TimeDelta.Default };
+    var frame = new RenderFrame { DeltaTime = DeltaTime.OneOver60 };
 
     manager.AddContext(context);
 
@@ -33,7 +33,7 @@ public class RenderContextManagerTests
     using var manager = new RenderContextManager(server, resources);
 
     var context = Substitute.For<IRenderContext>();
-    var frame = new RenderFrame { DeltaTime = TimeDelta.Default };
+    var frame = new RenderFrame { DeltaTime = DeltaTime.OneOver60 };
 
     manager.AddContext(context);
 

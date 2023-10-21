@@ -75,7 +75,7 @@ public sealed class SpriteContextDescriptor : IRenderContextDescriptor
   private async Task<Material> ResolveMaterialAsync(IGraphicsContext context, IResourceManager resources,
     CancellationToken cancellationToken)
   {
-    if (Material.IsNone)
+    if (!Material.HasValue)
     {
       return await resources.LoadDefaultSpriteMaterialAsync(cancellationToken);
     }

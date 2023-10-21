@@ -49,9 +49,9 @@ public static class Game
 
     host.RegisterServices(registry);
 
-    using var graphics = new GraphicsContext(registry.GetRequiredService<IGraphicsBackend>());
+    using var graphics = new GraphicsContext(registry.GetServiceOrThrow<IGraphicsBackend>());
 
-    var clock = new TimeDeltaClock();
+    var clock = new DeltaTimeClock();
     var startTime = TimeStamp.Now;
 
     while (!host.IsClosing)

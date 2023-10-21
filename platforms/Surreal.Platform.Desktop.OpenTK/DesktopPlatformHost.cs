@@ -13,8 +13,8 @@ using Surreal.Internal.Graphics;
 using Surreal.Internal.Input;
 using Surreal.IO;
 using Surreal.Resources;
-using Surreal.Services;
 using Surreal.Timing;
+using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -114,7 +114,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     // no-op
   }
 
-  public void BeginFrame(TimeDelta deltaTime)
+  public void BeginFrame(DeltaTime deltaTime)
   {
     if (!IsClosing)
     {
@@ -134,7 +134,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     }
   }
 
-  public void EndFrame(TimeDelta deltaTime)
+  public void EndFrame(DeltaTime deltaTime)
   {
     if (!IsClosing)
     {

@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Surreal.Mathematics;
+using Surreal.Maths;
 
 namespace Surreal.Colors;
 
@@ -7,7 +7,7 @@ namespace Surreal.Colors;
 /// A floating-point representation of color.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public record struct Color(float R, float G, float B, float A = 1f)
+public record struct Color(float R, float G, float B, float A = 1f) : IFromRandom<Color>, IInterpolated<Color>
 {
   public static readonly Color Black = new(0, 0, 0);
   public static readonly Color Red = new(1f, 0, 0);
@@ -25,15 +25,28 @@ public record struct Color(float R, float G, float B, float A = 1f)
   public float A = A;
 
   /// <summary>
+  /// Creates a new random color.
+  /// </summary>
+  public static Color FromRandom(Random random)
+  {
+    return new Color(
+      random.NextFloat(),
+      random.NextFloat(),
+      random.NextFloat(),
+      A: 1f
+    );
+  }
+
+  /// <summary>
   /// Interpolates between two colors.
   /// </summary>
   public static Color Lerp(Color a, Color b, float t)
   {
     return new Color(
-      Maths.Lerp(a.R, b.R, t),
-      Maths.Lerp(a.G, b.G, t),
-      Maths.Lerp(a.B, b.B, t),
-      Maths.Lerp(a.A, b.A, t)
+      MathE.Lerp(a.R, b.R, t),
+      MathE.Lerp(a.G, b.G, t),
+      MathE.Lerp(a.B, b.B, t),
+      MathE.Lerp(a.A, b.A, t)
     );
   }
 

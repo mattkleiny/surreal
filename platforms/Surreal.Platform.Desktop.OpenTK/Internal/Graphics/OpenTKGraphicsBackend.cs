@@ -8,7 +8,7 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
+using Surreal.Maths;
 using Matrix3x2 = System.Numerics.Matrix3x2;
 using Quaternion = System.Numerics.Quaternion;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;

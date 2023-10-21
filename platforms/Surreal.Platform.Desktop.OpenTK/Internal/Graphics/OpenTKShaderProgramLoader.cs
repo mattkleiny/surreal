@@ -58,8 +58,7 @@ internal sealed class OpenTKShaderProgramLoader(IGraphicsContext graphics) : Res
     return program;
   }
 
-  private static async Task<OpenTKShaderSet> LoadShaderSetAsync(ResourceContext context,
-    CancellationToken cancellationToken)
+  private static async Task<OpenTKShaderSet> LoadShaderSetAsync(ResourceContext context, CancellationToken cancellationToken)
   {
     await using var stream = await context.Path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream, Encoding.UTF8);
@@ -70,9 +69,7 @@ internal sealed class OpenTKShaderProgramLoader(IGraphicsContext graphics) : Res
   /// <summary>
   /// Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
   /// </summary>
-  [VisibleForTesting]
-  internal static async Task<OpenTKShaderSet> ParseCodeAsync(VirtualPath path, TextReader reader,
-    CancellationToken cancellationToken = default)
+  internal static async Task<OpenTKShaderSet> ParseCodeAsync(VirtualPath path, TextReader reader, CancellationToken cancellationToken = default)
   {
     var sharedCode = new StringBuilder();
     var shaderCode = new List<Shader>();

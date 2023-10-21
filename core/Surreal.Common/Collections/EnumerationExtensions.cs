@@ -3,7 +3,6 @@
 /// <summary>
 /// A structured enumeration with support for lookups and complex objects.
 /// </summary>
-[RequiresUnreferencedCode("Discovers types via reflection")]
 public abstract record Enumeration<T>
   where T : Enumeration<T>
 {

@@ -1,7 +1,7 @@
 ﻿using Surreal.IO;
 using Surreal.Resources;
-using Surreal.Services;
 using Surreal.Timing;
+using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -30,8 +30,8 @@ public interface IPlatformHost : IDisposable
   void RegisterAssetLoaders(IResourceManager manager);
   void RegisterFileSystems(IFileSystemRegistry registry);
 
-  void BeginFrame(TimeDelta deltaTime);
-  void EndFrame(TimeDelta deltaTime);
+  void BeginFrame(DeltaTime deltaTime);
+  void EndFrame(DeltaTime deltaTime);
 }
 
 /// <summary>

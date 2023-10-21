@@ -17,7 +17,7 @@ public readonly record struct ClockTimeRange(ClockTime Start, ClockTime End)
 /// <summary>
 /// Represents a discrete time in a 24 hour clock with hours, minutes and seconds.
 /// </summary>
-public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
+public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>, IParsable<ClockTime>
 {
   private const int TicksPerSecond = 1;
   private const int TicksPerMinute = TicksPerSecond * 60;
@@ -40,9 +40,15 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
   public int Minutes => Ticks / TicksPerMinute % 60;
   public int Seconds => Ticks / TicksPerSecond % 60;
 
+
   public static ClockTime Parse(string raw)
   {
-    if (!TryParse(raw, out var time))
+    return Parse(raw, CultureInfo.CurrentCulture);
+  }
+
+  public static ClockTime Parse(string raw, IFormatProvider? provider)
+  {
+    if (!TryParse(raw, provider, out var time))
     {
       throw new FormatException($"Failed to parse raw clock time from {raw}");
     }
@@ -52,7 +58,17 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
 
   public static bool TryParse(string raw, out ClockTime time)
   {
-    time = default;
+    return TryParse(raw, CultureInfo.CurrentCulture, out time);
+  }
+
+  public static bool TryParse(string? raw, IFormatProvider? provider, out ClockTime result)
+  {
+    result = default;
+
+    if (string.IsNullOrEmpty(raw))
+    {
+      return false;
+    }
 
     // split into hours:minutes:seconds
     var components = raw.Split(':');
@@ -62,9 +78,9 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
     }
 
     // break into components
-    if (!int.TryParse(components[0], out var hours) ||
-        !int.TryParse(components[1], out var minutes) ||
-        !int.TryParse(components[2], out var seconds))
+    if (!int.TryParse(components[0], provider, out var hours) ||
+        !int.TryParse(components[1], provider, out var minutes) ||
+        !int.TryParse(components[2], provider, out var seconds))
     {
       return false;
     }
@@ -77,7 +93,7 @@ public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>
       return false;
     }
 
-    time = new ClockTime(hours, minutes, seconds);
+    result = new ClockTime(hours, minutes, seconds);
     return true;
   }
 

@@ -4,7 +4,7 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
+using Surreal.Maths;
 
 namespace Surreal.Graphics;
 

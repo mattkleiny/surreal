@@ -1,6 +1,6 @@
 ﻿using Surreal.Colors;
 using Surreal.Graphics.Images;
-using Surreal.Mathematics;
+using Surreal.Maths;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;

@@ -12,6 +12,3 @@ public class BoundedStackTests
     queue.TryPush(3).Should().BeFalse();
   }
 }
-
-
-

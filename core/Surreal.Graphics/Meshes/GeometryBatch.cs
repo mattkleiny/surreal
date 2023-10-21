@@ -1,7 +1,7 @@
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Shaders;
-using Surreal.Mathematics;
+using Surreal.Maths;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
@@ -100,8 +100,8 @@ public sealed class GeometryBatch
 
     for (var theta = 0f; theta < 360f; theta += increment)
     {
-      var x = radius * MathF.Cos(Maths.DegreesToRadians(theta)) + center.X;
-      var y = radius * MathF.Sin(Maths.DegreesToRadians(theta)) + center.Y;
+      var x = radius * MathF.Cos(Maths.MathE.DegreesToRadians(theta)) + center.X;
+      var y = radius * MathF.Sin(Maths.MathE.DegreesToRadians(theta)) + center.Y;
 
       points.Add(new Vector2(x, y));
     }
@@ -117,8 +117,8 @@ public sealed class GeometryBatch
 
     for (var theta = startAngle; theta < endAngle; theta += increment)
     {
-      var x = radius * MathF.Cos(Maths.DegreesToRadians(theta)) + center.X;
-      var y = radius * MathF.Sin(Maths.DegreesToRadians(theta)) + center.Y;
+      var x = radius * MathF.Cos(Maths.MathE.DegreesToRadians(theta)) + center.X;
+      var y = radius * MathF.Sin(Maths.MathE.DegreesToRadians(theta)) + center.Y;
 
       points.Add(new Vector2(x, y));
     }

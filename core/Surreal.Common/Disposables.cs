@@ -13,19 +13,14 @@ public static class Disposables
   /// <summary>
   /// Creates a new anonymous, delegate-based <see cref="IDisposable" /> implementation.
   /// </summary>
-  public static IDisposable Anonymous(Action action)
-  {
-    return new AnonymousDisposable(action);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static IDisposable Anonymous(Action action) => new AnonymousDisposable(action);
 
   /// <summary>
   /// An anonymous, delegate-based <see cref="IDisposable" /> implementation.
   /// </summary>
   private sealed class AnonymousDisposable(Action action) : IDisposable
   {
-    public void Dispose()
-    {
-      action.Invoke();
-    }
+    public void Dispose() => action.Invoke();
   }
 }

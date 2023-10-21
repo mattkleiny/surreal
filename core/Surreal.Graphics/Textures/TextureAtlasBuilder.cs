@@ -1,6 +1,6 @@
-﻿using Surreal.Colors;
+﻿using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Graphics.Images;
-using Surreal.Grids;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Textures;
@@ -29,7 +29,7 @@ public class TextureAtlasBuilder
   /// <summary>
   /// Converts the <see cref="TextureAtlasBuilder" /> to a grid of <see cref="Color" />.
   /// </summary>
-  public Grid<Color32> ToGrid(int stride)
+  public DenseGrid<Color32> ToGrid(int stride)
   {
     var totalWidth = _cells.Sum(_ => _.Width);
     var maxHeight = _cells.Max(_ => _.Height);
@@ -37,7 +37,7 @@ public class TextureAtlasBuilder
     var width = totalWidth / stride;
     var height = maxHeight * (_cells.Count / stride);
 
-    var result = new Grid<Color32>(width, height);
+    var result = new DenseGrid<Color32>(width, height);
 
     ToSpan(result.Span);
 
@@ -101,7 +101,7 @@ public class TextureAtlasBuilder
   /// </summary>
   public readonly struct Cell(int width, int height)
   {
-    private readonly Grid<Color32> _pixels = new(width, height);
+    private readonly DenseGrid<Color32> _pixels = new(width, height);
 
     public int Width => _pixels.Width;
     public int Height => _pixels.Height;
