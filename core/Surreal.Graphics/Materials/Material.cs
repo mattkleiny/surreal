@@ -1,6 +1,4 @@
-﻿using Surreal.Graphics.Shaders;
-
-namespace Surreal.Graphics.Materials;
+﻿namespace Surreal.Graphics.Materials;
 
 /// <summary>
 /// Different kinds of blends.

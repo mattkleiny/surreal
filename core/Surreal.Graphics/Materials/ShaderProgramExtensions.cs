@@ -1,7 +1,6 @@
-﻿using Surreal.Graphics.Materials;
-using Surreal.Resources;
+﻿using Surreal.Resources;
 
-namespace Surreal.Graphics.Shaders;
+namespace Surreal.Graphics.Materials;
 
 /// <summary>
 /// Utilities for <see cref="ShaderProgram" />s.

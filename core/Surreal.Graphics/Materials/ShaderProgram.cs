@@ -1,7 +1,7 @@
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 
-namespace Surreal.Graphics.Shaders;
+namespace Surreal.Graphics.Materials;
 
 /// <summary>
 /// A low-level shader program on the GPU.

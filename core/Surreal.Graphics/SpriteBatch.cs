@@ -5,7 +5,7 @@ using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Sprites;
+namespace Surreal.Graphics;
 
 /// <summary>
 /// A batched mesh of sprites for rendering to the GPU.
@@ -34,6 +34,11 @@ public sealed class SpriteBatch : IDisposable
 
     CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
   }
+
+  /// <summary>
+  /// Invoked when the batch is flushed.
+  /// </summary>
+  public event Action? Flushed;
 
   /// <summary>
   /// The underlying <see cref="IGraphicsBackend" />.
@@ -129,7 +134,6 @@ public sealed class SpriteBatch : IDisposable
     if (_vertexCount == 0) return;
     if (_material == null) return;
 
-
     if (_lastTexture != null)
     {
       // TODO: bind the appropriate texture
@@ -142,6 +146,8 @@ public sealed class SpriteBatch : IDisposable
     _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
 
     _vertexCount = 0;
+
+    Flushed?.Invoke();
   }
 
   /// <summary>

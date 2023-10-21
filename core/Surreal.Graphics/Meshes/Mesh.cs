@@ -1,6 +1,5 @@
 ﻿using Surreal.Colors;
 using Surreal.Graphics.Materials;
-using Surreal.Graphics.Shaders;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;
@@ -161,6 +160,11 @@ public sealed class Mesh<TVertex> : Mesh
   /// </summary>
   public GraphicsBuffer<uint> Indices { get; }
 
+  /// <summary>
+  /// The <see cref="VertexDescriptorSet" /> for the mesh.
+  /// </summary>
+  public VertexDescriptorSet Descriptors => VertexDescriptors;
+
   /// <inheritdoc/>
   public override Size Size => Vertices.Size + Indices.Size;
 
@@ -188,11 +192,11 @@ public sealed class Mesh<TVertex> : Mesh
     material.Apply(_backend); // TODO: put this in a better place (material batching?)
 
     _backend.DrawMesh(
-      Handle,
-      vertexCount,
-      indexCount,
-      type,
-      Indices.ElementType
+      mesh: Handle,
+      vertexCount: vertexCount,
+      indexCount: indexCount,
+      meshType: type,
+      indexType: Indices.ElementType
     );
   }
 
@@ -208,11 +212,11 @@ public sealed class Mesh<TVertex> : Mesh
     _backend.SetActiveShader(shader.Handle);
 
     _backend.DrawMesh(
-      Handle,
-      vertexCount,
-      indexCount,
-      type,
-      Indices.ElementType
+      mesh: Handle,
+      vertexCount: vertexCount,
+      indexCount: indexCount,
+      meshType: type,
+      indexType: Indices.ElementType
     );
   }
 
