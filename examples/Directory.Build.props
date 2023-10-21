@@ -36,7 +36,7 @@
     <Using Include="Surreal.Timing"/>
     <Using Include="Surreal.Utilities"/>
 
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop.Silk\Surreal.Platform.Desktop.Silk.csproj"/>
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj"/>
 
     <!-- automatically exclude example projects from code coverage -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
