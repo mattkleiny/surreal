@@ -12,7 +12,7 @@ internal sealed class SilkInputBackend(SilkWindow window) : IInputBackend, IDisp
   {
   }
 
-  private static IEnumerable<IInputDevice> CreateInputDevices(IInputContext context)
+  private static List<IInputDevice> CreateInputDevices(IInputContext context)
   {
     var results = new List<IInputDevice>();
 

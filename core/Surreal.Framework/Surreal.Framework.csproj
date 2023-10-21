@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A game framework based on Surreal</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Audio\Surreal.Audio.csproj"/>
+    <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj"/>
+    <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj"/>
+  </ItemGroup>
+</Project>

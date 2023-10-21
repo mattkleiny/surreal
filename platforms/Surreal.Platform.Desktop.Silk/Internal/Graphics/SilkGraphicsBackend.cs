@@ -284,10 +284,6 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     throw new NotImplementedException();
   }
 
-  public void Dispose()
-  {
-  }
-
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static BufferTargetARB ConvertBufferType(BufferType type)
   {
