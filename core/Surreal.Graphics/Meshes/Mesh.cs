@@ -22,6 +22,9 @@ public enum MeshType
 /// </summary>
 public abstract class Mesh : GraphicsAsset, IHasSizeEstimate
 {
+  /// <summary>
+  /// The byte size of the <see cref="Mesh" />.
+  /// </summary>
   public abstract Size Size { get; }
 
   /// <summary>
@@ -143,12 +146,27 @@ public sealed class Mesh<TVertex> : Mesh
     Handle = backend.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
   }
 
+  /// <summary>
+  /// The <see cref="GraphicsHandle"/> for the mesh itself.
+  /// </summary>
   public GraphicsHandle Handle { get; }
+
+  /// <summary>
+  /// The <see cref="GraphicsBuffer{TVertex}" /> for the vertices.
+  /// </summary>
   public GraphicsBuffer<TVertex> Vertices { get; }
+
+  /// <summary>
+  /// The <see cref="GraphicsBuffer{uint}" /> for the indices.
+  /// </summary>
   public GraphicsBuffer<uint> Indices { get; }
 
+  /// <inheritdoc/>
   public override Size Size => Vertices.Size + Indices.Size;
 
+  /// <summary>
+  /// Tessellates a shape given by a <see cref="Tessellator{TVertex}" /> into this <see cref="Mesh{TVertex}" />.
+  /// </summary>
   public void Tessellate(Action<Tessellator<TVertex>> builder)
   {
     var tessellator = new Tessellator<TVertex>();
@@ -158,11 +176,13 @@ public sealed class Mesh<TVertex> : Mesh
     tessellator.WriteTo(this);
   }
 
+  /// <inheritdoc/>
   public override void Draw(Material material, MeshType type = MeshType.Triangles)
   {
     Draw(material, Vertices.Length, Indices.Length, type);
   }
 
+  /// <inheritdoc/>
   public override void Draw(Material material, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles)
   {
     material.Apply(_backend); // TODO: put this in a better place (material batching?)
@@ -176,11 +196,13 @@ public sealed class Mesh<TVertex> : Mesh
     );
   }
 
+  /// <inheritdoc/>
   public override void Draw(ShaderProgram shader, MeshType type = MeshType.Triangles)
   {
     Draw(shader, Vertices.Length, Indices.Length, type);
   }
 
+  /// <inheritdoc/>
   public override void Draw(ShaderProgram shader, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles)
   {
     _backend.SetActiveShader(shader.Handle);

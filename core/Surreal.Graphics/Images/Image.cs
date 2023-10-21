@@ -29,7 +29,14 @@ public sealed class Image : IDisposable
     _image = image;
   }
 
+  /// <summary>
+  /// The width of the image, in pixels.
+  /// </summary>
   public int Width => _image.Width;
+
+  /// <summary>
+  /// The height of the image, in pixels.
+  /// </summary>
   public int Height => _image.Height;
 
   /// <summary>

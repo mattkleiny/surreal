@@ -2,7 +2,6 @@
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Shaders;
 using Surreal.Graphics.Textures;
 using Surreal.Memory;
 
@@ -41,43 +40,48 @@ public sealed class SpriteBatch : IDisposable
   /// </summary>
   public IGraphicsBackend Backend { get; }
 
-  /// <summary>
-  /// The <see cref="MaterialProperty{T}" /> to bind textures to.
-  /// </summary>
-  public MaterialProperty<Texture> TextureProperty { get; set; } = MaterialProperty.Texture;
-
   public void Dispose()
   {
     _mesh.Dispose();
     _vertices.Dispose();
   }
 
-  public void Begin(ShaderProgram shader)
-  {
-    Begin(new Material(shader));
-  }
-
+  /// <summary>
+  /// Begins a new batch of sprites with the given material.
+  /// </summary>
   public void Begin(Material material)
   {
     _vertexCount = 0; // reset vertex pointer
     _material = material;
   }
 
+  /// <summary>
+  /// Draws a sprite at the given position.
+  /// </summary>
   public void Draw(in TextureRegion region, Vector2 position)
   {
     Draw(region, position, region.Size);
   }
 
+  /// <summary>
+  /// Draws a sprite at the given position.
+  /// </summary>
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
   {
     Draw(region, position, size, Color.White);
   }
 
+  /// <summary>
+  /// Draws a sprite at the given position.
+  /// </summary>
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
   {
     Draw(region, position, size, 0f, color);
   }
 
+  /// <summary>
+  /// Draws a sprite at the given position.
+  /// </summary>
   [SkipLocalsInit]
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
   {
@@ -117,26 +121,22 @@ public sealed class SpriteBatch : IDisposable
     _vertexCount += output.Count;
   }
 
+  /// <summary>
+  /// Flushes any pending sprites to the GPU.
+  /// </summary>
   public void Flush()
   {
-    if (_vertexCount == 0)
-    {
-      return;
-    }
+    if (_vertexCount == 0) return;
+    if (_material == null) return;
 
-    if (_material == null)
+
+    if (_lastTexture != null)
     {
-      return;
+      // TODO: bind the appropriate texture
     }
 
     var spriteCount = _vertexCount / 4;
     var indexCount = spriteCount * 6;
-
-    // bind the appropriate texture
-    if (_lastTexture != null)
-    {
-      _material.Properties.SetProperty(TextureProperty, _lastTexture);
-    }
 
     _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
     _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
@@ -144,6 +144,9 @@ public sealed class SpriteBatch : IDisposable
     _vertexCount = 0;
   }
 
+  /// <summary>
+  /// Creates a default winding of indices for a quad.
+  /// </summary>
   private unsafe void CreateIndices(int indexCount)
   {
     Span<uint> indices = stackalloc uint[indexCount];

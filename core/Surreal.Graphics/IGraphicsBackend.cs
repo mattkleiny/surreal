@@ -7,6 +7,11 @@ using Surreal.Maths;
 namespace Surreal.Graphics;
 
 /// <summary>
+/// A viewport size for camera rendering.
+/// </summary>
+public readonly record struct Viewport(int X, int Y, uint Width, uint Height);
+
+/// <summary>
 /// An abstraction over the different types of graphics backends available.
 /// </summary>
 public interface IGraphicsBackend

@@ -43,11 +43,29 @@ public enum TextureFilterMode
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
 public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : GraphicsAsset, IHasSizeEstimate
 {
-  public int Width { get; private set; }
-  public int Height { get; private set; }
+  /// <summary>
+  /// The <see cref="GraphicsHandle"/> for the underlying texture.
+  /// </summary>
   public GraphicsHandle Handle { get; } = backend.CreateTexture(filterMode, wrapMode);
-  public TextureFormat Format { get; set; } = format;
 
+  /// <summary>
+  /// The width of the texture, in pixels.
+  /// </summary>
+  public int Width { get; private set; }
+
+  /// <summary>
+  /// The height of the texture, in pixels.
+  /// </summary>
+  public int Height { get; private set; }
+
+  /// <summary>
+  /// The c<see cref="TextureFormat" /> of the texture.
+  /// </summary>
+  public TextureFormat Format { get; init; } = format;
+
+  /// <summary>
+  /// The <see cref="TextureFilterMode" /> of the texture.
+  /// </summary>
   public TextureFilterMode FilterMode
   {
     get => filterMode;
@@ -58,6 +76,9 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
     }
   }
 
+  /// <summary>
+  /// The <see cref="TextureWrapMode" /> of the texture.
+  /// </summary>
   public TextureWrapMode WrapMode
   {
     get => wrapMode;
@@ -68,6 +89,7 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
     }
   }
 
+  /// <inheritdoc/>
   public Size Size { get; private set; }
 
   /// <summary>
@@ -105,35 +127,54 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
     return texture;
   }
 
+  /// <summary>
+  /// Converts the <see cref="Texture" /> to a <see cref="TextureRegion" />.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public TextureRegion ToRegion()
   {
     return new TextureRegion(this);
   }
 
+  /// <summary>
+  /// Reads the entire texture into a <see cref="Memory{T}" />.
+  /// </summary>
   public Memory<T> ReadPixels<T>()
     where T : unmanaged
   {
     return backend.ReadTextureData<T>(Handle);
   }
 
+  /// <summary>
+  /// Reads the entire texture into a <see cref="Span{T}" />.
+  /// </summary>
   public void ReadPixels<T>(Span<T> buffer)
     where T : unmanaged
   {
     backend.ReadTextureData(Handle, buffer);
   }
 
+  /// <summary>
+  /// Reads a sub-region of the texture into a <see cref="Memory{T}" />.
+  /// </summary>
   public Memory<T> ReadPixelsSub<T>(int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
     return backend.ReadTextureSubData<T>(Handle, offsetX, offsetY, (uint)width, (uint)height);
   }
 
+  /// <summary>
+  /// Reads a sub-region of the texture into a <see cref="Span{T}" />.
+  /// </summary>
   public void ReadPixelsSub<T>(Span<T> buffer, int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
     backend.ReadTextureSubData(Handle, buffer, offsetX, offsetY, (uint)width, (uint)height);
   }
 
+  /// <summary>
+  /// Writes the given <see cref="ReadOnlySpan{T}" /> to the texture.
+  /// </summary>
   public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
@@ -144,12 +185,18 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
     backend.WriteTextureData(Handle, (uint)width, (uint)height, pixels, Format);
   }
 
+  /// <summary>
+  /// Writes the given <see cref="ReadOnlySpan{T}" /> to the texture at the given offset.
+  /// </summary>
   public void WritePixelsSub<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
     backend.WriteTextureSubData(Handle, offsetX, offsetY, (uint)width, (uint)height, pixels, Format);
   }
 
+  /// <summary>
+  /// Writes the given <see cref="Image" /> to the texture.
+  /// </summary>
   public void WritePixels(Image image)
   {
     var pixels = image.Pixels.ToReadOnlySpan();

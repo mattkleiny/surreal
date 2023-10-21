@@ -18,6 +18,9 @@ public sealed record TextureLoaderSettings
 /// </summary>
 public sealed class TextureLoader(IGraphicsBackend graphics) : AssetLoader<Texture>
 {
+  /// <summary>
+  /// Default settings for <see cref="Texture" />s loaded via this loader.
+  /// </summary>
   public TextureLoaderSettings Settings { get; init; } = new();
 
   public override async Task<Texture> LoadAsync(AssetContext context, CancellationToken cancellationToken)

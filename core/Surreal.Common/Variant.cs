@@ -282,8 +282,7 @@ public readonly struct Variant
   public Array? AsArray() => _object as Array;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public T? As<T>()
-    where T : class => _object as T;
+  public T? As<T>() where T : class => _object as T;
 
   #endregion
 

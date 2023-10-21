@@ -12,8 +12,8 @@ namespace Surreal.Graphics.Meshes;
 public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
 {
   private const int DefaultVertexCount = 64;
-  private readonly Mesh<Vertex2> _mesh = new(backend);
 
+  private readonly Mesh<Vertex2> _mesh = new(backend);
   private readonly IDisposableBuffer<Vertex2> _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
 
   private Material? _material;

@@ -56,8 +56,14 @@ public enum VertexType
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class VertexDescriptorAttribute(int count, VertexType type) : Attribute
 {
-  public string? Alias { get; set; }
+  /// <summary>
+  /// The number of components in the vertex field.
+  /// </summary>
   public int Count { get; set; } = count;
+
+  /// <summary>
+  /// The type of the vertex field.
+  /// </summary>
   public VertexType Type { get; set; } = type;
 
   /// <summary>
@@ -72,6 +78,9 @@ public sealed class VertexDescriptorAttribute(int count, VertexType type) : Attr
 [DebuggerDisplay("{Name}: {Count}")]
 public readonly record struct VertexDescriptor(string Name, uint Offset, int Count, VertexType Type, bool ShouldNormalize)
 {
+  /// <summary>
+  /// The stride between each vertex.
+  /// </summary>
   public uint Stride => (uint)(Count * DetermineSize(Type));
 
   private static int DetermineSize(VertexType type)
@@ -96,8 +105,14 @@ public readonly record struct VertexDescriptor(string Name, uint Offset, int Cou
 /// </summary>
 public sealed record VertexDescriptorSet(ImmutableArray<VertexDescriptor> Descriptors, uint Stride)
 {
+  /// <summary>
+  /// The number of <see cref="VertexDescriptor" />s in the set.
+  /// </summary>
   public int Length => Descriptors.Length;
 
+  /// <summary>
+  /// Gets a <see cref="VertexDescriptor" /> by index.
+  /// </summary>
   public VertexDescriptor this[int index] => Descriptors[index];
 
   public static VertexDescriptorSet Create<TVertex>()

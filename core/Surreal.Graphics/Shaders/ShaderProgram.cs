@@ -4,40 +4,13 @@ using Surreal.Maths;
 namespace Surreal.Graphics.Shaders;
 
 /// <summary>
-/// Different kinds of uniform values supported on a <see cref="ShaderProgram" />.
-/// </summary>
-public enum UniformType
-{
-  Integer,
-  Float,
-  Point2,
-  Point3,
-  Point4,
-  Vector2,
-  Vector3,
-  Vector4,
-  Quaternion,
-  Matrix3X2,
-  Matrix4X4,
-  Texture
-}
-
-/// <summary>
-/// Metadata about attributes in a <see cref="ShaderProgram" />.
-/// </summary>
-public sealed record ShaderAttributeMetadata(string Name, int Location, int Length, int Count, UniformType Type);
-
-/// <summary>
-/// Metadata about uniforms in a <see cref="ShaderProgram" />.
-/// </summary>
-public sealed record ShaderUniformMetadata(string Name, int Location, int Length, int Count, UniformType Type);
-
-/// <summary>
 /// A low-level shader program on the GPU.
 /// </summary>
 public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
 {
-  public IGraphicsBackend Backend { get; } = backend;
+  /// <summary>
+  /// The <see cref="GraphicsHandle"/> for the shader itself.
+  /// </summary>
   public GraphicsHandle Handle { get; private set; } = backend.CreateShader();
 
   public int GetUniformLocation(string name)
