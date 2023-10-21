@@ -42,7 +42,7 @@ public enum TextureFilterMode
 /// A texture that can be uploaded to the GPU.
 /// </summary>
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
-public sealed class Texture(IGraphicsContext context,
+public sealed class Texture(GraphicsContext context,
   TextureFormat format = TextureFormat.Rgba8,
   TextureFilterMode filterMode = TextureFilterMode.Point,
   TextureWrapMode wrapMode = TextureWrapMode.Clamp) : GraphicsResource, IHasSizeEstimate
@@ -50,7 +50,7 @@ public sealed class Texture(IGraphicsContext context,
   private TextureFilterMode _filterMode = TextureFilterMode.Point;
   private TextureWrapMode _wrapMode = TextureWrapMode.Clamp;
 
-  public IGraphicsContext Context { get; } = context;
+  public GraphicsContext Context { get; } = context;
 
   public int Width { get; private set; }
   public int Height { get; private set; }
@@ -83,7 +83,7 @@ public sealed class Texture(IGraphicsContext context,
   /// <summary>
   /// Creates a colored 1x1 texture.
   /// </summary>
-  public static Texture CreateColored(IGraphicsContext context, Color color, TextureFormat format = TextureFormat.Rgba8)
+  public static Texture CreateColored(GraphicsContext context, Color color, TextureFormat format = TextureFormat.Rgba8)
   {
     var texture = new Texture(context, format);
 
@@ -95,7 +95,7 @@ public sealed class Texture(IGraphicsContext context,
   /// <summary>
   /// Creates a texture from random noise.
   /// </summary>
-  public static Texture CreateNoise(IGraphicsContext context, int width, int height, Seed seed = default,
+  public static Texture CreateNoise(GraphicsContext context, int width, int height, Seed seed = default,
     TextureFormat format = TextureFormat.Rgba8)
   {
     var texture = new Texture(context, format);

@@ -48,9 +48,9 @@ public sealed record ShaderUniformMetadata(
 /// <summary>
 /// A low-level shader program on the GPU.
 /// </summary>
-public sealed class ShaderProgram(IGraphicsContext context) : GraphicsResource
+public sealed class ShaderProgram(GraphicsContext context) : GraphicsResource
 {
-  public IGraphicsContext Context { get; } = context;
+  public GraphicsContext Context { get; } = context;
   public GraphicsHandle Handle { get; private set; } = context.Backend.CreateShader();
 
   /// <summary>

@@ -19,7 +19,7 @@ using Vector4 = System.Numerics.Vector4;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// The <see cref="IGraphicsContext" /> for the OpenTK backend (OpenGL).
+/// The <see cref="GraphicsContext" /> for the OpenTK backend (OpenGL).
 /// </summary>
 internal sealed class OpenTKGraphicsBackend : IGraphicsBackend
 {

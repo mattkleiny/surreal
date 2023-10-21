@@ -21,7 +21,7 @@ public enum BufferUsage
 }
 
 /// <summary>
-/// A buffer of data on the <see cref="IGraphicsContext" />.
+/// A buffer of data on the <see cref="GraphicsContext" />.
 /// </summary>
 public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 {
@@ -34,7 +34,7 @@ public abstract class GraphicsBuffer : GraphicsResource, IHasSizeEstimate
 /// <summary>
 /// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.
 /// </summary>
-public sealed class GraphicsBuffer<T>(IGraphicsContext context, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
+public sealed class GraphicsBuffer<T>(GraphicsContext context, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
   where T : unmanaged
 {
   public override Type ElementType => typeof(T);

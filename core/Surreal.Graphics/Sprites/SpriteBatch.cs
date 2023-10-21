@@ -23,7 +23,12 @@ public sealed class SpriteBatch : IDisposable
   private Material? _material;
   private int _vertexCount;
 
-  public SpriteBatch(IGraphicsContext context, int spriteCount = DefaultSpriteCount)
+  public SpriteBatch(int spriteCount = DefaultSpriteCount)
+    : this(GraphicsContext.Default, spriteCount)
+  {
+  }
+
+  public SpriteBatch(GraphicsContext context, int spriteCount = DefaultSpriteCount)
   {
     Debug.Assert(spriteCount > 0, "spriteCount > 0");
     Debug.Assert(spriteCount <= MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
@@ -37,9 +42,9 @@ public sealed class SpriteBatch : IDisposable
   }
 
   /// <summary>
-  /// The underlying <see cref="IGraphicsContext" />.
+  /// The underlying <see cref="GraphicsContext" />.
   /// </summary>
-  public IGraphicsContext Context { get; }
+  public GraphicsContext Context { get; }
 
   /// <summary>
   /// The <see cref="MaterialProperty{T}" /> to bind textures to.

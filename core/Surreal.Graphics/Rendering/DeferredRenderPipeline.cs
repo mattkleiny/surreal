@@ -6,7 +6,7 @@
 [RenderPipeline("Deferred")]
 public sealed class DeferredRenderPipeline : MultiPassRenderPipeline
 {
-  public DeferredRenderPipeline(IGraphicsContext context)
+  public DeferredRenderPipeline(GraphicsContext context)
   {
     Passes.Add(new ColorBufferPass(context));
     Passes.Add(new ShadowStencilPass(context));
@@ -15,16 +15,16 @@ public sealed class DeferredRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that collects color data.
   /// </summary>
-  private sealed class ColorBufferPass(IGraphicsContext context) : RenderPass
+  private sealed class ColorBufferPass(GraphicsContext context) : RenderPass
   {
-    private readonly IGraphicsContext _context = context;
+    private readonly GraphicsContext _context = context;
   }
 
   /// <summary>
   /// A <see cref="RenderPass"/> that collects stenciled shadow map data.
   /// </summary>
-  private sealed class ShadowStencilPass(IGraphicsContext context) : RenderPass
+  private sealed class ShadowStencilPass(GraphicsContext context) : RenderPass
   {
-    private readonly IGraphicsContext _context = context;
+    private readonly GraphicsContext _context = context;
   }
 }

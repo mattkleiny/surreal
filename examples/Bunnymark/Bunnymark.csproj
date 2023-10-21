@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A simple sprite benchmarking example for Surreal.</Description>
+  </PropertyGroup>
+</Project>

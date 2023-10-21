@@ -65,7 +65,7 @@ public class TextureAtlasBuilder
   /// <summary>
   /// Converts the <see cref="TextureAtlasBuilder" /> to a single <see cref="Texture" />.
   /// </summary>
-  public Texture ToTexture(IGraphicsContext context, int stride)
+  public Texture ToTexture(GraphicsContext context, int stride)
   {
     var texture = new Texture(context);
     var grid = ToGrid(stride);

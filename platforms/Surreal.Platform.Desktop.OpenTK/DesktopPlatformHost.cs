@@ -1,14 +1,8 @@
 using Surreal.Audio;
-using Surreal.Audio.Clips;
-using Surreal.Colors;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
-using Surreal.Graphics.Fonts;
 using Surreal.Graphics.Images;
-using Surreal.Graphics.Materials;
 using Surreal.Input;
-using Surreal.IO;
-using Surreal.Resources;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -53,7 +47,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   private readonly FrameCounter _frameCounter = new();
   private IntervalTimer _frameDisplayTimer = new(TimeSpan.FromSeconds(1));
 
-  public DesktopPlatformHost(DesktopConfiguration configuration)
+  public DesktopPlatformHost(DesktopConfiguration configuration, IGameHost host)
   {
     _configuration = configuration;
 
@@ -63,6 +57,13 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     InputBackend = new OpenTKInputBackend(Window);
 
     Resized += OnResized;
+
+    host.Services.AddService<IPlatformHost>(this);
+    host.Services.AddService<IDesktopPlatformHost>(this);
+    host.Services.AddService<IDesktopWindow>(Window);
+    host.Services.AddService<IAudioBackend>(AudioBackend);
+    host.Services.AddService<IGraphicsBackend>(GraphicsBackend);
+    host.Services.AddService<IInputBackend>(InputBackend);
   }
 
   public OpenTKWindow Window { get; }
@@ -84,31 +85,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public bool IsFocused => Window.IsFocused;
   public bool IsClosing => Window.IsClosing;
   public bool IsVisible => Window.IsVisible;
-
-  public void RegisterServices(IServiceRegistry services)
-  {
-    services.AddService<IPlatformHost>(this);
-    services.AddService<IDesktopPlatformHost>(this);
-    services.AddService<IDesktopWindow>(Window);
-    services.AddService<IAudioBackend>(AudioBackend);
-    services.AddService<IGraphicsBackend>(GraphicsBackend);
-    services.AddService<IInputBackend>(InputBackend);
-  }
-
-  public void RegisterAssetLoaders(IResourceManager manager)
-  {
-    manager.AddLoader(new AudioBufferLoader());
-    manager.AddLoader(new AudioClipLoader(AudioBackend));
-    manager.AddLoader(new BitmapFontLoader());
-    manager.AddLoader(new ColorPaletteLoader());
-    manager.AddLoader(new ImageLoader());
-    manager.AddLoader(new MaterialLoader());
-  }
-
-  public void RegisterFileSystems(IFileSystemRegistry registry)
-  {
-    // no-op
-  }
 
   public void BeginFrame(DeltaTime deltaTime)
   {

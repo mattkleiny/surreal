@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>A super basic example of bootstrapping with Surreal.</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj"/>
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop.Silk\Surreal.Platform.Desktop.Silk.csproj"/>
-  </ItemGroup>
-</Project>

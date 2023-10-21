@@ -19,7 +19,7 @@ public interface IRenderContext : IDisposable
 /// </summary>
 public interface IRenderContextDescriptor
 {
-  Task<IRenderContext> BuildContextAsync(IGraphicsContext context, IResourceManager resources, CancellationToken cancellationToken = default);
+  Task<IRenderContext> BuildContextAsync(GraphicsContext context, IResourceManager resources, CancellationToken cancellationToken = default);
 }
 
 /// <summary>

@@ -18,7 +18,7 @@ internal sealed record OpenTKShaderSet(string Path, ImmutableArray<OpenTKShader>
 /// <summary>
 /// The <see cref="ResourceLoader{T}" /> for GLSL <see cref="ShaderProgram" />s.
 /// </summary>
-internal sealed class OpenTKShaderProgramLoader(IGraphicsContext graphics) : ResourceLoader<ShaderProgram>
+internal sealed class OpenTKShaderProgramLoader(GraphicsContext graphics) : ResourceLoader<ShaderProgram>
 {
   public override bool CanHandle(ResourceContext context)
   {

@@ -8,9 +8,9 @@ namespace Surreal.Graphics;
 /// </summary>
 public sealed class RenderTarget : GraphicsResource
 {
-  private readonly IGraphicsContext _context;
+  private readonly GraphicsContext _context;
 
-  public RenderTarget(IGraphicsContext context, RenderTargetDescriptor colorDescriptor)
+  public RenderTarget(GraphicsContext context, RenderTargetDescriptor colorDescriptor)
   {
     _context = context;
 

@@ -1,30 +1,19 @@
-﻿namespace Surreal.Graphics;
+﻿using Surreal.Utilities;
+
+namespace Surreal.Graphics;
 
 /// <summary>
-/// The graphics context is the top-level entry point for the graphics subsystem.
+/// The default <see cref="GraphicsContext"/> implementation.
 /// </summary>
-public interface IGraphicsContext
+public readonly record struct GraphicsContext(IGraphicsBackend Backend)
 {
   /// <summary>
-  /// The underlying graphics backend.
+  /// Creates a new <see cref="GraphicsContext"/> with the default <see cref="IGraphicsBackend"/>.
   /// </summary>
-  IGraphicsBackend Backend { get; }
-}
+  public static GraphicsContext Default => new(Game.Services.GetServiceOrThrow<IGraphicsBackend>());
 
-/// <summary>
-/// The default <see cref="IGraphicsContext"/> implementation.
-/// </summary>
-public sealed record GraphicsContext(IGraphicsBackend Backend) : IGraphicsContext, IDisposable
-{
   /// <summary>
   /// Creates a new <see cref="GraphicsContext"/> with a <see cref="HeadlessGraphicsBackend"/>.
   /// </summary>
-  public static GraphicsContext CreateHeadless()
-  {
-    return new GraphicsContext(new HeadlessGraphicsBackend());
-  }
-
-  public void Dispose()
-  {
-  }
+  public static GraphicsContext Headless => new(new HeadlessGraphicsBackend());
 }

@@ -21,14 +21,14 @@ public sealed record DesktopConfiguration
 }
 
 /// <summary>
-/// A <see cref="IPlatform" /> for desktop environments.
+/// A <see cref="IPlatformHostFactory" /> for desktop environments.
 /// </summary>
-public sealed class DesktopPlatform : IPlatform
+public sealed class DesktopPlatform : IPlatformHostFactory
 {
   public DesktopConfiguration Configuration { get; } = new();
 
-  public IPlatformHost BuildHost()
+  public IPlatformHost BuildHost(IGameHost host)
   {
-    return new DesktopPlatformHost(Configuration);
+    return new DesktopPlatformHost(Configuration, host);
   }
 }

@@ -1,11 +1,11 @@
 namespace Surreal;
 
 /// <summary>
-/// A <see cref="IPlatform" /> for headless environments.
+/// A <see cref="IPlatformHostFactory" /> for headless environments.
 /// </summary>
-public sealed class HeadlessPlatform : IPlatform
+public sealed class HeadlessPlatform : IPlatformHostFactory
 {
-  public IPlatformHost BuildHost()
+  public IPlatformHost BuildHost(IGameHost host)
   {
     return new HeadlessPlatformHost();
   }

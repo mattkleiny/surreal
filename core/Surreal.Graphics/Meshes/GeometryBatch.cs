@@ -10,7 +10,7 @@ namespace Surreal.Graphics.Meshes;
 /// An efficient batch of geometric primitives for rendering to the GPU.
 /// </summary>
 public sealed class GeometryBatch
-  (IGraphicsContext context, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
+  (GraphicsContext context, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
 {
   private const int DefaultVertexCount = 64;
   private readonly Mesh<Vertex2> _mesh = new(context);

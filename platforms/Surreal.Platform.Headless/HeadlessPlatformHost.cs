@@ -3,10 +3,7 @@ using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
-using Surreal.IO;
-using Surreal.Resources;
 using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -35,20 +32,6 @@ internal sealed class HeadlessPlatformHost : IHeadlessPlatformHost
 
   public HeadlessKeyboardDevice Keyboard => InputBackend.Keyboard;
   public HeadlessMouseDevice Mouse => InputBackend.Mouse;
-
-  public void RegisterServices(IServiceRegistry services)
-  {
-  }
-
-  public void RegisterAssetLoaders(IResourceManager manager)
-  {
-    // no-op
-  }
-
-  public void RegisterFileSystems(IFileSystemRegistry registry)
-  {
-    // no-op
-  }
 
   public void BeginFrame(DeltaTime deltaTime)
   {

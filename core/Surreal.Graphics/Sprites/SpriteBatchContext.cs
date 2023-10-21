@@ -9,7 +9,7 @@ namespace Surreal.Graphics.Sprites;
 /// <summary>
 /// A <see cref="RenderContext"/> for sprite rendering.
 /// </summary>
-public sealed class SpriteContext(IGraphicsContext context, Material material) : RenderContext
+public sealed class SpriteContext(GraphicsContext context, Material material) : RenderContext
 {
   /// <summary>
   /// The <see cref="Material"/> used for rendering.
@@ -64,7 +64,7 @@ public sealed class SpriteContextDescriptor : IRenderContextDescriptor
   /// </summary>
   public Optional<ColorPalette> ColorPalette { get; init; }
 
-  public async Task<IRenderContext> BuildContextAsync(IGraphicsContext context, IResourceManager resources,
+  public async Task<IRenderContext> BuildContextAsync(GraphicsContext context, IResourceManager resources,
     CancellationToken cancellationToken)
   {
     var material = await ResolveMaterialAsync(context, resources, cancellationToken);
@@ -72,7 +72,7 @@ public sealed class SpriteContextDescriptor : IRenderContextDescriptor
     return new SpriteContext(context, material);
   }
 
-  private async Task<Material> ResolveMaterialAsync(IGraphicsContext context, IResourceManager resources,
+  private async Task<Material> ResolveMaterialAsync(GraphicsContext context, IResourceManager resources,
     CancellationToken cancellationToken)
   {
     if (!Material.HasValue)

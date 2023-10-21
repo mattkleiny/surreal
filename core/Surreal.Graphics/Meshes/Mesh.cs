@@ -27,7 +27,7 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   /// <summary>
   /// Convenience method for building <see cref="Mesh{TVertex}" />s with a <see cref="Tessellator{TVertex}" />.
   /// </summary>
-  public static Mesh<TVertex> Create<TVertex>(IGraphicsContext context, Action<Tessellator<TVertex>> builder)
+  public static Mesh<TVertex> Create<TVertex>(GraphicsContext context, Action<Tessellator<TVertex>> builder)
     where TVertex : unmanaged
   {
     var mesh = new Mesh<TVertex>(context);
@@ -40,7 +40,7 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   /// <summary>
   /// Builds a simple triangle <see cref="Mesh" />.
   /// </summary>
-  public static Mesh<Vertex2> CreateTriangle(IGraphicsContext context, float size = 1f)
+  public static Mesh<Vertex2> CreateTriangle(GraphicsContext context, float size = 1f)
   {
     return Create<Vertex2>(context, tessellator =>
     {
@@ -55,7 +55,7 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   /// <summary>
   /// Builds a simple quad <see cref="Mesh" /> quad.
   /// </summary>
-  public static Mesh<Vertex2> CreateQuad(IGraphicsContext context, float size = 1f)
+  public static Mesh<Vertex2> CreateQuad(GraphicsContext context, float size = 1f)
   {
     return Create<Vertex2>(context, tessellator =>
     {
@@ -71,7 +71,7 @@ public abstract class Mesh : GraphicsResource, IHasSizeEstimate
   /// <summary>
   /// Builds a simple circle <see cref="Mesh" />.
   /// </summary>
-  public static Mesh<Vertex2> CreateCircle(IGraphicsContext context, float radius = 1f, int segments = 16)
+  public static Mesh<Vertex2> CreateCircle(GraphicsContext context, float radius = 1f, int segments = 16)
   {
     return Create<Vertex2>(context, tessellator =>
     {
@@ -131,9 +131,9 @@ public sealed class Mesh<TVertex> : Mesh
   /// </summary>
   private static readonly VertexDescriptorSet VertexDescriptors = VertexDescriptorSet.Create<TVertex>();
 
-  private readonly IGraphicsContext _context;
+  private readonly GraphicsContext _context;
 
-  public Mesh(IGraphicsContext context, BufferUsage usage = BufferUsage.Static)
+  public Mesh(GraphicsContext context, BufferUsage usage = BufferUsage.Static)
   {
     _context = context;
 

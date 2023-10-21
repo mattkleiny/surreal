@@ -11,7 +11,8 @@ public interface IRenderContextManager
   /// <summary>
   /// Adds a <see cref="IRenderContext"/> to the manager.
   /// </summary>
-  void AddContext<T>(T context) where T : IRenderContext;
+  void AddContext<T>(T context)
+    where T : IRenderContext;
 
   /// <summary>
   /// Adds a context to the manager via the given <see cref="IRenderContextDescriptor"/>.
@@ -48,7 +49,7 @@ public interface IRenderContextManager
 /// <summary>
 /// The default <see cref="IRenderContextManager"/> implementation.
 /// </summary>
-public sealed class RenderContextManager(IGraphicsContext graphicsContext, IResourceManager resourceManager) : IRenderContextManager, IDisposable
+public sealed class RenderContextManager(GraphicsContext graphicsContext, IResourceManager resourceManager) : IRenderContextManager, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 

@@ -1,7 +1,5 @@
-﻿using Surreal.Graphics;
-using Surreal.Resources;
+﻿using Surreal.Resources;
 using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -20,9 +18,9 @@ public readonly record struct GameTime
 public sealed record GameConfiguration
 {
   /// <summary>
-  /// The <see cref="IPlatform"/> to use for the game.
+  /// The <see cref="IPlatformHostFactory"/> to use for the game.
   /// </summary>
-  public required IPlatform Platform { get; init; }
+  public required IPlatformHostFactory Platform { get; init; }
 
   /// <summary>
   /// The <see cref="IGameHost"/> for the game.
@@ -67,34 +65,37 @@ public static class Game
   /// </summary>
   public static void Start(GameConfiguration configuration)
   {
-    using var platform = configuration.Platform.BuildHost();
     using var host = configuration.Host;
+    using var platform = configuration.Platform.BuildHost(host);
 
-    platform.RegisterServices(host.Services);
+    Host = host;
 
-    using var graphics = new GraphicsContext(host.Services.GetServiceOrThrow<IGraphicsBackend>());
-
-    var clock = new DeltaTimeClock();
-    var startTime = TimeStamp.Now;
-
-    host.Initialize(graphics);
-
-    while (!platform.IsClosing && !host.IsClosing)
+    try
     {
-      var deltaTime = clock.Tick();
-      var totalTime = TimeStamp.Now - startTime;
+      var clock = new DeltaTimeClock();
+      var startTime = TimeStamp.Now;
 
-      var gameTime = new GameTime
+      while (!platform.IsClosing && !host.IsClosing)
       {
-        DeltaTime = deltaTime,
-        TotalTime = (float)totalTime.TotalSeconds
-      };
+        var deltaTime = clock.Tick();
+        var totalTime = TimeStamp.Now - startTime;
 
-      platform.BeginFrame(deltaTime);
+        var gameTime = new GameTime
+        {
+          DeltaTime = deltaTime,
+          TotalTime = (float)totalTime.TotalSeconds
+        };
 
-      host.Tick(gameTime, graphics);
+        platform.BeginFrame(deltaTime);
 
-      platform.EndFrame(deltaTime);
+        host.Tick(gameTime);
+
+        platform.EndFrame(deltaTime);
+      }
+    }
+    finally
+    {
+      Host = null!;
     }
   }
 }

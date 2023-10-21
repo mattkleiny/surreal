@@ -1,13 +1,7 @@
-﻿using Surreal.Graphics;
-using Surreal.Resources;
+﻿using Surreal.Resources;
 using Surreal.Utilities;
 
 namespace Surreal;
-
-/// <summary>
-/// A callback for the main game loop.
-/// </summary>
-public delegate void TickDelegate(GameTime time, IGraphicsContext graphics);
 
 /// <summary>
 /// Contextual services for a game.
@@ -35,14 +29,9 @@ public interface IGameHost : IDisposable
   bool IsClosing { get; }
 
   /// <summary>
-  /// Initializes the game.
-  /// </summary>
-  void Initialize(GraphicsContext graphics);
-
-  /// <summary>
   /// Executes the main game loop.
   /// </summary>
-  void Tick(GameTime time, GraphicsContext graphics);
+  void Tick(GameTime time);
 }
 
 /// <summary>
@@ -51,11 +40,22 @@ public interface IGameHost : IDisposable
 public abstract class GameHost : IGameHost
 {
   /// <summary>
-  /// Creates a <see cref="GameHost"/> using an anonymous callback for the main game loop.
+  /// A callback for setting up a game.
   /// </summary>
-  public static GameHost Anonymous(TickDelegate tickDelegate)
+  public delegate GameTickDelegate GameSetupDelegate();
+
+  /// <summary>
+  /// A callback for ticking a game.
+  /// </summary>
+  public delegate void GameTickDelegate(GameTime time);
+
+  /// <summary>
+  /// Creates a new <see cref="GameHost"/> instance using a delegate-based approach.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static GameHost Create(GameSetupDelegate setupDelegate)
   {
-    return new AnonymousGameHost(tickDelegate);
+    return new DelegateGameHost(setupDelegate);
   }
 
   protected GameHost()
@@ -76,27 +76,25 @@ public abstract class GameHost : IGameHost
   public bool IsClosing => false;
 
   /// <inheritdoc/>
-  public virtual void Initialize(GraphicsContext graphics)
-  {
-  }
+  public abstract void Tick(GameTime time);
 
-  /// <inheritdoc/>
-  public abstract void Tick(GameTime time, GraphicsContext graphics);
-
-  public void Dispose()
+  public virtual void Dispose()
   {
     Events.UnsubscribeAll(this);
     Services.Dispose();
   }
 
   /// <summary>
-  /// A <see cref="GameHost"/> using an anonymous callback for the main game loop.
+  /// An anonymous <see cref="GameHost"/> implementation.
   /// </summary>
-  private sealed class AnonymousGameHost(TickDelegate tickDelegate) : GameHost
+  private sealed class DelegateGameHost(GameSetupDelegate setupDelegate) : GameHost
   {
-    public override void Tick(GameTime time, GraphicsContext graphics)
+    private GameTickDelegate? _tickDelegate;
+
+    public override void Tick(GameTime time)
     {
-      tickDelegate.Invoke(time, graphics);
+      _tickDelegate ??= setupDelegate();
+      _tickDelegate(time);
     }
   }
 }

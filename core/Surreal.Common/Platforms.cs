@@ -1,16 +1,18 @@
-﻿using Surreal.IO;
-using Surreal.Resources;
-using Surreal.Timing;
-using Surreal.Utilities;
+﻿using Surreal.Timing;
 
 namespace Surreal;
 
 /// <summary>
+/// Indicates an error in the platform error of the application.
+/// </summary>
+public class PlatformException(string message, Exception? innerException = null) : ApplicationException(message, innerException);
+
+/// <summary>
 /// Represents the underlying platform.
 /// </summary>
-public interface IPlatform
+public interface IPlatformHostFactory
 {
-  IPlatformHost BuildHost();
+  IPlatformHost BuildHost(IGameHost host);
 }
 
 /// <summary>
@@ -26,15 +28,6 @@ public interface IPlatformHost : IDisposable
   bool IsFocused { get; }
   bool IsClosing { get; }
 
-  void RegisterServices(IServiceRegistry services);
-  void RegisterAssetLoaders(IResourceManager manager);
-  void RegisterFileSystems(IFileSystemRegistry registry);
-
   void BeginFrame(DeltaTime deltaTime);
   void EndFrame(DeltaTime deltaTime);
 }
-
-/// <summary>
-/// Indicates an error in the platform error of the application.
-/// </summary>
-public class PlatformException(string message, Exception? innerException = null) : ApplicationException(message, innerException);

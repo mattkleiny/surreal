@@ -16,7 +16,7 @@ public sealed record TextureLoaderSettings
 /// <summary>
 /// The <see cref="ResourceLoader{T}" /> for <see cref="Texture" />s.
 /// </summary>
-public sealed class TextureLoader(IGraphicsContext graphics) : ResourceLoader<Texture>
+public sealed class TextureLoader(GraphicsContext graphics) : ResourceLoader<Texture>
 {
   public TextureLoaderSettings Settings { get; init; } = new();
 

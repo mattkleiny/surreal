@@ -36,9 +36,9 @@ public readonly record struct BlendState(bool IsEnabled, BlendMode Source, Blend
 public sealed class Material(ShaderProgram shader, bool ownsShader = true) : GraphicsResource
 {
   /// <summary>
-  /// The underlying <see cref="IGraphicsContext" />.
+  /// The underlying <see cref="GraphicsContext" />.
   /// </summary>
-  public IGraphicsContext Context => Shader.Context;
+  public GraphicsContext Context => Shader.Context;
 
   /// <summary>
   /// The associated <see cref="ShaderProgram" /> for the material.
@@ -58,7 +58,7 @@ public sealed class Material(ShaderProgram shader, bool ownsShader = true) : Gra
   /// <summary>
   /// Applies the material properties to the underlying shader.
   /// </summary>
-  public void Apply(IGraphicsContext context)
+  public void Apply(GraphicsContext context)
   {
     // bind the shader
     context.Backend.SetActiveShader(Shader.Handle);

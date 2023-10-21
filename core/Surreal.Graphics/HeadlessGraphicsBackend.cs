@@ -9,7 +9,7 @@ using Surreal.Maths;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// A no-op <see cref="IGraphicsContext" /> for headless environments and testing.
+/// A no-op <see cref="GraphicsContext" /> for headless environments and testing.
 /// </summary>
 public sealed class HeadlessGraphicsBackend : IGraphicsBackend
 {
