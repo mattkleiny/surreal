@@ -1,7 +1,5 @@
 ﻿namespace Surreal.Maths;
 
-// TODO: make the coordinate system consistent across the project
-
 /// <summary>
 /// A bounding rectangle in 2-space.
 /// </summary>

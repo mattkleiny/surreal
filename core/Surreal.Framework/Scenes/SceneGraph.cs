@@ -18,8 +18,6 @@ public sealed class SceneGraph : IScene, IDisposable
   /// <inheritdoc/>
   public ReadOnlySlice<IRenderCamera> CullVisibleCameras()
   {
-    // TODO: find visible cameras
-
     return Root.ResolveChildren<IRenderCamera>();
   }
 

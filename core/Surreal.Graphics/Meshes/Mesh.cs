@@ -179,7 +179,7 @@ public sealed class Mesh<TVertex> : Mesh
   /// <inheritdoc/>
   public override void Draw(Material material, uint vertexCount, uint indexCount, MeshType type = MeshType.Triangles)
   {
-    material.ApplyMaterial(); // TODO: put this in a better place (material batching?)
+    material.ApplyMaterial();
 
     _backend.DrawMesh(
       mesh: Handle,
