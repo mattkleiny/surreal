@@ -1,10 +1,10 @@
 ﻿using Surreal.Maths;
 using Surreal.Timing;
 
-namespace Surreal.Scenes.Canvas;
+namespace Surreal.Scenes.Spatial;
 
 /// <summary>
-/// A node in 2d space.
+/// A <see cref="SceneNode"/> that represents a 2D object.
 /// </summary>
 public class SceneNode2D : SceneNode
 {

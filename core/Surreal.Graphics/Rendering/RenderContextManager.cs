@@ -50,22 +50,22 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
   /// <summary>
   /// Notifies the manager that a camera is rendering.
   /// </summary>
-  public void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+  public void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
     foreach (var context in _contexts.Values)
     {
-      context.OnBeginCamera(in frame, camera);
+      context.OnBeginViewport(in frame, viewport);
     }
   }
 
   /// <summary>
   /// Notifies the manager that a camera is rendering.
   /// </summary>
-  public void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+  public void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
     foreach (var context in _contexts.Values)
     {
-      context.OnEndCamera(in frame, camera);
+      context.OnEndViewport(in frame, viewport);
     }
   }
 

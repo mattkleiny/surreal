@@ -1,15 +1,13 @@
-﻿using Surreal.Collections;
-using Surreal.Colors;
-using Surreal.Graphics.Rendering;
+﻿using Surreal.Colors;
 using Surreal.Maths;
 using Surreal.Timing;
 
-namespace Surreal.Scenes.Canvas;
+namespace Surreal.Scenes.Spatial;
 
 /// <summary>
 /// A <see cref="SceneNode2D"/> that represents a camera.
 /// </summary>
-public class CameraNode2D : SceneNode2D, IRenderCamera
+public class CameraNode2D : SceneNode2D, ICamera
 {
   private Matrix4x4 _projectionView = Matrix4x4.Identity;
   private Frustum _frustum = Frustum.FromProjectionMatrix(Matrix4x4.Identity);
@@ -19,9 +17,13 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   private float _farPlane = 100f;
   private bool _isCameraDirty;
 
-  /// <summary>
-  /// The color to clear the screen to.
-  /// </summary>
+  /// <inheritdoc/>
+  public ref readonly Frustum Frustum => ref _frustum;
+
+  /// <inheritdoc/>
+  public ref readonly Matrix4x4 ProjectionView => ref _projectionView;
+
+  /// <inheritdoc/>
   public Optional<Color> ClearColor { get; set; }
 
   /// <summary>
@@ -84,23 +86,24 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
     }
   }
 
-  /// <summary>
-  /// The frustum of the camera.
-  /// </summary>
-  public ref readonly Frustum Frustum => ref _frustum;
-
-  /// <inheritdoc/>
-  public ref readonly Matrix4x4 ProjectionView => ref _projectionView;
-
-  /// <inheritdoc/>
-  public ReadOnlySlice<IRenderObject> CullVisibleObjects()
+  protected override void OnEnterTree()
   {
-    if (TryResolveRoot(out SceneNode node))
+    base.OnEnterTree();
+
+    if (TryResolveParent(out CameraViewportNode viewport))
     {
-      return node.ResolveChildren<IRenderObject>(o => o.IsVisibleToFrustum(_frustum));
+      viewport.ActiveCameras.AddFirst(this);
+    }
+  }
+
+  protected override void OnExitTree()
+  {
+    if (TryResolveParent(out CameraViewportNode viewport))
+    {
+      viewport.ActiveCameras.Remove(this);
     }
 
-    return ReadOnlySlice<IRenderObject>.Empty;
+    base.OnExitTree();
   }
 
   protected override void OnUpdate(DeltaTime deltaTime)

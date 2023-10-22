@@ -32,7 +32,8 @@
     <Using Include="Surreal.Maths"/>
     <Using Include="Surreal.Memory"/>
     <Using Include="Surreal.Scenes"/>
-    <Using Include="Surreal.Scenes.Canvas"/>
+    <Using Include="Surreal.Scenes.Spatial"/>
+    <Using Include="Surreal.Scenes.UI"/>
     <Using Include="Surreal.Timing"/>
     <Using Include="Surreal.Utilities"/>
 

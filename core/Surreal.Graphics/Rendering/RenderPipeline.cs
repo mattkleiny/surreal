@@ -51,19 +51,19 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 
     OnBeginFrame(in frame);
 
-    foreach (var camera in scene.CullVisibleCameras())
+    foreach (var camera in scene.CullVisibleViewports())
     {
-      RenderCamera(in frame, camera);
+      RenderViewport(in frame, camera);
     }
 
     OnEndFrame(in frame);
   }
 
-  private void RenderCamera(in RenderFrame frame, IRenderCamera camera)
+  private void RenderViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    OnBeginCamera(in frame, camera);
-    OnRenderCamera(in frame, camera);
-    OnEndCamera(in frame, camera);
+    OnBeginViewport(in frame, viewport);
+    OnRenderViewport(in frame, viewport);
+    OnEndViewport(in frame, viewport);
   }
 
   protected virtual void OnBeginFrame(in RenderFrame frame)
@@ -71,18 +71,18 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
     Contexts.OnBeginFrame(in frame);
   }
 
-  protected virtual void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+  protected virtual void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    Contexts.OnBeginCamera(in frame, camera);
+    Contexts.OnBeginViewport(in frame, viewport);
   }
 
-  protected virtual void OnRenderCamera(in RenderFrame frame, IRenderCamera camera)
+  protected virtual void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  protected virtual void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+  protected virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    Contexts.OnEndCamera(in frame, camera);
+    Contexts.OnEndViewport(in frame, viewport);
   }
 
   protected virtual void OnEndFrame(in RenderFrame frame)
@@ -116,33 +116,33 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     }
   }
 
-  protected override void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+  protected override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    base.OnBeginCamera(in frame, camera);
+    base.OnBeginViewport(in frame, viewport);
 
     foreach (var pass in Passes)
     {
-      pass.OnBeginCamera(in frame, camera);
+      pass.OnBeginViewport(in frame, viewport);
     }
   }
 
-  protected override void OnRenderCamera(in RenderFrame frame, IRenderCamera camera)
+  protected override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    base.OnRenderCamera(in frame, camera);
+    base.OnRenderViewport(in frame, viewport);
 
     foreach (var pass in Passes)
     {
-      pass.OnRenderCamera(in frame, camera);
+      pass.OnRenderViewport(in frame, viewport);
     }
   }
 
-  protected override void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+  protected override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    base.OnEndCamera(in frame, camera);
+    base.OnEndViewport(in frame, viewport);
 
     foreach (var pass in Passes)
     {
-      pass.OnEndCamera(in frame, camera);
+      pass.OnEndViewport(in frame, viewport);
     }
   }
 

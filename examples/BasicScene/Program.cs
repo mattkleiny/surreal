@@ -33,17 +33,20 @@ Game.Start(new GameConfiguration
 
     // create scene and main camera
     var scene = new SceneGraph();
+    var viewport = new CameraViewportNode();
     var camera = new CameraNode2D
     {
       Zoom = 100f
     };
 
-    scene.Root.Add(camera);
+    scene.Root.Add(viewport);
+
+    viewport.Add(camera);
 
     // create some bunnies
     for (int i = 0; i < 100; i++)
     {
-      scene.Root.Add(new BunnyNode2D
+      viewport.Add(new BunnyNode2D
       {
         Sprite = sprite
       });

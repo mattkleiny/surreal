@@ -5,20 +5,9 @@ using Surreal.Maths;
 namespace Surreal.Graphics.Rendering;
 
 /// <summary>
-/// Represents a scene that can be rendered by a <see cref="IRenderPipeline"/>.
+/// Represents a kind of viewport that can be used to render a scene.
 /// </summary>
-public interface IRenderScene
-{
-  /// <summary>
-  /// Culls visible cameras from the scene.
-  /// </summary>
-  ReadOnlySlice<IRenderCamera> CullVisibleCameras();
-}
-
-/// <summary>
-/// Represents a kind of camera that can be used to render a scene.
-/// </summary>
-public interface IRenderCamera
+public interface IRenderViewport
 {
   /// <summary>
   /// The projection-view matrix for the camera.
@@ -34,6 +23,17 @@ public interface IRenderCamera
   /// Culls visible objects from the perspective of the camera.
   /// </summary>
   ReadOnlySlice<IRenderObject> CullVisibleObjects();
+}
+
+/// <summary>
+/// Represents a scene that can be rendered by a <see cref="IRenderPipeline"/>.
+/// </summary>
+public interface IRenderScene
+{
+  /// <summary>
+  /// Culls visible cameras from the scene.
+  /// </summary>
+  ReadOnlySlice<IRenderViewport> CullVisibleViewports();
 }
 
 /// <summary>

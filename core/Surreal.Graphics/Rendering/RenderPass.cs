@@ -13,10 +13,10 @@ public interface IRenderPass : IDisposable
   void OnBeginFrame(in RenderFrame frame);
   void OnEndFrame(in RenderFrame frame);
 
-  void OnBeginCamera(in RenderFrame frame, IRenderCamera camera);
-  void OnEndCamera(in RenderFrame frame, IRenderCamera camera);
+  void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport);
+  void OnEndViewport(in RenderFrame frame, IRenderViewport viewport);
 
-  void OnRenderCamera(in RenderFrame frame, IRenderCamera camera);
+  void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport);
 }
 
 /// <summary>
@@ -40,15 +40,15 @@ public abstract class RenderPass : IRenderPass
   {
   }
 
-  public virtual void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+  public virtual void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  public virtual void OnRenderCamera(in RenderFrame frame, IRenderCamera camera)
+  public virtual void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  public virtual void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+  public virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 

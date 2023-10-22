@@ -42,23 +42,23 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
       DepthStencilFormat = DepthStencilFormat.None
     });
 
-    public override void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+    public override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
     {
-      var clearColor = camera.ClearColor.GetOrDefault(pipeline.ClearColor);
+      var clearColor = viewport.ClearColor.GetOrDefault(pipeline.ClearColor);
 
       _colorTarget.BindToDisplay();
       _colorTarget.ClearColorBuffer(clearColor);
     }
 
-    public override void OnRenderCamera(in RenderFrame frame, IRenderCamera camera)
+    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
     {
-      foreach (var visibleObject in camera.CullVisibleObjects())
+      foreach (var visibleObject in viewport.CullVisibleObjects())
       {
         visibleObject.Render(in frame);
       }
     }
 
-    public override void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+    public override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
     {
       _colorTarget.UnbindFromDisplay();
       _colorTarget.BlitToBackBuffer(_blitMaterial, mask: BlitMask.Color);

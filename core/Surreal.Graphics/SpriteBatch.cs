@@ -36,12 +36,12 @@ public sealed class SpriteBatchContext(IGraphicsBackend backend) : RenderContext
     SpriteBatch.Begin(Material);
   }
 
-  protected internal override void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+  protected internal override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    Material.Properties.SetProperty(ProjectionView, camera.ProjectionView);
+    Material.Properties.SetProperty(ProjectionView, viewport.ProjectionView);
   }
 
-  protected internal override void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+  protected internal override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
     SpriteBatch.Flush();
   }

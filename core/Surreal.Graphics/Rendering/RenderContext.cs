@@ -8,8 +8,8 @@ public interface IRenderContext
   void OnBeginFrame(in RenderFrame frame);
   void OnEndFrame(in RenderFrame frame);
 
-  void OnBeginCamera(in RenderFrame frame, IRenderCamera camera);
-  void OnEndCamera(in RenderFrame frame, IRenderCamera camera);
+  void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport);
+  void OnEndViewport(in RenderFrame frame, IRenderViewport viewport);
 }
 
 /// <summary>
@@ -25,11 +25,11 @@ public abstract class RenderContext : IRenderContext, IDisposable
   {
   }
 
-  protected internal virtual void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+  protected internal virtual void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  protected internal virtual void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+  protected internal virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
@@ -42,14 +42,14 @@ public abstract class RenderContext : IRenderContext, IDisposable
     OnBeginFrame(in frame);
   }
 
-  void IRenderContext.OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
+  void IRenderContext.OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    OnBeginCamera(in frame, camera);
+    OnBeginViewport(in frame, viewport);
   }
 
-  void IRenderContext.OnEndCamera(in RenderFrame frame, IRenderCamera camera)
+  void IRenderContext.OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    OnEndCamera(in frame, camera);
+    OnEndViewport(in frame, viewport);
   }
 
   void IRenderContext.OnEndFrame(in RenderFrame frame)

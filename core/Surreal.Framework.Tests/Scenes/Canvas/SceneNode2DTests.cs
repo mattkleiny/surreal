@@ -1,4 +1,5 @@
 ﻿using Surreal.Maths;
+using Surreal.Scenes.Spatial;
 using Surreal.Timing;
 
 namespace Surreal.Scenes.Canvas;

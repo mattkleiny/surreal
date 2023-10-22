@@ -16,9 +16,9 @@ public sealed class SceneGraph : IScene, IDisposable
   public SceneNode Root { get; } = new();
 
   /// <inheritdoc/>
-  public ReadOnlySlice<IRenderCamera> CullVisibleCameras()
+  public ReadOnlySlice<IRenderViewport> CullVisibleViewports()
   {
-    return Root.ResolveChildren<IRenderCamera>();
+    return Root.ResolveChildren<IRenderViewport>();
   }
 
   /// <inheritdoc/>
