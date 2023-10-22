@@ -6,7 +6,7 @@
 [RenderPipeline("Deferred")]
 public sealed class DeferredRenderPipeline : MultiPassRenderPipeline
 {
-  public DeferredRenderPipeline(IGraphicsBackend backend)
+  public DeferredRenderPipeline(IGraphicsBackend backend) : base(backend)
   {
     Passes.Add(new ColorBufferPass());
     Passes.Add(new ShadowStencilPass());

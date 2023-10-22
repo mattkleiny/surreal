@@ -11,4 +11,9 @@ public readonly record struct RenderFrame
   /// The time since the last frame.
   /// </summary>
   public required DeltaTime DeltaTime { get; init; }
+
+  /// <summary>
+  /// The <see cref="IRenderContextManager"/> for this frame.
+  /// </summary>
+  public required IRenderContextManager Manager { get; init; }
 }

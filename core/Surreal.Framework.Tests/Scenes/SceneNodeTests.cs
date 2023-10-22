@@ -1,15 +1,16 @@
-﻿using Surreal.Timing;
-using static Surreal.Scenes.SceneGraphNode;
+﻿using Surreal.Graphics.Rendering;
+using Surreal.Timing;
+using static Surreal.Scenes.SceneNode;
 
 namespace Surreal.Scenes;
 
-public class SceneGraphNodeTests
+public class SceneNodeTests
 {
   [Test]
   public void it_should_notify_node_of_attachment_to_tree()
   {
-    var scene = new SceneGraphScene();
-    var node = new SceneGraphNode();
+    var scene = new SceneGraph();
+    var node = new SceneNode();
 
     node.IsInTree.Should().BeFalse();
 
@@ -21,8 +22,8 @@ public class SceneGraphNodeTests
   [Test]
   public void it_should_notify_node_of_removal_from_tree()
   {
-    var scene = new SceneGraphScene();
-    var node = new SceneGraphNode();
+    var scene = new SceneGraph();
+    var node = new SceneNode();
 
     scene.Root.Children.Add(node);
 
@@ -36,8 +37,8 @@ public class SceneGraphNodeTests
   [Test]
   public void it_should_awake_node_on_first_attachment_to_tree()
   {
-    var scene = new SceneGraphScene();
-    var node = new SceneGraphNode();
+    var scene = new SceneGraph();
+    var node = new SceneNode();
 
     node.IsAwake.Should().BeFalse();
 
@@ -53,24 +54,46 @@ public class SceneGraphNodeTests
   [Test]
   public void it_should_notify_ready_on_first_update()
   {
-    var scene = new SceneGraphScene();
-    var node = new SceneGraphNode();
+    var scene = new SceneGraph();
+    var node = new SceneNode();
 
     scene.Root.Children.Add(node);
 
     node.IsReady.Should().BeFalse();
 
-    scene.Tick(DeltaTime.OneOver60);
+    scene.Update(DeltaTime.OneOver60);
 
     node.IsReady.Should().BeTrue();
   }
 
   [Test]
+  public void it_should_notify_ready_on_first_render()
+  {
+    var scene = new SceneGraph();
+    var node = new SceneNode();
+
+    scene.Root.Children.Add(node);
+
+    node.IsReady.Should().BeFalse();
+
+    var frame = new RenderFrame
+    {
+      DeltaTime = DeltaTime.OneOver60,
+      Manager = Substitute.For<IRenderContextManager>()
+    };
+
+    scene.Render(in frame);
+
+    node.IsReady.Should().BeTrue();
+  }
+
+  [Test]
+  [Ignore("Find a better way to capture notifications for testing")]
   public void it_should_propagate_inbox_messages_to_children()
   {
-    var parent = new SceneGraphNode();
-    var child1 = new SceneGraphNode();
-    var child2 = new SceneGraphNode();
+    var parent = new SceneNode();
+    var child1 = new SceneNode();
+    var child2 = new SceneNode();
 
     parent.Children.Add(child1);
     parent.Children.Add(child2);
@@ -89,8 +112,8 @@ public class SceneGraphNodeTests
   [Test]
   public void it_should_propagate_outbox_message_to_parent()
   {
-    var parent = new SceneGraphNode();
-    var child = new SceneGraphNode();
+    var parent = new SceneNode();
+    var child = new SceneNode();
 
     parent.Children.Add(child);
 
@@ -105,23 +128,23 @@ public class SceneGraphNodeTests
   [Test]
   public void it_should_propagate_destruction_up_to_root()
   {
-    var scene = new SceneGraphScene
+    var scene = new SceneGraph
     {
       Root =
       {
         Children =
         {
-          new SceneGraphNode
+          new SceneNode
           {
             Children =
             {
-              new SceneGraphNode(),
-              new SceneGraphNode()
+              new SceneNode(),
+              new SceneNode()
             }
           },
-          new SceneGraphNode
+          new SceneNode
           {
-            Children = { new SceneGraphNode() }
+            Children = { new SceneNode() }
           }
         }
       }
@@ -129,6 +152,34 @@ public class SceneGraphNodeTests
 
     scene.Root.Children[0].Destroy();
 
-    scene.Tick(DeltaTime.OneOver60);
+    scene.Update(DeltaTime.OneOver60);
+  }
+
+  [Test]
+  public void it_should_propagate_disposal_down_to_children()
+  {
+    var scene = new SceneGraph
+    {
+      Root =
+      {
+        Children =
+        {
+          new SceneNode
+          {
+            Children =
+            {
+              new SceneNode(),
+              new SceneNode()
+            }
+          },
+          new SceneNode
+          {
+            Children = { new SceneNode() }
+          }
+        }
+      }
+    };
+
+    scene.Dispose();
   }
 }

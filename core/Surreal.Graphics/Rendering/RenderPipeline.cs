@@ -32,15 +32,17 @@ public interface IRenderPipeline : IDisposable
 /// <summary>
 /// Convenience base class for <see cref="IRenderPipeline"/> implementations.
 /// </summary>
-public abstract class RenderPipeline : IRenderPipeline
+public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 {
+  private readonly RenderContextManager _manager = new(backend);
   private readonly DeltaTimeClock _clock = new();
 
   public void Render(ReadOnlySlice<IRenderCamera> cameras)
   {
     var frame = new RenderFrame
     {
-      DeltaTime = _clock.Tick()
+      DeltaTime = _clock.Tick(),
+      Manager = _manager
     };
 
     OnBeginFrame(in frame);
@@ -71,13 +73,14 @@ public abstract class RenderPipeline : IRenderPipeline
 
   public virtual void Dispose()
   {
+    _manager.Dispose();
   }
 }
 
 /// <summary>
 /// A basic <see cref="RenderPipeline"/> that supports multiple render passes.
 /// </summary>
-public abstract class MultiPassRenderPipeline : RenderPipeline
+public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : RenderPipeline(backend)
 {
   /// <summary>
   /// The list of render passes in the pipeline.

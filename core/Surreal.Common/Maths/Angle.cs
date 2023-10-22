@@ -94,8 +94,17 @@ public readonly record struct Angle(float Radians) : IFromRandom<Angle>, IInterp
 
   public override string ToString() => $"{Degrees:F}°";
 
+  // comparisons
   public static bool operator <(Angle left, Angle right) => left.Radians < right.Radians;
   public static bool operator >(Angle left, Angle right) => left.Radians > right.Radians;
   public static bool operator <=(Angle left, Angle right) => left.Radians <= right.Radians;
   public static bool operator >=(Angle left, Angle right) => left.Radians >= right.Radians;
+
+  // arithmetic operators
+  public static Angle operator +(Angle left, Angle right) => new(left.Radians + right.Radians);
+  public static Angle operator -(Angle left, Angle right) => new(left.Radians - right.Radians);
+  public static Angle operator *(Angle angle, float scalar) => new(angle.Radians * scalar);
+  public static Angle operator /(Angle angle, float scalar) => new(angle.Radians / scalar);
+  public static Angle operator *(float scalar, Angle angle) => new(angle.Radians * scalar);
+  public static Angle operator /(float scalar, Angle angle) => new(angle.Radians / scalar);
 }

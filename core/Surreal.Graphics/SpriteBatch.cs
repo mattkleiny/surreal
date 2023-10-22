@@ -2,10 +2,22 @@
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Memory;
 
 namespace Surreal.Graphics;
+
+/// <summary>
+/// A <see cref="RenderContext"/> for <see cref="SpriteBatch"/>es.
+/// </summary>
+public sealed class SpriteBatchContext : RenderContext
+{
+  /// <summary>
+  /// The <see cref="SpriteBatch"/> used by this context.
+  /// </summary>
+  public required SpriteBatch Batch { get; init; }
+}
 
 /// <summary>
 /// A batched mesh of sprites for rendering to the GPU.

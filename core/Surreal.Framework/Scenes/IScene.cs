@@ -1,4 +1,4 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Graphics.Rendering;
 using Surreal.Timing;
 
 namespace Surreal.Scenes;
@@ -16,7 +16,12 @@ namespace Surreal.Scenes;
 public interface IScene : IDisposable
 {
   /// <summary>
-  /// Ticks the entire scene.
+  /// Updates the entire scene.
   /// </summary>
-  void Tick(DeltaTime deltaTime);
+  void Update(DeltaTime deltaTime);
+
+  /// <summary>
+  /// Renders the entire scene.
+  /// </summary>
+  void Render(in RenderFrame frame);
 }

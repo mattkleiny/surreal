@@ -9,29 +9,38 @@ public class RenderContextManagerTests
   public void it_should_notify_on_use_when_acquiring_render_context()
   {
     using var resources = new AssetManager();
-    using var manager = new RenderContextManager(IGraphicsBackend.Headless, resources);
+    using var manager = new RenderContextManager(IGraphicsBackend.Headless);
 
-    var context = Substitute.For<IRenderContext>();
-    var frame = new RenderFrame { DeltaTime = DeltaTime.OneOver60 };
-
-    manager.AddContext(context);
-
-    using (var _ = manager.AcquireContext<IRenderContext>(in frame))
+    var frame = new RenderFrame
     {
-      context.Received().OnBeginUse(frame);
+      DeltaTime = DeltaTime.OneOver60,
+      Manager = manager
+    };
+
+    manager.AddContext(Substitute.For<IRenderContext>());
+
+    var context = manager.AcquireContext<IRenderContext>(in frame);
+
+    using (context.AcquireScope(in frame))
+    {
+      context.Received().OnBeginScope(frame);
     }
 
-    context.Received().OnEndUse(frame);
+    context.Received().OnEndScope(frame);
   }
 
   [Test]
   public void it_should_notify_on_frame_before_acquiring_context()
   {
     using var resources = new AssetManager();
-    using var manager = new RenderContextManager(IGraphicsBackend.Headless, resources);
+    using var manager = new RenderContextManager(IGraphicsBackend.Headless);
 
     var context = Substitute.For<IRenderContext>();
-    var frame = new RenderFrame { DeltaTime = DeltaTime.OneOver60 };
+    var frame = new RenderFrame
+    {
+      DeltaTime = DeltaTime.OneOver60,
+      Manager = manager
+    };
 
     manager.AddContext(context);
 

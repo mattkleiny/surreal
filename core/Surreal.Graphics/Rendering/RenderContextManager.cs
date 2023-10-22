@@ -1,5 +1,4 @@
 ﻿using Surreal.Diagnostics.Logging;
-using Surreal.Resources;
 
 namespace Surreal.Graphics.Rendering;
 
@@ -15,11 +14,6 @@ public interface IRenderContextManager
     where T : IRenderContext;
 
   /// <summary>
-  /// Adds a context to the manager via the given <see cref="IRenderContextDescriptor"/>.
-  /// </summary>
-  Task AddContextAsync(IRenderContextDescriptor descriptor, CancellationToken cancellationToken = default);
-
-  /// <summary>
   /// Notifies the manager that a new frame is beginning.
   /// </summary>
   void OnBeginFrame(in RenderFrame frame);
@@ -33,28 +27,29 @@ public interface IRenderContextManager
   /// Attempts to acquire a context of the given type from the manager;
   /// if successful, returns a scoped reference to the context.
   /// <para/>
-  /// The scoped reference will call <see cref="IRenderContext.OnBeginUse"/>
-  /// and <see cref="IRenderContext.OnEndUse"/> when it is created and disposed.
+  /// The scoped reference will call <see cref="IRenderContext.OnBeginScope"/>
+  /// and <see cref="IRenderContext.OnEndScope"/> when it is created and disposed.
   /// </summary>
-  bool TryAcquireContext<TContext>(in RenderFrame frame, out RenderContextManager.RenderContextScope<TContext> result)
+  bool TryAcquireContext<TContext>(in RenderFrame frame, out TContext result)
     where TContext : IRenderContext;
 
   /// <summary>
   /// Attempts to acquire a context of the given type from the manager. If unsuccessful, throws an exception.
   /// </summary>
-  RenderContextManager.RenderContextScope<TContext> AcquireContext<TContext>(in RenderFrame frame)
+  TContext AcquireContext<TContext>(in RenderFrame frame)
     where TContext : IRenderContext;
 }
 
 /// <summary>
 /// The default <see cref="IRenderContextManager"/> implementation.
 /// </summary>
-public sealed class RenderContextManager(IGraphicsBackend backend, AssetManager assetManager) : IRenderContextManager, IDisposable
+public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderContextManager, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 
   private readonly Dictionary<Type, IRenderContext> _contexts = new();
 
+  /// <inheritdoc/>
   public void AddContext<T>(T context)
     where T : IRenderContext
   {
@@ -63,15 +58,7 @@ public sealed class RenderContextManager(IGraphicsBackend backend, AssetManager 
     _contexts.Add(typeof(T), context);
   }
 
-  public async Task AddContextAsync(IRenderContextDescriptor descriptor, CancellationToken cancellationToken = default)
-  {
-    Log.Trace($"Registering render context descriptor {descriptor.GetType()}");
-
-    var context = await descriptor.BuildContextAsync(backend, assetManager, cancellationToken);
-
-    _contexts.Add(context.GetType(), context);
-  }
-
+  /// <inheritdoc/>
   public void OnBeginFrame(in RenderFrame frame)
   {
     foreach (var context in _contexts.Values)
@@ -80,6 +67,7 @@ public sealed class RenderContextManager(IGraphicsBackend backend, AssetManager 
     }
   }
 
+  /// <inheritdoc/>
   public void OnEndFrame(in RenderFrame frame)
   {
     foreach (var context in _contexts.Values)
@@ -92,15 +80,15 @@ public sealed class RenderContextManager(IGraphicsBackend backend, AssetManager 
   /// Attempts to acquire a context of the given type from the manager;
   /// if successful, returns a scoped reference to the context.
   /// <para/>
-  /// The scoped reference will call <see cref="IRenderContext.OnBeginUse"/>
-  /// and <see cref="IRenderContext.OnEndUse"/> when it is created and disposed.
+  /// The scoped reference will call <see cref="IRenderContext.OnBeginScope"/>
+  /// and <see cref="IRenderContext.OnEndScope"/> when it is created and disposed.
   /// </summary>
-  public bool TryAcquireContext<TContext>(in RenderFrame frame, out RenderContextScope<TContext> result)
+  public bool TryAcquireContext<TContext>(in RenderFrame frame, out TContext result)
     where TContext : IRenderContext
   {
     if (_contexts.TryGetValue(typeof(TContext), out var context))
     {
-      result = new RenderContextScope<TContext>(frame, (TContext)context);
+      result = (TContext)context;
       return true;
     }
 
@@ -111,7 +99,7 @@ public sealed class RenderContextManager(IGraphicsBackend backend, AssetManager 
   /// <summary>
   /// Attempts to acquire a context of the given type from the manager. If unsuccessful, throws an exception.
   /// </summary>
-  public RenderContextScope<TContext> AcquireContext<TContext>(in RenderFrame frame)
+  public TContext AcquireContext<TContext>(in RenderFrame frame)
     where TContext : IRenderContext
   {
     if (!TryAcquireContext<TContext>(in frame, out var result))
@@ -126,33 +114,12 @@ public sealed class RenderContextManager(IGraphicsBackend backend, AssetManager 
   {
     foreach (var context in _contexts.Values)
     {
-      context.Dispose();
+      if (context is IDisposable disposable)
+      {
+        disposable.Dispose();
+      }
     }
 
     _contexts.Clear();
-  }
-
-  /// <summary>
-  /// A managed scoped reference to a <see cref="IRenderContext"/>.
-  /// </summary>
-  public readonly struct RenderContextScope<TContext> : IDisposable
-    where TContext : IRenderContext
-  {
-    private readonly RenderFrame _frame;
-
-    public TContext Context { get; }
-
-    public RenderContextScope(RenderFrame frame, TContext context)
-    {
-      _frame = frame;
-
-      Context = context;
-      Context.OnBeginUse(in _frame);
-    }
-
-    public void Dispose()
-    {
-      Context.OnEndUse(in _frame);
-    }
   }
 }
