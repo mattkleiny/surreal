@@ -16,7 +16,7 @@ namespace Surreal.Scenes;
 public interface IScene : IRenderScene
 {
   /// <summary>
-  /// Updates the entire scene.
+  /// Ticks the entire scene.
   /// </summary>
   void Update(DeltaTime deltaTime);
 }

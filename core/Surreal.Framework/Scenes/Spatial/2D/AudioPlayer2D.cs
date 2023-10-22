@@ -1,32 +1,39 @@
 ﻿using Surreal.Audio;
 using Surreal.Audio.Clips;
+using Surreal.Utilities;
 
 namespace Surreal.Scenes.Spatial;
 
 /// <summary>
 /// A <see cref="SceneNode2D"/> that plays audio.
 /// </summary>
-public class AudioPlayer2D(IAudioBackend backend) : SceneNode2D
+public class AudioPlayer2D : SceneNode2D
 {
-  private readonly AudioSource _source = new(backend);
+  private AudioSource? _source;
 
   /// <summary>
   /// True if this audio player should play when the scene starts.
   /// </summary>
-  public bool PlayOnAwake { get; set; }
+  public bool PlayOnReady { get; set; }
 
   /// <summary>
   /// True if the audio source is currently playing.
   /// </summary>
-  public bool IsPlaying => _source.IsPlaying;
+  public bool IsPlaying => _source?.IsPlaying ?? false;
 
   /// <summary>
   /// True if the audio source should loop.
   /// </summary>
   public bool IsLooping
   {
-    get => _source.IsLooping;
-    set => _source.IsLooping = value;
+    get => _source?.IsLooping ?? false;
+    set
+    {
+      if (_source != null)
+      {
+        _source.IsLooping = value;
+      }
+    }
   }
 
   /// <summary>
@@ -34,8 +41,14 @@ public class AudioPlayer2D(IAudioBackend backend) : SceneNode2D
   /// </summary>
   public float Volume
   {
-    get => _source.Volume;
-    set => _source.Volume = value;
+    get => _source?.Volume ?? 0f;
+    set
+    {
+      if (_source != null)
+      {
+        _source.Volume = value;
+      }
+    }
   }
 
   /// <summary>
@@ -50,7 +63,7 @@ public class AudioPlayer2D(IAudioBackend backend) : SceneNode2D
   {
     if (AudioClip != null)
     {
-      _source.Play(AudioClip);
+      _source?.Play(AudioClip);
     }
   }
 
@@ -59,30 +72,45 @@ public class AudioPlayer2D(IAudioBackend backend) : SceneNode2D
   /// </summary>
   public void Stop()
   {
-    _source.Stop();
+    _source?.Stop();
   }
 
-  protected override void OnAwake()
+  protected override void OnReady()
   {
-    if (PlayOnAwake)
+    base.OnReady();
+
+    if (PlayOnReady)
     {
       Play();
     }
-
-    base.OnAwake();
   }
 
-  protected override void OnDispose()
+  protected override void OnEnterTree()
   {
-    _source.Stop();
-    _source.Dispose();
+    base.OnEnterTree();
 
-    base.OnDispose();
+    _source = new AudioSource(Services.GetServiceOrThrow<IAudioBackend>());
+  }
+
+  protected override void OnExitTree()
+  {
+    base.OnExitTree();
+
+    if (_source != null)
+    {
+      _source.Stop();
+      _source.Dispose();
+
+      _source = null;
+    }
   }
 
   protected override void OnTransformUpdated()
   {
-    _source.Position = new Vector3(GlobalPosition, 0f);
+    if (_source != null)
+    {
+      _source.Position = new Vector3(GlobalPosition, 0f);
+    }
 
     base.OnTransformUpdated();
   }

@@ -38,7 +38,11 @@ Game.Start(configuration, async game =>
   };
 
   // create scene and main camera
-  using var scene = new SceneGraph();
+  using var scene = new SceneGraph
+  {
+    Assets = game.Assets,
+    Services = game.Services
+  };
 
   var viewport = new CameraViewportNode();
   var camera = new CameraNode2D
@@ -46,13 +50,13 @@ Game.Start(configuration, async game =>
     Zoom = 100f
   };
 
-  scene.Root.Add(viewport);
+  scene.Add(viewport);
   viewport.Add(camera);
 
   // add the music player
-  scene.Root.Add(new AudioPlayer2D(audio)
+  scene.Add(new AudioPlayer2D()
   {
-    PlayOnAwake = true,
+    PlayOnReady = true,
     IsLooping = true,
     AudioClip = clip
   });

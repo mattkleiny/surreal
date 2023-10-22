@@ -1,4 +1,5 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Assets;
+using Surreal.Collections;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -70,11 +71,42 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// </summary>
   public SceneNodeList Children { get; }
 
+  /// <summary>
+  /// The <see cref="IServiceProvider"/> for the scene graph.
+  /// </summary>
+  public IServiceProvider Services
+  {
+    get
+    {
+      if (!TryResolveParent(out SceneGraph graph))
+      {
+        throw new InvalidOperationException("Unable to access services from a node that is not in a scene graph.");
+      }
+
+      return graph.Services;
+    }
+  }
+
+  /// <summary>
+  /// The <see cref="IAssetProvider"/> for the scene graph.
+  /// </summary>
+  public IAssetProvider Assets
+  {
+    get
+    {
+      if (!TryResolveParent(out SceneGraph graph))
+      {
+        throw new InvalidOperationException("Unable to access assets from a node that is not in a scene graph.");
+      }
+
+      return graph.Assets;
+    }
+  }
+
   public bool IsAwake => _states.HasFlag(SceneGraphStates.Awake);
   public bool IsReady => _states.HasFlag(SceneGraphStates.Ready);
   public bool IsInTree => _states.HasFlag(SceneGraphStates.InTree);
   public bool IsDestroyed => _states.HasFlag(SceneGraphStates.Destroyed);
-  public bool IsDisposed => _states.HasFlag(SceneGraphStates.Disposed);
 
   internal Queue<Notification> Inbox { get; } = new();
   internal Queue<Notification> Outbox { get; } = new();
@@ -192,8 +224,61 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
       _states |= SceneGraphStates.Ready;
     }
 
+    OnPreUpdate(deltaTime);
     OnUpdate(deltaTime);
+    OnPostUpdate(deltaTime);
+  }
 
+  /// <summary>
+  /// Destroys this node and its children.
+  /// </summary>
+  public void Destroy()
+  {
+    Outbox.Enqueue(new Notification(NotificationType.Destroy, this));
+  }
+
+  protected virtual void UpdateInternal(DeltaTime deltaTime)
+  {
+    if (!_states.HasFlagFast(SceneGraphStates.Ready))
+    {
+      OnReady();
+
+      _states |= SceneGraphStates.Ready;
+    }
+
+    OnUpdate(deltaTime);
+  }
+
+  protected virtual void OnAwake()
+  {
+  }
+
+  protected virtual void OnReady()
+  {
+  }
+
+  protected virtual void OnDestroy()
+  {
+  }
+
+  protected virtual void OnEnterTree()
+  {
+  }
+
+  protected virtual void OnExitTree()
+  {
+  }
+
+  protected virtual void OnPreUpdate(DeltaTime deltaTime)
+  {
+    foreach (var child in Children)
+    {
+      child.OnPreUpdate(deltaTime);
+    }
+  }
+
+  protected virtual void OnUpdate(DeltaTime deltaTime)
+  {
     // propagate inbox messages to children
     while (Inbox.TryDequeue(out var notification))
     {
@@ -220,40 +305,12 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
     }
   }
 
-  /// <summary>
-  /// Destroys this node and its children.
-  /// </summary>
-  public void Destroy()
+  protected virtual void OnPostUpdate(DeltaTime deltaTime)
   {
-    Outbox.Enqueue(new Notification(NotificationType.Destroy, this));
-  }
-
-  protected virtual void OnAwake()
-  {
-  }
-
-  protected virtual void OnReady()
-  {
-  }
-
-  protected virtual void OnDestroy()
-  {
-  }
-
-  protected virtual void OnDispose()
-  {
-  }
-
-  protected virtual void OnEnterTree()
-  {
-  }
-
-  protected virtual void OnExitTree()
-  {
-  }
-
-  protected virtual void OnUpdate(DeltaTime deltaTime)
-  {
+    foreach (var child in Children)
+    {
+      child.OnPostUpdate(deltaTime);
+    }
   }
 
   internal virtual void OnNotification(Notification notification)
@@ -267,18 +324,12 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
 
   public void Dispose()
   {
-    if (!_states.HasFlagFast(SceneGraphStates.Disposed))
+    foreach (var child in Children)
     {
-      foreach (var child in Children)
-      {
-        child.Dispose();
-      }
-
-      OnDispose();
-      Children.Clear();
-
-      _states |= SceneGraphStates.Disposed;
+      child.Dispose();
     }
+
+    Children.Clear();
   }
 
   public List<SceneNode>.Enumerator GetEnumerator()
@@ -408,8 +459,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
     Awake = 1 << 0,
     Ready = 1 << 1,
     InTree = 1 << 2,
-    Destroyed = 1 << 3,
-    Disposed = 1 << 4
+    Destroyed = 1 << 3
   }
 
   /// <summary>
