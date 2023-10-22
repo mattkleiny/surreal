@@ -139,7 +139,7 @@ public static class FastBinaryWriterExtensions
   }
 
   public static void WriteSlice<T>(this FastBinaryWriter writer, ReadOnlySlice<T> collection)
-    where T : IBinarySerializable
+    where T : IBinarySerializable<T>
   {
     writer.WriteInt32(collection.Length);
 
@@ -150,7 +150,7 @@ public static class FastBinaryWriterExtensions
   }
 
   public static void WriteSpan<T>(this FastBinaryWriter writer, ReadOnlySpan<T> collection)
-    where T : IBinarySerializable
+    where T : IBinarySerializable<T>
   {
     writer.WriteInt32(collection.Length);
 
@@ -161,7 +161,7 @@ public static class FastBinaryWriterExtensions
   }
 
   public static void WriteList<T>(this FastBinaryWriter writer, IReadOnlyList<T> list)
-    where T : IBinarySerializable
+    where T : IBinarySerializable<T>
   {
     writer.WriteInt32(list.Count);
 
@@ -172,7 +172,7 @@ public static class FastBinaryWriterExtensions
   }
 
   public static void WriteCollection<T>(this FastBinaryWriter writer, ICollection<T> collection)
-    where T : IBinarySerializable
+    where T : IBinarySerializable<T>
   {
     writer.WriteInt32(collection.Count);
 
@@ -183,8 +183,8 @@ public static class FastBinaryWriterExtensions
   }
 
   public static void WriteSerializable<T>(this FastBinaryWriter writer, T serializable)
-    where T : IBinarySerializable
+    where T : IBinarySerializable<T>
   {
-    serializable.Save(writer);
+    serializable.ToBinary(writer);
   }
 }

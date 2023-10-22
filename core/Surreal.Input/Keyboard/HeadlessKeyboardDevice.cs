@@ -3,6 +3,7 @@ namespace Surreal.Input.Keyboard;
 /// <summary>
 /// A headless <see cref="IKeyboardDevice" />.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public sealed class HeadlessKeyboardDevice : IKeyboardDevice
 {
   public event Action<Key>? KeyPressed;

@@ -44,8 +44,6 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 
     public override void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
     {
-      base.OnBeginCamera(in frame, camera);
-
       var clearColor = camera.ClearColor.GetOrDefault(pipeline.ClearColor);
 
       _colorTarget.BindToDisplay();

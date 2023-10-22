@@ -24,6 +24,7 @@ public readonly record struct GameTime
 /// <summary>
 /// Configuration for the game.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public sealed record GameConfiguration
 {
   /// <summary>

@@ -9,6 +9,7 @@ namespace Surreal;
 /// <summary>
 /// A <see cref="IServiceModule"/> for the framework components.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public sealed class FrameworkModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)

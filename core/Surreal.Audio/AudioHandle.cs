@@ -3,6 +3,7 @@
 /// <summary>
 /// An opaque handle to a resource in the underling <see cref="IAudioBackend" /> implementation.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public readonly record struct AudioHandle(nint Id)
 {
   public static AudioHandle None => default;

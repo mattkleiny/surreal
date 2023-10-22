@@ -3,6 +3,7 @@ namespace Surreal.Input.Mouse;
 /// <summary>
 /// A headless <see cref="IMouseDevice" />.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public sealed class HeadlessMouseDevice : IMouseDevice
 {
   public event Action<MouseButton>? ButtonPressed;

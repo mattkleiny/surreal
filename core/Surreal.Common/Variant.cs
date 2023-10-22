@@ -79,7 +79,7 @@ public struct Variant
   public static Variant Null => default;
 
   private VariantValue _value;
-  private object? _object;
+  private readonly object? _object;
 
   /// <summary>
   /// The type of the <see cref="Variant"/>.

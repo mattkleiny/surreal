@@ -16,6 +16,7 @@ public readonly record struct Viewport(int X, int Y, uint Width, uint Height);
 /// <summary>
 /// An opaque handle to a resource in the underling <see cref="IGraphicsBackend" /> implementation.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public readonly record struct GraphicsHandle(nint Id)
 {
   public static GraphicsHandle None => default;
