@@ -42,9 +42,38 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
   }
 
   /// <summary>
+  /// Loads the built-in default canvas shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultCanvasShader(IGraphicsBackend backend)
+  {
+    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/canvas.glsl");
+  }
+
+  /// <summary>
+  /// Loads the built-in default sprite shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultSpriteShader(IGraphicsBackend backend)
+  {
+    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/sprite.glsl");
+  }
+
+  /// <summary>
+  /// Loads the built-in default wire shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultWireShader(IGraphicsBackend backend)
+  {
+    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/wire.glsl");
+  }
+
+  /// <summary>
   /// The <see cref="GraphicsHandle"/> for the shader itself.
   /// </summary>
   public GraphicsHandle Handle { get; private set; } = backend.CreateShader();
+
+  /// <summary>
+  /// Determines if the shader is currently active.
+  /// </summary>
+  public bool IsActive => backend.IsActiveShaderProgram(Handle);
 
   /// <summary>
   /// The <see cref="ShaderKernel"/>s that make up the program.

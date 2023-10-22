@@ -156,16 +156,6 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
     backend.SetBlendState(BlendState);
   }
 
-  /// <summary>
-  /// Draws a fullscreen quad with the material.
-  /// </summary>
-  public void DrawFullscreenQuad()
-  {
-    ApplyMaterial();
-
-    // TODO: draw fullscreen quad
-  }
-
   protected override void Dispose(bool managed)
   {
     if (managed && ownsShader)

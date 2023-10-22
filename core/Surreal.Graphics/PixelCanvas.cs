@@ -1,6 +1,7 @@
 ﻿using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics;
@@ -10,16 +11,17 @@ namespace Surreal.Graphics;
 /// </summary>
 public sealed class PixelCanvas : IDisposable
 {
-  private static MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
+  private static MaterialProperty<Vector2> ScreenSize { get; } = new("u_screenSize");
   private static MaterialProperty<Texture> Texture { get; } = new("u_texture");
 
   private readonly DenseGrid<Color32> _pixels;
   private readonly Material _material;
   private readonly Texture _texture;
+  private readonly Mesh<Vertex2> _mesh;
 
   public PixelCanvas(IGraphicsBackend backend, int width, int height)
   {
-    var shader = ShaderProgram.Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/sprite.glsl");
+    var shader = ShaderProgram.LoadDefaultCanvasShader(backend);
 
     _pixels = new DenseGrid<Color32>(width, height);
     _material = new Material(backend, shader)
@@ -28,8 +30,9 @@ public sealed class PixelCanvas : IDisposable
     };
 
     _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
+    _mesh = Mesh.CreateQuad(backend);
 
-    _material.Properties.SetProperty(ProjectionView, Matrix4x4.Identity);
+    _material.Properties.SetProperty(ScreenSize, new Vector2(width, height));
     _material.Properties.SetProperty(Texture, _texture);
   }
 
@@ -54,7 +57,7 @@ public sealed class PixelCanvas : IDisposable
   public void DrawFullscreenQuad()
   {
     _texture.WritePixels<Color32>(_pixels.Width, _pixels.Height, _pixels.AsSpan());
-    _material.DrawFullscreenQuad();
+    _mesh.Draw(_material);
   }
 
   public void Dispose()

@@ -18,6 +18,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   private int _nextShaderId;
   private int _nextTextureId;
   private int _nextFrameBufferId;
+  private GraphicsHandle _activeShader;
   private FrameBufferHandle _activeFrameBuffer;
 
   public void SetViewportSize(Viewport viewport)
@@ -136,6 +137,11 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
     return new GraphicsHandle(Interlocked.Increment(ref _nextShaderId));
   }
 
+  public bool IsActiveShaderProgram(GraphicsHandle handle)
+  {
+    return _activeShader == handle;
+  }
+
   public void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels)
   {
   }
@@ -147,6 +153,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public void SetActiveShader(GraphicsHandle handle)
   {
+    _activeShader = handle;
   }
 
   public void DeleteShader(GraphicsHandle handle)

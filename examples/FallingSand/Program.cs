@@ -23,6 +23,12 @@ Game.Start(new GameConfiguration
     {
       graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
 
+      for (var y = 0; y < canvas.Height; y++)
+      for (var x = 0; x < canvas.Width; x++)
+      {
+        canvas[x, y] = Random.Shared.Next<Color>();
+      }
+
       canvas.DrawFullscreenQuad();
 
       if (keyboard.IsKeyPressed(Key.Escape))

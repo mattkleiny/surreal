@@ -112,6 +112,7 @@ public interface IGraphicsBackend
 
   // shaders
   GraphicsHandle CreateShader();
+  bool IsActiveShaderProgram(GraphicsHandle handle);
   void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels);
   int GetShaderUniformLocation(GraphicsHandle handle, string name);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
