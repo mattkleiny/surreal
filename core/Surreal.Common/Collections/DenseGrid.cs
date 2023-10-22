@@ -31,11 +31,6 @@ public sealed class DenseGrid<T> : IEnumerable<T>
   public int Height { get; }
 
   /// <summary>
-  /// Converts the grid to a <see cref="SpanGrid{T}" />.
-  /// </summary>
-  public SpanGrid<T> Span => new(_elements, Width);
-
-  /// <summary>
   /// Returns a reference to the element at the given position.
   /// </summary>
   public ref T this[int x, int y]
@@ -74,6 +69,15 @@ public sealed class DenseGrid<T> : IEnumerable<T>
   public Span<T> AsSpan()
   {
     return _elements;
+  }
+
+  /// <summary>
+  /// Converts the grid to a <see cref="SpanGrid{T}" />.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public SpanGrid<T> AsSpanGrid()
+  {
+    return new SpanGrid<T>(_elements, Width);
   }
 
   public Enumerator GetEnumerator()

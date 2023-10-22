@@ -29,7 +29,7 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255) : IFromRandom
   /// </summary>
   public static Color32 FromRandom(Random random)
   {
-    return new Color(
+    return new Color32(
       random.NextByte(),
       random.NextByte(),
       random.NextByte(),

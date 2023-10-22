@@ -1,3 +1,5 @@
+using FallingSand;
+
 Game.Start(new GameConfiguration
 {
   Platform = new DesktopPlatform
@@ -12,24 +14,42 @@ Game.Start(new GameConfiguration
       IsTransparent = true
     }
   },
-  Host = GameHost.Create(() =>
+  Host = GameHost.Create(async () =>
   {
     var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
     var keyboard = Game.Services.GetServiceOrThrow<IKeyboardDevice>();
+    var mouse = Game.Services.GetServiceOrThrow<IMouseDevice>();
 
-    var canvas = new PixelCanvas(graphics, 256, 144);
+    var canvas = new SandCanvas(graphics);
 
-    return _ =>
+    var palette = await Game.Assets.LoadAssetAsync<ColorPalette>("resx://FallingSand/Assets/Embedded/palettes/kule-16.pal");
+
+    return time =>
     {
       graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
 
-      for (var y = 0; y < canvas.Height; y++)
-      for (var x = 0; x < canvas.Width; x++)
+      var isLeftButtonDown = mouse.IsButtonDown(MouseButton.Left);
+      var isRightButtonDown = mouse.IsButtonDown(MouseButton.Right);
+
+      if (isLeftButtonDown || isRightButtonDown)
       {
-        canvas[x, y] = Random.Shared.Next<Color>();
+        var relativePosition = new Point2(
+          (int)(mouse.NormalisedPosition.X * canvas.Pixels.Width),
+          (int)(mouse.NormalisedPosition.Y * canvas.Pixels.Height)
+        );
+
+        if (isLeftButtonDown)
+        {
+          canvas.DrawSand(relativePosition, 3, palette.SelectRandom());
+        }
+        else if (isRightButtonDown)
+        {
+          canvas.DrawSand(relativePosition, 3, Color32.Clear);
+        }
       }
 
-      canvas.DrawFullscreenQuad();
+      canvas.Update(time.DeltaTime);
+      canvas.DrawQuad();
 
       if (keyboard.IsKeyPressed(Key.Escape))
       {

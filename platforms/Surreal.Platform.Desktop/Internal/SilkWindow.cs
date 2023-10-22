@@ -45,6 +45,7 @@ internal sealed class SilkWindow : IDesktopWindow
 
   public GL OpenGL { get; }
   public IInputContext Input { get; }
+  public IWindow InnerWindow => _window;
 
   public event Action<int, int>? Resized;
 

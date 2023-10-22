@@ -9,9 +9,7 @@ public interface IMouseDevice : IInputDevice
 
   Vector2 Position { get; }
   Vector2 NormalisedPosition { get; }
-  Vector2 DeltaPosition { get; }
 
-  bool IsCursorVisible { get; set; }
   event Action<MouseButton> ButtonPressed;
   event Action<MouseButton> ButtonReleased;
 

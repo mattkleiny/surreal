@@ -15,6 +15,7 @@ public sealed class FrameworkModule : IServiceModule
   {
     registry.AddAssemblyServices(Assembly.GetExecutingAssembly());
 
+    registry.AddModule(new CommonModule());
     registry.AddModule(new AudioModule());
     registry.AddModule(new GraphicsModule());
     registry.AddModule(new InputModule());

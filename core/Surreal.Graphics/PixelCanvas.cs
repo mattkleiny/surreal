@@ -3,13 +3,14 @@ using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Textures;
+using Surreal.Memory;
 
 namespace Surreal.Graphics;
 
 /// <summary>
 /// A utility for rendering pixels to the screen.
 /// </summary>
-public sealed class PixelCanvas : IDisposable
+public class PixelCanvas : IDisposable
 {
   private static MaterialProperty<Texture> Texture { get; } = new("u_texture");
 
@@ -20,7 +21,7 @@ public sealed class PixelCanvas : IDisposable
 
   public PixelCanvas(IGraphicsBackend backend, int width, int height)
   {
-    _pixels = new DenseGrid<Color32>(width, height);
+    _pixels = new DenseGrid<Color32>(width, height, Color32.Clear);
 
     _mesh = Mesh.CreateQuad(backend);
     _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
@@ -33,26 +34,17 @@ public sealed class PixelCanvas : IDisposable
   }
 
   /// <summary>
-  /// The width of the canvas, in pixels.
+  /// The pixels in the canvas.
   /// </summary>
-  public int Width => _pixels.Width;
-
-  /// <summary>
-  /// The height of the canvas, in pixels.
-  /// </summary>
-  public int Height => _pixels.Height;
-
-  /// <summary>
-  /// Read/write access to the pixels in the canvas.
-  /// </summary>
-  public ref Color32 this[int x, int y] => ref _pixels[x, y];
+  public SpanGrid<Color32> Pixels => _pixels.AsSpanGrid();
 
   /// <summary>
   /// Draws the canvas to the screen as a fullscreen quad.
   /// </summary>
-  public void DrawFullscreenQuad()
+  public void DrawQuad()
   {
     _texture.WritePixels<Color32>(_pixels.Width, _pixels.Height, _pixels.AsSpan());
+
     _mesh.Draw(_material);
   }
 

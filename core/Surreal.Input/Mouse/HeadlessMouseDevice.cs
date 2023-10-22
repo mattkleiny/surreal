@@ -41,9 +41,6 @@ public sealed class HeadlessMouseDevice : IMouseDevice
   }
 
   public Vector2 NormalisedPosition => Position;
-  public Vector2 DeltaPosition => Vector2.Zero;
-
-  public bool IsCursorVisible { get; set; } = true;
 
   public bool IsButtonDown(MouseButton button)
   {

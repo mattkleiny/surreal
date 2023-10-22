@@ -23,7 +23,7 @@
     {
       graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
 
-      canvas.DrawFullscreenQuad();
+      canvas.DrawQuad();
 
       if (keyboard.IsKeyPressed(Key.Escape))
       {
