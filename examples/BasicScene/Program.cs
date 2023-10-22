@@ -16,24 +16,23 @@ Game.Start(new GameConfiguration
   },
   Host = GameHost.Create(async () =>
   {
-    var log = LogFactory.GetLog<Program>();
-    var logTimer = new IntervalTimer(TimeSpan.FromSeconds(1));
-
     var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
     var keyboard = Game.Services.GetServiceOrThrow<IKeyboardDevice>();
     var mouse = Game.Services.GetServiceOrThrow<IMouseDevice>();
+    var sprite = await Game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
 
+    // setup the render pipeline
     var pipeline = new ForwardRenderPipeline(graphics)
     {
+      ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f),
       Contexts =
       {
         new SpriteBatchContext(graphics)
       }
     };
 
-    var sprite = await Game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
+    // create scene and main camera
     var scene = new SceneGraph();
-
     var camera = new CameraNode2D
     {
       Zoom = 100f
@@ -41,6 +40,7 @@ Game.Start(new GameConfiguration
 
     scene.Root.Add(camera);
 
+    // create some bunnies
     for (int i = 0; i < 100; i++)
     {
       scene.Root.Add(new BunnyNode2D
@@ -51,8 +51,6 @@ Game.Start(new GameConfiguration
 
     return time =>
     {
-      graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-
       scene.Update(time.DeltaTime);
       pipeline.Render(scene);
 
@@ -61,15 +59,6 @@ Game.Start(new GameConfiguration
       if (keyboard.IsKeyPressed(Key.Escape))
       {
         Game.Exit();
-      }
-
-      if (logTimer.Tick(time.DeltaTime))
-      {
-        var visibleObjects = camera.CullVisibleObjects();
-
-        log.Trace($"There are {visibleObjects.Length} visible objects");
-
-        logTimer.Reset();
       }
     };
   })

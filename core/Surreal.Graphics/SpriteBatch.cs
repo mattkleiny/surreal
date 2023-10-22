@@ -33,31 +33,23 @@ public sealed class SpriteBatchContext(IGraphicsBackend backend) : RenderContext
 
   protected internal override void OnBeginFrame(in RenderFrame frame)
   {
-    base.OnBeginFrame(in frame);
-
     SpriteBatch.Begin(Material);
   }
 
-  protected internal override void OnBeginCamera(in RenderFrame frame)
+  protected internal override void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
   {
-    Material.Properties.SetProperty(ProjectionView, frame.Camera!.ProjectionView);
-
-    base.OnBeginCamera(in frame);
+    Material.Properties.SetProperty(ProjectionView, camera.ProjectionView);
   }
 
   protected internal override void OnEndFrame(in RenderFrame frame)
   {
     SpriteBatch.Flush();
-
-    base.OnEndFrame(in frame);
   }
 
   protected internal override void Dispose()
   {
     SpriteBatch.Dispose();
     Material.Dispose();
-
-    base.Dispose();
   }
 }
 

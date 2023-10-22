@@ -15,6 +15,15 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 {
   private FrameBufferHandle _activeFrameBuffer;
 
+  public Viewport GetViewportSize()
+  {
+    Span<int> size = stackalloc int[4];
+
+    gl.GetInteger(GetPName.Viewport, size);
+
+    return new Viewport(size[0], size[1], (uint)size[2], (uint)size[3]);
+  }
+
   public void SetViewportSize(Viewport viewport)
   {
     gl.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
@@ -523,6 +532,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
   public unsafe FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor)
   {
     var framebuffer = gl.GenFramebuffer();
+    var viewportSize = GetViewportSize();
 
     gl.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
 
@@ -535,8 +545,8 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
       target: TextureTarget.Texture2D,
       level: 0,
       internalformat: GetInternalFormat(descriptor.Format),
-      width: descriptor.Width,
-      height: descriptor.Height,
+      width: descriptor.Width.GetOrDefault(viewportSize.Width),
+      height: descriptor.Height.GetOrDefault(viewportSize.Height),
       border: 0,
       format: PixelFormat.Rgb,
       type: PixelType.UnsignedByte,
@@ -557,8 +567,8 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
       gl.RenderbufferStorage(
         target: RenderbufferTarget.Renderbuffer,
         internalformat: ConvertDepthStencilFormat(descriptor.DepthStencilFormat),
-        width: descriptor.Width,
-        height: descriptor.Height
+        width: descriptor.Width.GetOrDefault(viewportSize.Width),
+        height: descriptor.Height.GetOrDefault(viewportSize.Height)
       );
 
       gl.FramebufferRenderbuffer(
@@ -596,6 +606,63 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.BindFramebuffer(FramebufferTarget.Framebuffer, handle.FrameBuffer);
 
     _activeFrameBuffer = handle; // remember the active framebuffer
+  }
+
+  public unsafe void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height)
+  {
+    gl.BindTexture(TextureTarget.Texture2D, handle.ColorAttachment);
+
+    gl.TexImage2D(
+      target: TextureTarget.Texture2D,
+      level: 0,
+      internalformat: GetInternalFormat(TextureFormat.Rgba8),
+      width: width,
+      height: height,
+      border: 0,
+      format: PixelFormat.Rgba,
+      type: PixelType.UnsignedByte,
+      pixels: null
+    );
+
+    if (handle.DepthStencilAttachment != GraphicsHandle.None)
+    {
+      gl.BindRenderbuffer(GLEnum.Renderbuffer, handle.DepthStencilAttachment);
+
+      gl.RenderbufferStorage(
+        target: RenderbufferTarget.Renderbuffer,
+        internalformat: ConvertDepthStencilFormat(DepthStencilFormat.Depth24Stencil8),
+        width: width,
+        height: height
+      );
+    }
+  }
+
+  public void BlitToBackBuffer(FrameBufferHandle handle, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  {
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, handle.FrameBuffer);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+
+    gl.BlitFramebuffer(
+      srcX0: 0,
+      srcY0: 0,
+      srcX1: (int)sourceWidth,
+      srcY1: (int)sourceHeight,
+      dstX0: 0,
+      dstY0: 0,
+      dstX1: (int)destWidth,
+      dstY1: (int)destHeight,
+      mask: ConvertBlitMask(mask),
+      filter: filterMode switch
+      {
+        TextureFilterMode.Linear => BlitFramebufferFilter.Linear,
+        TextureFilterMode.Point => BlitFramebufferFilter.Nearest,
+
+        _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
+      }
+    );
+
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
   }
 
   public void DeleteFrameBuffer(FrameBufferHandle handle)
@@ -763,5 +830,16 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
       _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
+  }
+
+  private static uint ConvertBlitMask(BlitMask mask)
+  {
+    var result = ClearBufferMask.None;
+
+    if (mask.HasFlagFast(BlitMask.Color)) result |= ClearBufferMask.ColorBufferBit;
+    if (mask.HasFlagFast(BlitMask.Depth)) result |= ClearBufferMask.DepthBufferBit;
+    if (mask.HasFlagFast(BlitMask.Stencil)) result |= ClearBufferMask.StencilBufferBit;
+
+    return (uint)result;
   }
 }

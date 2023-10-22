@@ -66,6 +66,14 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
   }
 
   /// <summary>
+  /// Loads the built-in default blit shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultBlitShader(IGraphicsBackend backend)
+  {
+    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/blit.glsl");
+  }
+
+  /// <summary>
   /// The <see cref="GraphicsHandle"/> for the shader itself.
   /// </summary>
   public GraphicsHandle Handle { get; private set; } = backend.CreateShader();

@@ -19,7 +19,8 @@ public class RenderContextManagerTests
       DeltaTime = DeltaTime.OneOver60,
       Backend = backend,
       Contexts = manager,
-      Scene = Substitute.For<IRenderScene>()
+      Scene = Substitute.For<IRenderScene>(),
+      Viewport = new Viewport(0, 0, 640, 480)
     };
 
     manager.Add(context);

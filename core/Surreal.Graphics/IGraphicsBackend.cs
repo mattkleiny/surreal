@@ -59,6 +59,7 @@ public interface IGraphicsBackend
   static IGraphicsBackend Headless { get; } = new HeadlessGraphicsBackend();
 
   // intrinsics
+  Viewport GetViewportSize();
   void SetViewportSize(Viewport viewport);
   void SetBlendState(BlendState? state);
   void ClearColorBuffer(Color color);
@@ -137,5 +138,7 @@ public interface IGraphicsBackend
   FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor);
   bool IsActiveFrameBuffer(FrameBufferHandle handle);
   void BindFrameBuffer(FrameBufferHandle handle);
+  void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
+  void BlitToBackBuffer(FrameBufferHandle handle, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
   void DeleteFrameBuffer(FrameBufferHandle handle);
 }

@@ -1,4 +1,5 @@
 ﻿using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Maths;
 
 namespace Surreal.Graphics.Rendering;
@@ -23,6 +24,11 @@ public interface IRenderCamera
   /// The projection-view matrix for the camera.
   /// </summary>
   ref readonly Matrix4x4 ProjectionView { get; }
+
+  /// <summary>
+  /// The color to clear the screen to.
+  /// </summary>
+  Optional<Color> ClearColor { get; }
 
   /// <summary>
   /// Culls visible objects from the perspective of the camera.

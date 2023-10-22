@@ -1,4 +1,5 @@
 ﻿using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Graphics.Rendering;
 using Surreal.Maths;
 using Surreal.Timing;
@@ -17,6 +18,11 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   private float _nearPlane;
   private float _farPlane = 100f;
   private bool _isCameraDirty;
+
+  /// <summary>
+  /// The color to clear the screen to.
+  /// </summary>
+  public Optional<Color> ClearColor { get; set; }
 
   /// <summary>
   /// The zoom level of the camera.

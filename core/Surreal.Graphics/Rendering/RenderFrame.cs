@@ -1,5 +1,4 @@
-﻿using Surreal.Collections;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal.Graphics.Rendering;
 
@@ -29,12 +28,7 @@ public readonly record struct RenderFrame
   public required IRenderScene Scene { get; init; }
 
   /// <summary>
-  /// The current camera being rendered.
+  /// The viewport size of the frame.
   /// </summary>
-  public IRenderCamera? Camera { get; init; }
-
-  /// <summary>
-  /// The objects that were culled by the camera.
-  /// </summary>
-  public ReadOnlySlice<IRenderObject> VisibleObjects { get; init; }
+  public required Viewport Viewport { get; init; }
 }

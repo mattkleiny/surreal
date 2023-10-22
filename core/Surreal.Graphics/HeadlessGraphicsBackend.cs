@@ -13,6 +13,7 @@ namespace Surreal.Graphics;
 /// </summary>
 internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 {
+  private Viewport _viewportSize = new(0, 0, 1920, 1080);
   private int _nextBufferId;
   private int _nextMeshId;
   private int _nextShaderId;
@@ -21,8 +22,14 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   private GraphicsHandle _activeShader;
   private FrameBufferHandle _activeFrameBuffer;
 
+  public Viewport GetViewportSize()
+  {
+    return _viewportSize;
+  }
+
   public void SetViewportSize(Viewport viewport)
   {
+    _viewportSize = viewport;
   }
 
   public void SetBlendState(BlendState? state)
@@ -176,6 +183,14 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   public void BindFrameBuffer(FrameBufferHandle handle)
   {
     _activeFrameBuffer = handle;
+  }
+
+  public void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height)
+  {
+  }
+
+  public void BlitToBackBuffer(FrameBufferHandle handle, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  {
   }
 
   public void DeleteFrameBuffer(FrameBufferHandle handle)

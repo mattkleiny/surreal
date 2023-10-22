@@ -15,6 +15,18 @@ public enum DepthStencilFormat : byte
 }
 
 /// <summary>
+/// Indicates which buffers to blit when blitting a <see cref="RenderTarget"/>.
+/// </summary>
+[Flags]
+public enum BlitMask : byte
+{
+  None = 0,
+  Color = 1 << 0,
+  Depth = 1 << 1,
+  Stencil = 1 << 2
+}
+
+/// <summary>
 /// Descriptor for a <see cref="RenderTarget"/>.
 /// </summary>
 public sealed record RenderTargetDescriptor
@@ -22,12 +34,12 @@ public sealed record RenderTargetDescriptor
   /// <summary>
   /// The width of the render target, in pixels.
   /// </summary>
-  public required uint Width { get; set; }
+  public Optional<uint> Width { get; set; }
 
   /// <summary>
   /// The height of the render target, in pixels.
   /// </summary>
-  public required uint Height { get; set; }
+  public Optional<uint> Height { get; set; }
 
   /// <summary>
   /// The format of the render target.
@@ -66,9 +78,19 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   public bool IsActive => backend.IsActiveFrameBuffer(Handle);
 
   /// <summary>
+  /// The width of this render target, in pixels.
+  /// </summary>
+  public uint Width { get; private set; } = descriptor.Width.GetOrDefault(backend.GetViewportSize().Width);
+
+  /// <summary>
+  /// The height of this render target, in pixels.
+  /// </summary>
+  public uint Height { get; private set; } = descriptor.Height.GetOrDefault(backend.GetViewportSize().Height);
+
+  /// <summary>
   /// Binds this render target to the graphics backend.
   /// </summary>
-  public void Bind()
+  public void BindToDisplay()
   {
     backend.BindFrameBuffer(Handle);
   }
@@ -76,9 +98,23 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// <summary>
   /// Unbinds this render target from the graphics backend.
   /// </summary>
-  public void Unbind()
+  public void UnbindFromDisplay()
   {
     backend.BindFrameBuffer(FrameBufferHandle.None);
+  }
+
+  /// <summary>
+  /// Resizes this render target, if necessary.
+  /// </summary>
+  public void ResizeFrameBuffer(uint width, uint height)
+  {
+    if (Width != width || Height != height)
+    {
+      backend.ResizeFrameBuffer(Handle, width, height);
+
+      Width = width;
+      Height = height;
+    }
   }
 
   /// <summary>
@@ -118,6 +154,14 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
     }
 
     backend.ClearStencilBuffer(amount);
+  }
+
+  /// <summary>
+  /// Blits this render target to the main back buffer.
+  /// </summary>
+  public void BlitToBackBuffer(uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  {
+    backend.BlitToBackBuffer(Handle, sourceWidth, sourceHeight, destWidth, destHeight, mask, filterMode);
   }
 
   protected override void Dispose(bool managed)

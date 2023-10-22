@@ -50,22 +50,22 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
   /// <summary>
   /// Notifies the manager that a camera is rendering.
   /// </summary>
-  public void OnBeginCamera(in RenderFrame frame)
+  public void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
   {
     foreach (var context in _contexts.Values)
     {
-      context.OnBeginCamera(in frame);
+      context.OnBeginCamera(in frame, camera);
     }
   }
 
   /// <summary>
   /// Notifies the manager that a camera is rendering.
   /// </summary>
-  public void OnEndCamera(in RenderFrame frame)
+  public void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
   {
     foreach (var context in _contexts.Values)
     {
-      context.OnEndCamera(in frame);
+      context.OnEndCamera(in frame, camera);
     }
   }
 
