@@ -1,4 +1,6 @@
-﻿Game.Start(new GameConfiguration
+﻿const int maxIterations = 35;
+
+Game.Start(new GameConfiguration
 {
   Platform = new DesktopPlatform
   {
@@ -24,12 +26,12 @@
 
     return time =>
     {
+      constant += new Vector2(0.001f, 0.0f) * time.DeltaTime;
       graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
 
       DrawFractal(palette, canvas, constant);
-      canvas.DrawQuad();
 
-      constant += new Vector2(0.001f, 0.0f) * time.DeltaTime;
+      canvas.DrawQuad();
 
       if (keyboard.IsKeyPressed(Key.Escape))
       {
@@ -51,14 +53,8 @@
         );
 
         var iterations = ComputeIterations(initial, constant);
-        if (iterations == 25)
-        {
-          pixels[x, y] = Color32.Clear;
-        }
-        else
-        {
-          pixels[x, y] = palette[iterations % palette.Count];
-        }
+
+        pixels[x, y] = (Color)palette[iterations % palette.Count] - new Color(0, 0, 0, iterations / (float)maxIterations);
       }
     }
 
@@ -75,7 +71,7 @@
       var current = initial;
       var iterations = 0;
 
-      while (current.LengthSquared() < 4 && iterations < 25)
+      while (current.LengthSquared() < 4 && iterations < maxIterations)
       {
         current = ComputeNext(current, constant);
         iterations++;
