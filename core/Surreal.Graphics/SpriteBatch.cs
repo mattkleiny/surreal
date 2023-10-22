@@ -9,14 +9,14 @@ using Surreal.Memory;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// A <see cref="RenderContext"/> for <see cref="SpriteBatch"/>es.
+/// A <see cref="RenderContext"/> for <see cref="Graphics.SpriteBatch"/>es.
 /// </summary>
-public sealed class SpriteBatchContext : RenderContext
+public sealed class SpriteBatchContext(IGraphicsBackend backend) : RenderContext
 {
   /// <summary>
-  /// The <see cref="SpriteBatch"/> used by this context.
+  /// The <see cref="Graphics.SpriteBatch"/> used by this context.
   /// </summary>
-  public required SpriteBatch Batch { get; init; }
+  public SpriteBatch SpriteBatch { get; } = new(backend);
 }
 
 /// <summary>

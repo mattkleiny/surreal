@@ -8,22 +8,6 @@ namespace Surreal.Graphics.Rendering;
 public interface IRenderContextManager
 {
   /// <summary>
-  /// Adds a <see cref="IRenderContext"/> to the manager.
-  /// </summary>
-  void AddContext<T>(T context)
-    where T : IRenderContext;
-
-  /// <summary>
-  /// Notifies the manager that a new frame is beginning.
-  /// </summary>
-  void OnBeginFrame(in RenderFrame frame);
-
-  /// <summary>
-  /// Notifies the manager that the current frame is ending.
-  /// </summary>
-  void OnEndFrame(in RenderFrame frame);
-
-  /// <summary>
   /// Attempts to acquire a context of the given type from the manager;
   /// if successful, returns a scoped reference to the context.
   /// </summary>
@@ -34,22 +18,27 @@ public interface IRenderContextManager
 /// <summary>
 /// The default <see cref="IRenderContextManager"/> implementation.
 /// </summary>
-public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderContextManager, IDisposable
+public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderContextManager, IEnumerable<IRenderContext>, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 
   private readonly Dictionary<Type, IRenderContext> _contexts = new();
 
-  /// <inheritdoc/>
-  public void AddContext<T>(T context)
-    where T : IRenderContext
+  /// <summary>
+  /// Adds a <see cref="IRenderContext"/> to the manager.
+  /// </summary>
+  public void Add(IRenderContext context)
   {
-    Log.Trace($"Registering render context {typeof(T)}");
+    var type = context.GetType();
 
-    _contexts.Add(typeof(T), context);
+    Log.Trace($"Registering render context {type}");
+
+    _contexts.Add(type, context);
   }
 
-  /// <inheritdoc/>
+  /// <summary>
+  /// Notifies the manager that a new frame is beginning.
+  /// </summary>
   public void OnBeginFrame(in RenderFrame frame)
   {
     foreach (var context in _contexts.Values)
@@ -58,7 +47,9 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
     }
   }
 
-  /// <inheritdoc/>
+  /// <summary>
+  /// Notifies the manager that a new frame is ending.
+  /// </summary>
   public void OnEndFrame(in RenderFrame frame)
   {
     foreach (var context in _contexts.Values)
@@ -95,5 +86,20 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
     }
 
     _contexts.Clear();
+  }
+
+  public Dictionary<Type, IRenderContext>.ValueCollection.Enumerator GetEnumerator()
+  {
+    return _contexts.Values.GetEnumerator();
+  }
+
+  IEnumerator<IRenderContext> IEnumerable<IRenderContext>.GetEnumerator()
+  {
+    return GetEnumerator();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
   }
 }

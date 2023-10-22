@@ -28,9 +28,9 @@ public class SpriteNode : SceneNode2D, IRenderObject
 
   void IRenderObject.Render(in RenderFrame frame)
   {
-    if (frame.Manager.TryGetContext(in frame, out SpriteBatchContext context))
+    if (frame.Contexts.TryGetContext(in frame, out SpriteBatchContext context))
     {
-      context.Batch.Draw(
+      context.SpriteBatch.Draw(
         region: Sprite,
         position: GlobalPosition,
         size: GlobalScale,

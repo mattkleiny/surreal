@@ -21,7 +21,7 @@ public readonly record struct RenderFrame
   /// <summary>
   /// The <see cref="IRenderContextManager"/> for this frame.
   /// </summary>
-  public required IRenderContextManager Manager { get; init; }
+  public required IRenderContextManager Contexts { get; init; }
 
   /// <summary>
   /// The <see cref="IRenderScene"/> being rendered.

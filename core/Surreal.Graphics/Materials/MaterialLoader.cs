@@ -1,10 +1,12 @@
 ﻿using Surreal.Resources;
+using Surreal.Utilities;
 
 namespace Surreal.Graphics.Materials;
 
 /// <summary>
 /// The <see cref="AssetLoader{T}" /> for <see cref="Material" />s.
 /// </summary>
+[RegisterService(typeof(IAssetLoader))]
 public sealed class MaterialLoader(IGraphicsBackend backend) : AssetLoader<Material>
 {
   public override async Task<Material> LoadAsync(AssetContext context, CancellationToken cancellationToken)

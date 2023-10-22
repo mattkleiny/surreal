@@ -13,16 +13,28 @@ Game.Start(new GameConfiguration
       Height = 1080
     }
   },
-  Host = GameHost.Create(() =>
+  Host = GameHost.Create(async () =>
   {
-    var pipeline = new ForwardRenderPipeline(Game.Services.GetServiceOrThrow<IGraphicsBackend>());
+    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
+    var pipeline = new ForwardRenderPipeline(graphics)
+    {
+      Contexts =
+      {
+        new SpriteBatchContext(graphics)
+      }
+    };
+
+    var sprite = await Game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
     var scene = new SceneGraph();
 
     scene.Root.Add(new CameraNode2D());
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
-      scene.Root.Add(new BunnyNode());
+      scene.Root.Add(new BunnyNode
+      {
+        Sprite = sprite
+      });
     }
 
     return time =>
@@ -41,6 +53,6 @@ public sealed class BunnyNode : SpriteNode
   {
     base.OnUpdate(deltaTime);
 
-    GlobalPosition += new Vector2(1, 1);
+    GlobalPosition += new Vector2(1, 1) * Speed * deltaTime.Seconds;
   }
 }

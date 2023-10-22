@@ -18,11 +18,11 @@ public class RenderContextManagerTests
     {
       DeltaTime = DeltaTime.OneOver60,
       Backend = backend,
-      Manager = manager,
+      Contexts = manager,
       Scene = Substitute.For<IRenderScene>()
     };
 
-    manager.AddContext(context);
+    manager.Add(context);
 
     manager.OnBeginFrame(in frame);
     context.Received().OnBeginFrame(frame);

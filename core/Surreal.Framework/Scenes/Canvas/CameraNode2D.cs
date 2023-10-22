@@ -11,10 +11,10 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
 {
   private Matrix4x4 _projectionView = Matrix4x4.Identity;
   private Frustum _frustum = Frustum.FromProjectionMatrix(Matrix4x4.Identity);
-  private float _zoom = 1;
+  private float _zoom = 4.5f;
   private float _aspectRatio = 1;
   private float _nearPlane;
-  private float _farPlane = 1;
+  private float _farPlane = 100f;
 
   /// <summary>
   /// The zoom level of the camera.

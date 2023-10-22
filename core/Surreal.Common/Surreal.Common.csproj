@@ -3,6 +3,6 @@
     <Description>Common tools, collections, etc for Surreal.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="YamlDotNet" Version="13.1.0" PrivateAssets="compile" />
+    <PackageReference Include="LightInject" Version="6.6.4" PrivateAssets="compile"/>
   </ItemGroup>
 </Project>

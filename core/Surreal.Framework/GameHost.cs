@@ -54,13 +54,39 @@ public abstract class GameHost : IGameHost
   /// Creates a new <see cref="GameHost"/> instance using a delegate-based approach.
   /// </summary>
   public static GameHost Create(Func<GameTickDelegate> setupDelegate)
-    => Create(() => Task.FromResult(setupDelegate()));
+  {
+    return Create(new FrameworkModule(), setupDelegate);
+  }
+
+  /// <summary>
+  /// Creates a new <see cref="GameHost"/> instance using a delegate-based approach.
+  /// </summary>
+  public static GameHost Create(IServiceModule module, Func<GameTickDelegate> setupDelegate)
+  {
+    return Create(module, () => Task.FromResult(setupDelegate()));
+  }
 
   /// <summary>
   /// Creates a new <see cref="GameHost"/> instance using a delegate-based approach.
   /// </summary>
   public static GameHost Create(Func<Task<GameTickDelegate>> setupDelegate)
-    => new DelegateGameHost(setupDelegate);
+  {
+    return Create(new FrameworkModule(), setupDelegate);
+  }
+
+  /// <summary>
+  /// Creates a new <see cref="GameHost"/> instance using a delegate-based approach.
+  /// </summary>
+  public static GameHost Create(IServiceModule module, Func<Task<GameTickDelegate>> setupDelegate)
+  {
+    return new DelegateGameHost(module, setupDelegate);
+  }
+
+  protected GameHost(IServiceModule module)
+  {
+    Services = new ServiceRegistry();
+    Services.AddModule(module);
+  }
 
   /// <inheritdoc/>
   public IEventBus Events { get; } = new EventBus();
@@ -69,7 +95,7 @@ public abstract class GameHost : IGameHost
   public AssetManager Assets { get; } = new();
 
   /// <inheritdoc/>
-  public IServiceRegistry Services { get; } = new ServiceRegistry();
+  public IServiceRegistry Services { get; }
 
   /// <inheritdoc/>
   public bool IsClosing => false;
@@ -93,12 +119,17 @@ public abstract class GameHost : IGameHost
   /// <summary>
   /// An anonymous <see cref="GameHost"/> implementation.
   /// </summary>
-  private sealed class DelegateGameHost(Func<Task<GameTickDelegate>> setupDelegate) : GameHost
+  private sealed class DelegateGameHost(IServiceModule module, Func<Task<GameTickDelegate>> setupDelegate) : GameHost(module)
   {
     private GameTickDelegate? _tickDelegate;
 
     public override void Initialize(GameConfiguration configuration)
     {
+      foreach (var loader in Services.GetServices<IAssetLoader>())
+      {
+        Assets.AddLoader(loader);
+      }
+
       _tickDelegate = setupDelegate().Result;
     }
 

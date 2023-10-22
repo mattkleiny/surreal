@@ -1,10 +1,17 @@
-﻿namespace Surreal.Utilities;
+﻿using LightInject;
+
+namespace Surreal.Utilities;
 
 /// <summary>
 /// Abstracts over a service registry, allowing different IoC container depending on game host.
 /// </summary>
 public interface IServiceRegistry : IServiceProvider
 {
+  /// <summary>
+  /// Registers a service.
+  /// </summary>
+  void AddService(Type serviceType, Type implementationType);
+
   /// <summary>
   /// Registers a service.
   /// </summary>
@@ -16,30 +23,30 @@ public interface IServiceRegistry : IServiceProvider
 /// </summary>
 public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 {
-  private readonly ConcurrentDictionary<Type, object> _instances = new();
+  private readonly ServiceContainer _container = new();
 
   public object? GetService(Type serviceType)
   {
-    _instances.TryGetValue(serviceType, out var instance);
+    return _container.GetInstance(serviceType);
+  }
 
-    return instance;
+  public void AddService(Type serviceType, Type implementationType)
+  {
+    _container.RegisterSingleton(serviceType, implementationType, GenerateName());
   }
 
   public void AddService(Type serviceType, object instance)
   {
-    _instances.TryAdd(serviceType, instance);
+    _container.RegisterInstance(serviceType, instance, GenerateName());
+  }
+
+  private static string GenerateName()
+  {
+    return Guid.NewGuid().ToString();
   }
 
   public void Dispose()
   {
-    foreach (var instance in _instances.Values)
-    {
-      if (instance is IDisposable disposable)
-      {
-        disposable.Dispose();
-      }
-    }
-
-    _instances.Clear();
+    _container.Dispose();
   }
 }

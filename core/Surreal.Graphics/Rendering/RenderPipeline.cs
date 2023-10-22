@@ -28,8 +28,12 @@ public interface IRenderPipeline : IDisposable
 /// </summary>
 public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 {
-  private readonly RenderContextManager _manager = new(backend);
   private readonly DeltaTimeClock _clock = new();
+
+  /// <summary>
+  /// The <see cref="RenderContextManager"/> for the pipeline.
+  /// </summary>
+  public RenderContextManager Contexts { get; } = new(backend);
 
   /// <inheritdoc/>
   public void Render(IRenderScene scene)
@@ -38,7 +42,7 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
     {
       DeltaTime = _clock.Tick(),
       Backend = backend,
-      Manager = _manager,
+      Contexts = Contexts,
       Scene = scene
     };
 
@@ -58,6 +62,7 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 
   protected virtual void OnBeginFrame(in RenderFrame frame)
   {
+    Contexts.OnBeginFrame(in frame);
   }
 
   protected virtual void OnExecuteFrame(in RenderFrame frame)
@@ -66,11 +71,12 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 
   protected virtual void OnEndFrame(in RenderFrame frame)
   {
+    Contexts.OnEndFrame(in frame);
   }
 
   public virtual void Dispose()
   {
-    _manager.Dispose();
+    Contexts.Dispose();
   }
 }
 

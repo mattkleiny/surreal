@@ -1,4 +1,6 @@
-﻿namespace Surreal.Utilities;
+﻿using Surreal.Collections;
+
+namespace Surreal.Utilities;
 
 /// <summary>
 /// Indicates a service is not available.
@@ -22,22 +24,9 @@ public class RegisterServiceAttribute(Type? serviceType = null) : Attribute
   /// </summary>
   public virtual void RegisterService(IServiceRegistry registry, Type implementationType)
   {
-    var instance = Activator.CreateInstance(implementationType);
-    if (instance == null)
-    {
-      throw new InvalidOperationException($"Unable to active service of type {implementationType}");
-    }
-
-    registry.AddService(ServiceType ?? implementationType, instance);
+    registry.AddService(ServiceType ?? implementationType, implementationType);
   }
 }
-
-/// <summary>
-/// Indicates the associated property should be injected with a service.
-/// </summary>
-[MeansImplicitUse]
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method)]
-public sealed class InjectAttribute : Attribute;
 
 /// <summary>
 /// Indicates a module that can be registered in a <see cref="IServiceRegistry"/>.
@@ -98,10 +87,10 @@ public static class ServiceExtensions
   /// <summary>
   /// Gets all services of type <typeparamref name="T"/>.
   /// </summary>
-  public static IEnumerable<T> GetServices<T>(this IServiceProvider provider)
+  public static ReadOnlySlice<T> GetServices<T>(this IServiceProvider provider)
     where T : class
   {
-    return GetService<IEnumerable<T>>(provider) ?? Enumerable.Empty<T>();
+    return GetService<IEnumerable<T>>(provider)?.ToArray() ?? ReadOnlySlice<T>.Empty;
   }
 
   /// <summary>
@@ -141,73 +130,5 @@ public static class ServiceExtensions
     }
 
     return result;
-  }
-
-  /// <summary>
-  /// Injects <see cref="InjectAttribute"/>-annotated properties on the given target.
-  /// </summary>
-  public static void Inject(this IServiceProvider provider, object target)
-  {
-    const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-
-    static void InjectFields(IServiceProvider provider, object target)
-    {
-      var fields =
-        from field in target.GetType().GetFields(bindingFlags)
-        where field.GetCustomAttribute<InjectAttribute>() != null
-        select field;
-
-      foreach (var field in fields)
-      {
-        var service = provider.GetService(field.FieldType);
-        if (service != null)
-        {
-          field.SetValue(target, service);
-        }
-      }
-    }
-
-
-    static void InjectProperties(IServiceProvider provider, object target)
-    {
-      var properties =
-        from property in target.GetType().GetProperties(bindingFlags)
-        where property.GetCustomAttribute<InjectAttribute>() != null
-        select property;
-
-      foreach (var property in properties)
-      {
-        var service = provider.GetService(property.PropertyType);
-        if (service != null)
-        {
-          property.SetValue(target, service);
-        }
-      }
-    }
-
-    static void InjectMethods(IServiceProvider provider, object target)
-    {
-      var methods =
-        from method in target.GetType().GetMethods(bindingFlags)
-        where method.GetCustomAttribute<InjectAttribute>() != null
-        select method;
-
-      foreach (var method in methods)
-      {
-        var parameters = method.GetParameters();
-        var arguments = new object?[parameters.Length];
-
-        for (var i = 0; i < arguments.Length; i++)
-        {
-          arguments[i] = provider.GetService(parameters[i].ParameterType);
-        }
-
-        method.Invoke(target, arguments);
-      }
-    }
-
-    InjectFields(provider, target);
-    InjectProperties(provider, target);
-    InjectMethods(provider, target);
   }
 }
