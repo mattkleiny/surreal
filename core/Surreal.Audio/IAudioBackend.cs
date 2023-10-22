@@ -14,10 +14,7 @@ public interface IAudioBackend
 
   // audio clips
   AudioHandle CreateAudioClip();
-
-  void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
-    where T : unmanaged;
-
+  void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged;
   void DeleteAudioClip(AudioHandle clip);
 
   // audio sources

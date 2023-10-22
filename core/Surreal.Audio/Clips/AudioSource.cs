@@ -8,10 +8,19 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
   private bool _isLooping;
   private float _volume;
 
+  /// <summary>
+  /// The handle of the audio source in the underlying audio backend.
+  /// </summary>
   public AudioHandle Handle { get; } = backend.CreateAudioSource();
 
+  /// <summary>
+  /// True if the audio source is currently playing.
+  /// </summary>
   public bool IsPlaying => backend.IsAudioSourcePlaying(Handle);
 
+  /// <summary>
+  /// The normalized volume of the audio source.
+  /// </summary>
   public float Volume
   {
     get => _volume;
@@ -22,6 +31,9 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
     }
   }
 
+  /// <summary>
+  /// True if the audio source should loop.
+  /// </summary>
   public bool IsLooping
   {
     get => _isLooping;
@@ -32,11 +44,17 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
     }
   }
 
+  /// <summary>
+  /// Plays the given clip on this audio source.
+  /// </summary>
   public void Play(AudioClip clip)
   {
     backend.PlayAudioSource(Handle, clip.Handle);
   }
 
+  /// <summary>
+  /// Stops playing the current clip.
+  /// </summary>
   public void Stop()
   {
     backend.StopAudioSource(Handle);

@@ -90,8 +90,6 @@ public static class Game
   {
     var bootTime = TimeStamp.Now;
 
-    Log.Trace("Creating platform");
-
     using var platform = configuration.Platform.BuildHost(configuration.Host);
     using var host = configuration.Host;
 
@@ -99,7 +97,7 @@ public static class Game
 
     try
     {
-      Log.Trace("Initializing");
+      Log.Trace("Initializing game host");
 
       host.Initialize(configuration);
 
@@ -124,7 +122,7 @@ public static class Game
         platform.EndFrame(time.DeltaTime);
       }
 
-      Log.Trace("Shutting down");
+      Log.Trace("Shutting down game host");
     }
     finally
     {

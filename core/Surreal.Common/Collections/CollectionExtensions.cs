@@ -75,29 +75,6 @@ public static class CollectionExtensions
   }
 
   /// <summary>
-  /// Selects a random element from the given list.
-  /// </summary>
-  public static bool TrySelectRandom<T>(this IReadOnlyList<T> list, [MaybeNullWhen(false)] out T result)
-  {
-    return TrySelectRandom(list, Random.Shared, out result);
-  }
-
-  /// <summary>
-  /// Selects a random element from the given list.
-  /// </summary>
-  public static bool TrySelectRandom<T>(this IReadOnlyList<T> list, Random random, [MaybeNullWhen(false)] out T result)
-  {
-    if (list.Count == 0)
-    {
-      result = default;
-      return false;
-    }
-
-    result = list[random.Next(0, list.Count)];
-    return true;
-  }
-
-  /// <summary>
   /// Selects a random element from the given slice.
   /// </summary>
   public static T SelectRandom<T>(this ReadOnlySlice<T> slice)
@@ -116,29 +93,6 @@ public static class CollectionExtensions
     }
 
     return slice[random.Next(0, slice.Length)];
-  }
-
-  /// <summary>
-  /// Selects a random element from the given slice.
-  /// </summary>
-  public static bool TrySelectRandom<T>(this ReadOnlySlice<T> slice, [MaybeNullWhen(false)] out T result)
-  {
-    return TrySelectRandom(slice, Random.Shared, out result);
-  }
-
-  /// <summary>
-  /// Selects a random element from the given slice.
-  /// </summary>
-  public static bool TrySelectRandom<T>(this ReadOnlySlice<T> slice, Random random, [MaybeNullWhen(false)] out T result)
-  {
-    if (slice.Length == 0)
-    {
-      result = default;
-      return false;
-    }
-
-    result = slice[random.Next(0, slice.Length)];
-    return true;
   }
 
   /// <summary>
@@ -176,6 +130,75 @@ public static class CollectionExtensions
   public static T SelectRandom<T>(this IEnumerable<T> enumerable, Random random)
   {
     return SelectRandom(enumerable.ToList(), random);
+  }
+
+  /// <summary>
+  /// Selects a random element from the given list.
+  /// </summary>
+  public static bool TrySelectRandom<T>(this IReadOnlyList<T> list, [MaybeNullWhen(false)] out T result)
+  {
+    return TrySelectRandom(list, Random.Shared, out result);
+  }
+
+  /// <summary>
+  /// Selects a random element from the given list.
+  /// </summary>
+  public static bool TrySelectRandom<T>(this IReadOnlyList<T> list, Random random, [MaybeNullWhen(false)] out T result)
+  {
+    if (list.Count == 0)
+    {
+      result = default;
+      return false;
+    }
+
+    result = list[random.Next(0, list.Count)];
+    return true;
+  }
+
+  /// <summary>
+  /// Selects a random element from the given slice.
+  /// </summary>
+  public static bool TrySelectRandom<T>(this ReadOnlySlice<T> slice, [MaybeNullWhen(false)] out T result)
+  {
+    return TrySelectRandom(slice, Random.Shared, out result);
+  }
+
+  /// <summary>
+  /// Selects a random element from the given slice.
+  /// </summary>
+  public static bool TrySelectRandom<T>(this ReadOnlySlice<T> slice, Random random, [MaybeNullWhen(false)] out T result)
+  {
+    if (slice.Length == 0)
+    {
+      result = default;
+      return false;
+    }
+
+    result = slice[random.Next(0, slice.Length)];
+    return true;
+  }
+
+  /// <summary>
+  /// Selects a random element from the given slice.
+  /// </summary>
+  public static bool TrySelectRandom<T>(this ReadOnlySpan<T> span, [MaybeNullWhen(false)] out T result)
+  {
+    return TrySelectRandom(span, Random.Shared, out result);
+  }
+
+  /// <summary>
+  /// Selects a random element from the given span.
+  /// </summary>
+  public static bool TrySelectRandom<T>(this ReadOnlySpan<T> span, Random random, [MaybeNullWhen(false)] out T result)
+  {
+    if (span.Length == 0)
+    {
+      result = default;
+      return false;
+    }
+
+    result = span[random.Next(0, span.Length)];
+    return true;
   }
 
   /// <summary>
@@ -217,21 +240,5 @@ public static class CollectionExtensions
     }
 
     return elements;
-  }
-
-  /// <summary>
-  /// Retrieves a reference to a value type in a dictionary or creates it if it doesn't already exist.
-  /// </summary>
-  [SuppressMessage("ReSharper", "CanSimplifyDictionaryLookupWithTryAdd")]
-  public static ref TValue GetOrCreateRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
-    where TKey : notnull
-    where TValue : new()
-  {
-    if (!dictionary.ContainsKey(key))
-    {
-      dictionary.Add(key, new TValue());
-    }
-
-    return ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
   }
 }

@@ -71,7 +71,7 @@ Game.Start(new GameConfiguration
     // create some bunnies
     for (int i = 0; i < 100; i++)
     {
-      viewport.Add(new BunnyNode2D
+      viewport.Add(new Bunny
       {
         Sprite = sprite
       });
@@ -92,9 +92,20 @@ Game.Start(new GameConfiguration
   })
 });
 
-internal sealed class BunnyNode2D : SpriteNode2D
+
+/// <summary>
+/// An example custom node.
+/// </summary>
+internal sealed class Bunny : SpriteNode2D
 {
+  /// <summary>
+  /// The speed of the bunny.
+  /// </summary>
   public float Speed { get; set; } = 10f;
+
+  /// <summary>
+  /// The velocity of the bunny.
+  /// </summary>
   public Vector2 Velocity { get; set; } = Vector2.Zero;
 
   protected override void OnUpdate(DeltaTime deltaTime)
@@ -102,8 +113,8 @@ internal sealed class BunnyNode2D : SpriteNode2D
     base.OnUpdate(deltaTime);
 
     Velocity += new Vector2(
-      (float)(Random.Shared.NextDouble() - 0.5f) * Speed,
-      (float)(Random.Shared.NextDouble() - 0.5f) * Speed
+      (Random.Shared.NextFloat() - 0.5f) * Speed,
+      (Random.Shared.NextFloat() - 0.5f) * Speed
     );
 
     GlobalPosition += Velocity * deltaTime;

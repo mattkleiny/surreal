@@ -207,7 +207,7 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
   public void WritePixelsSub<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
     where T : unmanaged
   {
-    backend.WriteTextureSubData(Handle, offsetX, offsetY, (uint)width, (uint)height, pixels, Format);
+    backend.WriteTextureSubData(Handle, offsetX, offsetY, (uint)width, (uint)height, pixels);
   }
 
   /// <summary>

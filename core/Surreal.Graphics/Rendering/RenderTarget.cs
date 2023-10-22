@@ -178,11 +178,10 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// </summary>
   public void BlitToBackBuffer(
     Material material,
-    BlitMask mask = BlitMask.Color,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    BlitToBackBuffer(material, DefaultTextureProperty, mask, filterMode, wrapMode);
+    BlitToBackBuffer(material, DefaultTextureProperty, filterMode, wrapMode);
   }
 
   /// <summary>
@@ -190,12 +189,11 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// </summary>
   public void BlitToBackBuffer(
     Material material,
-    MaterialProperty<TextureSampler> samplerProperty,
-    BlitMask mask = BlitMask.Color,
+    MaterialProperty<TextureSampler> textureProperty,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    backend.BlitToBackBuffer(Handle, material, DefaultTextureProperty, filterMode, wrapMode);
+    backend.BlitToBackBuffer(Handle, material, textureProperty, filterMode, wrapMode);
   }
 
   protected override void Dispose(bool managed)

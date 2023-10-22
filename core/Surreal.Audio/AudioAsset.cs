@@ -1,4 +1,4 @@
-using Surreal.Assets;
+﻿using Surreal.Assets;
 using Surreal.Audio.Clips;
 using Surreal.Memory;
 

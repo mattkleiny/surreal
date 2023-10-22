@@ -6,6 +6,11 @@ using Surreal.Utilities;
 namespace Surreal.Audio.Clips;
 
 /// <summary>
+/// Indicates an attempt to us an unsupported audio format.
+/// </summary>
+public sealed class UnsupportedAudioFormatException(string message) : ApplicationException(message);
+
+/// <summary>
 /// The <see cref="AssetLoader{T}" /> for <see cref="AudioBuffer" />s.
 /// </summary>
 [RegisterService(typeof(IAssetLoader))]

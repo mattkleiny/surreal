@@ -110,6 +110,9 @@ Game.Start(new GameConfiguration
   })
 });
 
+/// <summary>
+/// A bunny in the sprite benchmark.
+/// </summary>
 public struct Bunny
 {
   public required Vector2 Position;

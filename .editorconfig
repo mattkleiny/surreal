@@ -11,31 +11,5 @@ csharp_style_var_for_built_in_types = true:silent
 csharp_style_var_when_type_is_apparent = true:silent
 csharp_style_var_elsewhere = true:silent
 
-# Core Analyzers
-dotnet_diagnostic.CA1716.severity = None # Don't use reserved keywords for types
-dotnet_diagnostic.CA1051.severity = None # Do not declare public instance fields
-dotnet_diagnostic.CA1707.severity = None # Do not use underscores in method names
-dotnet_diagnostic.CA1000.severity = None # Do not declare static fields in generic types
-dotnet_diagnostic.CA1816.severity = None # Call SuppressFinalize so sub-classes don't have to
-dotnet_diagnostic.CA1711.severity = None # Don't suffix with reserved type names
-dotnet_diagnostic.CA1720.severity = None # Don't use reserved type names
-dotnet_diagnostic.CA1822.severity = None # Member can be marked as static
-dotnet_diagnostic.CA1067.severity = None # Override Equals() (buggy with records)
-dotnet_diagnostic.CA1050.severity = None # Declare types in namespaces
-dotnet_diagnostic.CA1310.severity = None # Culture-aware string operations.
-
-## Sonar Analyzers
-dotnet_diagnostic.S4144.severity = None # Update this method so that its implementation is not identical to 'blah'
-dotnet_diagnostic.S3925.severity = None # Update this implementation of 'ISerializable' to conform to the recommended serialization pattern
-dotnet_diagnostic.S1199.severity = None # Extract this nested code block into a separate method
-dotnet_diagnostic.S3459.severity = None # Remove unassigned auto-property 'Blah', or set its value
-dotnet_diagnostic.S1144.severity = None # Remove the unused private set accessor in property 'Version'
-dotnet_diagnostic.S3903.severity = None # Move type into named namespace
-dotnet_diagnostic.S3973.severity = None # Multi-line loops
-dotnet_diagnostic.S2699.severity = None # At least one assertion in test case
-dotnet_diagnostic.S3881.severity = None # Rigid dispose patterns
-dotnet_diagnostic.S2743.severity = None # Static field in generic type
-dotnet_diagnostic.S2326.severity = None # Unused type parameter
-
-# IDE Analyzers
-dotnet_diagnostic.IDE1006.severity = None # Do not use underscores in method names
+## Analyzer configuration
+dotnet_diagnostic.IDE1006.severity = None # Do not use underscores in method names (used for test methods)

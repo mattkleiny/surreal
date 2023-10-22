@@ -52,7 +52,7 @@ public sealed class GraphicsBuffer<T>(IGraphicsBackend backend, BufferType type,
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying buffer.
   /// </summary>
-  public GraphicsHandle Handle { get; } = backend.CreateBuffer(type);
+  public GraphicsHandle Handle { get; } = backend.CreateBuffer();
 
   /// <summary>
   /// The type of the <see cref="GraphicsBuffer" />.
@@ -82,7 +82,7 @@ public sealed class GraphicsBuffer<T>(IGraphicsBackend backend, BufferType type,
   public void Write(ReadOnlySpan<T> buffer)
   {
     Length = (uint)buffer.Length;
-    Size = buffer.CalculateSize();
+    Size   = buffer.CalculateSize();
 
     backend.WriteBufferData(Handle, Type, buffer, Usage);
   }

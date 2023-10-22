@@ -69,7 +69,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.Flush();
   }
 
-  public GraphicsHandle CreateBuffer(BufferType type)
+  public GraphicsHandle CreateBuffer()
   {
     return new GraphicsHandle(gl.GenBuffer());
   }
@@ -279,8 +279,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     }
   }
 
-  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format,
-    int mipLevel = 0)
+  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0)
     where T : unmanaged
   {
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));

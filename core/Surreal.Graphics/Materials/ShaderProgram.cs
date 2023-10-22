@@ -106,6 +106,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
       // @formatter:off
       switch (value.Type)
       {
+        case VariantType.Null: break; // no-op
         case VariantType.Bool: backend.SetShaderUniform(Handle, location, value.AsBool() ? 1 : 0); break;
         case VariantType.Byte: backend.SetShaderUniform(Handle, location, value.AsByte()); break;
         case VariantType.Short: backend.SetShaderUniform(Handle, location, value.AsShort()); break;
@@ -116,6 +117,10 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
         case VariantType.Ulong: backend.SetShaderUniform(Handle, location, value.AsUlong()); break;
         case VariantType.Float: backend.SetShaderUniform(Handle, location, value.AsFloat()); break;
         case VariantType.Double: backend.SetShaderUniform(Handle, location, value.AsDouble()); break;
+        case VariantType.Decimal: backend.SetShaderUniform(Handle, location, (double) value.AsDecimal()); break;
+        case VariantType.Point2: backend.SetShaderUniform(Handle, location, value.AsPoint2()); break;
+        case VariantType.Point3: backend.SetShaderUniform(Handle, location, value.AsPoint3()); break;
+        case VariantType.Point4: backend.SetShaderUniform(Handle, location, value.AsPoint4()); break;
         case VariantType.Vector2: backend.SetShaderUniform(Handle, location, value.AsVector2()); break;
         case VariantType.Vector3: backend.SetShaderUniform(Handle, location, value.AsVector3()); break;
         case VariantType.Vector4: backend.SetShaderUniform(Handle, location, value.AsVector4()); break;
@@ -127,8 +132,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
         case VariantType.Object when value.AsObject() is Texture texture: backend.SetShaderSampler(Handle, location, texture.Handle, 0u); break;
         case VariantType.Object when value.AsObject() is TextureSampler sampler: backend.SetShaderSampler(Handle, location, sampler); break;
 
-        default:
-          throw new InvalidMaterialPropertyException($"The material property type for {name} is not supported.");
+        default: throw new InvalidMaterialPropertyException($"The material property type for {name} is not supported.");
       }
       // @formatter:on
     }

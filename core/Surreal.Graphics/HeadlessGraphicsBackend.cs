@@ -19,7 +19,6 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   private int _nextShaderId;
   private int _nextTextureId;
   private int _nextFrameBufferId;
-  private GraphicsHandle _activeShader;
   private FrameBufferHandle _activeFrameBuffer;
 
   public Viewport GetViewportSize()
@@ -52,7 +51,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
   }
 
-  public GraphicsHandle CreateBuffer(BufferType type)
+  public GraphicsHandle CreateBuffer()
   {
     return new GraphicsHandle(Interlocked.Increment(ref _nextBufferId));
   }
@@ -109,7 +108,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
   }
 
-  public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+  public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0)
     where T : unmanaged
   {
   }
@@ -159,7 +158,6 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public void SetActiveShader(GraphicsHandle handle)
   {
-    _activeShader = handle;
   }
 
   public void DeleteShader(GraphicsHandle handle)

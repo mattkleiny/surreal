@@ -35,6 +35,7 @@ public abstract class Widget
   /// </summary>
   public void Update(DeltaTime deltaTime)
   {
+    // TODO: implement me
   }
 
   /// <summary>
@@ -42,6 +43,7 @@ public abstract class Widget
   /// </summary>
   public void Render(in RenderFrame frame, WidgetBatch batch)
   {
+    // TODO: implement me
   }
 
   /// <summary>
@@ -61,6 +63,7 @@ public class Layout : Widget, IEnumerable<Widget>
 
   public void Add(Widget widget)
   {
+    // TODO: implement me
   }
 
   protected internal override Widget Build(in WidgetBuildContext context)

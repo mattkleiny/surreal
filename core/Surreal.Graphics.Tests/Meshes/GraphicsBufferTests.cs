@@ -9,7 +9,7 @@ public class GraphicsBufferTests
 
     using var buffer = new GraphicsBuffer<int>(backend, BufferType.Vertex);
 
-    backend.Received(1).CreateBuffer(BufferType.Vertex);
+    backend.Received(1).CreateBuffer();
   }
 
   [Test]

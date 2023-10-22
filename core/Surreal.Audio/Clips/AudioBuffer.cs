@@ -9,11 +9,29 @@ public sealed class AudioBuffer(TimeSpan duration, AudioSampleRate rate) : Audio
 {
   private readonly IDisposableBuffer<byte> _buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
 
+  /// <summary>
+  /// The duration of the buffer's audio
+  /// </summary>
   public TimeSpan Duration { get; } = duration;
+
+  /// <summary>
+  /// The sample rate of the buffer's audio
+  /// </summary>
   public AudioSampleRate Rate { get; } = rate;
 
+  /// <summary>
+  /// The buffer's data as a memory of bytes.
+  /// </summary>
   public Memory<byte> Memory => _buffer.Memory;
+
+  /// <summary>
+  /// The buffer's data as a span of bytes.
+  /// </summary>
   public Span<byte> Span => _buffer.Span;
+
+  /// <summary>
+  /// The size of the buffer in bytes.
+  /// </summary>
   public Size Size => Span.CalculateSize();
 
   protected override void Dispose(bool managed)
@@ -26,8 +44,3 @@ public sealed class AudioBuffer(TimeSpan duration, AudioSampleRate rate) : Audio
     base.Dispose(managed);
   }
 }
-
-/// <summary>
-/// Indicates an attempt to us an unsupported audio format.
-/// </summary>
-public sealed class UnsupportedAudioFormatException(string message) : ApplicationException(message);

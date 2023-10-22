@@ -46,6 +46,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     {
       base.OnBeginFrame(in frame);
 
+      _colorTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
       _colorTarget.BindToDisplay();
       _colorTarget.ClearColorBuffer(pipeline.ClearColor);
     }
@@ -61,7 +62,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     public override void OnEndFrame(in RenderFrame frame)
     {
       _colorTarget.UnbindFromDisplay();
-      _colorTarget.BlitToBackBuffer(_blitMaterial, mask: BlitMask.Color);
+      _colorTarget.BlitToBackBuffer(_blitMaterial);
     }
 
     public override void Dispose()

@@ -51,8 +51,15 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
     return $"{Bytes} bytes";
   }
 
+  // arithmetic
   public static Size operator +(Size a, Size b) => new(a.Bytes + b.Bytes);
   public static Size operator -(Size a, Size b) => new(a.Bytes - b.Bytes);
+  public static Size operator *(Size a, int scalar) => new(a.Bytes * scalar);
+  public static Size operator /(Size a, int scalar) => new(a.Bytes / scalar);
+  public static Size operator *(int scalar, Size a) => new(a.Bytes * scalar);
+  public static Size operator /(int scalar, Size a) => new(a.Bytes / scalar);
+
+  // comparisons
   public static bool operator <(Size left, Size right) => left.Bytes < right.Bytes;
   public static bool operator >(Size left, Size right) => left.Bytes > right.Bytes;
   public static bool operator <=(Size left, Size right) => left.Bytes <= right.Bytes;
