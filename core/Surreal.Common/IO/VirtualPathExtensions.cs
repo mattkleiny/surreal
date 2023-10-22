@@ -151,7 +151,7 @@ public static class VirtualPathExtensions
   public static async ValueTask<string> ReadAllTextAsync(this VirtualPath path, Encoding encoding, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
-    using var reader = new StreamReader(stream, encoding ?? DefaultEncoding);
+    using var reader = new StreamReader(stream, encoding);
 
     return await reader.ReadToEndAsync(cancellationToken);
   }
@@ -164,7 +164,7 @@ public static class VirtualPathExtensions
   public static void WriteAllText(this VirtualPath path, string text, Encoding encoding)
   {
     using var stream = path.OpenOutputStream();
-    using var writer = new StreamWriter(stream, encoding ?? DefaultEncoding);
+    using var writer = new StreamWriter(stream, encoding);
 
     writer.Write(text);
     writer.Flush();
@@ -178,10 +178,10 @@ public static class VirtualPathExtensions
   public static async ValueTask WriteAllTextAsync(this VirtualPath path, string text, Encoding encoding, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenOutputStreamAsync();
-    await using var writer = new StreamWriter(stream, encoding ?? DefaultEncoding);
+    await using var writer = new StreamWriter(stream, encoding);
 
     await writer.WriteAsync(text.AsMemory(), cancellationToken);
-    await writer.FlushAsync();
+    await writer.FlushAsync(cancellationToken);
   }
 
   public static void SerializeJson<T>(this VirtualPath path, T value)

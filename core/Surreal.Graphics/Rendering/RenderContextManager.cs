@@ -18,7 +18,7 @@ public interface IRenderContextManager
 /// <summary>
 /// The default <see cref="IRenderContextManager"/> implementation.
 /// </summary>
-public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderContextManager, IEnumerable<IRenderContext>, IDisposable
+public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IRenderContext>, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 

@@ -97,7 +97,7 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   {
     if (TryResolveRoot(out SceneNode node))
     {
-      return node.ResolveChildren<IRenderObject>(_ => _.IsVisibleToFrustum(_frustum));
+      return node.ResolveChildren<IRenderObject>(o => o.IsVisibleToFrustum(_frustum));
     }
 
     return ReadOnlySlice<IRenderObject>.Empty;

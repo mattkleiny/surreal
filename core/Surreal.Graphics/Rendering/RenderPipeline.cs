@@ -34,7 +34,7 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
   /// <summary>
   /// The <see cref="RenderContextManager"/> for the pipeline.
   /// </summary>
-  public RenderContextManager Contexts { get; } = new(backend);
+  public RenderContextManager Contexts { get; } = new();
 
   /// <inheritdoc/>
   public void Render(IRenderScene scene)

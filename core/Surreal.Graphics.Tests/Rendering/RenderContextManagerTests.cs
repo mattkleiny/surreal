@@ -11,7 +11,7 @@ public class RenderContextManagerTests
     var backend = IGraphicsBackend.Headless;
 
     using var resources = new AssetManager();
-    using var manager = new RenderContextManager(backend);
+    using var manager = new RenderContextManager();
 
     var context = Substitute.For<IRenderContext>();
     var frame = new RenderFrame

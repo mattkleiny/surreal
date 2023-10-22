@@ -52,7 +52,7 @@ public static class Game
   [SuppressMessage("Usage", "CA2255:The \'ModuleInitializer\' attribute should not be used in libraries")]
   public static void Initialize()
   {
-    LogFactory.Current = new TextWriterLogFactory(Console.Out, LogLevel.Trace);
+    LogFactory.Current = new TextWriterLogFactory(Console.Out, LogLevel.Trace, LogFormatters.Default());
     ProfilerFactory.Current = new SamplingProfilerFactory(new InMemoryProfilerSampler());
   }
 

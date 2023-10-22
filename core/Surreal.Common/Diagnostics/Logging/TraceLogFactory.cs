@@ -5,11 +5,6 @@
 /// </summary>
 public sealed class TraceLogFactory(LogLevel minLevel, LogFormatter formatter) : ILogFactory
 {
-  public TraceLogFactory(LogLevel minLevel)
-    : this(minLevel, LogFormatters.Default())
-  {
-  }
-
   public ILog GetLog(string category)
   {
     return new TraceLog(category, minLevel, formatter);

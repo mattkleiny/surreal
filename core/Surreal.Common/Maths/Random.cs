@@ -73,15 +73,15 @@ public static class RandomExtensions
     => new(random.NextInt(min, max), random.NextInt(min, max), random.NextInt(min, max));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Vector2 NextVector2(this Random random, float min = 0f, float max = 1f)
+  public static Vector2 NextVector2(this Random random, float min, float max)
     => new(random.NextFloat(min, max), random.NextFloat(min, max));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Vector3 NextVector3(this Random random, float min = 0f, float max = 1f)
+  public static Vector3 NextVector3(this Random random, float min, float max)
     => new(random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Vector4 NextVector4(this Random random, float min = 0f, float max = 1f)
+  public static Vector4 NextVector4(this Random random, float min, float max)
     => new(random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

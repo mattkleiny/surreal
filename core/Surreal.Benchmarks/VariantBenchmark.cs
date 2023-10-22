@@ -13,7 +13,7 @@ public class VariantBenchmark
   {
     var random = new Random(42);
 
-    _vector = random.NextVector4();
+    _vector = random.NextVector4(0f, 1f);
   }
 
   [Benchmark]

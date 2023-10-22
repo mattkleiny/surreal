@@ -7,15 +7,14 @@ public sealed class TextWriterLogFactory(TextWriter writer, LogLevel minLevel, L
 {
   private static readonly BlockingCollection<string> Messages = new();
 
-  public TextWriterLogFactory(TextWriter writer, LogLevel minLevel)
-    : this(writer, minLevel, LogFormatters.Default())
-  {
-    Task.Run(() => WriteLogsAsync(writer));
-  }
+  /// <summary>
+  /// The task that writes logs to the <see cref="TextWriter" />.
+  /// </summary>
+  public Task LoggingTask { get; } = Task.Run(() => WriteLogsAsync(writer));
 
   public ILog GetLog(string category)
   {
-    return new TextWriterLog(writer, category, minLevel, formatter);
+    return new TextWriterLog(category, minLevel, formatter);
   }
 
   private static void WriteLogsAsync(TextWriter writer)
@@ -31,7 +30,7 @@ public sealed class TextWriterLogFactory(TextWriter writer, LogLevel minLevel, L
   /// <summary>
   /// A <see cref="ILog" /> that writes to a <see cref="TextWriter" />.
   /// </summary>
-  private sealed class TextWriterLog(TextWriter writer, string category, LogLevel minLevel, LogFormatter formatter) : ILog
+  private sealed class TextWriterLog(string category, LogLevel minLevel, LogFormatter formatter) : ILog
   {
     public bool IsLevelEnabled(LogLevel level)
     {
