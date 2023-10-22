@@ -240,6 +240,10 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   {
   }
 
+  protected virtual void OnDispose()
+  {
+  }
+
   protected virtual void OnEnterTree()
   {
   }
@@ -270,6 +274,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
         child.Dispose();
       }
 
+      OnDispose();
       Children.Clear();
 
       _states |= SceneGraphStates.Disposed;

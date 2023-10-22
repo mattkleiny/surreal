@@ -26,8 +26,6 @@ Game.Start(configuration, async game =>
   var clip = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
 
-  var source = new AudioSource(audio);
-
   // setup the render pipeline
   using var pipeline = new ForwardRenderPipeline(graphics)
   {
@@ -51,6 +49,14 @@ Game.Start(configuration, async game =>
   scene.Root.Add(viewport);
   viewport.Add(camera);
 
+  // add the music player
+  scene.Root.Add(new AudioPlayer2D(audio)
+  {
+    PlayOnAwake = true,
+    IsLooping = true,
+    AudioClip = clip
+  });
+
   // create some bunnies
   for (int i = 0; i < 100; i++)
   {
@@ -70,11 +76,6 @@ Game.Start(configuration, async game =>
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       game.Exit();
-    }
-
-    if (keyboard.IsKeyPressed(Key.Space))
-    {
-      source.Play(clip);
     }
   });
 });

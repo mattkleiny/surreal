@@ -9,4 +9,7 @@
     <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj"/>
     <ProjectReference Include="..\Surreal.Scripting\Surreal.Scripting.csproj"/>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scenes\Spatial\Audio\"/>
+  </ItemGroup>
 </Project>

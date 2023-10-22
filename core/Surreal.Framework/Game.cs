@@ -64,6 +64,16 @@ public sealed class Game : IDisposable
 
   private static readonly ILog Log = LogFactory.GetLog<Game>();
   private static readonly ConcurrentQueue<Action> Callbacks = new();
+  private static Game? _current;
+
+  /// <summary>
+  /// The current game instance.
+  /// </summary>
+  public static Game Current
+  {
+    get => _current ?? throw new InvalidOperationException("The game has not been started.");
+    private set => _current = value;
+  }
 
   /// <summary>
   /// Sets up the logging and profiling systems.
