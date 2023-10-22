@@ -1,7 +1,12 @@
-﻿namespace Surreal.Graphics.Materials;
+﻿using Surreal.Colors;
+
+namespace Surreal.Graphics.Materials;
 
 public class MaterialTests
 {
+  private static MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
+  private static MaterialProperty<Color32> ClearColor { get; } = new("u_clearColor");
+
   [Test]
   public void it_should_apply_uniforms_to_backend_when_rendering()
   {
@@ -48,5 +53,53 @@ public class MaterialTests
     material.Dispose();
 
     backend.Received(0).DeleteShader(Arg.Any<GraphicsHandle>());
+  }
+
+  [Test]
+  public void it_should_transfer_active_shader_on_apply()
+  {
+    var backend = Substitute.For<IGraphicsBackend>();
+
+    using var shader = new ShaderProgram(backend);
+    using var material = new Material(backend, shader);
+
+    material.ApplyMaterial();
+
+    backend.Received(1).SetActiveShader(shader.Handle);
+  }
+
+  [Test]
+  public void it_should_transfer_uniforms_on_apply()
+  {
+    var backend = Substitute.For<IGraphicsBackend>();
+
+    using var shader = new ShaderProgram(backend);
+    using var material = new Material(backend, shader);
+
+    backend.GetShaderUniformLocation(shader.Handle, Arg.Any<string>()).Returns(2);
+
+    material.Properties.SetProperty(ProjectionView, Matrix4x4.Identity);
+    material.Properties.SetProperty(ClearColor, Color32.White);
+
+    material.ApplyMaterial();
+
+    backend.Received(1).SetShaderUniform(shader.Handle, Arg.Any<int>(), Matrix4x4.Identity);
+    backend.Received(1).SetShaderUniform(shader.Handle, Arg.Any<int>(), Color32.White);
+  }
+
+  [Test]
+  public void it_should_transfer_active_blend_state_on_apply()
+  {
+    var backend = Substitute.For<IGraphicsBackend>();
+
+    using var shader = new ShaderProgram(backend);
+    using var material = new Material(backend, shader)
+    {
+      BlendState = BlendState.OneMinusSourceAlpha
+    };
+
+    material.ApplyMaterial();
+
+    backend.Received(1).SetBlendState(material.BlendState);
   }
 }

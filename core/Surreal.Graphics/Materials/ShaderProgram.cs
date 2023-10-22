@@ -1,3 +1,5 @@
+using Surreal.Graphics.Textures;
+
 namespace Surreal.Graphics.Materials;
 
 /// <summary>
@@ -54,6 +56,9 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
         case VariantType.Quaternion: backend.SetShaderUniform(Handle, location, value.AsQuaternion()); break;
         case VariantType.Color: backend.SetShaderUniform(Handle, location, value.AsColor()); break;
         case VariantType.Color32: backend.SetShaderUniform(Handle, location, value.AsColor32()); break;
+        case VariantType.Object when value.AsObject() is Matrix3x2 matrix: backend.SetShaderUniform(Handle, location, matrix); break;
+        case VariantType.Object when value.AsObject() is Matrix4x4 matrix: backend.SetShaderUniform(Handle, location, matrix); break;
+        case VariantType.Object when value.AsObject() is Texture texture: backend.SetShaderSampler(Handle, location, texture.Handle, 0); break;
 
         default:
           throw new InvalidMaterialPropertyException($"The material property type for {name} is not supported.");

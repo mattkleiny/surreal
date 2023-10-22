@@ -9,6 +9,6 @@ public class AudioBufferTests
   {
     using var buffer = new AudioBuffer(TimeSpan.FromSeconds(1), AudioSampleRate.Standard);
 
-    buffer.Size.Should().BeGreaterThan(1.Kilobytes());
+    buffer.Size.Should().BeGreaterThan(Size.FromKilobytes(1));
   }
 }

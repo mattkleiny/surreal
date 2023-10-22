@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Surreal.Colors;
+using Surreal.Maths;
 
 namespace Surreal;
 
@@ -25,6 +26,9 @@ public enum VariantType : byte
   Float,
   Double,
   Decimal,
+  Point2,
+  Point3,
+  Point4,
   Vector2,
   Vector3,
   Vector4,
@@ -53,6 +57,9 @@ internal struct VariantValue
   [FieldOffset(0)] public float Float;
   [FieldOffset(0)] public double Double;
   [FieldOffset(0)] public decimal Decimal;
+  [FieldOffset(0)] public Point2 Point2;
+  [FieldOffset(0)] public Point3 Point3;
+  [FieldOffset(0)] public Point4 Point4;
   [FieldOffset(0)] public Vector2 Vector2;
   [FieldOffset(0)] public Vector3 Vector3;
   [FieldOffset(0)] public Vector4 Vector4;
@@ -96,6 +103,9 @@ public struct Variant
     VariantType.Float => _value.Float,
     VariantType.Double => _value.Double,
     VariantType.Decimal => _value.Decimal,
+    VariantType.Point2 => _value.Point2,
+    VariantType.Point3 => _value.Point3,
+    VariantType.Point4 => _value.Point4,
     VariantType.Vector2 => _value.Vector2,
     VariantType.Vector3 => _value.Vector3,
     VariantType.Vector4 => _value.Vector4,
@@ -127,6 +137,9 @@ public struct Variant
     float value => value,
     double value => value,
     decimal value => value,
+    Point2 value => value,
+    Point3 value => value,
+    Point4 value => value,
     Vector2 value => value,
     Vector3 value => value,
     Vector4 value => value,
@@ -140,7 +153,7 @@ public struct Variant
 
   public override string ToString()
   {
-    return $"Variant {Value}";
+    return $"Variant {Value ?? "Null"}";
   }
 
   #region Constructors
@@ -220,6 +233,27 @@ public struct Variant
   {
     Type = VariantType.Decimal;
     _value.Decimal = value;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private Variant(Point2 value)
+  {
+    Type = VariantType.Point2;
+    _value.Point2 = value;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private Variant(Point3 value)
+  {
+    Type = VariantType.Point3;
+    _value.Point3 = value;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private Variant(Point4 value)
+  {
+    Type = VariantType.Point4;
+    _value.Point4 = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -324,6 +358,15 @@ public struct Variant
   public decimal AsDecimal() => _value.Decimal;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Point2 AsPoint2() => _value.Point2;
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Point3 AsPoint3() => _value.Point3;
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Point4 AsPoint4() => _value.Point4;
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Vector2 AsVector2() => _value.Vector2;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -365,6 +408,9 @@ public struct Variant
     if (typeof(T) == typeof(float)) return Unsafe.As<float, T>(ref _value.Float);
     if (typeof(T) == typeof(double)) return Unsafe.As<double, T>(ref _value.Double);
     if (typeof(T) == typeof(decimal)) return Unsafe.As<decimal, T>(ref _value.Decimal);
+    if (typeof(T) == typeof(Point2)) return Unsafe.As<Point2, T>(ref _value.Point2);
+    if (typeof(T) == typeof(Point3)) return Unsafe.As<Point3, T>(ref _value.Point3);
+    if (typeof(T) == typeof(Point4)) return Unsafe.As<Point4, T>(ref _value.Point4);
     if (typeof(T) == typeof(Vector2)) return Unsafe.As<Vector2, T>(ref _value.Vector2);
     if (typeof(T) == typeof(Vector3)) return Unsafe.As<Vector3, T>(ref _value.Vector3);
     if (typeof(T) == typeof(Vector4)) return Unsafe.As<Vector4, T>(ref _value.Vector4);
@@ -413,6 +459,15 @@ public struct Variant
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator Variant(decimal value) => new(value);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator Variant(Point2 value) => new(value);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator Variant(Point3 value) => new(value);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator Variant(Point4 value) => new(value);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator Variant(Vector2 value) => new(value);

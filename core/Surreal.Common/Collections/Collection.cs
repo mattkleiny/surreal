@@ -21,8 +21,8 @@ public class Collection<T> : IList<T>
     _items = new List<T>(capacity);
   }
 
-  public event ItemChangeHandler? ItemAdded;
-  public event ItemChangeHandler? ItemRemoved;
+  public event ItemChangeHandler? Added;
+  public event ItemChangeHandler? Removed;
 
   public int Count => _items.Count;
   public bool IsReadOnly => false;
@@ -51,12 +51,12 @@ public class Collection<T> : IList<T>
 
   protected virtual void OnItemAdded(T item)
   {
-    ItemAdded?.Invoke(this, item);
+    Added?.Invoke(this, item);
   }
 
   protected virtual void OnItemRemoved(T item)
   {
-    ItemRemoved?.Invoke(this, item);
+    Removed?.Invoke(this, item);
   }
 
   public bool Contains(T item)

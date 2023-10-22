@@ -1,4 +1,5 @@
 ﻿using Surreal.Colors;
+using Surreal.Maths;
 using Surreal.Utilities;
 
 namespace Surreal;
@@ -108,6 +109,33 @@ public class VariantTests
 
     test.Type.Should().Be(VariantType.Decimal);
     test.AsDecimal().Should().Be(1m);
+  }
+
+  [Test]
+  public void it_should_convert_point2()
+  {
+    Variant test = Point2.One;
+
+    test.Type.Should().Be(VariantType.Point2);
+    test.AsPoint2().Should().Be(Point2.One);
+  }
+
+  [Test]
+  public void it_should_convert_point3()
+  {
+    Variant test = Point3.One;
+
+    test.Type.Should().Be(VariantType.Point3);
+    test.AsPoint3().Should().Be(Point3.One);
+  }
+
+  [Test]
+  public void it_should_convert_point4()
+  {
+    Variant test = Point4.One;
+
+    test.Type.Should().Be(VariantType.Point4);
+    test.AsPoint4().Should().Be(Point4.One);
   }
 
   [Test]

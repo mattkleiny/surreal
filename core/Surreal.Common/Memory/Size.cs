@@ -15,6 +15,12 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
 {
   public static readonly Size Zero = new(0);
 
+  public static Size FromBytes(int value) => new(value);
+  public static Size FromKilobytes(int value) => FromBytes(value * 1024);
+  public static Size FromMegabytes(int value) => FromKilobytes(value * 1024);
+  public static Size FromGigabytes(int value) => FromMegabytes(value * 1024);
+  public static Size FromTerabytes(int value) => FromGigabytes(value * 1024);
+
   public float Kilobytes => Bytes / 1024f;
   public float Megabytes => Kilobytes / 1024f;
   public float Gigabytes => Megabytes / 1024f;
@@ -37,73 +43,24 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
 
   public override string ToString()
   {
-    if (Terabytes > 1)
-    {
-      return $"{Terabytes:F} terabytes";
-    }
-
-    if (Gigabytes > 1)
-    {
-      return $"{Gigabytes:F} gigabytes";
-    }
-
-    if (Megabytes > 1)
-    {
-      return $"{Megabytes:F} megabytes";
-    }
-
-    if (Kilobytes > 1)
-    {
-      return $"{Kilobytes:F} kilobytes";
-    }
+    if (Terabytes > 1) return $"{Terabytes:F} terabytes";
+    if (Gigabytes > 1) return $"{Gigabytes:F} gigabytes";
+    if (Megabytes > 1) return $"{Megabytes:F} megabytes";
+    if (Kilobytes > 1) return $"{Kilobytes:F} kilobytes";
 
     return $"{Bytes} bytes";
   }
 
-  public static Size operator +(Size a, Size b)
-  {
-    return new Size(a.Bytes + b.Bytes);
-  }
+  public static Size operator +(Size a, Size b) => new(a.Bytes + b.Bytes);
+  public static Size operator -(Size a, Size b) => new(a.Bytes - b.Bytes);
+  public static bool operator <(Size left, Size right) => left.Bytes < right.Bytes;
+  public static bool operator >(Size left, Size right) => left.Bytes > right.Bytes;
+  public static bool operator <=(Size left, Size right) => left.Bytes <= right.Bytes;
+  public static bool operator >=(Size left, Size right) => left.Bytes >= right.Bytes;
 
-  public static Size operator -(Size a, Size b)
-  {
-    return new Size(a.Bytes - b.Bytes);
-  }
-
-  public static bool operator <(Size left, Size right)
-  {
-    return left.Bytes < right.Bytes;
-  }
-
-  public static bool operator >(Size left, Size right)
-  {
-    return left.Bytes > right.Bytes;
-  }
-
-  public static bool operator <=(Size left, Size right)
-  {
-    return left.Bytes <= right.Bytes;
-  }
-
-  public static bool operator >=(Size left, Size right)
-  {
-    return left.Bytes >= right.Bytes;
-  }
-
-  public static implicit operator Size(int bytes)
-  {
-    return new Size(bytes);
-  }
-
-  public static implicit operator int(Size size)
-  {
-    return (int)size.Bytes;
-  }
-
-  public static implicit operator long(Size size)
-  {
-    return size.Bytes;
-  }
+  public static implicit operator Size(int bytes) => new(bytes);
+  public static implicit operator int(Size size) => (int)size.Bytes;
+  public static implicit operator long(Size size) => size.Bytes;
 }
 
 /// <summary>
@@ -111,47 +68,20 @@ public readonly record struct Size(long Bytes) : IComparable<Size>, IComparable
 /// </summary>
 public static class SizeExtensions
 {
-  public static Size Bytes(this int value)
-  {
-    return new Size(value);
-  }
-
-  public static Size Kilobytes(this int value)
-  {
-    return Bytes(value * 1024);
-  }
-
-  public static Size Megabytes(this int value)
-  {
-    return Kilobytes(value * 1024);
-  }
-
-  public static Size Gigabytes(this int value)
-  {
-    return Megabytes(value * 1024);
-  }
-
-  public static Size Terabytes(this int value)
-  {
-    return Gigabytes(value * 1024);
-  }
-
   public static Size Sum(this IEnumerable<Size> sizes)
   {
-    var totalBytes = 0L;
-
-    foreach (var size in sizes) totalBytes += size.Bytes;
+    var totalBytes = sizes.Sum(size => size.Bytes);
 
     return new Size(totalBytes);
   }
 
   public static Size CalculateSize<T>(this Span<T> span)
   {
-    return Bytes(span.Length * Unsafe.SizeOf<T>());
+    return Size.FromBytes(span.Length * Unsafe.SizeOf<T>());
   }
 
   public static Size CalculateSize<T>(this ReadOnlySpan<T> span)
   {
-    return Bytes(span.Length * Unsafe.SizeOf<T>());
+    return Size.FromBytes(span.Length * Unsafe.SizeOf<T>());
   }
 }

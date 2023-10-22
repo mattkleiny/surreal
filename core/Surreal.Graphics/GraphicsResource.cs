@@ -6,7 +6,7 @@ using Surreal.Resources;
 namespace Surreal.Graphics;
 
 /// <summary>
-/// Base class for any graphical resource.
+/// Base class for any graphical assets
 /// </summary>
 public abstract class GraphicsAsset : TrackedAsset<GraphicsAsset>
 {
