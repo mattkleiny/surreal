@@ -1,7 +1,7 @@
 ﻿using Surreal.Collections;
 using Surreal.Memory;
 
-namespace Surreal.Resources;
+namespace Surreal.Assets;
 
 /// <summary>
 /// An application asset that can be managed and unloaded.

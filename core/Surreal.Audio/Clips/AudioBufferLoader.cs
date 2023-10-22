@@ -1,6 +1,6 @@
 ﻿using NAudio.Wave;
+using Surreal.Assets;
 using Surreal.IO;
-using Surreal.Resources;
 using Surreal.Utilities;
 
 namespace Surreal.Audio.Clips;

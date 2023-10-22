@@ -1,5 +1,5 @@
-﻿using Surreal.Colors;
-using Surreal.Resources;
+﻿using Surreal.Assets;
+using Surreal.Colors;
 
 namespace Surreal.Graphics;
 

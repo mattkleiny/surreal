@@ -1,7 +1,7 @@
 ﻿using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 
-namespace Surreal.Resources;
+namespace Surreal.Assets;
 
 /// <summary>
 /// Denotes the given asset type is not supported by the manager.
@@ -45,7 +45,7 @@ public sealed class AssetManager : IAssetProvider, IDisposable
 
     if (!_assetsById.TryGetValue(id, out var asset))
     {
-      Log.Trace($"Loading asset {id.Path}");
+      Log.Trace($"Loading asset {id.Path} as {id.Type.Name} using {loader.GetType().Name}");
 
       _assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
     }

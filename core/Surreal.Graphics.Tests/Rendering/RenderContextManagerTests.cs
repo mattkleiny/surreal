@@ -1,4 +1,4 @@
-﻿using Surreal.Resources;
+﻿using Surreal.Assets;
 using Surreal.Timing;
 
 namespace Surreal.Graphics.Rendering;

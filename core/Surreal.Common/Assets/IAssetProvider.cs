@@ -1,6 +1,6 @@
 ﻿using Surreal.IO;
 
-namespace Surreal.Resources;
+namespace Surreal.Assets;
 
 /// <summary>
 /// Provides accesses to application <see cref="Asset"/>s.

@@ -1,6 +1,6 @@
-﻿using Surreal.Diagnostics.Logging;
+﻿using Surreal.Assets;
+using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
-using Surreal.Resources;
 using Surreal.Timing;
 
 namespace Surreal;

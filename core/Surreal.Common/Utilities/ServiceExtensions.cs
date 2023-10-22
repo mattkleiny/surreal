@@ -10,7 +10,7 @@ public class ServiceNotFoundException(string message) : ApplicationException(mes
 /// <summary>
 /// Indicates that the class should be registered as a service.
 /// </summary>
-[MeansImplicitUse]
+[MeansImplicitUse(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
 [AttributeUsage(AttributeTargets.Class)]
 public class RegisterServiceAttribute(Type? serviceType = null) : Attribute
 {

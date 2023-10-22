@@ -8,7 +8,7 @@ namespace Surreal.Graphics;
 /// <summary>
 /// A utility for rendering pixels to the screen.
 /// </summary>
-public class PixelCanvas : IDisposable
+public sealed class PixelCanvas : IDisposable
 {
   private static MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
   private static MaterialProperty<Texture> Texture { get; } = new("u_texture");

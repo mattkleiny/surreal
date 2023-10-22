@@ -31,7 +31,7 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
   {
     var type = context.GetType();
 
-    Log.Trace($"Registering render context {type}");
+    Log.Trace($"Registering {type}");
 
     _contexts.Add(type, context);
   }

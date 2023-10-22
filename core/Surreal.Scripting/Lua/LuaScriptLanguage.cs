@@ -1,5 +1,6 @@
 ﻿using NLua;
 using Surreal.IO;
+using Surreal.Utilities;
 
 namespace Surreal.Scripting.Lua;
 
@@ -12,6 +13,7 @@ public sealed class UsedByLuaAttribute : Attribute;
 /// <summary>
 /// A <see cref="IScriptLanguage"/> for Lua.
 /// </summary>
+[RegisterService(typeof(IScriptLanguage))]
 public sealed class LuaScriptLanguage : IScriptLanguage, IDisposable
 {
   private readonly NLua.Lua _lua;

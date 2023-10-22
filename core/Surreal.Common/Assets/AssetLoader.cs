@@ -1,6 +1,6 @@
 ﻿using Surreal.IO;
 
-namespace Surreal.Resources;
+namespace Surreal.Assets;
 
 /// <summary>
 /// Context for <see cref="IAssetLoader" /> operations.

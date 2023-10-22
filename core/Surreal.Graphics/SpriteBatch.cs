@@ -144,21 +144,22 @@ public sealed class SpriteBatch : IDisposable
   public void Flush()
   {
     if (_vertexCount == 0) return;
-    if (_material == null) return;
 
     if (_lastTexture != null)
     {
       // TODO: bind the appropriate texture
     }
 
-    var spriteCount = _vertexCount / 4;
-    var indexCount = spriteCount * 6;
+    if (_material != null)
+    {
+      var spriteCount = _vertexCount / 4;
+      var indexCount = spriteCount * 6;
 
-    _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
-    _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
+      _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
+      _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
+    }
 
     _vertexCount = 0;
-
     Flushed?.Invoke();
   }
 

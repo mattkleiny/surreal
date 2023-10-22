@@ -1,4 +1,4 @@
-﻿using Surreal.Resources;
+﻿using Surreal.Assets;
 
 namespace Surreal.Graphics.Materials;
 
