@@ -1,6 +1,6 @@
 ﻿const float zoomSpeed = 10f;
 
-Game.Start(new GameConfiguration
+var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
   {
@@ -13,83 +13,70 @@ Game.Start(new GameConfiguration
       Height = 1080,
       IsTransparent = true
     }
-  },
-  Host = GameHost.Create(async () =>
+  }
+};
+
+Game.Start(configuration, async game =>
+{
+  var audio = game.Services.GetServiceOrThrow<IAudioBackend>();
+  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
+  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
+  var mouse = game.Services.GetServiceOrThrow<IMouseDevice>();
+
+  var clip = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
+  var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
+
+  var source = new AudioSource(audio);
+
+  // setup the render pipeline
+  using var pipeline = new ForwardRenderPipeline(graphics)
   {
-    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
-    var keyboard = Game.Services.GetServiceOrThrow<IKeyboardDevice>();
-    var mouse = Game.Services.GetServiceOrThrow<IMouseDevice>();
-    var sprite = await Game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
-
-    // setup the render pipeline
-    var pipeline = new ForwardRenderPipeline(graphics)
+    ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f),
+    Contexts =
     {
-      ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f),
-      Contexts =
-      {
-        new SpriteContext(graphics),
-        new WidgetContext(graphics)
-      }
-    };
+      new SpriteContext(graphics),
+      new WidgetContext(graphics)
+    }
+  };
 
-    // create scene and main camera
-    var scene = new SceneGraph();
+  // create scene and main camera
+  using var scene = new SceneGraph();
 
-    var viewport = new CameraViewportNode();
-    var widgets = new WidgetViewportNode
+  var viewport = new CameraViewportNode();
+  var camera = new CameraNode2D
+  {
+    Zoom = 100f
+  };
+
+  scene.Root.Add(viewport);
+  viewport.Add(camera);
+
+  // create some bunnies
+  for (int i = 0; i < 100; i++)
+  {
+    viewport.Add(new Bunny
     {
-      Widget = new FloatingWindow
-      {
-        new StackPanel
-        {
-          new TextBlock
-          {
-            Text = "Bunnymark",
-            FontSize = 24f,
-            Margin = 8f
-          },
-          new TextBlock
-          {
-            Text = "Press ESC to exit",
-            FontSize = 16f,
-            Margin = 8f
-          }
-        }
-      }
-    };
+      Sprite = sprite
+    });
+  }
 
-    var camera = new CameraNode2D
+  game.ExecuteVariableStep(time =>
+  {
+    scene.Update(time.DeltaTime);
+    pipeline.Render(scene);
+
+    camera.Zoom += -mouse.ScrollAmount * zoomSpeed;
+
+    if (keyboard.IsKeyPressed(Key.Escape))
     {
-      Zoom = 100f
-    };
-
-    scene.Root.Add(viewport);
-    scene.Root.Add(widgets);
-
-    viewport.Add(camera);
-
-    // create some bunnies
-    for (int i = 0; i < 100; i++)
-    {
-      viewport.Add(new Bunny
-      {
-        Sprite = sprite
-      });
+      game.Exit();
     }
 
-    return time =>
+    if (keyboard.IsKeyPressed(Key.Space))
     {
-      scene.Update(time.DeltaTime);
-      pipeline.Render(scene);
-
-      camera.Zoom += -mouse.ScrollAmount * zoomSpeed;
-
-      if (keyboard.IsKeyPressed(Key.Escape))
-      {
-        Game.Exit();
-      }
-    };
-  })
+      source.Play(clip);
+    }
+  });
 });
 
 

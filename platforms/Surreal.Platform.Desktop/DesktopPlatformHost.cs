@@ -43,33 +43,36 @@ public interface IDesktopWindow : IDisposable
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 {
+  private readonly ThreadAffineSynchronizationContext _syncContext = new(Thread.CurrentThread);
+  private readonly FrameCounter _frameCounter = new();
   private readonly DesktopConfiguration _configuration;
 
-  private readonly FrameCounter _frameCounter = new();
   private IntervalTimer _frameDisplayTimer = new(TimeSpan.FromSeconds(1));
 
-  public DesktopPlatformHost(DesktopConfiguration configuration, IGameHost host)
+  public DesktopPlatformHost(DesktopConfiguration configuration, IServiceRegistry services)
   {
+    SynchronizationContext.SetSynchronizationContext(_syncContext);
+
     _configuration = configuration;
 
     Window = new SilkWindow(configuration);
-    AudioBackend = new SilkAudioBackend(AL.GetApi(soft: true));
+    AudioBackend = new SilkAudioBackend();
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
 
     Resized += OnResized;
 
-    host.Services.AddService<IPlatformHost>(this);
-    host.Services.AddService<IDesktopPlatformHost>(this);
-    host.Services.AddService<IDesktopWindow>(Window);
-    host.Services.AddService<IAudioBackend>(AudioBackend);
-    host.Services.AddService<IGraphicsBackend>(GraphicsBackend);
-    host.Services.AddService<IInputBackend>(InputBackend);
+    services.AddService<IPlatformHost>(this);
+    services.AddService<IDesktopPlatformHost>(this);
+    services.AddService<IDesktopWindow>(Window);
+    services.AddService<IAudioBackend>(AudioBackend);
+    services.AddService<IGraphicsBackend>(GraphicsBackend);
+    services.AddService<IInputBackend>(InputBackend);
 
     foreach (var device in InputBackend.Devices)
     {
-      host.Services.AddService(device);
-      host.Services.AddService(device.DeviceType, device);
+      services.AddService(device);
+      services.AddService(device.DeviceType, device);
     }
   }
 
@@ -95,6 +98,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public void BeginFrame(DeltaTime deltaTime)
   {
+    _syncContext.Process();
+
     if (!IsClosing)
     {
       Window.Update();
@@ -122,11 +127,61 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public void Dispose()
   {
+    AudioBackend.Dispose();
     Window.Dispose();
   }
 
   private void OnResized(int width, int height)
   {
     GraphicsBackend.SetViewportSize(new Viewport(0, 0, (uint)width, (uint)height));
+  }
+}
+
+/// <summary>
+/// A <see cref="SynchronizationContext"/> that prefers to schedule work back onto the main thread.
+/// </summary>
+internal sealed class ThreadAffineSynchronizationContext(Thread mainThread) : SynchronizationContext
+{
+  private readonly Queue<Continuation> _continuations = new();
+  private readonly Queue<Continuation> _buffer = new();
+
+  public void Process()
+  {
+    if (Thread.CurrentThread != mainThread)
+    {
+      throw new InvalidOperationException("Cannot process continuations from a non-main thread.");
+    }
+
+    while (_continuations.TryDequeue(out var continuation))
+    {
+      _buffer.Enqueue(continuation);
+    }
+
+    while (_buffer.TryDequeue(out var continuation))
+    {
+      continuation.Execute();
+    }
+  }
+
+  public override void Post(SendOrPostCallback callback, object? state)
+  {
+    _continuations.Enqueue(new Continuation(callback, state));
+  }
+
+  public override void Send(SendOrPostCallback callback, object? state)
+  {
+    if (Thread.CurrentThread == mainThread)
+    {
+      callback(state);
+    }
+    else
+    {
+      _continuations.Enqueue(new Continuation(callback, state));
+    }
+  }
+
+  private readonly record struct Continuation(SendOrPostCallback Callback, object? State)
+  {
+    public void Execute() => Callback(State);
   }
 }

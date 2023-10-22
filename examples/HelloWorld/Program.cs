@@ -1,4 +1,4 @@
-Game.Start(new GameConfiguration
+var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
   {
@@ -10,25 +10,26 @@ Game.Start(new GameConfiguration
       Width = 1920,
       Height = 1080
     }
-  },
-  Host = GameHost.Create(() =>
+  }
+};
+
+Game.Start(configuration, game =>
+{
+  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
+  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
+
+  var color1 = Random.Shared.Next<Color>();
+  var color2 = Random.Shared.Next<Color>();
+
+  game.ExecuteVariableStep(time =>
   {
-    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
-    var keyboard = Game.Services.GetServiceOrThrow<IKeyboardDevice>();
+    var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
 
-    var color1 = Random.Shared.Next<Color>();
-    var color2 = Random.Shared.Next<Color>();
+    graphics.ClearColorBuffer(color);
 
-    return time =>
+    if (keyboard.IsKeyPressed(Key.Escape))
     {
-      var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
-
-      graphics.ClearColorBuffer(color);
-
-      if (keyboard.IsKeyPressed(Key.Escape))
-      {
-        Game.Exit();
-      }
-    };
-  })
+      game.Exit();
+    }
+  });
 });

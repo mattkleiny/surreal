@@ -1,4 +1,5 @@
 ﻿using Surreal.IO;
+using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -19,14 +20,14 @@ public sealed record DesktopConfiguration
 }
 
 /// <summary>
-/// A <see cref="IPlatformHostFactory" /> for desktop environments.
+/// A <see cref="IPlatform" /> for desktop environments.
 /// </summary>
-public sealed class DesktopPlatform : IPlatformHostFactory
+public sealed class DesktopPlatform : IPlatform
 {
   public DesktopConfiguration Configuration { get; } = new();
 
-  public IPlatformHost BuildHost(IGameHost host)
+  public IPlatformHost BuildHost(IServiceRegistry services)
   {
-    return new DesktopPlatformHost(Configuration, host);
+    return new DesktopPlatformHost(Configuration, services);
   }
 }

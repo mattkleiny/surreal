@@ -3,8 +3,29 @@ using Surreal.Audio.Clips;
 
 namespace Surreal.Audio;
 
-internal sealed class SilkAudioBackend(AL al) : IAudioBackend
+internal sealed unsafe class SilkAudioBackend : IAudioBackend, IDisposable
 {
+  [SuppressMessage("ReSharper", "InconsistentNaming")]
+  private static ALContext alc = ALContext.GetApi(soft: true);
+
+  [SuppressMessage("ReSharper", "InconsistentNaming")]
+  private static readonly AL al = AL.GetApi(soft: true);
+
+  private readonly Context* _context;
+
+  public SilkAudioBackend()
+  {
+    var device = alc.OpenDevice(string.Empty); // the default device
+
+    _context = alc.CreateContext(device, null);
+    if (_context == null)
+    {
+      throw new InvalidOperationException("Failed to create OpenAL context.");
+    }
+
+    alc.MakeContextCurrent(_context);
+  }
+
   public AudioHandle CreateAudioClip()
   {
     return new AudioHandle(al.GenBuffer());
@@ -17,7 +38,7 @@ internal sealed class SilkAudioBackend(AL al) : IAudioBackend
     {
       al.BufferData(
         buffer: clip,
-        format: BufferFormat.Stereo16,
+        format: ConvertSampleRate(sampleRate),
         data: pointer,
         size: data.Length * sizeof(T),
         frequency: sampleRate.Frequency
@@ -32,7 +53,13 @@ internal sealed class SilkAudioBackend(AL al) : IAudioBackend
 
   public AudioHandle CreateAudioSource()
   {
-    return new AudioHandle(al.GenSource());
+    var source = al.GenSource();
+
+    al.SetSourceProperty(source, SourceFloat.Gain, 1f);
+    al.SetSourceProperty(source, SourceVector3.Position, Vector3.Zero);
+    al.SetSourceProperty(source, SourceBoolean.Looping, false);
+
+    return new AudioHandle(source);
   }
 
   public bool IsAudioSourcePlaying(AudioHandle handle)
@@ -71,5 +98,27 @@ internal sealed class SilkAudioBackend(AL al) : IAudioBackend
   public void DeleteAudioSource(AudioHandle source)
   {
     al.DeleteSource(source);
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static BufferFormat ConvertSampleRate(AudioSampleRate sampleRate)
+  {
+    return sampleRate switch
+    {
+      { BitsPerSample: 16, Channels: > 1 } => BufferFormat.Stereo16,
+      { BitsPerSample: 16, Channels: 1 } => BufferFormat.Mono16,
+      { BitsPerSample: 8, Channels: > 1 } => BufferFormat.Stereo8,
+      { BitsPerSample: 8, Channels: 1 } => BufferFormat.Mono8,
+
+      _ => throw new NotSupportedException($"Unsupported sample rate: {sampleRate}")
+    };
+  }
+
+  public void Dispose()
+  {
+    if (_context != null)
+    {
+      alc.DestroyContext(_context);
+    }
   }
 }
