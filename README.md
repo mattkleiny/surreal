@@ -58,3 +58,46 @@ Game.Start(new GameConfiguration
   })
 });
 ```
+
+## Capabilities
+
+- [x] Windows support
+- [ ] Mac support
+- [ ] Linux support
+- [ ] Android support
+- [ ] iOS support
+- [ ] WASM support
+
+### Audio
+
+- [ ] Audio playback
+- [ ] Audio hot reloading
+- [ ] Audio library
+- [ ] Audio effects
+
+### Graphics
+
+- [x] Mesh creation and rendering
+- [x] Texture read/writes
+- [ ] Texture hot reloading
+- [x] 2D Sprites and sprite sheets
+- [ ] 3D Sprites and sprite sheets
+- [x] 2D camera support
+- [ ] 3D camera support
+- [ ] Text rendering
+- [x] Render targets
+- [x] Post processing effects
+- [x] Material system
+- [ ] Material batching
+- [ ] Compute shader support
+- [ ] Shader hot reloading
+- [ ] Shader reflection
+- [x] Shader preprocessor
+- [ ] Shader library
+
+### Scripting
+
+- [ ] Shared scripting VM
+- [ ] Script hot reloading
+- [ ] Script library
+- [x] Lua support
