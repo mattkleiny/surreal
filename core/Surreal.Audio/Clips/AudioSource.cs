@@ -7,6 +7,7 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
 {
   private bool _isLooping;
   private float _volume;
+  private Vector3 _position;
 
   /// <summary>
   /// The handle of the audio source in the underlying audio backend.
@@ -41,6 +42,19 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
     {
       _isLooping = value;
       backend.SetAudioSourceLooping(Handle, value);
+    }
+  }
+
+  /// <summary>
+  /// The position of the audio source in 3D space.
+  /// </summary>
+  public Vector3 Position
+  {
+    get => _position;
+    set
+    {
+      _position = value;
+      backend.SetAudioSourcePosition(Handle, value);
     }
   }
 

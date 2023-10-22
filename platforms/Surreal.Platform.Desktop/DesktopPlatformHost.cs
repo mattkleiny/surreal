@@ -1,3 +1,4 @@
+using Silk.NET.OpenAL;
 using Surreal.Audio;
 using Surreal.Diagnostics;
 using Surreal.Graphics;
@@ -52,7 +53,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     _configuration = configuration;
 
     Window = new SilkWindow(configuration);
-    AudioBackend = new SilkAudioBackend();
+    AudioBackend = new SilkAudioBackend(AL.GetApi(soft: true));
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
 

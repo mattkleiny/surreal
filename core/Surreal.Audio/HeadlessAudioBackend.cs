@@ -42,6 +42,10 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
   {
   }
 
+  public void SetAudioSourcePosition(AudioHandle source, Vector3 value)
+  {
+  }
+
   public void SetAudioSourceVolume(AudioHandle source, float value)
   {
   }

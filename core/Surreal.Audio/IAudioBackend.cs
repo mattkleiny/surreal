@@ -22,6 +22,7 @@ public interface IAudioBackend
   bool IsAudioSourcePlaying(AudioHandle handle);
   void PlayAudioSource(AudioHandle source, AudioHandle clip);
   void StopAudioSource(AudioHandle source);
+  void SetAudioSourcePosition(AudioHandle source, Vector3 value);
   void SetAudioSourceVolume(AudioHandle source, float value);
   void SetAudioSourceLooping(AudioHandle source, bool value);
   void DeleteAudioSource(AudioHandle source);

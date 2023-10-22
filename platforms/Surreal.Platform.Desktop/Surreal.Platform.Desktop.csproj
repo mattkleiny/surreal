@@ -3,11 +3,13 @@
     <Description>A Surreal platform implementation for desktop environments using Silk .NET.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Silk.NET.Core" Version="2.17.1" PrivateAssets="compile"/>
-    <PackageReference Include="Silk.NET.Input" Version="2.17.1" PrivateAssets="compile"/>
-    <PackageReference Include="Silk.NET.OpenAL" Version="2.17.1" PrivateAssets="compile"/>
-    <PackageReference Include="Silk.NET.OpenGL" Version="2.17.1" PrivateAssets="compile"/>
-    <PackageReference Include="Silk.NET.Windowing" Version="2.17.1" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.Core" Version="2.18" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.Input" Version="2.18" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.OpenAL" Version="2.18" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.OpenAL.Extensions.Soft" Version="2.18.0" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.OpenAL.Soft.Native" Version="1.21.1.2" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.OpenGL" Version="2.18" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.Windowing" Version="2.18" PrivateAssets="compile"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj"/>
