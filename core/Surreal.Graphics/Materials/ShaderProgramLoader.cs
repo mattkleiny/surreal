@@ -9,8 +9,8 @@ namespace Surreal.Graphics.Materials;
 [RegisterService(typeof(IAssetLoader))]
 public sealed class ShaderProgramLoader(IGraphicsBackend backend) : AssetLoader<ShaderProgram>
 {
-  public override Task<ShaderProgram> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<ShaderProgram> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
-    throw new NotImplementedException();
+    return await ShaderProgram.LoadAsync(backend, context.Path, cancellationToken);
   }
 }

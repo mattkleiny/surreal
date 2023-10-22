@@ -1,4 +1,6 @@
+using Surreal.Collections;
 using Surreal.Graphics.Textures;
+using Surreal.IO;
 
 namespace Surreal.Graphics.Materials;
 
@@ -8,9 +10,56 @@ namespace Surreal.Graphics.Materials;
 public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
 {
   /// <summary>
+  /// Loads a <see cref="ShaderProgram"/> from the given <see cref="VirtualPath"/>.
+  /// </summary>
+  public static ShaderProgram Load(IGraphicsBackend backend, VirtualPath path)
+  {
+    using var stream = path.OpenInputStream();
+    using var reader = new StreamReader(stream, Encoding.UTF8);
+
+    var kernels = ParseCode(reader);
+    var program = new ShaderProgram(backend);
+
+    program.LinkKernels(kernels);
+
+    return program;
+  }
+
+  /// <summary>
+  /// Loads a <see cref="ShaderProgram"/> asynchronously from the given <see cref="VirtualPath"/>.
+  /// </summary>
+  public static async Task<ShaderProgram> LoadAsync(IGraphicsBackend backend, VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    await using var stream = await path.OpenInputStreamAsync();
+    using var reader = new StreamReader(stream, Encoding.UTF8);
+
+    var kernels = await ParseCodeAsync(reader, cancellationToken);
+    var program = new ShaderProgram(backend);
+
+    program.LinkKernels(kernels);
+
+    return program;
+  }
+
+  /// <summary>
   /// The <see cref="GraphicsHandle"/> for the shader itself.
   /// </summary>
   public GraphicsHandle Handle { get; private set; } = backend.CreateShader();
+
+  /// <summary>
+  /// The <see cref="ShaderKernel"/>s that make up the program.
+  /// </summary>
+  public ReadOnlySlice<ShaderKernel> Kernels { get; private set; } = ReadOnlySlice<ShaderKernel>.Empty;
+
+  /// <summary>
+  /// Links the given <see cref="ShaderKernel"/>s to the program.
+  /// </summary>
+  internal void LinkKernels(ReadOnlySlice<ShaderKernel> kernels)
+  {
+    backend.LinkShader(Handle, kernels);
+
+    Kernels = kernels;
+  }
 
   /// <summary>
   /// Gets the uniform location for the given name.
@@ -67,16 +116,6 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
     }
   }
 
-  /// <summary>
-  /// Deletes and replaces the old shader with a new one.
-  /// </summary>
-  public void ReplaceShader(GraphicsHandle newHandle)
-  {
-    backend.DeleteShader(Handle);
-
-    Handle = newHandle;
-  }
-
   protected override void Dispose(bool managed)
   {
     if (managed)
@@ -85,5 +124,66 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
     }
 
     base.Dispose(managed);
+  }
+
+
+  /// <summary>
+  /// Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
+  /// </summary>
+  private static ReadOnlySlice<ShaderKernel> ParseCode(TextReader reader)
+  {
+    var sharedCode = new StringBuilder();
+    var shaderCode = new List<ShaderKernel>();
+
+    foreach (var line in reader.ReadLines())
+    {
+      ParseShaderLine(line, shaderCode, sharedCode);
+    }
+
+    return shaderCode;
+  }
+
+  /// <summary>
+  /// Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
+  /// </summary>
+  private static async Task<ReadOnlySlice<ShaderKernel>> ParseCodeAsync(TextReader reader, CancellationToken cancellationToken = default)
+  {
+    var sharedCode = new StringBuilder();
+    var shaderCode = new List<ShaderKernel>();
+
+    await foreach (var line in reader.ReadLinesAsync(cancellationToken))
+    {
+      ParseShaderLine(line, shaderCode, sharedCode);
+    }
+
+    return shaderCode;
+  }
+
+  /// <summary>
+  /// Parses the given raw line of shader code.
+  /// </summary>
+  private static void ParseShaderLine(string line, List<ShaderKernel> kernels, StringBuilder sharedCode)
+  {
+    if (line.Trim().StartsWith("#shader_type"))
+    {
+      if (line.EndsWith("vertex"))
+      {
+        kernels.Add(new ShaderKernel(ShaderType.VertexShader, new StringBuilder(sharedCode.ToString())));
+      }
+
+      if (line.EndsWith("fragment"))
+      {
+        kernels.Add(new ShaderKernel(ShaderType.FragmentShader, new StringBuilder(sharedCode.ToString())));
+      }
+    }
+    // append code to either globals or the last kernel
+    else if (kernels.Count > 0)
+    {
+      kernels[^1].Code.AppendLine(line);
+    }
+    else
+    {
+      sharedCode.AppendLine(line);
+    }
   }
 }

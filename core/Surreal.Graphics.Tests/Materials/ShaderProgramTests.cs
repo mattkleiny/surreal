@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphics.Materials;
+﻿using Surreal.IO;
+
+namespace Surreal.Graphics.Materials;
 
 public class ShaderProgramTests
 {
@@ -29,13 +31,12 @@ public class ShaderProgramTests
   }
 
   [Test]
-  public void it_should_delete_old_shader_when_replacing()
+  [TestCase("local://Assets/External/shaders/test01.glsl")]
+  public void it_should_parse_shader_programs(VirtualPath path)
   {
-    var backend = Substitute.For<IGraphicsBackend>();
-    var program = new ShaderProgram(backend);
+    var backend = IGraphicsBackend.Headless;
+    var program = ShaderProgram.Load(backend, path);
 
-    program.ReplaceShader(new GraphicsHandle(7337));
-
-    backend.Received(1).DeleteShader(Arg.Any<GraphicsHandle>());
+    program.Kernels.Length.Should().Be(2);
   }
 }

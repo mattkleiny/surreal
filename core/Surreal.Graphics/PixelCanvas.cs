@@ -19,7 +19,7 @@ public sealed class PixelCanvas : IDisposable
 
   public PixelCanvas(IGraphicsBackend backend, int width, int height)
   {
-    var shader = new ShaderProgram(backend);
+    var shader = ShaderProgram.Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/sprite.glsl");
 
     _pixels = new DenseGrid<Color32>(width, height);
     _material = new Material(backend, shader)

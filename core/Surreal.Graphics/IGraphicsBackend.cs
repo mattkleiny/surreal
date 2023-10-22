@@ -1,4 +1,5 @@
-﻿using Surreal.Colors;
+﻿using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
@@ -111,6 +112,7 @@ public interface IGraphicsBackend
 
   // shaders
   GraphicsHandle CreateShader();
+  void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels);
   int GetShaderUniformLocation(GraphicsHandle handle, string name);
   void SetShaderUniform(GraphicsHandle handle, int location, int value);
   void SetShaderUniform(GraphicsHandle handle, int location, float value);

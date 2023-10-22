@@ -1,4 +1,5 @@
-﻿using Surreal.Colors;
+﻿using Surreal.Collections;
+using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
@@ -133,6 +134,10 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   public GraphicsHandle CreateShader()
   {
     return new GraphicsHandle(Interlocked.Increment(ref _nextShaderId));
+  }
+
+  public void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels)
+  {
   }
 
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)

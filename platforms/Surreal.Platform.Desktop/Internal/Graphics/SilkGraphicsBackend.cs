@@ -1,10 +1,12 @@
 ﻿using Silk.NET.OpenGL;
+using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
+using ShaderType = Surreal.Graphics.Materials.ShaderType;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Graphics;
@@ -376,6 +378,45 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     return new GraphicsHandle(gl.CreateProgram());
   }
 
+  public void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels)
+  {
+    var shaderIds = new List<uint>();
+
+    foreach (var kernel in kernels)
+    {
+      var shader = gl.CreateShader(ConvertShaderType(kernel.Type));
+
+      shaderIds.Add(shader);
+
+      gl.ShaderSource(shader, kernel.Code.ToString());
+      gl.CompileShader(shader);
+
+      if (gl.GetShader(shader, ShaderParameterName.CompileStatus) == 0)
+      {
+        var infoLog = gl.GetShaderInfoLog(shader);
+
+        throw new InvalidOperationException($"Failed to compile shader: {infoLog}");
+      }
+
+      gl.AttachShader(handle, shader);
+    }
+
+    gl.LinkProgram(handle);
+
+    if (gl.GetProgram(handle, ProgramPropertyARB.LinkStatus) == 0)
+    {
+      var infoLog = gl.GetProgramInfoLog(handle);
+
+      throw new InvalidOperationException($"Failed to link shader: {infoLog}");
+    }
+
+    foreach (var shader in shaderIds)
+    {
+      gl.DetachShader(handle, shader);
+      gl.DeleteShader(shader);
+    }
+  }
+
   public int GetShaderUniformLocation(GraphicsHandle handle, string name)
   {
     return gl.GetUniformLocation(handle, name);
@@ -704,6 +745,18 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
       DepthStencilFormat.Depth32Stencil8 => GLEnum.Depth32fStencil8,
 
       _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+    };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static GLEnum ConvertShaderType(ShaderType type)
+  {
+    return type switch
+    {
+      ShaderType.VertexShader => GLEnum.VertexShader,
+      ShaderType.FragmentShader => GLEnum.FragmentShader,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
     };
   }
 }
