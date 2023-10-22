@@ -7,9 +7,6 @@ namespace Surreal.Graphics.Rendering;
 /// </summary>
 public interface IRenderPass : IDisposable
 {
-  void OnPassAdded();
-  void OnPassRemoved();
-
   void OnBeginFrame(in RenderFrame frame);
   void OnEndFrame(in RenderFrame frame);
 
@@ -24,14 +21,6 @@ public interface IRenderPass : IDisposable
 /// </summary>
 public abstract class RenderPass : IRenderPass
 {
-  public virtual void OnPassAdded()
-  {
-  }
-
-  public virtual void OnPassRemoved()
-  {
-  }
-
   public virtual void OnBeginFrame(in RenderFrame frame)
   {
   }
@@ -62,17 +51,47 @@ public abstract class RenderPass : IRenderPass
 /// </summary>
 public sealed class RenderPassList : Collection<IRenderPass>
 {
-  protected override void OnItemAdded(IRenderPass item)
+  /// <summary>
+  /// Inserts a render pass before a specific pass.
+  /// </summary>
+  public void InsertBefore<TOtherPass>(IRenderPass pass)
+    where TOtherPass : IRenderPass
   {
-    base.OnItemAdded(item);
+    for (var i = 0; i < Count; i++)
+    {
+      var instance = this[i];
+      if (instance is TOtherPass)
+      {
+        Insert(i, pass);
+        return;
+      }
+    }
 
-    item.OnPassAdded();
+    Add(pass);
   }
 
-  protected override void OnItemRemoved(IRenderPass item)
+  /// <summary>
+  /// Inserts a render pass after a specific pass.
+  /// </summary>
+  public void InsertAfter<TOtherPass>(IRenderPass pass)
+    where TOtherPass : IRenderPass
   {
-    item.OnPassRemoved();
+    for (var i = 0; i < Count; i++)
+    {
+      var instance = this[i];
+      if (instance is TOtherPass)
+      {
+        if (i == Count - 1)
+        {
+          Add(pass);
+          return;
+        }
 
-    base.OnItemRemoved(item);
+        Insert(i + 1, pass);
+        return;
+      }
+    }
+
+    Add(pass);
   }
 }

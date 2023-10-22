@@ -155,7 +155,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   public ReadOnlySlice<T> ResolveChildren<T>(Predicate<T> predicate)
     where T : class
   {
-    static void ResolveChildrenRecursive(SceneNode node, List<T> results, Predicate<T> predicate, int depth = 0, int maxDepth = 100)
+    static void ResolveRecursive(SceneNode node, List<T> results, Predicate<T> predicate, int depth = 0, int maxDepth = 100)
     {
       Debug.Assert(depth < maxDepth);
 
@@ -169,13 +169,13 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
           }
         }
 
-        ResolveChildrenRecursive(child, results, predicate);
+        ResolveRecursive(child, results, predicate);
       }
     }
 
     var results = new List<T>();
 
-    ResolveChildrenRecursive(this, results, predicate);
+    ResolveRecursive(this, results, predicate);
 
     return results;
   }
