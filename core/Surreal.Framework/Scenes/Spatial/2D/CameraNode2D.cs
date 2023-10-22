@@ -1,5 +1,4 @@
-﻿using Surreal.Colors;
-using Surreal.Maths;
+﻿using Surreal.Maths;
 using Surreal.Timing;
 
 namespace Surreal.Scenes.Spatial;
@@ -22,9 +21,6 @@ public class CameraNode2D : SceneNode2D, ICamera
 
   /// <inheritdoc/>
   public ref readonly Matrix4x4 ProjectionView => ref _projectionView;
-
-  /// <inheritdoc/>
-  public Optional<Color> ClearColor { get; set; }
 
   /// <summary>
   /// The zoom level of the camera.

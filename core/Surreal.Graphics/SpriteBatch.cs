@@ -11,7 +11,7 @@ namespace Surreal.Graphics;
 /// <summary>
 /// A <see cref="RenderContext"/> for <see cref="Graphics.SpriteBatch"/>es.
 /// </summary>
-public sealed class SpriteBatchContext(IGraphicsBackend backend) : RenderContext
+public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
 {
   /// <summary>
   /// The <see cref="Graphics.SpriteBatch"/> used by this context.

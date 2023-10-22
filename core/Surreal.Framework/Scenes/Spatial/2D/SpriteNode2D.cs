@@ -21,6 +21,17 @@ public class SpriteNode2D : SceneNode2D, IRenderObject
   /// </summary>
   public Color Tint { get; set; } = Color.White;
 
+  protected virtual void OnRender(SpriteBatch batch)
+  {
+    batch.Draw(
+      region: Sprite,
+      position: GlobalPosition,
+      size: GlobalScale * Sprite.Size,
+      angle: GlobalRotation.Radians,
+      color: Tint
+    );
+  }
+
   bool IRenderObject.IsVisibleToFrustum(in Frustum frustum)
   {
     var center = new Vector3(GlobalPosition.X, GlobalPosition.Y, 0f);
@@ -31,15 +42,9 @@ public class SpriteNode2D : SceneNode2D, IRenderObject
 
   void IRenderObject.Render(in RenderFrame frame)
   {
-    if (frame.Contexts.TryGetContext(in frame, out SpriteBatchContext context))
+    if (frame.Contexts.TryGetContext(in frame, out SpriteContext context))
     {
-      context.SpriteBatch.Draw(
-        region: Sprite,
-        position: GlobalPosition,
-        size: GlobalScale * Sprite.Size,
-        angle: GlobalRotation.Radians,
-        color: Tint
-      );
+      OnRender(context.SpriteBatch);
     }
   }
 }

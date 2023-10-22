@@ -27,19 +27,44 @@ Game.Start(new GameConfiguration
       ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f),
       Contexts =
       {
-        new SpriteBatchContext(graphics)
+        new SpriteContext(graphics),
+        new WidgetContext(graphics)
       }
     };
 
     // create scene and main camera
     var scene = new SceneGraph();
+
     var viewport = new CameraViewportNode();
+    var widgets = new WidgetViewportNode
+    {
+      Widget = new FloatingWindow
+      {
+        new StackPanel
+        {
+          new TextBlock
+          {
+            Text = "Bunnymark",
+            FontSize = 24f,
+            Margin = 8f
+          },
+          new TextBlock
+          {
+            Text = "Press ESC to exit",
+            FontSize = 16f,
+            Margin = 8f
+          }
+        }
+      }
+    };
+
     var camera = new CameraNode2D
     {
       Zoom = 100f
     };
 
     scene.Root.Add(viewport);
+    scene.Root.Add(widgets);
 
     viewport.Add(camera);
 

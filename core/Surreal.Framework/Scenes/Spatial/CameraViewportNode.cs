@@ -1,5 +1,4 @@
 ﻿using Surreal.Collections;
-using Surreal.Colors;
 using Surreal.Graphics.Rendering;
 using Surreal.Maths;
 
@@ -19,11 +18,6 @@ public interface ICamera
   /// The projection view matrix of the camera.
   /// </summary>
   ref readonly Matrix4x4 ProjectionView { get; }
-
-  /// <summary>
-  /// The color to clear the screen to.
-  /// </summary>
-  Optional<Color> ClearColor { get; set; }
 }
 
 /// <summary>
@@ -37,20 +31,6 @@ public class CameraViewportNode : SceneNode, IRenderViewport
   /// The active camera stack.
   /// </summary>
   public LinkedList<ICamera> ActiveCameras { get; } = new();
-
-  /// <inheritdoc/>
-  public Optional<Color> ClearColor
-  {
-    get
-    {
-      if (!TryGetActiveCamera(out var camera))
-      {
-        return Optional.None<Color>();
-      }
-
-      return camera.ClearColor;
-    }
-  }
 
   /// <inheritdoc/>
   public ref readonly Matrix4x4 ProjectionView

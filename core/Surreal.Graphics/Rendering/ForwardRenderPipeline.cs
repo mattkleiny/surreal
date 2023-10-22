@@ -42,12 +42,12 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
       DepthStencilFormat = DepthStencilFormat.None
     });
 
-    public override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnBeginFrame(in RenderFrame frame)
     {
-      var clearColor = viewport.ClearColor.GetOrDefault(pipeline.ClearColor);
+      base.OnBeginFrame(in frame);
 
       _colorTarget.BindToDisplay();
-      _colorTarget.ClearColorBuffer(clearColor);
+      _colorTarget.ClearColorBuffer(pipeline.ClearColor);
     }
 
     public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
@@ -58,7 +58,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
       }
     }
 
-    public override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnEndFrame(in RenderFrame frame)
     {
       _colorTarget.UnbindFromDisplay();
       _colorTarget.BlitToBackBuffer(_blitMaterial, mask: BlitMask.Color);
