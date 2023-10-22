@@ -4,8 +4,6 @@
 
 #shader_type vertex
 
-uniform vec2 u_screenSize = vec2(0.0);
-
 layout (location = 0) in vec2 a_position;
 layout (location = 1) in vec4 a_color;
 layout (location = 2) in vec2 a_uv;
@@ -18,12 +16,7 @@ void main()
   v_color = a_color;
   v_uv = a_uv;
 
-  gl_Position = vec4(
-    2.0 * a_position.x / u_screenSize.x - 1.0,
-    1.0 - 2.0 * a_position.y / u_screenSize.y,
-    0.0,
-    1.0
-  );
+  gl_Position = vec4(a_position, 0.0, 1.0);
 }
 
 #shader_type fragment

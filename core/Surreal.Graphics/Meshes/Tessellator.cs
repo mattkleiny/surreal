@@ -14,9 +14,6 @@ public sealed class Tessellator<TVertex>
   public uint VertexCount => (uint)_vertices.Count;
   public uint IndexCount => (uint)_indices.Count;
 
-  public ReadOnlySpan<TVertex> Vertices => _vertices.AsSpan();
-  public ReadOnlySpan<uint> Indices => _indices.AsSpan();
-
   /// <summary>
   /// Adds a vertex to the tessellator.
   /// </summary>
@@ -47,8 +44,8 @@ public sealed class Tessellator<TVertex>
   /// </summary>
   public void WriteTo(Mesh<TVertex> mesh)
   {
-    mesh.Vertices.Write(Vertices);
-    mesh.Indices.Write(Indices);
+    mesh.Vertices.Write(_vertices.AsSpan());
+    mesh.Indices.Write(_indices.AsSpan());
   }
 }
 

@@ -129,7 +129,7 @@ public interface IGraphicsBackend
   void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value);
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value);
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value);
-  void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot);
+  void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, uint samplerSlot);
   void SetActiveShader(GraphicsHandle handle);
   void DeleteShader(GraphicsHandle handle);
 

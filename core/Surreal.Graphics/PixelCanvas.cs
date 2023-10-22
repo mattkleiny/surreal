@@ -11,7 +11,6 @@ namespace Surreal.Graphics;
 /// </summary>
 public sealed class PixelCanvas : IDisposable
 {
-  private static MaterialProperty<Vector2> ScreenSize { get; } = new("u_screenSize");
   private static MaterialProperty<Texture> Texture { get; } = new("u_texture");
 
   private readonly DenseGrid<Color32> _pixels;
@@ -21,18 +20,15 @@ public sealed class PixelCanvas : IDisposable
 
   public PixelCanvas(IGraphicsBackend backend, int width, int height)
   {
-    var shader = ShaderProgram.LoadDefaultCanvasShader(backend);
-
     _pixels = new DenseGrid<Color32>(width, height);
-    _material = new Material(backend, shader)
+
+    _mesh = Mesh.CreateQuad(backend);
+    _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
+    _material = new Material(backend, ShaderProgram.LoadDefaultCanvasShader(backend))
     {
       BlendState = BlendState.OneMinusSourceAlpha
     };
 
-    _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
-    _mesh = Mesh.CreateQuad(backend);
-
-    _material.Properties.SetProperty(ScreenSize, new Vector2(width, height));
     _material.Properties.SetProperty(Texture, _texture);
   }
 
@@ -64,5 +60,6 @@ public sealed class PixelCanvas : IDisposable
   {
     _material.Dispose();
     _texture.Dispose();
+    _mesh.Dispose();
   }
 }

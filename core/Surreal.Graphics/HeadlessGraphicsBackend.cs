@@ -238,7 +238,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
   }
 
-  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
+  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, uint samplerSlot)
   {
   }
 

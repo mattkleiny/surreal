@@ -348,7 +348,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     return new GraphicsHandle(array);
   }
 
-  public void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
+  public unsafe void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
   {
     gl.BindVertexArray(mesh);
 
@@ -358,7 +358,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     {
       var elementType = ConvertElementType(indexType);
 
-      gl.DrawElements(primitiveType, indexCount, elementType, 0);
+      gl.DrawElements(primitiveType, indexCount, elementType, null);
     }
     else
     {
@@ -503,9 +503,9 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     }
   }
 
-  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, int samplerSlot)
+  public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, uint samplerSlot)
   {
-    gl.ActiveTexture(TextureUnit.Texture0 + samplerSlot);
+    gl.ActiveTexture(TextureUnit.Texture0 + (int)samplerSlot);
     gl.BindTexture(TextureTarget.Texture2D, texture);
     gl.ProgramUniform1(handle, location, samplerSlot);
   }

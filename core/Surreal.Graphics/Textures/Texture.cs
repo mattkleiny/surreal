@@ -38,6 +38,11 @@ public enum TextureFilterMode
 }
 
 /// <summary>
+/// A texture sampler configuration for a shader.
+/// </summary>
+public readonly record struct TextureSampler(Texture Texture, uint SamplerSlot);
+
+/// <summary>
 /// A texture that can be uploaded to the GPU.
 /// </summary>
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]

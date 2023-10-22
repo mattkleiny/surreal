@@ -26,11 +26,11 @@ public sealed class SpriteBatch : IDisposable
 {
   private const int DefaultSpriteCount = 200;
   private const int MaximumSpriteCount = int.MaxValue / 6;
+
   private readonly Mesh<Vertex2> _mesh;
-
   private readonly IDisposableBuffer<Vertex2> _vertices;
-  private Texture? _lastTexture;
 
+  private Texture? _lastTexture;
   private Material? _material;
   private int _vertexCount;
 
@@ -85,13 +85,13 @@ public sealed class SpriteBatch : IDisposable
   /// </summary>
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
   {
-    Draw(region, position, size, Color.White);
+    Draw(region, position, size, Color32.White);
   }
 
   /// <summary>
   /// Draws a sprite at the given position.
   /// </summary>
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color32 color)
   {
     Draw(region, position, size, 0f, color);
   }
@@ -100,7 +100,7 @@ public sealed class SpriteBatch : IDisposable
   /// Draws a sprite at the given position.
   /// </summary>
   [SkipLocalsInit]
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color color)
+  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color32 color)
   {
     if (region.Texture == null)
     {
@@ -187,13 +187,13 @@ public sealed class SpriteBatch : IDisposable
   /// A common 2d vertex type for primitive shapes.
   /// </summary>
   [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex2(Vector2 Position, Color Color, Vector2 UV)
+  private record struct Vertex2(Vector2 Position, Color32 Color, Vector2 UV)
   {
-    [VertexDescriptor(4, VertexType.Float)]
-    public Color Color = Color;
-
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 Position = Position;
+
+    [VertexDescriptor(4, VertexType.UnsignedByte, ShouldNormalize = true)]
+    public Color32 Color = Color;
 
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 UV = UV;
