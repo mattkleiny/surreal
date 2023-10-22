@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Textures;
+﻿using Surreal.Colors;
+using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics.Rendering;
 
@@ -8,7 +9,8 @@ namespace Surreal.Graphics.Rendering;
 [RenderPipeline("Forward")]
 public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 {
-  public ForwardRenderPipeline(IGraphicsBackend backend) : base(backend)
+  public ForwardRenderPipeline(IGraphicsBackend backend)
+    : base(backend)
   {
     Passes.Add(new ColorBufferPass(backend));
     Passes.Add(new ShadowStencilPass(backend));
@@ -21,16 +23,20 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   {
     private readonly RenderTarget _colorTarget = new(backend, new RenderTargetDescriptor
     {
+      // TODO: make this dynamic
+      Width = 1920,
+      Height = 1080,
       Format = TextureFormat.Rgba8,
       FilterMode = TextureFilterMode.Point,
       WrapMode = TextureWrapMode.ClampToEdge,
-      DepthBits = DepthBits.None,
-      Stencil = StencilBits.None
+      DepthStencilFormat = DepthStencilFormat.None,
     });
 
-    public override void OnBeginFrame(in RenderFrame frame)
+    public override void OnBeginPass(in RenderFrame frame)
     {
-      // TODO: clear the color target
+      _colorTarget.Bind();
+
+      _colorTarget.ClearColorBuffer(Color.Black);
     }
 
     public override void OnExecutePass(in RenderFrame frame)
@@ -39,6 +45,11 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
       {
         renderObject.Render(in frame);
       }
+    }
+
+    public override void OnEndPass(in RenderFrame frame)
+    {
+      _colorTarget.Unbind();
     }
 
     public override void OnEndFrame(in RenderFrame frame)
@@ -59,23 +70,42 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// </summary>
   private sealed class ShadowStencilPass(IGraphicsBackend backend) : RenderPass
   {
-    private readonly RenderTarget _shadowStencilTarget = new(backend, new RenderTargetDescriptor
+    private readonly RenderTarget _shadowTarget = new(backend, new RenderTargetDescriptor
     {
+      // TODO: make this dynamic
+      Width = 1920,
+      Height = 1080,
       Format = TextureFormat.R8,
       FilterMode = TextureFilterMode.Point,
       WrapMode = TextureWrapMode.ClampToEdge,
-      DepthBits = DepthBits.None,
-      Stencil = StencilBits.Eight
+      DepthStencilFormat = DepthStencilFormat.Depth24Stencil8
     });
 
-    public override void OnBeginFrame(in RenderFrame frame)
+    public override void OnBeginPass(in RenderFrame frame)
     {
-      // TODO: clear the stencil target
+      _shadowTarget.Bind();
+
+      _shadowTarget.ClearColorBuffer(Color.Black);
+      _shadowTarget.ClearStencilBuffer(1);
     }
+
+    public override void OnExecutePass(in RenderFrame frame)
+    {
+      foreach (var renderObject in frame.VisibleObjects)
+      {
+        renderObject.Render(in frame);
+      }
+    }
+
+    public override void OnEndPass(in RenderFrame frame)
+    {
+      _shadowTarget.Unbind();
+    }
+
 
     public override void Dispose()
     {
-      _shadowStencilTarget.Dispose();
+      _shadowTarget.Dispose();
 
       base.Dispose();
     }

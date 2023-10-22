@@ -1,6 +1,7 @@
 ﻿using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 
@@ -35,6 +36,18 @@ public readonly record struct GraphicsHandle(nint Id)
 }
 
 /// <summary>
+/// An opaque handle to a render target in the underling <see cref="IGraphicsBackend" /> implementation.
+/// </summary>
+public readonly record struct FrameBufferHandle
+{
+  public static FrameBufferHandle None => default;
+
+  public required GraphicsHandle FrameBuffer { get; init; }
+  public readonly GraphicsHandle ColorAttachment { get; init; }
+  public readonly GraphicsHandle DepthStencilAttachment { get; init; }
+}
+
+/// <summary>
 /// An abstraction over the different types of graphics backends available.
 /// </summary>
 public interface IGraphicsBackend
@@ -48,7 +61,8 @@ public interface IGraphicsBackend
   void SetViewportSize(Viewport viewport);
   void SetBlendState(BlendState? state);
   void ClearColorBuffer(Color color);
-  void ClearDepthBuffer();
+  void ClearDepthBuffer(float depth);
+  void ClearStencilBuffer(int amount);
   void FlushToDevice();
 
   // buffers
@@ -117,4 +131,8 @@ public interface IGraphicsBackend
   void DeleteShader(GraphicsHandle handle);
 
   // frame buffers
+  FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor);
+  bool IsActiveFrameBuffer(FrameBufferHandle handle);
+  void BindFrameBuffer(FrameBufferHandle handle);
+  void DeleteFrameBuffer(FrameBufferHandle handle);
 }

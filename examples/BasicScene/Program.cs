@@ -15,8 +15,7 @@ Game.Start(new GameConfiguration
   },
   Host = GameHost.Create(() =>
   {
-    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
-    var pipeline = new ForwardRenderPipeline(graphics);
+    var pipeline = new ForwardRenderPipeline(Game.Services.GetServiceOrThrow<IGraphicsBackend>());
     var scene = new SceneGraph();
 
     scene.Root.Add(new CameraNode2D());

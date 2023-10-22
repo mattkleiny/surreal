@@ -1,6 +1,7 @@
 ﻿using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 
@@ -15,6 +16,8 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   private int _nextMeshId;
   private int _nextShaderId;
   private int _nextTextureId;
+  private int _nextFrameBufferId;
+  private FrameBufferHandle _activeFrameBuffer;
 
   public void SetViewportSize(Viewport viewport)
   {
@@ -28,7 +31,11 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
   }
 
-  public void ClearDepthBuffer()
+  public void ClearDepthBuffer(float depth)
+  {
+  }
+
+  public void ClearStencilBuffer(int amount)
   {
   }
 
@@ -138,6 +145,28 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   }
 
   public void DeleteShader(GraphicsHandle handle)
+  {
+  }
+
+  public FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor)
+  {
+    return new FrameBufferHandle
+    {
+      FrameBuffer = new GraphicsHandle(Interlocked.Increment(ref _nextFrameBufferId))
+    };
+  }
+
+  public bool IsActiveFrameBuffer(FrameBufferHandle handle)
+  {
+    return handle == _activeFrameBuffer;
+  }
+
+  public void BindFrameBuffer(FrameBufferHandle handle)
+  {
+    _activeFrameBuffer = handle;
+  }
+
+  public void DeleteFrameBuffer(FrameBufferHandle handle)
   {
   }
 

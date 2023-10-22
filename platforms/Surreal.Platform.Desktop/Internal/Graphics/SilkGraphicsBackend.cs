@@ -2,6 +2,7 @@
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
@@ -10,6 +11,8 @@ namespace Surreal.Graphics;
 
 internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 {
+  private FrameBufferHandle _activeFrameBuffer;
+
   public void SetViewportSize(Viewport viewport)
   {
     gl.Viewport(viewport.X, viewport.Y, viewport.Width, viewport.Height);
@@ -37,10 +40,16 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.Clear(ClearBufferMask.ColorBufferBit);
   }
 
-  public void ClearDepthBuffer()
+  public void ClearDepthBuffer(float depth)
   {
-    gl.ClearDepth(1.0f);
+    gl.ClearDepth(depth);
     gl.Clear(ClearBufferMask.DepthBufferBit);
+  }
+
+  public void ClearStencilBuffer(int amount)
+  {
+    gl.ClearStencil(amount);
+    gl.Clear(ClearBufferMask.StencilBufferBit);
   }
 
   public void FlushToDevice()
@@ -465,6 +474,95 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.DeleteProgram(handle);
   }
 
+  public unsafe FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor)
+  {
+    var framebuffer = gl.GenFramebuffer();
+
+    gl.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
+
+    // build the color attachment
+    var colorAttachment = gl.GenTexture();
+    var depthStencilAttachment = 0u;
+
+    gl.BindTexture(TextureTarget.Texture2D, colorAttachment);
+    gl.TexImage2D(
+      target: TextureTarget.Texture2D,
+      level: 0,
+      internalformat: GetInternalFormat(descriptor.Format),
+      width: descriptor.Width,
+      height: descriptor.Height,
+      border: 0,
+      format: PixelFormat.Rgb,
+      type: PixelType.UnsignedByte,
+      pixels: null
+    );
+
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ConvertTextureFilterMode(descriptor.FilterMode));
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ConvertTextureFilterMode(descriptor.FilterMode));
+    gl.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, colorAttachment, level: 0);
+
+    // build the depth attachment
+    if (descriptor.DepthStencilFormat != DepthStencilFormat.None)
+    {
+      depthStencilAttachment = gl.GenFramebuffer();
+
+      gl.BindRenderbuffer(GLEnum.Renderbuffer, depthStencilAttachment);
+
+      gl.RenderbufferStorage(
+        target: RenderbufferTarget.Renderbuffer,
+        internalformat: ConvertDepthStencilFormat(descriptor.DepthStencilFormat),
+        width: descriptor.Width,
+        height: descriptor.Height
+      );
+
+      gl.FramebufferRenderbuffer(
+        target: FramebufferTarget.Framebuffer,
+        attachment: FramebufferAttachment.DepthStencilAttachment,
+        renderbuffertarget: RenderbufferTarget.Renderbuffer,
+        renderbuffer: depthStencilAttachment
+      );
+    }
+
+    gl.DrawBuffers(stackalloc GLEnum[] { GLEnum.ColorAttachment0 });
+
+    if (gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != GLEnum.FramebufferComplete)
+    {
+      throw new InvalidOperationException("Failed to create framebuffer");
+    }
+
+    gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+    return new FrameBufferHandle
+    {
+      FrameBuffer = new GraphicsHandle(framebuffer),
+      ColorAttachment = new GraphicsHandle(colorAttachment),
+      DepthStencilAttachment = new GraphicsHandle(depthStencilAttachment)
+    };
+  }
+
+  public bool IsActiveFrameBuffer(FrameBufferHandle handle)
+  {
+    return _activeFrameBuffer == handle;
+  }
+
+  public void BindFrameBuffer(FrameBufferHandle handle)
+  {
+    gl.BindFramebuffer(FramebufferTarget.Framebuffer, handle.FrameBuffer);
+
+    _activeFrameBuffer = handle; // remember the active framebuffer
+  }
+
+  public void DeleteFrameBuffer(FrameBufferHandle handle)
+  {
+    gl.DeleteFramebuffer(handle.FrameBuffer);
+    gl.DeleteTexture(handle.ColorAttachment);
+
+    if (handle.DepthStencilAttachment != GraphicsHandle.None)
+    {
+      gl.DeleteRenderbuffer(handle.DepthStencilAttachment);
+    }
+  }
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static BlendingFactor ConvertBlendFactor(BlendMode mode)
   {
@@ -593,5 +691,19 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     if (type == typeof(ushort)) return DrawElementsType.UnsignedShort;
 
     throw new InvalidOperationException($"An unrecognized index type was provided: {type}");
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static GLEnum ConvertDepthStencilFormat(DepthStencilFormat format)
+  {
+    return format switch
+    {
+      DepthStencilFormat.None => GLEnum.None,
+      DepthStencilFormat.Depth24 => GLEnum.DepthComponent24,
+      DepthStencilFormat.Depth24Stencil8 => GLEnum.Depth24Stencil8,
+      DepthStencilFormat.Depth32Stencil8 => GLEnum.Depth32fStencil8,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+    };
   }
 }
