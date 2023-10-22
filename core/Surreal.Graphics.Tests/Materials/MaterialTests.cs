@@ -93,10 +93,9 @@ public class MaterialTests
     var backend = Substitute.For<IGraphicsBackend>();
 
     using var shader = new ShaderProgram(backend);
-    using var material = new Material(backend, shader)
-    {
-      BlendState = BlendState.OneMinusSourceAlpha
-    };
+    using var material = new Material(backend, shader);
+
+    material.BlendState = BlendState.OneMinusSourceAlpha;
 
     material.ApplyMaterial();
 

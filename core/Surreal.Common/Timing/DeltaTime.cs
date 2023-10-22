@@ -18,6 +18,10 @@ public readonly record struct DeltaTime(float Seconds)
 
   public override string ToString()
   {
+    if (TimeSpan.TotalDays >= 1) return $"{TimeSpan.TotalDays:F}d";
+    if (TimeSpan.TotalMinutes >= 1) return $"{TimeSpan.TotalMinutes:F}m";
+    if (TimeSpan.TotalSeconds >= 1) return $"{TimeSpan.TotalSeconds:F}s";
+
     return $"{TimeSpan.TotalMilliseconds:F}ms";
   }
 

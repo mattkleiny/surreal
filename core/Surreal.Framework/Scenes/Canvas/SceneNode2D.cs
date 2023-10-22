@@ -109,6 +109,13 @@ public class SceneNode2D : SceneNode
     }
   }
 
+  /// <summary>
+  /// Notifies of a change in the node's transform.
+  /// </summary>
+  protected virtual void OnTransformUpdated()
+  {
+  }
+
   protected override void OnUpdate(DeltaTime deltaTime)
   {
     base.OnUpdate(deltaTime);
@@ -118,6 +125,7 @@ public class SceneNode2D : SceneNode
       // notify children of transform changes
       Inbox.Enqueue(new Notification(NotificationType.TransformChanged, this));
 
+      OnTransformUpdated();
       _isGlobalDirty = false;
     }
 
@@ -130,6 +138,7 @@ public class SceneNode2D : SceneNode
         GlobalRotation = parent.GlobalRotation + LocalRotation;
       }
 
+      OnTransformUpdated();
       _isLocalDirty = false;
     }
   }

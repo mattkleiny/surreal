@@ -1,5 +1,4 @@
-﻿using Surreal.Collections;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
 namespace Surreal.Graphics.Rendering;
 
@@ -19,14 +18,9 @@ public sealed class RenderPipelineAttribute(string name) : Attribute
 public interface IRenderPipeline : IDisposable
 {
   /// <summary>
-  /// Initializes the pipeline.
+  /// Renders all the given cameras in the given scene.
   /// </summary>
-  void Initialize();
-
-  /// <summary>
-  /// Renders all the given cameras in the given frame.
-  /// </summary>
-  void Render(ReadOnlySlice<IRenderCamera> cameras);
+  void Render(IRenderScene scene);
 }
 
 /// <summary>
@@ -37,37 +31,40 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
   private readonly RenderContextManager _manager = new(backend);
   private readonly DeltaTimeClock _clock = new();
 
-  public void Render(ReadOnlySlice<IRenderCamera> cameras)
+  /// <inheritdoc/>
+  public void Render(IRenderScene scene)
   {
     var frame = new RenderFrame
     {
       DeltaTime = _clock.Tick(),
-      Manager = _manager
+      Backend = backend,
+      Manager = _manager,
+      Scene = scene
     };
 
     OnBeginFrame(in frame);
 
-    foreach (var camera in cameras)
+    foreach (var camera in scene.CullVisibleCameras())
     {
-      OnRenderCamera(in frame, camera);
+      OnExecuteFrame(frame with
+      {
+        Camera = camera,
+        VisibleObjects = camera.CullVisibleObjects()
+      });
     }
 
     OnEndFrame(in frame);
-  }
-
-  public virtual void Initialize()
-  {
   }
 
   protected virtual void OnBeginFrame(in RenderFrame frame)
   {
   }
 
-  protected virtual void OnEndFrame(in RenderFrame frame)
+  protected virtual void OnExecuteFrame(in RenderFrame frame)
   {
   }
 
-  protected virtual void OnRenderCamera(in RenderFrame frame, IRenderCamera camera)
+  protected virtual void OnEndFrame(in RenderFrame frame)
   {
   }
 
@@ -97,6 +94,18 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     }
   }
 
+  protected override void OnExecuteFrame(in RenderFrame frame)
+  {
+    base.OnExecuteFrame(in frame);
+
+    foreach (var pass in Passes)
+    {
+      pass.OnBeginPass(in frame);
+      pass.OnExecutePass(in frame);
+      pass.OnEndPass(in frame);
+    }
+  }
+
   protected override void OnEndFrame(in RenderFrame frame)
   {
     base.OnEndFrame(in frame);
@@ -104,18 +113,6 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     foreach (var pass in Passes)
     {
       pass.OnEndFrame(in frame);
-    }
-  }
-
-  protected override void OnRenderCamera(in RenderFrame frame, IRenderCamera camera)
-  {
-    base.OnRenderCamera(in frame, camera);
-
-    foreach (var pass in Passes)
-    {
-      pass.OnBeginPass(in frame, camera);
-      pass.OnRenderCamera(in frame, camera);
-      pass.OnEndPass(in frame, camera);
     }
   }
 

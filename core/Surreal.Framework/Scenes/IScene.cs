@@ -13,15 +13,10 @@ namespace Surreal.Scenes;
 /// so a scene could be a Scene Graph or an Actor Model or an Entity Component System,
 /// etc.
 /// </summary>
-public interface IScene : IDisposable
+public interface IScene : IRenderScene
 {
   /// <summary>
   /// Updates the entire scene.
   /// </summary>
   void Update(DeltaTime deltaTime);
-
-  /// <summary>
-  /// Renders the entire scene.
-  /// </summary>
-  void Render(in RenderFrame frame);
 }

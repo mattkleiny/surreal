@@ -8,7 +8,7 @@ namespace Surreal.Scenes.Canvas;
 /// <summary>
 /// A node that renders a sprite.
 /// </summary>
-public class SpriteNode : SceneNode2D
+public class SpriteNode : SceneNode2D, IRenderObject
 {
   /// <summary>
   /// The sprite texture to render.
@@ -20,11 +20,9 @@ public class SpriteNode : SceneNode2D
   /// </summary>
   public Color Tint { get; set; } = Color.White;
 
-  protected override void OnRender(in RenderFrame frame)
+  void IRenderObject.Render(in RenderFrame frame)
   {
-    base.OnRender(in frame);
-
-    if (frame.Manager.TryAcquireContext(in frame, out SpriteBatchContext context))
+    if (frame.Manager.TryGetContext(in frame, out SpriteBatchContext context))
     {
       context.Batch.Draw(
         region: Sprite,

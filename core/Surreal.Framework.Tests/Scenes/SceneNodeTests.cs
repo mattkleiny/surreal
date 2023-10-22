@@ -1,5 +1,4 @@
-﻿using Surreal.Graphics.Rendering;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 using static Surreal.Scenes.SceneNode;
 
 namespace Surreal.Scenes;
@@ -62,27 +61,6 @@ public class SceneNodeTests
     node.IsReady.Should().BeFalse();
 
     scene.Update(DeltaTime.OneOver60);
-
-    node.IsReady.Should().BeTrue();
-  }
-
-  [Test]
-  public void it_should_notify_ready_on_first_render()
-  {
-    var scene = new SceneGraph();
-    var node = new SceneNode();
-
-    scene.Root.Children.Add(node);
-
-    node.IsReady.Should().BeFalse();
-
-    var frame = new RenderFrame
-    {
-      DeltaTime = DeltaTime.OneOver60,
-      Manager = Substitute.For<IRenderContextManager>()
-    };
-
-    scene.Render(in frame);
 
     node.IsReady.Should().BeTrue();
   }

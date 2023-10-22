@@ -27,7 +27,7 @@ public class PixelCanvas : IDisposable
       BlendState = BlendState.OneMinusSourceAlpha
     };
 
-    _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.Clamp);
+    _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
 
     _material.Properties.SetProperty(ProjectionView, Matrix4x4.Identity);
     _material.Properties.SetProperty(Texture, _texture);

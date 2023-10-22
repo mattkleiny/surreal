@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Rendering;
+﻿using Surreal.Collections;
+using Surreal.Graphics.Rendering;
 using Surreal.Timing;
 using static Surreal.Scenes.SceneNode;
 
@@ -7,12 +8,20 @@ namespace Surreal.Scenes;
 /// <summary>
 /// A scene that uses <see cref="SceneNode"/>s as it's core building block.
 /// </summary>
-public sealed class SceneGraph : IScene
+public sealed class SceneGraph : IScene, IDisposable
 {
   /// <summary>
   /// The root <see cref="SceneNode"/> used by this scene.
   /// </summary>
   public SceneNode Root { get; } = new();
+
+  /// <inheritdoc/>
+  public ReadOnlySlice<IRenderCamera> CullVisibleCameras()
+  {
+    // TODO: find visible cameras
+
+    return Root.ResolveChildren<IRenderCamera>();
+  }
 
   /// <inheritdoc/>
   public void Update(DeltaTime deltaTime)
@@ -33,12 +42,6 @@ public sealed class SceneGraph : IScene
         }
       }
     }
-  }
-
-  /// <inheritdoc/>
-  public void Render(in RenderFrame frame)
-  {
-    Root.Render(in frame);
   }
 
   public void Dispose()

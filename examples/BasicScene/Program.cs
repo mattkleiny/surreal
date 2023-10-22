@@ -13,11 +13,13 @@ Game.Start(new GameConfiguration
       Height = 1080
     }
   },
-  Host = GameHost.Create(async () =>
+  Host = GameHost.Create(() =>
   {
     var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
-    var manager = new RenderContextManager(graphics);
+    var pipeline = new ForwardRenderPipeline(graphics);
     var scene = new SceneGraph();
+
+    scene.Root.Add(new CameraNode2D());
 
     for (int i = 0; i < 100; i++)
     {
@@ -26,14 +28,8 @@ Game.Start(new GameConfiguration
 
     return time =>
     {
-      var frame = new RenderFrame
-      {
-        DeltaTime = time.DeltaTime,
-        Manager = manager
-      };
-
       scene.Update(time.DeltaTime);
-      scene.Render(in frame);
+      pipeline.Render(scene);
     };
   })
 });

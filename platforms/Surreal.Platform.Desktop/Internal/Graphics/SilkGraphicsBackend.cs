@@ -512,7 +512,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
   {
     return wrapMode switch
     {
-      TextureWrapMode.Clamp => (int)GLEnum.ClampToEdge,
+      TextureWrapMode.ClampToEdge => (int)GLEnum.ClampToEdge,
       TextureWrapMode.Repeat => (int)GLEnum.MirroredRepeat,
 
       _ => throw new ArgumentOutOfRangeException(nameof(wrapMode), wrapMode, null)

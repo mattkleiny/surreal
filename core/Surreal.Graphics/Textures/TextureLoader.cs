@@ -10,7 +10,7 @@ public sealed record TextureLoaderSettings
 {
   public TextureFormat Format { get; init; } = TextureFormat.Rgba8;
   public TextureFilterMode FilterMode { get; init; } = TextureFilterMode.Point;
-  public TextureWrapMode WrapMode { get; init; } = TextureWrapMode.Clamp;
+  public TextureWrapMode WrapMode { get; init; } = TextureWrapMode.ClampToEdge;
 }
 
 /// <summary>

@@ -8,14 +8,18 @@ public class RenderContextManagerTests
   [Test]
   public void it_should_notify_on_frame_before_acquiring_context()
   {
+    var backend = IGraphicsBackend.Headless;
+
     using var resources = new AssetManager();
-    using var manager = new RenderContextManager(IGraphicsBackend.Headless);
+    using var manager = new RenderContextManager(backend);
 
     var context = Substitute.For<IRenderContext>();
     var frame = new RenderFrame
     {
       DeltaTime = DeltaTime.OneOver60,
-      Manager = manager
+      Backend = backend,
+      Manager = manager,
+      Scene = Substitute.For<IRenderScene>()
     };
 
     manager.AddContext(context);

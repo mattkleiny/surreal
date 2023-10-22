@@ -24,7 +24,7 @@ public enum TextureFormat
 /// </summary>
 public enum TextureWrapMode
 {
-  Clamp,
+  ClampToEdge,
   Repeat
 }
 
@@ -97,7 +97,7 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
   /// </summary>
   public static Texture CreateColored(IGraphicsBackend backend, Color color, TextureFormat format = TextureFormat.Rgba8)
   {
-    var texture = new Texture(backend, format, TextureFilterMode.Point, TextureWrapMode.Clamp);
+    var texture = new Texture(backend, format, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
 
     texture.WritePixels<Color>(1, 1, stackalloc Color[] { color });
 
@@ -109,7 +109,7 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
   /// </summary>
   public static Texture CreateNoise(IGraphicsBackend backend, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8)
   {
-    var texture = new Texture(backend, format, TextureFilterMode.Point, TextureWrapMode.Clamp);
+    var texture = new Texture(backend, format, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
     var random = seed.ToRandom();
 
     var pixels = new SpanGrid<Color>(new Color[width * height], width);

@@ -1,5 +1,4 @@
 ﻿using Surreal.Collections;
-using Surreal.Graphics.Rendering;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -91,6 +90,34 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   public void Remove(SceneNode node) => Children.Remove(node);
 
   /// <summary>
+  /// Attempts to find the parent node of the hierarchy.
+  /// </summary>
+  public bool TryResolveRoot<T>(out T result)
+    where T : SceneNode
+  {
+    var current = _parent;
+
+    while (current != null)
+    {
+      if (current.Parent == null)
+      {
+        break;
+      }
+
+      current = current.Parent;
+    }
+
+    if (current is T instance)
+    {
+      result = instance;
+      return true;
+    }
+
+    result = default!;
+    return false;
+  }
+
+  /// <summary>
   /// Attempts to find the first parent in the hierarchy of the given type, returning true if found.
   /// </summary>
   public bool TryResolveParent<T>(out T result)
@@ -111,6 +138,34 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
 
     result = default!;
     return false;
+  }
+
+  /// <summary>
+  /// Resolves all children of the given type recursively.
+  /// </summary>
+  public ReadOnlySlice<T> ResolveChildren<T>()
+    where T : class
+  {
+    static void ResolveChildrenRecursive(SceneNode node, List<T> results, int depth = 0, int maxDepth = 100)
+    {
+      Debug.Assert(depth < maxDepth);
+
+      foreach (var child in node.Children)
+      {
+        if (child is T instance)
+        {
+          results.Add(instance);
+        }
+
+        ResolveChildrenRecursive(child, results);
+      }
+    }
+
+    var results = new List<T>();
+
+    ResolveChildrenRecursive(this, results);
+
+    return results;
   }
 
   /// <summary>
@@ -154,26 +209,6 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   }
 
   /// <summary>
-  /// Renders this node and its children.
-  /// </summary>
-  public void Render(in RenderFrame frame)
-  {
-    if (!_states.HasFlagFast(SceneGraphStates.Ready))
-    {
-      OnReady();
-
-      _states |= SceneGraphStates.Ready;
-    }
-
-    OnRender(in frame);
-
-    foreach (var child in Children)
-    {
-      child.Render(in frame);
-    }
-  }
-
-  /// <summary>
   /// Destroys this node and its children.
   /// </summary>
   public void Destroy()
@@ -202,10 +237,6 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   }
 
   protected virtual void OnUpdate(DeltaTime deltaTime)
-  {
-  }
-
-  protected virtual void OnRender(in RenderFrame frame)
   {
   }
 

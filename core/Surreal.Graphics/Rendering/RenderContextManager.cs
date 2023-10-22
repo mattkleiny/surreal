@@ -26,17 +26,8 @@ public interface IRenderContextManager
   /// <summary>
   /// Attempts to acquire a context of the given type from the manager;
   /// if successful, returns a scoped reference to the context.
-  /// <para/>
-  /// The scoped reference will call <see cref="IRenderContext.OnBeginScope"/>
-  /// and <see cref="IRenderContext.OnEndScope"/> when it is created and disposed.
   /// </summary>
-  bool TryAcquireContext<TContext>(in RenderFrame frame, out TContext result)
-    where TContext : IRenderContext;
-
-  /// <summary>
-  /// Attempts to acquire a context of the given type from the manager. If unsuccessful, throws an exception.
-  /// </summary>
-  TContext AcquireContext<TContext>(in RenderFrame frame)
+  bool TryGetContext<TContext>(in RenderFrame frame, out TContext result)
     where TContext : IRenderContext;
 }
 
@@ -79,11 +70,8 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
   /// <summary>
   /// Attempts to acquire a context of the given type from the manager;
   /// if successful, returns a scoped reference to the context.
-  /// <para/>
-  /// The scoped reference will call <see cref="IRenderContext.OnBeginScope"/>
-  /// and <see cref="IRenderContext.OnEndScope"/> when it is created and disposed.
   /// </summary>
-  public bool TryAcquireContext<TContext>(in RenderFrame frame, out TContext result)
+  public bool TryGetContext<TContext>(in RenderFrame frame, out TContext result)
     where TContext : IRenderContext
   {
     if (_contexts.TryGetValue(typeof(TContext), out var context))
@@ -92,22 +80,8 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
       return true;
     }
 
-    result = default;
+    result = default!;
     return false;
-  }
-
-  /// <summary>
-  /// Attempts to acquire a context of the given type from the manager. If unsuccessful, throws an exception.
-  /// </summary>
-  public TContext AcquireContext<TContext>(in RenderFrame frame)
-    where TContext : IRenderContext
-  {
-    if (!TryAcquireContext<TContext>(in frame, out var result))
-    {
-      throw new InvalidOperationException($"No context of type {typeof(TContext)} is available.");
-    }
-
-    return result;
   }
 
   public void Dispose()
