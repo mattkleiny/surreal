@@ -10,8 +10,15 @@ namespace Surreal;
 /// </summary>
 public readonly record struct GameTime
 {
-  public required float DeltaTime { get; init; }
-  public required float TotalTime { get; init; }
+  /// <summary>
+  /// The time since the last frame.
+  /// </summary>
+  public required DeltaTime DeltaTime { get; init; }
+
+  /// <summary>
+  /// The total time elapsed since the game started.
+  /// </summary>
+  public required DeltaTime TotalTime { get; init; }
 }
 
 /// <summary>
@@ -84,20 +91,17 @@ public static class Game
 
       while (!platform.IsClosing && !host.IsClosing)
       {
-        var deltaTime = clock.Tick();
-        var totalTime = TimeStamp.Now - startTime;
-
-        var gameTime = new GameTime
+        var time = new GameTime
         {
-          DeltaTime = deltaTime,
-          TotalTime = (float)totalTime.TotalSeconds
+          DeltaTime = clock.Tick(),
+          TotalTime = TimeStamp.Now - startTime
         };
 
-        platform.BeginFrame(deltaTime);
+        platform.BeginFrame(time.DeltaTime);
 
-        host.Tick(gameTime);
+        host.Tick(time);
 
-        platform.EndFrame(deltaTime);
+        platform.EndFrame(time.DeltaTime);
       }
     }
     finally

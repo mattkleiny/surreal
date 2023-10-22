@@ -31,7 +31,7 @@ public sealed class SceneNodeList(SceneNode? parent = null) : Collection<SceneNo
 /// <summary>
 /// A single node in a scene graph.
 /// </summary>
-public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedEvents
+public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedEvents, IEnumerable<SceneNode>
 {
   private SceneGraphStates _states = SceneGraphStates.Dormant;
   private SceneNode? _parent;
@@ -79,6 +79,16 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
 
   internal Queue<Notification> Inbox { get; } = new();
   internal Queue<Notification> Outbox { get; } = new();
+
+  /// <summary>
+  /// Convenience method for adding a child to this node.
+  /// </summary>
+  public void Add(SceneNode node) => Children.Add(node);
+
+  /// <summary>
+  /// Convenience method for removing a child from this node.
+  /// </summary>
+  public void Remove(SceneNode node) => Children.Remove(node);
 
   /// <summary>
   /// Attempts to find the first parent in the hierarchy of the given type, returning true if found.
@@ -203,6 +213,11 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   {
   }
 
+  public override string ToString()
+  {
+    return $"{GetType().Name} {{ Id = {Id} }}";
+  }
+
   public void Dispose()
   {
     if (!_states.HasFlagFast(SceneGraphStates.Disposed))
@@ -218,9 +233,19 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
     }
   }
 
-  public override string ToString()
+  public List<SceneNode>.Enumerator GetEnumerator()
   {
-    return $"{GetType().Name} {{ Id = {Id} }}";
+    return Children.GetEnumerator();
+  }
+
+  IEnumerator<SceneNode> IEnumerable<SceneNode>.GetEnumerator()
+  {
+    throw new NotImplementedException();
+  }
+
+  IEnumerator IEnumerable.GetEnumerator()
+  {
+    return GetEnumerator();
   }
 
   /// <summary>

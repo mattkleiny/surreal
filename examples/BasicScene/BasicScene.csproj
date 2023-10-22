@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A basic scene graph example</Description>
+  </PropertyGroup>
+</Project>
