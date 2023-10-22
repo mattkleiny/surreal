@@ -2,6 +2,7 @@
 using Surreal.Graphics;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
+using Surreal.Maths;
 
 namespace Surreal.Scenes.Canvas;
 
@@ -19,6 +20,11 @@ public class SpriteNode : SceneNode2D, IRenderObject
   /// The tint to apply to the sprite.
   /// </summary>
   public Color Tint { get; set; } = Color.White;
+
+  bool IRenderObject.IsVisibleToFrustum(in Frustum frustum)
+  {
+    return frustum.ContainsPoint(new Vector3(GlobalPosition.X, GlobalPosition.Y, 0f));
+  }
 
   void IRenderObject.Render(in RenderFrame frame)
   {

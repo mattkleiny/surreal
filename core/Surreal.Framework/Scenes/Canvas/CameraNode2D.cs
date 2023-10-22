@@ -10,6 +10,7 @@ namespace Surreal.Scenes.Canvas;
 public class CameraNode2D : SceneNode2D, IRenderCamera
 {
   private Matrix4x4 _projectionView = Matrix4x4.Identity;
+  private Frustum _frustum = Frustum.FromProjectionMatrix(Matrix4x4.Identity);
   private float _zoom = 1;
   private float _aspectRatio = 1;
   private float _nearPlane;
@@ -51,6 +52,11 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
     set => SetField(ref _farPlane, value.Clamp(0f, float.MaxValue));
   }
 
+  /// <summary>
+  /// The frustum of the camera.
+  /// </summary>
+  public ref readonly Frustum Frustum => ref _frustum;
+
   /// <inheritdoc/>
   public ref readonly Matrix4x4 ProjectionView => ref _projectionView;
 
@@ -59,8 +65,7 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   {
     if (TryResolveRoot(out SceneNode node))
     {
-      // TODO: test if this object is visible
-      return node.ResolveChildren<IRenderObject>();
+      return node.ResolveChildren<IRenderObject>(_ => _.IsVisibleToFrustum(_frustum));
     }
 
     return ReadOnlySlice<IRenderObject>.Empty;
@@ -79,5 +84,8 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
       zNearPlane: _nearPlane,
       zFarPlane: _farPlane
     );
+
+    // create frustum from projection matrix
+    _frustum = Frustum.FromProjectionMatrix(_projectionView);
   }
 }

@@ -149,17 +149,16 @@ public class SceneNode2D : SceneNode
 
     switch (notification)
     {
-      case { Type: NotificationType.TransformChanged, Sender: SceneNode2D sender }:
+      case { Type: NotificationType.TransformChanged, Sender: SceneNode2D sender } when sender != this:
       {
-        if (sender != this)
-        {
-          // propagate transform changes to children
-          GlobalPosition = sender.GlobalPosition + LocalPosition;
-          GlobalScale = sender.GlobalScale * LocalScale;
-          GlobalRotation = sender.GlobalRotation + LocalRotation;
+        // propagate transform changes to children
+        GlobalPosition = sender.GlobalPosition + LocalPosition;
+        GlobalScale = sender.GlobalScale * LocalScale;
+        GlobalRotation = sender.GlobalRotation + LocalRotation;
 
-          _isGlobalDirty = false; // we're already going to notify children
-        }
+        OnTransformUpdated();
+
+        _isGlobalDirty = false; // we're already going to notify children
 
         break;
       }

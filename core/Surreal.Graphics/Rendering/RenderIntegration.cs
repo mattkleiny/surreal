@@ -1,4 +1,5 @@
 ﻿using Surreal.Collections;
+using Surreal.Maths;
 
 namespace Surreal.Graphics.Rendering;
 
@@ -34,6 +35,11 @@ public interface IRenderCamera
 /// </summary>
 public interface IRenderObject
 {
+  /// <summary>
+  /// Determines if the object is visible to the given frustum.
+  /// </summary>
+  bool IsVisibleToFrustum(in Frustum frustum);
+
   /// <summary>
   /// Renders the object.
   /// </summary>
