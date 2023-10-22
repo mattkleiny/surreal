@@ -22,7 +22,7 @@ public sealed class WidgetViewportNode : SceneNode, IRenderViewport, IRenderObje
   /// <inheritdoc/>
   ReadOnlySlice<IRenderObject> IRenderViewport.CullVisibleObjects()
   {
-    return ResolveChildren<IRenderObject>();
+    return new[] { this };
   }
 
   bool IRenderObject.IsVisibleToFrustum(in Frustum frustum)

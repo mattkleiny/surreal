@@ -19,17 +19,17 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
   public SpriteBatch SpriteBatch { get; } = new(backend);
 
   /// <summary>
+  /// The property to use for the projection view matrix.
+  /// </summary>
+  public MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
+
+  /// <summary>
   /// The material used by this context.
   /// </summary>
   public Material Material { get; init; } = new(backend, ShaderProgram.LoadDefaultSpriteShader(backend))
   {
     BlendState = BlendState.OneMinusSourceAlpha
   };
-
-  /// <summary>
-  /// The property to use for the projection view matrix.
-  /// </summary>
-  public MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
 
   protected internal override void OnBeginFrame(in RenderFrame frame)
   {

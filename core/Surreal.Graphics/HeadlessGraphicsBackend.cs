@@ -144,11 +144,6 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
     return new GraphicsHandle(Interlocked.Increment(ref _nextShaderId));
   }
 
-  public bool IsActiveShaderProgram(GraphicsHandle handle)
-  {
-    return _activeShader == handle;
-  }
-
   public void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels)
   {
   }

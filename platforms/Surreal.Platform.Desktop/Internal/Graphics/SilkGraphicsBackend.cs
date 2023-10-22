@@ -388,11 +388,6 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     return new GraphicsHandle(gl.CreateProgram());
   }
 
-  public bool IsActiveShaderProgram(GraphicsHandle handle)
-  {
-    return gl.GetInteger(GetPName.CurrentProgram) == handle;
-  }
-
   public void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels)
   {
     var shaderIds = new List<uint>();

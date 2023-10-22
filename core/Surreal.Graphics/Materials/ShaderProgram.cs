@@ -10,6 +10,30 @@ namespace Surreal.Graphics.Materials;
 public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
 {
   /// <summary>
+  /// Loads the built-in default canvas shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultCanvasShader(IGraphicsBackend backend)
+    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/canvas.glsl");
+
+  /// <summary>
+  /// Loads the built-in default sprite shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultSpriteShader(IGraphicsBackend backend)
+    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/sprite.glsl");
+
+  /// <summary>
+  /// Loads the built-in default wire shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultWireShader(IGraphicsBackend backend)
+    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/wire.glsl");
+
+  /// <summary>
+  /// Loads the built-in default blit shader.
+  /// </summary>
+  public static ShaderProgram LoadDefaultBlitShader(IGraphicsBackend backend)
+    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/blit.glsl");
+
+  /// <summary>
   /// Loads a <see cref="ShaderProgram"/> from the given <see cref="VirtualPath"/>.
   /// </summary>
   public static ShaderProgram Load(IGraphicsBackend backend, VirtualPath path)
@@ -42,60 +66,16 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
   }
 
   /// <summary>
-  /// Loads the built-in default canvas shader.
-  /// </summary>
-  public static ShaderProgram LoadDefaultCanvasShader(IGraphicsBackend backend)
-  {
-    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/canvas.glsl");
-  }
-
-  /// <summary>
-  /// Loads the built-in default sprite shader.
-  /// </summary>
-  public static ShaderProgram LoadDefaultSpriteShader(IGraphicsBackend backend)
-  {
-    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/sprite.glsl");
-  }
-
-  /// <summary>
-  /// Loads the built-in default wire shader.
-  /// </summary>
-  public static ShaderProgram LoadDefaultWireShader(IGraphicsBackend backend)
-  {
-    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/wire.glsl");
-  }
-
-  /// <summary>
-  /// Loads the built-in default blit shader.
-  /// </summary>
-  public static ShaderProgram LoadDefaultBlitShader(IGraphicsBackend backend)
-  {
-    return Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/blit.glsl");
-  }
-
-  /// <summary>
   /// The <see cref="GraphicsHandle"/> for the shader itself.
   /// </summary>
-  public GraphicsHandle Handle { get; private set; } = backend.CreateShader();
-
-  /// <summary>
-  /// Determines if the shader is currently active.
-  /// </summary>
-  public bool IsActive => backend.IsActiveShaderProgram(Handle);
-
-  /// <summary>
-  /// The <see cref="ShaderKernel"/>s that make up the program.
-  /// </summary>
-  public ReadOnlySlice<ShaderKernel> Kernels { get; private set; } = ReadOnlySlice<ShaderKernel>.Empty;
+  public GraphicsHandle Handle { get; } = backend.CreateShader();
 
   /// <summary>
   /// Links the given <see cref="ShaderKernel"/>s to the program.
   /// </summary>
-  internal void LinkKernels(ReadOnlySlice<ShaderKernel> kernels)
+  private void LinkKernels(ReadOnlySlice<ShaderKernel> kernels)
   {
     backend.LinkShader(Handle, kernels);
-
-    Kernels = kernels;
   }
 
   /// <summary>
