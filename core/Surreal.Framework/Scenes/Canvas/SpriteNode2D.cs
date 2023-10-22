@@ -9,7 +9,7 @@ namespace Surreal.Scenes.Canvas;
 /// <summary>
 /// A node that renders a sprite.
 /// </summary>
-public class SpriteNode : SceneNode2D, IRenderObject
+public class SpriteNode2D : SceneNode2D, IRenderObject
 {
   /// <summary>
   /// The sprite texture to render.
@@ -23,7 +23,10 @@ public class SpriteNode : SceneNode2D, IRenderObject
 
   bool IRenderObject.IsVisibleToFrustum(in Frustum frustum)
   {
-    return frustum.ContainsPoint(new Vector3(GlobalPosition.X, GlobalPosition.Y, 0f));
+    var center = new Vector3(GlobalPosition.X, GlobalPosition.Y, 0f);
+    var size = MathF.Max(Sprite.Size.X, Sprite.Size.Y) / 2f;
+
+    return frustum.ContainsSphere(center, size);
   }
 
   void IRenderObject.Render(in RenderFrame frame)
@@ -33,7 +36,7 @@ public class SpriteNode : SceneNode2D, IRenderObject
       context.SpriteBatch.Draw(
         region: Sprite,
         position: GlobalPosition,
-        size: GlobalScale,
+        size: GlobalScale * Sprite.Size,
         angle: GlobalRotation.Radians,
         color: Tint
       );

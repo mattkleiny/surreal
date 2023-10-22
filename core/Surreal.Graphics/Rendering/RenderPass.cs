@@ -13,6 +13,9 @@ public interface IRenderPass : IDisposable
   void OnBeginFrame(in RenderFrame frame);
   void OnEndFrame(in RenderFrame frame);
 
+  void OnBeginCamera(in RenderFrame frame);
+  void OnEndCamera(in RenderFrame frame);
+
   void OnBeginPass(in RenderFrame frame);
   void OnEndPass(in RenderFrame frame);
 
@@ -37,6 +40,14 @@ public abstract class RenderPass : IRenderPass
   }
 
   public virtual void OnEndFrame(in RenderFrame frame)
+  {
+  }
+
+  public virtual void OnBeginCamera(in RenderFrame frame)
+  {
+  }
+
+  public virtual void OnEndCamera(in RenderFrame frame)
   {
   }
 

@@ -1,6 +1,7 @@
 ﻿using Surreal.Collections;
 using Surreal.Graphics.Rendering;
 using Surreal.Maths;
+using Surreal.Timing;
 
 namespace Surreal.Scenes.Canvas;
 
@@ -15,6 +16,7 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   private float _aspectRatio = 1;
   private float _nearPlane;
   private float _farPlane = 100f;
+  private bool _isCameraDirty;
 
   /// <summary>
   /// The zoom level of the camera.
@@ -22,7 +24,13 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   public float Zoom
   {
     get => _zoom;
-    set => SetField(ref _zoom, value.Clamp(0f, 100f));
+    set
+    {
+      if (SetField(ref _zoom, value.Clamp(1f, 1000f)))
+      {
+        _isCameraDirty = true;
+      }
+    }
   }
 
   /// <summary>
@@ -31,7 +39,13 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   public float AspectRatio
   {
     get => _aspectRatio;
-    set => SetField(ref _aspectRatio, value.Clamp(0f, 100f));
+    set
+    {
+      if (SetField(ref _aspectRatio, value.Clamp(0f, 100f)))
+      {
+        _isCameraDirty = true;
+      }
+    }
   }
 
   /// <summary>
@@ -40,7 +54,13 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   public float NearPlane
   {
     get => _nearPlane;
-    set => SetField(ref _nearPlane, value.Clamp(0f, float.MaxValue));
+    set
+    {
+      if (SetField(ref _nearPlane, value.Clamp(0f, float.MaxValue)))
+      {
+        _isCameraDirty = true;
+      }
+    }
   }
 
   /// <summary>
@@ -49,7 +69,13 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   public float FarPlane
   {
     get => _farPlane;
-    set => SetField(ref _farPlane, value.Clamp(0f, float.MaxValue));
+    set
+    {
+      if (SetField(ref _farPlane, value.Clamp(0f, float.MaxValue)))
+      {
+        _isCameraDirty = true;
+      }
+    }
   }
 
   /// <summary>
@@ -61,7 +87,7 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
   public ref readonly Matrix4x4 ProjectionView => ref _projectionView;
 
   /// <inheritdoc/>
-  ReadOnlySlice<IRenderObject> IRenderCamera.CullVisibleObjects()
+  public ReadOnlySlice<IRenderObject> CullVisibleObjects()
   {
     if (TryResolveRoot(out SceneNode node))
     {
@@ -69,6 +95,18 @@ public class CameraNode2D : SceneNode2D, IRenderCamera
     }
 
     return ReadOnlySlice<IRenderObject>.Empty;
+  }
+
+  protected override void OnUpdate(DeltaTime deltaTime)
+  {
+    base.OnUpdate(deltaTime);
+
+    if (_isCameraDirty)
+    {
+      OnTransformUpdated();
+
+      _isCameraDirty = false;
+    }
   }
 
   protected override void OnTransformUpdated()

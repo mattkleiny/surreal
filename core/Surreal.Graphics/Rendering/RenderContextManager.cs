@@ -37,7 +37,7 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
   }
 
   /// <summary>
-  /// Notifies the manager that a new frame is beginning.
+  /// Notifies the manager that a new frame is rendering.
   /// </summary>
   public void OnBeginFrame(in RenderFrame frame)
   {
@@ -48,7 +48,29 @@ public sealed class RenderContextManager(IGraphicsBackend backend) : IRenderCont
   }
 
   /// <summary>
-  /// Notifies the manager that a new frame is ending.
+  /// Notifies the manager that a camera is rendering.
+  /// </summary>
+  public void OnBeginCamera(in RenderFrame frame)
+  {
+    foreach (var context in _contexts.Values)
+    {
+      context.OnBeginCamera(in frame);
+    }
+  }
+
+  /// <summary>
+  /// Notifies the manager that a camera is rendering.
+  /// </summary>
+  public void OnEndCamera(in RenderFrame frame)
+  {
+    foreach (var context in _contexts.Values)
+    {
+      context.OnEndCamera(in frame);
+    }
+  }
+
+  /// <summary>
+  /// Notifies the manager that a frame is finishing.
   /// </summary>
   public void OnEndFrame(in RenderFrame frame)
   {

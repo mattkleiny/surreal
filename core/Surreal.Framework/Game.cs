@@ -43,6 +43,8 @@ public sealed record GameConfiguration
 [ExcludeFromCodeCoverage]
 public static class Game
 {
+  private static readonly ILog Log = LogFactory.GetLog<IGameHost>();
+
   /// <summary>
   /// Initializes the game's static state.
   /// </summary>
@@ -85,6 +87,10 @@ public static class Game
   /// </summary>
   public static void Start(GameConfiguration configuration)
   {
+    var bootTime = TimeStamp.Now;
+
+    Log.Trace("Creating platform");
+
     using var platform = configuration.Platform.BuildHost(configuration.Host);
     using var host = configuration.Host;
 
@@ -92,10 +98,15 @@ public static class Game
 
     try
     {
+      Log.Trace("Initializing");
+
       host.Initialize(configuration);
 
       var clock = new DeltaTimeClock();
       var startTime = TimeStamp.Now;
+
+      Log.Trace($"Startup took {TimeStamp.Now - bootTime:c}");
+      Log.Trace("Starting main loop");
 
       while (!platform.IsClosing && !host.IsClosing)
       {
@@ -111,6 +122,8 @@ public static class Game
 
         platform.EndFrame(time.DeltaTime);
       }
+
+      Log.Trace("Shutting down");
     }
     finally
     {

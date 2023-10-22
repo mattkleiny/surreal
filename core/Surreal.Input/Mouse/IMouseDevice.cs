@@ -9,6 +9,7 @@ public interface IMouseDevice : IInputDevice
 
   Vector2 Position { get; }
   Vector2 NormalisedPosition { get; }
+  float ScrollAmount { get; }
 
   event Action<MouseButton> ButtonPressed;
   event Action<MouseButton> ButtonReleased;

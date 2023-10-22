@@ -50,7 +50,7 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 
     foreach (var camera in scene.CullVisibleCameras())
     {
-      OnExecuteFrame(frame with
+      RenderCamera(frame with
       {
         Camera = camera,
         VisibleObjects = camera.CullVisibleObjects()
@@ -60,13 +60,30 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
     OnEndFrame(in frame);
   }
 
+  private void RenderCamera(in RenderFrame frame)
+  {
+    OnBeginCamera(in frame);
+    OnRenderCamera(in frame);
+    OnEndCamera(in frame);
+  }
+
   protected virtual void OnBeginFrame(in RenderFrame frame)
   {
     Contexts.OnBeginFrame(in frame);
   }
 
-  protected virtual void OnExecuteFrame(in RenderFrame frame)
+  protected virtual void OnBeginCamera(in RenderFrame frame)
   {
+    Contexts.OnBeginCamera(in frame);
+  }
+
+  protected virtual void OnRenderCamera(in RenderFrame frame)
+  {
+  }
+
+  protected virtual void OnEndCamera(in RenderFrame frame)
+  {
+    Contexts.OnEndCamera(in frame);
   }
 
   protected virtual void OnEndFrame(in RenderFrame frame)
@@ -100,9 +117,19 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     }
   }
 
-  protected override void OnExecuteFrame(in RenderFrame frame)
+  protected override void OnBeginCamera(in RenderFrame frame)
   {
-    base.OnExecuteFrame(in frame);
+    base.OnBeginCamera(in frame);
+
+    foreach (var pass in Passes)
+    {
+      pass.OnBeginCamera(in frame);
+    }
+  }
+
+  protected override void OnRenderCamera(in RenderFrame frame)
+  {
+    base.OnRenderCamera(in frame);
 
     foreach (var pass in Passes)
     {
@@ -112,14 +139,24 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     }
   }
 
+  protected override void OnEndCamera(in RenderFrame frame)
+  {
+    foreach (var pass in Passes)
+    {
+      pass.OnEndCamera(in frame);
+    }
+
+    base.OnEndCamera(in frame);
+  }
+
   protected override void OnEndFrame(in RenderFrame frame)
   {
-    base.OnEndFrame(in frame);
-
     foreach (var pass in Passes)
     {
       pass.OnEndFrame(in frame);
     }
+
+    base.OnEndFrame(in frame);
   }
 
   public override void Dispose()

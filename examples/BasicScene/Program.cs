@@ -1,4 +1,4 @@
-﻿using Surreal.Scenes.Canvas;
+﻿const float zoomSpeed = 10f;
 
 Game.Start(new GameConfiguration
 {
@@ -16,8 +16,12 @@ Game.Start(new GameConfiguration
   },
   Host = GameHost.Create(async () =>
   {
+    var log = LogFactory.GetLog<Program>();
+    var logTimer = new IntervalTimer(TimeSpan.FromSeconds(1));
+
     var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
     var keyboard = Game.Services.GetServiceOrThrow<IKeyboardDevice>();
+    var mouse = Game.Services.GetServiceOrThrow<IMouseDevice>();
 
     var pipeline = new ForwardRenderPipeline(graphics)
     {
@@ -30,11 +34,16 @@ Game.Start(new GameConfiguration
     var sprite = await Game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
     var scene = new SceneGraph();
 
-    scene.Root.Add(new CameraNode2D());
-
-    for (int i = 0; i < 10; i++)
+    var camera = new CameraNode2D
     {
-      scene.Root.Add(new BunnyNode
+      Zoom = 100f
+    };
+
+    scene.Root.Add(camera);
+
+    for (int i = 0; i < 100; i++)
+    {
+      scene.Root.Add(new BunnyNode2D
       {
         Sprite = sprite
       });
@@ -47,22 +56,39 @@ Game.Start(new GameConfiguration
       scene.Update(time.DeltaTime);
       pipeline.Render(scene);
 
+      camera.Zoom += -mouse.ScrollAmount * zoomSpeed;
+
       if (keyboard.IsKeyPressed(Key.Escape))
       {
         Game.Exit();
+      }
+
+      if (logTimer.Tick(time.DeltaTime))
+      {
+        var visibleObjects = camera.CullVisibleObjects();
+
+        log.Trace($"There are {visibleObjects.Length} visible objects");
+
+        logTimer.Reset();
       }
     };
   })
 });
 
-public sealed class BunnyNode : SpriteNode
+internal sealed class BunnyNode2D : SpriteNode2D
 {
-  public float Speed { get; set; } = Random.Shared.NextFloat() * 10f;
+  public float Speed { get; set; } = 10f;
+  public Vector2 Velocity { get; set; } = Vector2.Zero;
 
   protected override void OnUpdate(DeltaTime deltaTime)
   {
     base.OnUpdate(deltaTime);
 
-    GlobalPosition += new Vector2(1, 1) * Speed * deltaTime.Seconds;
+    Velocity += new Vector2(
+      (float)(Random.Shared.NextDouble() - 0.5f) * Speed,
+      (float)(Random.Shared.NextDouble() - 0.5f) * Speed
+    );
+
+    GlobalPosition += Velocity * deltaTime;
   }
 }

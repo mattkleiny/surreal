@@ -9,6 +9,7 @@ internal sealed class SilkMouseDevice(IWindow window, IMouse mouse) : IMouseDevi
 {
   public Vector2 Position => mouse.Position;
   public Vector2 NormalisedPosition => mouse.Position / new Vector2(window.Size.X, window.Size.Y);
+  public float ScrollAmount => mouse.ScrollWheels[0].Y;
 
   public event Action<MouseButton>? ButtonPressed;
   public event Action<MouseButton>? ButtonReleased;

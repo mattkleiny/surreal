@@ -17,6 +17,48 @@ public sealed class SpriteBatchContext(IGraphicsBackend backend) : RenderContext
   /// The <see cref="Graphics.SpriteBatch"/> used by this context.
   /// </summary>
   public SpriteBatch SpriteBatch { get; } = new(backend);
+
+  /// <summary>
+  /// The material used by this context.
+  /// </summary>
+  public Material Material { get; init; } = new(backend, ShaderProgram.LoadDefaultSpriteShader(backend))
+  {
+    BlendState = BlendState.OneMinusSourceAlpha
+  };
+
+  /// <summary>
+  /// The property to use for the projection view matrix.
+  /// </summary>
+  public MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
+
+  protected internal override void OnBeginFrame(in RenderFrame frame)
+  {
+    base.OnBeginFrame(in frame);
+
+    SpriteBatch.Begin(Material);
+  }
+
+  protected internal override void OnBeginCamera(in RenderFrame frame)
+  {
+    Material.Properties.SetProperty(ProjectionView, frame.Camera!.ProjectionView);
+
+    base.OnBeginCamera(in frame);
+  }
+
+  protected internal override void OnEndFrame(in RenderFrame frame)
+  {
+    SpriteBatch.Flush();
+
+    base.OnEndFrame(in frame);
+  }
+
+  protected internal override void Dispose()
+  {
+    SpriteBatch.Dispose();
+    Material.Dispose();
+
+    base.Dispose();
+  }
 }
 
 /// <summary>
@@ -56,6 +98,11 @@ public sealed class SpriteBatch : IDisposable
   /// The underlying <see cref="IGraphicsBackend" />.
   /// </summary>
   public IGraphicsBackend Backend { get; }
+
+  /// <summary>
+  /// The property to use for the texture.
+  /// </summary>
+  public MaterialProperty<Texture> Texture { get; set; } = new("u_texture");
 
   public void Dispose()
   {
@@ -145,13 +192,13 @@ public sealed class SpriteBatch : IDisposable
   {
     if (_vertexCount == 0) return;
 
-    if (_lastTexture != null)
-    {
-      // TODO: bind the appropriate texture
-    }
-
     if (_material != null)
     {
+      if (_lastTexture != null)
+      {
+        _material.Properties.SetProperty(Texture, _lastTexture);
+      }
+
       var spriteCount = _vertexCount / 4;
       var indexCount = spriteCount * 6;
 
