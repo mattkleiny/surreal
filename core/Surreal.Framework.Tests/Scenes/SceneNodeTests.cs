@@ -95,15 +95,15 @@ public class SceneNodeTests
     parent.Children.Add(child1);
     parent.Children.Add(child2);
 
-    parent.Inbox.Enqueue(new Notification(NotificationType.Destroy, parent));
+    parent.NotificationsForChildren.Enqueue(new Notification(NotificationType.Destroy, parent));
 
     parent.Update(DeltaTime.OneOver60);
 
-    child1.Inbox.Should().ContainSingle();
-    child1.Inbox.Dequeue().Type.Should().Be(NotificationType.Destroy);
+    child1.NotificationsForChildren.Should().ContainSingle();
+    child1.NotificationsForChildren.Dequeue().Type.Should().Be(NotificationType.Destroy);
 
-    child2.Inbox.Should().ContainSingle();
-    child2.Inbox.Dequeue().Type.Should().Be(NotificationType.Destroy);
+    child2.NotificationsForChildren.Should().ContainSingle();
+    child2.NotificationsForChildren.Dequeue().Type.Should().Be(NotificationType.Destroy);
   }
 
   [Test]
@@ -114,12 +114,12 @@ public class SceneNodeTests
 
     parent.Children.Add(child);
 
-    child.Outbox.Enqueue(new Notification(NotificationType.Destroy, child));
+    child.NotificationsForParents.Enqueue(new Notification(NotificationType.Destroy, child));
 
     parent.Update(DeltaTime.OneOver60);
 
-    parent.Outbox.Should().ContainSingle();
-    parent.Outbox.Dequeue().Type.Should().Be(NotificationType.Destroy);
+    parent.NotificationsForParents.Should().ContainSingle();
+    parent.NotificationsForParents.Dequeue().Type.Should().Be(NotificationType.Destroy);
   }
 
   [Test]

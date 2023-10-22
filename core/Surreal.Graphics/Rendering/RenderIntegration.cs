@@ -4,6 +4,17 @@ using Surreal.Maths;
 namespace Surreal.Graphics.Rendering;
 
 /// <summary>
+/// Represents a scene that can be rendered by a <see cref="IRenderPipeline"/>.
+/// </summary>
+public interface IRenderScene
+{
+  /// <summary>
+  /// Culls visible cameras from the scene.
+  /// </summary>
+  ReadOnlySlice<IRenderViewport> CullVisibleViewports();
+}
+
+/// <summary>
 /// Represents a kind of viewport that can be used to render a scene.
 /// </summary>
 public interface IRenderViewport
@@ -16,18 +27,19 @@ public interface IRenderViewport
   /// <summary>
   /// Culls visible objects from the perspective of the camera.
   /// </summary>
-  ReadOnlySlice<IRenderObject> CullVisibleObjects();
+  ReadOnlySlice<T> CullVisibleObjects<T>()
+    where T : class;
 }
 
 /// <summary>
-/// Represents a scene that can be rendered by a <see cref="IRenderPipeline"/>.
+/// Determines if an object is visible to the camera.
 /// </summary>
-public interface IRenderScene
+public interface ICullableObject
 {
   /// <summary>
-  /// Culls visible cameras from the scene.
+  /// Determines if the object is visible to the given frustum.
   /// </summary>
-  ReadOnlySlice<IRenderViewport> CullVisibleViewports();
+  bool IsVisibleToFrustum(in Frustum frustum);
 }
 
 /// <summary>
@@ -35,11 +47,6 @@ public interface IRenderScene
 /// </summary>
 public interface IRenderObject
 {
-  /// <summary>
-  /// Determines if the object is visible to the given frustum.
-  /// </summary>
-  bool IsVisibleToFrustum(in Frustum frustum);
-
   /// <summary>
   /// Renders the object.
   /// </summary>

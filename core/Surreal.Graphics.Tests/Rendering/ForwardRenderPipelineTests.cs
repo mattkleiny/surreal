@@ -14,7 +14,7 @@ public class ForwardRenderPipelineTests
 
     backend.IsActiveFrameBuffer(Arg.Any<FrameBufferHandle>()).Returns(true);
     scene.CullVisibleViewports().Returns(new[] { viewport });
-    viewport.CullVisibleObjects().Returns(new[]
+    viewport.CullVisibleObjects<IRenderObject>().Returns(new[]
     {
       Substitute.For<IRenderObject>(),
       Substitute.For<IRenderObject>(),

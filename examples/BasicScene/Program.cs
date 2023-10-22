@@ -6,7 +6,7 @@ var configuration = new GameConfiguration
   {
     Configuration =
     {
-      Title = "Bunnymark",
+      Title = "Scene Graph Example",
       IsVsyncEnabled = true,
       ShowFpsInTitle = true,
       Width = 1920,
@@ -18,7 +18,6 @@ var configuration = new GameConfiguration
 
 Game.Start(configuration, async game =>
 {
-  var audio = game.Services.GetServiceOrThrow<IAudioBackend>();
   var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
   var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
   var mouse = game.Services.GetServiceOrThrow<IMouseDevice>();
@@ -32,8 +31,7 @@ Game.Start(configuration, async game =>
     ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f),
     Contexts =
     {
-      new SpriteContext(graphics),
-      new WidgetContext(graphics)
+      new SpriteContext(graphics)
     }
   };
 
@@ -45,21 +43,23 @@ Game.Start(configuration, async game =>
   };
 
   var viewport = new CameraViewportNode();
+
+  scene.Add(viewport);
+
   var camera = new CameraNode2D
   {
     Zoom = 100f
   };
 
-  scene.Add(viewport);
-  viewport.Add(camera);
-
   // add the music player
-  scene.Add(new AudioPlayer2D()
+  viewport.Add(new AudioPlayer2D
   {
     PlayOnReady = true,
     IsLooping = true,
     AudioClip = clip
   });
+
+  viewport.Add(camera);
 
   // create some bunnies
   for (int i = 0; i < 100; i++)

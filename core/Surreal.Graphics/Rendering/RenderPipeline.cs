@@ -112,7 +112,10 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
 
     foreach (var pass in Passes)
     {
-      pass.OnBeginFrame(in frame);
+      if (pass.IsEnabled)
+      {
+        pass.OnBeginFrame(in frame);
+      }
     }
   }
 
@@ -122,7 +125,10 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
 
     foreach (var pass in Passes)
     {
-      pass.OnBeginViewport(in frame, viewport);
+      if (pass.IsEnabled)
+      {
+        pass.OnBeginViewport(in frame, viewport);
+      }
     }
   }
 
@@ -132,7 +138,10 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
 
     foreach (var pass in Passes)
     {
-      pass.OnRenderViewport(in frame, viewport);
+      if (pass.IsEnabled)
+      {
+        pass.OnRenderViewport(in frame, viewport);
+      }
     }
   }
 
@@ -142,7 +151,10 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
 
     foreach (var pass in Passes)
     {
-      pass.OnEndViewport(in frame, viewport);
+      if (pass.IsEnabled)
+      {
+        pass.OnEndViewport(in frame, viewport);
+      }
     }
   }
 
@@ -152,7 +164,10 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
 
     foreach (var pass in Passes)
     {
-      pass.OnEndFrame(in frame);
+      if (pass.IsEnabled)
+      {
+        pass.OnEndFrame(in frame);
+      }
     }
   }
 

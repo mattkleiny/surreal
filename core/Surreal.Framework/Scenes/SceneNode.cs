@@ -108,8 +108,9 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   public bool IsInTree => _states.HasFlag(SceneGraphStates.InTree);
   public bool IsDestroyed => _states.HasFlag(SceneGraphStates.Destroyed);
 
-  internal Queue<Notification> Inbox { get; } = new();
-  internal Queue<Notification> Outbox { get; } = new();
+  // notifications that are flowing either to or from this node
+  internal Queue<Notification> NotificationsForParents { get; } = new();
+  internal Queue<Notification> NotificationsForChildren { get; } = new();
 
   /// <summary>
   /// Convenience method for adding a child to this node.
@@ -234,7 +235,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// </summary>
   public void Destroy()
   {
-    Outbox.Enqueue(new Notification(NotificationType.Destroy, this));
+    NotifyParents(NotificationType.Destroy);
   }
 
   protected virtual void UpdateInternal(DeltaTime deltaTime)
@@ -280,13 +281,13 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   protected virtual void OnUpdate(DeltaTime deltaTime)
   {
     // propagate inbox messages to children
-    while (Inbox.TryDequeue(out var notification))
+    while (NotificationsForChildren.TryDequeue(out var notification))
     {
       OnNotification(notification);
 
       foreach (var child in Children)
       {
-        child.Inbox.Enqueue(notification);
+        child.NotificationsForChildren.Enqueue(notification);
       }
     }
 
@@ -296,11 +297,11 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
       child.Update(deltaTime);
 
       // propagate outbox messages to parents
-      while (child.Outbox.TryDequeue(out var notification))
+      while (child.NotificationsForParents.TryDequeue(out var notification))
       {
         OnNotification(notification);
 
-        Outbox.Enqueue(notification);
+        NotificationsForParents.Enqueue(notification);
       }
     }
   }
@@ -434,6 +435,22 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   }
 
   /// <summary>
+  /// Notifies the parent nodes of a change.
+  /// </summary>
+  protected void NotifyParents(NotificationType type)
+  {
+    NotificationsForParents.Enqueue(new Notification(type, this));
+  }
+
+  /// <summary>
+  /// Notifies child nodes of a change.
+  /// </summary>
+  protected void NotifyChildren(NotificationType type)
+  {
+    NotificationsForChildren.Enqueue(new Notification(type, this));
+  }
+
+  /// <summary>
   /// Notifies listeners that a property has changed.
   /// </summary>
   protected virtual void NotifyPropertyChanging([CallerMemberName] string propertyName = "")
@@ -465,7 +482,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// A type of <see cref="Notification"/>.
   /// </summary>
-  internal enum NotificationType : byte
+  public enum NotificationType : byte
   {
     Destroy,
     TransformChanged

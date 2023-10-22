@@ -5,6 +5,8 @@ using Surreal.Timing;
 
 namespace Surreal.Scenes;
 
+// TODO: defer enter/exit tree until the first update at least
+
 /// <summary>
 /// A scene that uses <see cref="SceneNode"/>s as it's core building block.
 /// </summary>
@@ -31,7 +33,7 @@ public sealed class SceneGraph : SceneNode, IScene
     base.OnPostUpdate(deltaTime);
 
     // process top-level messages
-    while (Inbox.TryDequeue(out var notification))
+    while (NotificationsForChildren.TryDequeue(out var notification))
     {
       // handle root notifications
       switch (notification)

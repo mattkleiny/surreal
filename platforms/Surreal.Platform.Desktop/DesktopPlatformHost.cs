@@ -1,6 +1,7 @@
 using Silk.NET.OpenAL;
 using Surreal.Audio;
 using Surreal.Diagnostics;
+using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.Graphics.Images;
 using Surreal.Input;
@@ -43,6 +44,8 @@ public interface IDesktopWindow : IDisposable
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 {
+  private static readonly ILog Log = LogFactory.GetLog<DesktopPlatformHost>();
+
   private readonly ThreadAffineSynchronizationContext _syncContext = new(Thread.CurrentThread);
   private readonly FrameCounter _frameCounter = new();
   private readonly DesktopConfiguration _configuration;
@@ -133,6 +136,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   private void OnResized(int width, int height)
   {
+    Log.Trace($"Resizing window to {width}x{height}");
+
     GraphicsBackend.SetViewportSize(new Viewport(0, 0, (uint)width, (uint)height));
   }
 }

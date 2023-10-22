@@ -9,7 +9,7 @@ namespace Surreal.Scenes.Spatial;
 /// <summary>
 /// A node that renders a sprite.
 /// </summary>
-public class SpriteNode2D : SceneNode2D, IRenderObject
+public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject
 {
   /// <summary>
   /// The sprite texture to render.
@@ -32,7 +32,7 @@ public class SpriteNode2D : SceneNode2D, IRenderObject
     );
   }
 
-  bool IRenderObject.IsVisibleToFrustum(in Frustum frustum)
+  bool ICullableObject.IsVisibleToFrustum(in Frustum frustum)
   {
     var center = new Vector3(GlobalPosition.X, GlobalPosition.Y, 0f);
     var size = MathF.Max(Sprite.Size.X, Sprite.Size.Y) / 2f;

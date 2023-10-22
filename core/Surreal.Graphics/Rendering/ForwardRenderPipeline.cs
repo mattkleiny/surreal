@@ -1,4 +1,5 @@
 ﻿using Surreal.Colors;
+using Surreal.Graphics.Gizmos;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 
@@ -13,8 +14,14 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   public ForwardRenderPipeline(IGraphicsBackend backend)
     : base(backend)
   {
-    Passes.Add(new ColorBufferPass(backend, this));
+    Passes.Add(new ColorPass(backend, this));
+    Passes.Add(new GizmoPass(backend, this));
   }
+
+  /// <summary>
+  /// Determines if gizmos are enabled.
+  /// </summary>
+  public bool EnableGizmos { get; set; } = true;
 
   /// <summary>
   /// The color to clear the screen with.
@@ -24,7 +31,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that collects color data.
   /// </summary>
-  private sealed class ColorBufferPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
+  private sealed class ColorPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
     /// <summary>
     /// The material used to blit the color target to the back buffer.
@@ -53,9 +60,9 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 
     public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
     {
-      foreach (var visibleObject in viewport.CullVisibleObjects())
+      foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
       {
-        visibleObject.Render(in frame);
+        renderObject.Render(in frame);
       }
     }
 
@@ -69,6 +76,58 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     {
       _colorTarget.Dispose();
       _blitMaterial.Dispose();
+
+      base.Dispose();
+    }
+  }
+
+  /// <summary>
+  /// A <see cref="RenderPass"/> that renders gizmos.
+  /// </summary>
+  private sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
+  {
+    /// <summary>
+    /// The  material used to render gizmos.
+    /// </summary>
+    private readonly Material _gizmoMaterial = new(backend, ShaderProgram.LoadDefaultWireShader(backend));
+
+    /// <summary>
+    /// The batch used to render gizmos.
+    /// </summary>
+    public GizmoBatch GizmoBatch { get; } = new(backend);
+
+    /// <inheritdoc/>
+    public override bool IsEnabled => pipeline.EnableGizmos;
+
+    public override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+    {
+      base.OnBeginViewport(in frame, viewport);
+
+      _gizmoMaterial.Properties.SetProperty("u_projectionView", viewport.ProjectionView);
+
+      GizmoBatch.Begin(_gizmoMaterial);
+    }
+
+    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
+    {
+      base.OnRenderViewport(in frame, viewport);
+
+      foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
+      {
+        gizmoObject.RenderGizmos(in frame, GizmoBatch);
+      }
+    }
+
+    public override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
+    {
+      GizmoBatch.Flush();
+
+      base.OnEndViewport(in frame, viewport);
+    }
+
+    public override void Dispose()
+    {
+      GizmoBatch.Dispose();
 
       base.Dispose();
     }

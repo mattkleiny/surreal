@@ -114,6 +114,7 @@ public class SceneNode2D : SceneNode
   /// </summary>
   protected virtual void OnTransformUpdated()
   {
+    NotifyChildren(NotificationType.TransformChanged);
   }
 
   protected override void OnUpdate(DeltaTime deltaTime)
@@ -122,10 +123,8 @@ public class SceneNode2D : SceneNode
 
     if (_isGlobalDirty)
     {
-      // notify children of transform changes
-      Inbox.Enqueue(new Notification(NotificationType.TransformChanged, this));
-
       OnTransformUpdated();
+
       _isGlobalDirty = false;
     }
 

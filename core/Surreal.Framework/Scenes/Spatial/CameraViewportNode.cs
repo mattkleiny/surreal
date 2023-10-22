@@ -57,13 +57,22 @@ public class CameraViewportNode : SceneNode, IRenderViewport
   }
 
   /// <inheritdoc/>
-  public ReadOnlySlice<IRenderObject> CullVisibleObjects()
+  public ReadOnlySlice<T> CullVisibleObjects<T>()
+    where T : class
   {
     if (TryGetActiveCamera(out var camera))
     {
-      return ResolveChildren<IRenderObject>(o => o.IsVisibleToFrustum(camera.Frustum));
+      return ResolveChildren<T>(instance =>
+      {
+        if (instance is ICullableObject cullableObject)
+        {
+          return cullableObject.IsVisibleToFrustum(camera.Frustum);
+        }
+
+        return true;
+      });
     }
 
-    return ReadOnlySlice<IRenderObject>.Empty;
+    return ReadOnlySlice<T>.Empty;
   }
 }

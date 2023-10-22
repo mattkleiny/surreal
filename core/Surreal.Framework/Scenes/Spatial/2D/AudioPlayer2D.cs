@@ -1,5 +1,8 @@
 ﻿using Surreal.Audio;
 using Surreal.Audio.Clips;
+using Surreal.Colors;
+using Surreal.Graphics.Gizmos;
+using Surreal.Graphics.Rendering;
 using Surreal.Utilities;
 
 namespace Surreal.Scenes.Spatial;
@@ -7,7 +10,7 @@ namespace Surreal.Scenes.Spatial;
 /// <summary>
 /// A <see cref="SceneNode2D"/> that plays audio.
 /// </summary>
-public class AudioPlayer2D : SceneNode2D
+public class AudioPlayer2D : SceneNode2D, IGizmoObject
 {
   private AudioSource? _source;
 
@@ -113,5 +116,10 @@ public class AudioPlayer2D : SceneNode2D
     }
 
     base.OnTransformUpdated();
+  }
+
+  void IGizmoObject.RenderGizmos(in RenderFrame frame, GizmoBatch gizmos)
+  {
+    gizmos.DrawWireCircle(GlobalPosition, 4f, Color.Yellow);
   }
 }

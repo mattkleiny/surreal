@@ -7,6 +7,11 @@ namespace Surreal.Graphics.Rendering;
 /// </summary>
 public interface IRenderPass : IDisposable
 {
+  /// <summary>
+  /// True if the pass is enabled.
+  /// </summary>
+  bool IsEnabled { get; }
+
   void OnBeginFrame(in RenderFrame frame);
   void OnEndFrame(in RenderFrame frame);
 
@@ -21,6 +26,8 @@ public interface IRenderPass : IDisposable
 /// </summary>
 public abstract class RenderPass : IRenderPass
 {
+  public virtual bool IsEnabled => true;
+
   public virtual void OnBeginFrame(in RenderFrame frame)
   {
   }

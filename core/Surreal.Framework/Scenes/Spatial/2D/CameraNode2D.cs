@@ -108,7 +108,7 @@ public class CameraNode2D : SceneNode2D, ICamera
 
     if (_isCameraDirty)
     {
-      OnTransformUpdated();
+      UpdateCameraMatrices();
 
       _isCameraDirty = false;
     }
@@ -118,6 +118,11 @@ public class CameraNode2D : SceneNode2D, ICamera
   {
     base.OnTransformUpdated();
 
+    _isCameraDirty = true;
+  }
+
+  private void UpdateCameraMatrices()
+  {
     // create projection/view matrix from global position and orthographic projection
     _projectionView = Matrix4x4.CreateOrthographicOffCenter(
       left: GlobalPosition.X - _aspectRatio * _zoom,
