@@ -26,10 +26,13 @@ public class SpriteNode : SceneNode2D
 
     if (frame.Manager.TryAcquireContext(in frame, out SpriteBatchContext context))
     {
-      using (context.AcquireScope(in frame))
-      {
-        context.Batch.Draw(TextureRegion.Empty, LocalPosition, LocalScale, LocalRotation.Radians, Tint);
-      }
+      context.Batch.Draw(
+        region: Sprite,
+        position: GlobalPosition,
+        size: GlobalScale,
+        angle: GlobalRotation.Radians,
+        color: Tint
+      );
     }
   }
 }
