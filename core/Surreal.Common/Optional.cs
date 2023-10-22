@@ -27,5 +27,15 @@ public readonly record struct Optional<T>(T Value, bool HasValue)
     return Value;
   }
 
+  public override string ToString()
+  {
+    if (!HasValue)
+    {
+      return "None";
+    }
+
+    return $"Some({Value})";
+  }
+
   public static implicit operator Optional<T>(T value) => new(value, true);
 }

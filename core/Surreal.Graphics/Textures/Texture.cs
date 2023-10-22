@@ -40,7 +40,18 @@ public enum TextureFilterMode
 /// <summary>
 /// A texture sampler configuration for a shader.
 /// </summary>
-public readonly record struct TextureSampler(Texture Texture, uint SamplerSlot);
+public readonly record struct TextureSampler(GraphicsHandle Texture, uint SamplerSlot)
+{
+  /// <summary>
+  /// The <see cref="TextureFilterMode"/> to apply to the sampler.
+  /// </summary>
+  public Optional<TextureFilterMode> FilterMode { get; init; }
+
+  /// <summary>
+  /// The <see cref="TextureWrapMode"/> to apply to the sampler.
+  /// </summary>
+  public Optional<TextureWrapMode> WrapMode { get; init; }
+}
 
 /// <summary>
 /// A texture that can be uploaded to the GPU.

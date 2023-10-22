@@ -30,7 +30,10 @@ public readonly record struct BlendState(BlendMode Source, BlendMode Target)
 /// A property of a <see cref="Material" />.
 /// </summary>
 [SuppressMessage("ReSharper", "UnusedTypeParameter")]
-public readonly record struct MaterialProperty<T>(string Name);
+public readonly record struct MaterialProperty<T>(string Name)
+{
+  public static implicit operator MaterialProperty<T>(string value) => new(value);
+}
 
 /// <summary>
 /// Indicates that a <see cref="MaterialProperty{T}"/> does not exist on a material.

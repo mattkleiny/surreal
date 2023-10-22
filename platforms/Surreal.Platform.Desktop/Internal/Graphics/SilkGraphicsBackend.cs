@@ -13,6 +13,7 @@ namespace Surreal.Graphics;
 
 internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 {
+  private Mesh? _quadMesh;
   private FrameBufferHandle _activeFrameBuffer;
 
   public Viewport GetViewportSize()
@@ -519,6 +520,36 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.ProgramUniform1(handle, location, samplerSlot);
   }
 
+  public void SetShaderSampler(GraphicsHandle handle, int location, TextureSampler sampler)
+  {
+    gl.ActiveTexture(TextureUnit.Texture0 + (int)sampler.SamplerSlot);
+    gl.BindTexture(TextureTarget.Texture2D, sampler.Texture);
+    gl.ProgramUniform1(handle, location, sampler.SamplerSlot);
+
+    // apply sampler settings
+    if (sampler.FilterMode.HasValue || sampler.WrapMode.HasValue)
+    {
+      var samplerId = gl.CreateSampler();
+
+      if (sampler.FilterMode.HasValue)
+      {
+        gl.SamplerParameterI(samplerId, SamplerParameterI.MinFilter, ConvertTextureFilterMode(sampler.FilterMode.Value));
+      }
+
+      if (sampler.WrapMode.HasValue)
+      {
+        gl.SamplerParameterI(samplerId, SamplerParameterI.WrapS, ConvertTextureWrapMode(sampler.WrapMode.Value));
+        gl.SamplerParameterI(samplerId, SamplerParameterI.WrapT, ConvertTextureWrapMode(sampler.WrapMode.Value));
+      }
+
+      gl.BindSampler(sampler.SamplerSlot, samplerId);
+    }
+    else
+    {
+      gl.BindSampler(sampler.SamplerSlot, 0);
+    }
+  }
+
   public void SetActiveShader(GraphicsHandle handle)
   {
     gl.UseProgram(handle);
@@ -665,6 +696,26 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
   }
 
+  public void BlitToBackBuffer(FrameBufferHandle handle,
+    Material material,
+    MaterialProperty<TextureSampler> samplerProperty,
+    Optional<TextureFilterMode> filterMode,
+    Optional<TextureWrapMode> wrapMode)
+  {
+    var mesh = GetOrCreateQuadMesh();
+
+    var sampler = new TextureSampler(handle.ColorAttachment, 0)
+    {
+      FilterMode = filterMode,
+      WrapMode = wrapMode
+    };
+
+    material.ApplyMaterial();
+    material.Properties.SetProperty(samplerProperty, sampler);
+
+    mesh.Draw(material);
+  }
+
   public void DeleteFrameBuffer(FrameBufferHandle handle)
   {
     gl.DeleteFramebuffer(handle.FrameBuffer);
@@ -674,6 +725,14 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     {
       gl.DeleteRenderbuffer(handle.DepthStencilAttachment);
     }
+  }
+
+  /// <summary>
+  /// Gets or creates a fullscreen quad mesh.
+  /// </summary>
+  private Mesh GetOrCreateQuadMesh()
+  {
+    return _quadMesh ??= Mesh.CreateQuad(this);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

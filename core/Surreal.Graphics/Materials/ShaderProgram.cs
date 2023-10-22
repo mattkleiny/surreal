@@ -145,7 +145,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
         case VariantType.Object when value.AsObject() is Matrix3x2 matrix: backend.SetShaderUniform(Handle, location, matrix); break;
         case VariantType.Object when value.AsObject() is Matrix4x4 matrix: backend.SetShaderUniform(Handle, location, matrix); break;
         case VariantType.Object when value.AsObject() is Texture texture: backend.SetShaderSampler(Handle, location, texture.Handle, 0u); break;
-        case VariantType.Object when value.AsObject() is TextureSampler sampler: backend.SetShaderSampler(Handle, location, sampler.Texture.Handle, sampler.SamplerSlot); break;
+        case VariantType.Object when value.AsObject() is TextureSampler sampler: backend.SetShaderSampler(Handle, location, sampler); break;
 
         default:
           throw new InvalidMaterialPropertyException($"The material property type for {name} is not supported.");

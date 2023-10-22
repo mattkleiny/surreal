@@ -134,7 +134,7 @@ public sealed class EventBus(IEventBus? parent = null) : IEventBus
           {
             Method = method,
             MessageType = messageType,
-            DelegateType = typeof(EventListener<>).MakeGenericType(messageType),
+            DelegateType = typeof(EventListener<>).MakeGenericType(messageType)
           };
 
         DiscoveryCache[type] = methods = results.ToArray();

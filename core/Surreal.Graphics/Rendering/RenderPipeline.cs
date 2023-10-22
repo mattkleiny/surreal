@@ -29,6 +29,7 @@ public interface IRenderPipeline : IDisposable
 public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 {
   private readonly DeltaTimeClock _clock = new();
+  private readonly TimeStamp _startTime = TimeStamp.Now;
 
   /// <summary>
   /// The <see cref="RenderContextManager"/> for the pipeline.
@@ -41,6 +42,7 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
     var frame = new RenderFrame
     {
       DeltaTime = _clock.Tick(),
+      TotalTime = TimeStamp.Now - _startTime,
       Backend = backend,
       Contexts = Contexts,
       Scene = scene,

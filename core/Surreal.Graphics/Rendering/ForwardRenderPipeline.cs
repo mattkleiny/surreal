@@ -1,4 +1,5 @@
 ﻿using Surreal.Colors;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics.Rendering;
@@ -25,12 +26,20 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// </summary>
   private sealed class ColorBufferPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
+    /// <summary>
+    /// The material used to blit the color target to the back buffer.
+    /// </summary>
+    private readonly Material _blitMaterial = new(backend, ShaderProgram.LoadDefaultBlitShader(backend));
+
+    /// <summary>
+    /// The main color target for the pass.
+    /// </summary>
     private readonly RenderTarget _colorTarget = new(backend, new RenderTargetDescriptor
     {
       Format = TextureFormat.Rgba8,
       FilterMode = TextureFilterMode.Point,
       WrapMode = TextureWrapMode.ClampToEdge,
-      DepthStencilFormat = DepthStencilFormat.None,
+      DepthStencilFormat = DepthStencilFormat.None
     });
 
     public override void OnBeginCamera(in RenderFrame frame, IRenderCamera camera)
@@ -53,24 +62,14 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 
     public override void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
     {
-      var viewportSize = frame.Viewport;
-
-      // blit the color target to the back buffer
-      _colorTarget.BlitToBackBuffer(
-        sourceWidth: _colorTarget.Width,
-        sourceHeight: _colorTarget.Height,
-        destWidth: viewportSize.Width,
-        destHeight: viewportSize.Height,
-        mask: BlitMask.Color,
-        filterMode: TextureFilterMode.Point
-      );
-
       _colorTarget.UnbindFromDisplay();
+      _colorTarget.BlitToBackBuffer(_blitMaterial, mask: BlitMask.Color);
     }
 
     public override void Dispose()
     {
       _colorTarget.Dispose();
+      _blitMaterial.Dispose();
 
       base.Dispose();
     }

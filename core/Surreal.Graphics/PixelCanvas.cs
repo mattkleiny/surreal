@@ -12,8 +12,6 @@ namespace Surreal.Graphics;
 /// </summary>
 public class PixelCanvas : IDisposable
 {
-  private static MaterialProperty<Texture> Texture { get; } = new("u_texture");
-
   private readonly DenseGrid<Color32> _pixels;
   private readonly Material _material;
   private readonly Texture _texture;
@@ -30,7 +28,7 @@ public class PixelCanvas : IDisposable
       BlendState = BlendState.OneMinusSourceAlpha
     };
 
-    _material.Properties.SetProperty(Texture, _texture);
+    _material.Properties.SetProperty("u_texture", _texture);
   }
 
   /// <summary>

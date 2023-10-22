@@ -131,6 +131,7 @@ public interface IGraphicsBackend
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value);
   void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value);
   void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, uint samplerSlot);
+  void SetShaderSampler(GraphicsHandle handle, int location, TextureSampler sampler);
   void SetActiveShader(GraphicsHandle handle);
   void DeleteShader(GraphicsHandle handle);
 
@@ -139,6 +140,21 @@ public interface IGraphicsBackend
   bool IsActiveFrameBuffer(FrameBufferHandle handle);
   void BindFrameBuffer(FrameBufferHandle handle);
   void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
-  void BlitToBackBuffer(FrameBufferHandle handle, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
+
+  void BlitToBackBuffer(
+    FrameBufferHandle handle,
+    uint sourceWidth,
+    uint sourceHeight,
+    uint destWidth,
+    uint destHeight,
+    BlitMask mask,
+    TextureFilterMode filterMode);
+
+  void BlitToBackBuffer(FrameBufferHandle handle,
+    Material material,
+    MaterialProperty<TextureSampler> samplerProperty,
+    Optional<TextureFilterMode> filterMode,
+    Optional<TextureWrapMode> wrapMode);
+
   void DeleteFrameBuffer(FrameBufferHandle handle);
 }

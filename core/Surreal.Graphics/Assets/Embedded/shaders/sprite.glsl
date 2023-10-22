@@ -7,8 +7,8 @@
 uniform mat4 u_projectionView = mat4(1.0);
 
 layout (location = 0) in vec2 position;
-layout (location = 1) in vec4 color;
-layout (location = 2) in vec2 uv;
+layout (location = 1) in vec2 uv;
+layout (location = 2) in vec4 color;
 
 out vec4 v_color;
 out vec2 v_uv;

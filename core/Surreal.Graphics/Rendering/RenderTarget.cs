@@ -1,4 +1,5 @@
 ﻿using Surreal.Colors;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics.Rendering;
@@ -11,7 +12,7 @@ public enum DepthStencilFormat : byte
   None,
   Depth24,
   Depth24Stencil8,
-  Depth32Stencil8,
+  Depth32Stencil8
 }
 
 /// <summary>
@@ -67,6 +68,8 @@ public sealed record RenderTargetDescriptor
 /// </summary>
 public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescriptor descriptor) : GraphicsAsset
 {
+  private static readonly MaterialProperty<TextureSampler> DefaultTextureProperty = new("u_texture");
+
   /// <summary>
   /// The handle to the underlying render target.
   /// </summary>
@@ -159,9 +162,40 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// <summary>
   /// Blits this render target to the main back buffer.
   /// </summary>
-  public void BlitToBackBuffer(uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public void BlitToBackBuffer(
+    uint sourceWidth,
+    uint sourceHeight,
+    uint destWidth,
+    uint destHeight,
+    BlitMask mask,
+    TextureFilterMode filterMode)
   {
     backend.BlitToBackBuffer(Handle, sourceWidth, sourceHeight, destWidth, destHeight, mask, filterMode);
+  }
+
+  /// <summary>
+  /// Blits this render target to the main back buffer.
+  /// </summary>
+  public void BlitToBackBuffer(
+    Material material,
+    BlitMask mask = BlitMask.Color,
+    Optional<TextureFilterMode> filterMode = default,
+    Optional<TextureWrapMode> wrapMode = default)
+  {
+    BlitToBackBuffer(material, DefaultTextureProperty, mask, filterMode, wrapMode);
+  }
+
+  /// <summary>
+  /// Blits this render target to the main back buffer.
+  /// </summary>
+  public void BlitToBackBuffer(
+    Material material,
+    MaterialProperty<TextureSampler> samplerProperty,
+    BlitMask mask = BlitMask.Color,
+    Optional<TextureFilterMode> filterMode = default,
+    Optional<TextureWrapMode> wrapMode = default)
+  {
+    backend.BlitToBackBuffer(Handle, material, DefaultTextureProperty, filterMode, wrapMode);
   }
 
   protected override void Dispose(bool managed)

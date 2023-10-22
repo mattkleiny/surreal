@@ -41,7 +41,7 @@ public sealed class SpriteBatchContext(IGraphicsBackend backend) : RenderContext
     Material.Properties.SetProperty(ProjectionView, camera.ProjectionView);
   }
 
-  protected internal override void OnEndFrame(in RenderFrame frame)
+  protected internal override void OnEndCamera(in RenderFrame frame, IRenderCamera camera)
   {
     SpriteBatch.Flush();
   }
@@ -231,10 +231,10 @@ public sealed class SpriteBatch : IDisposable
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 Position = Position;
 
-    [VertexDescriptor(4, VertexType.UnsignedByte, ShouldNormalize = true)]
-    public Color32 Color = Color;
-
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 UV = UV;
+
+    [VertexDescriptor(4, VertexType.UnsignedByte, ShouldNormalize = true)]
+    public Color32 Color = Color;
   }
 }

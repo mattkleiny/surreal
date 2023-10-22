@@ -7,6 +7,8 @@
 layout (location = 0) in vec2 a_position;
 layout (location = 1) in vec2 a_uv;
 
+out vec2 v_uv;
+
 void main()
 {
   v_uv = a_uv;
@@ -16,11 +18,13 @@ void main()
 
 #shader_type fragment
 
-uniform mat4 u_texture;
+uniform sampler2D u_texture;
 
 in vec2 v_uv;
 
 void main()
 {
-  gl_FragColor = texture(u_texture, v_uv);
+  vec2 uv = vec2(v_uv.x, -v_uv.y);
+
+  gl_FragColor = texture(u_texture, uv);
 }

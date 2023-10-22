@@ -13,6 +13,11 @@ public readonly record struct RenderFrame
   public required DeltaTime DeltaTime { get; init; }
 
   /// <summary>
+  /// The total time since rendering started.
+  /// </summary>
+  public required DeltaTime TotalTime { get; init; }
+
+  /// <summary>
   /// The <see cref="IGraphicsBackend"/> for this frame.
   /// </summary>
   public required IGraphicsBackend Backend { get; init; }

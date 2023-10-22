@@ -158,6 +158,10 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
     return 0;
   }
 
+  public void SetShaderSampler(GraphicsHandle handle, int location, TextureSampler sampler)
+  {
+  }
+
   public void SetActiveShader(GraphicsHandle handle)
   {
     _activeShader = handle;
@@ -190,6 +194,14 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   }
 
   public void BlitToBackBuffer(FrameBufferHandle handle, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  {
+  }
+
+  public void BlitToBackBuffer(FrameBufferHandle handle,
+    Material material,
+    MaterialProperty<TextureSampler> samplerProperty,
+    Optional<TextureFilterMode> filterMode,
+    Optional<TextureWrapMode> wrapMode)
   {
   }
 

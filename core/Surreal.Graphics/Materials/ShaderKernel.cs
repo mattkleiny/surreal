@@ -6,7 +6,7 @@
 public enum ShaderType
 {
   VertexShader,
-  FragmentShader,
+  FragmentShader
 }
 
 /// <summary>
