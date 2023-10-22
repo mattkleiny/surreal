@@ -10,7 +10,6 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputType>WinExe</OutputType>
-    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>

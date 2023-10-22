@@ -46,6 +46,22 @@ public sealed class MaterialPropertySet : IEnumerable<KeyValuePair<string, Varia
   private readonly Dictionary<string, Variant> _uniforms = new();
 
   /// <summary>
+  /// Adds a uniform property to the material.
+  /// </summary>
+  public void Add<T>(MaterialProperty<T> property, T value)
+  {
+    _uniforms.Add(property.Name, Variant.From(value));
+  }
+
+  /// <summary>
+  /// Removes a uniform property from the material.
+  /// </summary>
+  public void Remove<T>(MaterialProperty<T> property)
+  {
+    _uniforms.Remove(property.Name);
+  }
+
+  /// <summary>
   /// Determines if the material contains the given property.
   /// </summary>
   public bool Contains<T>(MaterialProperty<T> property)
