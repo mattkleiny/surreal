@@ -14,11 +14,11 @@ public sealed class UsedByLuaAttribute : Attribute;
 /// A <see cref="IScriptLanguage"/> for Lua.
 /// </summary>
 [RegisterService(typeof(IScriptLanguage))]
-public sealed class LuaScriptLanguage : IScriptLanguage, IDisposable
+public sealed class LuaLanguage : IScriptLanguage, IDisposable
 {
   private readonly NLua.Lua _lua;
 
-  public LuaScriptLanguage()
+  public LuaLanguage()
   {
     _lua = new NLua.Lua();
     _lua.LoadCLRPackage();
@@ -64,6 +64,21 @@ public sealed class LuaScriptLanguage : IScriptLanguage, IDisposable
     return true;
   }
 
+  /// <inheritdoc/>
+  public bool CanLoad(VirtualPath path)
+  {
+    return path.Extension.EndsWith(".lua");
+  }
+
+  /// <inheritdoc/>
+  public async Task<Script> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    var code = await path.ReadAllTextAsync(cancellationToken);
+
+    return new LuaScript(this, code);
+  }
+
+  /// <inheritdoc/>
   public Variant ExecuteCode(string code)
   {
     var result = _lua.DoString(code);
@@ -75,6 +90,7 @@ public sealed class LuaScriptLanguage : IScriptLanguage, IDisposable
     };
   }
 
+  /// <inheritdoc/>
   public Variant ExecuteFile(VirtualPath path)
   {
     var text = path.ReadAllText();
@@ -85,5 +101,16 @@ public sealed class LuaScriptLanguage : IScriptLanguage, IDisposable
   public void Dispose()
   {
     _lua.Dispose();
+  }
+
+  /// <summary>
+  /// A <see cref="Script"/> type for Lua.
+  /// </summary>
+  private sealed class LuaScript(LuaLanguage language, string code) : Script
+  {
+    public override Variant Execute()
+    {
+      return language.ExecuteCode(code);
+    }
   }
 }

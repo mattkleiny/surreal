@@ -5,6 +5,11 @@
 /// </summary>
 public abstract class Script : IDisposable
 {
+  /// <summary>
+  /// Executes the script with the given arguments.
+  /// </summary>
+  public abstract Variant Execute();
+
   public void Dispose()
   {
   }

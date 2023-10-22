@@ -13,6 +13,16 @@ public interface IScriptLanguage
   string Name { get; }
 
   /// <summary>
+  /// Determines if this language can load the given path.
+  /// </summary>
+  bool CanLoad(VirtualPath path);
+
+  /// <summary>
+  /// Loads a script from the given path.
+  /// </summary>
+  Task<Script> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default);
+
+  /// <summary>
   /// Executes a script in this language.
   /// </summary>
   Variant ExecuteCode(string code);

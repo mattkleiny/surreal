@@ -8,7 +8,7 @@ public class LuaScriptLanguageTests
   [Test]
   public void it_should_execute_code_with_side_effect()
   {
-    using var language = new LuaScriptLanguage();
+    using var language = new LuaLanguage();
 
     var result = language.ExecuteCode("print(\"Hello, world!\")");
 
@@ -18,7 +18,7 @@ public class LuaScriptLanguageTests
   [Test]
   public void it_should_execute_code_and_return()
   {
-    using var language = new LuaScriptLanguage();
+    using var language = new LuaLanguage();
 
     var result = language.ExecuteCode("return 2 + 2");
 
@@ -29,7 +29,7 @@ public class LuaScriptLanguageTests
   [TestCase("local://Assets/External/scripts/HelloWorld.lua")]
   public void it_should_execute_a_file(VirtualPath path)
   {
-    using var language = new LuaScriptLanguage();
+    using var language = new LuaLanguage();
 
     var result = language.ExecuteFile(path);
 
@@ -39,7 +39,7 @@ public class LuaScriptLanguageTests
   [Test]
   public void it_should_execute_a_file_with_context()
   {
-    using var language = new LuaScriptLanguage();
+    using var language = new LuaLanguage();
     var context = new GameContext();
 
     language["Game"] = context;
@@ -59,7 +59,7 @@ public class LuaScriptLanguageTests
   [Test]
   public void it_should_pass_global_state()
   {
-    using var language = new LuaScriptLanguage();
+    using var language = new LuaLanguage();
 
     language["test"] = 42;
 
@@ -71,7 +71,7 @@ public class LuaScriptLanguageTests
   [Test]
   public void it_should_yield_functions_from_lua()
   {
-    using var language = new LuaScriptLanguage();
+    using var language = new LuaLanguage();
 
     language.ExecuteCode("function test() return 42 end");
 

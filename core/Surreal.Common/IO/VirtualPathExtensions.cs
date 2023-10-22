@@ -130,15 +130,25 @@ public static class VirtualPathExtensions
     await stream.FlushAsync(cancellationToken);
   }
 
-  public static string ReadAllText(this VirtualPath path, Encoding? encoding = default)
+  public static string ReadAllText(this VirtualPath path)
+  {
+    return ReadAllText(path, DefaultEncoding);
+  }
+
+  public static string ReadAllText(this VirtualPath path, Encoding encoding)
   {
     using var stream = path.OpenInputStream();
-    using var reader = new StreamReader(stream, encoding ?? DefaultEncoding);
+    using var reader = new StreamReader(stream, encoding);
 
     return reader.ReadToEnd();
   }
 
-  public static async ValueTask<string> ReadAllTextAsync(this VirtualPath path, Encoding? encoding = default, CancellationToken cancellationToken = default)
+  public static ValueTask<string> ReadAllTextAsync(this VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    return ReadAllTextAsync(path, DefaultEncoding, cancellationToken);
+  }
+
+  public static async ValueTask<string> ReadAllTextAsync(this VirtualPath path, Encoding encoding, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
     using var reader = new StreamReader(stream, encoding ?? DefaultEncoding);
@@ -146,7 +156,12 @@ public static class VirtualPathExtensions
     return await reader.ReadToEndAsync(cancellationToken);
   }
 
-  public static void WriteAllText(this VirtualPath path, string text, Encoding? encoding = default)
+  public static void WriteAllText(this VirtualPath path, string text)
+  {
+    WriteAllText(path, text, DefaultEncoding);
+  }
+
+  public static void WriteAllText(this VirtualPath path, string text, Encoding encoding)
   {
     using var stream = path.OpenOutputStream();
     using var writer = new StreamWriter(stream, encoding ?? DefaultEncoding);
@@ -155,7 +170,12 @@ public static class VirtualPathExtensions
     writer.Flush();
   }
 
-  public static async ValueTask WriteAllTextAsync(this VirtualPath path, string text, Encoding? encoding = default, CancellationToken cancellationToken = default)
+  public static ValueTask WriteAllTextAsync(this VirtualPath path, string text, CancellationToken cancellationToken = default)
+  {
+    return WriteAllTextAsync(path, text, DefaultEncoding, cancellationToken);
+  }
+
+  public static async ValueTask WriteAllTextAsync(this VirtualPath path, string text, Encoding encoding, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenOutputStreamAsync();
     await using var writer = new StreamWriter(stream, encoding ?? DefaultEncoding);

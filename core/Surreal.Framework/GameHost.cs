@@ -85,7 +85,9 @@ public abstract class GameHost : IGameHost
   protected GameHost(IServiceModule module)
   {
     Services = new ServiceRegistry();
+
     Services.AddModule(module);
+    Services.AddService<IGameHost>(this);
   }
 
   /// <inheritdoc/>
