@@ -36,7 +36,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     {
       _colorTarget.Bind();
 
-      _colorTarget.ClearColorBuffer(Color.Black);
+      _colorTarget.ClearColorBuffer(Color.Clear);
     }
 
     public override void OnExecutePass(in RenderFrame frame)

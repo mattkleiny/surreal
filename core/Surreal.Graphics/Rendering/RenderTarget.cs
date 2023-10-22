@@ -84,14 +84,14 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// <summary>
   /// Clears the color buffer of this render target.
   /// </summary>
-  public void ClearColorBuffer(Color black)
+  public void ClearColorBuffer(Color color)
   {
     if (!IsActive)
     {
       throw new InvalidOperationException("Cannot clear a render target that is not bound.");
     }
 
-    backend.ClearColorBuffer(black);
+    backend.ClearColorBuffer(color);
   }
 
   /// <summary>
