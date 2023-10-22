@@ -1,4 +1,5 @@
 ﻿using LightInject;
+using Surreal.Diagnostics.Logging;
 
 namespace Surreal.Utilities;
 
@@ -23,6 +24,8 @@ public interface IServiceRegistry : IServiceProvider
 /// </summary>
 public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 {
+  private static readonly ILog Log = LogFactory.GetLog<ServiceRegistry>();
+
   private readonly ServiceContainer _container = new();
 
   public object? GetService(Type serviceType)
@@ -32,11 +35,22 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
   public void AddService(Type serviceType, Type implementationType)
   {
+    if (implementationType != serviceType)
+    {
+      Log.Trace($"Registering service {serviceType} with implementation {implementationType}");
+    }
+    else
+    {
+      Log.Trace($"Registering service {serviceType}");
+    }
+
     _container.RegisterSingleton(serviceType, implementationType, GenerateName());
   }
 
   public void AddService(Type serviceType, object instance)
   {
+    Log.Trace($"Registering service {serviceType} with instance {instance}");
+
     _container.RegisterInstance(serviceType, instance, GenerateName());
   }
 

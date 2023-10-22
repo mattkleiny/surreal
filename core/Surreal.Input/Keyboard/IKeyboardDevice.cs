@@ -5,6 +5,8 @@
 /// </summary>
 public interface IKeyboardDevice : IInputDevice
 {
+  Type IInputDevice.DeviceType => typeof(IKeyboardDevice);
+
   event Action<Key> KeyPressed;
   event Action<Key> KeyReleased;
 

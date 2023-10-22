@@ -8,14 +8,23 @@
       IsVsyncEnabled = true,
       ShowFpsInTitle = true,
       Width = 1920,
-      Height = 1080
+      Height = 1080,
+      IsTransparent = true
     }
   },
   Host = GameHost.Create(() =>
   {
+    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
+    var keyboard = Game.Services.GetServiceOrThrow<IKeyboardDevice>();
+
     return _ =>
     {
-      // TODO: implement me
+      graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
+
+      if (keyboard.IsKeyPressed(Key.Escape))
+      {
+        Game.Exit();
+      }
     };
   })
 });

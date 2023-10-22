@@ -38,6 +38,11 @@ public interface IGameHost : IDisposable
   /// Executes the main game loop.
   /// </summary>
   void Tick(GameTime time);
+
+  /// <summary>
+  /// Exits the main game loop.
+  /// </summary>
+  void Exit();
 }
 
 /// <summary>
@@ -100,13 +105,19 @@ public abstract class GameHost : IGameHost
   public IServiceRegistry Services { get; }
 
   /// <inheritdoc/>
-  public bool IsClosing => false;
+  public bool IsClosing { get; private set; }
 
   /// <inheritdoc/>
   public abstract void Initialize(GameConfiguration configuration);
 
   /// <inheritdoc/>
   public abstract void Tick(GameTime time);
+
+  /// <inheritdoc/>
+  public void Exit()
+  {
+    IsClosing = true;
+  }
 
   public virtual void Dispose()
   {

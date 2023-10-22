@@ -54,7 +54,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     Window = new SilkWindow(configuration);
     AudioBackend = new SilkAudioBackend();
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
-    InputBackend = new SilkInputBackend();
+    InputBackend = new SilkInputBackend(Window.Input);
 
     Resized += OnResized;
 
@@ -64,6 +64,12 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     host.Services.AddService<IAudioBackend>(AudioBackend);
     host.Services.AddService<IGraphicsBackend>(GraphicsBackend);
     host.Services.AddService<IInputBackend>(InputBackend);
+
+    foreach (var device in InputBackend.Devices)
+    {
+      host.Services.AddService(device);
+      host.Services.AddService(device.DeviceType, device);
+    }
   }
 
   public SilkWindow Window { get; }

@@ -22,6 +22,7 @@ internal sealed class SilkWindow : IDesktopWindow
       IsEventDriven = configuration.IsEventDriven,
       VSync = configuration.IsVsyncEnabled,
       WindowBorder = configuration.IsResizable ? WindowBorder.Resizable : WindowBorder.Fixed,
+      TransparentFramebuffer = configuration.IsTransparent
     };
 
     _window = Window.Create(windowOptions);

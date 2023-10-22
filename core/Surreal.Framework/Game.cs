@@ -43,6 +43,17 @@ public sealed record GameConfiguration
 [ExcludeFromCodeCoverage]
 public static class Game
 {
+  /// <summary>
+  /// Initializes the game's static state.
+  /// </summary>
+  [ModuleInitializer]
+  [SuppressMessage("Usage", "CA2255:The \'ModuleInitializer\' attribute should not be used in libraries")]
+  public static void Initialize()
+  {
+    LogFactory.Current = new TextWriterLogFactory(Console.Out, LogLevel.Trace);
+    ProfilerFactory.Current = new SamplingProfilerFactory(new InMemoryProfilerSampler());
+  }
+
   private static IGameHost? _host;
 
   /// <summary>
@@ -74,9 +85,6 @@ public static class Game
   /// </summary>
   public static void Start(GameConfiguration configuration)
   {
-    LogFactory.Current = new TextWriterLogFactory(Console.Out, LogLevel.Trace);
-    ProfilerFactory.Current = new SamplingProfilerFactory(new InMemoryProfilerSampler());
-
     using var platform = configuration.Platform.BuildHost(configuration.Host);
     using var host = configuration.Host;
 
@@ -108,5 +116,13 @@ public static class Game
     {
       Host = null!;
     }
+  }
+
+  /// <summary>
+  /// Exits the current game.
+  /// </summary>
+  public static void Exit()
+  {
+    Host.Exit();
   }
 }

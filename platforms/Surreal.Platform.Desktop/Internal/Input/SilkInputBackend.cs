@@ -1,8 +1,16 @@
-﻿namespace Surreal.Input;
+﻿using Silk.NET.Input;
 
-internal sealed class SilkInputBackend : IInputBackend, IDisposable
+namespace Surreal.Input;
+
+internal sealed class SilkInputBackend(IInputContext context) : IInputBackend, IDisposable
 {
-  public IEnumerable<IInputDevice> Devices { get; } = Enumerable.Empty<IInputDevice>();
+  /// <inheritdoc/>
+  public IEnumerable<IInputDevice> Devices { get; } = new IInputDevice[]
+  {
+    // TODO: make this more robust
+    new SilkKeyboardDevice(context.Keyboards.Single()),
+    new SilkMouseDevice(context.Mice.Single())
+  };
 
   public void Dispose()
   {

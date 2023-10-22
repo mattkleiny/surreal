@@ -5,6 +5,8 @@
 /// </summary>
 public interface IMouseDevice : IInputDevice
 {
+  Type IInputDevice.DeviceType => typeof(IMouseDevice);
+
   Vector2 Position { get; }
   Vector2 NormalisedPosition { get; }
   Vector2 DeltaPosition { get; }

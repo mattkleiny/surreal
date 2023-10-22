@@ -27,7 +27,7 @@ public static class LogFactory
 
   public static ILog GetLog(string category)
   {
-    return new LazyLog(category);
+    return Current.GetLog(category);
   }
 
   private static string GetFullNameWithoutGenerics(Type type)
@@ -40,29 +40,6 @@ public static class LogFactory
     }
 
     return RemoveGenerics(type.FullName ?? string.Empty);
-  }
-
-  /// <summary>
-  /// A <see cref="ILog" /> that lazily acquires the <see cref="ILog" /> target.
-  /// </summary>
-  private sealed class LazyLog(string category) : ILog
-  {
-    private readonly Lazy<ILog> _log = new(() => Current.GetLog(category));
-
-    public bool IsLevelEnabled(LogLevel level)
-    {
-      return _log.Value.IsLevelEnabled(level);
-    }
-
-    public void WriteMessage(LogLevel level, string message, Exception? exception = null)
-    {
-      _log.Value.WriteMessage(level, message, exception);
-    }
-
-    public void WriteMessage(LogLevel level, ref LogInterpolator handler, Exception? exception = null)
-    {
-      _log.Value.WriteMessage(level, ref handler, exception);
-    }
   }
 
   /// <summary>

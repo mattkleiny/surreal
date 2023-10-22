@@ -27,7 +27,7 @@ public static class ProfilerFactory
 
   public static IProfiler GetProfiler(string category)
   {
-    return new LazyProfiler(category);
+    return Current.GetProfiler(category);
   }
 
   private static string GetFullNameWithoutGenerics(Type type)
@@ -40,29 +40,6 @@ public static class ProfilerFactory
     }
 
     return RemoveGenerics(type.FullName ?? string.Empty);
-  }
-
-  /// <summary>
-  /// A <see cref="IProfiler" /> that lazily acquires the <see cref="IProfiler" /> target.
-  /// </summary>
-  private sealed class LazyProfiler : IProfiler
-  {
-    private readonly Lazy<IProfiler> _profiler;
-
-    public LazyProfiler(string category)
-    {
-      _profiler = new Lazy<IProfiler>(() => Current.GetProfiler(category));
-    }
-
-    public ProfilingScope Track(string task)
-    {
-      return _profiler.Value.Track(task);
-    }
-
-    public ProfilingScope Track(string category, string task)
-    {
-      return _profiler.Value.Track(category, task);
-    }
   }
 
   /// <summary>
