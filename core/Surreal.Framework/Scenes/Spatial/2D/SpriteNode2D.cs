@@ -44,7 +44,7 @@ public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject, IGizmoO
     set => SetField(ref _tint, value);
   }
 
-  protected virtual void OnRender(SpriteBatch batch)
+  protected virtual void OnRender(in RenderFrame frame, SpriteBatch batch)
   {
     batch.Draw(
       region: Sprite,
@@ -67,7 +67,7 @@ public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject, IGizmoO
   {
     if (frame.Contexts.TryGetContext(in frame, out SpriteContext context))
     {
-      OnRender(context.SpriteBatch);
+      OnRender(in frame, context.SpriteBatch);
     }
   }
 
@@ -76,7 +76,7 @@ public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject, IGizmoO
     gizmos.DrawWireQuad(
       center: GlobalPosition,
       size: GlobalScale * Sprite.Size,
-      color: Color.Red
+      color: Color.White
     );
   }
 }

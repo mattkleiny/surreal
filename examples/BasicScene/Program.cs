@@ -18,10 +18,13 @@ var configuration = new GameConfiguration
 
 Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTree scene, ForwardRenderPipeline pipeline) =>
 {
-  var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
+  var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/crab.png");
   var music = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
+  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://BasicScene/Assets/Embedded/palettes/kule-16.pal");
 
   pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+  pipeline.RequireDepthPass = false;
+  pipeline.EnableGizmos = false;
 
   var viewport = new CameraViewportNode();
 
@@ -40,51 +43,78 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
 
   viewport.Add(camera);
   viewport.Add(musicPlayer);
-
-  // create some bunnies
-  for (int i = 0; i < 100; i++)
+  viewport.Add(new Spawner
   {
-    var bunny = new Bunny
+    Factory = () => new Entity
     {
-      Sprite = sprite
-    };
-
-    viewport.Add(bunny);
-
-    if (i == 0)
-    {
-      bunny.Add(new AudioListener2D());
+      Sprite = sprite,
+      Tint = palette.SelectRandom(),
+      Velocity = Random.Shared.NextVector2(-1f, 1f),
+      RotationSpeed = Random.Shared.NextFloat(-1f, 1f),
+      Bounds = new Vector2(200f, 200f)
     }
-  }
+  });
 
   scene.Add(viewport);
 });
 
 namespace BasicScene
 {
-  /// <summary>
-  /// An example custom node.
-  /// </summary>
-  internal sealed class Bunny : SpriteNode2D
+  internal sealed class Spawner : SceneNode2D, IGizmoObject
   {
-    /// <summary>
-    /// The speed of the bunny.
-    /// </summary>
-    public float Speed { get; set; } = 10f;
+    private static readonly ILog Log = LogFactory.GetLog<Spawner>();
 
-    /// <summary>
-    /// The velocity of the bunny.
-    /// </summary>
-    public Vector2 Velocity { get; set; } = Vector2.Zero;
+    public int SpawnCount { get; set; } = 512;
+    public TimeSpan SpawnRate { get; set; } = TimeSpan.FromSeconds(0.5f);
+
+    public required Func<SceneNode2D> Factory { get; set; }
+
+    private IntervalTimer _spawnTimer;
 
     protected override void OnUpdate(DeltaTime deltaTime)
     {
       base.OnUpdate(deltaTime);
 
-      Velocity += new Vector2(
-        (Random.Shared.NextFloat() - 0.5f) * Speed,
-        (Random.Shared.NextFloat() - 0.5f) * Speed
-      );
+      _spawnTimer.Tick(deltaTime);
+
+      if (_spawnTimer.HasPassed(SpawnRate))
+      {
+        for (int i = 0; i < SpawnCount; i++)
+        {
+          Add(Factory());
+        }
+
+        _spawnTimer.Reset();
+
+        Log.Trace($"There are {Children.Count} children");
+      }
+    }
+
+    void IGizmoObject.RenderGizmos(in RenderFrame frame, GizmoBatch gizmos)
+    {
+      gizmos.DrawSolidCircle(GlobalPosition, 0.3f, Color.Yellow);
+    }
+  }
+
+  internal sealed class Entity : SpriteNode2D
+  {
+    public Vector2 Bounds { get; set; }
+    public Vector2 Velocity { get; set; } = Vector2.Zero;
+    public float RotationSpeed { get; set; } = 10f;
+
+    protected override void OnUpdate(DeltaTime deltaTime)
+    {
+      base.OnUpdate(deltaTime);
+
+      // update position and rotation
+      GlobalPosition += Velocity * 100f * deltaTime;
+      GlobalRotation += Angle.FromRadians(RotationSpeed * deltaTime);
+
+      // bounce off walls
+      if (GlobalPosition.X < -Bounds.X / 2f) Velocity *= new Vector2(-1f, 1f);
+      if (GlobalPosition.X > Bounds.X / 2f) Velocity *= new Vector2(-1f, 1f);
+      if (GlobalPosition.Y < -Bounds.Y / 2f) Velocity *= new Vector2(1f, -1f);
+      if (GlobalPosition.Y > Bounds.Y / 2f) Velocity *= new Vector2(1f, -1f);
 
       GlobalPosition += Velocity * deltaTime;
     }

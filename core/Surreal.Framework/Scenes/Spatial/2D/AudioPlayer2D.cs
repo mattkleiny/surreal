@@ -1,8 +1,5 @@
 ﻿using Surreal.Audio;
 using Surreal.Audio.Clips;
-using Surreal.Colors;
-using Surreal.Graphics.Gizmos;
-using Surreal.Graphics.Rendering;
 using Surreal.Utilities;
 
 namespace Surreal.Scenes.Spatial;
@@ -10,7 +7,7 @@ namespace Surreal.Scenes.Spatial;
 /// <summary>
 /// A node that plays audio.
 /// </summary>
-public class AudioPlayer2D : SceneNode2D, IGizmoObject
+public class AudioPlayer2D : SceneNode2D
 {
   private AudioClip? _audioClip;
   private AudioSource? _source;
@@ -150,10 +147,5 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
     {
       _source.Position = new Vector3(GlobalPosition, 0f);
     }
-  }
-
-  void IGizmoObject.RenderGizmos(in RenderFrame frame, GizmoBatch gizmos)
-  {
-    gizmos.DrawSolidCircle(GlobalPosition, 2f, Color.Yellow);
   }
 }
