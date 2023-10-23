@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A Surreal platform implementation for desktop environments using Silk .NET.</Description>
+    <RootNamespace>Surreal</RootNamespace>
     <SilkVersion>2.17</SilkVersion>
   </PropertyGroup>
   <ItemGroup>

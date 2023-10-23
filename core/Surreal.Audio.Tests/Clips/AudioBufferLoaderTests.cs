@@ -1,6 +1,7 @@
 ﻿using Surreal.Assets;
+using Surreal.Audio.Clips;
 
-namespace Surreal.Audio.Clips;
+namespace Surreal.Audio.Tests.Clips;
 
 public class AudioBufferLoaderTests
 {

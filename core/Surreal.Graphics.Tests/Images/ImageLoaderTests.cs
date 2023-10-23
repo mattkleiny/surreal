@@ -1,6 +1,7 @@
 ﻿using Surreal.Assets;
+using Surreal.Graphics.Images;
 
-namespace Surreal.Graphics.Images;
+namespace Surreal.Graphics.Tests.Images;
 
 public class ImageLoaderTests
 {

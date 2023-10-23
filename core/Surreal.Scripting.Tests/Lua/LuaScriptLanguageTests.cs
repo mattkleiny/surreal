@@ -1,7 +1,7 @@
 ﻿using Surreal.IO;
 using Surreal.Scripting.Lua;
 
-namespace Surreal.Lua;
+namespace Surreal.Scripting.Tests.Lua;
 
 public class LuaScriptLanguageTests
 {

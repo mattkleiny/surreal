@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Common tools, collections, etc for Surreal.</Description>
+    <RootNamespace>Surreal</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="LightInject" Version="6.6.4" PrivateAssets="compile"/>

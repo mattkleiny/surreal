@@ -3,7 +3,6 @@ using Surreal.Diagnostics;
 using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.Graphics.Images;
-using Surreal.Graphics.Rendering;
 using Surreal.Input;
 using Surreal.Timing;
 using Surreal.Utilities;

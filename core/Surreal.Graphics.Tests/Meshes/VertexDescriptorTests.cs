@@ -1,7 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using Surreal.Colors;
+using Surreal.Graphics.Meshes;
 
-namespace Surreal.Graphics.Meshes;
+namespace Surreal.Graphics.Tests.Meshes;
 
 public sealed class VertexDescriptorTests
 {

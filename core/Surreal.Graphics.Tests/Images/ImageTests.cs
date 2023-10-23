@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphics.Images;
+﻿using Surreal.Graphics.Images;
+
+namespace Surreal.Graphics.Tests.Images;
 
 public class ImageTests
 {

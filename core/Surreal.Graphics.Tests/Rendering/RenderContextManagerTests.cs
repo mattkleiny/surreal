@@ -1,7 +1,8 @@
 ﻿using Surreal.Assets;
+using Surreal.Graphics.Rendering;
 using Surreal.Timing;
 
-namespace Surreal.Graphics.Rendering;
+namespace Surreal.Graphics.Tests.Rendering;
 
 public class RenderContextManagerTests
 {

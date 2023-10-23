@@ -17,6 +17,11 @@ public interface IServiceRegistry : IServiceProvider
   /// Registers a service.
   /// </summary>
   void AddService(Type serviceType, object instance);
+
+  /// <summary>
+  /// Instantiates a type and populates it's service without adding it to the container.
+  /// </summary>
+  T Instantiate<T>() where T : class;
 }
 
 /// <summary>
@@ -52,6 +57,44 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     Log.Trace($"Registering service {serviceType} with instance {instance}");
 
     _container.RegisterInstance(serviceType, instance, GenerateName());
+  }
+
+  public T Instantiate<T>()
+    where T : class
+  {
+    var constructors = typeof(T).GetConstructors()
+      .Where(c => c.IsPublic)
+      .OrderByDescending(c => c.GetParameters().Length);
+
+    var candidates = new List<ConstructorInfo>(constructors);
+
+    for (var i = candidates.Count - 1; i >= 0; i--)
+    {
+      foreach (var parameter in candidates[i].GetParameters())
+      {
+        if (!_container.CanGetInstance(parameter.ParameterType, null))
+        {
+          candidates.RemoveAt(i);
+          break;
+        }
+      }
+    }
+
+    if (candidates.Count == 0)
+    {
+      return Activator.CreateInstance<T>();
+    }
+
+    var constructorInfo = candidates[0];
+    var parameterInfos = constructorInfo.GetParameters();
+    var parameters = new object[parameterInfos.Length];
+
+    for (var i = 0; i < parameterInfos.Length; i++)
+    {
+      parameters[i] = _container.GetInstance(parameterInfos[i].ParameterType);
+    }
+
+    return (T)constructorInfo.Invoke(parameters);
   }
 
   private static string GenerateName()

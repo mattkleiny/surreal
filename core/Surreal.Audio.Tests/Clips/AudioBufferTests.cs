@@ -1,6 +1,7 @@
-﻿using Surreal.Memory;
+﻿using Surreal.Audio.Clips;
+using Surreal.Memory;
 
-namespace Surreal.Audio.Clips;
+namespace Surreal.Audio.Tests.Clips;
 
 public class AudioBufferTests
 {

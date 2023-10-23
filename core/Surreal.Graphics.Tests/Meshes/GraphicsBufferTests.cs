@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphics.Meshes;
+﻿using Surreal.Graphics.Meshes;
+
+namespace Surreal.Graphics.Tests.Meshes;
 
 public class GraphicsBufferTests
 {

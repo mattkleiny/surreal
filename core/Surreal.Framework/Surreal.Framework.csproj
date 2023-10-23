@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Game frameworks for Surreal</Description>
+    <RootNamespace>Surreal</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Audio\Surreal.Audio.csproj"/>

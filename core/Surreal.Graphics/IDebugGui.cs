@@ -1,7 +1,4 @@
-﻿using Surreal.Graphics.Rendering;
-using Surreal.Timing;
-
-namespace Surreal.Graphics;
+﻿namespace Surreal.Graphics;
 
 /// <summary>
 /// A utility for rendering immediate-mode GUIs.

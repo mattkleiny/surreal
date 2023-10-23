@@ -17,7 +17,6 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Surreal</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ApplicationIcon>$(MSBuildThisFileDirectory)/surreal.ico</ApplicationIcon>
@@ -100,7 +99,6 @@
   <!-- conveniences for test projects -->
   <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
     <IsPackable>false</IsPackable>
-    <PackRelease>false</PackRelease>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
@@ -125,9 +123,6 @@
   <PropertyGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
-    <PackRelease>false</PackRelease>
-    <IsTrimmable>false</IsTrimmable>
-    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
   <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
     <PackageReference Include="BenchmarkDotNet" Version="0.13.9"/>

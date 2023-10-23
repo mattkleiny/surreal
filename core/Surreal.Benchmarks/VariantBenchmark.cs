@@ -1,34 +1,37 @@
-﻿using Surreal;
+﻿using Surreal.Benchmarks;
 using Surreal.Maths;
 
 BenchmarkRunner.Run<VariantBenchmark>();
 
-[MemoryDiagnoser]
-[DisassemblyDiagnoser]
-public class VariantBenchmark
+namespace Surreal.Benchmarks
 {
-  private readonly Vector4 _vector;
-
-  public VariantBenchmark()
+  [MemoryDiagnoser]
+  [DisassemblyDiagnoser]
+  public class VariantBenchmark
   {
-    var random = new Random(42);
+    private readonly Vector4 _vector;
 
-    _vector = random.NextVector4(0f, 1f);
-  }
+    public VariantBenchmark()
+    {
+      var random = new Random(42);
 
-  [Benchmark]
-  public Vector4 Baseline() => PassNormal(_vector);
+      _vector = random.NextVector4(0f, 1f);
+    }
 
-  [Benchmark]
-  public Vector4 ByVariant() => PassByVariant(_vector);
+    [Benchmark]
+    public Vector4 Baseline() => PassNormal(_vector);
 
-  private Vector4 PassNormal(Vector4 vector)
-  {
-    return _vector + vector;
-  }
+    [Benchmark]
+    public Vector4 ByVariant() => PassByVariant(_vector);
 
-  private Vector4 PassByVariant(Variant variant)
-  {
-    return _vector + variant.AsVector4();
+    private Vector4 PassNormal(Vector4 vector)
+    {
+      return _vector + vector;
+    }
+
+    private Vector4 PassByVariant(Variant variant)
+    {
+      return _vector + variant.AsVector4();
+    }
   }
 }

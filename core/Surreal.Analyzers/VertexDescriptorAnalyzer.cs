@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Surreal;
+namespace Surreal.Analyzers;
 
 /// <summary>
 /// An analyzer that checks for correct usages of Vertex Descriptors

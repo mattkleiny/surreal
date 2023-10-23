@@ -2,6 +2,8 @@
 using Surreal.Assets;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
+using Surreal.Graphics.Rendering;
+using Surreal.Scenes;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -52,15 +54,10 @@ public sealed record GameConfiguration
 [ExcludeFromCodeCoverage]
 public sealed class Game : IDisposable
 {
-  /// <summary>
-  /// A function that sets up the game.
-  /// </summary>
   public delegate void GameSetup(Game game);
-
-  /// <summary>
-  /// A function that sets up the game.
-  /// </summary>
   public delegate Task GameSetupAsync(Game game);
+  public delegate void SceneSetup(Game game, SceneTree scene);
+  public delegate Task SceneSetupAsync(Game game, SceneTree scene);
 
   /// <summary>
   /// A function that runs the game loop.
@@ -113,7 +110,7 @@ public sealed class Game : IDisposable
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
-  public static void Start(GameConfiguration configuration, GameSetupAsync gameSetup, CancellationToken cancellationToken = default)
+  public static void Start(GameConfiguration configuration, GameSetupAsync gameSetup)
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
@@ -136,9 +133,6 @@ public sealed class Game : IDisposable
     // marshal all async work back to the main thread
     SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
 
-    // allow early termination of the core event loop
-    cancellationToken.Register(() => game.IsClosing = true);
-
     // prepare the game and loop
     Schedule(() => gameSetup(game).ContinueWith(task =>
     {
@@ -157,6 +151,62 @@ public sealed class Game : IDisposable
       // eventually this will end up blocking when a main loop takes over
       PumpEventLoop();
     }
+  }
+
+  /// <summary>
+  /// Starts the game with a scene and the given render pipeline.
+  /// </summary>
+  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+  public static void StartScene<TPipeline>(GameConfiguration configuration, SceneSetup sceneSetup)
+    where TPipeline : class, IRenderPipeline
+  {
+    Start(configuration, game =>
+    {
+      using var pipeline = game.Services.Instantiate<TPipeline>();
+
+      using var sceneTree = new SceneTree
+      {
+        Assets = game.Assets,
+        Services = game.Services,
+        Renderer = pipeline
+      };
+
+      sceneSetup(game, sceneTree);
+
+      game.ExecuteVariableStep(time =>
+      {
+        sceneTree.Update(time.DeltaTime);
+        sceneTree.Render(time.DeltaTime);
+      });
+    });
+  }
+
+  /// <summary>
+  /// Starts the game with a scene and the given render pipeline.
+  /// </summary>
+  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+  public static void StartScene<TPipeline>(GameConfiguration configuration, SceneSetupAsync sceneSetup)
+    where TPipeline : class, IRenderPipeline
+  {
+    Start(configuration, async game =>
+    {
+      using var pipeline = game.Services.Instantiate<TPipeline>();
+
+      using var sceneTree = new SceneTree
+      {
+        Assets = game.Assets,
+        Services = game.Services,
+        Renderer = pipeline
+      };
+
+      await sceneSetup(game, sceneTree);
+
+      game.ExecuteVariableStep(time =>
+      {
+        sceneTree.Update(time.DeltaTime);
+        sceneTree.Render(time.DeltaTime);
+      });
+    });
   }
 
   /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace Surreal.Collections;
+﻿using Surreal.Collections;
+
+namespace Surreal.Common.Tests.Collections;
 
 public class GenerationalArenaTests
 {

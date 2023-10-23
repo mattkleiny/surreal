@@ -1,7 +1,8 @@
 ﻿using Surreal.Graphics.Materials;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 
-namespace Surreal.Graphics.Rendering;
+namespace Surreal.Graphics.Tests.Rendering;
 
 public class ForwardRenderPipelineTests
 {
@@ -23,7 +24,7 @@ public class ForwardRenderPipelineTests
 
     using var pipeline = new ForwardRenderPipeline(backend);
 
-    pipeline.Render(scene);
+    pipeline.Render(scene, TODO);
 
     backend.Received().BlitToBackBuffer(
       handle: Arg.Any<FrameBufferHandle>(),

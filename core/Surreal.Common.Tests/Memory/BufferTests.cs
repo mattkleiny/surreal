@@ -1,4 +1,6 @@
-﻿namespace Surreal.Memory;
+﻿using Surreal.Memory;
+
+namespace Surreal.Common.Tests.Memory;
 
 public class BufferTests
 {

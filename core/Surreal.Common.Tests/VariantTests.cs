@@ -2,7 +2,7 @@
 using Surreal.Maths;
 using Surreal.Utilities;
 
-namespace Surreal;
+namespace Surreal.Common.Tests;
 
 public class VariantTests
 {

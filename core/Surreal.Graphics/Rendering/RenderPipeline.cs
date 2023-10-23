@@ -21,7 +21,7 @@ public interface IRenderPipeline : IDisposable
   /// <summary>
   /// Renders all the given cameras in the given scene.
   /// </summary>
-  void Render(IRenderScene scene);
+  void Render(IRenderScene scene, DeltaTime deltaTime);
 }
 
 /// <summary>
@@ -29,7 +29,6 @@ public interface IRenderPipeline : IDisposable
 /// </summary>
 public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 {
-  private readonly DeltaTimeClock _clock = new();
   private readonly TimeStamp _startTime = TimeStamp.Now;
 
   /// <summary>
@@ -38,11 +37,11 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
   public RenderContextManager Contexts { get; } = new();
 
   /// <inheritdoc/>
-  public void Render(IRenderScene scene)
+  public void Render(IRenderScene scene, DeltaTime deltaTime)
   {
     var frame = new RenderFrame
     {
-      DeltaTime = _clock.Tick(),
+      DeltaTime = deltaTime,
       TotalTime = TimeStamp.Now - _startTime,
       Backend = backend,
       Contexts = Contexts,

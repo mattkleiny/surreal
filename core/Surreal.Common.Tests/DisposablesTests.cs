@@ -1,4 +1,4 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Common.Tests;
 
 public class DisposablesTests
 {

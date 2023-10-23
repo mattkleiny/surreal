@@ -1,7 +1,7 @@
 ﻿using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 
-namespace Surreal.Graphics;
+namespace Surreal.Graphics.Tests;
 
 public class SpriteBatchTests
 {

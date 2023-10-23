@@ -1,4 +1,4 @@
-﻿const float zoomSpeed = 10f;
+﻿using BasicScene;
 
 var configuration = new GameConfiguration
 {
@@ -16,43 +16,25 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.Start(configuration, async game =>
+Game.StartScene<ForwardRenderPipeline>(configuration, async (game, scene) =>
 {
-  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
-  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
-  var mouse = game.Services.GetServiceOrThrow<IMouseDevice>();
-  var debug = game.Services.GetServiceOrThrow<IDebugGui>();
-
-  var clip = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
+  var music = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
 
-  // setup the render pipeline
-  using var pipeline = new ForwardRenderPipeline(graphics)
+  if (scene.Renderer is ForwardRenderPipeline pipeline)
   {
-    ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f),
-    Contexts =
-    {
-      new SpriteContext(graphics)
-    }
-  };
-
-  // create scene and main camera
-  using var scene = new SceneTree
-  {
-    Assets = game.Assets,
-    Services = game.Services
-  };
+    pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+  }
 
   var viewport = new CameraViewportNode();
   var camera = new CameraNode2D { Zoom = 100f };
 
-  scene.Add(viewport);
   viewport.Add(camera);
   viewport.Add(new AudioPlayer2D
   {
     PlayOnReady = true,
     IsLooping = true,
-    AudioClip = clip
+    AudioClip = music
   });
 
   // create some bunnies
@@ -64,62 +46,36 @@ Game.Start(configuration, async game =>
     });
   }
 
-  game.ExecuteVariableStep(time =>
-  {
-    scene.Update(time.DeltaTime);
-    pipeline.Render(scene);
-
-    camera.Zoom += -mouse.ScrollAmount * zoomSpeed;
-
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      game.Exit();
-    }
-
-    if (keyboard.IsKeyPressed(Key.F2))
-    {
-      pipeline.EnableGizmos = !pipeline.EnableGizmos;
-    }
-
-    debug.ShowWindow("Debug Tools", window =>
-    {
-      var visibleObjects = viewport.CullVisibleObjects<IRenderObject>();
-
-      window.Text($"Delta Time: {time.DeltaTime}");
-      window.Text($"Total Time: {time.TotalTime}");
-      window.Text($"Frames per second: {time.FramesPerSecond}");
-      window.Text($"Visible objects: {visibleObjects.Length}");
-
-      pipeline.EnableGizmos = window.Checkbox("Enable Gizmos", pipeline.EnableGizmos);
-    });
-  });
+  scene.Add(viewport);
 });
 
-
-/// <summary>
-/// An example custom node.
-/// </summary>
-internal sealed class Bunny : SpriteNode2D
+namespace BasicScene
 {
   /// <summary>
-  /// The speed of the bunny.
+  /// An example custom node.
   /// </summary>
-  public float Speed { get; set; } = 10f;
-
-  /// <summary>
-  /// The velocity of the bunny.
-  /// </summary>
-  public Vector2 Velocity { get; set; } = Vector2.Zero;
-
-  protected override void OnUpdate(DeltaTime deltaTime)
+  internal sealed class Bunny : SpriteNode2D
   {
-    base.OnUpdate(deltaTime);
+    /// <summary>
+    /// The speed of the bunny.
+    /// </summary>
+    public float Speed { get; set; } = 10f;
 
-    Velocity += new Vector2(
-      (Random.Shared.NextFloat() - 0.5f) * Speed,
-      (Random.Shared.NextFloat() - 0.5f) * Speed
-    );
+    /// <summary>
+    /// The velocity of the bunny.
+    /// </summary>
+    public Vector2 Velocity { get; set; } = Vector2.Zero;
 
-    GlobalPosition += Velocity * deltaTime;
+    protected override void OnUpdate(DeltaTime deltaTime)
+    {
+      base.OnUpdate(deltaTime);
+
+      Velocity += new Vector2(
+        (Random.Shared.NextFloat() - 0.5f) * Speed,
+        (Random.Shared.NextFloat() - 0.5f) * Speed
+      );
+
+      GlobalPosition += Velocity * deltaTime;
+    }
   }
 }

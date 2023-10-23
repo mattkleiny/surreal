@@ -17,6 +17,8 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     Passes.Add(new DepthPass(backend, this));
     Passes.Add(new ColorPass(backend, this));
     Passes.Add(new GizmoPass(backend, this));
+
+    Contexts.Add(new SpriteContext(backend));
   }
 
   /// <summary>
@@ -27,12 +29,12 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// Determines if gizmos are enabled.
   /// </summary>
-  public bool EnableGizmos { get; set; } = Debugger.IsAttached;
+  public bool EnableGizmos { get; set; } = true;
 
   /// <summary>
   /// The color to clear the screen with.
   /// </summary>
-  public Color ClearColor { get; set; } = Color.Clear;
+  public Color ClearColor { get; set; } = Color.Black;
 
   /// <summary>
   /// A <see cref="RenderPass"/> that collects depth data.
@@ -60,7 +62,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
       _depthTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
       _depthTarget.BindToDisplay();
 
-      _depthTarget.ClearColorBuffer(Color.Clear);
+      _depthTarget.ClearColorBuffer(pipeline.ClearColor);
       _depthTarget.ClearDepthBuffer(1f);
 
       foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
@@ -140,7 +142,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     /// <summary>
     /// The batch used to render gizmos.
     /// </summary>
-    public GizmoBatch GizmoBatch { get; } = new(backend);
+    private readonly GizmoBatch _gizmoBatch = new(backend);
 
     /// <inheritdoc/>
     public override bool IsEnabled => pipeline.EnableGizmos;
@@ -151,19 +153,19 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 
       _gizmoMaterial.Properties.SetProperty("u_transform", viewport.ProjectionView);
 
-      GizmoBatch.Begin(_gizmoMaterial);
+      _gizmoBatch.Begin(_gizmoMaterial);
 
       foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
       {
-        gizmoObject.RenderGizmos(in frame, GizmoBatch);
+        gizmoObject.RenderGizmos(in frame, _gizmoBatch);
       }
 
-      GizmoBatch.Flush();
+      _gizmoBatch.Flush();
     }
 
     public override void Dispose()
     {
-      GizmoBatch.Dispose();
+      _gizmoBatch.Dispose();
 
       base.Dispose();
     }

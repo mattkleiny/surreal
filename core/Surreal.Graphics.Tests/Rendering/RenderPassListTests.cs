@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphics.Rendering;
+﻿using Surreal.Graphics.Rendering;
+
+namespace Surreal.Graphics.Tests.Rendering;
 
 public class RenderPassListTests
 {

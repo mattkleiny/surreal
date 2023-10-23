@@ -20,6 +20,17 @@ public sealed class SceneTree : SceneNode, IScene
   /// </summary>
   public new required IServiceProvider Services { get; init; }
 
+  /// <summary>
+  /// The <see cref="IRenderPipeline"/> to use for the scene.
+  /// </summary>
+  public IRenderPipeline? Renderer { get; init; }
+
+  /// <inheritdoc/>
+  public void Render(DeltaTime deltaTime)
+  {
+    Renderer?.Render(this, deltaTime);
+  }
+
   /// <inheritdoc/>
   public ReadOnlySlice<IRenderViewport> CullVisibleViewports()
   {

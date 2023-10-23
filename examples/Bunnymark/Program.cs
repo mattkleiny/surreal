@@ -1,4 +1,6 @@
-﻿const int width = 1920;
+﻿using Bunnymark;
+
+const int width = 1920;
 const int height = 1080;
 const int batchSize = 512;
 
@@ -110,14 +112,17 @@ Game.Start(configuration, async game =>
   });
 });
 
-/// <summary>
-/// A bunny in the sprite benchmark.
-/// </summary>
-public struct Bunny
+namespace Bunnymark
 {
-  public required Vector2 Position;
-  public required Vector2 Velocity;
-  public required Color32 Tint;
-  public required Angle Rotation;
-  public required float RotationSpeed;
+  /// <summary>
+  /// A bunny in the sprite benchmark.
+  /// </summary>
+  public struct Bunny
+  {
+    public required Vector2 Position;
+    public required Vector2 Velocity;
+    public required Color32 Tint;
+    public required Angle Rotation;
+    public required float RotationSpeed;
+  }
 }

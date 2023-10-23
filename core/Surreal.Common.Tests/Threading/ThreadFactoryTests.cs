@@ -1,4 +1,6 @@
-﻿namespace Surreal.Threading;
+﻿using Surreal.Threading;
+
+namespace Surreal.Common.Tests.Threading;
 
 public class ThreadFactoryTests
 {
@@ -23,6 +25,3 @@ public class ThreadFactoryTests
     result.Should().Be(42);
   }
 }
-
-
-

@@ -1,4 +1,6 @@
-﻿namespace Surreal.Timing;
+﻿using Surreal.Timing;
+
+namespace Surreal.Common.Tests.Timing;
 
 public class TimeSpanTests
 {

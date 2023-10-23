@@ -1,4 +1,6 @@
-﻿namespace Surreal.Text;
+﻿using Surreal.Text;
+
+namespace Surreal.Common.Tests.Text;
 
 public class StringSpanTests
 {

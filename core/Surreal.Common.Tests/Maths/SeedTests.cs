@@ -1,6 +1,7 @@
 ﻿using Surreal.IO;
+using Surreal.Maths;
 
-namespace Surreal.Maths;
+namespace Surreal.Common.Tests.Maths;
 
 public class SeedTests
 {
