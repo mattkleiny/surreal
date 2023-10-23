@@ -125,6 +125,7 @@
   <PropertyGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
+    <PackRelease>false</PackRelease>
     <IsTrimmable>false</IsTrimmable>
     <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
