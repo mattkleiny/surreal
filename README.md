@@ -28,34 +28,43 @@ with an emphasis on simplicity and ease of use.
 The following code snippets show how to use Surreal to create a simple game.
 
 ```csharp
-Game.Start(new GameConfiguration
+// configure the platform for hosting the game
+var configuration = new GameConfiguration
 {
-  // swap and configure the particular platform you want to target
   Platform = new DesktopPlatform
   {
     Configuration =
     {
-      Title = "Hello, World!",
+      Title = "Hello, Surreal!",
+      IsVsyncEnabled = true,
+      ShowFpsInTitle = true,
       Width = 1920,
       Height = 1080
     }
-  },
-  Host = GameHost.Create(() =>
+  }
+};
+
+Game.Start(configuration, game =>
+{
+  // get access to whatever game services you need
+  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
+  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
+
+  var color1 = Random.Shared.Next<Color>();
+  var color2 = Random.Shared.Next<Color>();
+
+  // run a game loop with whatever logic you need
+  game.ExecuteVariableStep(time =>
   {
-    // do one time initialization here, and access the game services
-    var graphics = Game.Services.GetServiceOrThrow<IGraphicsBackend>();
+    var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
 
-    var color1 = Random.Shared.Next<Color>();
-    var color2 = Random.Shared.Next<Color>();
+    graphics.ClearColorBuffer(color);
 
-    // return a function that will be called every frame
-    return time =>
+    if (keyboard.IsKeyPressed(Key.Escape))
     {
-      var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
-
-      graphics.ClearColorBuffer(color);
-    };
-  })
+      game.Exit();
+    }
+  });
 });
 ```
 

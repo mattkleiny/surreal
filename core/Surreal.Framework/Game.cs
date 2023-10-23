@@ -117,6 +117,9 @@ public sealed class Game : IDisposable
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
+    // use the base directory as the current directory
+    Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
     // prepare core services
     using var services = new ServiceRegistry();
     using var host = configuration.Platform.BuildHost(services);
