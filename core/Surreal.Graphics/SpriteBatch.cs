@@ -31,25 +31,28 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
     BlendState = BlendState.OneMinusSourceAlpha
   };
 
-  protected internal override void OnBeginFrame(in RenderFrame frame)
+  public override void OnBeginPass(in RenderFrame frame, IRenderViewport viewport)
   {
+    base.OnBeginPass(in frame, viewport);
+
+    Material.Properties.SetProperty(ProjectionView, viewport.ProjectionView);
+
     SpriteBatch.Begin(Material);
   }
 
-  protected internal override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+  public override void OnEndPass(in RenderFrame frame, IRenderViewport viewport)
   {
-    Material.Properties.SetProperty(ProjectionView, viewport.ProjectionView);
-  }
+    base.OnEndPass(in frame, viewport);
 
-  protected internal override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
-  {
     SpriteBatch.Flush();
   }
 
-  protected internal override void Dispose()
+  public override void Dispose()
   {
     SpriteBatch.Dispose();
     Material.Dispose();
+
+    base.Dispose();
   }
 }
 

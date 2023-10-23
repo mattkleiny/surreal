@@ -61,9 +61,11 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 
   private void RenderViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-    OnBeginViewport(in frame, viewport);
+    Contexts.OnBeginViewport(in frame, viewport);
+
     OnRenderViewport(in frame, viewport);
-    OnEndViewport(in frame, viewport);
+
+    Contexts.OnEndViewport(in frame, viewport);
   }
 
   protected virtual void OnBeginFrame(in RenderFrame frame)
@@ -71,18 +73,8 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
     Contexts.OnBeginFrame(in frame);
   }
 
-  protected virtual void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
-  {
-    Contexts.OnBeginViewport(in frame, viewport);
-  }
-
   protected virtual void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
   {
-  }
-
-  protected virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
-  {
-    Contexts.OnEndViewport(in frame, viewport);
   }
 
   protected virtual void OnEndFrame(in RenderFrame frame)
@@ -119,15 +111,15 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     }
   }
 
-  protected override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+  protected override void OnEndFrame(in RenderFrame frame)
   {
-    base.OnBeginViewport(in frame, viewport);
+    base.OnEndFrame(in frame);
 
     foreach (var pass in Passes)
     {
       if (pass.IsEnabled)
       {
-        pass.OnBeginViewport(in frame, viewport);
+        pass.OnEndFrame(in frame);
       }
     }
   }
@@ -140,33 +132,32 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     {
       if (pass.IsEnabled)
       {
-        pass.OnRenderViewport(in frame, viewport);
+        pass.OnBeginViewport(in frame, viewport);
       }
     }
-  }
 
-  protected override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
-  {
-    base.OnEndViewport(in frame, viewport);
+    foreach (var pass in Passes)
+    {
+      if (pass.IsEnabled)
+      {
+        using (new GraphicsDebugScope(frame.Backend, pass.Name))
+        {
+          Contexts.OnBeginPass(in frame, viewport);
+
+          pass.OnBeginPass(in frame, viewport);
+          pass.OnExecutePass(in frame, viewport);
+          pass.OnEndPass(in frame, viewport);
+
+          Contexts.OnEndPass(in frame, viewport);
+        }
+      }
+    }
 
     foreach (var pass in Passes)
     {
       if (pass.IsEnabled)
       {
         pass.OnEndViewport(in frame, viewport);
-      }
-    }
-  }
-
-  protected override void OnEndFrame(in RenderFrame frame)
-  {
-    base.OnEndFrame(in frame);
-
-    foreach (var pass in Passes)
-    {
-      if (pass.IsEnabled)
-      {
-        pass.OnEndFrame(in frame);
       }
     }
   }

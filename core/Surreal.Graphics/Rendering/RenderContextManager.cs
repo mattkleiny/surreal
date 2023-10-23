@@ -48,7 +48,18 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
   }
 
   /// <summary>
-  /// Notifies the manager that a camera is rendering.
+  /// Notifies the manager that a frame is finishing.
+  /// </summary>
+  public void OnEndFrame(in RenderFrame frame)
+  {
+    foreach (var context in _contexts.Values)
+    {
+      context.OnEndFrame(in frame);
+    }
+  }
+
+  /// <summary>
+  /// Notifies the manager that a viewport is rendering.
   /// </summary>
   public void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
@@ -59,7 +70,7 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
   }
 
   /// <summary>
-  /// Notifies the manager that a camera is rendering.
+  /// Notifies the manager that a viewport is rendering.
   /// </summary>
   public void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
@@ -70,13 +81,24 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
   }
 
   /// <summary>
-  /// Notifies the manager that a frame is finishing.
+  /// Notifies the manager that a pass is rendering.
   /// </summary>
-  public void OnEndFrame(in RenderFrame frame)
+  public void OnBeginPass(in RenderFrame frame, IRenderViewport viewport)
   {
     foreach (var context in _contexts.Values)
     {
-      context.OnEndFrame(in frame);
+      context.OnBeginPass(in frame, viewport);
+    }
+  }
+
+  /// <summary>
+  /// Notifies the manager that a pass is rendering.
+  /// </summary>
+  public void OnEndPass(in RenderFrame frame, IRenderViewport viewport)
+  {
+    foreach (var context in _contexts.Values)
+    {
+      context.OnEndPass(in frame, viewport);
     }
   }
 

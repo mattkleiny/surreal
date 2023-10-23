@@ -10,6 +10,9 @@ public interface IRenderContext
 
   void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport);
   void OnEndViewport(in RenderFrame frame, IRenderViewport viewport);
+
+  void OnBeginPass(in RenderFrame frame, IRenderViewport viewport);
+  void OnEndPass(in RenderFrame frame, IRenderViewport viewport);
 }
 
 /// <summary>
@@ -17,48 +20,31 @@ public interface IRenderContext
 /// </summary>
 public abstract class RenderContext : IRenderContext, IDisposable
 {
-  protected internal virtual void OnBeginFrame(in RenderFrame frame)
+  public virtual void OnBeginFrame(in RenderFrame frame)
   {
   }
 
-  protected internal virtual void OnEndFrame(in RenderFrame frame)
+  public virtual void OnEndFrame(in RenderFrame frame)
   {
   }
 
-  protected internal virtual void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+  public virtual void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  protected internal virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
+  public virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  protected internal virtual void Dispose()
+  public virtual void OnBeginPass(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  void IRenderContext.OnBeginFrame(in RenderFrame frame)
+  public virtual void OnEndPass(in RenderFrame frame, IRenderViewport viewport)
   {
-    OnBeginFrame(in frame);
   }
 
-  void IRenderContext.OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+  public virtual void Dispose()
   {
-    OnBeginViewport(in frame, viewport);
-  }
-
-  void IRenderContext.OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
-  {
-    OnEndViewport(in frame, viewport);
-  }
-
-  void IRenderContext.OnEndFrame(in RenderFrame frame)
-  {
-    OnEndFrame(in frame);
-  }
-
-  void IDisposable.Dispose()
-  {
-    Dispose();
   }
 }

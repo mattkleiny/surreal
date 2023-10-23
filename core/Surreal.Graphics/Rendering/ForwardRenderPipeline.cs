@@ -53,25 +53,23 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     /// <inheritdoc/>
     public override bool IsEnabled => pipeline.RequireDepthPass;
 
-    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
     {
-      base.OnRenderViewport(in frame, viewport);
+      base.OnExecutePass(in frame, viewport);
 
-      using (new GraphicsDebugScope(backend, "Depth Pass"))
+
+      _depthTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
+      _depthTarget.BindToDisplay();
+
+      _depthTarget.ClearColorBuffer(Color.Clear);
+      _depthTarget.ClearDepthBuffer(1f);
+
+      foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
       {
-        _depthTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
-        _depthTarget.BindToDisplay();
-
-        _depthTarget.ClearColorBuffer(Color.Clear);
-        _depthTarget.ClearDepthBuffer(1f);
-
-        foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
-        {
-          renderObject.Render(in frame);
-        }
-
-        _depthTarget.UnbindFromDisplay();
+        renderObject.Render(in frame);
       }
+
+      _depthTarget.UnbindFromDisplay();
     }
 
     public override void Dispose()
@@ -103,25 +101,22 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
       DepthStencilFormat = DepthStencilFormat.None
     });
 
-    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
     {
-      base.OnRenderViewport(in frame, viewport);
+      base.OnExecutePass(in frame, viewport);
 
-      using (new GraphicsDebugScope(backend, "Color Pass"))
+      _colorTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
+      _colorTarget.BindToDisplay();
+
+      _colorTarget.ClearColorBuffer(pipeline.ClearColor);
+
+      foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
       {
-        _colorTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
-        _colorTarget.BindToDisplay();
-
-        _colorTarget.ClearColorBuffer(pipeline.ClearColor);
-
-        foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
-        {
-          renderObject.Render(in frame);
-        }
-
-        _colorTarget.UnbindFromDisplay();
-        _colorTarget.BlitToBackBuffer(_blitMaterial);
+        renderObject.Render(in frame);
       }
+
+      _colorTarget.UnbindFromDisplay();
+      _colorTarget.BlitToBackBuffer(_blitMaterial);
     }
 
     public override void Dispose()
@@ -151,23 +146,20 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     /// <inheritdoc/>
     public override bool IsEnabled => pipeline.EnableGizmos;
 
-    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
     {
-      base.OnRenderViewport(in frame, viewport);
+      base.OnExecutePass(in frame, viewport);
 
-      using (new GraphicsDebugScope(backend, "Gizmo Pass"))
+      _gizmoMaterial.Properties.SetProperty("u_projectionView", viewport.ProjectionView);
+
+      GizmoBatch.Begin(_gizmoMaterial);
+
+      foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
       {
-        _gizmoMaterial.Properties.SetProperty("u_projectionView", viewport.ProjectionView);
-
-        GizmoBatch.Begin(_gizmoMaterial);
-
-        foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
-        {
-          gizmoObject.RenderGizmos(in frame, GizmoBatch);
-        }
-
-        GizmoBatch.Flush();
+        gizmoObject.RenderGizmos(in frame, GizmoBatch);
       }
+
+      GizmoBatch.Flush();
     }
 
     public override void Dispose()

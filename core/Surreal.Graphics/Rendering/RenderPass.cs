@@ -8,6 +8,11 @@ namespace Surreal.Graphics.Rendering;
 public interface IRenderPass : IDisposable
 {
   /// <summary>
+  /// The name of the render pass, for debugging.
+  /// </summary>
+  string Name { get; }
+
+  /// <summary>
   /// True if the pass is enabled.
   /// </summary>
   bool IsEnabled { get; }
@@ -16,8 +21,11 @@ public interface IRenderPass : IDisposable
   void OnEndFrame(in RenderFrame frame);
 
   void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport);
-  void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport);
   void OnEndViewport(in RenderFrame frame, IRenderViewport viewport);
+
+  void OnBeginPass(in RenderFrame frame, IRenderViewport viewport);
+  void OnExecutePass(in RenderFrame frame, IRenderViewport viewport);
+  void OnEndPass(in RenderFrame frame, IRenderViewport viewport);
 }
 
 /// <summary>
@@ -25,6 +33,10 @@ public interface IRenderPass : IDisposable
 /// </summary>
 public abstract class RenderPass : IRenderPass
 {
+  /// <inheritdoc/>
+  public virtual string Name => GetType().Name;
+
+  /// <inheritdoc/>
   public virtual bool IsEnabled => true;
 
   public virtual void OnBeginFrame(in RenderFrame frame)
@@ -39,11 +51,19 @@ public abstract class RenderPass : IRenderPass
   {
   }
 
-  public virtual void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
+  public virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
-  public virtual void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
+  public virtual void OnBeginPass(in RenderFrame frame, IRenderViewport viewport)
+  {
+  }
+
+  public virtual void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
+  {
+  }
+
+  public virtual void OnEndPass(in RenderFrame frame, IRenderViewport viewport)
   {
   }
 
