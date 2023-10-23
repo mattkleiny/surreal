@@ -23,14 +23,19 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   private PolygonMode _lastPolygonMode;
 
   /// <summary>
-  /// Begins a new batch of geometry with the given material.
+  /// The material to use for rendering the batch.
   /// </summary>
-  public void Begin(Material material)
+  public Material? Material
   {
-    _vertexCount = 0;
-    _indexCount = 0;
-
-    _material = material;
+    get => _material;
+    set
+    {
+      if (_material != value)
+      {
+        Flush();
+        _material = value;
+      }
+    }
   }
 
   /// <summary>
@@ -222,6 +227,15 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   }
 
   /// <summary>
+  /// Resets the batch, discarding any pending geometry.
+  /// </summary>
+  public void Reset()
+  {
+    _vertexCount = 0;
+    _indexCount = 0;
+  }
+
+  /// <summary>
   /// Flushes the batch to the GPU.
   /// </summary>
   public void Flush()
@@ -238,8 +252,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
       _mesh.Draw(_material);
     }
 
-    _vertexCount = 0;
-    _indexCount = 0;
+    Reset();
   }
 
   public void Dispose()

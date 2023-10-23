@@ -21,7 +21,7 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
   /// <summary>
   /// The property to use for the projection view matrix.
   /// </summary>
-  public MaterialProperty<Matrix4x4> TransformProperty { get; } = new("u_transform");
+  public MaterialProperty<Matrix4x4> TransformProperty { get; } = MaterialProperty.Transform;
 
   /// <summary>
   /// The material used by this context.
@@ -37,7 +37,8 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
 
     Material.Properties.SetProperty(TransformProperty, viewport.ProjectionView);
 
-    SpriteBatch.Begin(Material);
+    SpriteBatch.Material = Material;
+    SpriteBatch.Reset();
   }
 
   public override void OnEndPass(in RenderFrame frame, IRenderViewport viewport)
@@ -99,19 +100,20 @@ public sealed class SpriteBatch : IDisposable
   /// </summary>
   public MaterialProperty<Texture> Texture { get; set; } = new("u_texture");
 
-  public void Dispose()
-  {
-    _mesh.Dispose();
-    _vertices.Dispose();
-  }
-
   /// <summary>
-  /// Begins a new batch of sprites with the given material.
+  /// The material used by this batch.
   /// </summary>
-  public void Begin(Material material)
+  public Material? Material
   {
-    _vertexCount = 0; // reset vertex pointer
-    _material = material;
+    get => _material;
+    set
+    {
+      if (_material != value)
+      {
+        Flush();
+        _material = value;
+      }
+    }
   }
 
   /// <summary>
@@ -181,6 +183,14 @@ public sealed class SpriteBatch : IDisposable
   }
 
   /// <summary>
+  /// Resets the batch, discarding any pending sprites.
+  /// </summary>
+  public void Reset()
+  {
+    _vertexCount = 0; // reset vertex pointer
+  }
+
+  /// <summary>
   /// Flushes any pending sprites to the GPU.
   /// </summary>
   public void Flush()
@@ -201,7 +211,8 @@ public sealed class SpriteBatch : IDisposable
       _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
     }
 
-    _vertexCount = 0;
+    Reset();
+
     Flushed?.Invoke();
   }
 
@@ -223,6 +234,12 @@ public sealed class SpriteBatch : IDisposable
     }
 
     _mesh.Indices.Write(indices);
+  }
+
+  public void Dispose()
+  {
+    _mesh.Dispose();
+    _vertices.Dispose();
   }
 
   /// <summary>

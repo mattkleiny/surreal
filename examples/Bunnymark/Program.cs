@@ -25,7 +25,6 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
   var log = LogFactory.GetLog<Program>();
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
 
-  using var batch = new SpriteBatch(graphics);
   using var material = new Material(graphics, ShaderProgram.LoadDefaultSpriteShader(graphics))
   {
     BlendState = BlendState.OneMinusSourceAlpha,
@@ -34,6 +33,11 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
       { "u_texture", sprite },
       { "u_transform", Matrix4x4.CreateOrthographic(width, -height, 0, 100f) }
     }
+  };
+
+  using var batch = new SpriteBatch(graphics)
+  {
+    Material = material
   };
 
   var bunnies = new List<Bunny>();
@@ -56,7 +60,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
       if (bunny.Position.Y > height / 2f) bunny.Velocity.Y *= -1f;
     }
 
-    batch.Begin(material);
+    batch.Reset();
 
     foreach (ref var bunny in bunnies.AsSpan())
     {

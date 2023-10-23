@@ -153,7 +153,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 
       _gizmoMaterial.Properties.SetProperty("u_transform", viewport.ProjectionView);
 
-      _gizmoBatch.Begin(_gizmoMaterial);
+      _gizmoBatch.Material = _gizmoMaterial;
 
       foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
       {

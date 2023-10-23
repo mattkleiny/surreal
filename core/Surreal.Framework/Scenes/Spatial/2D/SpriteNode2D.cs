@@ -1,6 +1,7 @@
 ﻿using Surreal.Colors;
 using Surreal.Graphics;
 using Surreal.Graphics.Gizmos;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
@@ -12,15 +13,37 @@ namespace Surreal.Scenes.Spatial;
 /// </summary>
 public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject, IGizmoObject
 {
+  private Material? _material;
+  private TextureRegion _sprite = TextureRegion.Empty;
+  private Color _tint = Color.White;
+
+  /// <summary>
+  /// The material to use when rendering the sprite.
+  /// </summary>
+  /// <returns></returns>
+  public Material? Material
+  {
+    get => _material;
+    set => SetField(ref _material, value);
+  }
+
   /// <summary>
   /// The sprite texture to render.
   /// </summary>
-  public TextureRegion Sprite { get; set; } = TextureRegion.Empty;
+  public TextureRegion Sprite
+  {
+    get => _sprite;
+    set => SetField(ref _sprite, value);
+  }
 
   /// <summary>
   /// The tint to apply to the sprite.
   /// </summary>
-  public Color Tint { get; set; } = Color.White;
+  public Color Tint
+  {
+    get => _tint;
+    set => SetField(ref _tint, value);
+  }
 
   protected virtual void OnRender(SpriteBatch batch)
   {

@@ -68,8 +68,6 @@ public sealed record RenderTargetDescriptor
 /// </summary>
 public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescriptor descriptor) : GraphicsAsset
 {
-  private static readonly MaterialProperty<TextureSampler> DefaultTextureProperty = new("u_texture");
-
   /// <summary>
   /// The handle to the underlying render target.
   /// </summary>
@@ -181,7 +179,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    BlitToBackBuffer(material, DefaultTextureProperty, filterMode, wrapMode);
+    BlitToBackBuffer(material, MaterialProperty.Texture, filterMode, wrapMode);
   }
 
   /// <summary>

@@ -44,8 +44,8 @@ Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice
 
     var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
 
-    material.Properties.SetProperty("u_transform", modelViewProjection);
-    material.Properties.SetProperty("u_color", color);
+    material.Properties.SetProperty(MaterialProperty.Transform,  modelViewProjection);
+    material.Properties.SetProperty(MaterialProperty.Color, color);
 
     mesh.Draw(material);
 

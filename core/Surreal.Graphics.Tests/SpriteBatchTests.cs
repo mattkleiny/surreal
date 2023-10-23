@@ -19,7 +19,7 @@ public class SpriteBatchTests
 
     batch.Flushed += () => Interlocked.Increment(ref flushCount);
 
-    batch.Begin(material);
+    batch.Reset();
 
     batch.Draw(texture1, Vector2.Zero);
     batch.Draw(texture1, Vector2.Zero);
@@ -48,7 +48,7 @@ public class SpriteBatchTests
 
     batch.Flushed += () => Interlocked.Increment(ref flushCount);
 
-    batch.Begin(material);
+    batch.Reset();
 
     batch.Draw(texture1, Vector2.Zero);
     batch.Draw(texture1, Vector2.Zero);
