@@ -110,6 +110,11 @@ internal sealed unsafe class SilkAudioBackend : IAudioBackend, IDisposable
     al.SetSourceProperty(source, SourceBoolean.Looping, value);
   }
 
+  public void SetAudioSourceDistanceFalloff(AudioHandle source, float distance)
+  {
+    al.SetSourceProperty(source, SourceFloat.ReferenceDistance, distance);
+  }
+
   public void DeleteAudioSource(AudioHandle source)
   {
     al.DeleteSource(source);

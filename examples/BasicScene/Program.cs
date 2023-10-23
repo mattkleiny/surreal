@@ -34,10 +34,9 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
   {
     PlayOnReady = true,
     IsLooping = true,
-    AudioClip = music
+    AudioClip = music,
+    DistanceFalloff = 20f
   };
-
-  camera.Add(new AudioListener2D());
 
   viewport.Add(camera);
   viewport.Add(musicPlayer);
@@ -45,10 +44,17 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
   // create some bunnies
   for (int i = 0; i < 100; i++)
   {
-    viewport.Add(new Bunny
+    var bunny = new Bunny
     {
       Sprite = sprite
-    });
+    };
+
+    viewport.Add(bunny);
+
+    if (i == 0)
+    {
+      bunny.Add(new AudioListener2D());
+    }
   }
 
   scene.Add(viewport);

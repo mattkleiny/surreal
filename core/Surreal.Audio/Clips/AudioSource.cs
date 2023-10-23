@@ -6,8 +6,9 @@
 public sealed class AudioSource(IAudioBackend backend) : AudioAsset
 {
   private bool _isLooping;
-  private float _volume;
   private Vector3 _position;
+  private float _volume = 1f;
+  private float _distanceFalloff = 1f;
 
   /// <summary>
   /// The handle of the audio source in the underlying audio backend.
@@ -33,6 +34,19 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
   }
 
   /// <summary>
+  /// The position of the audio source in 3D space.
+  /// </summary>
+  public Vector3 Position
+  {
+    get => _position;
+    set
+    {
+      _position = value;
+      backend.SetAudioSourcePosition(Handle, value);
+    }
+  }
+
+  /// <summary>
   /// True if the audio source should loop.
   /// </summary>
   public bool IsLooping
@@ -46,15 +60,15 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
   }
 
   /// <summary>
-  /// The position of the audio source in 3D space.
+  /// The radius at which the audio source can be heard.
   /// </summary>
-  public Vector3 Position
+  public float DistanceFalloff
   {
-    get => _position;
+    get => _distanceFalloff;
     set
     {
-      _position = value;
-      backend.SetAudioSourcePosition(Handle, value);
+      _distanceFalloff = value;
+      backend.SetAudioSourceDistanceFalloff(Handle, value);
     }
   }
 

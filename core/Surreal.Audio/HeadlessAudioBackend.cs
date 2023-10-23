@@ -66,6 +66,10 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
   {
   }
 
+  public void SetAudioSourceDistanceFalloff(AudioHandle source, float distance)
+  {
+  }
+
   public void DeleteAudioSource(AudioHandle source)
   {
   }

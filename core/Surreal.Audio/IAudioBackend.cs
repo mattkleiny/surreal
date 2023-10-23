@@ -30,5 +30,6 @@ public interface IAudioBackend
   void SetAudioSourcePosition(AudioHandle source, Vector3 value);
   void SetAudioSourceGain(AudioHandle source, float gain);
   void SetAudioSourceLooping(AudioHandle source, bool value);
+  void SetAudioSourceDistanceFalloff(AudioHandle source, float distance);
   void DeleteAudioSource(AudioHandle source);
 }

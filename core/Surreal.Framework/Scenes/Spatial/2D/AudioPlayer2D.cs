@@ -12,11 +12,21 @@ namespace Surreal.Scenes.Spatial;
 /// </summary>
 public class AudioPlayer2D : SceneNode2D, IGizmoObject
 {
+  private AudioClip? _audioClip;
   private AudioSource? _source;
   private bool _playOnReady = true;
   private bool _isLooping;
   private float _volume = 1f;
-  private AudioClip? _audioClip;
+  private float _distanceFalloff = 1f;
+
+  /// <summary>
+  /// The <see cref="AudioClip"/> to play.
+  /// </summary>
+  public AudioClip? AudioClip
+  {
+    get => _audioClip;
+    set => SetField(ref _audioClip, value);
+  }
 
   /// <summary>
   /// True if this audio player should play when the scene starts.
@@ -63,12 +73,18 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
   }
 
   /// <summary>
-  /// The <see cref="AudioClip"/> to play.
+  /// The distance falloff of the audio source.
   /// </summary>
-  public AudioClip? AudioClip
+  public float DistanceFalloff
   {
-    get => _audioClip;
-    set => SetField(ref _audioClip, value);
+    get => _distanceFalloff;
+    set
+    {
+      if (SetField(ref _distanceFalloff, value) && _source != null)
+      {
+        _source.DistanceFalloff = value;
+      }
+    }
   }
 
   /// <summary>
@@ -107,8 +123,9 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
     _source = new AudioSource(Services.GetServiceOrThrow<IAudioBackend>())
     {
       Volume = _volume,
+      Position = new Vector3(GlobalPosition, 0f),
       IsLooping = _isLooping,
-      Position = new Vector3(GlobalPosition, 0f)
+      DistanceFalloff = _distanceFalloff
     };
   }
 
