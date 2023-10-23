@@ -154,6 +154,6 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
 
   void IGizmoObject.RenderGizmos(in RenderFrame frame, GizmoBatch gizmos)
   {
-    gizmos.DrawWireCircle(GlobalPosition, 4f, Color.Yellow);
+    gizmos.DrawSolidCircle(GlobalPosition, 2f, Color.Yellow);
   }
 }

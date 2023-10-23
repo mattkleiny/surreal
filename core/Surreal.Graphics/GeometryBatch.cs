@@ -80,11 +80,22 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
     => DrawTriangle(a, b, c, color, PolygonMode.Lines);
 
+  private void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Color color, PolygonMode type)
+  {
+    DrawTriangleFan(stackalloc[] { a, b, c }, color, type);
+  }
+
   /// <summary>
   /// Draws a solid quad.
   /// </summary>
   public void DrawSolidQuad(Rectangle rectangle, Color color)
     => DrawQuad(rectangle.Center, rectangle.Size, color, PolygonMode.Filled);
+
+  /// <summary>
+  /// Draws a wireframe quad.
+  /// </summary>
+  public void DrawWireQuad(Rectangle rectangle, Color color)
+    => DrawQuad(rectangle.Center, rectangle.Size, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a solid quad.
@@ -95,19 +106,36 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   /// <summary>
   /// Draws a wireframe quad.
   /// </summary>
-  public void DrawWireQuad(Rectangle rectangle, Color color)
-    => DrawQuad(rectangle.Center, rectangle.Size, color, PolygonMode.Lines);
-
-  /// <summary>
-  /// Draws a wireframe quad.
-  /// </summary>
   public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
     => DrawQuad(center, size, color, PolygonMode.Lines);
+
+  private void DrawQuad(Vector2 center, Vector2 size, Color color, PolygonMode type)
+  {
+    var halfWidth = size.X / 2f;
+    var halfHeight = size.Y / 2f;
+
+    var bottomLeft = new Vector2(center.X - halfWidth, center.Y - halfHeight);
+    var topLeft = new Vector2(center.X - halfWidth, center.Y + halfHeight);
+    var topRight = new Vector2(center.X + halfWidth, center.Y + halfHeight);
+    var bottomRight = new Vector2(center.X + halfWidth, center.Y - halfHeight);
+
+    DrawTriangle(bottomLeft, topLeft, topRight, color, type);
+    DrawTriangle(topRight, bottomRight, bottomLeft, color, type);
+  }
+
+  /// <summary>
+  /// Draws a solid circle.
+  /// </summary>
+  public void DrawSolidCircle(Vector2 center, float radius, Color color, int segments)
+    => DrawCircle(center, radius, color, segments, PolygonMode.Filled);
 
   /// <summary>
   /// Draws a wireframe circle.
   /// </summary>
   public void DrawWireCircle(Vector2 center, float radius, Color color, int segments = 16)
+    => DrawCircle(center, radius, color, segments, PolygonMode.Lines);
+
+  private void DrawCircle(Vector2 center, float radius, Color color, int segments, PolygonMode polygonMode)
   {
     var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
     var increment = 360f / segments;
@@ -120,13 +148,22 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
       points.Add(new Vector2(x, y));
     }
 
-    DrawTriangleFan(points, color, PolygonMode.Lines);
+    DrawTriangleFan(points, color, polygonMode);
   }
+
+  /// <summary>
+  /// Draws a solid arc.
+  /// </summary>
+  public void DrawSolidArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16)
+    => DrawArc(center, startAngle, endAngle, radius, color, segments, PolygonMode.Filled);
 
   /// <summary>
   /// Draws a wireframe arc.
   /// </summary>
   public void DrawWireArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16)
+    => DrawArc(center, startAngle, endAngle, radius, color, segments, PolygonMode.Lines);
+
+  private void DrawArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments, PolygonMode mode)
   {
     var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
     var length = endAngle - startAngle;
@@ -140,7 +177,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
       points.Add(new Vector2(x, y));
     }
 
-    DrawTriangleFan(points, color, PolygonMode.Lines);
+    DrawTriangleFan(points, color, mode);
   }
 
   /// <summary>
@@ -161,35 +198,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
     DrawTriangleFan(points, color, PolygonMode.Lines);
   }
 
-  /// <summary>
-  /// Draws a quad.
-  /// </summary>
-  public void DrawQuad(Vector2 center, Vector2 size, Color color, PolygonMode type)
-  {
-    var halfWidth = size.X / 2f;
-    var halfHeight = size.Y / 2f;
-
-    var bottomLeft = new Vector2(center.X - halfWidth, center.Y - halfHeight);
-    var topLeft = new Vector2(center.X - halfWidth, center.Y + halfHeight);
-    var topRight = new Vector2(center.X + halfWidth, center.Y + halfHeight);
-    var bottomRight = new Vector2(center.X + halfWidth, center.Y - halfHeight);
-
-    DrawTriangle(bottomLeft, topLeft, topRight, color, type);
-    DrawTriangle(topRight, bottomRight, bottomLeft, color, type);
-  }
-
-  /// <summary>
-  /// Draws a solid triangle.
-  /// </summary>
-  public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Color color, PolygonMode type)
-  {
-    DrawTriangleFan(stackalloc[] { a, b, c }, color, type);
-  }
-
-  /// <summary>
-  /// Draws a primitive of the given type.
-  /// </summary>
-  public void DrawTriangleFan(ReadOnlySpan<Vector2> points, Color color, PolygonMode type)
+  private void DrawTriangleFan(ReadOnlySpan<Vector2> points, Color color, PolygonMode type)
   {
     if (_lastPolygonMode != type)
     {

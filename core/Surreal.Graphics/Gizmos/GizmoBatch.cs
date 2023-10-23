@@ -44,17 +44,23 @@ public sealed class GizmoBatch(IGraphicsBackend backend) : IDisposable
   public void DrawSolidQuad(Rectangle rectangle, Color color)
     => _geometryBatch.DrawSolidQuad(rectangle, color);
 
-  public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
-    => _geometryBatch.DrawSolidQuad(center, size, color);
-
   public void DrawWireQuad(Rectangle rectangle, Color color)
     => _geometryBatch.DrawWireQuad(rectangle, color);
+
+  public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
+    => _geometryBatch.DrawSolidQuad(center, size, color);
 
   public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
     => _geometryBatch.DrawWireQuad(center, size, color);
 
+  public void DrawSolidCircle(Vector2 center, float radius, Color color, int segments = 16)
+    => _geometryBatch.DrawSolidCircle(center, radius, color, segments);
+
   public void DrawWireCircle(Vector2 center, float radius, Color color, int segments = 16)
     => _geometryBatch.DrawWireCircle(center, radius, color, segments);
+
+  public void DrawSolidArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16)
+    => _geometryBatch.DrawSolidArc(center, startAngle, endAngle, radius, color, segments);
 
   public void DrawWireArc(Vector2 center, float startAngle, float endAngle, float radius, Color color, int segments = 16)
     => _geometryBatch.DrawWireArc(center, startAngle, endAngle, radius, color, segments);
