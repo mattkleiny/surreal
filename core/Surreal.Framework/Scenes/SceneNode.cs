@@ -217,22 +217,27 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
 
   protected virtual void OnAwake()
   {
+    Log.Trace($"Node {Id} is awake");
   }
 
   protected virtual void OnReady()
   {
-  }
-
-  protected virtual void OnDestroy()
-  {
+    Log.Trace($"Node {Id} is ready");
   }
 
   protected virtual void OnEnterTree()
   {
+    Log.Trace($"Node {Id} has entered the tree");
   }
 
   protected virtual void OnExitTree()
   {
+    Log.Trace($"Node {Id} has exited the tree");
+  }
+
+  protected virtual void OnDestroy()
+  {
+    Log.Trace($"Node {Id} has been destroyed");
   }
 
   protected virtual void OnPreUpdate(DeltaTime deltaTime)

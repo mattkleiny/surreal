@@ -54,13 +54,13 @@ public sealed record GameConfiguration
 [ExcludeFromCodeCoverage]
 public class Game : IDisposable
 {
+  private static readonly ILog Log = LogFactory.GetLog<Game>();
+  private static readonly ConcurrentQueue<Action> Callbacks = new();
+
   /// <summary>
   /// A function that runs the game loop.
   /// </summary>
   public delegate void GameLoop(GameTime time);
-
-  private static readonly ILog Log = LogFactory.GetLog<Game>();
-  private static readonly ConcurrentQueue<Action> Callbacks = new();
 
   /// <summary>
   /// Sets up the logging and profiling systems.
@@ -144,6 +144,8 @@ public class Game : IDisposable
     Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
     // prepare core services
+    var startTime = TimeStamp.Now;
+
     using var services = new ServiceRegistry();
     using var host = configuration.Platform.BuildHost(services);
 
@@ -177,6 +179,9 @@ public class Game : IDisposable
         game.Exit();
       }
     }));
+
+    Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
+    Log.Trace($"Running main event pump");
 
     while (!game.Host.IsClosing && !game.IsClosing)
     {
