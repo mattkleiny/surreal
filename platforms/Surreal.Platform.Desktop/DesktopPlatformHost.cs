@@ -1,9 +1,9 @@
-using Silk.NET.OpenAL;
 using Surreal.Audio;
 using Surreal.Diagnostics;
 using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.Graphics.Images;
+using Surreal.Graphics.Rendering;
 using Surreal.Input;
 using Surreal.Timing;
 using Surreal.Utilities;
@@ -62,6 +62,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     AudioBackend = new SilkAudioBackend();
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
+    DebugGui = new SilkDebugGui(Window);
 
     Resized += OnResized;
 
@@ -71,6 +72,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IAudioBackend>(AudioBackend);
     services.AddService<IGraphicsBackend>(GraphicsBackend);
     services.AddService<IInputBackend>(InputBackend);
+    services.AddService<IDebugGui>(DebugGui);
 
     foreach (var device in InputBackend.DiscoverAllDevices())
     {
@@ -83,6 +85,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public SilkAudioBackend AudioBackend { get; }
   public SilkGraphicsBackend GraphicsBackend { get; }
   public SilkInputBackend InputBackend { get; }
+  public SilkDebugGui DebugGui { get; set; }
 
   IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
 
@@ -106,6 +109,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     if (!IsClosing)
     {
       Window.Update();
+      DebugGui.Update(deltaTime);
 
       // show the game's FPS in the window title
       if (_configuration.ShowFpsInTitle)
@@ -124,7 +128,9 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   {
     if (!IsClosing)
     {
+      DebugGui.Render(GraphicsBackend);
       Window.Present();
+
       InputBackend.Update();
     }
   }

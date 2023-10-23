@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Graphics.Rendering;
+using Surreal.Timing;
 using Surreal.Utilities;
 
 namespace Surreal;

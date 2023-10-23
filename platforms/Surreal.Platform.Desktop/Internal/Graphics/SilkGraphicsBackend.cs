@@ -1,5 +1,5 @@
 ﻿using Silk.NET.OpenGL;
-using Silk.NET.OpenGLES.Extensions.EXT;
+using Silk.NET.OpenGL.Extensions.EXT;
 using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;

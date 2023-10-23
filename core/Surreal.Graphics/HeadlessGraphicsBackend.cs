@@ -278,8 +278,4 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   public void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, uint samplerSlot)
   {
   }
-
-  public void Dispose()
-  {
-  }
 }

@@ -22,6 +22,11 @@ public readonly record struct GameTime
   /// The total time elapsed since the game started.
   /// </summary>
   public required DeltaTime TotalTime { get; init; }
+
+  /// <summary>
+  /// The number of frames per second.
+  /// </summary>
+  public float FramesPerSecond => 1f / DeltaTime;
 }
 
 /// <summary>
@@ -190,20 +195,20 @@ public sealed class Game : IDisposable
 
     while (!Host.IsClosing && !IsClosing)
     {
-      var gameTime = new GameTime
+      var time = new GameTime
       {
         DeltaTime = deltaTimeClock.Tick(),
         TotalTime = TimeStamp.Now - startTime
       };
 
-      Host.BeginFrame(gameTime.DeltaTime);
+      Host.BeginFrame(time.DeltaTime);
 
       if (Host.IsFocused || runInBackground)
       {
-        gameLoop(gameTime);
+        gameLoop(time);
       }
 
-      Host.EndFrame(gameTime.DeltaTime);
+      Host.EndFrame(time.DeltaTime);
 
       // we need to take over the event loop from here
       PumpEventLoop();

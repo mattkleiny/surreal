@@ -21,6 +21,7 @@ Game.Start(configuration, async game =>
   var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
   var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
   var mouse = game.Services.GetServiceOrThrow<IMouseDevice>();
+  var debug = game.Services.GetServiceOrThrow<IDebugGui>();
 
   var clip = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
@@ -82,10 +83,17 @@ Game.Start(configuration, async game =>
       game.Exit();
     }
 
-    if (keyboard.IsKeyPressed(Key.F2))
+    debug.ShowWindow("Debug Tools", window =>
     {
-      pipeline.EnableGizmos = !pipeline.EnableGizmos;
-    }
+      var visibleObjects = viewport.CullVisibleObjects<IRenderObject>();
+
+      window.Text($"Delta Time: {time.DeltaTime}");
+      window.Text($"Total Time: {time.TotalTime}");
+      window.Text($"Frames per second: {time.FramesPerSecond}");
+      window.Text($"Visible objects: {visibleObjects.Length}");
+
+      pipeline.EnableGizmos = window.Checkbox("Enable Gizmos", pipeline.EnableGizmos);
+    });
   });
 });
 

@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Diagnostics.Profiling;
+using Surreal.Timing;
 
 namespace Surreal.Graphics.Rendering;
 
@@ -93,6 +94,8 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 /// </summary>
 public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : RenderPipeline(backend)
 {
+  private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<MultiPassRenderPipeline>();
+
   /// <summary>
   /// The list of render passes in the pipeline.
   /// </summary>
@@ -132,7 +135,10 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     {
       if (pass.IsEnabled)
       {
-        pass.OnBeginViewport(in frame, viewport);
+        using (Profiler.Track(pass.Name))
+        {
+          pass.OnBeginViewport(in frame, viewport);
+        }
       }
     }
 
@@ -140,6 +146,7 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     {
       if (pass.IsEnabled)
       {
+        using (Profiler.Track(pass.Name))
         using (new GraphicsDebugScope(frame.Backend, pass.Name))
         {
           Contexts.OnBeginPass(in frame, viewport);
@@ -157,7 +164,10 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
     {
       if (pass.IsEnabled)
       {
-        pass.OnEndViewport(in frame, viewport);
+        using (Profiler.Track(pass.Name))
+        {
+          pass.OnEndViewport(in frame, viewport);
+        }
       }
     }
   }
