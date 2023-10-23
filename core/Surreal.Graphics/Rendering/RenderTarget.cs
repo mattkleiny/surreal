@@ -103,7 +103,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// </summary>
   public void UnbindFromDisplay()
   {
-    backend.BindFrameBuffer(FrameBufferHandle.None);
+    backend.UnbindFrameBuffer();
   }
 
   /// <summary>

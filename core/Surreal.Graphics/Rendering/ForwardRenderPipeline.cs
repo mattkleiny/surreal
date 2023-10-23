@@ -14,9 +14,15 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   public ForwardRenderPipeline(IGraphicsBackend backend)
     : base(backend)
   {
+    Passes.Add(new DepthPass(backend, this));
     Passes.Add(new ColorPass(backend, this));
     Passes.Add(new GizmoPass(backend, this));
   }
+
+  /// <summary>
+  /// Determines if a depth pass is required
+  /// </summary>
+  public bool RequireDepthPass { get; set; } = true;
 
   /// <summary>
   /// Determines if gizmos are enabled.
@@ -29,9 +35,57 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   public Color ClearColor { get; set; } = Color.Clear;
 
   /// <summary>
+  /// A <see cref="RenderPass"/> that collects depth data.
+  /// </summary>
+  private sealed class DepthPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass()
+  {
+    /// <summary>
+    /// The main color target for the pass.
+    /// </summary>
+    private readonly RenderTarget _depthTarget = new(backend, new RenderTargetDescriptor
+    {
+      Format = TextureFormat.R,
+      FilterMode = TextureFilterMode.Linear,
+      WrapMode = TextureWrapMode.ClampToEdge,
+      DepthStencilFormat = DepthStencilFormat.Depth24
+    });
+
+    /// <inheritdoc/>
+    public override bool IsEnabled => pipeline.RequireDepthPass;
+
+    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
+    {
+      base.OnRenderViewport(in frame, viewport);
+
+      using (new GraphicsDebugScope(backend, "Depth Pass"))
+      {
+        _depthTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
+        _depthTarget.BindToDisplay();
+
+        _depthTarget.ClearColorBuffer(Color.Clear);
+        _depthTarget.ClearDepthBuffer(1f);
+
+        foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
+        {
+          renderObject.Render(in frame);
+        }
+
+        _depthTarget.UnbindFromDisplay();
+      }
+    }
+
+    public override void Dispose()
+    {
+      _depthTarget.Dispose();
+
+      base.Dispose();
+    }
+  }
+
+  /// <summary>
   /// A <see cref="RenderPass"/> that collects color data.
   /// </summary>
-  private sealed class ColorPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
+  private sealed class ColorPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass()
   {
     /// <summary>
     /// The material used to blit the color target to the back buffer.
@@ -49,27 +103,25 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
       DepthStencilFormat = DepthStencilFormat.None
     });
 
-    public override void OnBeginFrame(in RenderFrame frame)
-    {
-      base.OnBeginFrame(in frame);
-
-      _colorTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
-      _colorTarget.BindToDisplay();
-      _colorTarget.ClearColorBuffer(pipeline.ClearColor);
-    }
-
     public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
     {
-      foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
-      {
-        renderObject.Render(in frame);
-      }
-    }
+      base.OnRenderViewport(in frame, viewport);
 
-    public override void OnEndFrame(in RenderFrame frame)
-    {
-      _colorTarget.UnbindFromDisplay();
-      _colorTarget.BlitToBackBuffer(_blitMaterial);
+      using (new GraphicsDebugScope(backend, "Color Pass"))
+      {
+        _colorTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
+        _colorTarget.BindToDisplay();
+
+        _colorTarget.ClearColorBuffer(pipeline.ClearColor);
+
+        foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
+        {
+          renderObject.Render(in frame);
+        }
+
+        _colorTarget.UnbindFromDisplay();
+        _colorTarget.BlitToBackBuffer(_blitMaterial);
+      }
     }
 
     public override void Dispose()
@@ -84,7 +136,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that renders gizmos.
   /// </summary>
-  private sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
+  private sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass()
   {
     /// <summary>
     /// The  material used to render gizmos.
@@ -99,20 +151,23 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     /// <inheritdoc/>
     public override bool IsEnabled => pipeline.EnableGizmos;
 
-    public override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
     {
-      _gizmoMaterial.Properties.SetProperty("u_projectionView", viewport.ProjectionView);
+      base.OnRenderViewport(in frame, viewport);
 
-      GizmoBatch.Begin(_gizmoMaterial);
-
-      foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
+      using (new GraphicsDebugScope(backend, "Gizmo Pass"))
       {
-        gizmoObject.RenderGizmos(in frame, GizmoBatch);
+        _gizmoMaterial.Properties.SetProperty("u_projectionView", viewport.ProjectionView);
+
+        GizmoBatch.Begin(_gizmoMaterial);
+
+        foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
+        {
+          gizmoObject.RenderGizmos(in frame, GizmoBatch);
+        }
+
+        GizmoBatch.Flush();
       }
-
-      GizmoBatch.Flush();
-
-      base.OnEndViewport(in frame, viewport);
     }
 
     public override void Dispose()

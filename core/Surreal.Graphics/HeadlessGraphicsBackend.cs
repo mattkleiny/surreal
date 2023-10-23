@@ -186,6 +186,11 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
     _activeFrameBuffer = handle;
   }
 
+  public void UnbindFrameBuffer()
+  {
+    _activeFrameBuffer = default;
+  }
+
   public void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height)
   {
   }
@@ -203,6 +208,14 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   }
 
   public void DeleteFrameBuffer(FrameBufferHandle handle)
+  {
+  }
+
+  public void BeginDebugScope(string name)
+  {
+  }
+
+  public void EndDebugScope()
   {
   }
 

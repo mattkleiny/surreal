@@ -121,6 +121,7 @@ public interface IGraphicsBackend
   FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor);
   bool IsActiveFrameBuffer(FrameBufferHandle handle);
   void BindFrameBuffer(FrameBufferHandle handle);
+  void UnbindFrameBuffer();
   void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
 
   void BlitToBackBuffer(
@@ -139,4 +140,8 @@ public interface IGraphicsBackend
     Optional<TextureWrapMode> wrapMode);
 
   void DeleteFrameBuffer(FrameBufferHandle handle);
+
+  // debugging
+  void BeginDebugScope(string name);
+  void EndDebugScope();
 }

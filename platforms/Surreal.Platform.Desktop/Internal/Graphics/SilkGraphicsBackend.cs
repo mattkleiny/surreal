@@ -1,4 +1,5 @@
 ﻿using Silk.NET.OpenGL;
+using Silk.NET.OpenGLES.Extensions.EXT;
 using Surreal.Collections;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
@@ -14,6 +15,8 @@ namespace Surreal.Graphics;
 
 internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 {
+  private readonly ExtDebugMarker _debugMarker = new(gl.Context);
+  private readonly Stack<FrameBufferHandle> _activeFrameBuffers = new();
   private Mesh? _quadMesh;
   private FrameBufferHandle _activeFrameBuffer;
 
@@ -635,14 +638,25 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public bool IsActiveFrameBuffer(FrameBufferHandle handle)
   {
-    return _activeFrameBuffer == handle;
+    return handle == _activeFrameBuffer;
   }
 
   public void BindFrameBuffer(FrameBufferHandle handle)
   {
     gl.BindFramebuffer(FramebufferTarget.Framebuffer, handle.FrameBuffer);
 
-    _activeFrameBuffer = handle; // remember the active framebuffer
+    _activeFrameBuffers.Push(_activeFrameBuffer);
+    _activeFrameBuffer = handle;
+  }
+
+  public void UnbindFrameBuffer()
+  {
+    if (_activeFrameBuffers.TryPop(out var handle))
+    {
+      gl.BindFramebuffer(FramebufferTarget.Framebuffer, handle.FrameBuffer);
+
+      _activeFrameBuffer = handle;
+    }
   }
 
   public unsafe void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height)
@@ -731,6 +745,16 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     {
       gl.DeleteRenderbuffer(handle.DepthStencilAttachment);
     }
+  }
+
+  public void BeginDebugScope(string name)
+  {
+    _debugMarker.PushGroupMarker((uint)name.Length, name);
+  }
+
+  public void EndDebugScope()
+  {
+    _debugMarker.PopGroupMarker();
   }
 
   /// <summary>

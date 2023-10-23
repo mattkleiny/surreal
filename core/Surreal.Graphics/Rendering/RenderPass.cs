@@ -16,9 +16,8 @@ public interface IRenderPass : IDisposable
   void OnEndFrame(in RenderFrame frame);
 
   void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport);
-  void OnEndViewport(in RenderFrame frame, IRenderViewport viewport);
-
   void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport);
+  void OnEndViewport(in RenderFrame frame, IRenderViewport viewport);
 }
 
 /// <summary>
