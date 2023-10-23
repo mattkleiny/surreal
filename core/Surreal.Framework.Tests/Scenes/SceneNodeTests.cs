@@ -6,13 +6,16 @@ namespace Surreal.Scenes;
 public class SceneNodeTests
 {
   [Test]
-  public void it_should_notify_node_of_attachment_to_tree()
+  public void it_should_notify_node_of_attachment_to_active_tree()
   {
     var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()
     };
+
+    scene.Update(DeltaTime.OneOver60);
+
     var node = new SceneNode();
 
     node.IsInTree.Should().BeFalse();
@@ -23,13 +26,15 @@ public class SceneNodeTests
   }
 
   [Test]
-  public void it_should_notify_node_of_removal_from_tree()
+  public void it_should_notify_node_of_removal_from_active_tree()
   {
     var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()
     };
+
+    scene.Update(DeltaTime.OneOver60);
 
     var node = new SceneNode();
 
@@ -43,13 +48,15 @@ public class SceneNodeTests
   }
 
   [Test]
-  public void it_should_awake_node_on_first_attachment_to_tree()
+  public void it_should_awake_node_on_first_attachment_to_active_tree()
   {
     var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()
     };
+
+    scene.Update(DeltaTime.OneOver60);
 
     var node = new SceneNode();
 

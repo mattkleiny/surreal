@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Surreal.Graphics</RootNamespace>
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj"/>
   </ItemGroup>

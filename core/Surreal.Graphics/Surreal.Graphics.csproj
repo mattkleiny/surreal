@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Graphics drivers for Surreal.</Description>
-    <RootNamespace>Surreal.Graphics</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj"/>

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Input drivers for Surreal.</Description>
-    <RootNamespace>Surreal.Input</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj" />

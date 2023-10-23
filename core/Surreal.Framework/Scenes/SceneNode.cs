@@ -1,5 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Diagnostics.Logging;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -31,6 +32,8 @@ public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
 /// </summary>
 public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedEvents, IEnumerable<SceneNode>
 {
+  private static readonly ILog Log = LogFactory.GetLog<SceneNode>();
+
   private SceneNodeStates _states = SceneNodeStates.Dormant;
 
   public SceneNode()
