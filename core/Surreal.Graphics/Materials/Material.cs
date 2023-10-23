@@ -173,7 +173,7 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
   public ShaderProgram Shader { get; } = shader;
 
   /// <summary>
-  /// The blend state for this m aterial.
+  /// The blend state for this material.
   /// </summary>
   public BlendState? BlendState { get; set; }
 

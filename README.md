@@ -18,10 +18,10 @@ with an emphasis on simplicity and ease of use.
 
 ### Installation
 
-1. Clone the repository ```sh git clone https://github.com/mattkleiny/surreal.git```
-2. Build the project ```sh dotnet build```
-3. Run the tests ```sh dotnet test```
-4. Run an example ```sh dotnet run --project ./examples/HelloWorld```
+1. Clone the repository ```git clone https://github.com/mattkleiny/surreal.git```
+2. Build the project ```dotnet build```
+3. Run the tests ```dotnet test```
+4. Run an example ```dotnet run --project ./examples/HelloWorld```
 
 ## Usage
 
@@ -76,7 +76,7 @@ Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice
 
 ### Audio
 
-- [ ] Audio playback
+- [X] Audio playback
 - [ ] Audio hot reloading
 - [ ] Audio library
 - [ ] Audio effects
