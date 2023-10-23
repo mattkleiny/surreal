@@ -152,7 +152,7 @@ public sealed class SpriteBatch : IDisposable
       Flush();
       _lastTexture = region.Texture;
     }
-    else if (_vertexCount >= _vertices.Span.Length)
+    else if (_vertexCount + 4 >= _vertices.Span.Length)
     {
       // if we've exceeded the batch capacity, we'll need to flush and start again
       Flush();

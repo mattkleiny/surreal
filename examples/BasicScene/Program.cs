@@ -81,6 +81,11 @@ Game.Start(configuration, async game =>
     {
       game.Exit();
     }
+
+    if (keyboard.IsKeyPressed(Key.F2))
+    {
+      pipeline.EnableGizmos = !pipeline.EnableGizmos;
+    }
   });
 });
 

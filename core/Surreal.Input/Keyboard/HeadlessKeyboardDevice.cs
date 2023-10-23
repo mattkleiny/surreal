@@ -23,9 +23,4 @@ public sealed class HeadlessKeyboardDevice : IKeyboardDevice
   {
     return false;
   }
-
-  public bool IsKeyReleased(Key key)
-  {
-    return !false;
-  }
 }

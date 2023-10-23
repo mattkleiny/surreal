@@ -16,6 +16,15 @@ public enum BlendMode
 }
 
 /// <summary>
+/// How to rasterize a polygon in a <see cref="Material"/>.
+/// </summary>
+public enum PolygonMode
+{
+  Lines,
+  Filled
+}
+
+/// <summary>
 /// State blending operation.
 /// </summary>
 public readonly record struct BlendState(BlendMode Source, BlendMode Target)
@@ -153,6 +162,11 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
   public BlendState? BlendState { get; set; }
 
   /// <summary>
+  /// The polygon mode to use for the material.
+  /// </summary>
+  public PolygonMode PolygonMode { get; set; } = PolygonMode.Filled;
+
+  /// <summary>
   /// The properties of the material.
   /// </summary>
   public MaterialPropertySet Properties { get; } = new();
@@ -173,6 +187,7 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
 
     // apply blend state
     backend.SetBlendState(BlendState);
+    backend.SetPolygonMode(PolygonMode);
   }
 
   protected override void Dispose(bool managed)

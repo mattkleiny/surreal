@@ -21,7 +21,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// Determines if gizmos are enabled.
   /// </summary>
-  public bool EnableGizmos { get; set; } = true;
+  public bool EnableGizmos { get; set; } = Debugger.IsAttached;
 
   /// <summary>
   /// The color to clear the screen with.
@@ -99,27 +99,17 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     /// <inheritdoc/>
     public override bool IsEnabled => pipeline.EnableGizmos;
 
-    public override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
     {
-      base.OnBeginViewport(in frame, viewport);
-
       _gizmoMaterial.Properties.SetProperty("u_projectionView", viewport.ProjectionView);
 
       GizmoBatch.Begin(_gizmoMaterial);
-    }
-
-    public override void OnRenderViewport(in RenderFrame frame, IRenderViewport viewport)
-    {
-      base.OnRenderViewport(in frame, viewport);
 
       foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
       {
         gizmoObject.RenderGizmos(in frame, GizmoBatch);
       }
-    }
 
-    public override void OnEndViewport(in RenderFrame frame, IRenderViewport viewport)
-    {
       GizmoBatch.Flush();
 
       base.OnEndViewport(in frame, viewport);

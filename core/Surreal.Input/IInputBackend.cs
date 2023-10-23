@@ -13,5 +13,5 @@ public interface IInputBackend
   /// <summary>
   /// All of the attached <see cref="IInputDevice" />s.
   /// </summary>
-  IEnumerable<IInputDevice> Devices { get; }
+  IEnumerable<IInputDevice> DiscoverAllDevices();
 }

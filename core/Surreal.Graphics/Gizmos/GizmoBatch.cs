@@ -88,7 +88,7 @@ public sealed class GizmoBatch(IGraphicsBackend backend) : IDisposable
 
   public void Flush()
   {
-    // no-op
+    _geometryBatch.Flush();
   }
 
   public void Dispose()

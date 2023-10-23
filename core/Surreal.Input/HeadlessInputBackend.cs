@@ -20,5 +20,5 @@ internal sealed class HeadlessInputBackend : IInputBackend
   public HeadlessKeyboardDevice Keyboard { get; } = new();
   public HeadlessMouseDevice Mouse { get; } = new();
 
-  public IEnumerable<IInputDevice> Devices => _devices;
+  public IEnumerable<IInputDevice> DiscoverAllDevices() => _devices;
 }

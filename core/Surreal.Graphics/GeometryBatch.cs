@@ -11,20 +11,25 @@ namespace Surreal.Graphics;
 /// </summary>
 public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
 {
-  private const int DefaultVertexCount = 64;
+  private const int DefaultVertexCount = 512;
 
   private readonly Mesh<Vertex2> _mesh = new(backend);
   private readonly IDisposableBuffer<Vertex2> _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
+  private readonly IDisposableBuffer<uint> _indices = Buffers.AllocateNative<uint>(maximumVertexCount * 4);
 
   private Material? _material;
   private int _vertexCount;
+  private int _indexCount;
+  private PolygonMode _lastPolygonMode;
 
   /// <summary>
   /// Begins a new batch of geometry with the given material.
   /// </summary>
   public void Begin(Material material)
   {
-    _vertexCount = 0; // reset vertex pointer
+    _vertexCount = 0;
+    _indexCount = 0;
+
     _material = material;
   }
 
@@ -32,89 +37,67 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   /// Draws a point at the given position.
   /// </summary>
   public void DrawPoint(Vector2 position, Color color)
-  {
-    DrawPrimitive(stackalloc[] { position }, color, MeshType.Points);
-  }
+    => DrawTriangleFan(stackalloc[] { position }, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a line from the given start to end points.
   /// </summary>
   public void DrawLine(Vector2 from, Vector2 to, Color color)
-  {
-    DrawPrimitive(stackalloc[] { from, to }, color, MeshType.Lines);
-  }
+    => DrawTriangleFan(stackalloc[] { from, to }, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a series of lines.
   /// </summary>
   public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
-  {
-    DrawPrimitive(points, color, MeshType.Lines);
-  }
+    => DrawTriangleFan(points, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a connected series of lines.
   /// </summary>
   public void DrawLineLoop(ReadOnlySpan<Vector2> points, Color color)
-  {
-    DrawPrimitive(points, color, MeshType.LineLoop);
-  }
+    => DrawTriangleFan(points, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a connected strip of lines.
   /// </summary>
   public void DrawLineStrip(ReadOnlySpan<Vector2> points, Color color)
-  {
-    DrawPrimitive(points, color, MeshType.LineStrip);
-  }
+    => DrawTriangleFan(points, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a solid triangle.
   /// </summary>
   public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-  {
-    DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.Triangles);
-  }
+    => DrawTriangle(a, b, c, color, PolygonMode.Filled);
 
   /// <summary>
   /// Draws wireframe triangle.
   /// </summary>
   public void DrawWireTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
-  {
-    DrawPrimitive(stackalloc[] { a, b, c }, color, MeshType.LineLoop);
-  }
+    => DrawTriangle(a, b, c, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a solid quad.
   /// </summary>
   public void DrawSolidQuad(Rectangle rectangle, Color color)
-  {
-    DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.Triangles);
-  }
+    => DrawQuad(rectangle.Center, rectangle.Size, color, PolygonMode.Filled);
 
   /// <summary>
   /// Draws a solid quad.
   /// </summary>
   public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
-  {
-    DrawQuad(center, size, color, MeshType.Triangles);
-  }
+    => DrawQuad(center, size, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a wireframe quad.
   /// </summary>
   public void DrawWireQuad(Rectangle rectangle, Color color)
-  {
-    DrawQuad(rectangle.Center, rectangle.Size, color, MeshType.LineLoop);
-  }
+    => DrawQuad(rectangle.Center, rectangle.Size, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a wireframe quad.
   /// </summary>
   public void DrawWireQuad(Vector2 center, Vector2 size, Color color)
-  {
-    DrawQuad(center, size, color, MeshType.LineLoop);
-  }
+    => DrawQuad(center, size, color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a wireframe circle.
@@ -132,7 +115,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
       points.Add(new Vector2(x, y));
     }
 
-    DrawLineLoop(points, color);
+    DrawTriangleFan(points, color, PolygonMode.Lines);
   }
 
   /// <summary>
@@ -152,7 +135,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
       points.Add(new Vector2(x, y));
     }
 
-    DrawLineStrip(points, color);
+    DrawTriangleFan(points, color, PolygonMode.Lines);
   }
 
   /// <summary>
@@ -170,13 +153,13 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
       points.Add(curve.SampleAt(x));
     }
 
-    DrawLineStrip(points.ToSpan(), color);
+    DrawTriangleFan(points, color, PolygonMode.Lines);
   }
 
   /// <summary>
   /// Draws a quad.
   /// </summary>
-  private void DrawQuad(Vector2 center, Vector2 size, Color color, MeshType type)
+  public void DrawQuad(Vector2 center, Vector2 size, Color color, PolygonMode type)
   {
     var halfWidth = size.X / 2f;
     var halfHeight = size.Y / 2f;
@@ -186,59 +169,83 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
     var topRight = new Vector2(center.X + halfWidth, center.Y + halfHeight);
     var bottomRight = new Vector2(center.X + halfWidth, center.Y - halfHeight);
 
-    DrawPrimitive(
-      stackalloc Vector2[]
-      {
-        // triangle 1
-        bottomLeft,
-        topLeft,
-        topRight,
+    DrawTriangle(bottomLeft, topLeft, topRight, color, type);
+    DrawTriangle(topRight, bottomRight, bottomLeft, color, type);
+  }
 
-        // triangle 2
-        topRight,
-        bottomRight,
-        bottomLeft
-      },
-      color,
-      type
-    );
+  /// <summary>
+  /// Draws a solid triangle.
+  /// </summary>
+  public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Color color, PolygonMode type)
+  {
+    DrawTriangleFan(stackalloc[] { a, b, c }, color, type);
   }
 
   /// <summary>
   /// Draws a primitive of the given type.
   /// </summary>
-  public void DrawPrimitive(ReadOnlySpan<Vector2> points, Color color, MeshType type)
+  public void DrawTriangleFan(ReadOnlySpan<Vector2> points, Color color, PolygonMode type)
   {
-    var destination = new SpanList<Vertex2>(_vertices.Span[_vertexCount..points.Length]);
+    if (_lastPolygonMode != type)
+    {
+      // if we're switching geometry types, we'll need to flush and start again
+      Flush();
+      _lastPolygonMode = type;
+    }
+    else if (_vertexCount + points.Length > _vertices.Span.Length)
+    {
+      // if we've exceeded the batch capacity, we'll need to flush and start again
+      Flush();
+    }
 
-    for (var i = 0; i < points.Length; i++) destination.Add(new Vertex2(points[i], color, Vector2.Zero));
+    var vertices = new SpanList<Vertex2>(_vertices.Span[_vertexCount..]);
+    var indices = new SpanList<uint>(_indices.Span[_indexCount..]);
 
-    _vertexCount += points.Length;
+    vertices.Add(new Vertex2(points[0], color, Vector2.Zero));
 
-    Flush(type);
+    var startIndex = (uint)_vertexCount;
+
+    for (var i = 1; i < points.Length - 1; i++)
+    {
+      var offset = startIndex + vertices.Count;
+
+      vertices.Add(new Vertex2(points[i + 0], color, Vector2.Zero));
+      vertices.Add(new Vertex2(points[i + 1], color, Vector2.Zero));
+
+      indices.Add(startIndex);
+      indices.Add((uint)(offset + 0));
+      indices.Add((uint)(offset + 1));
+    }
+
+    _vertexCount += vertices.Count;
+    _indexCount += indices.Count;
   }
 
-  private void Flush(MeshType type)
+  /// <summary>
+  /// Flushes the batch to the GPU.
+  /// </summary>
+  public void Flush()
   {
-    if (_vertexCount == 0)
-    {
-      return;
-    }
+    if (_vertexCount == 0) return;
 
-    if (_material == null)
+    if (_material != null)
     {
-      return;
-    }
+      _material.PolygonMode = _lastPolygonMode;
 
-    _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
-    _mesh.Draw(_material, (uint)_vertexCount, 0, type);
+      _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
+      _mesh.Indices.Write(_indices.Span[.._indexCount]);
+
+      _mesh.Draw(_material);
+    }
 
     _vertexCount = 0;
+    _indexCount = 0;
   }
 
   public void Dispose()
   {
     _mesh.Dispose();
     _vertices.Dispose();
+    _indices.Dispose();
   }
 }

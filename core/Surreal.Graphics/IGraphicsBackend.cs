@@ -63,6 +63,7 @@ public interface IGraphicsBackend
   Viewport GetViewportSize();
   void SetViewportSize(Viewport viewport);
   void SetBlendState(BlendState? state);
+  void SetPolygonMode(PolygonMode mode);
   void ClearColorBuffer(Color color);
   void ClearDepthBuffer(float depth);
   void ClearStencilBuffer(int amount);

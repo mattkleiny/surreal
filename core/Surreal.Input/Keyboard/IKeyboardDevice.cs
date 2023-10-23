@@ -13,5 +13,4 @@ public interface IKeyboardDevice : IInputDevice
   bool IsKeyDown(Key key);
   bool IsKeyUp(Key key);
   bool IsKeyPressed(Key key);
-  bool IsKeyReleased(Key key);
 }

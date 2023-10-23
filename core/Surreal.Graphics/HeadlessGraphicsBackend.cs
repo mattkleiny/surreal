@@ -35,6 +35,10 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
   }
 
+  public void SetPolygonMode(PolygonMode mode)
+  {
+  }
+
   public void ClearColorBuffer(Color color)
   {
   }

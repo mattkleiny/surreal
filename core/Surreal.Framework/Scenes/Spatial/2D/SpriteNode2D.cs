@@ -1,5 +1,6 @@
 ﻿using Surreal.Colors;
 using Surreal.Graphics;
+using Surreal.Graphics.Gizmos;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
@@ -9,7 +10,7 @@ namespace Surreal.Scenes.Spatial;
 /// <summary>
 /// A node that renders a sprite.
 /// </summary>
-public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject
+public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject, IGizmoObject
 {
   /// <summary>
   /// The sprite texture to render.
@@ -46,5 +47,14 @@ public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject
     {
       OnRender(context.SpriteBatch);
     }
+  }
+
+  void IGizmoObject.RenderGizmos(in RenderFrame frame, GizmoBatch gizmos)
+  {
+    gizmos.DrawWireQuad(
+      center: GlobalPosition,
+      size: GlobalScale * Sprite.Size,
+      color: Color.Red
+    );
   }
 }
