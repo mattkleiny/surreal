@@ -13,16 +13,13 @@
   }
 };
 
-Game.Start(configuration, game =>
+Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
 {
-  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
-  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
+  using var mesh = Mesh.CreateCube(graphics);
+  using var material = new Material(graphics, ShaderProgram.LoadDefaultWireShader(graphics));
 
   var color1 = Random.Shared.Next<Color>();
   var color2 = Random.Shared.Next<Color>();
-
-  using var mesh = Mesh.CreateCube(graphics);
-  using var material = new Material(graphics, ShaderProgram.LoadDefaultWireShader(graphics));
 
   var model = Matrix4x4.CreateRotationZ(Angle.FromDegrees(45f), Vector3.Zero);
 

@@ -16,15 +16,11 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.Start(configuration, async game =>
+Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
 {
-  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
-  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
-  var mouse = game.Services.GetServiceOrThrow<IMouseDevice>();
-
-  var canvas = new SandCanvas(graphics);
-
   var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://FallingSand/Assets/Embedded/palettes/kule-16.pal");
+
+  using var canvas = new SandCanvas(graphics);
 
   game.ExecuteVariableStep(time =>
   {

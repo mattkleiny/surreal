@@ -16,15 +16,12 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.StartScene<ForwardRenderPipeline>(configuration, async (game, scene) =>
+Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTree scene, ForwardRenderPipeline pipeline) =>
 {
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
   var music = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
 
-  if (scene.Renderer is ForwardRenderPipeline pipeline)
-  {
-    pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-  }
+  pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
   var viewport = new CameraViewportNode();
   var camera = new CameraNode2D { Zoom = 100f };

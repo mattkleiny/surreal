@@ -32,6 +32,6 @@ public readonly record struct AudioSampleRate(int Frequency, int Channels, int B
 
   public override string ToString()
   {
-    return $"{Frequency:N0} hz * {Channels} channels * {BitsPerSample} bits per sample = {BitsPerSecond}bps";
+    return $"{Frequency:N0} hz * {Channels} channels * {BitsPerSample} bits per sample = {BitsPerSecond:N0}bps";
   }
 }

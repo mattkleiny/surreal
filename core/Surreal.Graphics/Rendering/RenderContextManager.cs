@@ -119,7 +119,10 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
     return false;
   }
 
-  public void Dispose()
+  /// <summary>
+  /// Removes all contexts from the manager.
+  /// </summary>
+  public void Clear()
   {
     foreach (var context in _contexts.Values)
     {
@@ -130,6 +133,11 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
     }
 
     _contexts.Clear();
+  }
+
+  public void Dispose()
+  {
+    Clear();
   }
 
   public Dictionary<Type, IRenderContext>.ValueCollection.Enumerator GetEnumerator()

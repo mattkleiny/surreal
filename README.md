@@ -44,16 +44,13 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.Start(configuration, game =>
+// request access to whatever services you need in the start method
+Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
 {
-  // get access to whatever game services you need
-  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
-  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
-
   var color1 = Random.Shared.Next<Color>();
   var color2 = Random.Shared.Next<Color>();
 
-  // run a game loop with whatever logic you need
+  // start a game loop and execute a callback on every frame
   game.ExecuteVariableStep(time =>
   {
     var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));

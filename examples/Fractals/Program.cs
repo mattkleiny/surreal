@@ -16,12 +16,9 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.Start(configuration, async game =>
+Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
 {
-  var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
-  var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
-
-  var canvas = new PixelCanvas(graphics, 256, 144);
+  using var canvas = new PixelCanvas(graphics, 256, 144);
 
   var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Fractals/Assets/Embedded/palettes/raspberry.pal");
   var constant = new Vector2(0.285f, 0.01f);

@@ -52,13 +52,8 @@ public sealed record GameConfiguration
 /// Entry point for the game.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public sealed class Game : IDisposable
+public class Game : IDisposable
 {
-  public delegate void GameSetup(Game game);
-  public delegate Task GameSetupAsync(Game game);
-  public delegate void SceneSetup(Game game, SceneTree scene);
-  public delegate Task SceneSetupAsync(Game game, SceneTree scene);
-
   /// <summary>
   /// A function that runs the game loop.
   /// </summary>
@@ -86,22 +81,53 @@ public sealed class Game : IDisposable
     Callbacks.Enqueue(callback);
   }
 
-  private Game(ServiceRegistry services, IPlatformHost host)
-  {
-    Services = services;
-    Host = host;
-  }
-
   /// <summary>
   /// Starts the game.
   /// </summary>
-  public static void Start(GameConfiguration configuration, GameSetup gameSetup)
+  public static void Start(GameConfiguration configuration, Delegate setup)
   {
-    Start(configuration, game =>
+    StartInner(configuration, async game =>
     {
-      gameSetup(game);
+      // set up the game
+      var result = game.Services.ExecuteDelegate(setup, game);
+      if (result is Task task)
+      {
+        await task;
+      }
+    });
+  }
 
-      return Task.CompletedTask;
+  /// <summary>
+  /// Starts the game with a scene and the given render pipeline.
+  /// </summary>
+  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+  public static void StartScene<TPipeline>(GameConfiguration configuration, Delegate setup)
+    where TPipeline : class, IRenderPipeline
+  {
+    StartInner(configuration, async game =>
+    {
+      // build the scene tree
+      using var pipeline = game.Services.Instantiate<TPipeline>();
+      using var sceneTree = new SceneTree
+      {
+        Assets = game.Assets,
+        Services = game.Services,
+        Renderer = pipeline
+      };
+
+      // set up the scene
+      var result = game.Services.ExecuteDelegate(setup, game, pipeline, sceneTree);
+      if (result is Task task)
+      {
+        await task;
+      }
+
+      // run the game loop
+      game.ExecuteVariableStep(time =>
+      {
+        sceneTree.Update(time.DeltaTime);
+        sceneTree.Render(time.DeltaTime);
+      });
     });
   }
 
@@ -110,7 +136,7 @@ public sealed class Game : IDisposable
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
-  public static void Start(GameConfiguration configuration, GameSetupAsync gameSetup)
+  private static void StartInner(GameConfiguration configuration, Func<Game, Task> gameSetup)
   {
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
@@ -120,8 +146,14 @@ public sealed class Game : IDisposable
     // prepare core services
     using var services = new ServiceRegistry();
     using var host = configuration.Platform.BuildHost(services);
-    using var game = new Game(services, host);
 
+    using var game = new Game
+    {
+      Services = services,
+      Host = host
+    };
+
+    // configure the game services
     services.AddModule(configuration.Module);
 
     // prepare asset manager
@@ -133,7 +165,7 @@ public sealed class Game : IDisposable
     // marshal all async work back to the main thread
     SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
 
-    // prepare the game and loop
+    // prepare the game setup on the first frame of the loop
     Schedule(() => gameSetup(game).ContinueWith(task =>
     {
       if (task.IsFaulted)
@@ -154,89 +186,24 @@ public sealed class Game : IDisposable
   }
 
   /// <summary>
-  /// Starts the game with a scene and the given render pipeline.
-  /// </summary>
-  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  public static void StartScene<TPipeline>(GameConfiguration configuration, SceneSetup sceneSetup)
-    where TPipeline : class, IRenderPipeline
-  {
-    Start(configuration, game =>
-    {
-      using var pipeline = game.Services.Instantiate<TPipeline>();
-
-      using var sceneTree = new SceneTree
-      {
-        Assets = game.Assets,
-        Services = game.Services,
-        Renderer = pipeline
-      };
-
-      sceneSetup(game, sceneTree);
-
-      game.ExecuteVariableStep(time =>
-      {
-        sceneTree.Update(time.DeltaTime);
-        sceneTree.Render(time.DeltaTime);
-      });
-    });
-  }
-
-  /// <summary>
-  /// Starts the game with a scene and the given render pipeline.
-  /// </summary>
-  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  public static void StartScene<TPipeline>(GameConfiguration configuration, SceneSetupAsync sceneSetup)
-    where TPipeline : class, IRenderPipeline
-  {
-    Start(configuration, async game =>
-    {
-      using var pipeline = game.Services.Instantiate<TPipeline>();
-
-      using var sceneTree = new SceneTree
-      {
-        Assets = game.Assets,
-        Services = game.Services,
-        Renderer = pipeline
-      };
-
-      await sceneSetup(game, sceneTree);
-
-      game.ExecuteVariableStep(time =>
-      {
-        sceneTree.Update(time.DeltaTime);
-        sceneTree.Render(time.DeltaTime);
-      });
-    });
-  }
-
-  /// <summary>
-  /// The services available to the game.
-  /// </summary>
-  public ServiceRegistry Services { get; init; }
-
-  /// <summary>
   /// The assets available to the game.
   /// </summary>
   public AssetManager Assets { get; } = new();
 
   /// <summary>
+  /// The services available to the game.
+  /// </summary>
+  public required ServiceRegistry Services { get; init; }
+
+  /// <summary>
   /// The main platform host for the game.
   /// </summary>
-  public IPlatformHost Host { get; init; }
+  public required IPlatformHost Host { get; init; }
 
   /// <summary>
   /// True if the game is getting ready to close.
   /// </summary>
   public bool IsClosing { get; private set; }
-
-  /// <summary>Pumps the main event loop a single frame.</summary>
-  private static void PumpEventLoop()
-  {
-    while (Callbacks.TryDequeue(out var callback))
-    {
-      callback.Invoke();
-    }
-  }
 
   /// <summary>
   /// Executes the given <see cref="gameLoop"/> with a variable step frequency.
@@ -263,12 +230,13 @@ public sealed class Game : IDisposable
 
       Host.EndFrame(time.DeltaTime);
 
-      // we need to take over the event loop from here
       PumpEventLoop();
     }
   }
 
-  /// <summary>Exits the game at the end of the frame.</summary>
+  /// <summary>
+  /// Exits the game at the end of the frame.
+  /// </summary>
   public void Exit()
   {
     IsClosing = true;
@@ -279,7 +247,18 @@ public sealed class Game : IDisposable
     Assets.Dispose();
   }
 
-  /// <summary>Synchronizes back to the main <see cref="Game"/>.</summary>
+  /// <summary>Pumps the main event loop a single frame.</summary>
+  protected static void PumpEventLoop()
+  {
+    while (Callbacks.TryDequeue(out var callback))
+    {
+      callback.Invoke();
+    }
+  }
+
+  /// <summary>
+  /// Synchronizes back to the main <see cref="Game"/>.
+  /// </summary>
   private sealed class GameAffineSynchronizationContext : SynchronizationContext
   {
     public override void Post(SendOrPostCallback callback, object? state)

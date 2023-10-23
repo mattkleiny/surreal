@@ -22,6 +22,12 @@ public interface IServiceRegistry : IServiceProvider
   /// Instantiates a type and populates it's service without adding it to the container.
   /// </summary>
   T Instantiate<T>() where T : class;
+
+  /// <summary>
+  /// Invokes the given <see cref="Delegate"/> with services available in the container, as
+  /// well as the auxiliary services provided in <see cref="extraServices"/>
+  /// </summary>
+  object? ExecuteDelegate(Delegate @delegate, params object[] extraServices);
 }
 
 /// <summary>
@@ -57,6 +63,39 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     Log.Trace($"Registering service {serviceType} with instance {instance}");
 
     _container.RegisterInstance(serviceType, instance, GenerateName());
+  }
+
+  /// <summary>
+  /// Invokes the given <see cref="Delegate"/> with services available in the container, as
+  /// well as the auxiliary services provided in <see cref="extraServices"/>
+  /// </summary>
+  public object? ExecuteDelegate(Delegate @delegate, params object[] extraServices)
+  {
+    var methodInfo = @delegate.GetMethodInfo();
+    var parameterInfos = methodInfo.GetParameters();
+    var parameters = new object[parameterInfos.Length];
+    var servicesByType = extraServices.ToDictionary(s => s.GetType());
+
+    for (var i = 0; i < parameterInfos.Length; i++)
+    {
+      var parameterInfo = parameterInfos[i];
+      var parameterType = parameterInfo.ParameterType;
+
+      if (_container.CanGetInstance(parameterType, null))
+      {
+        parameters[i] = _container.GetInstance(parameterType);
+      }
+      else if (servicesByType.TryGetValue(parameterType, out var instance))
+      {
+        parameters[i] = instance;
+      }
+      else
+      {
+        throw new InvalidOperationException($"Unable to resolve parameter {parameterInfo}");
+      }
+    }
+
+    return methodInfo.Invoke(@delegate.Target, parameters);
   }
 
   public T Instantiate<T>()
