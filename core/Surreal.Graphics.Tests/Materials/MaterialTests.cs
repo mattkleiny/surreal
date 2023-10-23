@@ -4,7 +4,7 @@ namespace Surreal.Graphics.Materials;
 
 public class MaterialTests
 {
-  private static MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
+  private static MaterialProperty<Matrix4x4> Transform { get; } = new("u_transform");
   private static MaterialProperty<Color32> ClearColor { get; } = new("u_clearColor");
 
   [Test]
@@ -78,7 +78,7 @@ public class MaterialTests
 
     backend.GetShaderUniformLocation(shader.Handle, Arg.Any<string>()).Returns(2);
 
-    material.Properties.SetProperty(ProjectionView, Matrix4x4.Identity);
+    material.Properties.SetProperty(Transform, Matrix4x4.Identity);
     material.Properties.SetProperty(ClearColor, Color32.White);
 
     material.ApplyMaterial();

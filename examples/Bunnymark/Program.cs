@@ -20,9 +20,6 @@ var configuration = new GameConfiguration
 
 Game.Start(configuration, async game =>
 {
-  MaterialProperty<Texture> texture = new("u_texture");
-  MaterialProperty<Matrix4x4> projectionView = new("u_projectionView");
-
   var log = LogFactory.GetLog<Program>();
 
   var graphics = game.Services.GetServiceOrThrow<IGraphicsBackend>();
@@ -37,8 +34,8 @@ Game.Start(configuration, async game =>
     BlendState = BlendState.OneMinusSourceAlpha,
     Properties =
     {
-      { texture, sprite },
-      { projectionView, Matrix4x4.CreateOrthographic(width, -height, 0, 100f) }
+      { "u_texture", sprite },
+      { "u_transform", Matrix4x4.CreateOrthographic(width, -height, 0, 100f) }
     }
   };
 

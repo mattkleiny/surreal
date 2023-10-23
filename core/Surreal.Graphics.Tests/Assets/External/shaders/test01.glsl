@@ -2,7 +2,7 @@
 
 #shader_type vertex
 
-uniform mat4 u_projectionView = mat4(1.0);
+uniform mat4 u_transform = mat4(1.0);
 
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec4 color;
@@ -16,7 +16,7 @@ void main()
   v_color = color;
   v_uv = uv;
 
-  gl_Position = vec4(position, 0.0, 1.0) * u_projectionView;
+  gl_Position = vec4(position, 0.0, 1.0) * u_transform;
 }
 
 #shader_type fragment

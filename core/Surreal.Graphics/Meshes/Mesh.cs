@@ -101,6 +101,69 @@ public abstract class Mesh : GraphicsAsset, IHasSizeEstimate
   }
 
   /// <summary>
+  /// Builds a simple cube <see cref="Mesh" />.
+  /// </summary>
+  public static Mesh<Vertex3> CreateCube(IGraphicsBackend backend, float size = 1f)
+  {
+    return Create<Vertex3>(backend, tessellator =>
+    {
+      // build a cube mesh from 6 faces
+      var vertices = new SpanList<Vertex3>(stackalloc Vertex3[6]);
+
+      // front
+      vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(0f, 0f)));
+      vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(0f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(1f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(1f, 0f)));
+
+      tessellator.AddTriangleFan(vertices);
+      vertices.Clear();
+
+      // back
+      vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(0f, 0f)));
+      vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(0f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(1f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(1f, 0f)));
+
+      tessellator.AddTriangleFan(vertices);
+      vertices.Clear();
+
+      // left
+      vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(0f, 0f)));
+      vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(0f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(1f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(1f, 0f)));
+
+      tessellator.AddTriangleFan(vertices);
+      vertices.Clear();
+
+      // right
+      vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(0f, 0f)));
+      vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(0f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(1f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(1f, 0f)));
+
+      tessellator.AddTriangleFan(vertices);
+      vertices.Clear();
+
+      // top
+      vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(0f, 0f)));
+      vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(0f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(1f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(1f, 0f)));
+
+      tessellator.AddTriangleFan(vertices);
+      vertices.Clear();
+
+      // bottom
+      vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(0f, 0f)));
+      vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(0f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(1f, 1f)));
+      vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(1f, 0f)));
+    });
+  }
+
+  /// <summary>
   /// Draws the mesh with the given <see cref="Material" />.
   /// </summary>
   public abstract void Draw(Material material, MeshType type = MeshType.Triangles);

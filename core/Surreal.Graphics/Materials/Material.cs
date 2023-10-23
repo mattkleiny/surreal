@@ -25,7 +25,18 @@ public enum PolygonMode
 }
 
 /// <summary>
-/// State blending operation.
+/// Possible culling modes for a <see cref="Material"/>.
+/// </summary>
+public enum CullingMode
+{
+  Disabled,
+  Front,
+  Back,
+  Both
+}
+
+/// <summary>
+/// Blend state options
 /// </summary>
 public readonly record struct BlendState(BlendMode Source, BlendMode Target)
 {
@@ -34,6 +45,11 @@ public readonly record struct BlendState(BlendMode Source, BlendMode Target)
   /// </summary>
   public static BlendState OneMinusSourceAlpha { get; } = new(BlendMode.SourceAlpha, BlendMode.OneMinusSourceAlpha);
 }
+
+/// <summary>
+/// Scissor state options.
+/// </summary>
+public readonly record struct ScissorState(int Left, int Top, int Right, int Bottom);
 
 /// <summary>
 /// A property of a <see cref="Material" />.
@@ -157,14 +173,24 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
   public ShaderProgram Shader { get; } = shader;
 
   /// <summary>
-  /// The desired <see cref="Materials.BlendState" /> for this material.
+  /// The blend state for this m aterial.
   /// </summary>
   public BlendState? BlendState { get; set; }
+
+  /// <summary>
+  /// Scissor test state for this material.
+  /// </summary>
+  public ScissorState? ScissorState { get; set; }
 
   /// <summary>
   /// The polygon mode to use for the material.
   /// </summary>
   public PolygonMode PolygonMode { get; set; } = PolygonMode.Filled;
+
+  /// <summary>
+  /// Back-face culling mode.
+  /// </summary>
+  public CullingMode CullingMode { get; set; } = CullingMode.Disabled;
 
   /// <summary>
   /// The properties of the material.
@@ -187,7 +213,9 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
 
     // apply blend state
     backend.SetBlendState(BlendState);
+    backend.SetScissorState(ScissorState);
     backend.SetPolygonMode(PolygonMode);
+    backend.SetCullingMode(CullingMode);
   }
 
   protected override void Dispose(bool managed)

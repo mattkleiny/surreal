@@ -107,4 +107,8 @@ public readonly record struct Angle(float Radians) : IFromRandom<Angle>, IInterp
   public static Angle operator /(Angle angle, float scalar) => new(angle.Radians / scalar);
   public static Angle operator *(float scalar, Angle angle) => new(angle.Radians * scalar);
   public static Angle operator /(float scalar, Angle angle) => new(angle.Radians / scalar);
+
+  // implicit conversions
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator float(Angle angle) => angle.Radians;
 }

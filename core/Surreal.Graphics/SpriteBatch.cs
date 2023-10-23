@@ -21,7 +21,7 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
   /// <summary>
   /// The property to use for the projection view matrix.
   /// </summary>
-  public MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
+  public MaterialProperty<Matrix4x4> TransformProperty { get; } = new("u_transform");
 
   /// <summary>
   /// The material used by this context.
@@ -35,7 +35,7 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
   {
     base.OnBeginPass(in frame, viewport);
 
-    Material.Properties.SetProperty(ProjectionView, viewport.ProjectionView);
+    Material.Properties.SetProperty(TransformProperty, viewport.ProjectionView);
 
     SpriteBatch.Begin(Material);
   }

@@ -50,6 +50,25 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     }
   }
 
+  public void SetScissorState(ScissorState? state)
+  {
+    if (state != null)
+    {
+      gl.Enable(EnableCap.ScissorTest);
+
+      gl.Scissor(
+        x: state.Value.Left,
+        y: state.Value.Top,
+        width: (uint)(state.Value.Right - state.Value.Left),
+        height: (uint)(state.Value.Bottom - state.Value.Top)
+      );
+    }
+    else
+    {
+      gl.Disable(EnableCap.ScissorTest);
+    }
+  }
+
   public void SetPolygonMode(PolygonMode mode)
   {
     gl.PolygonMode(TriangleFace.FrontAndBack, mode switch
@@ -59,6 +78,27 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
       _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
     });
+  }
+
+  public void SetCullingMode(CullingMode mode)
+  {
+    if (mode != CullingMode.Disabled)
+    {
+      gl.Enable(EnableCap.CullFace);
+
+      gl.CullFace(mode switch
+      {
+        CullingMode.Front => TriangleFace.Front,
+        CullingMode.Back => TriangleFace.Back,
+        CullingMode.Both => TriangleFace.FrontAndBack,
+
+        _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+      });
+    }
+    else
+    {
+      gl.Disable(GLEnum.CullFace);
+    }
   }
 
   public void ClearColorBuffer(Color color)

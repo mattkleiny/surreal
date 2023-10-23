@@ -4,7 +4,7 @@ namespace Surreal.Graphics.Materials;
 
 public class MaterialPropertyTests
 {
-  private static MaterialProperty<Matrix4x4> ProjectionView { get; } = new("u_projectionView");
+  private static MaterialProperty<Matrix4x4> Transform { get; } = new("u_transform");
   private static MaterialProperty<Color32> ClearColor { get; } = new("u_clearColor");
   private static MaterialProperty<Vector3> LightPosition { get; } = new("u_lightPosition");
 
@@ -13,7 +13,7 @@ public class MaterialPropertyTests
   {
     var propertySet = new MaterialPropertySet();
 
-    propertySet.SetProperty(ProjectionView, Matrix4x4.Identity);
+    propertySet.SetProperty(Transform, Matrix4x4.Identity);
   }
 
   [Test]

@@ -35,7 +35,15 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
   }
 
+  public void SetScissorState(ScissorState? state)
+  {
+  }
+
   public void SetPolygonMode(PolygonMode mode)
+  {
+  }
+
+  public void SetCullingMode(CullingMode mode)
   {
   }
 
