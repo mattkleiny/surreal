@@ -37,7 +37,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that collects depth data.
   /// </summary>
-  private sealed class DepthPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass()
+  private sealed class DepthPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
     /// <summary>
     /// The main color target for the pass.
@@ -56,7 +56,6 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
     {
       base.OnExecutePass(in frame, viewport);
-
 
       _depthTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
       _depthTarget.BindToDisplay();
@@ -83,7 +82,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that collects color data.
   /// </summary>
-  private sealed class ColorPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass()
+  private sealed class ColorPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
     /// <summary>
     /// The material used to blit the color target to the back buffer.
@@ -131,7 +130,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that renders gizmos.
   /// </summary>
-  private sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass()
+  private sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
     /// <summary>
     /// The  material used to render gizmos.

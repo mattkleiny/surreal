@@ -1,8 +1,7 @@
 ﻿using Surreal.Maths;
-using Surreal.Scenes.Spatial;
 using Surreal.Timing;
 
-namespace Surreal.Scenes.Canvas;
+namespace Surreal.Scenes.Spatial;
 
 public class SceneNode2DTests
 {

@@ -9,57 +9,44 @@ namespace Surreal.Scenes;
 /// A list of <see cref="SceneNode"/>s.
 /// </summary>
 [DebuggerDisplay("SceneNodeList (Count = {Count})")]
-public sealed class SceneNodeList(SceneNode? parent = null) : Collection<SceneNode>
+public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
 {
   protected override void OnItemAdded(SceneNode item)
   {
     base.OnItemAdded(item);
 
-    item.Parent = parent;
-    item.NotifyEnterTree();
+    item.OnNodeAdded(owner);
   }
 
   protected override void OnItemRemoved(SceneNode item)
   {
     base.OnItemRemoved(item);
 
-    item.NotifyExitTree();
-    item.Parent = null;
+    item.OnNodeRemoved(owner);
   }
 }
 
 /// <summary>
-/// A single node in a scene graph.
+/// A single node in a scene tree.
 /// </summary>
 public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedEvents, IEnumerable<SceneNode>
 {
-  private SceneGraphStates _states = SceneGraphStates.Dormant;
-  private SceneNode? _parent;
+  private SceneNodeStates _states = SceneNodeStates.Dormant;
 
   public SceneNode()
   {
     Children = new SceneNodeList(this);
   }
 
+  /// <summary>
+  /// Notifies listeners that a property is changing.
+  /// </summary>
   public event PropertyEventHandler? PropertyChanging;
-  public event PropertyEventHandler? PropertyChanged;
 
   /// <summary>
-  /// The parent of this node.
+  /// Notifies listeners that a property has changed.
   /// </summary>
-  public SceneNode? Parent
-  {
-    get => _parent;
-    internal set
-    {
-      if (_parent != value)
-      {
-        _parent?.Children.Remove(this);
-      }
-
-      _parent = value;
-    }
-  }
+  public event PropertyEventHandler? PropertyChanged;
 
   /// <summary>
   /// A unique identifier for this node.
@@ -67,50 +54,60 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   public Guid Id { get; } = Guid.NewGuid();
 
   /// <summary>
+  /// The name of the node.
+  /// </summary>
+  public string? Name { get; set; }
+
+  /// <summary>
+  /// The parent of this node.
+  /// </summary>
+  public SceneNode? Parent { get; private set; }
+
+  /// <summary>
   /// The children of this node.
   /// </summary>
   public SceneNodeList Children { get; }
 
   /// <summary>
-  /// The <see cref="IServiceProvider"/> for the scene graph.
+  /// The <see cref="IServiceProvider"/> for the scene tree.
   /// </summary>
   public IServiceProvider Services
   {
     get
     {
-      if (!TryResolveParent(out SceneGraph graph))
+      if (!TryResolveRoot(out var tree))
       {
-        throw new InvalidOperationException("Unable to access services from a node that is not in a scene graph.");
+        throw new InvalidOperationException("Unable to access services from a node that is not in a scene tree.");
       }
 
-      return graph.Services;
+      return tree.Services;
     }
   }
 
   /// <summary>
-  /// The <see cref="IAssetProvider"/> for the scene graph.
+  /// The <see cref="IAssetProvider"/> for the scene tree.
   /// </summary>
   public IAssetProvider Assets
   {
     get
     {
-      if (!TryResolveParent(out SceneGraph graph))
+      if (!TryResolveRoot(out var tree))
       {
-        throw new InvalidOperationException("Unable to access assets from a node that is not in a scene graph.");
+        throw new InvalidOperationException("Unable to access assets from a node that is not in a scene tree.");
       }
 
-      return graph.Assets;
+      return tree.Assets;
     }
   }
 
-  public bool IsAwake => _states.HasFlag(SceneGraphStates.Awake);
-  public bool IsReady => _states.HasFlag(SceneGraphStates.Ready);
-  public bool IsInTree => _states.HasFlag(SceneGraphStates.InTree);
-  public bool IsDestroyed => _states.HasFlag(SceneGraphStates.Destroyed);
+  public bool IsAwake => _states.HasFlag(SceneNodeStates.Awake);
+  public bool IsReady => _states.HasFlag(SceneNodeStates.Ready);
+  public bool IsInTree => _states.HasFlag(SceneNodeStates.InTree);
+  public bool IsDestroyed => _states.HasFlag(SceneNodeStates.Destroyed);
 
-  // notifications that are flowing either to or from this node
-  internal Queue<Notification> NotificationsForParents { get; } = new();
-  internal Queue<Notification> NotificationsForChildren { get; } = new();
+  // messages that are flowing either to or from this node
+  internal Queue<Message> MessagesForParents { get; } = new();
+  internal Queue<Message> MessagesForChildren { get; } = new();
 
   /// <summary>
   /// Convenience method for adding a child to this node.
@@ -123,31 +120,11 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   public void Remove(SceneNode node) => Children.Remove(node);
 
   /// <summary>
-  /// Attempts to find the parent node of the hierarchy.
+  /// Attempts to find the root <see cref="SceneTree"/> of the hierarchy.
   /// </summary>
-  public bool TryResolveRoot<T>(out T result)
-    where T : SceneNode
+  public bool TryResolveRoot(out SceneTree result)
   {
-    var current = _parent;
-
-    while (current != null)
-    {
-      if (current.Parent == null)
-      {
-        break;
-      }
-
-      current = current.Parent;
-    }
-
-    if (current is T instance)
-    {
-      result = instance;
-      return true;
-    }
-
-    result = default!;
-    return false;
+    return TryResolveParent(out result);
   }
 
   /// <summary>
@@ -156,7 +133,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   public bool TryResolveParent<T>(out T result)
     where T : SceneNode
   {
-    var current = _parent;
+    var current = Parent;
 
     while (current != null)
     {
@@ -218,12 +195,9 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// </summary>
   public void Update(DeltaTime deltaTime)
   {
-    if (!_states.HasFlagFast(SceneGraphStates.Ready))
-    {
-      OnReady();
-
-      _states |= SceneGraphStates.Ready;
-    }
+    AwakeIfNecessary();
+    EnterTreeIfNecessary();
+    ReadyIfNecessary();
 
     OnPreUpdate(deltaTime);
     OnUpdate(deltaTime);
@@ -235,19 +209,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// </summary>
   public void Destroy()
   {
-    NotifyParents(NotificationType.Destroy);
-  }
-
-  protected virtual void UpdateInternal(DeltaTime deltaTime)
-  {
-    if (!_states.HasFlagFast(SceneGraphStates.Ready))
-    {
-      OnReady();
-
-      _states |= SceneGraphStates.Ready;
-    }
-
-    OnUpdate(deltaTime);
+    SendMessageToParents(MessageType.Destroy);
   }
 
   protected virtual void OnAwake()
@@ -280,29 +242,9 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
 
   protected virtual void OnUpdate(DeltaTime deltaTime)
   {
-    // propagate inbox messages to children
-    while (NotificationsForChildren.TryDequeue(out var notification))
-    {
-      OnNotification(notification);
-
-      foreach (var child in Children)
-      {
-        child.NotificationsForChildren.Enqueue(notification);
-      }
-    }
-
-    // update children
     foreach (var child in Children)
     {
-      child.Update(deltaTime);
-
-      // propagate outbox messages to parents
-      while (child.NotificationsForParents.TryDequeue(out var notification))
-      {
-        OnNotification(notification);
-
-        NotificationsForParents.Enqueue(notification);
-      }
+      child.OnUpdate(deltaTime);
     }
   }
 
@@ -312,15 +254,18 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
     {
       child.OnPostUpdate(deltaTime);
     }
+
+    PropagateMessagesToChildren();
+    PropagateMessagesToParents();
   }
 
-  internal virtual void OnNotification(Notification notification)
+  internal virtual void OnMessageReceived(Message message)
   {
   }
 
   public override string ToString()
   {
-    return $"{GetType().Name} {{ Id = {Id} }}";
+    return $"{GetType().Name} {{ Id = {Id}, Name = {Name} }}";
   }
 
   public void Dispose()
@@ -340,7 +285,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
 
   IEnumerator<SceneNode> IEnumerable<SceneNode>.GetEnumerator()
   {
-    throw new NotImplementedException();
+    return GetEnumerator();
   }
 
   IEnumerator IEnumerable.GetEnumerator()
@@ -349,63 +294,155 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   }
 
   /// <summary>
-  /// Notifies this node that it has been added to a scene graph.
+  /// Notifies this node that it has been added to a scene tree.
   /// </summary>
-  internal void NotifyEnterTree()
+  internal void OnNodeAdded(SceneNode owner)
   {
-    if (!_states.HasFlagFast(SceneGraphStates.Awake))
+    if (Parent != owner)
     {
-      OnAwake();
-
-      _states |= SceneGraphStates.Awake;
+      Parent?.Children.Remove(this);
+      Parent = owner;
     }
 
-    if (!_states.HasFlagFast(SceneGraphStates.InTree))
+    if (owner.IsAwake) AwakeIfNecessary();
+    if (owner.IsInTree) EnterTreeIfNecessary();
+  }
+
+  /// <summary>
+  /// Notifies this node that it has been removed from a scene tree.
+  /// </summary>
+  internal void OnNodeRemoved(SceneNode owner)
+  {
+    ExitTreeIfNecessary();
+
+    Parent = null;
+  }
+
+  /// <summary>
+  /// Awakens this node and its children.
+  /// </summary>
+  private void AwakeIfNecessary()
+  {
+    if (!_states.HasFlagFast(SceneNodeStates.Awake))
     {
       foreach (var child in Children)
       {
-        child.NotifyEnterTree();
+        child.OnAwake();
       }
 
-      OnEnterTree();
+      OnAwake();
 
-      _states |= SceneGraphStates.InTree;
+      _states |= SceneNodeStates.Awake;
     }
   }
 
   /// <summary>
-  /// Notifies this node that it has been removed from a scene graph.
+  /// Notifies this node that it has been added to a scene tree.
   /// </summary>
-  internal void NotifyExitTree()
+  private void EnterTreeIfNecessary()
   {
-    if (_states.HasFlagFast(SceneGraphStates.InTree))
+    if (!_states.HasFlagFast(SceneNodeStates.InTree))
     {
       foreach (var child in Children)
       {
-        child.NotifyExitTree();
+        child.EnterTreeIfNecessary();
+      }
+
+      OnEnterTree();
+
+      _states |= SceneNodeStates.InTree;
+    }
+  }
+
+  /// <summary>
+  /// Notifies this node that it has been removed from a scene tree.
+  /// </summary>
+  private void ExitTreeIfNecessary()
+  {
+    if (_states.HasFlagFast(SceneNodeStates.InTree))
+    {
+      foreach (var child in Children)
+      {
+        child.ExitTreeIfNecessary();
       }
 
       OnExitTree();
 
-      _states &= ~SceneGraphStates.InTree;
+      _states &= ~SceneNodeStates.InTree;
+    }
+  }
+
+  /// <summary>
+  /// Readies this node and its children.
+  /// </summary>
+  private void ReadyIfNecessary()
+  {
+    if (!_states.HasFlagFast(SceneNodeStates.Ready))
+    {
+      foreach (var child in Children)
+      {
+        child.ReadyIfNecessary();
+      }
+
+      OnReady();
+
+      _states |= SceneNodeStates.Ready;
     }
   }
 
   /// <summary>
   /// Notifies this node that it has been destroyed.
   /// </summary>
-  internal void NotifyDestroyed()
+  internal void DestroyIfNecessary()
   {
-    if (!_states.HasFlagFast(SceneGraphStates.Destroyed))
+    if (!_states.HasFlagFast(SceneNodeStates.Destroyed))
     {
       foreach (var child in Children)
       {
-        child.NotifyDestroyed();
+        child.DestroyIfNecessary();
       }
 
       OnDestroy();
 
-      _states |= SceneGraphStates.Destroyed;
+      _states |= SceneNodeStates.Destroyed;
+    }
+  }
+
+  /// <summary>
+  /// Sends <see cref="Message"/>s up the tree to parents.
+  /// </summary>
+  private void PropagateMessagesToParents()
+  {
+    foreach (var child in Children)
+    {
+      while (child.MessagesForParents.TryDequeue(out var message))
+      {
+        OnMessageReceived(message);
+
+        if (message.IsRecursive)
+        {
+          MessagesForParents.Enqueue(message);
+        }
+      }
+    }
+  }
+
+  /// <summary>
+  /// Sends <see cref="Message"/>s down the tree to children.
+  /// </summary>
+  private void PropagateMessagesToChildren()
+  {
+    while (MessagesForChildren.TryDequeue(out var message))
+    {
+      foreach (var child in Children)
+      {
+        child.OnMessageReceived(message);
+
+        if (message.IsRecursive)
+        {
+          child.MessagesForChildren.Enqueue(message);
+        }
+      }
     }
   }
 
@@ -437,17 +474,17 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// Notifies the parent nodes of a change.
   /// </summary>
-  protected void NotifyParents(NotificationType type)
+  protected void SendMessageToParents(MessageType type, bool recursive = false)
   {
-    NotificationsForParents.Enqueue(new Notification(type, this));
+    MessagesForParents.Enqueue(new Message(type, this, recursive));
   }
 
   /// <summary>
   /// Notifies child nodes of a change.
   /// </summary>
-  protected void NotifyChildren(NotificationType type)
+  protected void SendMessageToChildren(MessageType type, bool recursive = false)
   {
-    NotificationsForChildren.Enqueue(new Notification(type, this));
+    MessagesForChildren.Enqueue(new Message(type, this, recursive));
   }
 
   /// <summary>
@@ -470,7 +507,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// Possible states of a <see cref="SceneNode"/>.
   /// </summary>
   [Flags]
-  private enum SceneGraphStates
+  private enum SceneNodeStates
   {
     Dormant = 0,
     Awake = 1 << 0,
@@ -480,9 +517,9 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   }
 
   /// <summary>
-  /// A type of <see cref="Notification"/>.
+  /// A type of <see cref="Message"/>.
   /// </summary>
-  public enum NotificationType : byte
+  public enum MessageType : byte
   {
     Destroy,
     TransformChanged
@@ -491,5 +528,9 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// A message to be processed by a <see cref="SceneNode"/>.
   /// </summary>
-  internal readonly record struct Notification(NotificationType Type, SceneNode Sender);
+  internal readonly record struct Message(
+    MessageType Type,
+    SceneNode Sender,
+    bool IsRecursive
+  );
 }

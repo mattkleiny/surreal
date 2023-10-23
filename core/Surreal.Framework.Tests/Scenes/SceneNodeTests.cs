@@ -1,6 +1,5 @@
 ﻿using Surreal.Assets;
 using Surreal.Timing;
-using static Surreal.Scenes.SceneNode;
 
 namespace Surreal.Scenes;
 
@@ -9,7 +8,7 @@ public class SceneNodeTests
   [Test]
   public void it_should_notify_node_of_attachment_to_tree()
   {
-    var scene = new SceneGraph
+    var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()
@@ -18,7 +17,7 @@ public class SceneNodeTests
 
     node.IsInTree.Should().BeFalse();
 
-    scene.Children.Add(node);
+    scene.Add(node);
 
     node.IsInTree.Should().BeTrue();
   }
@@ -26,7 +25,7 @@ public class SceneNodeTests
   [Test]
   public void it_should_notify_node_of_removal_from_tree()
   {
-    var scene = new SceneGraph
+    var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()
@@ -34,11 +33,11 @@ public class SceneNodeTests
 
     var node = new SceneNode();
 
-    scene.Children.Add(node);
+    scene.Add(node);
 
     node.IsInTree.Should().BeTrue();
 
-    scene.Children.Remove(node);
+    scene.Remove(node);
 
     node.IsInTree.Should().BeFalse();
   }
@@ -46,7 +45,7 @@ public class SceneNodeTests
   [Test]
   public void it_should_awake_node_on_first_attachment_to_tree()
   {
-    var scene = new SceneGraph
+    var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()
@@ -56,11 +55,11 @@ public class SceneNodeTests
 
     node.IsAwake.Should().BeFalse();
 
-    scene.Children.Add(node);
+    scene.Add(node);
 
     node.IsAwake.Should().BeTrue();
 
-    scene.Children.Remove(node);
+    scene.Remove(node);
 
     node.IsAwake.Should().BeTrue();
   }
@@ -68,64 +67,26 @@ public class SceneNodeTests
   [Test]
   public void it_should_notify_ready_on_first_update()
   {
-    var scene = new SceneGraph
+    var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()
     };
     var node = new SceneNode();
 
-    scene.Children.Add(node);
+    scene.Add(node);
 
     node.IsReady.Should().BeFalse();
 
-    ((SceneNode)scene).Update(DeltaTime.OneOver60);
+    scene.Update(DeltaTime.OneOver60);
 
     node.IsReady.Should().BeTrue();
   }
 
   [Test]
-  [Ignore("Find a better way to capture notifications for testing")]
-  public void it_should_propagate_inbox_messages_to_children()
-  {
-    var parent = new SceneNode();
-    var child1 = new SceneNode();
-    var child2 = new SceneNode();
-
-    parent.Children.Add(child1);
-    parent.Children.Add(child2);
-
-    parent.NotificationsForChildren.Enqueue(new Notification(NotificationType.Destroy, parent));
-
-    parent.Update(DeltaTime.OneOver60);
-
-    child1.NotificationsForChildren.Should().ContainSingle();
-    child1.NotificationsForChildren.Dequeue().Type.Should().Be(NotificationType.Destroy);
-
-    child2.NotificationsForChildren.Should().ContainSingle();
-    child2.NotificationsForChildren.Dequeue().Type.Should().Be(NotificationType.Destroy);
-  }
-
-  [Test]
-  public void it_should_propagate_outbox_message_to_parent()
-  {
-    var parent = new SceneNode();
-    var child = new SceneNode();
-
-    parent.Children.Add(child);
-
-    child.NotificationsForParents.Enqueue(new Notification(NotificationType.Destroy, child));
-
-    parent.Update(DeltaTime.OneOver60);
-
-    parent.NotificationsForParents.Should().ContainSingle();
-    parent.NotificationsForParents.Dequeue().Type.Should().Be(NotificationType.Destroy);
-  }
-
-  [Test]
   public void it_should_propagate_destruction_up_to_root()
   {
-    var scene = new SceneGraph
+    var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>(),
@@ -147,13 +108,13 @@ public class SceneNodeTests
 
     scene.Children[0].Destroy();
 
-    ((SceneNode)scene).Update(DeltaTime.OneOver60);
+    scene.Update(DeltaTime.OneOver60);
   }
 
   [Test]
   public void it_should_propagate_disposal_down_to_children()
   {
-    var scene = new SceneGraph
+    var scene = new SceneTree
     {
       Assets = Substitute.For<IAssetProvider>(),
       Services = Substitute.For<IServiceProvider>()

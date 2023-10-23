@@ -37,30 +37,23 @@ Game.Start(configuration, async game =>
   };
 
   // create scene and main camera
-  using var scene = new SceneGraph
+  using var scene = new SceneTree
   {
     Assets = game.Assets,
     Services = game.Services
   };
 
   var viewport = new CameraViewportNode();
+  var camera = new CameraNode2D { Zoom = 100f };
 
   scene.Add(viewport);
-
-  var camera = new CameraNode2D
-  {
-    Zoom = 100f
-  };
-
-  // add the music player
+  viewport.Add(camera);
   viewport.Add(new AudioPlayer2D
   {
     PlayOnReady = true,
     IsLooping = true,
     AudioClip = clip
   });
-
-  viewport.Add(camera);
 
   // create some bunnies
   for (int i = 0; i < 100; i++)
@@ -81,6 +74,11 @@ Game.Start(configuration, async game =>
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       game.Exit();
+    }
+
+    if (keyboard.IsKeyPressed(Key.F2))
+    {
+      pipeline.EnableGizmos = !pipeline.EnableGizmos;
     }
 
     debug.ShowWindow("Debug Tools", window =>

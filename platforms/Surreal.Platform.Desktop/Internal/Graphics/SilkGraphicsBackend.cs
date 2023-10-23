@@ -15,6 +15,7 @@ namespace Surreal.Graphics;
 
 internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 {
+  private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");
   private readonly ExtDebugMarker _debugMarker = new(gl.Context);
   private readonly Stack<FrameBufferHandle> _activeFrameBuffers = new();
   private Mesh? _quadMesh;
@@ -789,12 +790,18 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public void BeginDebugScope(string name)
   {
-    _debugMarker.PushGroupMarker((uint)name.Length, name);
+    if (_isMarkersAvailable)
+    {
+      _debugMarker.PushGroupMarker((uint)name.Length, name);
+    }
   }
 
   public void EndDebugScope()
   {
-    _debugMarker.PopGroupMarker();
+    if (_isMarkersAvailable)
+    {
+      _debugMarker.PopGroupMarker();
+    }
   }
 
   /// <summary>

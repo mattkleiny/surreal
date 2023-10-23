@@ -13,11 +13,19 @@ namespace Surreal.Scenes.Spatial;
 public class AudioPlayer2D : SceneNode2D, IGizmoObject
 {
   private AudioSource? _source;
+  private bool _playOnReady = true;
+  private bool _isLooping;
+  private float _volume = 1f;
+  private AudioClip? _audioClip;
 
   /// <summary>
   /// True if this audio player should play when the scene starts.
   /// </summary>
-  public bool PlayOnReady { get; set; }
+  public bool PlayOnReady
+  {
+    get => _playOnReady;
+    set => SetField(ref _playOnReady, value);
+  }
 
   /// <summary>
   /// True if the audio source is currently playing.
@@ -32,7 +40,7 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
     get => _source?.IsLooping ?? false;
     set
     {
-      if (_source != null)
+      if (SetField(ref _isLooping, value) && _source != null)
       {
         _source.IsLooping = value;
       }
@@ -47,7 +55,7 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
     get => _source?.Volume ?? 0f;
     set
     {
-      if (_source != null)
+      if (SetField(ref _volume, value) && _source != null)
       {
         _source.Volume = value;
       }
@@ -57,7 +65,11 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
   /// <summary>
   /// The <see cref="AudioClip"/> to play.
   /// </summary>
-  public AudioClip? AudioClip { get; set; }
+  public AudioClip? AudioClip
+  {
+    get => _audioClip;
+    set => SetField(ref _audioClip, value);
+  }
 
   /// <summary>
   /// Plays the given <see cref="AudioClip"/> on the audio source.
@@ -92,7 +104,12 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
   {
     base.OnEnterTree();
 
-    _source = new AudioSource(Services.GetServiceOrThrow<IAudioBackend>());
+    _source = new AudioSource(Services.GetServiceOrThrow<IAudioBackend>())
+    {
+      Volume = _volume,
+      IsLooping = _isLooping,
+      Position = new Vector3(GlobalPosition, 0f)
+    };
   }
 
   protected override void OnExitTree()
@@ -110,12 +127,12 @@ public class AudioPlayer2D : SceneNode2D, IGizmoObject
 
   protected override void OnTransformUpdated()
   {
+    base.OnTransformUpdated();
+
     if (_source != null)
     {
       _source.Position = new Vector3(GlobalPosition, 0f);
     }
-
-    base.OnTransformUpdated();
   }
 
   void IGizmoObject.RenderGizmos(in RenderFrame frame, GizmoBatch gizmos)

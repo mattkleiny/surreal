@@ -114,7 +114,7 @@ public class SceneNode2D : SceneNode
   /// </summary>
   protected virtual void OnTransformUpdated()
   {
-    NotifyChildren(NotificationType.TransformChanged);
+    SendMessageToChildren(MessageType.TransformChanged, recursive: true);
   }
 
   protected override void OnUpdate(DeltaTime deltaTime)
@@ -138,17 +138,18 @@ public class SceneNode2D : SceneNode
       }
 
       OnTransformUpdated();
+
       _isLocalDirty = false;
     }
   }
 
-  internal override void OnNotification(Notification notification)
+  internal override void OnMessageReceived(Message message)
   {
-    base.OnNotification(notification);
+    base.OnMessageReceived(message);
 
-    switch (notification)
+    switch (message)
     {
-      case { Type: NotificationType.TransformChanged, Sender: SceneNode2D sender } when sender != this:
+      case { Type: MessageType.TransformChanged, Sender: SceneNode2D sender }:
       {
         // propagate transform changes to children
         GlobalPosition = sender.GlobalPosition + LocalPosition;
