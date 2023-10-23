@@ -26,6 +26,21 @@ internal sealed unsafe class SilkAudioBackend : IAudioBackend, IDisposable
     alc.MakeContextCurrent(_context);
   }
 
+  public void SetAudioListenerGain(float gain)
+  {
+    al.SetListenerProperty(ListenerFloat.Gain, gain);
+  }
+
+  public void SetAudioListenerPosition(Vector3 vector3)
+  {
+    al.SetListenerProperty(ListenerVector3.Position, vector3.X, vector3.Y, vector3.Z);
+  }
+
+  public void SetAudioListenerVelocity(Vector3 vector3)
+  {
+    al.SetListenerProperty(ListenerVector3.Velocity, vector3.X, vector3.Y, vector3.Z);
+  }
+
   public AudioHandle CreateAudioClip()
   {
     return new AudioHandle(al.GenBuffer());
@@ -85,7 +100,7 @@ internal sealed unsafe class SilkAudioBackend : IAudioBackend, IDisposable
     al.SetSourceProperty(source, SourceVector3.Position, value);
   }
 
-  public void SetAudioSourceVolume(AudioHandle source, float value)
+  public void SetAudioSourceGain(AudioHandle source, float value)
   {
     al.SetSourceProperty(source, SourceFloat.Gain, value);
   }

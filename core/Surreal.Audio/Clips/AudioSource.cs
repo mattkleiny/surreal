@@ -28,7 +28,7 @@ public sealed class AudioSource(IAudioBackend backend) : AudioAsset
     set
     {
       _volume = value;
-      backend.SetAudioSourceVolume(Handle, value);
+      backend.SetAudioSourceGain(Handle, value);
     }
   }
 

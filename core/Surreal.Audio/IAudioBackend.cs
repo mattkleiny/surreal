@@ -12,6 +12,11 @@ public interface IAudioBackend
   /// </summary>
   static IAudioBackend Headless { get; } = new HeadlessAudioBackend();
 
+  // listeners
+  void SetAudioListenerGain(float gain);
+  void SetAudioListenerPosition(Vector3 vector3);
+  void SetAudioListenerVelocity(Vector3 vector3);
+
   // audio clips
   AudioHandle CreateAudioClip();
   void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data) where T : unmanaged;
@@ -23,7 +28,7 @@ public interface IAudioBackend
   void PlayAudioSource(AudioHandle source, AudioHandle clip);
   void StopAudioSource(AudioHandle source);
   void SetAudioSourcePosition(AudioHandle source, Vector3 value);
-  void SetAudioSourceVolume(AudioHandle source, float value);
+  void SetAudioSourceGain(AudioHandle source, float gain);
   void SetAudioSourceLooping(AudioHandle source, bool value);
   void DeleteAudioSource(AudioHandle source);
 }

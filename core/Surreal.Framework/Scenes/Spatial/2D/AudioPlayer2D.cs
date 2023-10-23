@@ -8,7 +8,7 @@ using Surreal.Utilities;
 namespace Surreal.Scenes.Spatial;
 
 /// <summary>
-/// A <see cref="SceneNode2D"/> that plays audio.
+/// A node that plays audio.
 /// </summary>
 public class AudioPlayer2D : SceneNode2D, IGizmoObject
 {

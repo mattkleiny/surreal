@@ -24,15 +24,23 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
   pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
   var viewport = new CameraViewportNode();
-  var camera = new CameraNode2D { Zoom = 100f };
 
-  viewport.Add(camera);
-  viewport.Add(new AudioPlayer2D
+  var camera = new CameraNode2D
+  {
+    Zoom = 100f
+  };
+
+  var musicPlayer = new AudioPlayer2D
   {
     PlayOnReady = true,
     IsLooping = true,
     AudioClip = music
-  });
+  };
+
+  camera.Add(new AudioListener2D());
+
+  viewport.Add(camera);
+  viewport.Add(musicPlayer);
 
   // create some bunnies
   for (int i = 0; i < 100; i++)

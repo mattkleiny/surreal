@@ -20,7 +20,6 @@ public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject, IGizmoO
   /// <summary>
   /// The material to use when rendering the sprite.
   /// </summary>
-  /// <returns></returns>
   public Material? Material
   {
     get => _material;

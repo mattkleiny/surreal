@@ -10,6 +10,18 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
   private int _nextClipId;
   private int _nextSourceId;
 
+  public void SetAudioListenerGain(float gain)
+  {
+  }
+
+  public void SetAudioListenerPosition(Vector3 vector3)
+  {
+  }
+
+  public void SetAudioListenerVelocity(Vector3 vector3)
+  {
+  }
+
   public AudioHandle CreateAudioClip()
   {
     return new AudioHandle(Interlocked.Increment(ref _nextClipId));
@@ -46,7 +58,7 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
   {
   }
 
-  public void SetAudioSourceVolume(AudioHandle source, float value)
+  public void SetAudioSourceGain(AudioHandle source, float value)
   {
   }
 

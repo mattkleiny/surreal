@@ -1,15 +1,13 @@
-﻿<!-- common configuration for example projects -->
+﻿<!-- common configuration for general projects -->
 <Project>
   <Import Project="../Directory.Build.props"/>
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <OutputType>Exe</OutputType>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputType>WinExe</OutputType>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>

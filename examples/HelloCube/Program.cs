@@ -4,11 +4,12 @@
   {
     Configuration =
     {
-      Title = "Hello, Surreal!",
+      Title = "Hello, Cube!",
       IsVsyncEnabled = true,
       ShowFpsInTitle = true,
       Width = 1920,
-      Height = 1080
+      Height = 1080,
+      IsTransparent = true
     }
   }
 };
@@ -40,7 +41,7 @@ Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice
 
   game.ExecuteVariableStep(time =>
   {
-    graphics.ClearColorBuffer(Color.Clear);
+    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
 
     var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
 

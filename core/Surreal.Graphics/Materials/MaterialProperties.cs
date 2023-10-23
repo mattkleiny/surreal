@@ -15,7 +15,7 @@ public static class MaterialProperty
 {
   public static MaterialProperty<Matrix4x4> Transform { get; } = new("u_transform");
   public static MaterialProperty<TextureSampler> Texture { get; } = new("u_texture");
-  public static MaterialProperty<Color32> Color { get; } = new("u_color");
+  public static MaterialProperty<Color> Color { get; } = new("u_color");
 }
 
 /// <summary>
