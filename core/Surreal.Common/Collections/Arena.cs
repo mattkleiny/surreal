@@ -1,11 +1,17 @@
 ﻿namespace Surreal.Collections;
 
 /// <summary>
-/// A safe index into an item in an <see cref="GenerationalArena{T}" />.
+/// A safe index into an item in an <see cref="Arena{T}" />.
 /// </summary>
 public readonly record struct ArenaIndex(ushort Id, uint Generation)
 {
   public static ArenaIndex Invalid => default;
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ArenaIndex FromUlong(ulong value)
+  {
+    return new ArenaIndex((ushort)value, (uint)(value >> 32));
+  }
 
   public bool IsInvalid => Id == 0;
   public bool IsValid => Id != 0;
@@ -16,12 +22,18 @@ public readonly record struct ArenaIndex(ushort Id, uint Generation)
   {
     return Id.ToString(CultureInfo.InvariantCulture);
   }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator ulong(ArenaIndex index)
+  {
+    return ((ulong)index.Generation << 32) | index.Id;
+  }
 }
 
 /// <summary>
 /// A generational arena is a collection of <see cref="T" /> with safe externalized indices in the form of (<see cref="ArenaIndex" />).
 /// </summary>
-public sealed class GenerationalArena<T> : IEnumerable<T>
+public sealed class Arena<T> : IEnumerable<T>
   where T : notnull
 {
   private Entry[] _entries = Array.Empty<Entry>();
@@ -34,6 +46,11 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   /// The number of items in the arena.
   /// </summary>
   public int Count => _count;
+
+  /// <summary>
+  /// Returns the item at the given index.
+  /// </summary>
+  public ref T this[ArenaIndex index] => ref _entries[index.Offset].Value;
 
   /// <summary>
   /// Determines if the given index is contained in the arena.
@@ -106,6 +123,12 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   /// </summary>
   public void Clear()
   {
+    _entries = Array.Empty<Entry>();
+    _count = 0;
+    _nextIndex = 0;
+
+    // bump the generation when we need to allocate and we've since removed all items
+    _hasDirtyGeneration = true;
   }
 
   /// <summary>
@@ -158,7 +181,7 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   }
 
   /// <summary>
-  /// Manages a single entry in the <see cref="GenerationalArena{T}" />.
+  /// Manages a single entry in the <see cref="Arena{T}" />.
   /// </summary>
   [SuppressMessage("ReSharper", "ConvertToConstant.Local")]
   [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
@@ -181,14 +204,14 @@ public sealed class GenerationalArena<T> : IEnumerable<T>
   }
 
   /// <summary>
-  /// Allows enumerating an <see cref="GenerationalArena{T}" />.
+  /// Allows enumerating an <see cref="Arena{T}" />.
   /// </summary>
   public struct Enumerator : IEnumerator<T>
   {
-    private readonly GenerationalArena<T> _arena;
+    private readonly Arena<T> _arena;
     private int _index;
 
-    public Enumerator(GenerationalArena<T> arena)
+    public Enumerator(Arena<T> arena)
       : this()
     {
       _arena = arena;

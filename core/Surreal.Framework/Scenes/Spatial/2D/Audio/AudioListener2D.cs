@@ -1,7 +1,7 @@
 ﻿using Surreal.Audio;
 using Surreal.Utilities;
 
-namespace Surreal.Scenes.Spatial;
+namespace Surreal.Scenes.Spatial.Audio;
 
 /// <summary>
 /// A node that listens to audio.

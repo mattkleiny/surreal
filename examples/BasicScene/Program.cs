@@ -1,4 +1,6 @@
 ﻿using BasicScene;
+using Surreal.Scenes.Spatial.Audio;
+using Surreal.Scenes.Spatial.Physics;
 
 var configuration = new GameConfiguration
 {
@@ -24,36 +26,41 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
   var music = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
   var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://BasicScene/Assets/Embedded/palettes/kule-16.pal");
 
-  var viewport = new CameraViewportNode();
+  var random = Random.Shared;
 
-  var camera = new CameraNode2D
+  scene.Add(new CameraViewportNode
   {
-    Zoom = 100f
-  };
-
-  var musicPlayer = new AudioPlayer2D
-  {
-    PlayOnReady = true,
-    IsLooping = true,
-    AudioClip = music,
-    DistanceFalloff = 20f
-  };
-
-  viewport.Add(camera);
-  viewport.Add(musicPlayer);
-  viewport.Add(new Spawner
-  {
-    Factory = () => new Entity
+    new CameraNode2D
     {
-      Sprite = sprite,
-      Tint = palette.SelectRandom(),
-      Velocity = Random.Shared.NextVector2(-1f, 1f),
-      RotationSpeed = Random.Shared.NextFloat(-1f, 1f),
-      Bounds = new Vector2(200f, 200f)
+      Zoom = 100f
+    },
+    new AudioPlayer2D
+    {
+      PlayOnReady = true,
+      IsLooping = true,
+      AudioClip = music,
+      DistanceFalloff = 20f
+    },
+    new Spawner
+    {
+      Factory = () => new RigidBody2D
+      {
+        Velocity = new Vector2(
+          x: random.NextFloat(-1f, 1f),
+          y: random.NextFloat(0.2f, 1f)
+        ) * random.NextFloat(1f, 50f),
+        Torque = random.NextFloat(-1f, 1f),
+        Children =
+        {
+          new SpriteNode2D
+          {
+            Sprite = sprite,
+            Tint = palette.SelectRandom()
+          }
+        }
+      }
     }
   });
-
-  scene.Add(viewport);
 });
 
 namespace BasicScene
@@ -62,7 +69,7 @@ namespace BasicScene
   {
     private static readonly ILog Log = LogFactory.GetLog<Spawner>();
 
-    public int SpawnCount { get; set; } = 8;
+    public int SpawnCount { get; set; } = 8 * 8;
     public TimeSpan SpawnRate { get; set; } = TimeSpan.FromSeconds(0.5f);
     public required Func<SceneNode2D> Factory { get; set; }
 
@@ -90,30 +97,6 @@ namespace BasicScene
     void IGizmoObject.RenderGizmos(in RenderFrame frame, GizmoBatch gizmos)
     {
       gizmos.DrawSolidCircle(GlobalPosition, 0.3f, Color.Yellow);
-    }
-  }
-
-  internal sealed class Entity : SpriteNode2D
-  {
-    public Vector2 Bounds { get; set; }
-    public Vector2 Velocity { get; set; } = Vector2.Zero;
-    public float RotationSpeed { get; set; } = 10f;
-
-    protected override void OnUpdate(DeltaTime deltaTime)
-    {
-      base.OnUpdate(deltaTime);
-
-      // update position and rotation
-      GlobalPosition += Velocity * 100f * deltaTime;
-      GlobalRotation += Angle.FromRadians(RotationSpeed * deltaTime);
-
-      // bounce off walls
-      if (GlobalPosition.X < -Bounds.X / 2f) Velocity *= new Vector2(-1f, 1f);
-      if (GlobalPosition.X > Bounds.X / 2f) Velocity *= new Vector2(-1f, 1f);
-      if (GlobalPosition.Y < -Bounds.Y / 2f) Velocity *= new Vector2(1f, -1f);
-      if (GlobalPosition.Y > Bounds.Y / 2f) Velocity *= new Vector2(1f, -1f);
-
-      GlobalPosition += Velocity * deltaTime;
     }
   }
 }

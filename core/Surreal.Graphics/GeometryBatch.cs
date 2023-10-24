@@ -48,7 +48,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   /// Draws a line from the given start to end points.
   /// </summary>
   public void DrawLine(Vector2 from, Vector2 to, Color color)
-    => DrawTriangleFan(stackalloc[] { from, to }, color, PolygonMode.Lines);
+    => DrawWireTriangle(from, from, to, color);
 
   /// <summary>
   /// Draws a series of lines.

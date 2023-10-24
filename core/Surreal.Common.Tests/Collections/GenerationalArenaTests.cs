@@ -7,7 +7,7 @@ public class GenerationalArenaTests
   [Test]
   public void it_should_manage_a_simple_object_arena()
   {
-    var arena = new GenerationalArena<Guid>();
+    var arena = new Arena<Guid>();
 
     var id1 = arena.Add(Guid.NewGuid());
     var id2 = arena.Add(Guid.NewGuid());

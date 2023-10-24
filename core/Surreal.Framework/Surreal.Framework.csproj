@@ -8,6 +8,7 @@
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj"/>
     <ProjectReference Include="..\Surreal.Graphics\Surreal.Graphics.csproj"/>
     <ProjectReference Include="..\Surreal.Input\Surreal.Input.csproj"/>
+    <ProjectReference Include="..\Surreal.Physics\Surreal.Physics.csproj" />
     <ProjectReference Include="..\Surreal.Scripting\Surreal.Scripting.csproj"/>
   </ItemGroup>
 </Project>

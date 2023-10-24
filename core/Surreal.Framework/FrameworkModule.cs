@@ -1,6 +1,7 @@
 ﻿using Surreal.Audio;
 using Surreal.Graphics;
 using Surreal.Input;
+using Surreal.Physics;
 using Surreal.Scripting;
 using Surreal.Utilities;
 
@@ -20,6 +21,7 @@ public sealed class FrameworkModule : IServiceModule
     registry.AddModule(new AudioModule());
     registry.AddModule(new GraphicsModule());
     registry.AddModule(new InputModule());
+    registry.AddModule(new PhysicsModule());
     registry.AddModule(new ScriptingModule());
   }
 }

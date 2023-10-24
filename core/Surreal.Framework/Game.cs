@@ -3,6 +3,7 @@ using Surreal.Assets;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Graphics.Rendering;
+using Surreal.Physics;
 using Surreal.Scenes;
 using Surreal.Timing;
 using Surreal.Utilities;
@@ -106,13 +107,16 @@ public class Game : IDisposable
   {
     StartInner(configuration, async game =>
     {
+      var physics = game.Services.GetServiceOrThrow<IPhysicsBackend>();
+
       // build the scene tree
       using var pipeline = game.Services.Instantiate<TPipeline>();
       using var sceneTree = new SceneTree
       {
         Assets = game.Assets,
         Services = game.Services,
-        Renderer = pipeline
+        RenderPipeline = pipeline,
+        PhysicsWorld = physics.CreatePhysicsWorld2d()
       };
 
       // set up the scene

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Physics\Surreal.Physics.csproj" />
+  </ItemGroup>
+</Project>

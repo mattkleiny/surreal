@@ -26,15 +26,6 @@ public sealed class GizmoBatch(IGraphicsBackend backend) : IDisposable
   public void DrawLine(Vector2 from, Vector2 to, Color color)
     => _geometryBatch.DrawLine(from, to, color);
 
-  public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
-    => _geometryBatch.DrawLines(points, color);
-
-  public void DrawLineLoop(ReadOnlySpan<Vector2> points, Color color)
-    => _geometryBatch.DrawLineLoop(points, color);
-
-  public void DrawLineStrip(ReadOnlySpan<Vector2> points, Color color)
-    => _geometryBatch.DrawLineStrip(points, color);
-
   public void DrawSolidTriangle(Vector2 a, Vector2 b, Vector2 c, Color color)
     => _geometryBatch.DrawSolidTriangle(a, b, c, color);
 
