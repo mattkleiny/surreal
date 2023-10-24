@@ -181,74 +181,74 @@ public static class VirtualPathExtensions
     await using var writer = new StreamWriter(stream, encoding);
 
     await writer.WriteAsync(text.AsMemory(), cancellationToken);
-    await writer.FlushAsync(cancellationToken);
+    await writer.FlushAsync();
   }
 
-  public static void SerializeJson<T>(this VirtualPath path, T value)
+  public static void Serialize<T>(this VirtualPath path, T value, FileFormat format)
     where T : class
   {
     using var stream = path.OpenOutputStream();
 
-    JsonSerializer.Serialize(stream, value);
+    format.Serialize(stream, value);
   }
 
-  public static async ValueTask SerializeJsonAsync<T>(this VirtualPath path, T value, CancellationToken cancellationToken = default)
+  public static async ValueTask SerializeAsync<T>(this VirtualPath path, T value, FileFormat format, CancellationToken cancellationToken = default)
     where T : class
   {
     await using var stream = await path.OpenOutputStreamAsync();
 
-    await JsonSerializer.SerializeAsync(stream, value, cancellationToken: cancellationToken);
+    await format.SerializeAsync(stream, value, cancellationToken);
   }
 
-  public static T DeserializeJson<T>(this VirtualPath path)
+  public static T Deserialize<T>(this VirtualPath path, FileFormat format)
     where T : class
   {
     using var stream = path.OpenInputStream();
 
-    var result = JsonSerializer.Deserialize<T>(stream);
+    var result = format.Deserialize<T>(stream);
     if (result == null)
     {
-      throw new JsonException($"Failed to parse {typeof(T)} from stream");
+      throw new InvalidDataException($"Failed to parse {typeof(T)} from stream");
     }
 
     return result;
   }
 
-  public static async ValueTask<T> DeserializeJsonAsync<T>(this VirtualPath path, CancellationToken cancellationToken = default)
+  public static async ValueTask<T> DeserializeAsync<T>(this VirtualPath path, FileFormat format, CancellationToken cancellationToken = default)
     where T : class
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    var result = await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken);
+    var result = await format.DeserializeAsync<T>(stream, cancellationToken);
     if (result == null)
     {
-      throw new JsonException($"Failed to parse {typeof(T)} from stream");
+      throw new InvalidDataException($"Failed to parse {typeof(T)} from stream");
     }
 
     return result;
   }
 
-  public static object DeserializeJson(this VirtualPath path, Type type)
+  public static object Deserialize(this VirtualPath path, Type type, FileFormat format)
   {
     using var stream = path.OpenInputStream();
 
-    var result = JsonSerializer.Deserialize(stream, type);
+    var result = format.Deserialize(stream, type);
     if (result == null)
     {
-      throw new JsonException($"Failed to parse {type} from stream");
+      throw new InvalidDataException($"Failed to parse {type} from stream");
     }
 
     return result;
   }
 
-  public static async ValueTask<object> DeserializeJsonAsync(this VirtualPath path, Type type, CancellationToken cancellationToken = default)
+  public static async ValueTask<object> DeserializeAsync(this VirtualPath path, Type type, FileFormat format, CancellationToken cancellationToken = default)
   {
     await using var stream = await path.OpenInputStreamAsync();
 
-    var result = await JsonSerializer.DeserializeAsync(stream, type, cancellationToken: cancellationToken);
+    var result = await format.DeserializeAsync(stream, type, cancellationToken: cancellationToken);
     if (result == null)
     {
-      throw new JsonException($"Failed to parse {type} from stream");
+      throw new InvalidDataException($"Failed to parse {type} from stream");
     }
 
     return result;
