@@ -67,6 +67,11 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   public SceneNode? Parent { get; private set; }
 
   /// <summary>
+  /// The owner of this node, which is the root <see cref="SceneTree"/> in which it belongs.
+  /// </summary>
+  public SceneTree? Owner { get; private set; }
+
+  /// <summary>
   /// The children of this node.
   /// </summary>
   public SceneNodeList Children { get; }
@@ -78,12 +83,12 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   {
     get
     {
-      if (!TryResolveRoot(out var tree))
+      if (Owner == null)
       {
         throw new InvalidOperationException("Unable to access services from a node that is not in a scene tree.");
       }
 
-      return tree.Services;
+      return Owner.Services;
     }
   }
 
@@ -94,12 +99,12 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   {
     get
     {
-      if (!TryResolveRoot(out var tree))
+      if (Owner == null)
       {
         throw new InvalidOperationException("Unable to access assets from a node that is not in a scene tree.");
       }
 
-      return tree.Assets;
+      return Owner.Assets;
     }
   }
 
@@ -351,6 +356,11 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   {
     if (!_states.HasFlagFast(SceneNodeStates.InTree))
     {
+      if (TryResolveRoot(out var owner))
+      {
+        Owner = owner;
+      }
+
       foreach (var child in Children)
       {
         child.EnterTreeIfNecessary();
@@ -375,6 +385,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
       }
 
       OnExitTree();
+      Owner = null;
 
       _states &= ~SceneNodeStates.InTree;
     }

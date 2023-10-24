@@ -74,6 +74,7 @@ public sealed class ResourceFileSystem : FileSystem
       .GetAssemblies()
       // dynamic assemblies do not support resources
       .Where(assembly => !assembly.GetName().Name!.StartsWith("System."))
+      .Where(assembly => !assembly.GetName().Name!.StartsWith("Microsoft."))
       .Where(assembly => !assembly.IsDynamic);
   }
 }

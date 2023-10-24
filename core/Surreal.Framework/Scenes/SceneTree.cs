@@ -32,7 +32,7 @@ public sealed class SceneTree : SceneNode, IScene
   }
 
   /// <inheritdoc/>
-  public ReadOnlySlice<IRenderViewport> CullVisibleViewports()
+  public ReadOnlySlice<IRenderViewport> CullActiveViewports()
   {
     return ResolveChildren<IRenderViewport>();
   }

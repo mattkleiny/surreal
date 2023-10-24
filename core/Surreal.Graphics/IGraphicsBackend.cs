@@ -86,7 +86,6 @@ public interface IGraphicsBackend
   void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged;
   void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
   void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0) where T : unmanaged;
-
   void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode);
   void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode);
   void DeleteTexture(GraphicsHandle handle);

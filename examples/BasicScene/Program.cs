@@ -18,13 +18,11 @@ var configuration = new GameConfiguration
 
 Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTree scene, ForwardRenderPipeline pipeline) =>
 {
+  pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/crab.png");
   var music = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
   var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://BasicScene/Assets/Embedded/palettes/kule-16.pal");
-
-  pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-  pipeline.RequireDepthPass = false;
-  pipeline.EnableGizmos = false;
 
   var viewport = new CameraViewportNode();
 
@@ -64,9 +62,8 @@ namespace BasicScene
   {
     private static readonly ILog Log = LogFactory.GetLog<Spawner>();
 
-    public int SpawnCount { get; set; } = 512;
+    public int SpawnCount { get; set; } = 8;
     public TimeSpan SpawnRate { get; set; } = TimeSpan.FromSeconds(0.5f);
-
     public required Func<SceneNode2D> Factory { get; set; }
 
     private IntervalTimer _spawnTimer;

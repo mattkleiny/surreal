@@ -30,7 +30,6 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
     };
 
     var format = reader.WaveFormat;
-
     var sampleRate = new AudioSampleRate(format.SampleRate, format.Channels, format.BitsPerSample);
     var buffer = new AudioBuffer(reader.TotalTime, sampleRate);
 

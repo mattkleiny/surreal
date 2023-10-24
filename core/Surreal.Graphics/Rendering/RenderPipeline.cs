@@ -51,7 +51,7 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 
     OnBeginFrame(in frame);
 
-    foreach (var camera in scene.CullVisibleViewports())
+    foreach (var camera in scene.CullActiveViewports())
     {
       RenderViewport(in frame, camera);
     }

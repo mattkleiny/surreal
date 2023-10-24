@@ -9,9 +9,9 @@ namespace Surreal.Graphics.Rendering;
 public interface IRenderScene
 {
   /// <summary>
-  /// Culls visible cameras from the scene.
+  /// Culls active <see cref="IRenderViewport"/>s in the scene.
   /// </summary>
-  ReadOnlySlice<IRenderViewport> CullVisibleViewports();
+  ReadOnlySlice<IRenderViewport> CullActiveViewports();
 }
 
 /// <summary>

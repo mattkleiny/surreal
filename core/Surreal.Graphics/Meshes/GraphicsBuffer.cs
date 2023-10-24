@@ -28,7 +28,7 @@ public abstract class GraphicsBuffer : GraphicsAsset, IHasSizeEstimate
   /// <summary>
   /// The type of element stored in the <see cref="GraphicsBuffer" />.
   /// </summary>
-  public abstract Type ElementType { get; }
+  public abstract Type DataType { get; }
 
   /// <summary>
   /// The length of the <see cref="GraphicsBuffer" />.
@@ -42,12 +42,13 @@ public abstract class GraphicsBuffer : GraphicsAsset, IHasSizeEstimate
 }
 
 /// <summary>
-/// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.
+/// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="TData" />.
 /// </summary>
-public sealed class GraphicsBuffer<T>(IGraphicsBackend backend, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
-  where T : unmanaged
+public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
+  where TData : unmanaged
 {
-  public override Type ElementType => typeof(T);
+  /// <inheritdoc/>
+  public override Type DataType => typeof(TData);
 
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying buffer.
@@ -67,19 +68,19 @@ public sealed class GraphicsBuffer<T>(IGraphicsBackend backend, BufferType type,
   /// <summary>
   /// Reads the entire buffer into a <see cref="Memory{T}" />.
   /// </summary>
-  public Memory<T> Read(Optional<Range> range = default)
+  public Memory<TData> Read(Optional<Range> range = default)
   {
     var (offset, length) = range
       .GetOrDefault(Range.All)
       .GetOffsetAndLength((int)Length);
 
-    return backend.ReadBufferData<T>(Handle, Type, offset, length);
+    return backend.ReadBufferData<TData>(Handle, Type, offset, length);
   }
 
   /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the buffer.
   /// </summary>
-  public void Write(ReadOnlySpan<T> buffer)
+  public void Write(ReadOnlySpan<TData> buffer)
   {
     Length = (uint)buffer.Length;
     Size   = buffer.CalculateSize();
@@ -90,7 +91,7 @@ public sealed class GraphicsBuffer<T>(IGraphicsBackend backend, BufferType type,
   /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the buffer at the given offset.
   /// </summary>
-  public void Write(nint offset, ReadOnlySpan<T> buffer)
+  public void Write(nint offset, ReadOnlySpan<TData> buffer)
   {
     backend.WriteBufferSubData(Handle, Type, offset, buffer);
   }

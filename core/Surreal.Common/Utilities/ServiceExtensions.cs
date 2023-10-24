@@ -68,7 +68,7 @@ public static class ServiceExtensions
   {
     foreach (var type in assembly.GetTypes())
     {
-      if (type.TryGetCustomAttribute(out RegisterServiceAttribute attribute, inherit: true))
+      if (type.TryGetCustomAttribute(out RegisterServiceAttribute attribute))
       {
         attribute.RegisterService(registry, type);
       }

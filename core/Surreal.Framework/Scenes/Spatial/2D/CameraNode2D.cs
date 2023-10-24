@@ -94,12 +94,12 @@ public class CameraNode2D : SceneNode2D, ICamera
 
   protected override void OnExitTree()
   {
+    base.OnExitTree();
+
     if (TryResolveParent(out CameraViewportNode viewport))
     {
       viewport.ActiveCameras.Remove(this);
     }
-
-    base.OnExitTree();
   }
 
   protected override void OnUpdate(DeltaTime deltaTime)
