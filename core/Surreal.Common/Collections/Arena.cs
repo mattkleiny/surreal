@@ -145,6 +145,7 @@ public sealed class Arena<T> : IEnumerable<T>
     }
 
     // try and re-use an existing index
+    // TODO: keep a separate free list
     for (var i = 0; i < _entries.Length; i++)
     {
       ref var entry = ref _entries[i];
@@ -156,6 +157,7 @@ public sealed class Arena<T> : IEnumerable<T>
     }
 
     // otherwise allocate a new one and make space if necessary
+    // TODO: consider allocating in chunks
     var id = (ushort)Interlocked.Increment(ref _nextIndex);
     if (id >= _entries.Length)
     {
@@ -185,12 +187,12 @@ public sealed class Arena<T> : IEnumerable<T>
   /// </summary>
   [SuppressMessage("ReSharper", "ConvertToConstant.Local")]
   [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
-  private record struct Entry(T Value, uint Generation)
+  private struct Entry(T value, uint generation)
   {
     /// <summary>
     /// The value of the entry.
     /// </summary>
-    public T Value = Value;
+    public T Value = value;
 
     /// <summary>
     /// True if the entry is occupied.
@@ -200,7 +202,7 @@ public sealed class Arena<T> : IEnumerable<T>
     /// <summary>
     /// The generation that the entry was created in.
     /// </summary>
-    public uint Generation = Generation;
+    public uint Generation = generation;
   }
 
   /// <summary>
