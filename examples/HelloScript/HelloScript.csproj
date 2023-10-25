@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A basic example of scripting with Surreal.</Description>
+  </PropertyGroup>
+</Project>

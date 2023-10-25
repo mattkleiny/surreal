@@ -90,7 +90,7 @@ public sealed class MaterialPropertySet : IEnumerable<KeyValuePair<string, Varia
   /// <summary>
   /// Attempts to get a uniform property from the material, throwing if it does not exist.
   /// </summary>
-  public T GetPropertyOrThrow<T>(MaterialProperty<T> property, T defaultValue = default!)
+  public T GetPropertyOrThrow<T>(MaterialProperty<T> property)
   {
     if (!TryGetProperty(property, out var value))
     {

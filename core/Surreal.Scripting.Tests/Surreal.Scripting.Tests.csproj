@@ -2,4 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Scripting\Surreal.Scripting.csproj"/>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Lua\" />
+  </ItemGroup>
 </Project>

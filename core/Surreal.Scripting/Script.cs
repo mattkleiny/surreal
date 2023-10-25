@@ -8,9 +8,9 @@ public abstract class Script : IDisposable
   /// <summary>
   /// Executes the script with the given arguments.
   /// </summary>
-  public abstract Variant Execute();
+  public abstract Variant ExecuteFunction(string name, params Variant[] arguments);
 
-  public void Dispose()
+  public virtual void Dispose()
   {
   }
 }

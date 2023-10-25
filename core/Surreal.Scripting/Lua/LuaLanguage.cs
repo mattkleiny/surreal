@@ -7,63 +7,15 @@ namespace Surreal.Scripting.Lua;
 /// <summary>
 /// Indicates that a type or member is used by Lua.
 /// </summary>
-[MeansImplicitUse]
+[MeansImplicitUse(ImplicitUseTargetFlags.WithMembers)]
 public sealed class UsedByLuaAttribute : Attribute;
 
 /// <summary>
 /// A <see cref="IScriptLanguage"/> for Lua.
 /// </summary>
 [RegisterService(typeof(IScriptLanguage))]
-public sealed class LuaLanguage : IScriptLanguage, IDisposable
+public sealed class LuaLanguage : IScriptLanguage
 {
-  private readonly NLua.Lua _lua;
-
-  public LuaLanguage()
-  {
-    _lua = new NLua.Lua();
-    _lua.LoadCLRPackage();
-  }
-
-  public string Name => "Lua";
-
-  /// <summary>
-  /// Read/write access to the global state of Lua.
-  /// </summary>
-  public object this[string key]
-  {
-    get => _lua[key];
-    set => _lua[key] = value;
-  }
-
-  /// <summary>
-  /// Attempts to get a <see cref="Callable"/> from a Lua function.
-  /// </summary>
-  public bool TryGetCallable(string name, out Callable result)
-  {
-    var state = _lua[name];
-
-    if (state is not LuaFunction function)
-    {
-      result = default!;
-      return false;
-    }
-
-    result = args =>
-    {
-      var arguments = args.Select(a => a.Value).ToArray();
-      var results = function.Call(arguments);
-
-      if (results.Length > 0)
-      {
-        return Variant.From(results[0]);
-      }
-
-      return Variant.Null;
-    };
-
-    return true;
-  }
-
   /// <inheritdoc/>
   public bool CanLoad(VirtualPath path)
   {
@@ -73,44 +25,101 @@ public sealed class LuaLanguage : IScriptLanguage, IDisposable
   /// <inheritdoc/>
   public async Task<Script> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    var code = await path.ReadAllTextAsync(cancellationToken);
-
-    return new LuaScript(this, code);
+    return new LuaScript(await path.ReadAllTextAsync(cancellationToken));
   }
 
-  /// <inheritdoc/>
-  public Variant ExecuteCode(string code)
+  /// <summary>
+  /// Attempts to get a <see cref="Callable"/> from a Lua function.
+  /// </summary>
+  private sealed class LuaContext(NLua.Lua lua) : IDisposable
   {
-    var result = _lua.DoString(code);
+    private readonly Dictionary<string, Callable> _callableCache = new();
 
-    return result switch
+    /// <summary>
+    /// Creates a new <see cref="LuaContext"/> from the given chunk of code.
+    /// </summary>
+    public static LuaContext CreateFromChunk(string code)
     {
-      [var value] => Variant.From(value),
-      _ => Variant.Null
-    };
-  }
+      var lua = new NLua.Lua();
 
-  /// <inheritdoc/>
-  public Variant ExecuteFile(VirtualPath path)
-  {
-    var text = path.ReadAllText();
+      lua.LoadCLRPackage();
+      lua.DoString(code);
 
-    return ExecuteCode(text);
-  }
+      return new LuaContext(lua);
+    }
 
-  public void Dispose()
-  {
-    _lua.Dispose();
+    /// <summary>
+    /// Read/write access to the global state of Lua.
+    /// </summary>
+    public object this[string key]
+    {
+      get => lua[key];
+      set => lua[key] = value;
+    }
+
+    /// <summary>
+    /// Attempts to get a <see cref="Callable"/> representing a function with the given name.
+    /// </summary>
+    public bool TryGetCallable(string name, out Callable result)
+    {
+      if (_callableCache.TryGetValue(name, out result!))
+      {
+        return true;
+      }
+
+      var state = lua[name];
+      if (state is not LuaFunction function)
+      {
+        result = default!;
+        return false;
+      }
+
+      result = args =>
+      {
+        var arguments = args.Select(a => a.Value).ToArray();
+        var results = function.Call(arguments);
+
+        if (results.Length > 0)
+        {
+          return Variant.From(results[0]);
+        }
+
+        return Variant.Null;
+      };
+
+      _callableCache[name] = result;
+
+      return true;
+    }
+
+    public void Dispose()
+    {
+      lua.Dispose();
+    }
   }
 
   /// <summary>
   /// A <see cref="Script"/> type for Lua.
   /// </summary>
-  private sealed class LuaScript(LuaLanguage language, string code) : Script
+  private sealed class LuaScript(string code) : Script
   {
-    public override Variant Execute()
+    private readonly LuaContext _context = LuaContext.CreateFromChunk(code);
+
+    public override Variant ExecuteFunction(string name, params Variant[] arguments)
     {
-      return language.ExecuteCode(code);
+      if (!_context.TryGetCallable(name, out var callable))
+      {
+        throw new InvalidOperationException($"Unable to locate function {name}");
+      }
+
+      return callable(arguments);
+    }
+
+    public override void Dispose()
+    {
+      _context.Dispose();
+
+      base.Dispose();
     }
   }
 }

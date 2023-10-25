@@ -15,6 +15,7 @@ public class MaterialPropertyTests
     var propertySet = new MaterialPropertySet();
 
     propertySet.SetProperty(Transform, Matrix4x4.Identity);
+    propertySet.GetPropertyOrThrow(Transform).Should().Be(Matrix4x4.Identity);
   }
 
   [Test]
@@ -23,6 +24,7 @@ public class MaterialPropertyTests
     var propertySet = new MaterialPropertySet();
 
     propertySet.SetProperty(ClearColor, Color32.White);
+    propertySet.GetPropertyOrThrow(ClearColor).Should().Be(Color32.White);
   }
 
   [Test]
@@ -31,5 +33,6 @@ public class MaterialPropertyTests
     var propertySet = new MaterialPropertySet();
 
     propertySet.SetProperty(LightPosition, Vector3.One);
+    propertySet.GetPropertyOrThrow(LightPosition).Should().Be(Vector3.One);
   }
 }

@@ -136,13 +136,10 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     return (T)constructorInfo.Invoke(parameters);
   }
 
-  private static string GenerateName()
-  {
-    return Guid.NewGuid().ToString();
-  }
-
   public void Dispose()
   {
     _container.Dispose();
   }
+
+  private static string GenerateName() => Guid.NewGuid().ToString();
 }
