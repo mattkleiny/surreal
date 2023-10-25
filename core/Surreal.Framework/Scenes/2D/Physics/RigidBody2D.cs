@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.Scenes.Spatial.Physics;
+namespace Surreal.Scenes.Physics;
 
 /// <summary>
 /// A rigidbody in 2D space.

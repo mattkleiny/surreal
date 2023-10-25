@@ -1,8 +1,9 @@
 ﻿using Surreal.Collections;
+using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Rendering;
 using Surreal.Maths;
 
-namespace Surreal.Scenes.Spatial;
+namespace Surreal.Scenes;
 
 /// <summary>
 /// A camera that renders scene elements to the screen.
@@ -23,7 +24,7 @@ public interface ICamera
 /// <summary>
 /// A node that renders scene elements to the screen via a camera.
 /// </summary>
-public class CameraViewport : SceneNode, IRenderViewport
+public class CameraViewport : SceneNode, IRenderViewport, IGizmoObject
 {
   private static readonly Matrix4x4 Identity = Matrix4x4.Identity;
 
@@ -31,9 +32,6 @@ public class CameraViewport : SceneNode, IRenderViewport
   /// The active camera stack.
   /// </summary>
   public LinkedList<ICamera> ActiveCameras { get; } = new();
-
-  /// <inheritdoc/>
-  object? IRenderViewport.Owner => Owner;
 
   /// <inheritdoc/>
   public ref readonly Matrix4x4 ProjectionView
@@ -77,5 +75,13 @@ public class CameraViewport : SceneNode, IRenderViewport
     }
 
     return ReadOnlySlice<T>.Empty;
+  }
+
+  void IGizmoObject.RenderGizmos(IGizmoBatch gizmos)
+  {
+    if (Root.Physics is IGizmoObject physicsGizmos)
+    {
+      physicsGizmos.RenderGizmos(gizmos);
+    }
   }
 }

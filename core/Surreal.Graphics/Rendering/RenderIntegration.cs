@@ -20,11 +20,6 @@ public interface IRenderScene
 public interface IRenderViewport
 {
   /// <summary>
-  /// The owner of this viewport.
-  /// </summary>
-  object? Owner { get; }
-
-  /// <summary>
   /// The projection-view matrix for the camera.
   /// </summary>
   ref readonly Matrix4x4 ProjectionView { get; }

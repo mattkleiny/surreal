@@ -1,7 +1,7 @@
 ﻿using Surreal.Maths;
 using Surreal.Timing;
 
-namespace Surreal.Scenes.Spatial;
+namespace Surreal.Scenes;
 
 /// <summary>
 /// A <see cref="Node2D"/> that represents a camera.

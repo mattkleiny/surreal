@@ -155,9 +155,9 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 
       _geometryBatch.Material = _gizmoMaterial;
 
-      if (viewport.Owner is IGizmoObject rootGizmos)
+      if (viewport is IGizmoObject viewportGizmos)
       {
-        rootGizmos.RenderGizmos(_geometryBatch);
+        viewportGizmos.RenderGizmos(_geometryBatch);
       }
 
       foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())

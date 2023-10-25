@@ -1,6 +1,6 @@
 ﻿using Surreal.Physics;
 
-namespace Surreal.Scenes.Spatial.Physics;
+namespace Surreal.Scenes.Physics;
 
 /// <summary>
 /// A physical body in 2D space.
@@ -23,7 +23,7 @@ public abstract class PhysicsBody2D : Node2D
     {
       if (_physicsWorld == null)
       {
-        var world = Owner?.PhysicsWorld as IPhysicsWorld2d;
+        var world = Root?.Physics as IPhysicsWorld2d;
 
         _physicsWorld = world ?? throw new InvalidOperationException("A 2d physics world is not available");
       }

@@ -35,6 +35,7 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   private static readonly ILog Log = LogFactory.GetLog<SceneNode>();
 
   private SceneNodeStates _states = SceneNodeStates.Dormant;
+  private ISceneRoot? _root;
 
   public SceneNode()
   {
@@ -67,46 +68,28 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   public SceneNode? Parent { get; private set; }
 
   /// <summary>
-  /// The owner of this node, which is the root <see cref="SceneTree"/> in which it belongs.
-  /// </summary>
-  public SceneTree? Owner { get; private set; }
-
-  /// <summary>
   /// The children of this node.
   /// </summary>
   public SceneNodeList Children { get; }
 
   /// <summary>
+  /// The root of the entire scene, which provides services and asset access.
+  /// </summary>
+  public ISceneRoot Root
+  {
+    get => _root ?? throw new InvalidOperationException("A scene root is not available");
+    private set => _root = value;
+  }
+
+  /// <summary>
   /// The <see cref="IServiceProvider"/> for the scene tree.
   /// </summary>
-  public IServiceProvider Services
-  {
-    get
-    {
-      if (Owner == null)
-      {
-        throw new InvalidOperationException("Unable to access services from a node that is not in a scene tree.");
-      }
-
-      return Owner.Services;
-    }
-  }
+  public IServiceProvider Services => Root.Services;
 
   /// <summary>
   /// The <see cref="IAssetProvider"/> for the scene tree.
   /// </summary>
-  public IAssetProvider Assets
-  {
-    get
-    {
-      if (Owner == null)
-      {
-        throw new InvalidOperationException("Unable to access assets from a node that is not in a scene tree.");
-      }
-
-      return Owner.Assets;
-    }
-  }
+  public IAssetProvider Assets => Root.Assets;
 
   public bool IsAwake => _states.HasFlag(SceneNodeStates.Awake);
   public bool IsReady => _states.HasFlag(SceneNodeStates.Ready);
@@ -130,9 +113,16 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   /// <summary>
   /// Attempts to find the root <see cref="SceneTree"/> of the hierarchy.
   /// </summary>
-  public bool TryResolveRoot(out SceneTree result)
+  protected virtual bool TryResolveRoot(out ISceneRoot result)
   {
-    return TryResolveParent(out result);
+    if (Parent is { _root: { } root })
+    {
+      result = root;
+      return true;
+    }
+
+    result = default!;
+    return false;
   }
 
   /// <summary>
@@ -362,9 +352,9 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   {
     if (!_states.HasFlagFast(SceneNodeStates.InTree))
     {
-      if (TryResolveRoot(out var owner))
+      if (TryResolveRoot(out var sceneRoot))
       {
-        Owner = owner;
+        Root = sceneRoot;
       }
 
       foreach (var child in Children)
@@ -391,7 +381,7 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
       }
 
       OnExitTree();
-      Owner = null;
+      Root = null!;
 
       _states &= ~SceneNodeStates.InTree;
     }

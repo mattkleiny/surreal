@@ -111,13 +111,13 @@ public class Game : IDisposable
 
       // build the scene tree
       using var pipeline = game.Services.Instantiate<TPipeline>();
-      using var sceneTree = new SceneTree
+      using var sceneTree = new SceneTree(new SceneTreeRoot
       {
         Assets = game.Assets,
         Services = game.Services,
-        RenderPipeline = pipeline,
-        PhysicsWorld = physics.CreatePhysicsWorld2d()
-      };
+        Renderer = pipeline,
+        Physics = physics.CreatePhysicsWorld2d(),
+      });
 
       // set up the scene
       var result = game.Services.ExecuteDelegate(setup, game, pipeline, sceneTree);
@@ -305,6 +305,24 @@ public class Game : IDisposable
     {
       callback.Invoke();
     }
+  }
+
+  /// <summary>
+  /// The <see cref="ISceneRoot"/> for the <see cref="Game"/>.
+  /// </summary>
+  private sealed class SceneTreeRoot : ISceneRoot
+  {
+    /// <inheritdoc/>
+    public required IAssetProvider Assets { get; init; }
+
+    /// <inheritdoc/>
+    public required IServiceProvider Services { get; init; }
+
+    /// <inheritdoc/>
+    public IRenderPipeline? Renderer { get; set; }
+
+    /// <inheritdoc/>
+    public IPhysicsWorld? Physics { get; set; }
   }
 
   /// <summary>

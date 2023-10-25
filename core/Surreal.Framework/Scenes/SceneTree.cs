@@ -1,8 +1,5 @@
-﻿using Surreal.Assets;
-using Surreal.Collections;
-using Surreal.Diagnostics.Gizmos;
+﻿using Surreal.Collections;
 using Surreal.Graphics.Rendering;
-using Surreal.Physics;
 using Surreal.Timing;
 
 namespace Surreal.Scenes;
@@ -10,41 +7,12 @@ namespace Surreal.Scenes;
 /// <summary>
 /// A <see cref="IScene"/> that uses <see cref="SceneNode"/>s as it's core building block.
 /// </summary>
-public sealed class SceneTree : SceneNode, IScene, IGizmoObject
+public sealed class SceneTree(ISceneRoot root) : SceneNode, IScene
 {
-  /// <summary>
-  /// The top-level <see cref="IAssetProvider"/> available to the scene.
-  /// </summary>
-  public new required IAssetProvider Assets { get; init; }
-
-  /// <summary>
-  /// The top-level <see cref="IServiceProvider"/> available to the scene.
-  /// </summary>
-  public new required IServiceProvider Services { get; init; }
-
-  /// <summary>
-  /// The <see cref="IRenderPipeline"/> attached to the scene.
-  /// </summary>
-  public IRenderPipeline? RenderPipeline { get; init; }
-
-  /// <summary>
-  /// The <see cref="IPhysicsWorld"/> attached to the scene.
-  /// </summary>
-  public IPhysicsWorld? PhysicsWorld { get; init; }
-
-  /// <summary>
-  /// Resets the tree and removes all of it's children.
-  /// </summary>
-  public void Reset()
-  {
-    PhysicsWorld?.Reset();
-    Children.Clear();
-  }
-
   /// <inheritdoc/>
   public new void Update(DeltaTime deltaTime)
   {
-    PhysicsWorld?.Tick(deltaTime);
+    root.Physics?.Tick(deltaTime);
 
     base.Update(deltaTime);
   }
@@ -52,7 +20,16 @@ public sealed class SceneTree : SceneNode, IScene, IGizmoObject
   /// <inheritdoc/>
   public void Render(DeltaTime deltaTime)
   {
-    RenderPipeline?.Render(this, deltaTime);
+    root.Renderer?.Render(this, deltaTime);
+  }
+
+  /// <summary>
+  /// Resets the tree and removes all of it's children.
+  /// </summary>
+  public void Reset()
+  {
+    root.Physics?.Reset();
+    Children.Clear();
   }
 
   /// <inheritdoc/>
@@ -62,12 +39,10 @@ public sealed class SceneTree : SceneNode, IScene, IGizmoObject
   }
 
   /// <inheritdoc/>
-  void IGizmoObject.RenderGizmos(IGizmoBatch gizmos)
+  protected override bool TryResolveRoot(out ISceneRoot result)
   {
-    if (PhysicsWorld is IGizmoObject physicsWorld)
-    {
-      physicsWorld.RenderGizmos(gizmos);
-    }
+    result = root;
+    return true;
   }
 
   internal override void OnMessageReceivedFromChild(Message message)

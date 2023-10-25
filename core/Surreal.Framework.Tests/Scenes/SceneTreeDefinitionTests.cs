@@ -1,7 +1,5 @@
-﻿using Surreal.Assets;
-using Surreal.IO;
+﻿using Surreal.IO;
 using Surreal.Scenes;
-using Surreal.Utilities;
 
 namespace Surreal.Framework.Tests.Scenes;
 
@@ -31,11 +29,7 @@ public class SceneTreeDefinitionTests
   [Test]
   public void it_should_attach_scene_tree_as_new_children_to_existing_node()
   {
-    using var tree = new SceneTree
-    {
-      Assets = new AssetManager(),
-      Services = new ServiceRegistry()
-    };
+    using var tree = new SceneTree(new TestSceneRoot());
 
     var definition = new SceneTreeDefinition
     {

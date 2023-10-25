@@ -1,5 +1,4 @@
 ﻿using Surreal.Scripting;
-using Surreal.Scripting.Lua;
 
 var configuration = new GameConfiguration
 {

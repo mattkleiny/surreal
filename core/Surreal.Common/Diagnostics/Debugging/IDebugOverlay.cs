@@ -1,9 +1,9 @@
-﻿namespace Surreal.Graphics;
+﻿namespace Surreal.Diagnostics.Debugging;
 
 /// <summary>
-/// A utility for rendering immediate-mode GUIs.
+/// A utility for rendering immediate-mode debug overlays.
 /// </summary>
-public interface IDebugGui
+public interface IDebugOverlay
 {
   /// <summary>
   /// Shows a window in the GUI.
@@ -12,7 +12,7 @@ public interface IDebugGui
 }
 
 /// <summary>
-/// A window in the <see cref="IDebugGui"/>.
+/// A window in the <see cref="IDebugOverlay"/>.
 /// </summary>
 public interface IDebugWindow
 {

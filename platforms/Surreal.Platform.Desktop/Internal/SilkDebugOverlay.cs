@@ -1,14 +1,15 @@
 ﻿using ImGuiNET;
 using Silk.NET.OpenGL.Extensions.ImGui;
+using Surreal.Diagnostics.Debugging;
 using Surreal.Graphics;
 using Surreal.Timing;
 
 namespace Surreal;
 
 /// <summary>
-/// An <see cref="IDebugGui"/> for IMGUI.
+/// An <see cref="IDebugOverlay"/> for IMGUI.
 /// </summary>
-internal sealed class SilkDebugGui(SilkWindow window) : IDebugGui, IDisposable, IDebugWindow
+internal sealed class SilkDebugOverlay(SilkWindow window) : IDebugOverlay, IDisposable, IDebugWindow
 {
   private readonly ImGuiController _controller = new(window.OpenGL, window.InnerWindow, window.Input);
 

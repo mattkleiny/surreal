@@ -1,5 +1,6 @@
 using Surreal.Audio;
 using Surreal.Diagnostics;
+using Surreal.Diagnostics.Debugging;
 using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.Graphics.Images;
@@ -61,7 +62,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     AudioBackend = new SilkAudioBackend();
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
-    DebugGui = new SilkDebugGui(Window);
+    DebugOverlay = new SilkDebugOverlay(Window);
 
     Resized += OnResized;
 
@@ -71,7 +72,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IAudioBackend>(AudioBackend);
     services.AddService<IGraphicsBackend>(GraphicsBackend);
     services.AddService<IInputBackend>(InputBackend);
-    services.AddService<IDebugGui>(DebugGui);
+    services.AddService<IDebugOverlay>(DebugOverlay);
 
     foreach (var device in InputBackend.DiscoverAllDevices())
     {
@@ -84,7 +85,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public SilkAudioBackend AudioBackend { get; }
   public SilkGraphicsBackend GraphicsBackend { get; }
   public SilkInputBackend InputBackend { get; }
-  public SilkDebugGui DebugGui { get; set; }
+  public SilkDebugOverlay DebugOverlay { get; set; }
 
   IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
 
@@ -108,7 +109,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     if (!IsClosing)
     {
       Window.Update();
-      DebugGui.Update(deltaTime);
+      DebugOverlay.Update(deltaTime);
 
       // show the game's FPS in the window title
       if (_configuration.ShowFpsInTitle)
@@ -127,7 +128,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   {
     if (!IsClosing)
     {
-      DebugGui.Render(GraphicsBackend);
+      DebugOverlay.Render(GraphicsBackend);
       Window.Present();
 
       InputBackend.Update();

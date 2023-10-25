@@ -1,5 +1,4 @@
-﻿using System.Xml.Serialization;
-using YamlDotNet.Serialization;
+﻿using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace Surreal.IO;
