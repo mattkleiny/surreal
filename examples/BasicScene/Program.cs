@@ -14,7 +14,7 @@
   }
 };
 
-Game.StartScene<ForwardRenderPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline) =>
+Game.StartScene<ForwardRenderPipeline>(configuration, (Game game, SceneTree scene, ForwardRenderPipeline pipeline) =>
 {
   pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
@@ -23,6 +23,8 @@ Game.StartScene<ForwardRenderPipeline>(configuration, (SceneTree scene, ForwardR
     new Camera2D { Zoom = 100f },
     new RigidBodySpawner { GlobalPosition = new Vector2(45f, 60f) },
   });
+
+  scene.Add(new DebugOverlayMenu(game, scene));
 });
 
 public sealed class RigidBodySpawner : Node2D
@@ -49,6 +51,26 @@ public sealed class RigidBodySpawner : Node2D
       });
 
       _spawnTimer.Reset();
+    }
+  }
+}
+
+public sealed class DebugOverlayMenu(Game game, SceneTree tree) : SceneNode
+{
+  protected override void OnUpdate(DeltaTime deltaTime)
+  {
+    base.OnUpdate(deltaTime);
+
+    if (game.Services.TryGetService(out IDebugOverlay overlay))
+    {
+      overlay.ShowMenuBar(menu =>
+      {
+        menu.MenuItem("Tools", file =>
+        {
+          if (file.MenuItem("Reset")) tree.Reset();
+          if (file.MenuItem("Exit")) game.Exit();
+        });
+      });
     }
   }
 }

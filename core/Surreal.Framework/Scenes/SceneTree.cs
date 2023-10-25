@@ -28,8 +28,8 @@ public sealed class SceneTree(ISceneRoot root) : SceneNode, IScene
   /// </summary>
   public void Reset()
   {
-    root.Physics?.Reset();
     Children.Clear();
+    root.Physics?.Reset();
   }
 
   /// <inheritdoc/>

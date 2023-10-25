@@ -9,7 +9,7 @@ namespace Surreal;
 /// <summary>
 /// An <see cref="IDebugOverlay"/> for IMGUI.
 /// </summary>
-internal sealed class SilkDebugOverlay(SilkWindow window) : IDebugOverlay, IDisposable, IDebugWindow
+internal sealed class SilkDebugOverlay(SilkWindow window) : IDebugOverlay, IDisposable, IDebugWindow, IDebugMenu
 {
   private readonly ImGuiController _controller = new(window.OpenGL, window.InnerWindow, window.Input);
 
@@ -32,6 +32,20 @@ internal sealed class SilkDebugOverlay(SilkWindow window) : IDebugOverlay, IDisp
     }
   }
 
+  public void Dispose()
+  {
+    _controller.Dispose();
+  }
+
+  public void ShowMenuBar(Action<IDebugMenu> builder)
+  {
+    ImGui.BeginMainMenuBar();
+
+    builder(this);
+
+    ImGui.EndMainMenuBar();
+  }
+
   public void ShowWindow(string title, Action<IDebugWindow> builder)
   {
     ImGui.Begin(title);
@@ -39,11 +53,6 @@ internal sealed class SilkDebugOverlay(SilkWindow window) : IDebugOverlay, IDisp
     builder(this);
 
     ImGui.End();
-  }
-
-  public void Dispose()
-  {
-    _controller.Dispose();
   }
 
   void IDebugWindow.Text(string text)
@@ -61,5 +70,20 @@ internal sealed class SilkDebugOverlay(SilkWindow window) : IDebugOverlay, IDisp
     ImGui.Checkbox(text, ref value);
 
     return value;
+  }
+
+  bool IDebugMenu.MenuItem(string title, bool enabled)
+  {
+    return ImGui.MenuItem(title, enabled);
+  }
+
+  void IDebugMenu.MenuItem(string title, Action<IDebugMenu> builder, bool enabled)
+  {
+    if (ImGui.BeginMenu(title, enabled))
+    {
+      builder(this);
+    }
+
+    ImGui.EndMenu();
   }
 }

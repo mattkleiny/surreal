@@ -5,9 +5,7 @@
 /// </summary>
 public interface IDebugOverlay
 {
-  /// <summary>
-  /// Shows a window in the GUI.
-  /// </summary>
+  void ShowMenuBar(Action<IDebugMenu> builder);
   void ShowWindow(string title, Action<IDebugWindow> builder);
 }
 
@@ -19,4 +17,13 @@ public interface IDebugWindow
   void Text(string text);
   bool Button(string text);
   bool Checkbox(string text, bool value);
+}
+
+/// <summary>
+/// A menu in the <see cref="IDebugOverlay"/>.
+/// </summary>
+public interface IDebugMenu
+{
+  bool MenuItem(string title, bool enabled = true);
+  void MenuItem(string title, Action<IDebugMenu> builder, bool enabled = true);
 }
