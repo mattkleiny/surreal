@@ -77,6 +77,7 @@ public class CameraViewport : SceneNode, IRenderViewport, IGizmoObject
     return ReadOnlySlice<T>.Empty;
   }
 
+  /// <inheritdoc/>
   void IGizmoObject.RenderGizmos(IGizmoBatch gizmos)
   {
     if (Root.Physics is IGizmoObject physicsGizmos)
