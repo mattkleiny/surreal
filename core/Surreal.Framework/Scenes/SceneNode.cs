@@ -334,16 +334,7 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
     OnAwakeIfNecessary();
     OnEnterTreeIfNecessary();
 
-    OnInitializeInActiveTree();
-
     DispatchMessagesToChildren();
-  }
-
-  /// <summary>
-  /// Initializes the node and its children.
-  /// </summary>
-  protected virtual void OnInitializeInActiveTree()
-  {
   }
 
   /// <summary>

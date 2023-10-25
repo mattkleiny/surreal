@@ -110,10 +110,10 @@ public class Node2D : SceneNode
     }
   }
 
-  protected override void OnInitializeInActiveTree()
+  protected override void OnAwake()
   {
-    base.OnInitializeInActiveTree();
-    
+    base.OnAwake();
+
     // initialize global transform propagation
     SendMessageToChildren(MessageType.TransformChanged);
   }

@@ -60,10 +60,10 @@ public sealed class LuaLanguage : IScriptLanguage
     /// <summary>
     /// Read/write access to the global state of Lua.
     /// </summary>
-    public object this[string key]
+    public Variant this[string key]
     {
-      get => lua[key];
-      set => lua[key] = value;
+      get => Variant.From(lua[key]);
+      set => lua[key] = value.Value;
     }
 
     /// <summary>
@@ -119,6 +119,16 @@ public sealed class LuaLanguage : IScriptLanguage
   private sealed class LuaScript(string code) : Script
   {
     private readonly LuaContext _context = LuaContext.CreateFromChunk(code);
+
+    public override Variant GetGlobal(string name)
+    {
+      return Variant.From(_context[name]);
+    }
+
+    public override void SetGlobal(string name, Variant value)
+    {
+      _context[name] = value;
+    }
 
     public override Variant ExecuteFunction(string name, params Variant[] arguments)
     {
