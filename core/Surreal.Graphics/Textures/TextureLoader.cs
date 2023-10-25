@@ -31,6 +31,7 @@ public sealed class TextureLoader(IGraphicsBackend graphics) : AssetLoader<Textu
     var texture = new Texture(graphics, Settings.Format, Settings.FilterMode, Settings.WrapMode);
 
     texture.WritePixels(image);
+    // context.WatchForChanges(context.Path, texture);
 
     return texture;
   }

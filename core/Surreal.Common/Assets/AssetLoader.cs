@@ -3,30 +3,6 @@
 namespace Surreal.Assets;
 
 /// <summary>
-/// Context for <see cref="IAssetLoader" /> operations.
-/// </summary>
-public readonly record struct AssetContext(AssetId AssetId, AssetManager Manager)
-{
-  /// <summary>
-  /// The type of the asset being loaded.
-  /// </summary>
-  public Type Type => AssetId.Type;
-
-  /// <summary>
-  /// The path of the asset being loaded.
-  /// </summary>
-  public VirtualPath Path => AssetId.Path;
-
-  /// <summary>
-  /// Loads a dependent asset from the manager.
-  /// </summary>
-  public Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    return Manager.LoadAssetAsync<T>(path, cancellationToken);
-  }
-}
-
-/// <summary>
 /// Allows loading assets from storage.
 /// </summary>
 public interface IAssetLoader
@@ -58,5 +34,40 @@ public abstract class AssetLoader<T> : IAssetLoader
   async Task<object> IAssetLoader.LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
     return await LoadAsync(context, cancellationToken);
+  }
+}
+
+/// <summary>
+/// Context for <see cref="IAssetLoader" /> operations.
+/// </summary>
+public readonly record struct AssetContext(AssetId AssetId, AssetManager Manager)
+{
+  /// <summary>
+  /// The type of the asset being loaded.
+  /// </summary>
+  public Type Type => AssetId.Type;
+
+  /// <summary>
+  /// The path of the asset being loaded.
+  /// </summary>
+  public VirtualPath Path => AssetId.Path;
+
+  /// <summary>
+  /// Loads a dependent asset from the manager.
+  /// </summary>
+  public Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    return Manager.LoadAssetAsync<T>(path, cancellationToken);
+  }
+
+  /// <summary>
+  /// Watches for changes on the given path and notifies the given <see cref="IHotReloadable{T}"/> when a change occurs.
+  /// </summary>
+  public void WatchForChanges<T>(VirtualPath path, IHotReloadable<T> reloadable)
+  {
+    if (Manager.IsHotReloadEnabled)
+    {
+      Manager.WatchForChanges(path, reloadable);
+    }
   }
 }

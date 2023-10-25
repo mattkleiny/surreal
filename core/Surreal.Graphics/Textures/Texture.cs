@@ -1,4 +1,5 @@
-﻿using Surreal.Maths;
+﻿using Surreal.Assets;
+using Surreal.Maths;
 using Surreal.Memory;
 using Color = Surreal.Colors.Color;
 using Image = Surreal.Graphics.Images.Image;
@@ -57,7 +58,7 @@ public readonly record struct TextureSampler(GraphicsHandle Texture, uint Sample
 /// A texture that can be uploaded to the GPU.
 /// </summary>
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
-public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : GraphicsAsset, IHasSizeEstimate
+public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : GraphicsAsset, IHasSizeEstimate, IHotReloadable<Texture>
 {
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying texture.
@@ -228,5 +229,10 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
     }
 
     base.Dispose(managed);
+  }
+
+  void IHotReloadable<Texture>.OnHotReload(Texture asset)
+  {
+    throw new NotImplementedException();
   }
 }

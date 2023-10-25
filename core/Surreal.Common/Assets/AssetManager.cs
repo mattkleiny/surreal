@@ -26,6 +26,11 @@ public sealed class AssetManager : IAssetProvider, IDisposable
   private readonly Dictionary<AssetId, object> _assetsById = new();
   private readonly List<IAssetLoader> _loaders = new();
 
+  /// <summary>
+  /// Determines if hot reloading assets are enabled.
+  /// </summary>
+  public bool IsHotReloadEnabled { get; init; } = true;
+
   public void AddLoader(IAssetLoader loader)
   {
     Log.Trace($"Registering asset loader {loader.GetType().Name}");
@@ -53,6 +58,15 @@ public sealed class AssetManager : IAssetProvider, IDisposable
     return (T)asset;
   }
 
+  /// <summary>
+  /// Watches for changes in the asset at the given path.
+  /// </summary>
+  public void WatchForChanges<T>(VirtualPath path, IHotReloadable<T> reloadable)
+  {
+    // TODO: add an internal entry system for asset and put watchers there
+    throw new NotImplementedException();
+  }
+
   public void Dispose()
   {
     foreach (var asset in _assetsById.Values)
@@ -72,9 +86,8 @@ public sealed class AssetManager : IAssetProvider, IDisposable
   /// </summary>
   private bool TryGetLoader(AssetContext context, [NotNullWhen(true)] out IAssetLoader? result)
   {
-    for (var i = 0; i < _loaders.Count; i++)
+    foreach (var loader in _loaders)
     {
-      var loader = _loaders[i];
       if (loader.CanHandle(context))
       {
         result = loader;
@@ -82,7 +95,46 @@ public sealed class AssetManager : IAssetProvider, IDisposable
       }
     }
 
+    // fallback to common loader
+    var commonLoader = CommonAssetLoader.Instance;
+    if (commonLoader.CanHandle(context))
+    {
+      result = commonLoader;
+      return true;
+    }
+
     result = default;
     return false;
+  }
+
+  /// <summary>
+  /// A <see cref="IAssetLoader"/> that can load any standard file format.
+  /// </summary>
+  private sealed class CommonAssetLoader : IAssetLoader
+  {
+    public static CommonAssetLoader Instance { get; } = new();
+
+    public bool CanHandle(AssetContext context)
+    {
+      var extension = context.Path.Extension;
+
+      return extension.EndsWith("json") ||
+             extension.EndsWith("yml") ||
+             extension.EndsWith("xml");
+    }
+
+    public async Task<object> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+    {
+      var format = context.Path.Extension switch
+      {
+        ".json" => FileFormat.Json,
+        ".yml" => FileFormat.Yml,
+        ".xml" => FileFormat.Xml,
+
+        _ => throw new NotSupportedException($"Unsupported file extension: {context.Path.Extension}")
+      };
+
+      return await context.Path.DeserializeAsync(context.Type, format, cancellationToken);
+    }
   }
 }
