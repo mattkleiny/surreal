@@ -1,5 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Rendering;
 using Surreal.Physics;
 using Surreal.Timing;
@@ -9,7 +10,7 @@ namespace Surreal.Scenes;
 /// <summary>
 /// A <see cref="IScene"/> that uses <see cref="SceneNode"/>s as it's core building block.
 /// </summary>
-public sealed class SceneTree : SceneNode, IScene
+public sealed class SceneTree : SceneNode, IScene, IGizmoObject
 {
   /// <summary>
   /// The top-level <see cref="IAssetProvider"/> available to the scene.
@@ -32,11 +33,11 @@ public sealed class SceneTree : SceneNode, IScene
   public IPhysicsWorld? PhysicsWorld { get; init; }
 
   /// <inheritdoc/>
-  public void Update(DeltaTime deltaTime)
+  public new void Update(DeltaTime deltaTime)
   {
-    OnUpdate(deltaTime);
-
     PhysicsWorld?.Tick(deltaTime);
+
+    base.Update(deltaTime);
   }
 
   /// <inheritdoc/>
@@ -49,5 +50,29 @@ public sealed class SceneTree : SceneNode, IScene
   public ReadOnlySlice<IRenderViewport> CullActiveViewports()
   {
     return ResolveChildren<IRenderViewport>();
+  }
+
+  /// <inheritdoc/>
+  void IGizmoObject.RenderGizmos(IGizmoBatch gizmos)
+  {
+    if (PhysicsWorld is IGizmoObject physicsWorld)
+    {
+      physicsWorld.RenderGizmos(gizmos);
+    }
+  }
+
+  internal override void OnMessageReceivedFromChild(Message message)
+  {
+    base.OnMessageReceivedFromChild(message);
+
+    switch (message)
+    {
+      case { Type: MessageType.Destroy, Sender: var sender }:
+      {
+        sender.OnDestroyIfNecessary();
+
+        break;
+      }
+    }
   }
 }

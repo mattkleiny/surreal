@@ -199,6 +199,28 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   }
 
   /// <summary>
+  /// Updates this node and its children.
+  /// </summary>
+  public void Update(DeltaTime deltaTime)
+  {
+    OnAwakeIfNecessary();
+    OnEnterTreeIfNecessary();
+
+    DispatchMessagesToChildren();
+
+    OnReadyIfNecessary();
+
+    OnUpdate(deltaTime);
+
+    foreach (var child in Children)
+    {
+      child.Update(deltaTime);
+    }
+
+    DispatchMessagesToParents();
+  }
+
+  /// <summary>
   /// Destroys this node and its children.
   /// </summary>
   public void Destroy()
@@ -208,44 +230,31 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
 
   protected virtual void OnAwake()
   {
-    Log.Trace($"Node {Id} is awake");
+    Log.Trace($"{GetType().Name} {Id} is awake");
   }
 
   protected virtual void OnReady()
   {
-    Log.Trace($"Node {Id} is ready");
+    Log.Trace($"{GetType().Name} {Id} is ready");
   }
 
   protected virtual void OnEnterTree()
   {
-    Log.Trace($"Node {Id} has entered the tree");
+    Log.Trace($"{GetType().Name} {Id} has entered the tree");
   }
 
   protected virtual void OnExitTree()
   {
-    Log.Trace($"Node {Id} has exited the tree");
+    Log.Trace($"{GetType().Name} {Id} has exited the tree");
   }
 
   protected virtual void OnDestroy()
   {
-    Log.Trace($"Node {Id} has been destroyed");
+    Log.Trace($"{GetType().Name} {Id} has been destroyed");
   }
 
   protected virtual void OnUpdate(DeltaTime deltaTime)
   {
-    OnAwakeIfNecessary();
-    OnEnterTreeIfNecessary();
-
-    DispatchMessagesToChildren();
-
-    OnReadyIfNecessary();
-
-    foreach (var child in Children)
-    {
-      child.OnUpdate(deltaTime);
-    }
-
-    DispatchMessagesToParents();
   }
 
   internal virtual void OnMessageReceived(Message message)

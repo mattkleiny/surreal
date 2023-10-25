@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Surreal.Colors;
 using Surreal.IO;

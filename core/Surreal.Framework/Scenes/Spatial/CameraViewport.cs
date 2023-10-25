@@ -33,6 +33,9 @@ public class CameraViewport : SceneNode, IRenderViewport
   public LinkedList<ICamera> ActiveCameras { get; } = new();
 
   /// <inheritdoc/>
+  object? IRenderViewport.Owner => Owner;
+
+  /// <inheritdoc/>
   public ref readonly Matrix4x4 ProjectionView
   {
     get

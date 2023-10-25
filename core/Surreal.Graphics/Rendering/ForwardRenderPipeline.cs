@@ -1,5 +1,5 @@
 ﻿using Surreal.Colors;
-using Surreal.Graphics.Gizmos;
+using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 
@@ -142,7 +142,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     /// <summary>
     /// The batch used to render gizmos.
     /// </summary>
-    private readonly GizmoBatch _gizmoBatch = new(backend);
+    private readonly GeometryBatch _geometryBatch = new(backend);
 
     /// <inheritdoc/>
     public override bool IsEnabled => pipeline.EnableGizmos;
@@ -153,19 +153,24 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
 
       _gizmoMaterial.Properties.SetProperty("u_transform", viewport.ProjectionView);
 
-      _gizmoBatch.Material = _gizmoMaterial;
+      _geometryBatch.Material = _gizmoMaterial;
+
+      if (viewport.Owner is IGizmoObject rootGizmos)
+      {
+        rootGizmos.RenderGizmos(_geometryBatch);
+      }
 
       foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
       {
-        gizmoObject.RenderGizmos(in frame, _gizmoBatch);
+        gizmoObject.RenderGizmos(_geometryBatch);
       }
 
-      _gizmoBatch.Flush();
+      _geometryBatch.Flush();
     }
 
     public override void Dispose()
     {
-      _gizmoBatch.Dispose();
+      _geometryBatch.Dispose();
 
       base.Dispose();
     }

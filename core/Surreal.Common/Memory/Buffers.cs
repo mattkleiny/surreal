@@ -1,6 +1,4 @@
-﻿using System.Buffers;
-using System.IO.MemoryMappedFiles;
-using System.Runtime.InteropServices;
+﻿using System.IO.MemoryMappedFiles;
 using Surreal.IO;
 
 namespace Surreal.Memory;

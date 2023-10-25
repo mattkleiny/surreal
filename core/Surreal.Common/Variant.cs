@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.Maths;
 
 namespace Surreal;

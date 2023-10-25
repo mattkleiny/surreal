@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
@@ -120,25 +119,19 @@ public sealed class SpriteBatch : IDisposable
   /// Draws a sprite at the given position.
   /// </summary>
   public void Draw(in TextureRegion region, Vector2 position)
-  {
-    Draw(region, position, region.Size);
-  }
+    => Draw(region, position, region.Size);
 
   /// <summary>
   /// Draws a sprite at the given position.
   /// </summary>
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
-  {
-    Draw(region, position, size, Color32.White);
-  }
+    => Draw(region, position, size, Color32.White);
 
   /// <summary>
   /// Draws a sprite at the given position.
   /// </summary>
   public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color32 color)
-  {
-    Draw(region, position, size, 0f, color);
-  }
+    => Draw(region, position, size, 0f, color);
 
   /// <summary>
   /// Draws a sprite at the given position.

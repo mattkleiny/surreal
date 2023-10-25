@@ -1,4 +1,5 @@
 using Surreal.Colors;
+using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Maths;
@@ -9,13 +10,13 @@ namespace Surreal.Graphics;
 /// <summary>
 /// An efficient batch of geometric primitives for rendering to the GPU.
 /// </summary>
-public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IDisposable
+public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IGizmoBatch, IDisposable
 {
   private const int DefaultVertexCount = 512;
 
   private readonly Mesh<Vertex2> _mesh = new(backend);
   private readonly IDisposableBuffer<Vertex2> _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
-  private readonly IDisposableBuffer<uint> _indices = Buffers.AllocateNative<uint>(maximumVertexCount * 4);
+  private readonly IDisposableBuffer<uint> _indices = Buffers.AllocateNative<uint>((maximumVertexCount - 1) * 3);
 
   private Material? _material;
   private int _vertexCount;
@@ -51,22 +52,27 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
     => DrawWireTriangle(from, from, to, color);
 
   /// <summary>
-  /// Draws a series of lines.
+  /// Draws a strip of lines from the given points.
   /// </summary>
-  public void DrawLines(ReadOnlySpan<Vector2> points, Color color)
-    => DrawTriangleFan(points, color, PolygonMode.Lines);
+  public void DrawLineStrip(SpanList<Vector2> points, Color color)
+  {
+    for (var i = 0; i < points.Count - 1; i ++)
+    {
+      var a = points[i + 0];
+      var b = points[i + 1];
 
-  /// <summary>
-  /// Draws a connected series of lines.
-  /// </summary>
-  public void DrawLineLoop(ReadOnlySpan<Vector2> points, Color color)
-    => DrawTriangleFan(points, color, PolygonMode.Lines);
+      DrawLine(a, b, color);
+    }
 
-  /// <summary>
-  /// Draws a connected strip of lines.
-  /// </summary>
-  public void DrawLineStrip(ReadOnlySpan<Vector2> points, Color color)
-    => DrawTriangleFan(points, color, PolygonMode.Lines);
+    // connect last segment
+    if (points.Count > 2)
+    {
+      var a = points[^1];
+      var b = points[0];
+
+      DrawLine(a, b, color);
+    }
+  }
 
   /// <summary>
   /// Draws a solid triangle.
@@ -81,9 +87,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
     => DrawTriangle(a, b, c, color, PolygonMode.Lines);
 
   private void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Color color, PolygonMode type)
-  {
-    DrawTriangleFan(stackalloc[] { a, b, c }, color, type);
-  }
+    => DrawTriangleFan(stackalloc[] { a, b, c }, color, type);
 
   /// <summary>
   /// Draws a solid quad.
@@ -101,7 +105,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   /// Draws a solid quad.
   /// </summary>
   public void DrawSolidQuad(Vector2 center, Vector2 size, Color color)
-    => DrawQuad(center, size, color, PolygonMode.Lines);
+    => DrawQuad(center, size, color, PolygonMode.Filled);
 
   /// <summary>
   /// Draws a wireframe quad.
@@ -127,15 +131,6 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   /// Draws a solid circle.
   /// </summary>
   public void DrawSolidCircle(Vector2 center, float radius, Color color, int segments)
-    => DrawCircle(center, radius, color, segments, PolygonMode.Filled);
-
-  /// <summary>
-  /// Draws a wireframe circle.
-  /// </summary>
-  public void DrawWireCircle(Vector2 center, float radius, Color color, int segments = 16)
-    => DrawCircle(center, radius, color, segments, PolygonMode.Lines);
-
-  private void DrawCircle(Vector2 center, float radius, Color color, int segments, PolygonMode polygonMode)
   {
     var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
     var increment = 360f / segments;
@@ -148,7 +143,26 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
       points.Add(new Vector2(x, y));
     }
 
-    DrawTriangleFan(points, color, polygonMode);
+    DrawTriangleFan(points, color, PolygonMode.Filled);
+  }
+
+  /// <summary>
+  /// Draws a wireframe circle.
+  /// </summary>
+  public void DrawWireCircle(Vector2 center, float radius, Color color, int segments = 16)
+  {
+    var points = new SpanList<Vector2>(stackalloc Vector2[segments]);
+    var increment = 360f / segments;
+
+    for (var theta = 0f; theta < 360f; theta += increment)
+    {
+      var x = radius * MathF.Cos(MathE.DegreesToRadians(theta)) + center.X;
+      var y = radius * MathF.Sin(MathE.DegreesToRadians(theta)) + center.Y;
+
+      points.Add(new Vector2(x, y));
+    }
+
+    DrawLineStrip(points, color);
   }
 
   /// <summary>
@@ -198,15 +212,19 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
     DrawTriangleFan(points, color, PolygonMode.Lines);
   }
 
-  private void DrawTriangleFan(ReadOnlySpan<Vector2> points, Color color, PolygonMode type)
+  private void DrawTriangleFan(ReadOnlySpan<Vector2> points, Color color, PolygonMode mode)
   {
-    if (_lastPolygonMode != type)
+    var finalVertexCount = (points.Length - 2) * 2 + 1;
+    var finalIndexCount = (points.Length - 2) * 3;
+
+    if (_lastPolygonMode != mode)
     {
       // if we're switching geometry types, we'll need to flush and start again
       Flush();
-      _lastPolygonMode = type;
+      _lastPolygonMode = mode;
     }
-    else if (_vertexCount + points.Length > _vertices.Span.Length)
+    else if (_vertexCount + finalVertexCount > _vertices.Span.Length ||
+             _indexCount + finalIndexCount > _indices.Span.Length)
     {
       // if we've exceeded the batch capacity, we'll need to flush and start again
       Flush();

@@ -19,9 +19,10 @@
     <Using Include="Surreal.Collections"/>
     <Using Include="Surreal.Colors"/>
     <Using Include="Surreal.Diagnostics"/>
+    <Using Include="Surreal.Diagnostics.Gizmos"/>
     <Using Include="Surreal.Diagnostics.Logging"/>
+    <Using Include="Surreal.Diagnostics.Profiling"/>
     <Using Include="Surreal.Graphics"/>
-    <Using Include="Surreal.Graphics.Gizmos"/>
     <Using Include="Surreal.Graphics.Images"/>
     <Using Include="Surreal.Graphics.Materials"/>
     <Using Include="Surreal.Graphics.Meshes"/>

@@ -1,4 +1,6 @@
 ﻿using Surreal.Collections;
+using Surreal.Colors;
+using Surreal.Diagnostics.Gizmos;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -23,37 +25,88 @@ internal sealed class PhysicsBackend : IPhysicsBackend
   /// <summary>
   /// The <see cref="IPhysicsWorld2d"/> implementation for this backend.
   /// </summary>
-  private sealed class PhysicsWorld2d : IPhysicsWorld2d
+  private sealed class PhysicsWorld2d : IPhysicsWorld2d, IGizmoObject
   {
-    private readonly Arena<PhysicsBody> _bodies = new();
+    private const float BodyRadius = 5f;
+    private const float WorldRadius = 80f;
 
-    public Vector2 Gravity { get; set; } = new(0f, -9.81f);
+    private readonly Arena<VerletBody> _bodies = new();
 
+    /// <summary>
+    /// The number of iterations to perform per tick.
+    /// </summary>
+    public int Iterations { get; set; } = 1;
+
+    /// <inheritdoc/>
+    public Vector2 Gravity { get; set; } = new(0f, -100f);
+
+    /// <inheritdoc/>
     public void Tick(DeltaTime deltaTime)
     {
-      var deltaTimeSqr = deltaTime.Seconds * deltaTime.Seconds;
+      var stepTime = deltaTime / Iterations;
 
-      // apply gravity
+      for (int i = 0; i < Iterations; i++)
+      {
+        ApplyConstraints();
+        // ApplyCollisions();
+        ApplyVerlet(stepTime);
+      }
+    }
+
+    private void ApplyConstraints()
+    {
+      var position = Vector2.Zero;
+
       foreach (ref var body in _bodies)
       {
-        body.Acceleration += Gravity;
-      }
+        var delta = body.CurrentPosition - position;
+        var distance = delta.Length();
 
-      // verlet integration
+        if (distance > WorldRadius - BodyRadius)
+        {
+          var normal = delta / distance;
+
+          body.CurrentPosition = position + normal * (distance - BodyRadius);
+        }
+      }
+    }
+
+    private unsafe void ApplyCollisions()
+    {
+      foreach (ref var a in _bodies)
+      foreach (ref var b in _bodies)
+      {
+        if (Unsafe.AsPointer(ref a) == Unsafe.AsPointer(ref b))
+          continue;
+
+        var axis = a.CurrentPosition - b.CurrentPosition;
+        var distance = axis.Length();
+
+        if (distance < BodyRadius)
+        {
+          var normal = axis / distance;
+          var delta = BodyRadius - distance;
+
+          a.CurrentPosition += 0.5f * delta * normal;
+          b.CurrentPosition -= 0.5f * delta * normal;
+        }
+      }
+    }
+
+    private void ApplyVerlet(float deltaTime)
+    {
       foreach (ref var body in _bodies)
       {
         var velocity = body.CurrentPosition - body.PreviousPosition;
 
         body.PreviousPosition = body.CurrentPosition;
-        body.CurrentPosition += velocity + body.Acceleration * deltaTimeSqr;
-
-        body.Acceleration = Vector2.Zero;
+        body.CurrentPosition += velocity + Gravity * (deltaTime * deltaTime);
       }
     }
 
     public PhysicsHandle CreateBody(Vector2 initialPosition)
     {
-      var index = _bodies.Add(new PhysicsBody
+      var index = _bodies.Add(new VerletBody
       {
         CurrentPosition = initialPosition,
         PreviousPosition = initialPosition
@@ -67,39 +120,28 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       return _bodies[handle].CurrentPosition;
     }
 
-    public void SetBodyPosition(PhysicsHandle handle, Vector2 position)
-    {
-      ref var body = ref _bodies[handle];
-
-      body.PreviousPosition = position;
-      body.CurrentPosition = position;
-    }
-
-    public Vector2 GetBodyVelocity(PhysicsHandle handle)
-    {
-      var body = _bodies[handle];
-
-      return body.CurrentPosition - body.PreviousPosition;
-    }
-
-    public void AddBodyVelocity(PhysicsHandle handle, Vector2 velocity)
-    {
-      _bodies[handle].Acceleration += velocity;
-    }
-
     public void DeleteBody(PhysicsHandle handle)
     {
       _bodies.Remove(handle);
     }
 
-    /// <summary>
-    /// A single physics body.
-    /// </summary>
-    private struct PhysicsBody
+    void IGizmoObject.RenderGizmos(IGizmoBatch gizmos)
+    {
+      gizmos.DrawWireCircle(Vector2.Zero, WorldRadius, Color.White);
+
+      foreach (var body in _bodies)
+      {
+        var velocity = body.CurrentPosition - body.PreviousPosition;
+
+        gizmos.DrawWireCircle(body.CurrentPosition, BodyRadius, Color.White);
+        gizmos.DrawLine(body.CurrentPosition, body.CurrentPosition + velocity * 10f, Color.Green);
+      }
+    }
+
+    private struct VerletBody
     {
       public Vector2 PreviousPosition;
       public Vector2 CurrentPosition;
-      public Vector2 Acceleration;
     }
   }
 }

@@ -33,8 +33,5 @@ public interface IPhysicsWorld2d : IPhysicsWorld
   // bodies
   PhysicsHandle CreateBody(Vector2 initialPosition);
   Vector2 GetBodyPosition(PhysicsHandle handle);
-  void SetBodyPosition(PhysicsHandle handle, Vector2 position);
-  Vector2 GetBodyVelocity(PhysicsHandle handle);
-  void AddBodyVelocity(PhysicsHandle handle, Vector2 velocity);
   void DeleteBody(PhysicsHandle handle);
 }

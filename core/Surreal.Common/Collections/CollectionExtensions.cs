@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Surreal.Collections;
+﻿namespace Surreal.Collections;
 
 /// <summary>
 /// General purpose collection extensions

@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Silk.NET.Core;
+﻿using Silk.NET.Core;
 using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;

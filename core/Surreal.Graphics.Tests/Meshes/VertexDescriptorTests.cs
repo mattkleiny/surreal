@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.Graphics.Meshes;
 
 namespace Surreal.Graphics.Tests.Meshes;

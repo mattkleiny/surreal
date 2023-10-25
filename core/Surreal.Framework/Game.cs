@@ -127,11 +127,10 @@ public class Game : IDisposable
       }
 
       // run the game loop
-      game.ExecuteVariableStep(time =>
-      {
-        sceneTree.Update(time.DeltaTime);
-        sceneTree.Render(time.DeltaTime);
-      });
+      game.ExecuteFixedStep(
+        updateLoop: time => sceneTree.Update(time.DeltaTime),
+        drawLoop: time => sceneTree.Render(time.DeltaTime)
+      );
     });
   }
 
@@ -238,6 +237,49 @@ public class Game : IDisposable
       }
 
       Host.EndFrame(time.DeltaTime);
+
+      PumpEventLoop();
+    }
+  }
+
+  /// <summary>
+  /// Executes the given <see cref="updateLoop"/>/<see cref="drawLoop"/> combo with a fixed step frequency.
+  /// </summary>
+  public void ExecuteFixedStep(GameLoop updateLoop, GameLoop drawLoop, bool runInBackground = false)
+  {
+    var startTime = TimeStamp.Now;
+    var deltaTimeClock = new DeltaTimeClock();
+    var accumulator = 0f;
+
+    while (!Host.IsClosing && !IsClosing)
+    {
+      var deltaTime = deltaTimeClock.Tick();
+
+      accumulator += deltaTime;
+
+      Host.BeginFrame(deltaTime);
+
+      if (Host.IsFocused || runInBackground)
+      {
+        while (accumulator >= deltaTime)
+        {
+          updateLoop(new GameTime
+          {
+            DeltaTime = deltaTime,
+            TotalTime = TimeStamp.Now - startTime
+          });
+
+          accumulator -= deltaTime;
+        }
+
+        drawLoop(new GameTime
+        {
+          DeltaTime = deltaTime,
+          TotalTime = TimeStamp.Now - startTime
+        });
+      }
+
+      Host.EndFrame(deltaTime);
 
       PumpEventLoop();
     }
