@@ -6,7 +6,11 @@
 [DebuggerDisplay("{ToString(),raw}")]
 public readonly ref struct SpanOwner<T>
 {
+  /// <summary>
+  /// An empty <see cref="SpanOwner{T}"/> instance.
+  /// </summary>
   public static SpanOwner<T> Empty => new(0, ArrayPool<T>.Shared);
+
   public static SpanOwner<T> Allocate(int size, bool zeroFill = false) => new(size, ArrayPool<T>.Shared, zeroFill);
   public static SpanOwner<T> Allocate(int size, ArrayPool<T> pool, bool zeroFill = false) => new(size, pool, zeroFill);
 

@@ -7,6 +7,7 @@
 /// and make it explicit instead of boxing it generically to a <see cref="object"/>.
 /// </summary>
 [DebuggerDisplay("{ToString(),raw}")]
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class Box<T>
     where T : struct
 {

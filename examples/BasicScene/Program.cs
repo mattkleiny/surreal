@@ -26,8 +26,6 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
   var music = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
   var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://BasicScene/Assets/Embedded/palettes/kule-16.pal");
 
-  var random = Random.Shared;
-
   scene.Add(new CameraViewportNode
   {
     new CameraNode2D
@@ -43,13 +41,9 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
     },
     new Spawner
     {
-      Factory = () => new RigidBody2D
+      GlobalPosition = new Vector2(0f, 80f),
+      SpawnFactory = () => new RigidBody2D
       {
-        Velocity = new Vector2(
-          x: random.NextFloat(-1f, 1f),
-          y: random.NextFloat(0.2f, 1f)
-        ) * random.NextFloat(1f, 50f),
-        Torque = random.NextFloat(-1f, 1f),
         Children =
         {
           new SpriteNode2D
@@ -69,9 +63,10 @@ namespace BasicScene
   {
     private static readonly ILog Log = LogFactory.GetLog<Spawner>();
 
-    public int SpawnCount { get; set; } = 8 * 8;
+    public int MaxInstanceCount { get; set; } = 128;
+    public int SpawnCount { get; set; } = 4;
     public TimeSpan SpawnRate { get; set; } = TimeSpan.FromSeconds(0.5f);
-    public required Func<SceneNode2D> Factory { get; set; }
+    public required Func<SceneNode2D> SpawnFactory { get; set; }
 
     private IntervalTimer _spawnTimer;
 
@@ -79,13 +74,24 @@ namespace BasicScene
     {
       base.OnUpdate(deltaTime);
 
+      if (Children.Count >= MaxInstanceCount)
+      {
+        return;
+      }
+
       _spawnTimer.Tick(deltaTime);
 
       if (_spawnTimer.HasPassed(SpawnRate))
       {
         for (int i = 0; i < SpawnCount; i++)
         {
-          Add(Factory());
+          var node = SpawnFactory();
+
+          node.GlobalPosition = GlobalPosition;
+          node.GlobalRotation = GlobalRotation;
+          node.GlobalScale = GlobalScale;
+
+          Add(node);
         }
 
         _spawnTimer.Reset();

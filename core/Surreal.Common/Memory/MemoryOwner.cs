@@ -6,7 +6,11 @@
 [DebuggerDisplay("{ToString(),raw}")]
 public sealed class MemoryOwner<T> : IMemoryOwner<T>
 {
+  /// <summary>
+  /// An empty <see cref="MemoryOwner{T}"/> instance.
+  /// </summary>
   public static MemoryOwner<T> Empty => new(0, ArrayPool<T>.Shared);
+
   public static MemoryOwner<T> Allocate(int size, bool zeroFill = false) => new(size, ArrayPool<T>.Shared, zeroFill);
   public static MemoryOwner<T> Allocate(int size, ArrayPool<T> pool, bool zeroFill = false) => new(size, pool, zeroFill);
 
