@@ -1,6 +1,4 @@
-﻿using Surreal.Scenes.Spatial.Physics;
-
-var configuration = new GameConfiguration
+﻿var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
   {
