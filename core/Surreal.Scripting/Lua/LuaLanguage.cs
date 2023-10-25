@@ -43,6 +43,15 @@ public sealed class LuaLanguage : IScriptLanguage
       var lua = new NLua.Lua();
 
       lua.LoadCLRPackage();
+
+      // import default packages
+      lua.DoString("import ('Surreal', 'Surreal.Colors')");
+      lua.DoString("import ('Surreal', 'Surreal.Maths')");
+      lua.DoString("import ('Surreal', 'Surreal.Memory')");
+      lua.DoString("import ('Surreal', 'Surreal.Text')");
+      lua.DoString("import ('System.Numerics.Vectors', 'System.Numerics')");
+
+      // run the initial script code
       lua.DoString(code);
 
       return new LuaContext(lua);
