@@ -32,6 +32,15 @@ public sealed class SceneTree : SceneNode, IScene, IGizmoObject
   /// </summary>
   public IPhysicsWorld? PhysicsWorld { get; init; }
 
+  /// <summary>
+  /// Resets the tree and removes all of it's children.
+  /// </summary>
+  public void Reset()
+  {
+    PhysicsWorld?.Reset();
+    Children.Clear();
+  }
+
   /// <inheritdoc/>
   public new void Update(DeltaTime deltaTime)
   {

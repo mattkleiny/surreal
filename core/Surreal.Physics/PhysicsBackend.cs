@@ -53,6 +53,12 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       }
     }
 
+    /// <inheritdoc/>
+    public void Reset()
+    {
+      _bodies.Clear();
+    }
+
     private void ApplyConstraints()
     {
       var position = Vector2.Zero;

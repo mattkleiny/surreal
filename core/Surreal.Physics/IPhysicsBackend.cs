@@ -20,6 +20,11 @@ public interface IPhysicsWorld
   /// Updates the physics world.
   /// </summary>
   void Tick(DeltaTime deltaTime);
+
+  /// <summary>
+  /// Clears all objects from the physics world.
+  /// </summary>
+  void Reset();
 }
 
 /// <summary>
