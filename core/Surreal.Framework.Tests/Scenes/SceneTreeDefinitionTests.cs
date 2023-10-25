@@ -8,9 +8,9 @@ namespace Surreal.Framework.Tests.Scenes;
 public class SceneTreeDefinitionTests
 {
   [Test]
-  [TestCase("Assets/External/scenes/test01.scene.json")]
-  [TestCase("Assets/External/scenes/test01.scene.yml")]
-  [TestCase("Assets/External/scenes/test01.scene.xml")]
+  [TestCase("Assets/External/Scenes/test01.scene.json")]
+  [TestCase("Assets/External/Scenes/test01.scene.yml")]
+  [TestCase("Assets/External/Scenes/test01.scene.xml")]
   public async Task it_should_deserialize_scene_tree_from_disk(VirtualPath path)
   {
     var format = path.Extension switch

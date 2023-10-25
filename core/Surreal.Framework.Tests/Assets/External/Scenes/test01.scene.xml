@@ -1,6 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <SceneTree Name="Test Scene" Description="A simple testing scene">
-  <Tree>
-    <Children />
-  </Tree>
+  <Children />
 </SceneTree>
