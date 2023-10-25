@@ -29,7 +29,7 @@ public class LuaScriptLanguageTests
     game.Messages.Dequeue().Should().Be("Hello, World!");
   }
 
-  [UsedByLua]
+  [UsedByScript]
   private sealed class TestGameContext
   {
     public Queue<string> Messages { get; } = new();

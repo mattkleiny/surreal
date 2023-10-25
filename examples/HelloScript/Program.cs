@@ -43,7 +43,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
 /// <summary>
 /// An example bridging class for connecting Lua to Surreal.
 /// </summary>
-[UsedByLua]
+[UsedByScript]
 public sealed class ScriptBridge(Game game, IGraphicsBackend graphics, IGizmoBatch gizmos)
 {
   public void DrawLine(Vector2 a, Vector2 b)

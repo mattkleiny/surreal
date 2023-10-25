@@ -60,8 +60,6 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
       if (bunny.Position.Y > height / 2f) bunny.Velocity.Y *= -1f;
     }
 
-    batch.Reset();
-
     foreach (ref var bunny in bunnies.AsSpan())
     {
       batch.Draw(sprite, bunny.Position, size, bunny.Rotation.Radians, bunny.Tint);

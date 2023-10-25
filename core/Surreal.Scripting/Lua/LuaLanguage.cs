@@ -5,16 +5,10 @@ using Surreal.Utilities;
 namespace Surreal.Scripting.Lua;
 
 /// <summary>
-/// Indicates that a type or member is used by Lua.
-/// </summary>
-[MeansImplicitUse(ImplicitUseTargetFlags.WithMembers)]
-public sealed class UsedByLuaAttribute : Attribute;
-
-/// <summary>
 /// A <see cref="IScriptLanguage"/> for Lua.
 /// </summary>
 [RegisterService(typeof(IScriptLanguage))]
-public sealed class LuaLanguage : IScriptLanguage
+internal sealed class LuaLanguage : IScriptLanguage
 {
   /// <inheritdoc/>
   public bool CanLoad(VirtualPath path)

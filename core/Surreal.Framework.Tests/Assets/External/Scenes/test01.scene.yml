@@ -1,0 +1,4 @@
+﻿name: "Test Scene"
+description: "A simple testing scene"
+tree:
+  children: []

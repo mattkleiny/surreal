@@ -1,4 +1,6 @@
 ﻿using System.Xml.Serialization;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Surreal.IO;
 
@@ -8,6 +10,7 @@ namespace Surreal.IO;
 public abstract class FileFormat
 {
   public static FileFormat Json { get; } = new JsonFileFormat();
+  public static FileFormat Yml { get; } = new YmlFileFormat();
   public static FileFormat Xml { get; } = new XmlFileFormat();
 
   #region Serialization
@@ -73,6 +76,80 @@ public abstract class FileFormat
       where T : class
     {
       return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken);
+    }
+  }
+
+  /// <summary>
+  /// A <see cref="FileFormat"/> for YAML.
+  /// </summary>
+  private sealed class YmlFileFormat : FileFormat
+  {
+    private readonly ISerializer _serializer = new SerializerBuilder()
+      .WithNamingConvention(UnderscoredNamingConvention.Instance)
+      .Build();
+
+    private readonly IDeserializer _deserializer = new DeserializerBuilder()
+      .WithNamingConvention(UnderscoredNamingConvention.Instance)
+      .Build();
+
+    public override void Serialize(Stream stream, object value)
+    {
+      using var writer = new StreamWriter(stream, Encoding.UTF8);
+
+      _serializer.Serialize(writer, value);
+    }
+
+    public override void Serialize<T>(Stream stream, T value)
+    {
+      using var writer = new StreamWriter(stream, Encoding.UTF8);
+
+      _serializer.Serialize(writer, value, typeof(T));
+    }
+
+    public override Task SerializeAsync(Stream stream, object value, CancellationToken cancellationToken = default)
+    {
+      using var writer = new StreamWriter(stream, Encoding.UTF8);
+
+      _serializer.Serialize(writer, value);
+
+      return Task.CompletedTask;
+    }
+
+    public override Task SerializeAsync<T>(Stream stream, T value, CancellationToken cancellationToken = default)
+    {
+      using var writer = new StreamWriter(stream, Encoding.UTF8);
+
+      _serializer.Serialize(writer, value, typeof(T));
+
+      return Task.CompletedTask;
+    }
+
+    public override object? Deserialize(Stream stream, Type type)
+    {
+      using var reader = new StreamReader(stream, Encoding.UTF8);
+
+      return _deserializer.Deserialize(reader, type);
+    }
+
+    public override T? Deserialize<T>(Stream stream) where T : class
+    {
+      using var reader = new StreamReader(stream, Encoding.UTF8);
+
+      return (T?) _deserializer.Deserialize(reader, typeof(T));
+    }
+
+    public override Task<object?> DeserializeAsync(Stream stream, Type type, CancellationToken cancellationToken = default)
+    {
+      using var reader = new StreamReader(stream, Encoding.UTF8);
+
+      return Task.FromResult(_deserializer.Deserialize(reader, type));
+    }
+
+    public override Task<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken = default) where T : class
+    {
+      using var reader = new StreamReader(stream, Encoding.UTF8);
+
+      return Task.FromResult((T?) _deserializer.Deserialize(reader, typeof(T)));
     }
   }
 
