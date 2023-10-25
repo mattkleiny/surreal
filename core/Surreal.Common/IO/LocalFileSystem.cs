@@ -56,13 +56,13 @@ public sealed class LocalFileSystem() : FileSystem("local")
     return File.Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
   }
 
-  public override MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
+  public override MemoryMappedFile OpenMemoryMappedFile(string path)
   {
     return MemoryMappedFile.CreateFromFile(
       path,
       FileMode.OpenOrCreate,
       Guid.NewGuid().ToString(), // needs to be unique
-      length,
+      0,
       MemoryMappedFileAccess.ReadWrite
     );
   }

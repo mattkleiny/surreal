@@ -50,7 +50,7 @@ public static class Buffers
     return new NativeBuffer<T>(length, zeroFill);
   }
 
-  public static IDisposableBuffer<T> AllocateMapped<T>(VirtualPath path, int offset, int length)
+  public static IDisposableBuffer<T> AllocateMapped<T>(VirtualPath path, int offset = 0, int length = 0)
     where T : unmanaged
   {
     return new MappedBuffer<T>(path, offset, length);
@@ -164,7 +164,7 @@ public static class Buffers
         throw new InvalidOperationException($"The given path does not support memory mapped files: {path}");
       }
 
-      _file = path.OpenMemoryMappedFile(offset, length);
+      _file = path.OpenMemoryMappedFile();
       _accessor = _file.CreateViewAccessor(offset, length, MemoryMappedFileAccess.ReadWrite);
 
       _accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref _pointer);

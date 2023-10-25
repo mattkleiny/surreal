@@ -23,7 +23,7 @@ public interface IFileSystem
   bool IsDirectory(string path);
   Stream OpenInputStream(string path);
   Stream OpenOutputStream(string path);
-  MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length);
+  MemoryMappedFile OpenMemoryMappedFile(string path);
   IPathWatcher WatchPath(VirtualPath path);
 
   // asynchronous API
@@ -94,7 +94,7 @@ public abstract class FileSystem : IFileSystem
   public abstract Stream OpenInputStream(string path);
   public abstract Stream OpenOutputStream(string path);
 
-  public virtual MemoryMappedFile OpenMemoryMappedFile(string path, int offset, int length)
+  public virtual MemoryMappedFile OpenMemoryMappedFile(string path)
   {
     throw new NotSupportedException("This file system does not support memory mapping.");
   }

@@ -64,8 +64,8 @@ public static class VirtualPathExtensions
   public static ValueTask<Stream> OpenOutputStreamAsync(this VirtualPath path)
     => path.GetFileSystem().OpenOutputStreamAsync(path.Target.ToString());
 
-  public static MemoryMappedFile OpenMemoryMappedFile(this VirtualPath path, int offset, int length)
-    => path.GetFileSystem().OpenMemoryMappedFile(path.Target.ToString(), offset, length);
+  public static MemoryMappedFile OpenMemoryMappedFile(this VirtualPath path)
+    => path.GetFileSystem().OpenMemoryMappedFile(path.Target.ToString());
 
   public static IPathWatcher Watch(this VirtualPath path)
     => path.GetFileSystem().WatchPath(path);
