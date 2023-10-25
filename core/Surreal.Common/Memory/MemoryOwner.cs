@@ -1,21 +1,13 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Memory;
 
 /// <summary>
-/// A <see cref="IMemoryOwner{T}"/> implementation with an embedded length and a fast <see cref="Span{T}"/> accessor.
+/// A <see cref="IMemoryOwner{T}"/> implementation with conveniences for fast access.
 /// </summary>
 [DebuggerDisplay("{ToString(),raw}")]
 public sealed class MemoryOwner<T> : IMemoryOwner<T>
 {
-  public static MemoryOwner<T> Empty
-  {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => new(0, ArrayPool<T>.Shared);
-  }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static MemoryOwner<T> Empty => new(0, ArrayPool<T>.Shared);
   public static MemoryOwner<T> Allocate(int size, bool zeroFill = false) => new(size, ArrayPool<T>.Shared, zeroFill);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static MemoryOwner<T> Allocate(int size, ArrayPool<T> pool, bool zeroFill = false) => new(size, pool, zeroFill);
 
   private readonly int _start;
@@ -44,12 +36,14 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     _array = array;
   }
 
+  /// <summary>
+  /// The length of the current buffer.
+  /// </summary>
   public int Length => _length;
 
   /// <inheritdoc/>
   public Memory<T> Memory
   {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     get
     {
       if (_array is null)
@@ -57,7 +51,7 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
         throw new ObjectDisposedException(nameof(MemoryOwner<T>), "The current buffer has already been disposed");
       }
 
-      return new(_array, _start, _length);
+      return new Memory<T>(_array, _start, _length);
     }
   }
 
@@ -66,7 +60,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
   /// </summary>
   public Span<T> Span
   {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     get
     {
       if (_array is null)
@@ -86,17 +79,13 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
   /// </summary>
   public MemoryOwner<T> Slice(int start, int length)
   {
+    Debug.Assert((uint)start <= (uint)_length);
+    Debug.Assert((uint)length <= (uint)(_length - start));
+
     if (_array is null)
     {
       throw new ObjectDisposedException(nameof(MemoryOwner<T>), "The current buffer has already been disposed");
     }
-
-    Debug.Assert((uint)start <= (uint)_length);
-    Debug.Assert((uint)length <= (uint)(_length - start));
-
-    // We're transferring the ownership of the underlying array, so the current
-    // instance no longer needs to be disposed.
-    GC.SuppressFinalize(this);
 
     return new MemoryOwner<T>(start, length, _pool, _array);
   }

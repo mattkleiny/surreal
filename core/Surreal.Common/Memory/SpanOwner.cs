@@ -1,23 +1,13 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Memory;
 
 /// <summary>
-/// A stack-only type with the ability to rent a buffer of a specified length and getting a <see cref="Span{T}"/> from it.
-/// This type mirrors <see cref="MemoryOwner{T}"/> but without allocations and with further optimizations.
-/// As this is a stack-only type, it relies on the duck-typed <see cref="IDisposable"/> pattern introduced with C# 8.
+/// A <see cref="IMemoryOwner{T}"/>-like stack-only implementation with conveniences for fast access.
 /// </summary>
 [DebuggerDisplay("{ToString(),raw}")]
 public readonly ref struct SpanOwner<T>
 {
-  public static SpanOwner<T> Empty
-  {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => new(0, ArrayPool<T>.Shared);
-  }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static SpanOwner<T> Empty => new(0, ArrayPool<T>.Shared);
   public static SpanOwner<T> Allocate(int size, bool zeroFill = false) => new(size, ArrayPool<T>.Shared, zeroFill);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static SpanOwner<T> Allocate(int size, ArrayPool<T> pool, bool zeroFill = false) => new(size, pool, zeroFill);
 
   private readonly int _length;
@@ -36,6 +26,9 @@ public readonly ref struct SpanOwner<T>
     }
   }
 
+  /// <summary>
+  /// The length of the current buffer.
+  /// </summary>
   public int Length => _length;
 
   /// <summary>

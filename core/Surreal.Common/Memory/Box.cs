@@ -1,4 +1,4 @@
-﻿namespace Surreal;
+﻿namespace Surreal.Memory;
 
 /// <summary>
 /// A boxed value type <typeparamref name="T"/> on the managed heap.

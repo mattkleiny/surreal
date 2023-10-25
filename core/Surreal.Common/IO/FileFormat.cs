@@ -1,4 +1,6 @@
-﻿namespace Surreal;
+﻿using System.Xml.Serialization;
+
+namespace Surreal.IO;
 
 /// <summary>
 /// A format for I/O file operations.
@@ -8,45 +10,23 @@ public abstract class FileFormat
   public static FileFormat Json { get; } = new JsonFileFormat();
   public static FileFormat Xml { get; } = new XmlFileFormat();
 
-  /// <summary>
-  /// Serializes the given value to the given stream.
-  /// </summary>
+  #region Serialization
+
   public abstract void Serialize(Stream stream, object value);
-
-  /// <summary>
-  /// Serializes the given value to the given stream.
-  /// </summary>
-  public abstract Task SerializeAsync(Stream stream, object value, CancellationToken cancellationToken = default);
-
-  /// <summary>
-  /// Serializes the given value to the given stream.
-  /// </summary>
   public abstract void Serialize<T>(Stream stream, T value) where T : class;
-
-  /// <summary>
-  /// Serializes the given value to the given stream.
-  /// </summary>
+  public abstract Task SerializeAsync(Stream stream, object value, CancellationToken cancellationToken = default);
   public abstract Task SerializeAsync<T>(Stream stream, T value, CancellationToken cancellationToken = default) where T : class;
 
-  /// <summary>
-  /// Deserializes a value of the given type from the given stream.
-  /// </summary>
+  #endregion
+
+  #region Deserialization
+
   public abstract object? Deserialize(Stream stream, Type type);
-
-  /// <summary>
-  /// Deserializes a value of the given type from the given stream.
-  /// </summary>
-  public abstract Task<object?> DeserializeAsync(Stream stream, Type type, CancellationToken cancellationToken = default);
-
-  /// <summary>
-  /// Deserializes a value of the given type from the given stream.
-  /// </summary>
   public abstract T? Deserialize<T>(Stream stream) where T : class;
-
-  /// <summary>
-  /// Deserializes a value of the given type from the given stream.
-  /// </summary>
+  public abstract Task<object?> DeserializeAsync(Stream stream, Type type, CancellationToken cancellationToken = default);
   public abstract Task<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken = default) where T : class;
+
+  #endregion
 
   /// <summary>
   /// A <see cref="FileFormat"/> for JSON.
@@ -58,14 +38,14 @@ public abstract class FileFormat
       JsonSerializer.Serialize(stream, value);
     }
 
-    public override async Task SerializeAsync(Stream stream, object value, CancellationToken cancellationToken = default)
-    {
-      await JsonSerializer.SerializeAsync(stream, value, cancellationToken: cancellationToken);
-    }
-
     public override void Serialize<T>(Stream stream, T value)
     {
       JsonSerializer.Serialize(stream, value);
+    }
+
+    public override async Task SerializeAsync(Stream stream, object value, CancellationToken cancellationToken = default)
+    {
+      await JsonSerializer.SerializeAsync(stream, value, cancellationToken: cancellationToken);
     }
 
     public override async Task SerializeAsync<T>(Stream stream, T value, CancellationToken cancellationToken = default)
@@ -79,14 +59,14 @@ public abstract class FileFormat
       return JsonSerializer.Deserialize(stream, type);
     }
 
-    public override async Task<object?> DeserializeAsync(Stream stream, Type type, CancellationToken cancellationToken = default)
-    {
-      return await JsonSerializer.DeserializeAsync(stream, type, cancellationToken: cancellationToken);
-    }
-
     public override T? Deserialize<T>(Stream stream) where T : class
     {
       return JsonSerializer.Deserialize<T>(stream);
+    }
+
+    public override async Task<object?> DeserializeAsync(Stream stream, Type type, CancellationToken cancellationToken = default)
+    {
+      return await JsonSerializer.DeserializeAsync(stream, type, cancellationToken: cancellationToken);
     }
 
     public override async Task<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken = default)
@@ -96,7 +76,6 @@ public abstract class FileFormat
     }
   }
 
-
   /// <summary>
   /// A <see cref="FileFormat"/> for XML.
   /// </summary>
@@ -104,42 +83,67 @@ public abstract class FileFormat
   {
     public override void Serialize(Stream stream, object value)
     {
-      throw new NotImplementedException();
-    }
+      var serializer = new XmlSerializer(value.GetType());
 
-    public override Task SerializeAsync(Stream stream, object value, CancellationToken cancellationToken = default)
-    {
-      throw new NotImplementedException();
+      serializer.Serialize(stream, value);
     }
 
     public override void Serialize<T>(Stream stream, T value)
     {
-      throw new NotImplementedException();
+      var serializer = new XmlSerializer(typeof(T));
+
+      serializer.Serialize(stream, value);
+    }
+
+    public override Task SerializeAsync(Stream stream, object value, CancellationToken cancellationToken = default)
+    {
+      cancellationToken.ThrowIfCancellationRequested();
+
+      var serializer = new XmlSerializer(value.GetType());
+
+      serializer.Serialize(stream, value);
+
+      return Task.CompletedTask;
     }
 
     public override Task SerializeAsync<T>(Stream stream, T value, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
+      cancellationToken.ThrowIfCancellationRequested();
+
+      var serializer = new XmlSerializer(typeof(T));
+
+      serializer.Serialize(stream, value);
+
+      return Task.CompletedTask;
     }
 
     public override object? Deserialize(Stream stream, Type type)
     {
-      throw new NotImplementedException();
+      var serializer = new XmlSerializer(type);
+
+      return serializer.Deserialize(stream);
+    }
+
+    public override T? Deserialize<T>(Stream stream)
+      where T : class
+    {
+      var serializer = new XmlSerializer(typeof(T));
+
+      return (T?)serializer.Deserialize(stream);
     }
 
     public override Task<object?> DeserializeAsync(Stream stream, Type type, CancellationToken cancellationToken = default)
     {
-      throw new NotImplementedException();
-    }
+      var serializer = new XmlSerializer(type);
 
-    public override T? Deserialize<T>(Stream stream) where T : class
-    {
-      throw new NotImplementedException();
+      return Task.FromResult(serializer.Deserialize(stream));
     }
 
     public override Task<T?> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken = default) where T : class
     {
-      throw new NotImplementedException();
+      var serializer = new XmlSerializer(typeof(T));
+
+      return Task.FromResult((T?)serializer.Deserialize(stream));
     }
   }
 }
