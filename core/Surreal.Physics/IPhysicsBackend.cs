@@ -7,14 +7,12 @@ namespace Surreal.Physics;
 /// </summary>
 public interface IPhysicsBackend
 {
-  /// <summary>
-  /// Creates a new 2d physics world.
-  /// </summary>
   IPhysicsWorld2d CreatePhysicsWorld2d();
+  IPhysicsWorld2d CreatePhysicsWorld3d();
 }
 
 /// <summary>
-/// Represents a physics world that can be updated via the physics system.
+/// A physics world that contains objects and simulates physics.
 /// </summary>
 public interface IPhysicsWorld
 {
@@ -25,7 +23,7 @@ public interface IPhysicsWorld
 }
 
 /// <summary>
-/// Represents a 2d world that can be updated via the physics system.
+/// A 2d world in a <see cref="IPhysicsBackend"/>.
 /// </summary>
 public interface IPhysicsWorld2d : IPhysicsWorld
 {

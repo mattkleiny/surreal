@@ -65,7 +65,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public GraphicsHandle CreateBuffer()
   {
-    return new GraphicsHandle(Interlocked.Increment(ref _nextBufferId));
+    return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextBufferId));
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
@@ -90,7 +90,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
-    return new GraphicsHandle(Interlocked.Increment(ref _nextTextureId));
+    return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextTextureId));
   }
 
   public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
@@ -139,7 +139,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
   {
-    return new GraphicsHandle(Interlocked.Increment(ref _nextMeshId));
+    return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextMeshId));
   }
 
   public void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
@@ -152,7 +152,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
 
   public GraphicsHandle CreateShader()
   {
-    return new GraphicsHandle(Interlocked.Increment(ref _nextShaderId));
+    return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextShaderId));
   }
 
   public void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels)
@@ -180,7 +180,7 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
     return new FrameBufferHandle
     {
-      FrameBuffer = new GraphicsHandle(Interlocked.Increment(ref _nextFrameBufferId))
+      FrameBuffer = GraphicsHandle.FromInt(Interlocked.Increment(ref _nextFrameBufferId))
     };
   }
 

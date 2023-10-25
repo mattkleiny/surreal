@@ -24,7 +24,7 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
 
   public AudioHandle CreateAudioClip()
   {
-    return new AudioHandle(Interlocked.Increment(ref _nextClipId));
+    return AudioHandle.FromInt(Interlocked.Increment(ref _nextClipId));
   }
 
   public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
@@ -38,7 +38,7 @@ internal sealed class HeadlessAudioBackend : IAudioBackend
 
   public AudioHandle CreateAudioSource()
   {
-    return new AudioHandle(Interlocked.Increment(ref _nextSourceId));
+    return AudioHandle.FromInt(Interlocked.Increment(ref _nextSourceId));
   }
 
   public bool IsAudioSourcePlaying(AudioHandle handle)

@@ -6,7 +6,7 @@ namespace Surreal.Audio;
 internal sealed unsafe class SilkAudioBackend : IAudioBackend, IDisposable
 {
   [SuppressMessage("ReSharper", "InconsistentNaming")]
-  private static ALContext alc = ALContext.GetApi(soft: true);
+  private static readonly ALContext alc = ALContext.GetApi(soft: true);
 
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   private static readonly AL al = AL.GetApi(soft: true);
@@ -43,10 +43,10 @@ internal sealed unsafe class SilkAudioBackend : IAudioBackend, IDisposable
 
   public AudioHandle CreateAudioClip()
   {
-    return new AudioHandle(al.GenBuffer());
+    return AudioHandle.FromUInt(al.GenBuffer());
   }
 
-  public unsafe void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
+  public void WriteAudioClipData<T>(AudioHandle clip, AudioSampleRate sampleRate, ReadOnlySpan<T> data)
     where T : unmanaged
   {
     fixed (T* pointer = data)
@@ -74,7 +74,7 @@ internal sealed unsafe class SilkAudioBackend : IAudioBackend, IDisposable
     al.SetSourceProperty(source, SourceVector3.Position, Vector3.Zero);
     al.SetSourceProperty(source, SourceBoolean.Looping, false);
 
-    return new AudioHandle(source);
+    return AudioHandle.FromUInt(source);
   }
 
   public bool IsAudioSourcePlaying(AudioHandle handle)

@@ -10,10 +10,11 @@ public readonly record struct PhysicsHandle(ulong Id)
 {
   public static PhysicsHandle None => default;
 
-  public PhysicsHandle(ArenaIndex index)
-    : this((ulong)index)
-  {
-  }
+  public static PhysicsHandle FromInt(int index) => new((ulong)index);
+  public static PhysicsHandle FromUInt(uint index) => new(index);
+  public static PhysicsHandle FromNInt(nint index) => new((ulong)index);
+  public static PhysicsHandle FromULong(ulong index) => new(index);
+  public static PhysicsHandle FromArenaIndex(ArenaIndex index) => new(index);
 
   public static implicit operator int(PhysicsHandle handle) => (int)handle.Id;
   public static implicit operator uint(PhysicsHandle handle) => (uint)handle.Id;

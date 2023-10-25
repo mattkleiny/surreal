@@ -15,10 +15,15 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     return new PhysicsWorld2d();
   }
 
+  public IPhysicsWorld2d CreatePhysicsWorld3d()
+  {
+    throw new NotImplementedException();
+  }
+
   /// <summary>
-  /// A simple 2d physics world.
+  /// The <see cref="IPhysicsWorld2d"/> implementation for this backend.
   /// </summary>
-  internal sealed class PhysicsWorld2d : IPhysicsWorld2d
+  private sealed class PhysicsWorld2d : IPhysicsWorld2d
   {
     private readonly Arena<PhysicsBody> _bodies = new();
 
@@ -37,7 +42,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
     public PhysicsHandle CreateBody()
     {
-      return new PhysicsHandle(_bodies.Add(new PhysicsBody()));
+      return PhysicsHandle.FromArenaIndex(_bodies.Add(new PhysicsBody()));
     }
 
     public Vector2 GetBodyPosition(PhysicsHandle handle)

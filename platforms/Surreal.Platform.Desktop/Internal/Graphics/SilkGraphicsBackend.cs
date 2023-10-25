@@ -127,7 +127,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public GraphicsHandle CreateBuffer()
   {
-    return new GraphicsHandle(gl.GenBuffer());
+    return GraphicsHandle.FromUInt(gl.GenBuffer());
   }
 
   public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
@@ -208,7 +208,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, textureWrapMode);
     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, textureWrapMode);
 
-    return new GraphicsHandle(texture);
+    return GraphicsHandle.FromUInt(texture);
   }
 
   public unsafe Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
@@ -410,7 +410,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
     gl.BindVertexArray(0);
 
-    return new GraphicsHandle(array);
+    return GraphicsHandle.FromUInt(array);
   }
 
   public unsafe void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
@@ -440,7 +440,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public GraphicsHandle CreateShader()
   {
-    return new GraphicsHandle(gl.CreateProgram());
+    return GraphicsHandle.FromUInt(gl.CreateProgram());
   }
 
   public void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels)
@@ -671,9 +671,9 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
     return new FrameBufferHandle
     {
-      FrameBuffer = new GraphicsHandle(framebuffer),
-      ColorAttachment = new GraphicsHandle(colorAttachment),
-      DepthStencilAttachment = new GraphicsHandle(depthStencilAttachment)
+      FrameBuffer = GraphicsHandle.FromUInt(framebuffer),
+      ColorAttachment = GraphicsHandle.FromUInt(colorAttachment),
+      DepthStencilAttachment = GraphicsHandle.FromUInt(depthStencilAttachment)
     };
   }
 

@@ -14,7 +14,8 @@ namespace Surreal.Graphics;
 public readonly record struct Viewport(int X, int Y, uint Width, uint Height);
 
 /// <summary>
-/// An opaque handle to a render target in the underling <see cref="IGraphicsBackend" /> implementation.
+/// An opaque handle to a render target in the underling <see cref="IGraphicsBackend" /> implementation,
+/// and it's accompanying color and depth/stencil attachments.
 /// </summary>
 public readonly record struct FrameBufferHandle
 {
