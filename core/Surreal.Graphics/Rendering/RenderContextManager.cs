@@ -3,7 +3,7 @@
 namespace Surreal.Graphics.Rendering;
 
 /// <summary>
-/// Represents a manager for <see cref="IRenderContext"/>s.
+/// Represents a manager for <see cref="RenderContext"/>s.
 /// </summary>
 public interface IRenderContextManager
 {
@@ -12,22 +12,22 @@ public interface IRenderContextManager
   /// if successful, returns a scoped reference to the context.
   /// </summary>
   bool TryGetContext<TContext>(in RenderFrame frame, out TContext result)
-    where TContext : IRenderContext;
+    where TContext : RenderContext;
 }
 
 /// <summary>
 /// The default <see cref="IRenderContextManager"/> implementation.
 /// </summary>
-public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IRenderContext>, IDisposable
+public sealed class RenderContextManager : IRenderContextManager, IEnumerable<RenderContext>, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<RenderContextManager>();
 
-  private readonly Dictionary<Type, IRenderContext> _contexts = new();
+  private readonly Dictionary<Type, RenderContext> _contexts = new();
 
   /// <summary>
-  /// Adds a <see cref="IRenderContext"/> to the manager.
+  /// Adds a <see cref="RenderContext"/> to the manager.
   /// </summary>
-  public void Add(IRenderContext context)
+  public void Add(RenderContext context)
   {
     var type = context.GetType();
 
@@ -107,7 +107,7 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
   /// if successful, returns a scoped reference to the context.
   /// </summary>
   public bool TryGetContext<TContext>(in RenderFrame frame, out TContext result)
-    where TContext : IRenderContext
+    where TContext : RenderContext
   {
     if (_contexts.TryGetValue(typeof(TContext), out var context))
     {
@@ -140,12 +140,12 @@ public sealed class RenderContextManager : IRenderContextManager, IEnumerable<IR
     Clear();
   }
 
-  public Dictionary<Type, IRenderContext>.ValueCollection.Enumerator GetEnumerator()
+  public Dictionary<Type, RenderContext>.ValueCollection.Enumerator GetEnumerator()
   {
     return _contexts.Values.GetEnumerator();
   }
 
-  IEnumerator<IRenderContext> IEnumerable<IRenderContext>.GetEnumerator()
+  IEnumerator<RenderContext> IEnumerable<RenderContext>.GetEnumerator()
   {
     return GetEnumerator();
   }

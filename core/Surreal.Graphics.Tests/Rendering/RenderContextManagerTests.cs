@@ -14,7 +14,7 @@ public class RenderContextManagerTests
     using var resources = new AssetManager();
     using var manager = new RenderContextManager();
 
-    var context = Substitute.For<IRenderContext>();
+    var context = Substitute.For<RenderContext>();
     var frame = new RenderFrame
     {
       DeltaTime = DeltaTime.OneOver60,

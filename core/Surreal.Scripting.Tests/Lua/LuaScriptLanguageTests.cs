@@ -8,7 +8,7 @@ public class LuaScriptLanguageTests
   public async Task it_should_execute_a_simple_script()
   {
     var language = new LuaLanguage();
-    var script = await language.LoadAsync("Assets/External/Scripts/HelloWorld.lua");
+    var script = await language.LoadAsync("Assets/External/scripts/HelloWorld.lua");
 
     var result = script.ExecuteFunction("say_hello", "World");
 
@@ -19,7 +19,7 @@ public class LuaScriptLanguageTests
   public async Task it_should_execute_a_more_complex_script()
   {
     var language = new LuaLanguage();
-    var script = await language.LoadAsync("Assets/External/Scripts/HelloGame.lua");
+    var script = await language.LoadAsync("Assets/External/scripts/HelloGame.lua");
     var game = new TestGameContext();
 
     script.SetGlobal("Game", Variant.From(game));
