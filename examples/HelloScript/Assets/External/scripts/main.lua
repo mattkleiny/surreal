@@ -9,4 +9,6 @@ function tick(game, delta_time)
   if timer >= 10 then
     game:Exit()
   end
+
+  return timer, 10 - timer
 end

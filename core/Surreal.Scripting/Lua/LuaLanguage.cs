@@ -62,32 +62,38 @@ public sealed class LuaLanguage : IScriptLanguage
     /// </summary>
     public bool TryGetCallable(string name, out Callable result)
     {
-      if (_callableCache.TryGetValue(name, out result!))
+      // cache callables as there is a bit of overhead in constructing the closure
+      if (!_callableCache.TryGetValue(name, out result!))
       {
-        return true;
-      }
-
-      var state = lua[name];
-      if (state is not LuaFunction function)
-      {
-        result = default!;
-        return false;
-      }
-
-      result = args =>
-      {
-        var arguments = args.Select(a => a.Value).ToArray();
-        var results = function.Call(arguments);
-
-        if (results.Length > 0)
+        // try and find the function in the global state
+        var state = lua[name];
+        if (state is not LuaFunction function)
         {
-          return Variant.From(results[0]);
+          result = default!;
+          return false;
         }
 
-        return Variant.Null;
-      };
+        // build a callable wrapper
+        result = args =>
+        {
+          var arguments = args.Select(a => a.Value).ToArray();
+          var results = function.Call(arguments);
 
-      _callableCache[name] = result;
+          if (results.Length == 0)
+          {
+            return Variant.Null;
+          }
+
+          if (results.Length == 1)
+          {
+            return Variant.From(results[0]);
+          }
+
+          return Variant.From(results);
+        };
+
+        _callableCache[name] = result;
+      }
 
       return true;
     }
