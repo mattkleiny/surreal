@@ -26,9 +26,9 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
   var music = await game.Assets.LoadAssetAsync<AudioClip>("Assets/External/audio/test.wav");
   var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://BasicScene/Assets/Embedded/palettes/kule-16.pal");
 
-  scene.Add(new CameraViewportNode
+  scene.Add(new CameraViewport
   {
-    new CameraNode2D
+    new Camera2D
     {
       Zoom = 100f
     },
@@ -46,7 +46,7 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
       {
         Children =
         {
-          new SpriteNode2D
+          new Sprite2D
           {
             Sprite = sprite,
             Tint = palette.SelectRandom()
@@ -59,14 +59,14 @@ Game.StartScene<ForwardRenderPipeline>(configuration, async (Game game, SceneTre
 
 namespace BasicScene
 {
-  internal sealed class Spawner : SceneNode2D, IGizmoObject
+  internal sealed class Spawner : Node2D, IGizmoObject
   {
     private static readonly ILog Log = LogFactory.GetLog<Spawner>();
 
     public int MaxInstanceCount { get; set; } = 128;
     public int SpawnCount { get; set; } = 4;
     public TimeSpan SpawnRate { get; set; } = TimeSpan.FromSeconds(0.5f);
-    public required Func<SceneNode2D> SpawnFactory { get; set; }
+    public required Func<Node2D> SpawnFactory { get; set; }
 
     private IntervalTimer _spawnTimer;
 

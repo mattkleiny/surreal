@@ -30,7 +30,7 @@ public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
 /// <summary>
 /// A single node in a scene tree.
 /// </summary>
-public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedEvents, IEnumerable<SceneNode>
+public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPropertyChangedEvents, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<SceneNode>();
 
@@ -199,20 +199,6 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   }
 
   /// <summary>
-  /// Updates this node and its children.
-  /// </summary>
-  public void Update(DeltaTime deltaTime)
-  {
-    AwakeIfNecessary();
-    EnterTreeIfNecessary();
-    ReadyIfNecessary();
-
-    OnPreUpdate(deltaTime);
-    OnUpdate(deltaTime);
-    OnPostUpdate(deltaTime);
-  }
-
-  /// <summary>
   /// Destroys this node and its children.
   /// </summary>
   public void Destroy()
@@ -245,34 +231,32 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
     Log.Trace($"Node {Id} has been destroyed");
   }
 
-  protected virtual void OnPreUpdate(DeltaTime deltaTime)
-  {
-    foreach (var child in Children)
-    {
-      child.OnPreUpdate(deltaTime);
-    }
-  }
-
   protected virtual void OnUpdate(DeltaTime deltaTime)
   {
+    OnAwakeIfNecessary();
+    OnEnterTreeIfNecessary();
+
+    DispatchMessagesToChildren();
+
+    OnReadyIfNecessary();
+
     foreach (var child in Children)
     {
       child.OnUpdate(deltaTime);
     }
-  }
 
-  protected virtual void OnPostUpdate(DeltaTime deltaTime)
-  {
-    foreach (var child in Children)
-    {
-      child.OnPostUpdate(deltaTime);
-    }
-
-    PropagateMessagesToChildren();
-    PropagateMessagesToParents();
+    DispatchMessagesToParents();
   }
 
   internal virtual void OnMessageReceived(Message message)
+  {
+  }
+
+  internal virtual void OnMessageReceivedFromParent(Message message)
+  {
+  }
+
+  internal virtual void OnMessageReceivedFromChild(Message message)
   {
   }
 
@@ -317,8 +301,10 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
       Parent = owner;
     }
 
-    if (owner.IsAwake) AwakeIfNecessary();
-    if (owner.IsInTree) EnterTreeIfNecessary();
+    if (owner.IsAwake)
+    {
+      InitializeInActiveTree();
+    }
   }
 
   /// <summary>
@@ -326,15 +312,35 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// </summary>
   internal void OnNodeRemoved(SceneNode owner)
   {
-    ExitTreeIfNecessary();
+    OnExitTreeIfNecessary();
 
     Parent = null;
   }
 
   /// <summary>
+  /// Initializes the node and its children in an already active scene tree.
+  /// </summary>
+  private void InitializeInActiveTree()
+  {
+    OnAwakeIfNecessary();
+    OnEnterTreeIfNecessary();
+
+    OnInitializeInActiveTree();
+
+    DispatchMessagesToChildren();
+  }
+
+  /// <summary>
+  /// Initializes the node and its children.
+  /// </summary>
+  protected virtual void OnInitializeInActiveTree()
+  {
+  }
+
+  /// <summary>
   /// Awakens this node and its children.
   /// </summary>
-  private void AwakeIfNecessary()
+  private void OnAwakeIfNecessary()
   {
     if (!_states.HasFlagFast(SceneNodeStates.Awake))
     {
@@ -352,7 +358,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// Notifies this node that it has been added to a scene tree.
   /// </summary>
-  private void EnterTreeIfNecessary()
+  private void OnEnterTreeIfNecessary()
   {
     if (!_states.HasFlagFast(SceneNodeStates.InTree))
     {
@@ -363,7 +369,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
 
       foreach (var child in Children)
       {
-        child.EnterTreeIfNecessary();
+        child.OnEnterTreeIfNecessary();
       }
 
       OnEnterTree();
@@ -375,13 +381,13 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// Notifies this node that it has been removed from a scene tree.
   /// </summary>
-  private void ExitTreeIfNecessary()
+  private void OnExitTreeIfNecessary()
   {
     if (_states.HasFlagFast(SceneNodeStates.InTree))
     {
       foreach (var child in Children)
       {
-        child.ExitTreeIfNecessary();
+        child.OnExitTreeIfNecessary();
       }
 
       OnExitTree();
@@ -394,13 +400,13 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// Readies this node and its children.
   /// </summary>
-  private void ReadyIfNecessary()
+  private void OnReadyIfNecessary()
   {
     if (!_states.HasFlagFast(SceneNodeStates.Ready))
     {
       foreach (var child in Children)
       {
-        child.ReadyIfNecessary();
+        child.OnReadyIfNecessary();
       }
 
       OnReady();
@@ -412,13 +418,13 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// Notifies this node that it has been destroyed.
   /// </summary>
-  internal void DestroyIfNecessary()
+  internal void OnDestroyIfNecessary()
   {
     if (!_states.HasFlagFast(SceneNodeStates.Destroyed))
     {
       foreach (var child in Children)
       {
-        child.DestroyIfNecessary();
+        child.OnDestroyIfNecessary();
       }
 
       OnDestroy();
@@ -430,13 +436,14 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// Sends <see cref="Message"/>s up the tree to parents.
   /// </summary>
-  private void PropagateMessagesToParents()
+  private void DispatchMessagesToParents()
   {
     foreach (var child in Children)
     {
       while (child.MessagesForParents.TryDequeue(out var message))
       {
         OnMessageReceived(message);
+        OnMessageReceivedFromChild(message);
 
         if (message.IsRecursive)
         {
@@ -449,13 +456,14 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// <summary>
   /// Sends <see cref="Message"/>s down the tree to children.
   /// </summary>
-  private void PropagateMessagesToChildren()
+  private void DispatchMessagesToChildren()
   {
     while (MessagesForChildren.TryDequeue(out var message))
     {
       foreach (var child in Children)
       {
         child.OnMessageReceived(message);
+        child.OnMessageReceivedFromParent(message);
 
         if (message.IsRecursive)
         {
@@ -526,7 +534,7 @@ public class SceneNode : IDisposable, IPropertyChangingEvents, IPropertyChangedE
   /// Possible states of a <see cref="SceneNode"/>.
   /// </summary>
   [Flags]
-  private enum SceneNodeStates
+  private enum SceneNodeStates : byte
   {
     Dormant = 0,
     Awake = 1 << 0,

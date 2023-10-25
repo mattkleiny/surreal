@@ -31,18 +31,10 @@ public interface IPhysicsWorld2d : IPhysicsWorld
   Vector2 Gravity { get; set; }
 
   // bodies
-  PhysicsHandle CreateBody();
+  PhysicsHandle CreateBody(Vector2 initialPosition);
   Vector2 GetBodyPosition(PhysicsHandle handle);
   void SetBodyPosition(PhysicsHandle handle, Vector2 position);
-  float GetBodyRotation(PhysicsHandle handle);
-  void SetBodyRotation(PhysicsHandle handle, float rotation);
-  Vector2 GetBodyScale(PhysicsHandle handle);
-  void SetBodyScale(PhysicsHandle handle, Vector2 scale);
-  void GetBodyTransform(PhysicsHandle handle, out Vector2 position, out float rotation, out Vector2 scale);
-  void SetBodyTransform(PhysicsHandle handle, Vector2 position, float rotation, Vector2 scale);
   Vector2 GetBodyVelocity(PhysicsHandle handle);
-  void SetBodyVelocity(PhysicsHandle handle, Vector2 velocity);
-  float GetBodyTorque(PhysicsHandle handle);
-  void SetBodyTorque(PhysicsHandle handle, float torque);
+  void AddBodyVelocity(PhysicsHandle handle, Vector2 velocity);
   void DeleteBody(PhysicsHandle handle);
 }

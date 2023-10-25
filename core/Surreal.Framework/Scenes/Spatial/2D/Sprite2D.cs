@@ -10,7 +10,7 @@ namespace Surreal.Scenes.Spatial;
 /// <summary>
 /// A node that renders a sprite.
 /// </summary>
-public class SpriteNode2D : SceneNode2D, ICullableObject, IRenderObject
+public class Sprite2D : Node2D, ICullableObject, IRenderObject
 {
   private Material? _material;
   private TextureRegion _sprite = TextureRegion.Empty;

@@ -4,9 +4,9 @@ using Surreal.Timing;
 namespace Surreal.Scenes.Spatial;
 
 /// <summary>
-/// A <see cref="SceneNode2D"/> that represents a camera.
+/// A <see cref="Node2D"/> that represents a camera.
 /// </summary>
-public class CameraNode2D : SceneNode2D, ICamera
+public class Camera2D : Node2D, ICamera
 {
   private Matrix4x4 _projectionView = Matrix4x4.Identity;
   private Frustum _frustum = Frustum.FromProjectionMatrix(Matrix4x4.Identity);
@@ -86,7 +86,7 @@ public class CameraNode2D : SceneNode2D, ICamera
   {
     base.OnEnterTree();
 
-    if (TryResolveParent(out CameraViewportNode viewport))
+    if (TryResolveParent(out CameraViewport viewport))
     {
       viewport.ActiveCameras.AddFirst(this);
     }
@@ -96,7 +96,7 @@ public class CameraNode2D : SceneNode2D, ICamera
   {
     base.OnExitTree();
 
-    if (TryResolveParent(out CameraViewportNode viewport))
+    if (TryResolveParent(out CameraViewport viewport))
     {
       viewport.ActiveCameras.Remove(this);
     }

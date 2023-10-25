@@ -7,7 +7,7 @@ namespace Surreal.Scenes.Spatial.Audio;
 /// <summary>
 /// A node that plays audio.
 /// </summary>
-public class AudioPlayer2D : SceneNode2D
+public class AudioPlayer2D : Node2D
 {
   private AudioClip? _audioClip;
   private AudioSource? _source;

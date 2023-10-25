@@ -23,7 +23,7 @@ public interface ICamera
 /// <summary>
 /// A node that renders scene elements to the screen via a camera.
 /// </summary>
-public class CameraViewportNode : SceneNode, IRenderViewport
+public class CameraViewport : SceneNode, IRenderViewport
 {
   private static readonly Matrix4x4 Identity = Matrix4x4.Identity;
 

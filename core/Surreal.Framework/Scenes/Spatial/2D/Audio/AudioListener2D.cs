@@ -6,7 +6,7 @@ namespace Surreal.Scenes.Spatial.Audio;
 /// <summary>
 /// A node that listens to audio.
 /// </summary>
-public class AudioListener2D : SceneNode2D
+public class AudioListener2D : Node2D
 {
   private float _volume = 1f;
 

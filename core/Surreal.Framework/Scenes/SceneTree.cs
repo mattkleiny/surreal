@@ -31,31 +31,12 @@ public sealed class SceneTree : SceneNode, IScene
   /// </summary>
   public IPhysicsWorld? PhysicsWorld { get; init; }
 
-  protected override void OnUpdate(DeltaTime deltaTime)
+  /// <inheritdoc/>
+  public void Update(DeltaTime deltaTime)
   {
-    base.OnUpdate(deltaTime);
+    OnUpdate(deltaTime);
 
     PhysicsWorld?.Tick(deltaTime);
-  }
-
-  /// <inheritdoc/>
-  protected override void OnPostUpdate(DeltaTime deltaTime)
-  {
-    base.OnPostUpdate(deltaTime);
-
-    while (MessagesForParents.TryDequeue(out var message))
-    {
-      switch (message)
-      {
-        case { Type: MessageType.Destroy, Sender: var sender }:
-        {
-          sender.Parent?.Children.Remove(sender);
-          sender.DestroyIfNecessary();
-
-          break;
-        }
-      }
-    }
   }
 
   /// <inheritdoc/>

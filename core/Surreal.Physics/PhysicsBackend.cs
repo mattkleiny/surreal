@@ -31,86 +31,60 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
     public void Tick(DeltaTime deltaTime)
     {
+      var deltaTimeSqr = deltaTime.Seconds * deltaTime.Seconds;
+
+      // apply gravity
       foreach (ref var body in _bodies)
       {
-        body.Position += body.Velocity * deltaTime;
-        body.Rotation += body.Torque * deltaTime;
+        body.Acceleration += Gravity;
+      }
 
-        body.Velocity += Gravity * deltaTime;
+      // verlet integration
+      foreach (ref var body in _bodies)
+      {
+        var velocity = body.CurrentPosition - body.PreviousPosition;
+
+        body.PreviousPosition = body.CurrentPosition;
+        body.CurrentPosition += velocity + body.Acceleration * deltaTimeSqr;
+
+        body.Acceleration = Vector2.Zero;
       }
     }
 
-    public PhysicsHandle CreateBody()
+    public PhysicsHandle CreateBody(Vector2 initialPosition)
     {
-      return PhysicsHandle.FromArenaIndex(_bodies.Add(new PhysicsBody()));
+      var index = _bodies.Add(new PhysicsBody
+      {
+        CurrentPosition = initialPosition,
+        PreviousPosition = initialPosition
+      });
+
+      return PhysicsHandle.FromArenaIndex(index);
     }
 
     public Vector2 GetBodyPosition(PhysicsHandle handle)
     {
-      return _bodies[handle].Position;
+      return _bodies[handle].CurrentPosition;
     }
 
     public void SetBodyPosition(PhysicsHandle handle, Vector2 position)
     {
-      _bodies[handle].Position = position;
-    }
-
-    public float GetBodyRotation(PhysicsHandle handle)
-    {
-      return _bodies[handle].Rotation;
-    }
-
-    public void SetBodyRotation(PhysicsHandle handle, float rotation)
-    {
-      _bodies[handle].Rotation = rotation;
-    }
-
-    public Vector2 GetBodyScale(PhysicsHandle handle)
-    {
-      return _bodies[handle].Scale;
-    }
-
-    public void SetBodyScale(PhysicsHandle handle, Vector2 scale)
-    {
-      _bodies[handle].Scale = scale;
-    }
-
-    public void GetBodyTransform(PhysicsHandle handle, out Vector2 position, out float rotation, out Vector2 scale)
-    {
-      var body = _bodies[handle];
-
-      position = body.Position;
-      rotation = body.Rotation;
-      scale = body.Scale;
-    }
-
-    public void SetBodyTransform(PhysicsHandle handle, Vector2 position, float rotation, Vector2 scale)
-    {
       ref var body = ref _bodies[handle];
 
-      body.Position = position;
-      body.Rotation = rotation;
-      body.Scale = scale;
+      body.PreviousPosition = position;
+      body.CurrentPosition = position;
     }
 
     public Vector2 GetBodyVelocity(PhysicsHandle handle)
     {
-      return _bodies[handle].Velocity;
+      var body = _bodies[handle];
+
+      return body.CurrentPosition - body.PreviousPosition;
     }
 
-    public void SetBodyVelocity(PhysicsHandle handle, Vector2 velocity)
+    public void AddBodyVelocity(PhysicsHandle handle, Vector2 velocity)
     {
-      _bodies[handle].Velocity = new Vector2(velocity.X, velocity.Y);
-    }
-
-    public float GetBodyTorque(PhysicsHandle handle)
-    {
-      return _bodies[handle].Torque;
-    }
-
-    public void SetBodyTorque(PhysicsHandle handle, float torque)
-    {
-      _bodies[handle].Torque = torque;
+      _bodies[handle].Acceleration += velocity;
     }
 
     public void DeleteBody(PhysicsHandle handle)
@@ -123,11 +97,9 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     /// </summary>
     private struct PhysicsBody
     {
-      public Vector2 Position;
-      public float Rotation;
-      public Vector2 Scale;
-      public Vector2 Velocity;
-      public float Torque;
+      public Vector2 PreviousPosition;
+      public Vector2 CurrentPosition;
+      public Vector2 Acceleration;
     }
   }
 }
