@@ -14,15 +14,6 @@ public sealed class Box<T>
   /// Returns a <see cref="Box{T}"/> reference from the input <see cref="object"/> instance.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Box<T> UnsafeGetFrom(object obj)
-  {
-    return Unsafe.As<Box<T>>(obj)!;
-  }
-
-  /// <summary>
-  /// Returns a <see cref="Box{T}"/> reference from the input <see cref="object"/> instance.
-  /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Box<T> GetFrom(object obj)
   {
     if (obj.GetType() != typeof(T))
@@ -30,29 +21,35 @@ public sealed class Box<T>
       throw new InvalidCastException($"Can't cast the input object to the type Box<{typeof(T)}>");
     }
 
-    return Unsafe.As<Box<T>>(obj)!;
+    return Unsafe.As<Box<T>>(obj);
   }
-
 
   /// <summary>
   /// Tries to get a <see cref="Box{T}"/> reference from an input <see cref="object"/> representing a boxed <typeparamref name="T"/> value.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static bool TryGetFrom(object obj, [NotNullWhen(true)] out Box<T>? box)
+  public static bool TryGetFrom(object obj, [NotNullWhen(true)] out Box<T>? result)
   {
     if (obj.GetType() == typeof(T))
     {
-      box = Unsafe.As<Box<T>>(obj)!;
-
+      result = Unsafe.As<Box<T>>(obj);
       return true;
     }
 
-    box = null;
-
+    result = null;
     return false;
   }
 
-   public override string ToString()
+  /// <summary>
+  /// Returns a <see cref="Box{T}"/> reference from the input <see cref="object"/> instance.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Box<T> UnsafeGetFrom(object obj)
+  {
+    return Unsafe.As<Box<T>>(obj);
+  }
+
+  public override string ToString()
   {
     return this.GetReference().ToString()!;
   }
@@ -71,7 +68,7 @@ public sealed class Box<T>
   public static implicit operator T(Box<T> box) => (T)(object)box;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static implicit operator Box<T>(T value) => Unsafe.As<Box<T>>(value)!;
+  public static implicit operator Box<T>(T value) => Unsafe.As<Box<T>>(value);
 }
 
 /// <summary>
