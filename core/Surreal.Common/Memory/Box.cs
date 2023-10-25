@@ -52,12 +52,7 @@ public sealed class Box<T>
     return false;
   }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static implicit operator T(Box<T> box) => (T)(object)box;
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static implicit operator Box<T>(T value) => Unsafe.As<Box<T>>(value)!;
-  public override string ToString()
+   public override string ToString()
   {
     return this.GetReference().ToString()!;
   }
@@ -71,6 +66,12 @@ public sealed class Box<T>
   {
     return this.GetReference().GetHashCode();
   }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator T(Box<T> box) => (T)(object)box;
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator Box<T>(T value) => Unsafe.As<Box<T>>(value)!;
 }
 
 /// <summary>
