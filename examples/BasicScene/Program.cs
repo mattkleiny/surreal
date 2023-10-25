@@ -35,6 +35,14 @@ public sealed class RigidBodySpawner : Node2D
   {
     base.OnUpdate(deltaTime);
 
+    if (Services.TryGetService(out IKeyboardDevice keyboard))
+    {
+      if (keyboard.IsKeyPressed(Key.Space))
+      {
+        Children.Clear();
+      }
+    }
+
     if (_spawnTimer.Tick(deltaTime))
     {
       Add(new RigidBody2D

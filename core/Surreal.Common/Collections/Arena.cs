@@ -36,6 +36,8 @@ public readonly record struct ArenaIndex(ushort Id, uint Generation)
 public sealed class Arena<T> : IEnumerable<T>
   where T : notnull
 {
+  private const int CompactFactor = 1024;
+
   private Entry[] _entries = Array.Empty<Entry>();
   private int _count;
   private uint _generation = 1;
@@ -132,6 +134,28 @@ public sealed class Arena<T> : IEnumerable<T>
   }
 
   /// <summary>
+  /// Compacts the arena by removing all empty entries that are no longer valid.
+  /// </summary>
+  public void Compact()
+  {
+    var newEntries = new Entry[_count];
+    var newCount = 0;
+
+    for (var i = 0; i < _entries.Length; i++)
+    {
+      ref var entry = ref _entries[i];
+
+      if (entry.IsOccupied)
+      {
+        newEntries[newCount++] = entry;
+      }
+    }
+
+    _entries = newEntries;
+    _count = newCount;
+  }
+
+  /// <summary>
   /// Allocates a new <see cref="ArenaIndex" /> either by finding the first free spot in the list or allocating new space.
   /// </summary>
   private ArenaIndex AllocateIndex()
@@ -142,6 +166,11 @@ public sealed class Arena<T> : IEnumerable<T>
       Interlocked.Increment(ref _generation);
 
       _hasDirtyGeneration = false;
+
+      if (_entries.Length > CompactFactor)
+      {
+        Compact();
+      }
     }
 
     // try and re-use an existing index
