@@ -1,4 +1,5 @@
 ﻿using Surreal.IO;
+using Surreal.Memory;
 
 namespace Surreal.Graphics.Sprites;
 
@@ -7,9 +8,6 @@ namespace Surreal.Graphics.Sprites;
 /// <para/>
 /// Aseprite stores it's data in a proprietary binary format, which
 /// can be found here: https://github.com/aseprite/aseprite/blob/main/docs/ase-file-specs.md.
-/// <para/>
-/// Typically an Aseprite file is loaded as a <see cref="SpriteSheet"/>, though this
-/// type is made public for more advanced scenarios.
 /// </summary>
 public sealed class AsepriteFile
 {
@@ -20,20 +18,32 @@ public sealed class AsepriteFile
   {
     using var reader = new FastBinaryReader(stream);
 
-    var result = new AsepriteFile();
-    var header = new AsepriteHeader(result);
+    var file = new AsepriteFile
+    {
+      Header = AsepriteHeader.Load(reader)
+    };
 
     while (reader.Position < reader.Length)
     {
-      var chunk = AsepriteChunk.Load(reader, header);
+      var frame = AsepriteFrame.Load(reader, file.Header);
 
-      header.Chunks.Add(chunk);
+      file.Frames.Add(frame);
     }
 
-    return result;
+    return file;
   }
 
-  private enum ColorDepth
+  /// <summary>
+  /// The header of the file.
+  /// </summary>
+  public required AsepriteHeader Header { get; init; }
+
+  /// <summary>
+  /// The frames of the file.
+  /// </summary>
+  public List<AsepriteFrame> Frames { get; init; } = new();
+
+  public enum ColorDepth
   {
     RGBA = 32,
     Grayscale = 16,
@@ -100,36 +110,146 @@ public sealed class AsepriteFile
   /// <summary>
   /// The top-level header for the file.
   /// </summary>
-  private sealed class AsepriteHeader(AsepriteFile file)
+  public sealed class AsepriteHeader
   {
-    /// <summary>
-    /// All of the chunks in the file.
-    /// </summary>
-    public List<AsepriteChunk> Chunks { get; } = new();
+    public static AsepriteHeader Load(FastBinaryReader reader)
+    {
+      var fileSize = reader.ReadUInt32();
+      var magicNumber = reader.ReadUInt16();
+      var frameCount = reader.ReadUInt16();
+      var width = reader.ReadUInt16();
+      var height = reader.ReadUInt16();
+      var colorDepth = (ColorDepth)reader.ReadUInt16();
+      var flags = reader.ReadUInt32();
+      var speed = reader.ReadUInt16();
+
+      reader.ReadBytes(8); // skip reserved bytes
+
+      var transparentIndex = reader.ReadByte();
+
+      reader.ReadBytes(3); // skip reserved bytes
+
+      var colors = reader.ReadUInt16();
+      var pixelWidth = reader.ReadByte();
+      var pixelHeight = reader.ReadByte();
+
+      reader.ReadBytes(92); // skip reserved bytes
+
+      return new AsepriteHeader()
+      {
+        FileSize = Size.FromBytes((int)fileSize),
+        MagicNumber = magicNumber,
+        FrameCount = frameCount,
+        Width = width,
+        Height = height,
+        ColorDepth = colorDepth,
+        Flags = flags,
+        Speed = speed,
+        TransparentIndex = transparentIndex,
+        Colors = colors,
+        PixelWidth = pixelWidth,
+        PixelHeight = pixelHeight,
+      };
+    }
+
+    public Size FileSize { get; init; }
+    public uint MagicNumber { get; init; }
+    public uint FrameCount { get; init; }
+    public uint Width { get; init; }
+    public uint Height { get; init; }
+    public ColorDepth ColorDepth { get; init; }
+    public uint Flags { get; init; }
+    public uint Speed { get; init; }
+    public byte TransparentIndex { get; init; }
+    public uint Colors { get; init; }
+    public byte PixelWidth { get; init; }
+    public byte PixelHeight { get; init; }
   }
 
   /// <summary>
   /// A single frame of the file.
   /// </summary>
-  private sealed class AsepriteFrame(AsepriteHeader header);
+  public sealed class AsepriteFrame(AsepriteHeader header)
+  {
+    public static AsepriteFrame Load(FastBinaryReader reader, AsepriteHeader header)
+    {
+      var length = reader.ReadUInt32();
+      var magicNumber = reader.ReadUInt16();
+      var chunkCount = reader.ReadUInt16();
+      var durationMs = reader.ReadUInt16();
+
+      reader.ReadBytes(2); // skip reserved bytes
+
+      var newChunkCount = reader.ReadUInt32();
+      if (newChunkCount != 0)
+        chunkCount = newChunkCount;
+
+      var frame = new AsepriteFrame(header)
+      {
+        Size = Size.FromBytes((int)length),
+        MagicNumber = magicNumber,
+        ChunkCount = chunkCount,
+        Duration = TimeSpan.FromMilliseconds(durationMs),
+      };
+
+      for (var i = 0; i < frame.ChunkCount; i++)
+      {
+        var chunk = AsepriteChunk.Load(reader, frame);
+        if (chunk != null)
+        {
+          frame.Chunks.Add(chunk);
+        }
+      }
+
+      return frame;
+    }
+
+    public Size Size { get; set; }
+    public uint MagicNumber { get; set; }
+    public uint ChunkCount { get; set; }
+    public TimeSpan Duration { get; set; }
+
+    /// <summary>
+    /// The chunks of the frame.
+    /// </summary>
+    public List<AsepriteChunk> Chunks { get; } = new();
+  }
 
   /// <summary>
   /// A chunk of binary data parsed from the file.
   /// </summary>
-  private abstract class AsepriteChunk(AsepriteHeader header)
+  public abstract class AsepriteChunk(AsepriteFrame frame)
   {
     /// <summary>
     /// Loads the appropriate chunk from the given <paramref name="reader"/>.
     /// </summary>
-    public static AsepriteChunk Load(FastBinaryReader reader, AsepriteHeader header)
+    public static AsepriteChunk? Load(FastBinaryReader reader, AsepriteFrame frame)
     {
-      throw new NotImplementedException();
+      const int headerSize = 6; // size of the header of a chunk
+
+      var length = reader.ReadUInt32();
+      var type = (ChunkType)reader.ReadUInt16();
+
+      switch (type)
+      {
+        // case ChunkType.Layer:
+        // case ChunkType.Cel:
+        // case ChunkType.CelExtra:
+        // case ChunkType.Tags:
+        // case ChunkType.Palette:
+        //   throw new NotImplementedException();
+
+        // skip the chunk
+        default:
+          reader.Stream.Seek(length - headerSize, SeekOrigin.Current);
+          return null;
+      }
     }
   }
 
-  private sealed class AsepriteLayerChunk(AsepriteHeader header) : AsepriteChunk(header);
-  private sealed class AsepriteCelChunk(AsepriteHeader header) : AsepriteChunk(header);
-  private sealed class AsepriteCelExtraChunk(AsepriteHeader header) : AsepriteChunk(header);
-  private sealed class AsepriteTagsChunk(AsepriteHeader header) : AsepriteChunk(header);
-  private sealed class AsepritePaletteChunk(AsepriteHeader header) : AsepriteChunk(header);
+  private sealed class AsepriteLayerChunk(AsepriteFrame header) : AsepriteChunk(header);
+  private sealed class AsepriteCelChunk(AsepriteFrame header) : AsepriteChunk(header);
+  private sealed class AsepriteCelExtraChunk(AsepriteFrame header) : AsepriteChunk(header);
+  private sealed class AsepriteTagsChunk(AsepriteFrame header) : AsepriteChunk(header);
+  private sealed class AsepritePaletteChunk(AsepriteFrame header) : AsepriteChunk(header);
 }

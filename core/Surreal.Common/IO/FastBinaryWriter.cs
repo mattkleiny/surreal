@@ -16,6 +16,11 @@ public sealed class FastBinaryWriter(Stream stream, Encoding encoding) : IDispos
   }
 
   /// <summary>
+  /// The stream being written to.
+  /// </summary>
+  public Stream Stream => _writer.BaseStream;
+
+  /// <summary>
   /// The position of the reader in the stream.
   /// </summary>
   public long Position => _writer.BaseStream.Position;
