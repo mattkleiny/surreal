@@ -1,0 +1,8 @@
+﻿<!-- common configuration for extension projects -->
+<Project>
+  <Import Project="../Directory.Build.props" />
+
+  <PropertyGroup>
+    <RootNamespace>Surreal</RootNamespace>
+  </PropertyGroup>
+</Project>

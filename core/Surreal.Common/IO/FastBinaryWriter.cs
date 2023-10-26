@@ -15,6 +15,16 @@ public sealed class FastBinaryWriter(Stream stream, Encoding encoding) : IDispos
   {
   }
 
+  /// <summary>
+  /// The position of the reader in the stream.
+  /// </summary>
+  public long Position => _writer.BaseStream.Position;
+
+  /// <summary>
+  /// The length of the base stream.
+  /// </summary>
+  public long Length => _writer.BaseStream.Length;
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void WriteByte(byte value) => _writer.Write(value);
 

@@ -44,9 +44,12 @@ public sealed record GameConfiguration
   public required IPlatform Platform { get; init; }
 
   /// <summary>
-  /// The root <see cref="IServiceModule"/> to use for the game.
+  /// The <see cref="IServiceModule"/>s to use for the game.
   /// </summary>
-  public IServiceModule Module { get; init; } = new FrameworkModule();
+  public List<IServiceModule> Modules { get; init; } = new()
+  {
+    new FrameworkModule()
+  };
 }
 
 /// <summary>
@@ -159,7 +162,10 @@ public class Game : IDisposable
     };
 
     // configure the game services
-    services.AddModule(configuration.Module);
+    foreach (var module in configuration.Modules)
+    {
+      services.AddModule(module);
+    }
 
     // prepare asset manager
     foreach (var loader in services.GetServices<IAssetLoader>())

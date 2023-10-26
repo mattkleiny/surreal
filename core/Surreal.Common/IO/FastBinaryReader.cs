@@ -15,6 +15,16 @@ public sealed class FastBinaryReader(Stream stream, Encoding encoding) : IDispos
   {
   }
 
+  /// <summary>
+  /// The position of the reader in the stream.
+  /// </summary>
+  public long Position => _reader.BaseStream.Position;
+
+  /// <summary>
+  /// The length of the base stream.
+  /// </summary>
+  public long Length => _reader.BaseStream.Length;
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public byte ReadByte() => _reader.ReadByte();
 

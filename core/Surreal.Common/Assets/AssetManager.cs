@@ -23,8 +23,9 @@ public sealed class AssetManager : IAssetProvider, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<AssetManager>();
 
-  private readonly Dictionary<AssetId, object> _assetsById = new();
+  private readonly Dictionary<AssetId, Entry> _entriesById = new();
   private readonly List<IAssetLoader> _loaders = new();
+  private readonly List<IPathWatcher> _watchers = new();
 
   /// <summary>
   /// Determines if hot reloading assets are enabled.
@@ -48,28 +49,27 @@ public sealed class AssetManager : IAssetProvider, IDisposable
       throw new UnsupportedAssetException($"An unsupported asset type was requested: {context.Type.Name}");
     }
 
-    if (!_assetsById.TryGetValue(id, out var asset))
+    if (!_entriesById.TryGetValue(id, out var entry))
     {
       Log.Trace($"Loading asset {id.Path} as {id.Type.Name} using {loader.GetType().Name}");
 
-      _assetsById[id] = asset = await loader.LoadAsync(context, cancellationToken);
+      _entriesById[id] = entry = new Entry(await loader.LoadAsync(context, cancellationToken));
     }
 
-    return (T)asset;
+    return (T)entry.Asset;
   }
 
   /// <summary>
   /// Watches for changes in the asset at the given path.
   /// </summary>
-  public void WatchForChanges<T>(VirtualPath path, IHotReloadable<T> reloadable)
+  public void WatchForChanges<T>(AssetId id, IHotReloadable<T> reloadable)
   {
-    // TODO: add an internal entry system for asset and put watchers there
     throw new NotImplementedException();
   }
 
   public void Dispose()
   {
-    foreach (var asset in _assetsById.Values)
+    foreach (var asset in _entriesById.Values)
     {
       if (asset is IDisposable disposable)
       {
@@ -77,7 +77,7 @@ public sealed class AssetManager : IAssetProvider, IDisposable
       }
     }
 
-    _assetsById.Clear();
+    _entriesById.Clear();
     _loaders.Clear();
   }
 
@@ -105,6 +105,38 @@ public sealed class AssetManager : IAssetProvider, IDisposable
 
     result = default;
     return false;
+  }
+
+  /// <summary>
+  /// An entry in the <see cref="AssetManager"/>.
+  /// </summary>
+  private sealed class Entry(object asset) : IDisposable
+  {
+    /// <summary>
+    /// Invoked when the underlying asset has reloaded.
+    /// </summary>
+    public event Action<object>? Reloaded;
+
+    /// <summary>
+    /// The actual asset data.
+    /// </summary>
+    public object Asset { get; set; } = asset;
+
+    /// <summary>
+    /// Notifies that the asset has been reloaded.
+    /// </summary>
+    public void NotifyReloaded()
+    {
+      Reloaded?.Invoke(Asset);
+    }
+
+    public void Dispose()
+    {
+      if (Asset is IDisposable disposable)
+      {
+        disposable.Dispose();
+      }
+    }
   }
 
   /// <summary>

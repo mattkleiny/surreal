@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>An extension that adds support for Aseprite asset loading</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
+  </ItemGroup>
+</Project>

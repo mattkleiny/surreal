@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>An example of sprite sheets with Surreal.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\extensions\Surreal.Extensions.Aseprite\Surreal.Extensions.Aseprite.csproj" />
+  </ItemGroup>
+</Project>

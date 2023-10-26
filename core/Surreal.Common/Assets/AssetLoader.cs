@@ -63,11 +63,11 @@ public readonly record struct AssetContext(AssetId AssetId, AssetManager Manager
   /// <summary>
   /// Watches for changes on the given path and notifies the given <see cref="IHotReloadable{T}"/> when a change occurs.
   /// </summary>
-  public void WatchForChanges<T>(VirtualPath path, IHotReloadable<T> reloadable)
+  public void ReloadWhenChanged<T>(IHotReloadable<T> reloadable)
   {
     if (Manager.IsHotReloadEnabled)
     {
-      Manager.WatchForChanges(path, reloadable);
+      Manager.WatchForChanges(AssetId, reloadable);
     }
   }
 }
