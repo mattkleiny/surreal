@@ -5,15 +5,15 @@ using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Memory;
 
-namespace Surreal.Graphics;
+namespace Surreal.Graphics.Sprites;
 
 /// <summary>
-/// A <see cref="RenderContext"/> for <see cref="Graphics.SpriteBatch"/>es.
+/// A <see cref="RenderContext"/> for <see cref="Sprites.SpriteBatch"/>es.
 /// </summary>
 public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
 {
   /// <summary>
-  /// The <see cref="Graphics.SpriteBatch"/> used by this context.
+  /// The <see cref="Sprites.SpriteBatch"/> used by this context.
   /// </summary>
   public SpriteBatch SpriteBatch { get; } = new(backend);
 

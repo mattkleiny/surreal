@@ -1,10 +1,14 @@
 ﻿using System.Runtime;
 using Surreal.Assets;
+using Surreal.Audio;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
+using Surreal.Graphics;
 using Surreal.Graphics.Rendering;
+using Surreal.Input;
 using Surreal.Physics;
 using Surreal.Scenes;
+using Surreal.Scripting;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -48,7 +52,11 @@ public sealed record GameConfiguration
   /// </summary>
   public List<IServiceModule> Modules { get; init; } = new()
   {
-    new FrameworkModule()
+    new AudioModule(),
+    new GraphicsModule(),
+    new InputModule(),
+    new PhysicsModule(),
+    new ScriptingModule()
   };
 }
 

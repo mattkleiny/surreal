@@ -1,4 +1,5 @@
 ﻿using Surreal.Graphics.Materials;
+using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics;

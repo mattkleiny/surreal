@@ -1,6 +1,8 @@
 ﻿using Surreal.Colors;
 using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 
 namespace Surreal.Graphics.Rendering;

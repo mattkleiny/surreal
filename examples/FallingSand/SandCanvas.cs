@@ -1,4 +1,6 @@
-﻿namespace FallingSand;
+﻿using Surreal.Graphics.Utilities;
+
+namespace FallingSand;
 
 /// <summary>
 /// A simple canvas of 'sand' pixels that can be simulated.

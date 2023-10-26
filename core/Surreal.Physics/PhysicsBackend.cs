@@ -48,7 +48,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       for (int i = 0; i < Iterations; i++)
       {
         ApplyConstraints();
-        // ApplyCollisions();
+        ApplyCollisions();
         ApplyVerlet(stepTime);
       }
     }
@@ -140,7 +140,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
         var velocity = body.CurrentPosition - body.PreviousPosition;
 
         gizmos.DrawWireCircle(body.CurrentPosition, BodyRadius, Color.White);
-        gizmos.DrawLine(body.CurrentPosition, body.CurrentPosition + velocity * 10f, Color.Green);
+        // gizmos.DrawLine(body.CurrentPosition, body.CurrentPosition + velocity * 10f, Color.Green);
       }
     }
 

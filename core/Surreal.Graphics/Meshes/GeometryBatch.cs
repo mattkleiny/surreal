@@ -1,11 +1,10 @@
 using Surreal.Colors;
 using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
-using Surreal.Graphics.Meshes;
 using Surreal.Maths;
 using Surreal.Memory;
 
-namespace Surreal.Graphics;
+namespace Surreal.Graphics.Meshes;
 
 /// <summary>
 /// An efficient batch of geometric primitives for rendering to the GPU.
