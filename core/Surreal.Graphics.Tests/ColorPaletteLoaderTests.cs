@@ -1,7 +1,7 @@
 ﻿using Surreal.Assets;
 using Surreal.Colors;
 
-namespace Surreal.Graphics.Tests;
+namespace Surreal.Graphics;
 
 public class ColorPaletteLoaderTests
 {

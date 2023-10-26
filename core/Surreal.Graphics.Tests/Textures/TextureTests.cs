@@ -1,6 +1,6 @@
 ﻿using Surreal.Graphics.Meshes;
 
-namespace Surreal.Graphics.Tests.Textures;
+namespace Surreal.Graphics.Textures;
 
 public class TextureTests
 {

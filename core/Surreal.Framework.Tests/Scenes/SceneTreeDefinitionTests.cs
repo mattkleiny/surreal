@@ -1,7 +1,6 @@
 ﻿using Surreal.IO;
-using Surreal.Scenes;
 
-namespace Surreal.Framework.Tests.Scenes;
+namespace Surreal.Scenes;
 
 public class SceneTreeDefinitionTests
 {

@@ -1,7 +1,6 @@
-﻿using Surreal.Scenes;
-using Surreal.Timing;
+﻿using Surreal.Timing;
 
-namespace Surreal.Framework.Tests.Scenes;
+namespace Surreal.Scenes;
 
 public class SceneNodeTests
 {

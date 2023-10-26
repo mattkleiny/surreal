@@ -1,7 +1,6 @@
 ﻿using Surreal.Colors;
-using Surreal.Graphics.Materials;
 
-namespace Surreal.Graphics.Tests.Materials;
+namespace Surreal.Graphics.Materials;
 
 public class MaterialTests
 {

@@ -1,7 +1,6 @@
-﻿using Surreal.Graphics.Materials;
-using Surreal.IO;
+﻿using Surreal.IO;
 
-namespace Surreal.Graphics.Tests.Materials;
+namespace Surreal.Graphics.Materials;
 
 public class ShaderProgramTests
 {

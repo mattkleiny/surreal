@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Surreal.Physics</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Physics\Surreal.Physics.csproj" />
   </ItemGroup>

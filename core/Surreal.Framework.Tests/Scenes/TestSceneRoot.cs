@@ -1,9 +1,8 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Rendering;
 using Surreal.Physics;
-using Surreal.Scenes;
 
-namespace Surreal.Framework.Tests.Scenes;
+namespace Surreal.Scenes;
 
 internal sealed class TestSceneRoot : ISceneRoot
 {
