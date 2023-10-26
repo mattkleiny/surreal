@@ -1,6 +1,4 @@
-﻿using Surreal.Timing;
-
-namespace Surreal.Common.Tests.Timing;
+﻿namespace Surreal.Timing;
 
 public class IntervalTimerTests
 {

@@ -99,6 +99,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Aseprite
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriteSheets", "examples\SpriteSheets\SpriteSheets.csproj", "{BD841CF6-D8B1-4892-8108-969F841D86A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Aseprite.Tests", "extensions\Surreal.Extensions.Aseprite.Tests\Surreal.Extensions.Aseprite.Tests.csproj", "{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,10 @@ Global
 		{BD841CF6-D8B1-4892-8108-969F841D86A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD841CF6-D8B1-4892-8108-969F841D86A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD841CF6-D8B1-4892-8108-969F841D86A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -265,5 +271,6 @@ Global
 		{FD08144B-1C44-40A7-A78F-9F84F0422183} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{03B54069-793C-46D9-A9BD-B45451A0E8C8} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 		{BD841CF6-D8B1-4892-8108-969F841D86A1} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 	EndGlobalSection
 EndGlobal

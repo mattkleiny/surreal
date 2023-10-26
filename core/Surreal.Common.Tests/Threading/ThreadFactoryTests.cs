@@ -1,6 +1,4 @@
-﻿using Surreal.Threading;
-
-namespace Surreal.Common.Tests.Threading;
+﻿namespace Surreal.Threading;
 
 public class ThreadFactoryTests
 {

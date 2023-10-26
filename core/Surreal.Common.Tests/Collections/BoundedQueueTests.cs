@@ -1,6 +1,4 @@
-﻿using Surreal.Collections;
-
-namespace Surreal.Common.Tests.Collections;
+﻿namespace Surreal.Collections;
 
 public class BoundedQueueTests
 {

@@ -1,6 +1,4 @@
-﻿using Surreal.Memory;
-
-namespace Surreal.Common.Tests.Memory;
+﻿namespace Surreal.Memory;
 
 public class SpanGridTests
 {

@@ -1,4 +1,4 @@
-﻿namespace Surreal.Common.Tests;
+﻿namespace Surreal;
 
 public class OptionalTests
 {
