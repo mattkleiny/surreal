@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>The Last Voyage of the Avventura.</Description>
-    <ApplicationIcon>avventura.ico</ApplicationIcon>
-  </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="avventura.png"/>
-  </ItemGroup>
-</Project>

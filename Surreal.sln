@@ -77,13 +77,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicScene", "examples\Basi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloCube", "examples\HelloCube\HelloCube.csproj", "{42BC3B20-A61B-4CEF-BC8A-19717B55EFC8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{B867ED37-CC01-4531-BAE0-D49E314F39AF}"
-	ProjectSection(SolutionItems) = preProject
-		projects\Directory.Build.props = projects\Directory.Build.props
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avventura", "projects\Avventura\Avventura.csproj", "{FF6461A4-EC20-469D-9233-FD6C730615F6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Physics", "core\Surreal.Physics\Surreal.Physics.csproj", "{A15FE464-0805-4C0E-B71F-EAAFB208E687}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Physics.Tests", "core\Surreal.Physics.Tests\Surreal.Physics.Tests.csproj", "{7E7E14CE-5D2D-4B42-9D57-118AE8AC3797}"
@@ -91,9 +84,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloScript", "examples\HelloScript\HelloScript.csproj", "{FD08144B-1C44-40A7-A78F-9F84F0422183}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}"
-	ProjectSection(SolutionItems) = preProject
-		extensions\Directory.Build.props = extensions\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Aseprite", "extensions\Surreal.Extensions.Aseprite\Surreal.Extensions.Aseprite.csproj", "{03B54069-793C-46D9-A9BD-B45451A0E8C8}"
 EndProject
@@ -203,10 +193,6 @@ Global
 		{42BC3B20-A61B-4CEF-BC8A-19717B55EFC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42BC3B20-A61B-4CEF-BC8A-19717B55EFC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42BC3B20-A61B-4CEF-BC8A-19717B55EFC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF6461A4-EC20-469D-9233-FD6C730615F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF6461A4-EC20-469D-9233-FD6C730615F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF6461A4-EC20-469D-9233-FD6C730615F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF6461A4-EC20-469D-9233-FD6C730615F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A15FE464-0805-4C0E-B71F-EAAFB208E687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A15FE464-0805-4C0E-B71F-EAAFB208E687}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A15FE464-0805-4C0E-B71F-EAAFB208E687}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -265,7 +251,6 @@ Global
 		{574FE520-97F5-4951-B258-3A0EACF84151} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{06A891BE-893C-4D34-BB15-933BC190F109} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{42BC3B20-A61B-4CEF-BC8A-19717B55EFC8} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
-		{FF6461A4-EC20-469D-9233-FD6C730615F6} = {B867ED37-CC01-4531-BAE0-D49E314F39AF}
 		{A15FE464-0805-4C0E-B71F-EAAFB208E687} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{7E7E14CE-5D2D-4B42-9D57-118AE8AC3797} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{FD08144B-1C44-40A7-A78F-9F84F0422183} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}

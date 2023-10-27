@@ -174,9 +174,7 @@ public sealed class AsepriteFile
 
       switch (type)
       {
-        case ChunkType.Layer:
-          return AsepriteLayerChunk.Load(reader, frame);
-
+        // case ChunkType.Layer:
         // case ChunkType.Cel:
         // case ChunkType.CelExtra:
         // case ChunkType.Tags:
