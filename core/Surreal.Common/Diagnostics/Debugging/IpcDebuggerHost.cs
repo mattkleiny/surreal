@@ -1,5 +1,4 @@
-﻿using System.Runtime.Versioning;
-using Surreal.Reactive;
+﻿using Surreal.Reactive;
 using TinyIpc.Messaging;
 
 namespace Surreal.Diagnostics.Debugging;

@@ -36,7 +36,8 @@ public enum VariantType : byte
   Color32,
   String,
   Object,
-  Array
+  Array,
+  Callable
 }
 
 /// <summary>
@@ -114,9 +115,9 @@ public struct Variant
     VariantType.String => _object,
     VariantType.Object => _object,
     VariantType.Array => _object,
+    VariantType.Callable => _object,
     _ => throw new ArgumentOutOfRangeException()
   };
-
 
   /// <summary>
   /// Creates a new <see cref="Variant"/> from a <see cref="object"/>.
@@ -147,6 +148,7 @@ public struct Variant
     Color32 value => value,
     string value => value,
     Array value => value,
+    Callable value => value,
     _ => new Variant(input)
   };
 
@@ -318,6 +320,13 @@ public struct Variant
     _object = value;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private Variant(Callable value)
+  {
+    Type = VariantType.Callable;
+    _object = value;
+  }
+
   #endregion
 
   #region Explicit Conversions
@@ -391,6 +400,9 @@ public struct Variant
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Array? AsArray() => _object as Array;
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Callable? AsCallable() => _object as Callable;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public T As<T>()
@@ -491,6 +503,9 @@ public struct Variant
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator Variant(Array value) => new(value);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static implicit operator Variant(Callable value) => new(value);
 
   #endregion
 }

@@ -22,6 +22,9 @@ public sealed record DesktopConfiguration
 /// <summary>
 /// A <see cref="IPlatform" /> for desktop environments.
 /// </summary>
+[SupportedOSPlatform("windows")]
+[SupportedOSPlatform("macos")]
+[SupportedOSPlatform("linux")]
 public sealed class DesktopPlatform : IPlatform
 {
   public DesktopConfiguration Configuration { get; } = new();

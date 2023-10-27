@@ -240,4 +240,14 @@ public class VariantTests
     test.Type.Should().Be(VariantType.Object);
     test.AsObject().Should().Be(Matrix4x4.Identity);
   }
+
+  [Test]
+  public void it_should_convert_callable()
+  {
+    Callable callable = a => a[0];
+    Variant test = Variant.From(callable);
+
+    test.Type.Should().Be(VariantType.Callable);
+    test.AsObject().Should().Be(callable);
+  }
 }
