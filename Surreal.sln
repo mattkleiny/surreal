@@ -23,6 +23,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{DDEB73C7-6BB8-4F6F-822B-FDD77637B89D}"
 ProjectSection(SolutionItems) = preProject
 	.github\workflows\build-and-package.yml = .github\workflows\build-and-package.yml
+	.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{B9125AD4-8943-45DC-993A-5D1B179F9041}"
