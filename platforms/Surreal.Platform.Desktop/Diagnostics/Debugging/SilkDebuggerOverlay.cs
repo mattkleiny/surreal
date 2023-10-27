@@ -6,9 +6,9 @@ using Surreal.Timing;
 namespace Surreal.Diagnostics.Debugging;
 
 /// <summary>
-/// An <see cref="IDebugOverlay"/> for IMGUI.
+/// An <see cref="IDebuggerOverlay"/> for IMGUI.
 /// </summary>
-internal sealed class SilkDebugOverlay(SilkWindow window) : IDisposable, IDebugOverlay, IDebugWindow, IDebugMenu
+internal sealed class SilkDebuggerOverlay(SilkWindow window) : IDisposable, IDebuggerOverlay, IDebuggerWindow, IDebuggerMenu
 {
   private readonly ImGuiController _controller = new(window.OpenGL, window.InnerWindow, window.Input);
 
@@ -36,7 +36,7 @@ internal sealed class SilkDebugOverlay(SilkWindow window) : IDisposable, IDebugO
     _controller.Dispose();
   }
 
-  public void ShowMenuBar(Action<IDebugMenu> builder)
+  public void ShowMenuBar(Action<IDebuggerMenu> builder)
   {
     ImGui.BeginMainMenuBar();
 
@@ -45,7 +45,7 @@ internal sealed class SilkDebugOverlay(SilkWindow window) : IDisposable, IDebugO
     ImGui.EndMainMenuBar();
   }
 
-  public void ShowWindow(string title, Action<IDebugWindow> builder)
+  public void ShowWindow(string title, Action<IDebuggerWindow> builder)
   {
     ImGui.Begin(title);
 
@@ -54,29 +54,29 @@ internal sealed class SilkDebugOverlay(SilkWindow window) : IDisposable, IDebugO
     ImGui.End();
   }
 
-  void IDebugWindow.Text(string text)
+  void IDebuggerWindow.Text(string text)
   {
     ImGui.Text(text);
   }
 
-  bool IDebugWindow.Button(string text)
+  bool IDebuggerWindow.Button(string text)
   {
     return ImGui.Button(text);
   }
 
-  bool IDebugWindow.Checkbox(string text, bool value)
+  bool IDebuggerWindow.Checkbox(string text, bool value)
   {
     ImGui.Checkbox(text, ref value);
 
     return value;
   }
 
-  bool IDebugMenu.MenuItem(string title, bool enabled)
+  bool IDebuggerMenu.MenuItem(string title, bool enabled)
   {
     return ImGui.MenuItem(title, enabled);
   }
 
-  void IDebugMenu.MenuItem(string title, Action<IDebugMenu> builder, bool enabled)
+  void IDebuggerMenu.MenuItem(string title, Action<IDebuggerMenu> builder, bool enabled)
   {
     if (ImGui.BeginMenu(title, enabled))
     {

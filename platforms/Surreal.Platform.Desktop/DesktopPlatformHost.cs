@@ -62,7 +62,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     AudioBackend = new SilkAudioBackend();
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
-    DebugOverlay = new SilkDebugOverlay(Window);
+    DebuggerOverlay = new SilkDebuggerOverlay(Window);
 
     Resized += OnResized;
 
@@ -72,7 +72,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IAudioBackend>(AudioBackend);
     services.AddService<IGraphicsBackend>(GraphicsBackend);
     services.AddService<IInputBackend>(InputBackend);
-    services.AddService<IDebugOverlay>(DebugOverlay);
+    services.AddService<IDebuggerOverlay>(DebuggerOverlay);
 
     foreach (var device in InputBackend.DiscoverAllDevices())
     {
@@ -85,7 +85,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public SilkAudioBackend AudioBackend { get; }
   public SilkGraphicsBackend GraphicsBackend { get; }
   public SilkInputBackend InputBackend { get; }
-  public SilkDebugOverlay DebugOverlay { get; set; }
+  public SilkDebuggerOverlay DebuggerOverlay { get; set; }
 
   IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
 
@@ -109,7 +109,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     if (!IsClosing)
     {
       Window.Update();
-      DebugOverlay.Update(deltaTime);
+      DebuggerOverlay.Update(deltaTime);
 
       // show the game's FPS in the window title
       if (_configuration.ShowFpsInTitle)
@@ -128,7 +128,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   {
     if (!IsClosing)
     {
-      DebugOverlay.Render(GraphicsBackend);
+      DebuggerOverlay.Render(GraphicsBackend);
       Window.Present();
 
       InputBackend.Update();
