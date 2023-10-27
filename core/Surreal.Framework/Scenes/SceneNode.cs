@@ -1,5 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Diagnostics.Debugging;
 using Surreal.Diagnostics.Logging;
 using Surreal.Timing;
 using Surreal.Utilities;

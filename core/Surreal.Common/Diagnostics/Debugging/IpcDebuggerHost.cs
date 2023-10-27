@@ -4,6 +4,8 @@ using TinyIpc.Messaging;
 
 namespace Surreal.Diagnostics.Debugging;
 
+// TODO: replace TinyIpc with something even lighter
+
 /// <summary>
 /// A <see cref="IDebuggerHost"/> that uses IPC to communicate with the debugger.
 /// <para/>
@@ -29,16 +31,13 @@ public sealed class IpcDebuggerHost : IDisposable, IDebuggerHost
   /// <inheritdoc/>
   public IObservable<DebuggerEvent> Events => _events;
 
-  /// <summary>
-  /// Enqueues an event to be sent at a later date.
-  /// </summary>
+  /// <inheritdoc/>
   public void EnqueueEvent(DebuggerEvent @event)
   {
+    _eventsToSend.Enqueue(@event);
   }
 
-  /// <summary>
-  /// Flushes all enqueued events to the opposite end of the channel.
-  /// </summary>
+  /// <inheritdoc/>
   public async Task FlushAsync(CancellationToken cancellationToken = default)
   {
     while (!cancellationToken.IsCancellationRequested && _eventsToSend.TryDequeue(out var @event))

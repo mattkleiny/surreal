@@ -11,6 +11,16 @@ public interface IDebuggerHost
   /// A stream of <see cref="DebuggerEvent"/>s from the opposite side of the host.
   /// </summary>
   IObservable<DebuggerEvent> Events { get; }
+
+  /// <summary>
+  /// Enqueues an event to be sent at a later date.
+  /// </summary>
+  void EnqueueEvent(DebuggerEvent @event);
+
+  /// <summary>
+  /// Flushes all enqueued events to the opposite end of the channel.
+  /// </summary>
+  Task FlushAsync(CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -18,6 +28,18 @@ public interface IDebuggerHost
 /// </summary>
 public sealed class DebuggerEvent
 {
+  /// <summary>
+  /// Creates a new <see cref="DebuggerEvent"/> with the given kind and value.
+  /// </summary>
+  public static DebuggerEvent Create<T>(DebuggerEventKind<T> kind, T value)
+  {
+    return new DebuggerEvent
+    {
+      Kind = kind.Name,
+      Payload = JsonSerializer.Serialize(value)
+    };
+  }
+
   /// <summary>
   /// The kind of event. Indicative of a <see cref="DebuggerEventKind{T}.Name"/>.
   /// </summary>
