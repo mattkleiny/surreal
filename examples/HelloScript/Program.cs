@@ -1,6 +1,4 @@
-﻿using Surreal.Scripting;
-
-var configuration = new GameConfiguration
+﻿var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
   {

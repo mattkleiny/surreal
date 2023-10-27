@@ -3,13 +3,10 @@
   <Import Project="../Directory.Build.props" />
 
   <PropertyGroup>
-    <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <OutputType>WinExe</OutputType>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+    <TargetPlatformIdentifier>windows</TargetPlatformIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +34,7 @@
     <Using Include="Surreal.Scenes" />
     <Using Include="Surreal.Scenes.Audio" />
     <Using Include="Surreal.Scenes.Physics" />
+    <Using Include="Surreal.Scripting" />
     <Using Include="Surreal.Timing" />
     <Using Include="Surreal.Utilities" />
 
@@ -44,5 +42,10 @@
 
     <!-- automatically exclude example projects from code coverage -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
+
+    <!-- allow access to internals from associated editor projects -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(ProjectName).Editor</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 </Project>

@@ -4,6 +4,8 @@ using Surreal.Physics;
 
 namespace Surreal.Scenes;
 
+// TODO: find a way to remove this?
+
 /// <summary>
 /// The root of a scene.
 /// <para/>

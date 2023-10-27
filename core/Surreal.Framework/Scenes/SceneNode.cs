@@ -1,6 +1,5 @@
 ﻿using Surreal.Assets;
 using Surreal.Collections;
-using Surreal.Diagnostics.Logging;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -32,8 +31,6 @@ public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
 /// </summary>
 public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPropertyChangedEvents, IDisposable
 {
-  private static readonly ILog Log = LogFactory.GetLog<SceneNode>();
-
   private SceneNodeStates _states = SceneNodeStates.Dormant;
   private ISceneRoot? _root;
 
@@ -220,27 +217,22 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
 
   protected virtual void OnAwake()
   {
-    Log.Trace($"{GetType().Name} {Id} is awake");
   }
 
   protected virtual void OnReady()
   {
-    Log.Trace($"{GetType().Name} {Id} is ready");
   }
 
   protected virtual void OnEnterTree()
   {
-    Log.Trace($"{GetType().Name} {Id} has entered the tree");
   }
 
   protected virtual void OnExitTree()
   {
-    Log.Trace($"{GetType().Name} {Id} has exited the tree");
   }
 
   protected virtual void OnDestroy()
   {
-    Log.Trace($"{GetType().Name} {Id} has been destroyed");
   }
 
   protected virtual void OnUpdate(DeltaTime deltaTime)

@@ -14,7 +14,7 @@
   }
 };
 
-Game.StartScene<ForwardRenderPipeline>(configuration, (Game game, SceneTree scene, ForwardRenderPipeline pipeline) =>
+Game.StartScene<ForwardRenderPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline) =>
 {
   pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 

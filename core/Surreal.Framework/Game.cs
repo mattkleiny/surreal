@@ -29,11 +29,6 @@ public readonly record struct GameTime
   /// The total time elapsed since the game started.
   /// </summary>
   public required DeltaTime TotalTime { get; init; }
-
-  /// <summary>
-  /// The number of frames per second.
-  /// </summary>
-  public float FramesPerSecond => 1f / DeltaTime;
 }
 
 /// <summary>

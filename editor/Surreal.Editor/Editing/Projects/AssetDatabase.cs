@@ -1,4 +1,4 @@
-﻿namespace Surreal.Editor.Assets;
+﻿namespace Surreal.Editing.Projects;
 
 /// <summary>
 /// An asset database is a collection of files and folders that are used to create a game.

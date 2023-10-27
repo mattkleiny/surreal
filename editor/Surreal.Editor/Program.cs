@@ -1,16 +1,10 @@
-﻿using Avalonia;
-
-namespace Surreal.Editor;
+﻿namespace Surreal;
 
 public static class Program
 {
   [STAThread]
-  public static void Main(string[] args)
-    => BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
-
-  [UsedImplicitly]
-  public static AppBuilder BuildAvaloniaApp()
-    => AppBuilder.Configure<App>()
-      .UsePlatformDetect()
-      .LogToTrace();
+  public static int Main()
+  {
+    return Editor.Start(new EditorConfiguration());
+  }
 }
