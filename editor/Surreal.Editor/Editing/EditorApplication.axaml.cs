@@ -27,6 +27,7 @@ internal sealed class EditorApplication : Application, IDisposable
   public EditorApplication(EditorConfiguration configuration)
   {
     Configuration = configuration;
+    Project = configuration.DefaultProject;
 
     _services = new ServiceRegistry();
 

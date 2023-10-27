@@ -9,5 +9,15 @@
         x:DataType="surreal:EditorApplication"
         Width="{Binding Configuration.DefaultWidth, Mode=OneTime}"
         Height="{Binding Configuration.DefaultHeight, Mode=OneTime}"
-        Title="{Binding  Configuration.WindowTitle}">
+        Background="Transparent"
+        TransparencyLevelHint="AcrylicBlur">
+
+  <!-- format the window title based on the project name -->
+  <Window.Title>
+    <MultiBinding StringFormat="{}{0} ({1})">
+      <Binding Path="Configuration.WindowTitle" />
+      <Binding Path="Project.RootPath" FallbackValue="No active project" />
+    </MultiBinding>
+  </Window.Title>
+
 </Window>

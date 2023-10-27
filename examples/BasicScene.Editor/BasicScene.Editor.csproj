@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>An editor for the basic scene graph example</Description>
+    <StartWorkingDirectory>$(MSBuildThisFileDirectory)../BasicScene</StartWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\editor\Surreal.Editor\Surreal.Editor.csproj" />

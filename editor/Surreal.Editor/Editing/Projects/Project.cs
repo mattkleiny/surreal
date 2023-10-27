@@ -7,7 +7,7 @@ public sealed class Project
 {
   public Project(string rootPath)
   {
-    RootPath = rootPath;
+    RootPath = Path.GetFullPath(rootPath);
     Assets = new AssetDatabase(SourcePath, TargetPath);
 
     // refresh assets in the background
@@ -22,12 +22,12 @@ public sealed class Project
   /// <summary>
   /// Source path where assets are loaded.
   /// </summary>
-  public string SourcePath => Path.GetFullPath(Path.Combine(RootPath, "Assets"));
+  public string SourcePath => Path.Combine(RootPath, "Assets");
 
   /// <summary>
   /// Target path where cooked assets are saved.
   /// </summary>
-  public string TargetPath => Path.GetFullPath(Path.Combine(RootPath, "Resources"));
+  public string TargetPath => Path.Combine(RootPath, "Resources");
 
   /// <summary>
   /// The primary <see cref="AssetDatabase"/> for this project.

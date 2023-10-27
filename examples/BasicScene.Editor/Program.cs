@@ -2,9 +2,6 @@
 
 Editor.Start(new EditorConfiguration
 {
-  WindowTitle = "Basic Scene",
-  DefaultProject = new Project(AppDomain.CurrentDomain.BaseDirectory)
-  {
-    EntryPoint = ProjectEntryPoint.FromAssembly(Assembly.LoadFrom("BasicScene"))
-  }
+  WindowTitle = "Custom Editor",
+  DefaultProject = new Project(Environment.CurrentDirectory)
 });
