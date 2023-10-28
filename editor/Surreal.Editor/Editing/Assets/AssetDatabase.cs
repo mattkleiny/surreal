@@ -69,6 +69,11 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
   }
 
   /// <summary>
+  /// True if the database should automatically import changes when <see cref="WatchForChanges"/> is true.
+  /// </summary>
+  public bool AutomaticallyImportChanges { get; set; }
+
+  /// <summary>
   /// Gets all assets in the database at the given path.
   /// </summary>
   public AssetEntry GetAssetsById(Guid id)
@@ -112,100 +117,6 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     }
 
     return entries;
-  }
-
-  /// <summary>
-  /// Loads a <see cref="TAsset"/> from the given path.
-  /// </summary>
-  public async Task<TAsset> LoadAssetAsync<TAsset>(string path, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
-    where TAsset : class
-  {
-    return (TAsset)await LoadAssetAsync(typeof(TAsset), path, cancellationToken, writeMetadataToDisk);
-  }
-
-  /// <summary>
-  /// Loads an asset of the given type from the given path.
-  /// </summary>
-  private async Task<object> LoadAssetAsync(Type assetType, string path, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
-  {
-    var absolutePath = Path.GetFullPath(path);
-
-    // if an asset exists at the given path, load it
-    foreach (var entry in GetAssetsByType(assetType))
-    {
-      // we're looking for an asset with the same absolute path
-      if (entry.AbsolutePath != absolutePath) continue;
-
-      var metadata = new AssetMetadata
-      {
-        AssetId = entry.AssetId,
-        TypeId = entry.TypeId
-      };
-
-      foreach (var importer in Importers)
-      {
-        if (importer.CanHandle(metadata))
-        {
-          return await importer.ImportAsync(absolutePath, cancellationToken);
-        }
-      }
-    }
-
-    // load a brand new asset and add it to the database
-    return ImportAssetAsync(assetType, path, cancellationToken, writeMetadataToDisk);
-  }
-
-  /// <summary>
-  /// Imports a new asset into the database.
-  /// </summary>
-  public async Task<object> ImportAssetAsync(Type assetType, string path, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
-  {
-    if (path.EndsWith(".meta"))
-    {
-      throw new InvalidOperationException("Unable to import .meta file into the database; they're markers for the database itself");
-    }
-
-    var absolutePath = Path.GetFullPath(path);
-
-    // create a new asset metadata
-    var metadata = new AssetMetadata
-    {
-      AssetId = Guid.NewGuid(),
-      TypeId = assetType.GetCustomAttribute<AssetTypeAttribute>()!.Id
-    };
-
-    foreach (var importer in Importers)
-    {
-      if (importer.CanHandle(metadata))
-      {
-        Log.Trace($"Importing asset {metadata.AssetId} from path {absolutePath}");
-
-        var asset = await importer.ImportAsync(absolutePath, cancellationToken);
-
-        // create a new asset entry
-        _entries.Add(new AssetEntry
-        {
-          AssetId = metadata.AssetId,
-          TypeId = metadata.TypeId,
-          AbsolutePath = absolutePath,
-          IsEmbedded = false // TODO: detect embedded assets?
-        });
-
-        if (writeMetadataToDisk)
-        {
-          // write the metadata to disk
-          VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
-
-          Log.Trace($"Writing asset {metadata.AssetId} metadata to disk {metadataPath}");
-
-          await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
-        }
-
-        return asset;
-      }
-    }
-
-    throw new InvalidOperationException($"Unable to locate asset importer for {assetType.Name}");
   }
 
   /// <summary>
@@ -329,9 +240,12 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
   /// <summary>
   /// Bakes the asset database for the given target.
   /// </summary>
-  public Task BakeAsync(string target, CancellationToken cancellationToken = default)
+  public async Task BakeTargetAsync(IAssetBaker baker, AssetBakingTarget target, CancellationToken cancellationToken = default)
   {
-    throw new NotImplementedException();
+    var assets = _entries.Where(x => !x.IsEmbedded).ToArray();
+    var outputPath = Path.Combine(TargetPath, target.Path);
+
+    await baker.BakeAssetsAsync(assets, target, outputPath, cancellationToken);
   }
 
   /// <inheritdoc/>
@@ -348,6 +262,11 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     if (path.IsFile())
     {
       Log.Trace($"File was created {path}");
+
+      if (AutomaticallyImportChanges)
+      {
+        // TODO: implement me
+      }
     }
     else if (path.IsDirectory())
     {
@@ -365,6 +284,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
       if (path.IsFile())
       {
         Log.Trace($"File was modified {path}");
+
+        // TODO: automatically reload the asset in the database?
       }
       else if (path.IsDirectory())
       {
@@ -381,6 +302,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     if (oldPath.IsFile())
     {
       Log.Trace($"File was renamed from {oldPath} to {newPath}");
+
+      // TODO: automatically rename the asset in the database and the manifest on disk?
     }
     else if (oldPath.IsDirectory())
     {
@@ -396,6 +319,11 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     if (path.IsFile())
     {
       Log.Trace($"File was deleted {path}");
+
+      if (_entries.TryGetByPath(path.Target.ToString(), out var entries))
+      {
+        _entries.RemoveAll(entries);
+      }
     }
     else if (path.IsDirectory())
     {
@@ -407,7 +335,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
   /// A single entry in the <see cref="AssetDatabase"/>.
   /// </summary>
   [DebuggerDisplay("{AssetId} at {AbsolutePath}")]
-  public sealed class AssetEntry
+  public sealed class AssetEntry : IBakeableAsset
   {
     /// <summary>
     /// The ID of the asset.
@@ -531,6 +459,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     /// </summary>
     public void Add(AssetEntry entry)
     {
+      Log.Trace($"Adding entry {entry.AbsolutePath}");
+
       var index = _entries.Add(entry);
 
       entry.Index = index;
@@ -541,10 +471,23 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     }
 
     /// <summary>
+    /// Adds all of the given entries.
+    /// </summary>
+    public void AddAll(IEnumerable<AssetEntry> entries)
+    {
+      foreach (var entry in entries)
+      {
+        Add(entry);
+      }
+    }
+
+    /// <summary>
     /// Removes an existing asset from the collection.
     /// </summary>
     public void Remove(AssetEntry entry)
     {
+      Log.Trace($"Removing entry {entry.AbsolutePath}");
+
       var index = entry.Index;
 
       _entries.Remove(index);
@@ -552,6 +495,17 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
       _assetsById.Remove(entry.AssetId);
       _assetsByPath.Remove(entry.AbsolutePath, index);
       _assetsByTypeId.Remove(entry.TypeId, index);
+    }
+
+    /// <summary>
+    /// Removes all of the given entries.
+    /// </summary>
+    public void RemoveAll(IEnumerable<AssetEntry> entries)
+    {
+      foreach (var entry in entries)
+      {
+        Remove(entry);
+      }
     }
 
     /// <summary>

@@ -39,18 +39,6 @@ public class AssetDatabaseTests
   }
 
   [Test]
-  public async Task it_should_load_new_assets_into_the_database()
-  {
-    var database = await BuildAssetDatabaseAsync();
-
-    database.Assets.Should().NotContain(it => it.AbsolutePath.EndsWith("blueprint02.json"));
-
-    database.LoadAssetAsync<BlueprintSchema>(@"Assets/Source/blueprint02.json").Should().NotBeNull();
-
-    database.Assets.Should().Contain(it => it.AbsolutePath.EndsWith("blueprint02.json"));
-  }
-
-  [Test]
   public async Task it_should_import_all_assets_into_database()
   {
     var database = await BuildAssetDatabaseAsync();
@@ -62,6 +50,15 @@ public class AssetDatabaseTests
 
     database.Assets.Should().Contain(it => it.AbsolutePath.EndsWith("blueprint01.json"));
     database.Assets.Should().Contain(it => it.AbsolutePath.EndsWith("blueprint02.json"));
+  }
+
+  [Test]
+  public async Task it_bake_assets()
+  {
+    var database = await BuildAssetDatabaseAsync();
+    var baker = Substitute.For<IAssetBaker>();
+
+    await database.BakeTargetAsync(baker, AssetBakingTarget.Desktop);
   }
 
   private static async Task<AssetDatabase> BuildAssetDatabaseAsync()
