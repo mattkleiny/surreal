@@ -1,10 +1,33 @@
-﻿namespace Surreal.Editing.ViewModels;
+﻿using Surreal.Editing.Assets;
+using Surreal.Editing.Projects;
+
+namespace Surreal.Editing.ViewModels;
 
 /// <summary>
 /// Base class for any view model in the editor.
 /// </summary>
-public abstract class ViewModel : INotifyPropertyChanged, INotifyPropertyChanging
+public abstract class EditorViewModel : INotifyPropertyChanged, INotifyPropertyChanging
 {
+  /// <summary>
+  /// The active <see cref="EditorProjectContext"/>.
+  /// </summary>
+  private static EditorProjectContext? Context => EditorApplication.Current?.Context;
+
+  /// <summary>
+  /// The current <see cref="EditorConfiguration"/>.
+  /// </summary>
+  public static EditorConfiguration? Configuration => Context?.Configuration;
+
+  /// <summary>
+  /// The current <see cref="EditorProject"/>.
+  /// </summary>
+  public static EditorProject? Project => Context?.Project;
+
+  /// <summary>
+  /// The current <see cref="AssetDatabase"/>.
+  /// </summary>
+  public static AssetDatabase? Assets => Context?.Assets;
+
   /// <inheritdoc/>
   public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -1,8 +1,10 @@
 ﻿using Surreal.Graphics.Textures;
 using Surreal.IO;
+using Surreal.Utilities;
 
 namespace Surreal.Editing.Assets.Importers;
 
+[RegisterService(typeof(IAssetImporter))]
 internal sealed class TextureImporter : AssetImporter<Texture>
 {
   protected override bool CanHandlePath(string path)

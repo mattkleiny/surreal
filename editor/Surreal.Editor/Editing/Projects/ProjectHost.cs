@@ -39,6 +39,7 @@ public abstract class ProjectHost
   /// </summary>
   private sealed class InProcessHost(MethodBase entryPoint) : ProjectHost
   {
+    /// <inheritdoc/>
     public override Task StartAsync(HostingContext context, CancellationToken cancellationToken = default)
     {
       var options = new ThreadOptions

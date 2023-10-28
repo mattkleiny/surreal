@@ -87,10 +87,10 @@ public static class ServiceExtensions
   /// <summary>
   /// Gets all services of type <typeparamref name="T"/>.
   /// </summary>
-  public static ReadOnlySlice<T> GetServices<T>(this IServiceProvider provider)
+  public static T[] GetServices<T>(this IServiceProvider provider)
     where T : class
   {
-    return GetService<IEnumerable<T>>(provider)?.ToArray() ?? ReadOnlySlice<T>.Empty;
+    return GetService<IEnumerable<T>>(provider)?.ToArray() ?? Array.Empty<T>();
   }
 
   /// <summary>

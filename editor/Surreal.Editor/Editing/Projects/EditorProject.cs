@@ -11,7 +11,7 @@ public sealed class EditorProject
   public EditorProject(string rootPath, string projectFilePath)
   {
     RootPath = Path.GetFullPath(rootPath);
-    ProjectFile = ProjectFile.Load(projectFilePath);
+    File = ProjectFile.Load(projectFilePath);
 
     Assets = new AssetDatabase(SourcePath, TargetPath)
     {
@@ -51,10 +51,10 @@ public sealed class EditorProject
   /// <summary>
   /// Provides metadata about the MSBuild project.
   /// </summary>
-  internal ProjectFile ProjectFile { get; }
+  internal ProjectFile File { get; }
 
   /// <summary>
   /// The entry point for the associated project
   /// </summary>
-  public ProjectHost? ProjectHost { get; init; }
+  public ProjectHost? Host { get; init; }
 }

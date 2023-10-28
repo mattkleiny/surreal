@@ -17,6 +17,7 @@ internal sealed class EditorApplication : Application, IDisposable
   public new static EditorApplication? Current => (EditorApplication?)Application.Current;
 
   private readonly ServiceRegistry _services;
+  private EditorProject? _project;
 
   [UsedImplicitly]
   public EditorApplication()
@@ -26,15 +27,15 @@ internal sealed class EditorApplication : Application, IDisposable
 
   public EditorApplication(EditorConfiguration configuration)
   {
-    Configuration = configuration;
-    Project = configuration.DefaultProject;
-
     _services = new ServiceRegistry();
 
     foreach (var module in configuration.Modules)
     {
       _services.AddModule(module);
     }
+
+    Configuration = configuration;
+    Project = configuration.DefaultProject;
   }
 
   /// <summary>
@@ -45,7 +46,28 @@ internal sealed class EditorApplication : Application, IDisposable
   /// <summary>
   /// The currently active <see cref="EditorProject"/>.
   /// </summary>
-  public EditorProject? Project { get; set; }
+  public EditorProject? Project
+  {
+    get => _project;
+    set
+    {
+      if (_project != value)
+      {
+        Context?.Dispose();
+        _project = value;
+
+        if (value != null)
+        {
+          Context = new EditorProjectContext(Configuration, value, _services);
+        }
+      }
+    }
+  }
+
+  /// <summary>
+  /// The <see cref="EditorProjectContext"/> for the active <see cref="Project"/>.
+  /// </summary>
+  public EditorProjectContext? Context { get; private set; }
 
   /// <summary>
   /// The root <see cref="IServiceProvider"/> for the editor.

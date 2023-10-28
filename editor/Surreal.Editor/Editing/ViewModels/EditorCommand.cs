@@ -5,17 +5,17 @@ namespace Surreal.Editing.ViewModels;
 /// <summary>
 /// A <see cref="ICommand"/> that executes a delegate, with an optional predicate.
 /// </summary>
-public sealed class Command : ICommand
+public sealed class EditorCommand : ICommand
 {
   private readonly Action _callback;
   private readonly Func<bool> _predicate;
 
-  public Command(Action callback)
+  public EditorCommand(Action callback)
     : this(callback, static () => true)
   {
   }
 
-  public Command(Action callback, Func<bool> predicate)
+  public EditorCommand(Action callback, Func<bool> predicate)
   {
     _callback = callback;
     _predicate = predicate;

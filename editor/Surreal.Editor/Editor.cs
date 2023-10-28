@@ -36,7 +36,10 @@ public sealed record EditorConfiguration
   /// <summary>
   /// The <see cref="IServiceModule"/>s to use for the editor.
   /// </summary>
-  public List<IServiceModule> Modules { get; init; } = new();
+  public List<IServiceModule> Modules { get; init; } = new()
+  {
+    new EditorModule()
+  };
 }
 
 /// <summary>

@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Surreal.Diagnostics.Hosting;
-using Surreal.Editing.Projects;
 using Surreal.Editing.ViewModels;
 
 namespace Surreal.Editing;
@@ -22,19 +21,19 @@ internal partial class MainWindow : Window
 /// <summary>
 /// A view model for the main window.
 /// </summary>
-internal sealed class MainWindowViewModel : ViewModel
+internal sealed class MainWindowViewModel : EditorViewModel
 {
   private bool _isRunning;
   private HostingContext? _hostingContext;
 
   public MainWindowViewModel()
   {
-    StartGame = new Command(OnStartGame, () => !IsRunning);
-    StopGame = new Command(OnStopGame, () => IsRunning);
+    StartGame = new EditorCommand(OnStartGame, () => !IsRunning);
+    StopGame = new EditorCommand(OnStopGame, () => IsRunning);
   }
 
-  public Command StartGame { get; }
-  public Command StopGame { get; }
+  public EditorCommand StartGame { get; }
+  public EditorCommand StopGame { get; }
 
   /// <summary>
   /// True if the game is currently running.
@@ -52,21 +51,11 @@ internal sealed class MainWindowViewModel : ViewModel
     }
   }
 
-  /// <summary>
-  /// The current <see cref="EditorConfiguration"/>.
-  /// </summary>
-  public EditorConfiguration Configuration => EditorApplication.Current!.Configuration;
-
-  /// <summary>
-  /// The current <see cref="Project"/>.
-  /// </summary>
-  public EditorProject? Project => EditorApplication.Current!.Project;
-
   private void OnStartGame()
   {
     _hostingContext = new HostingContextImpl(this);
 
-    EditorApplication.Current?.Project?.ProjectHost?.StartAsync(_hostingContext);
+    Project?.Host?.StartAsync(_hostingContext);
   }
 
   private void OnStopGame()

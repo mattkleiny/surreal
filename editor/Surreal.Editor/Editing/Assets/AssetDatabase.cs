@@ -29,7 +29,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
   /// <summary>
   /// A list of <see cref="IAssetImporter"/>s that are capable of loading raw assets from disk.
   /// </summary>
-  public List<IAssetImporter> Importers { get; } = new();
+  public List<IAssetImporter> Importers { get; init; } = new();
 
   /// <summary>
   /// All of the assets in the database.
