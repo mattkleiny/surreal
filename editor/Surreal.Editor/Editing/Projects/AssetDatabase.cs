@@ -1,4 +1,5 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Assets;
+using Surreal.Collections;
 using Surreal.IO;
 using Surreal.Utilities;
 

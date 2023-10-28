@@ -66,7 +66,7 @@ public sealed record RenderTargetDescriptor
 /// <summary>
 /// A render target is a texture that can be rendered to.
 /// </summary>
-public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescriptor descriptor) : GraphicsAsset
+public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescriptor descriptor) : Disposable
 {
   /// <summary>
   /// The handle to the underlying render target.

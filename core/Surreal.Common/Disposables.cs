@@ -24,3 +24,31 @@ public static class Disposables
     public void Dispose() => action.Invoke();
   }
 }
+
+/// <summary>
+/// An <see cref="IDisposable"/> base class with a finalizer.
+/// </summary>
+public abstract class Disposable : IDisposable
+{
+  ~Disposable()
+  {
+    Dispose(false);
+  }
+
+  public bool IsDisposed { get; private set; }
+
+  public void Dispose()
+  {
+    if (!IsDisposed)
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+
+      IsDisposed = true;
+    }
+  }
+
+  protected virtual void Dispose(bool managed)
+  {
+  }
+}

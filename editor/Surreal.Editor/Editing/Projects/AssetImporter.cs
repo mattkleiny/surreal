@@ -1,4 +1,5 @@
-﻿using Surreal.IO;
+﻿using Surreal.Assets;
+using Surreal.IO;
 using Surreal.Utilities;
 
 namespace Surreal.Editing.Projects;
@@ -64,17 +65,4 @@ public sealed record AssetMetadata
   /// The type of the asset.
   /// </summary>
   public required Guid TypeId { get; init; }
-}
-
-/// <summary>
-/// Indicates the associated type is an asset.
-/// </summary>
-[MeansImplicitUse]
-[AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public sealed class AssetTypeAttribute(string id) : Attribute
-{
-  /// <summary>
-  /// The unique identifier for this asset type.
-  /// </summary>
-  public Guid Id { get; } = Guid.Parse(id);
 }

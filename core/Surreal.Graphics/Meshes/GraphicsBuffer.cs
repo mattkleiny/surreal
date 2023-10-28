@@ -23,7 +23,7 @@ public enum BufferUsage
 /// <summary>
 /// A buffer of data on the <see cref="IGraphicsBackend" />.
 /// </summary>
-public abstract class GraphicsBuffer : GraphicsAsset, IHasSizeEstimate
+public abstract class GraphicsBuffer : Disposable
 {
   /// <summary>
   /// The type of element stored in the <see cref="GraphicsBuffer" />.

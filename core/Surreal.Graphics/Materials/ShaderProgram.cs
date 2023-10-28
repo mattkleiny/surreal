@@ -7,7 +7,7 @@ namespace Surreal.Graphics.Materials;
 /// <summary>
 /// A low-level shader program on the GPU.
 /// </summary>
-public sealed class ShaderProgram(IGraphicsBackend backend) : GraphicsAsset
+public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
 {
   /// <summary>
   /// Loads the built-in default canvas shader.

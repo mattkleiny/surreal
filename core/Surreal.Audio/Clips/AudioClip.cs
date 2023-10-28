@@ -5,7 +5,7 @@ namespace Surreal.Audio.Clips;
 /// <summary>
 /// A clip of audio that can be played back via an audio device.
 /// </summary>
-public sealed class AudioClip(IAudioBackend backend) : AudioAsset, IHasSizeEstimate
+public sealed class AudioClip(IAudioBackend backend) : Disposable
 {
   /// <summary>
   /// The handle to the clip in the underlying audio backend.

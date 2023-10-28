@@ -3,7 +3,7 @@
 namespace Surreal.Assets;
 
 /// <summary>
-/// Provides accesses to application <see cref="Asset"/>s.
+/// Provides accesses to application <see cref="Disposable"/>s.
 /// </summary>
 public interface IAssetProvider
 {

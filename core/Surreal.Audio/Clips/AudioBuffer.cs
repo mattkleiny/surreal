@@ -5,7 +5,7 @@ namespace Surreal.Audio.Clips;
 /// <summary>
 /// A buffer of waveform data for use in audio playback.
 /// </summary>
-public sealed class AudioBuffer(TimeSpan duration, AudioSampleRate rate) : AudioAsset, IHasSizeEstimate
+public sealed class AudioBuffer(TimeSpan duration, AudioSampleRate rate) : Disposable
 {
   private readonly IDisposableBuffer<byte> _buffer = Buffers.AllocateNative<byte>(rate.CalculateSize(duration));
 

@@ -19,7 +19,7 @@ public enum MeshType
 /// <summary>
 /// Abstracts over all possible <see cref="Mesh{TVertex}" /> types.
 /// </summary>
-public abstract class Mesh : GraphicsAsset, IHasSizeEstimate
+public abstract class Mesh : Disposable
 {
   /// <summary>
   /// The byte size of the <see cref="Mesh" />.

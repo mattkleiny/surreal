@@ -1,4 +1,6 @@
-﻿namespace Surreal.Graphics.Materials;
+﻿using Surreal.Assets;
+
+namespace Surreal.Graphics.Materials;
 
 /// <summary>
 /// Different kinds of blends.
@@ -54,7 +56,7 @@ public readonly record struct ScissorState(int Left, int Top, int Right, int Bot
 /// <summary>
 /// A material is a configuration of the graphics state and properties used for rendering.
 /// </summary>
-public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, bool ownsShader = true) : GraphicsAsset
+public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, bool ownsShader = true) : Disposable
 {
   /// <summary>
   /// The associated <see cref="ShaderProgram" /> for the material.

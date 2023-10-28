@@ -58,7 +58,7 @@ public readonly record struct TextureSampler(GraphicsHandle Texture, uint Sample
 /// A texture that can be uploaded to the GPU.
 /// </summary>
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
-public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : GraphicsAsset, IHasSizeEstimate, IHotReloadable<Texture>
+public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : Disposable, IHotReloadable<Texture>
 {
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying texture.
