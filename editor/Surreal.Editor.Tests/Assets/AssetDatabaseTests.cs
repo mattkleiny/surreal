@@ -45,7 +45,7 @@ public class AssetDatabaseTests
 
     database.Assets.Should().NotContain(it => it.AbsolutePath.EndsWith("blueprint02.json"));
 
-    database.LoadAssetAsync<BlueprintSchema>(@"Assets\Source\blueprint02.json").Should().NotBeNull();
+    database.LoadAssetAsync<BlueprintSchema>(@"Assets/Source/blueprint02.json").Should().NotBeNull();
 
     database.Assets.Should().Contain(it => it.AbsolutePath.EndsWith("blueprint02.json"));
   }

@@ -24,7 +24,7 @@ public interface IFileSystem
   Stream OpenInputStream(string path);
   Stream OpenOutputStream(string path);
   MemoryMappedFile OpenMemoryMappedFile(string path);
-  IPathWatcher WatchPath(VirtualPath path);
+  IPathWatcher WatchPath(VirtualPath path, bool includeSubPaths);
 
   // asynchronous API
 }
@@ -47,14 +47,24 @@ public interface IFileSystemRegistry
 /// </summary>
 public interface IPathWatcher : IDisposable
 {
-  /// <summary>
-  /// The <see cref="VirtualPath" /> being watched.
-  /// </summary>
-  VirtualPath FilePath { get; }
-
   event Action<VirtualPath> Created;
-  event Action<VirtualPath> Modified;
+  event Action<VirtualPath, PathChangeTypes> Changed;
+  event Action<VirtualPath, VirtualPath>? Renamed;
   event Action<VirtualPath> Deleted;
+}
+
+/// <summary>
+/// A type of change for <see cref="IPathWatcher.Changed"/>.
+/// </summary>
+[Flags]
+public enum PathChangeTypes
+{
+  None = 0,
+  Created = 1 << 0,
+  Deleted = 1 << 1,
+  Modified = 1 << 2,
+  Renamed = 1 << 3,
+  All = Renamed | Modified | Deleted | Created
 }
 
 /// <summary>
@@ -92,7 +102,7 @@ public abstract class FileSystem : IFileSystem
     throw new NotSupportedException("This file system does not support memory mapping.");
   }
 
-  public virtual IPathWatcher WatchPath(VirtualPath path)
+  public virtual IPathWatcher WatchPath(VirtualPath path, bool includeSubPaths)
   {
     throw new NotSupportedException("This file system does not support path watching.");
   }

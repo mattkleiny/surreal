@@ -52,8 +52,8 @@ public static class VirtualPathExtensions
   public static MemoryMappedFile OpenMemoryMappedFile(this VirtualPath path)
     => path.GetFileSystem().OpenMemoryMappedFile(path.Target.ToString());
 
-  public static IPathWatcher Watch(this VirtualPath path)
-    => path.GetFileSystem().WatchPath(path);
+  public static IPathWatcher Watch(this VirtualPath path, bool includeSubPaths = false)
+    => path.GetFileSystem().WatchPath(path, includeSubPaths);
 
   public static VirtualPath ChangeExtension(this VirtualPath path, string newExtension)
   {

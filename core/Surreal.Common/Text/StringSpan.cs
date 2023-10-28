@@ -80,6 +80,19 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
     }
   }
 
+  /// <summary>
+  /// Tries to find the index of the given character in the span.
+  /// </summary>
+  public int IndexOf(char character)
+  {
+    if (Source == null)
+    {
+      return -1;
+    }
+
+    return Source.AsSpan(Offset, Length).IndexOf(character);
+  }
+
   public bool Equals(StringSpan other)
   {
     // equality is based on the individual characters of the span.

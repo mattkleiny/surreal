@@ -18,7 +18,8 @@ public sealed class Project
         new AudioClipImporter(),
         new ColorPaletteImporter(),
         new TextureImporter()
-      }
+      },
+      WatchForChanges = true
     };
 
     // import assets in the background

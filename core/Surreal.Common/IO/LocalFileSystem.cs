@@ -1,5 +1,6 @@
 ﻿using System.IO.MemoryMappedFiles;
 using Surreal.Memory;
+using Surreal.Text;
 
 namespace Surreal.IO;
 
@@ -33,17 +34,27 @@ public sealed class LocalFileSystem() : FileSystem("local")
 
   public override bool Exists(string path)
   {
-    return IsDirectory(path) || IsFile(path);
+    return Directory.Exists(path) || File.Exists(path);
   }
 
   public override bool IsFile(string path)
   {
-    return File.Exists(path);
+    var fileNameBegin = path.LastIndexOf(Path.DirectorySeparatorChar);
+    if (fileNameBegin == -1) fileNameBegin = 0; // we could just be a top level file (test.txt)
+
+    var fileName = path.AsStringSpan(fileNameBegin + 1);
+
+    return fileName.IndexOf('.') != -1; // we have an extension
   }
 
   public override bool IsDirectory(string path)
   {
-    return Directory.Exists(path);
+    var directoryNameBegin = path.LastIndexOf(Path.DirectorySeparatorChar);
+    if (directoryNameBegin == -1) directoryNameBegin = 0; // we could just be a top level directory (test)
+
+    var directoryName = path.AsStringSpan(directoryNameBegin + 1);
+
+    return directoryName.IndexOf('.') == -1; // we don't have an extension
   }
 
   public override Stream OpenInputStream(string path)
@@ -67,9 +78,9 @@ public sealed class LocalFileSystem() : FileSystem("local")
     );
   }
 
-  public override IPathWatcher WatchPath(VirtualPath path)
+  public override IPathWatcher WatchPath(VirtualPath path, bool includeSubPaths)
   {
-    return new PathWatcher(path.GetDirectory(), path);
+    return new PathWatcher(path.GetDirectory(), includeSubPaths);
   }
 
   /// <summary>
@@ -79,40 +90,36 @@ public sealed class LocalFileSystem() : FileSystem("local")
   {
     private readonly FileSystemWatcher _watcher;
 
-    public PathWatcher(VirtualPath directoryPath, VirtualPath filePath)
+    public PathWatcher(VirtualPath directoryPath, bool includeSubPaths)
     {
       _watcher = new FileSystemWatcher(directoryPath.Target.ToString())
       {
-        Filter = Path.GetFileName(filePath.Target.ToString()),
-
-        EnableRaisingEvents = true
+        EnableRaisingEvents = true,
+        IncludeSubdirectories = includeSubPaths
       };
 
       // adapt the event interface
       var context = SynchronizationContext.Current;
       if (context != null)
       {
-        _watcher.Created += (_, _) => context.Post(_ => Created?.Invoke(filePath), null);
-        _watcher.Changed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
-        _watcher.Renamed += (_, _) => context.Post(_ => Modified?.Invoke(filePath), null);
-        _watcher.Deleted += (_, _) => context.Post(_ => Deleted?.Invoke(filePath), null);
+        _watcher.Created += (_, args) => context.Post(_ => Created?.Invoke(args.FullPath), null);
+        _watcher.Changed += (_, args) => context.Post(_ => Changed?.Invoke(args.FullPath, (PathChangeTypes)args.ChangeType), null);
+        _watcher.Renamed += (_, args) => context.Post(_ => Renamed?.Invoke(args.OldFullPath, args.FullPath), null);
+        _watcher.Deleted += (_, args) => context.Post(_ => Deleted?.Invoke(args.FullPath), null);
       }
       else
       {
-        _watcher.Created += (_, _) => Created?.Invoke(filePath);
-        _watcher.Changed += (_, _) => Modified?.Invoke(filePath);
-        _watcher.Renamed += (_, _) => Modified?.Invoke(filePath);
-        _watcher.Deleted += (_, _) => Deleted?.Invoke(filePath);
+        _watcher.Created += (_, args) => Created?.Invoke(args.FullPath);
+        _watcher.Changed += (_, args) => Changed?.Invoke(args.FullPath, (PathChangeTypes)args.ChangeType);
+        _watcher.Renamed += (_, args) => Renamed?.Invoke(args.OldFullPath, args.FullPath);
+        _watcher.Deleted += (_, args) => Deleted?.Invoke(args.FullPath);
       }
-
-      FilePath = filePath;
     }
 
     public event Action<VirtualPath>? Created;
-    public event Action<VirtualPath>? Modified;
+    public event Action<VirtualPath, PathChangeTypes>? Changed;
+    public event Action<VirtualPath, VirtualPath>? Renamed;
     public event Action<VirtualPath>? Deleted;
-
-    public VirtualPath FilePath { get; }
 
     public void Dispose()
     {

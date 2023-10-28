@@ -9,11 +9,12 @@ namespace Surreal.Editing.Assets;
 /// <summary>
 /// An asset database is a collection of files and folders that are used to create a game.
 /// </summary>
-public sealed class AssetDatabase(string sourcePath, string targetPath)
+public sealed class AssetDatabase(string sourcePath, string targetPath) : IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<AssetDatabase>();
 
   private readonly AssetEntryCollection _entries = new();
+  private IPathWatcher? _pathWatcher;
 
   /// <summary>
   /// Source path where assets are loaded.
@@ -34,6 +35,38 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   /// All of the assets in the database.
   /// </summary>
   public IEnumerable<AssetEntry> Assets => _entries;
+
+  /// <summary>
+  /// Watches for changes on the source path and automatically imports them.
+  /// </summary>
+  public bool WatchForChanges
+  {
+    get => _pathWatcher != null;
+    set
+    {
+      if (value)
+      {
+        VirtualPath basePath = SourcePath;
+
+        _pathWatcher = basePath.Watch(includeSubPaths: true);
+
+        _pathWatcher.Created += OnFileCreated;
+        _pathWatcher.Changed += OnFileChanged;
+        _pathWatcher.Renamed += OnFileRenamed;
+        _pathWatcher.Deleted += OnFileDeleted;
+      }
+      else if (_pathWatcher != null)
+      {
+        _pathWatcher.Created -= OnFileCreated;
+        _pathWatcher.Changed -= OnFileChanged;
+        _pathWatcher.Renamed -= OnFileRenamed;
+        _pathWatcher.Deleted -= OnFileDeleted;
+
+        _pathWatcher.Dispose();
+        _pathWatcher = null;
+      }
+    }
+  }
 
   /// <summary>
   /// Gets all assets in the database at the given path.
@@ -185,57 +218,64 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     // recursively search for all files in the source path
     foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
     {
-      if (_entries.ContainsPath(absolutePath)) continue; // we don't want to import assets that are already imported
-      if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
-
-      VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
-
-      if (metadataPath.Exists())
+      try
       {
-        // refresh this entry
-        var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
+        if (_entries.ContainsPath(absolutePath)) continue; // we don't want to import assets that are already imported
+        if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
 
-        Log.Trace($"Importing asset {metadata.AssetId} from path {absolutePath}");
+        VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
 
-        _entries.Add(new AssetEntry
+        if (metadataPath.Exists())
         {
-          AbsolutePath = absolutePath,
-          AssetId = metadata.AssetId,
-          TypeId = metadata.TypeId,
-          IsEmbedded = false // TODO: detect embedded assets?
-        });
-      }
-      else
-      {
-        // import anew
-        foreach (var importer in Importers)
-        {
-          if (importer.TryGetTypeId(absolutePath, out var typeId))
+          // refresh this entry
+          var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
+
+          Log.Trace($"Importing asset {metadata.AssetId} from path {absolutePath}");
+
+          _entries.Add(new AssetEntry
           {
-            Log.Trace($"Importing new asset {typeId} from path {absolutePath}");
-
-            _entries.Add(new AssetEntry
+            AbsolutePath = absolutePath,
+            AssetId = metadata.AssetId,
+            TypeId = metadata.TypeId,
+            IsEmbedded = false // TODO: detect embedded assets?
+          });
+        }
+        else
+        {
+          // import anew
+          foreach (var importer in Importers)
+          {
+            if (importer.TryGetTypeId(absolutePath, out var typeId))
             {
-              AbsolutePath = absolutePath,
-              AssetId = Guid.NewGuid(),
-              TypeId = typeId,
-              IsEmbedded = false // TODO: detect embedded assets?
-            });
+              Log.Trace($"Importing new asset {typeId} from path {absolutePath}");
 
-            if (writeMetadataToDisk)
-            {
-              var metadata = new AssetMetadata
+              _entries.Add(new AssetEntry
               {
+                AbsolutePath = absolutePath,
                 AssetId = Guid.NewGuid(),
-                TypeId = typeId
-              };
+                TypeId = typeId,
+                IsEmbedded = false // TODO: detect embedded assets?
+              });
 
-              Log.Trace($"Writing asset {metadata.AssetId} metadata to disk {metadataPath}");
+              if (writeMetadataToDisk)
+              {
+                var metadata = new AssetMetadata
+                {
+                  AssetId = Guid.NewGuid(),
+                  TypeId = typeId
+                };
 
-              await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
+                Log.Trace($"Writing asset {metadata.AssetId} metadata to disk {metadataPath}");
+
+                await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
+              }
             }
           }
         }
+      }
+      catch (Exception exception)
+      {
+        Log.Error(exception, $"An error occurred whilst importing asset {absolutePath}");
       }
     }
   }
@@ -252,29 +292,36 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     // recursively search for all files in the source path
     foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
     {
-      VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
-
-      if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
-      if (!metadataPath.Exists()) continue; // we don't want to import assets without metadata
-
-      var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
-
-      foreach (var importer in Importers)
+      try
       {
-        if (importer.CanHandle(metadata))
+        VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
+
+        if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
+        if (!metadataPath.Exists()) continue; // we don't want to import assets without metadata
+
+        var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
+
+        foreach (var importer in Importers)
         {
-          Log.Trace($"Refreshing asset {metadata.AssetId} from path {absolutePath}");
-
-          _entries.Add(new AssetEntry
+          if (importer.CanHandle(metadata))
           {
-            AssetId = metadata.AssetId,
-            TypeId = metadata.TypeId,
-            AbsolutePath = absolutePath,
-            IsEmbedded = false // TODO: detect embedded assets?
-          });
+            Log.Trace($"Refreshing asset {metadata.AssetId} from path {absolutePath}");
 
-          break; // TODO: support multiple assets per path
+            _entries.Add(new AssetEntry
+            {
+              AssetId = metadata.AssetId,
+              TypeId = metadata.TypeId,
+              AbsolutePath = absolutePath,
+              IsEmbedded = false // TODO: detect embedded assets?
+            });
+
+            break; // TODO: support multiple assets per path
+          }
         }
+      }
+      catch (Exception exception)
+      {
+        Log.Error(exception, $"An error occurred whilst refreshing asset {absolutePath}");
       }
     }
   }
@@ -285,6 +332,75 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   public Task BakeAsync(string target, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
+  }
+
+  /// <inheritdoc/>
+  public void Dispose()
+  {
+    _pathWatcher?.Dispose();
+  }
+
+  /// <summary>
+  /// Invoked when a file is created.
+  /// </summary>
+  private void OnFileCreated(VirtualPath path)
+  {
+    if (path.IsFile())
+    {
+      Log.Trace($"File was created {path}");
+    }
+    else if (path.IsDirectory())
+    {
+      Log.Trace($"Directory was created {path}");
+    }
+  }
+
+  /// <summary>
+  /// Invoked when a file is modified.
+  /// </summary>
+  private void OnFileChanged(VirtualPath path, PathChangeTypes changeType)
+  {
+    if (changeType.HasFlagFast(PathChangeTypes.Modified))
+    {
+      if (path.IsFile())
+      {
+        Log.Trace($"File was modified {path}");
+      }
+      else if (path.IsDirectory())
+      {
+        Log.Trace($"Directory was modified {path}");
+      }
+    }
+  }
+
+  /// <summary>
+  /// Invoked when a file is renamed.
+  /// </summary>
+  private void OnFileRenamed(VirtualPath oldPath, VirtualPath newPath)
+  {
+    if (oldPath.IsFile())
+    {
+      Log.Trace($"File was renamed from {oldPath} to {newPath}");
+    }
+    else if (oldPath.IsDirectory())
+    {
+      Log.Trace($"Directory was renamed from {oldPath} to {newPath}");
+    }
+  }
+
+  /// <summary>
+  /// Invoked when a file is deleted.
+  /// </summary>
+  private void OnFileDeleted(VirtualPath path)
+  {
+    if (path.IsFile())
+    {
+      Log.Trace($"File was deleted {path}");
+    }
+    else if (path.IsDirectory())
+    {
+      Log.Trace($"Directory was deleted {path}");
+    }
   }
 
   /// <summary>
