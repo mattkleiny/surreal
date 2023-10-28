@@ -12,6 +12,11 @@ namespace Surreal.Editing.Projects;
 public interface IAssetImporter
 {
   /// <summary>
+  /// Determines if the given path can be handled by this importer, and returns the expected type id.
+  /// </summary>
+  bool TryDetermineType(string absolutePath, out Guid typeId);
+
+  /// <summary>
   /// Determines if the importer can handle an asset.
   /// </summary>
   bool CanHandle(AssetMetadata metadata);
@@ -28,16 +33,10 @@ public interface IAssetImporter
 public abstract class AssetImporter<[MeansImplicitUse] TAsset> : IAssetImporter
   where TAsset : class
 {
-  /// <inheritdoc/>
-  public virtual bool CanHandle(AssetMetadata metadata)
-  {
-    if (!typeof(TAsset).TryGetCustomAttribute(out AssetTypeAttribute attribute))
-    {
-      throw new InvalidOperationException($"The associated class {typeof(TAsset)} has no {nameof(AssetTypeAttribute)}");
-    }
-
-    return attribute.Id == metadata.TypeId;
-  }
+  /// <summary>
+  /// Determines if the importer can handle an asset at the given path.
+  /// </summary>
+  protected abstract bool CanHandlePath(string absolutePath);
 
   /// <summary>
   /// Imports a raw <see cref="TAsset"/> from disk.
@@ -45,9 +44,46 @@ public abstract class AssetImporter<[MeansImplicitUse] TAsset> : IAssetImporter
   public abstract Task<TAsset> ImportAsync(VirtualPath path, CancellationToken cancellationToken = default);
 
   /// <inheritdoc/>
+  bool IAssetImporter.TryDetermineType(string absolutePath, out Guid typeId)
+  {
+    if (CanHandlePath(absolutePath))
+    {
+      typeId = GetTypeId();
+      return true;
+    }
+
+    typeId = default;
+    return false;
+  }
+
+  /// <inheritdoc/>
+  bool IAssetImporter.CanHandle(AssetMetadata metadata)
+  {
+    if (!typeof(TAsset).TryGetCustomAttribute(out AssetTypeAttribute attribute))
+    {
+      throw new InvalidOperationException($"The associated class {typeof(TAsset)} has no {nameof(AssetTypeAttribute)}");
+    }
+
+    return GetTypeId() == metadata.TypeId;
+  }
+
+  /// <inheritdoc/>
   async Task<object> IAssetImporter.ImportAsync(VirtualPath path, CancellationToken cancellationToken)
   {
     return await ImportAsync(path, cancellationToken);
+  }
+
+  /// <summary>
+  /// The type id of the asset.
+  /// </summary>
+  private static Guid GetTypeId()
+  {
+    if (!typeof(TAsset).TryGetCustomAttribute(out AssetTypeAttribute attribute))
+    {
+      throw new InvalidOperationException($"The associated class {typeof(TAsset)} has no {nameof(AssetTypeAttribute)}");
+    }
+
+    return attribute.Id;
   }
 }
 

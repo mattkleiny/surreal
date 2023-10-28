@@ -67,7 +67,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   {
     if (!assetType.TryGetCustomAttribute(out AssetTypeAttribute attribute))
     {
-      throw new InvalidOperationException("The given type has no associated asset type attribute");
+      throw new InvalidOperationException($"The associated class {assetType.Name} has no {nameof(AssetTypeAttribute)}");
     }
 
     if (!_entries.TryGetByType(attribute.Id, out var entries))
@@ -79,6 +79,138 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   }
 
   /// <summary>
+  /// Loads a <see cref="TAsset"/> from the given path.
+  /// </summary>
+  public async Task<TAsset> LoadAssetAsync<TAsset>(string path, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
+    where TAsset : class
+  {
+    return (TAsset)await LoadAssetAsync(typeof(TAsset), path, cancellationToken, writeMetadataToDisk);
+  }
+
+  /// <summary>
+  /// Loads an asset of the given type from the given path.
+  /// </summary>
+  private async Task<object> LoadAssetAsync(Type assetType, string path, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
+  {
+    var absolutePath = Path.GetFullPath(path);
+
+    // if an asset exists at the given path, load it
+    foreach (var entry in GetAssetsByType(assetType))
+    {
+      // we're looking for an asset with the same absolute path
+      if (entry.AbsolutePath != absolutePath) continue;
+
+      var metadata = new AssetMetadata
+      {
+        AssetId = entry.AssetId,
+        TypeId = entry.TypeId
+      };
+
+      foreach (var importer in Importers)
+      {
+        if (importer.CanHandle(metadata))
+        {
+          return await importer.ImportAsync(absolutePath, cancellationToken);
+        }
+      }
+    }
+
+    // load a brand new asset and add it to the database
+    return ImportAssetAsync(assetType, path, cancellationToken, writeMetadataToDisk);
+  }
+
+  /// <summary>
+  /// Imports a new asset into the database.
+  /// </summary>
+  public async Task<object> ImportAssetAsync(Type assetType, string path, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
+  {
+    if (path.EndsWith(".meta"))
+    {
+      throw new InvalidOperationException("Unable to import .meta file into the database; they're markers for the database itself");
+    }
+
+    var absolutePath = Path.GetFullPath(path);
+
+    // create a new asset metadata
+    var metadata = new AssetMetadata
+    {
+      AssetId = Guid.NewGuid(),
+      TypeId = assetType.GetCustomAttribute<AssetTypeAttribute>()!.Id
+    };
+
+    foreach (var importer in Importers)
+    {
+      if (importer.CanHandle(metadata))
+      {
+        var asset = await importer.ImportAsync(absolutePath, cancellationToken);
+
+        // create a new asset entry
+        _entries.Add(new AssetEntry
+        {
+          AssetId = metadata.AssetId,
+          TypeId = metadata.TypeId,
+          AbsolutePath = absolutePath,
+          IsEmbedded = false // TODO: detect embedded assets?
+        });
+
+        if (writeMetadataToDisk)
+        {
+          // write the metadata to disk
+          VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
+
+          await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
+        }
+
+        return asset;
+      }
+    }
+
+    throw new InvalidOperationException($"Unable to locate asset importer for {assetType.Name}");
+  }
+
+  /// <summary>
+  /// Imports all assets under the given path into the database.
+  /// </summary>
+  public async Task ImportAssetsAsync(string basePath, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
+  {
+    // recursively search for all files in the source path
+    foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
+    {
+      if (_entries.ContainsPath(absolutePath)) continue; // we don't want to import assets that are already imported
+
+      VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
+
+      if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
+      if (await metadataPath.ExistsAsync()) continue; // we don't want to import assets that already have metadata
+
+      foreach (var importer in Importers)
+      {
+        if (importer.TryDetermineType(absolutePath, out var typeId))
+        {
+          _entries.Add(new AssetEntry
+          {
+            AbsolutePath = absolutePath,
+            AssetId = Guid.NewGuid(),
+            TypeId = typeId,
+            IsEmbedded = false // TODO: detect embedded assets?
+          });
+
+          if (writeMetadataToDisk)
+          {
+            var metadata = new AssetMetadata
+            {
+              AssetId = Guid.NewGuid(),
+              TypeId = typeId
+            };
+
+            await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
+          }
+        }
+      }
+    }
+  }
+
+  /// <summary>
   /// Refreshes the asset database.
   /// </summary>
   public async Task RefreshAsync(CancellationToken cancellationToken = default)
@@ -86,11 +218,11 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     _entries.Clear();
 
     // recursively search for all files in the source path
-    foreach (var assetPath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
+    foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
     {
-      VirtualPath metadataPath = Path.ChangeExtension(assetPath, "meta");
+      VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
 
-      if (assetPath.EndsWith(".meta")) continue; // we don't want to import metadata directly
+      if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
       if (!await metadataPath.ExistsAsync()) continue; // we don't want to import assets without metadata
 
       var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
@@ -103,7 +235,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
           {
             AssetId = metadata.AssetId,
             TypeId = metadata.TypeId,
-            AbsolutePath = assetPath,
+            AbsolutePath = absolutePath,
             IsEmbedded = false // TODO: detect embedded assets?
           });
 
@@ -148,11 +280,6 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     public required bool IsEmbedded { get; init; }
 
     /// <summary>
-    /// The current value of the asset in memory.
-    /// </summary>
-    public object? Data { get; set; }
-
-    /// <summary>
     /// The index of this entry in the <see cref="AssetEntryCollection"/>.
     /// </summary>
     internal ArenaIndex Index { get; set; }
@@ -166,14 +293,22 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     private readonly Arena<AssetEntry> _entries = new();
     private readonly Dictionary<Guid, ArenaIndex> _assetsById = new();
     private readonly MultiDictionary<string, ArenaIndex> _assetsByPath = new();
-    private readonly MultiDictionary<Guid, ArenaIndex> _assetsByType = new();
+    private readonly MultiDictionary<Guid, ArenaIndex> _assetsByTypeId = new();
+
+    /// <summary>
+    /// Determines if the collection contains an asset with the given ID.
+    /// </summary>
+    public bool ContainsId(Guid assetId)
+    {
+      return _assetsById.ContainsKey(assetId);
+    }
 
     /// <summary>
     /// Attempts to get an asset by its ID.
     /// </summary>
-    public bool TryGetById(Guid key, [MaybeNullWhen(false)] out AssetEntry result)
+    public bool TryGetById(Guid assetId, [MaybeNullWhen(false)] out AssetEntry result)
     {
-      if (!_assetsById.TryGetValue(key, out var index))
+      if (!_assetsById.TryGetValue(assetId, out var index))
       {
         result = default;
         return false;
@@ -184,11 +319,19 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     }
 
     /// <summary>
+    /// Determines if the collection contains an asset at the given path.
+    /// </summary>
+    public bool ContainsPath(string absolutePath)
+    {
+      return _assetsByPath.ContainsKey(absolutePath);
+    }
+
+    /// <summary>
     /// Attempts to get all assets by path.
     /// </summary>
-    public bool TryGetByPath(string path, [MaybeNullWhen(false)] out AssetEntry[] results)
+    public bool TryGetByPath(string absolutePath, [MaybeNullWhen(false)] out AssetEntry[] results)
     {
-      if (!_assetsByPath.TryGetValues(path, out var indices))
+      if (!_assetsByPath.TryGetValues(absolutePath, out var indices))
       {
         results = default;
         return false;
@@ -205,11 +348,19 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     }
 
     /// <summary>
-    /// Attempts to get all assets by type.
+    /// Determines if the collection contains an asset with the given type id.
     /// </summary>
-    public bool TryGetByType(Guid key, [MaybeNullWhen(false)] out AssetEntry[] results)
+    public bool ContainsType(Guid typeId)
     {
-      if (!_assetsByType.TryGetValues(key, out var indices))
+      return _assetsByTypeId.ContainsKey(typeId);
+    }
+
+    /// <summary>
+    /// Attempts to get all assets by type id.
+    /// </summary>
+    public bool TryGetByType(Guid typeId, [MaybeNullWhen(false)] out AssetEntry[] results)
+    {
+      if (!_assetsByTypeId.TryGetValues(typeId, out var indices))
       {
         results = default;
         return false;
@@ -236,7 +387,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
 
       _assetsById.Add(entry.AssetId, index);
       _assetsByPath.Add(entry.AbsolutePath, index);
-      _assetsByType.Add(entry.TypeId, index);
+      _assetsByTypeId.Add(entry.TypeId, index);
     }
 
     /// <summary>
@@ -250,7 +401,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
 
       _assetsById.Remove(entry.AssetId);
       _assetsByPath.Remove(entry.AbsolutePath, index);
-      _assetsByType.Remove(entry.TypeId, index);
+      _assetsByTypeId.Remove(entry.TypeId, index);
     }
 
     /// <summary>
@@ -261,7 +412,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
       _entries.Clear();
 
       _assetsById.Clear();
-      _assetsByType.Clear();
+      _assetsByTypeId.Clear();
       _assetsByPath.Clear();
 
       _entries.Compact();
