@@ -14,7 +14,7 @@
   }
 };
 
-Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
+Game.Start(configuration, async (Game game, IGraphicsBackend graphics) =>
 {
   using var geometryBatch = new GeometryBatch(graphics)
   {
@@ -29,11 +29,6 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
     script.ExecuteFunction("tick", bridge, time.DeltaTime.Seconds);
 
     geometryBatch.Flush();
-
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      game.Exit();
-    }
   });
 });
 

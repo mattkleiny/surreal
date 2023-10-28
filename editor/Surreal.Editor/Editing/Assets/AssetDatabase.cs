@@ -129,19 +129,20 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     // recursively search for all files in the source path
     foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
     {
+      VirtualPath assetPath = absolutePath;
+      VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
+
       try
       {
         if (_entries.ContainsPath(absolutePath)) continue; // we don't want to import assets that are already imported
         if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
-
-        VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
 
         if (metadataPath.Exists())
         {
           // refresh this entry
           var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
 
-          Log.Trace($"Importing asset {metadata.AssetId} from path {absolutePath}");
+          Log.Trace($"Importing asset from path {assetPath}");
 
           _entries.Add(new AssetEntry
           {
@@ -158,7 +159,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
           {
             if (importer.TryGetTypeId(absolutePath, out var typeId))
             {
-              Log.Trace($"Importing new asset {typeId} from path {absolutePath}");
+              Log.Trace($"Importing new asset from path {assetPath}");
 
               _entries.Add(new AssetEntry
               {
@@ -176,7 +177,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
                   TypeId = typeId
                 };
 
-                Log.Trace($"Writing asset {metadata.AssetId} metadata to disk {metadataPath}");
+                Log.Trace($"Writing asset metadata to disk {metadataPath}");
 
                 await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
               }
@@ -186,7 +187,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
       }
       catch (Exception exception)
       {
-        Log.Error(exception, $"An error occurred whilst importing asset {absolutePath}");
+        Log.Error(exception, $"An error occurred whilst importing asset {assetPath}");
       }
     }
   }
@@ -203,10 +204,11 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     // recursively search for all files in the source path
     foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
     {
+      VirtualPath assetPath = absolutePath;
+      VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
+
       try
       {
-        VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
-
         if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
         if (!metadataPath.Exists()) continue; // we don't want to import assets without metadata
 
@@ -216,7 +218,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
         {
           if (importer.CanHandle(metadata))
           {
-            Log.Trace($"Refreshing asset {metadata.AssetId} from path {absolutePath}");
+            Log.Trace($"Refreshing asset {metadata.AssetId} from {assetPath}");
 
             _entries.Add(new AssetEntry
             {
@@ -232,7 +234,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
       }
       catch (Exception exception)
       {
-        Log.Error(exception, $"An error occurred whilst refreshing asset {absolutePath}");
+        Log.Error(exception, $"An error occurred whilst refreshing asset {assetPath}");
       }
     }
   }
@@ -459,8 +461,6 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     /// </summary>
     public void Add(AssetEntry entry)
     {
-      Log.Trace($"Adding entry {entry.AbsolutePath}");
-
       var index = _entries.Add(entry);
 
       entry.Index = index;
@@ -486,8 +486,6 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     /// </summary>
     public void Remove(AssetEntry entry)
     {
-      Log.Trace($"Removing entry {entry.AbsolutePath}");
-
       var index = entry.Index;
 
       _entries.Remove(index);

@@ -1,7 +1,7 @@
 ﻿using Surreal.Editing.Assets;
 using Surreal.Editing.Projects;
 
-namespace Surreal.Editing.ViewModels;
+namespace Surreal.Editing.Common;
 
 /// <summary>
 /// Base class for any view model in the editor.

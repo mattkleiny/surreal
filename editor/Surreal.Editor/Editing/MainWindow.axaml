@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:surreal="clr-namespace:Surreal.Editing"
+        xmlns:components="clr-namespace:Surreal.Editing.Components"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:CompileBindings="True"
         x:Class="Surreal.Editing.MainWindow"
@@ -20,9 +21,8 @@
     </MultiBinding>
   </Window.Title>
 
-  <StackPanel IsEnabled="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}">
-    <Button Command="{Binding StartGame}">Start Game</Button>
-    <Button Command="{Binding StopGame}">Stop Game</Button>
-  </StackPanel>
+  <Grid>
+    <components:GameViewport />
+  </Grid>
 
 </Window>

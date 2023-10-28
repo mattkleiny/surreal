@@ -1,4 +1,5 @@
 ﻿using NLua;
+using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 using Surreal.Utilities;
 
@@ -10,6 +11,8 @@ namespace Surreal.Scripting.Lua;
 [RegisterService(typeof(IScriptLanguage))]
 internal sealed class LuaLanguage : IScriptLanguage
 {
+  private static readonly ILog Log = LogFactory.GetLog<LuaLanguage>();
+
   /// <inheritdoc/>
   public bool CanLoad(VirtualPath path)
   {
@@ -44,6 +47,9 @@ internal sealed class LuaLanguage : IScriptLanguage
       lua.DoString("import ('Surreal', 'Surreal.Memory')");
       lua.DoString("import ('Surreal', 'Surreal.Text')");
       lua.DoString("import ('System.Numerics.Vectors', 'System.Numerics')");
+
+      // replace default functions
+      lua["print"] = (string message) => Log.Debug(message);
 
       // run the initial script code
       lua.DoString(code);

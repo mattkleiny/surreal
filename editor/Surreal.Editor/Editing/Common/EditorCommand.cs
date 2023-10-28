@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace Surreal.Editing.ViewModels;
+namespace Surreal.Editing.Common;
 
 /// <summary>
 /// A <see cref="ICommand"/> that executes a delegate, with an optional predicate.
