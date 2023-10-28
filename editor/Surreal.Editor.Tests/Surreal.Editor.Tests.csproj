@@ -1,9 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>Surreal.Editor</RootNamespace>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Editor\Surreal.Editor.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- copy asset folders to output -->
+    <Content Include="$(ProjectDir)\Assets\Source\**" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Include="$(ProjectDir)\Assets\Target\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>

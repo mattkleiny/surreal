@@ -181,10 +181,10 @@ public static class VirtualPathExtensions
     await using var writer = new StreamWriter(stream, encoding);
 
     await writer.WriteAsync(text.AsMemory(), cancellationToken);
-    await writer.FlushAsync();
+    await writer.FlushAsync(cancellationToken);
   }
 
-  public static void Serialize<T>(this VirtualPath path, T value, FileFormat format)
+  public static void Serialize<[MeansImplicitUse] T>(this VirtualPath path, T value, FileFormat format)
     where T : class
   {
     using var stream = path.OpenOutputStream();
@@ -192,7 +192,7 @@ public static class VirtualPathExtensions
     format.Serialize(stream, value);
   }
 
-  public static async ValueTask SerializeAsync<T>(this VirtualPath path, T value, FileFormat format, CancellationToken cancellationToken = default)
+  public static async ValueTask SerializeAsync<[MeansImplicitUse] T>(this VirtualPath path, T value, FileFormat format, CancellationToken cancellationToken = default)
     where T : class
   {
     await using var stream = await path.OpenOutputStreamAsync();
@@ -200,7 +200,7 @@ public static class VirtualPathExtensions
     await format.SerializeAsync(stream, value, cancellationToken);
   }
 
-  public static T Deserialize<T>(this VirtualPath path, FileFormat format)
+  public static T Deserialize<[MeansImplicitUse] T>(this VirtualPath path, FileFormat format)
     where T : class
   {
     using var stream = path.OpenInputStream();
@@ -214,7 +214,7 @@ public static class VirtualPathExtensions
     return result;
   }
 
-  public static async ValueTask<T> DeserializeAsync<T>(this VirtualPath path, FileFormat format, CancellationToken cancellationToken = default)
+  public static async ValueTask<T> DeserializeAsync<[MeansImplicitUse] T>(this VirtualPath path, FileFormat format, CancellationToken cancellationToken = default)
     where T : class
   {
     await using var stream = await path.OpenInputStreamAsync();

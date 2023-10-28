@@ -11,7 +11,7 @@ public sealed class Project
     Assets = new AssetDatabase(SourcePath, TargetPath);
 
     // refresh assets in the background
-    Task.Run(Assets.RefreshAsync);
+    Task.Run(() => Assets.RefreshAsync());
   }
 
   /// <summary>

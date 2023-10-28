@@ -5,6 +5,7 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 indent_style = space
 indent_size = 2
+max_line_length = off
 
 [*.cs]
 csharp_style_var_for_built_in_types = true:silent

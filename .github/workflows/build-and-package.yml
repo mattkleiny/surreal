@@ -1,4 +1,4 @@
-name: Build, Test and Package
+name: Master Build and Package
 
 on:
   push:
