@@ -8,15 +8,14 @@
              x:DataType="components:GameViewportViewModel"
              x:Class="Surreal.Editing.Components.GameViewport">
 
-  <StackPanel IsEnabled="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center">
-    <Button Command="{Binding StartGame}">
-      Start Game
-    </Button>
-    <Button Command="{Binding StopGame}">
-      Stop Game
-    </Button>
-  </StackPanel>
+  <DockPanel IsEnabled="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}" LastChildFill="True">
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_Game">
+        <MenuItem Header="_Start Game" Command="{Binding StartGame}" />
+        <MenuItem Header="S_top Game" Command="{Binding StopGame}" />
+      </MenuItem>
+    </Menu>
+    <components:GameViewportHost x:Name="Host" />
+  </DockPanel>
 
 </UserControl>

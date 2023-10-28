@@ -1,4 +1,6 @@
 ﻿using Avalonia.Controls;
+using Avalonia.OpenGL;
+using Avalonia.OpenGL.Controls;
 using Avalonia.Threading;
 using Surreal.Audio;
 using Surreal.Editing.Common;
@@ -18,7 +20,19 @@ internal partial class GameViewport : UserControl
   {
     InitializeComponent();
 
-    DataContext = new GameViewportViewModel(this);
+    DataContext = new GameViewportViewModel(this, Host);
+  }
+}
+
+/// <summary>
+/// An <see cref="OpenGlControlBase"/> that hosts the game viewport.
+/// </summary>
+internal sealed class GameViewportHost : OpenGlControlBase
+{
+  protected override void OnOpenGlRender(GlInterface gl, int fb)
+  {
+    gl.ClearColor(0f, 0f, 0f, 1f);
+    gl.Clear(GlConsts.GL_COLOR_BUFFER_BIT);
   }
 }
 
@@ -28,12 +42,15 @@ internal partial class GameViewport : UserControl
 internal sealed class GameViewportViewModel : EditorViewModel
 {
   private readonly GameViewport _viewport;
+  private readonly GameViewportHost _viewportHost;
   private readonly HostingContext _context;
   private bool _isRunning;
 
-  public GameViewportViewModel(GameViewport viewport)
+  public GameViewportViewModel(GameViewport viewport, GameViewportHost viewportHost)
   {
     _viewport = viewport;
+    _viewportHost = viewportHost;
+
     _context = new EditorHostingContext(this);
 
     StartGame = new EditorCommand(OnStartGame, () => !IsRunning);
