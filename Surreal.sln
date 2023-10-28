@@ -92,7 +92,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriteSheets", "examples\Sp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Aseprite.Tests", "extensions\Surreal.Extensions.Aseprite.Tests\Surreal.Extensions.Aseprite.Tests.csproj", "{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicScene.Editor", "examples\BasicScene.Editor\BasicScene.Editor.csproj", "{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloEditor", "examples\HelloEditor\HelloEditor.csproj", "{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

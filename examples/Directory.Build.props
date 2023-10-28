@@ -42,10 +42,5 @@
 
     <!-- automatically exclude example projects from code coverage -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
-
-    <!-- allow access to internals from associated editor projects -->
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>$(ProjectName).Editor</_Parameter1>
-    </AssemblyAttribute>
   </ItemGroup>
 </Project>
