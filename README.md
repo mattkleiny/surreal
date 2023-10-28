@@ -16,7 +16,7 @@ with an emphasis on simplicity and ease of use.
 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet)
 
-### Installation
+### Getting Started
 
 1. Clone the repository ```git clone https://github.com/mattkleiny/surreal.git```
 2. Build the project ```dotnet build```
@@ -25,7 +25,7 @@ with an emphasis on simplicity and ease of use.
 
 ## Usage
 
-The following code snippets show how to use Surreal to create a simple game.
+The following code snippet show how to use Surreal to create a simple game loop.
 
 ```csharp
 // configure the platform for hosting the game

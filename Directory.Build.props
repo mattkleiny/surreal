@@ -25,6 +25,12 @@
     <!-- analysis and warnings -->
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>
     <NoWarn>CS0067</NoWarn>
+
+    <!-- enable source link for all projects -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <!-- conveniences for all projects -->
@@ -32,6 +38,9 @@
     <!-- annotations for JetBrains IDEs; private to each assembly -->
     <Using Include="JetBrains.Annotations"/>
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all"/>
+
+    <!-- github sourcelink support -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
 
     <!-- automatically copy external and embedded assets -->
     <Content Include="$(ProjectDir)\Assets\External\**" CopyToOutputDirectory="PreserveNewest"/>
