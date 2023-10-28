@@ -1,0 +1,7 @@
+<!-- common package versions for all projects -->
+<Project>
+  <PropertyGroup>
+    <AvaloniaVersion>11.0.5</AvaloniaVersion>
+    <SilkVersion>2.17</SilkVersion>
+  </PropertyGroup>
+</Project>

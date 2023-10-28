@@ -3,7 +3,6 @@
     <OutputType>WinExe</OutputType>
     <Description>The editor host for the Surreal project.</Description>
     <StartWorkingDirectory>$(MSBuildThisFileDirectory)</StartWorkingDirectory>
-    <AvaloniaVersion>11.0.5</AvaloniaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />

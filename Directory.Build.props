@@ -1,4 +1,4 @@
-<!-- common configuration for all projects -->
+<!-- common props for all projects -->
 <Project>
   <PropertyGroup>
     <!-- shared project properties -->
@@ -35,11 +35,11 @@
 
   <!-- conveniences for all projects -->
   <ItemGroup>
-    <!-- annotations for JetBrains IDEs; private to each assembly -->
+    <!-- annotations for JetBrains IDEs -->
     <Using Include="JetBrains.Annotations"/>
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all"/>
 
-    <!-- github sourcelink support -->
+    <!-- sourcelink support -->
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
 
     <!-- automatically copy external and embedded assets -->
@@ -64,89 +64,5 @@
       ReferenceOutputAssembly="false"
       OutputItemType="Analyzer"
       Condition="$(ProjectName) != 'Surreal.Analyzers'"/>
-  </ItemGroup>
-
-  <!-- conveniences for .NET projects -->
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net8'))">
-    <Using Include="System.Buffers"/>
-    <Using Include="System.Collections"/>
-    <Using Include="System.Collections.Concurrent"/>
-    <Using Include="System.Collections.Generic"/>
-    <Using Include="System.Collections.Immutable"/>
-    <Using Include="System.ComponentModel"/>
-    <Using Include="System.Diagnostics"/>
-    <Using Include="System.Diagnostics.CodeAnalysis"/>
-    <Using Include="System.Globalization"/>
-    <Using Include="System.Linq"/>
-    <Using Include="System.Linq.Expressions"/>
-    <Using Include="System.Net"/>
-    <Using Include="System.Numerics"/>
-    <Using Include="System.Reflection"/>
-    <Using Include="System.Runtime.CompilerServices"/>
-    <Using Include="System.Runtime.InteropServices"/>
-    <Using Include="System.Runtime.Versioning"/>
-    <Using Include="System.Security"/>
-    <Using Include="System.Text"/>
-    <Using Include="System.Text.Json"/>
-    <Using Include="System.Text.Json.Serialization"/>
-    <Using Include="System.Xml"/>
-    <Using Include="System.Xml.Serialization"/>
-  </ItemGroup>
-
-  <!-- conveniences for .NET Standard projects -->
-  <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
-    <Using Include="System.Collections"/>
-    <Using Include="System.Collections.Concurrent"/>
-    <Using Include="System.ComponentModel"/>
-    <Using Include="System.Diagnostics"/>
-    <Using Include="System.Diagnostics.CodeAnalysis"/>
-    <Using Include="System.Globalization"/>
-    <Using Include="System.Linq"/>
-    <Using Include="System.Linq.Expressions"/>
-    <Using Include="System.Net"/>
-    <Using Include="System.Numerics"/>
-    <Using Include="System.Reflection"/>
-    <Using Include="System.Runtime.CompilerServices"/>
-    <Using Include="System.Security"/>
-    <Using Include="System.Text"/>
-  </ItemGroup>
-
-  <!-- conveniences for test projects -->
-  <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
-    <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
-  <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
-    <PackageReference Include="AutoFixture" Version="4.17.0"/>
-    <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.17.0"/>
-    <PackageReference Include="coverlet.collector" Version="3.0.3"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0"/>
-    <PackageReference Include="NSubstitute" Version="4.2.2"/>
-    <PackageReference Include="NUnit" Version="3.13.2"/>
-    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0"/>
-    <PackageReference Include="FluentAssertions" Version="6.0.0"/>
-
-    <Using Include="NUnit.Framework"/>
-    <Using Include="NSubstitute"/>
-    <Using Include="FluentAssertions"/>
-
-    <!-- automatically exclude test projects from code coverage -->
-    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
-  </ItemGroup>
-
-  <!-- conveniences for benchmark projects -->
-  <PropertyGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
-    <OutputType>Exe</OutputType>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-  <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.9"/>
-
-    <Using Include="BenchmarkDotNet"/>
-    <Using Include="BenchmarkDotNet.Attributes"/>
-    <Using Include="BenchmarkDotNet.Running"/>
-
-    <!-- automatically exclude benchmark projects from code coverage -->
-    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
   </ItemGroup>
 </Project>

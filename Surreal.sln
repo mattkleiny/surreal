@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Solution Items)", "(Soluti
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 		.gitattributes = .gitattributes
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5B995C24-B8BE-46E8-8B0B-1254641F31A0}"

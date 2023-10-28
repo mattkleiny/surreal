@@ -3,7 +3,7 @@
   <Import Project="../Directory.Build.props" />
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <IsPackable>false</IsPackable>
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
     <TargetPlatformIdentifier>windows</TargetPlatformIdentifier>
