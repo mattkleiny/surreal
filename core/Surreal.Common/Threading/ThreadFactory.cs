@@ -7,15 +7,27 @@ public sealed record ThreadOptions
 {
   public static ThreadOptions Default { get; } = new();
 
-  public string Name { get; set; } = "Worker Thread";
-  public bool IsBackground { get; set; }
-  public ThreadPriority Priority { get; set; } = ThreadPriority.Normal;
+  /// <summary>
+  /// The name of the thread.
+  /// </summary>
+  public string Name { get; init; } = "Worker Thread";
+
+  /// <summary>
+  /// True if the thread is a background thread.
+  /// Background thread don't prevent the process from exiting.
+  /// </summary>
+  public bool IsBackground { get; init; }
+
+  /// <summary>
+  /// The desired priority of the thread.
+  /// </summary>
+  public ThreadPriority Priority { get; init; } = ThreadPriority.Normal;
 
   /// <summary>
   /// Use a single threading apartment (for Win32 COM interop).
   /// </summary>
   /// <remarks>This is only applicable to Windows, and will be ignored on other platforms.</remarks>
-  public bool UseSingleThreadApartment { get; set; }
+  public bool UseSingleThreadApartment { get; init; }
 }
 
 /// <summary>
@@ -41,6 +53,7 @@ public static class ThreadFactory
       try
       {
         await body();
+
         completionSource.SetResult();
       }
       catch (OperationCanceledException exception)

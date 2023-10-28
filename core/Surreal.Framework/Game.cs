@@ -1,6 +1,7 @@
 ﻿using System.Runtime;
 using Surreal.Assets;
 using Surreal.Audio;
+using Surreal.Diagnostics.Hosting;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Graphics;
@@ -93,7 +94,7 @@ public class Game : IDisposable
   /// </summary>
   public static void Start(GameConfiguration configuration, Delegate setup)
   {
-    StartInner(configuration, async game =>
+    Run(configuration, async game =>
     {
       // set up the game
       var result = game.Services.ExecuteDelegate(setup, game);
@@ -111,7 +112,7 @@ public class Game : IDisposable
   public static void StartScene<TPipeline>(GameConfiguration configuration, Delegate setup)
     where TPipeline : class, IRenderPipeline
   {
-    StartInner(configuration, async game =>
+    Run(configuration, async game =>
     {
       var physics = game.Services.GetServiceOrThrow<IPhysicsBackend>();
 
@@ -145,8 +146,17 @@ public class Game : IDisposable
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
-  private static void StartInner(GameConfiguration configuration, Func<Game, Task> gameSetup)
+  private static void Run(GameConfiguration configuration, Func<Game, Task> gameSetup)
   {
+    // if a hosting context is attached, we're attempting to be run inside of some
+    // environment. kick-off a different main loop in that case.
+    var hostingContext = HostingContext.Current;
+    if (hostingContext != null)
+    {
+      RunInsideHost(configuration, hostingContext, gameSetup);
+      return;
+    }
+
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
     // use the base directory as the current directory
@@ -200,6 +210,50 @@ public class Game : IDisposable
       // eventually this will end up blocking when a main loop takes over
       PumpEventLoop();
     }
+  }
+
+  /// <summary>
+  /// Runs this game inside of a <see cref="HostingContext"/>.
+  /// </summary>
+  private static void RunInsideHost(GameConfiguration configuration, HostingContext hostingContext, Func<Game, Task> gameSetup)
+  {
+    var isRunning = true;
+
+    hostingContext.HotReloaded += () =>
+    {
+      // TODO: hot reload core services?
+      Log.Trace("The game has hot reloaded!");
+    };
+
+    hostingContext.Cancelled += () =>
+    {
+      // cancel the main loop
+      isRunning = false;
+    };
+
+    hostingContext.NotifyStarted();
+
+    // TODO: bootstrap the game using the hosting context
+
+    var deltaTimeClock = new DeltaTimeClock();
+    var updateTimer = new IntervalTimer(TimeSpan.FromSeconds(1));
+
+    while (isRunning)
+    {
+      var deltaTime = deltaTimeClock.Tick();
+
+      // TODO: execute the game logic
+      if (updateTimer.Tick(deltaTime))
+      {
+        Log.Trace("Game is updating!");
+
+        updateTimer.Reset();
+      }
+
+      Thread.Yield();
+    }
+
+    hostingContext.NotifyStopped();
   }
 
   /// <summary>

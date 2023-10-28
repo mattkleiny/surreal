@@ -6,18 +6,23 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:CompileBindings="True"
         x:Class="Surreal.Editing.MainWindow"
-        x:DataType="surreal:EditorApplication"
-        Width="{Binding Configuration.DefaultWidth, Mode=OneTime}"
-        Height="{Binding Configuration.DefaultHeight, Mode=OneTime}"
+        x:DataType="surreal:MainWindowViewModel"
+        Width="{Binding Configuration.DefaultWidth, Mode=OneTime, FallbackValue=800}"
+        Height="{Binding Configuration.DefaultHeight, Mode=OneTime, FallbackValue=450}"
         Background="Transparent"
         TransparencyLevelHint="AcrylicBlur">
 
   <!-- format the window title based on the project name -->
   <Window.Title>
     <MultiBinding StringFormat="{}{0} ({1})">
-      <Binding Path="Configuration.WindowTitle" />
+      <Binding Path="Configuration.WindowTitle" FallbackValue="Surreal" />
       <Binding Path="Project.RootPath" FallbackValue="No active project" />
     </MultiBinding>
   </Window.Title>
+
+  <StackPanel>
+    <Button Command="{Binding StartGame}">Start Game</Button>
+    <Button Command="{Binding StopGame}">Stop Game</Button>
+  </StackPanel>
 
 </Window>

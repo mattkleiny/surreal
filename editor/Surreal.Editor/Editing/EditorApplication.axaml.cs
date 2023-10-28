@@ -43,6 +43,11 @@ internal sealed class EditorApplication : Application, IDisposable
   public EditorConfiguration Configuration { get; }
 
   /// <summary>
+  /// The currently active <see cref="EditorProject"/>.
+  /// </summary>
+  public EditorProject? Project { get; set; }
+
+  /// <summary>
   /// The root <see cref="IServiceProvider"/> for the editor.
   /// </summary>
   public IServiceProvider Services => _services;
@@ -51,11 +56,6 @@ internal sealed class EditorApplication : Application, IDisposable
   /// The top-level <see cref="IEventBus"/> for the editor.
   /// </summary>
   public IEventBus Events { get; } = new EventBus();
-
-  /// <summary>
-  /// The currently active <see cref="Projects.Project"/>.
-  /// </summary>
-  public Project? Project { get; set; }
 
   public override void Initialize()
   {

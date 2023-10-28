@@ -6,20 +6,13 @@ namespace Surreal.Editing.Projects;
 /// <summary>
 /// A project is a collection of files and folders that are used to create a game.
 /// </summary>
-public sealed class Project
+public sealed class EditorProject
 {
-  /// <summary>
-  /// Loads a project from the given path.
-  /// </summary>
-  public static Project Load(string rootPath, string projectPath)
+  public EditorProject(string rootPath, string projectFilePath)
   {
-    return new Project(rootPath, ProjectFile.Load(projectPath));
-  }
-
-  private Project(string rootPath, ProjectFile projectFile)
-  {
-    ProjectFile = projectFile;
     RootPath = Path.GetFullPath(rootPath);
+    ProjectFile = ProjectFile.Load(projectFilePath);
+
     Assets = new AssetDatabase(SourcePath, TargetPath)
     {
       Importers =
@@ -28,10 +21,10 @@ public sealed class Project
         new ColorPaletteImporter(),
         new TextureImporter()
       },
+      // N.B: place this at the end; order is important!
       WatchForChanges = true
     };
 
-    // import assets in the background
     Task.Run(() => Assets.ImportAssetsAsync(writeMetadataToDisk: true));
   }
 
@@ -63,5 +56,5 @@ public sealed class Project
   /// <summary>
   /// The entry point for the associated project
   /// </summary>
-  public ProjectEntryPoint? EntryPoint { get; init; }
+  public ProjectHost? ProjectHost { get; init; }
 }

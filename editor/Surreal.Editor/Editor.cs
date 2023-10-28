@@ -29,9 +29,9 @@ public sealed record EditorConfiguration
   public int DefaultHeight { get; init; } = 720;
 
   /// <summary>
-  /// The default <see cref="Project"/> to open.
+  /// The default <see cref="EditorProject"/> to open when starting the editor.
   /// </summary>
-  public Project? DefaultProject { get; init; }
+  public EditorProject? DefaultProject { get; init; }
 
   /// <summary>
   /// The <see cref="IServiceModule"/>s to use for the editor.
