@@ -3,6 +3,7 @@ using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Editing;
 using Surreal.Editing.Projects;
+using Surreal.Editing.Workloads;
 using Surreal.Utilities;
 
 namespace Surreal;
@@ -40,6 +41,11 @@ public sealed record EditorConfiguration
   {
     new EditorModule()
   };
+
+  /// <summary>
+  /// The <see cref="IEditorWorkload"/>s to use for the editor.
+  /// </summary>
+  public List<IEditorWorkload> Workloads { get; init; } = new();
 }
 
 /// <summary>

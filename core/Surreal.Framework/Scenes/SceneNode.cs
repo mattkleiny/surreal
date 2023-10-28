@@ -50,16 +50,6 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   public event PropertyEventHandler? PropertyChanged;
 
   /// <summary>
-  /// A unique identifier for this node.
-  /// </summary>
-  public Guid Id { get; } = Guid.NewGuid();
-
-  /// <summary>
-  /// The name of the node.
-  /// </summary>
-  public string? Name { get; set; }
-
-  /// <summary>
   /// The parent of this node.
   /// </summary>
   public SceneNode? Parent { get; private set; }
@@ -253,7 +243,7 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
 
   public override string ToString()
   {
-    return $"{GetType().Name} {{ Id = {Id}, Name = {Name} }}";
+    return $"{GetType().Name} ({Children.Count} children)";
   }
 
   public void Dispose()

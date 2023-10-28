@@ -20,7 +20,7 @@
     </MultiBinding>
   </Window.Title>
 
-  <StackPanel>
+  <StackPanel IsEnabled="{Binding Project, Converter={x:Static ObjectConverters.IsNotNull}}">
     <Button Command="{Binding StartGame}">Start Game</Button>
     <Button Command="{Binding StopGame}">Stop Game</Button>
   </StackPanel>
