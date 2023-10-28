@@ -1,11 +1,11 @@
 ﻿using System.Runtime;
 using Surreal.Assets;
 using Surreal.Audio;
-using Surreal.Diagnostics.Hosting;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Graphics;
 using Surreal.Graphics.Rendering;
+using Surreal.Hosting;
 using Surreal.Input;
 using Surreal.Physics;
 using Surreal.Scenes;
@@ -166,7 +166,7 @@ public class Game : IDisposable
     var startTime = TimeStamp.Now;
 
     using var services = new ServiceRegistry();
-    using var host = configuration.Platform.BuildHost(services);
+    using var host = configuration.Platform.BuildHost();
 
     using var game = new Game
     {
@@ -175,6 +175,8 @@ public class Game : IDisposable
     };
 
     // configure the game services
+    host.RegisterServices(services);
+
     foreach (var module in configuration.Modules)
     {
       services.AddModule(module);
@@ -215,45 +217,71 @@ public class Game : IDisposable
   /// <summary>
   /// Runs this game inside of a <see cref="HostingContext"/>.
   /// </summary>
-  private static void RunInsideHost(GameConfiguration configuration, HostingContext hostingContext, Func<Game, Task> gameSetup)
+  private static void RunInsideHost(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)
   {
-    var isRunning = true;
-
-    hostingContext.HotReloaded += () =>
+    try
     {
-      // TODO: hot reload core services?
-      Log.Trace("The game has hot reloaded!");
-    };
+      context.NotifyStarted();
 
-    hostingContext.Cancelled += () =>
-    {
-      // cancel the main loop
-      isRunning = false;
-    };
+      var startTime = TimeStamp.Now;
 
-    hostingContext.NotifyStarted();
+      // build the game using the hosting context
+      using var services = new ServiceRegistry();
+      using var host = context.PlatformHost;
 
-    // TODO: bootstrap the game using the hosting context
-
-    var deltaTimeClock = new DeltaTimeClock();
-    var updateTimer = new IntervalTimer(TimeSpan.FromSeconds(1));
-
-    while (isRunning)
-    {
-      var deltaTime = deltaTimeClock.Tick();
-
-      // TODO: execute the game logic
-      if (updateTimer.Tick(deltaTime))
+      using var game = new Game
       {
-        Log.Trace("Game is updating!");
+        Services = services,
+        Host = host
+      };
 
-        updateTimer.Reset();
+      // TODO: handle hot reloading?
+      context.Cancelled += () => game.Exit();
+      context.HotReloaded += () => Log.Trace("The game has hot reloaded!");
+
+      // configure the game services
+      host.RegisterServices(services);
+
+      foreach (var module in configuration.Modules)
+      {
+        services.AddModule(module);
       }
 
-      Thread.Yield();
-    }
+      // prepare asset manager
+      foreach (var loader in services.GetServices<IAssetLoader>())
+      {
+        game.Assets.AddLoader(loader);
+      }
 
-    hostingContext.NotifyStopped();
+      // marshal all async work back to the main thread
+      SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
+
+      // prepare the game setup on the first frame of the loop
+      Schedule(() => gameSetup(game).ContinueWith(task =>
+      {
+        if (task.IsFaulted)
+        {
+          Log.Error(task.Exception is { InnerExceptions.Count: 1 }
+            ? $"An unhandled top-level exception occurred: {task.Exception.InnerExceptions.Single()}"
+            : $"An unhandled top-level exception occurred: {task.Exception}");
+
+          game.Exit();
+        }
+      }));
+
+      Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
+      Log.Trace($"Running main event pump");
+
+      while (!game.Host.IsClosing && !game.IsClosing)
+      {
+        // eventually this will end up blocking when a main loop takes over
+        PumpEventLoop();
+      }
+    }
+    finally
+    {
+      context.NotifyStopped();
+    }
   }
 
   /// <summary>

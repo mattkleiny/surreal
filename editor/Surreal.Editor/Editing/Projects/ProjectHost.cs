@@ -1,4 +1,4 @@
-﻿using Surreal.Diagnostics.Hosting;
+﻿using Surreal.Hosting;
 using Surreal.Threading;
 
 namespace Surreal.Editing.Projects;

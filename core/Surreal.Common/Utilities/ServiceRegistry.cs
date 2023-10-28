@@ -41,7 +41,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
   public object? GetService(Type serviceType)
   {
-    return _container.GetInstance(serviceType);
+    return _container.TryGetInstance(serviceType);
   }
 
   public void AddService(Type serviceType, Type implementationType)

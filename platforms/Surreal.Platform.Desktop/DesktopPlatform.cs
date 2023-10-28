@@ -1,5 +1,4 @@
 ﻿using Surreal.IO;
-using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -29,8 +28,8 @@ public sealed class DesktopPlatform : IPlatform
 {
   public DesktopConfiguration Configuration { get; } = new();
 
-  public IPlatformHost BuildHost(IServiceRegistry services)
+  public IPlatformHost BuildHost()
   {
-    return new DesktopPlatformHost(Configuration, services);
+    return new DesktopPlatformHost(Configuration);
   }
 }

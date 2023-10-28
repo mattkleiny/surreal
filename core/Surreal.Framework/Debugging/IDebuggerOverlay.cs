@@ -1,4 +1,4 @@
-﻿namespace Surreal.Diagnostics.Debugging;
+﻿namespace Surreal.Debugging;
 
 /// <summary>
 /// A utility for rendering immediate-mode debug overlays.

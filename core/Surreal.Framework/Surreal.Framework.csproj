@@ -11,4 +11,7 @@
     <ProjectReference Include="..\Surreal.Physics\Surreal.Physics.csproj" />
     <ProjectReference Include="..\Surreal.Scripting\Surreal.Scripting.csproj"/>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="TinyIpc" Version="4.1.5" PrivateAssets="compile" />
+  </ItemGroup>
 </Project>

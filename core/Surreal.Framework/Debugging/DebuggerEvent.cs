@@ -1,6 +1,6 @@
 ﻿using Surreal.Reactive;
 
-namespace Surreal.Diagnostics.Debugging;
+namespace Surreal.Debugging;
 
 /// <summary>
 /// A kind of <see cref="DebuggerEvent"/>, and it's associated data type.

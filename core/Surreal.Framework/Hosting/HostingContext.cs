@@ -1,9 +1,9 @@
 ﻿using System.Reflection.Metadata;
-using Surreal.Diagnostics.Hosting;
+using Surreal.Hosting;
 
 [assembly: MetadataUpdateHandler(typeof(HostingContext))]
 
-namespace Surreal.Diagnostics.Hosting;
+namespace Surreal.Hosting;
 
 /// <summary>
 /// Permits hosting of a project inside of another context.
@@ -34,9 +34,9 @@ public abstract class HostingContext
   public event Action? Cancelled;
 
   /// <summary>
-  /// The services for the hosting context.
+  /// The <see cref="IPlatformHost"/> for the hosting context.
   /// </summary>
-  public abstract IServiceProvider Services { get; }
+  public abstract IPlatformHost PlatformHost { get; }
 
   /// <summary>
   /// Notifies the context that the game has started.

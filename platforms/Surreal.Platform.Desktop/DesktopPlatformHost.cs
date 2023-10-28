@@ -1,4 +1,5 @@
 using Surreal.Audio;
+using Surreal.Debugging;
 using Surreal.Diagnostics;
 using Surreal.Diagnostics.Debugging;
 using Surreal.Diagnostics.Logging;
@@ -16,6 +17,8 @@ namespace Surreal;
 public interface IDesktopPlatformHost : IPlatformHost
 {
   IDesktopWindow PrimaryWindow { get; }
+
+  // TODO: allow creating other windows?
 }
 
 /// <summary>
@@ -52,7 +55,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   private IntervalTimer _frameDisplayTimer = new(TimeSpan.FromSeconds(1));
 
-  public DesktopPlatformHost(DesktopConfiguration configuration, IServiceRegistry services)
+  public DesktopPlatformHost(DesktopConfiguration configuration)
   {
     SynchronizationContext.SetSynchronizationContext(_syncContext);
 
@@ -65,20 +68,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     DebuggerOverlay = new SilkDebuggerOverlay(Window);
 
     Resized += OnResized;
-
-    services.AddService<IPlatformHost>(this);
-    services.AddService<IDesktopPlatformHost>(this);
-    services.AddService<IDesktopWindow>(Window);
-    services.AddService<IAudioBackend>(AudioBackend);
-    services.AddService<IGraphicsBackend>(GraphicsBackend);
-    services.AddService<IInputBackend>(InputBackend);
-    services.AddService<IDebuggerOverlay>(DebuggerOverlay);
-
-    foreach (var device in InputBackend.DiscoverAllDevices())
-    {
-      services.AddService(device);
-      services.AddService(device.DeviceType, device);
-    }
   }
 
   public SilkWindow Window { get; }
@@ -101,6 +90,22 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public bool IsFocused => Window.IsFocused;
   public bool IsClosing => Window.IsClosing;
   public bool IsVisible => Window.IsVisible;
+
+  public void RegisterServices(IServiceRegistry services)
+  {
+    services.AddService<IDesktopPlatformHost>(this);
+    services.AddService<IDesktopWindow>(Window);
+    services.AddService<IAudioBackend>(AudioBackend);
+    services.AddService<IGraphicsBackend>(GraphicsBackend);
+    services.AddService<IInputBackend>(InputBackend);
+    services.AddService<IDebuggerOverlay>(DebuggerOverlay);
+
+    foreach (var device in InputBackend.DiscoverAllDevices())
+    {
+      services.AddService(device);
+      services.AddService(device.DeviceType, device);
+    }
+  }
 
   public void BeginFrame(DeltaTime deltaTime)
   {

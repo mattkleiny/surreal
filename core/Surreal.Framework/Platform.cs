@@ -11,7 +11,7 @@ public interface IPlatform
   /// <summary>
   /// Builds the main host for the platform.
   /// </summary>
-  IPlatformHost BuildHost(IServiceRegistry services);
+  IPlatformHost BuildHost();
 }
 
 /// <summary>
@@ -29,4 +29,9 @@ public interface IPlatformHost : IDisposable
 
   void BeginFrame(DeltaTime deltaTime);
   void EndFrame(DeltaTime deltaTime);
+
+  /// <summary>
+  /// Registers the platform's services in the given registry.
+  /// </summary>
+  void RegisterServices(IServiceRegistry services);
 }
