@@ -56,6 +56,7 @@ public readonly record struct ScissorState(int Left, int Top, int Right, int Bot
 /// <summary>
 /// A material is a configuration of the graphics state and properties used for rendering.
 /// </summary>
+[AssetType("73a1a9b0-ef0c-49be-9f5e-d57d9a221eb1")]
 public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, bool ownsShader = true) : Disposable
 {
   /// <summary>

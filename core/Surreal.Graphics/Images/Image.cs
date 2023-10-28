@@ -1,5 +1,6 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using Surreal.Assets;
 using Surreal.Colors;
 using Surreal.IO;
 using Surreal.Memory;
@@ -10,6 +11,7 @@ namespace Surreal.Graphics.Images;
 /// <summary>
 /// An image of colored pixels.
 /// </summary>
+[AssetType("834cad39-3394-4ef1-81a7-8cc86335eccd")]
 [DebuggerDisplay("Image {Width}x{Height} ~{Size}")]
 public sealed class Image : IDisposable
 {

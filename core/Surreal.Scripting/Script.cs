@@ -1,8 +1,11 @@
-﻿namespace Surreal.Scripting;
+﻿using Surreal.Assets;
+
+namespace Surreal.Scripting;
 
 /// <summary>
 /// A script asset, created from a <see cref="IScriptLanguage"/>.
 /// </summary>
+[AssetType("bbe7ef73-ed1c-4ba9-805a-9592362431d3")]
 public abstract class Script : IDisposable
 {
   /// <summary>

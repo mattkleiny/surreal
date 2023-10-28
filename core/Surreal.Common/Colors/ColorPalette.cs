@@ -1,8 +1,11 @@
-﻿namespace Surreal.Colors;
+﻿using Surreal.Assets;
+
+namespace Surreal.Colors;
 
 /// <summary>
 /// A palette of <see cref="Color32" />s, with span and range support.
 /// </summary>
+[AssetType("434985b1-3325-4e10-b1d9-634b8ff04df5")]
 public sealed record ColorPalette(Color32[] _colors, int Offset, int Count) : IReadOnlyList<Color32>
 {
   private readonly Color32[] _colors = _colors;
