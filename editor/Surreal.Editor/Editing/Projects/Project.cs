@@ -10,8 +10,8 @@ public sealed class Project
     RootPath = Path.GetFullPath(rootPath);
     Assets = new AssetDatabase(SourcePath, TargetPath);
 
-    // refresh assets in the background
-    Task.Run(() => Assets.RefreshAsync());
+    // import assets in the background
+    Task.Run(() => Assets.ImportAssetsAsync());
   }
 
   /// <summary>

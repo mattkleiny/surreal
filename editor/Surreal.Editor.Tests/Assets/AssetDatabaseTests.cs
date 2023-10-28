@@ -57,7 +57,7 @@ public class AssetDatabaseTests
     database.Assets.Should().Contain(it => it.AbsolutePath.EndsWith("blueprint01.json"));
     database.Assets.Should().NotContain(it => it.AbsolutePath.EndsWith("blueprint02.json"));
 
-    await database.ImportAssetsAsync("Assets/Source");
+    await database.ImportAssetsAsync();
 
     database.Assets.Should().Contain(it => it.AbsolutePath.EndsWith("blueprint01.json"));
     database.Assets.Should().Contain(it => it.AbsolutePath.EndsWith("blueprint02.json"));
@@ -73,7 +73,7 @@ public class AssetDatabaseTests
       }
     };
 
-    await database.RefreshAsync();
+    await database.RefreshAssetsAsync();
 
     return database;
   }

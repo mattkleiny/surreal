@@ -171,39 +171,54 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   /// <summary>
   /// Imports all assets under the given path into the database.
   /// </summary>
-  public async Task ImportAssetsAsync(string basePath, CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
+  public async Task ImportAssetsAsync(CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
   {
     // recursively search for all files in the source path
     foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
     {
       if (_entries.ContainsPath(absolutePath)) continue; // we don't want to import assets that are already imported
+      if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
 
       VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
 
-      if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
-      if (await metadataPath.ExistsAsync()) continue; // we don't want to import assets that already have metadata
-
-      foreach (var importer in Importers)
+      if (await metadataPath.ExistsAsync())
       {
-        if (importer.TryDetermineType(absolutePath, out var typeId))
+        // refresh this entry
+        var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
+
+        _entries.Add(new AssetEntry
         {
-          _entries.Add(new AssetEntry
+          AbsolutePath = absolutePath,
+          AssetId = metadata.AssetId,
+          TypeId = metadata.TypeId,
+          IsEmbedded = false // TODO: detect embedded assets?
+        });
+      }
+      else
+      {
+        // import anew
+        foreach (var importer in Importers)
+        {
+          if (importer.TryDetermineType(absolutePath, out var typeId))
           {
-            AbsolutePath = absolutePath,
-            AssetId = Guid.NewGuid(),
-            TypeId = typeId,
-            IsEmbedded = false // TODO: detect embedded assets?
-          });
-
-          if (writeMetadataToDisk)
-          {
-            var metadata = new AssetMetadata
+            _entries.Add(new AssetEntry
             {
+              AbsolutePath = absolutePath,
               AssetId = Guid.NewGuid(),
-              TypeId = typeId
-            };
+              TypeId = typeId,
+              IsEmbedded = false // TODO: detect embedded assets?
+            });
 
-            await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
+            if (writeMetadataToDisk)
+            {
+              var metadata = new AssetMetadata
+              {
+                AssetId = Guid.NewGuid(),
+                TypeId = typeId
+              };
+
+              await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
+            }
           }
         }
       }
@@ -213,7 +228,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   /// <summary>
   /// Refreshes the asset database.
   /// </summary>
-  public async Task RefreshAsync(CancellationToken cancellationToken = default)
+  public async Task RefreshAssetsAsync(CancellationToken cancellationToken = default)
   {
     _entries.Clear();
 
