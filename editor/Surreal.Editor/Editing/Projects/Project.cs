@@ -8,8 +8,17 @@ namespace Surreal.Editing.Projects;
 /// </summary>
 public sealed class Project
 {
-  public Project(string rootPath)
+  /// <summary>
+  /// Loads a project from the given path.
+  /// </summary>
+  public static Project Load(string rootPath, string projectPath)
   {
+    return new Project(rootPath, ProjectFile.Load(projectPath));
+  }
+
+  private Project(string rootPath, ProjectFile projectFile)
+  {
+    ProjectFile = projectFile;
     RootPath = Path.GetFullPath(rootPath);
     Assets = new AssetDatabase(SourcePath, TargetPath)
     {
@@ -45,6 +54,11 @@ public sealed class Project
   /// The primary <see cref="AssetDatabase"/> for this project.
   /// </summary>
   public AssetDatabase Assets { get; }
+
+  /// <summary>
+  /// Provides metadata about the MSBuild project.
+  /// </summary>
+  internal ProjectFile ProjectFile { get; }
 
   /// <summary>
   /// The entry point for the associated project

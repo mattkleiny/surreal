@@ -3,5 +3,5 @@
 Editor.Start(new EditorConfiguration
 {
   WindowTitle = "Custom Editor",
-  DefaultProject = new Project(Environment.CurrentDirectory)
+  DefaultProject = Project.Load(Environment.CurrentDirectory, "BasicScene.csproj")
 });
