@@ -221,7 +221,7 @@ public class Game : IDisposable
   {
     try
     {
-      context.NotifyStarted();
+      context.OnStarted();
 
       var startTime = TimeStamp.Now;
 
@@ -280,7 +280,7 @@ public class Game : IDisposable
     }
     finally
     {
-      context.NotifyStopped();
+      context.OnStopped();
     }
   }
 

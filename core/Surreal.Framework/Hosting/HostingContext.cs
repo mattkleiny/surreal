@@ -29,6 +29,11 @@ public abstract class HostingContext
   public event Action? HotReloaded;
 
   /// <summary>
+  /// Invoked when the hosting context has requested the next frame.
+  /// </summary>
+  public event Action? NextFrameRequested;
+
+  /// <summary>
   /// Invoked when the hosting context has been cancelled.
   /// </summary>
   public event Action? Cancelled;
@@ -41,21 +46,25 @@ public abstract class HostingContext
   /// <summary>
   /// Notifies the context that the game has started.
   /// </summary>
-  public virtual void NotifyStarted()
-  {
-  }
+  public abstract void OnStarted();
 
   /// <summary>
   /// Notifies the context that the game has stopped.
   /// </summary>
-  public virtual void NotifyStopped()
+  public abstract void OnStopped();
+
+  /// <summary>
+  /// Notifies the context that the next frame has been requested.
+  /// </summary>
+  public void NotifyNextFrameRequested()
   {
+    NextFrameRequested?.Invoke();
   }
 
   /// <summary>
   /// Notifies the context that the game has been cancelled.
   /// </summary>
-  public virtual void NotifyCancelled()
+  public void NotifyCancelled()
   {
     Cancelled?.Invoke();
   }

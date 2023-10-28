@@ -3,6 +3,7 @@ using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
 using Avalonia.Threading;
 using Surreal.Audio;
+using Surreal.Editing.Backends;
 using Surreal.Editing.Common;
 using Surreal.Graphics;
 using Surreal.Hosting;
@@ -29,10 +30,18 @@ internal partial class GameViewport : UserControl
 /// </summary>
 internal sealed class GameViewportHost : OpenGlControlBase
 {
+  /// <summary>
+  /// The <see cref="GlInterface"/> for the control.
+  /// </summary>
+  public GlInterface? OpenGl { get; private set; }
+
+  protected override void OnOpenGlInit(GlInterface gl)
+  {
+    OpenGl = gl;
+  }
+
   protected override void OnOpenGlRender(GlInterface gl, int fb)
   {
-    gl.ClearColor(0f, 0f, 0f, 1f);
-    gl.Clear(GlConsts.GL_COLOR_BUFFER_BIT);
   }
 }
 
@@ -89,25 +98,19 @@ internal sealed class GameViewportViewModel : EditorViewModel
   /// <summary>
   /// The <see cref="HostingContext"/> for the main window.
   /// </summary>
-  private sealed class EditorHostingContext(GameViewportViewModel viewModel) : HostingContext
+  private sealed class EditorHostingContext(GameViewportViewModel owner) : HostingContext
   {
     /// <inheritdoc/>
-    public override IPlatformHost PlatformHost { get; } = new EditorPlatformHost(viewModel._viewport, viewModel);
+    public override IPlatformHost PlatformHost { get; } = new EditorPlatformHost(owner);
 
-    /// <inheritdoc/>
-    public override void NotifyStarted()
+    public override void OnStarted()
     {
-      base.NotifyStarted();
-
-      Dispatcher.UIThread.Post(() => viewModel.IsRunning = true);
+      Dispatcher.UIThread.Post(() => owner.IsRunning = true);
     }
 
-    /// <inheritdoc/>
-    public override void NotifyStopped()
+    public override void OnStopped()
     {
-      base.NotifyStopped();
-
-      Dispatcher.UIThread.Post(() => viewModel.IsRunning = false);
+      Dispatcher.UIThread.Post(() => owner.IsRunning = false);
     }
 
     /// <summary>
@@ -115,13 +118,11 @@ internal sealed class GameViewportViewModel : EditorViewModel
     /// </summary>
     private sealed class EditorPlatformHost : IPlatformHost
     {
-      private readonly GameViewportViewModel _viewModel;
-      private readonly GameViewport _viewport;
+      private readonly GameViewportViewModel _owner;
 
-      public EditorPlatformHost(GameViewport viewport, GameViewportViewModel viewModel)
+      public EditorPlatformHost(GameViewportViewModel owner)
       {
-        _viewModel = viewModel;
-        _viewport = viewport;
+        _owner = owner;
 
         // TODO: forward resize events
         // _viewModel._viewport.RResized += (_, e) => { Resized?.Invoke((int)e.ClientSize.Width, (int)e.ClientSize.Height); };
@@ -129,16 +130,16 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
       public event Action<int, int>? Resized;
 
-      public int Width => (int)_viewport.Width;
-      public int Height => (int)_viewport.Height;
-      public bool IsVisible => _viewport.IsVisible;
+      public int Width => (int)_owner._viewport.Width;
+      public int Height => (int)_owner._viewport.Height;
+      public bool IsVisible => _owner._viewport.IsVisible;
       public bool IsFocused => true; // TODO: implement me
-      public bool IsClosing => !_viewModel.IsRunning;
+      public bool IsClosing => !_owner.IsRunning;
 
       public void RegisterServices(IServiceRegistry services)
       {
         services.AddService(IAudioBackend.Headless);
-        services.AddService(IGraphicsBackend.Headless);
+        services.AddService<IGraphicsBackend>(new EditorGraphicsBackend(_owner._viewportHost.OpenGl!));
       }
 
       public void BeginFrame(DeltaTime deltaTime)
