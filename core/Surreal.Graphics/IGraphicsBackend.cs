@@ -102,8 +102,17 @@ public interface IGraphicsBackend
   void UnbindFrameBuffer();
   void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
 
+  void BlitFromBackBuffer(
+    GraphicsHandle targetFrameBuffer,
+    uint sourceWidth,
+    uint sourceHeight,
+    uint destWidth,
+    uint destHeight,
+    BlitMask mask,
+    TextureFilterMode filterMode);
+
   void BlitToBackBuffer(
-    FrameBufferHandle handle,
+    GraphicsHandle sourceFrameBuffer,
     uint sourceWidth,
     uint sourceHeight,
     uint destWidth,

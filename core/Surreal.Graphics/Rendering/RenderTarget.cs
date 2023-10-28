@@ -161,20 +161,6 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// Blits this render target to the main back buffer.
   /// </summary>
   public void BlitToBackBuffer(
-    uint sourceWidth,
-    uint sourceHeight,
-    uint destWidth,
-    uint destHeight,
-    BlitMask mask,
-    TextureFilterMode filterMode)
-  {
-    backend.BlitToBackBuffer(Handle, sourceWidth, sourceHeight, destWidth, destHeight, mask, filterMode);
-  }
-
-  /// <summary>
-  /// Blits this render target to the main back buffer.
-  /// </summary>
-  public void BlitToBackBuffer(
     Material material,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)

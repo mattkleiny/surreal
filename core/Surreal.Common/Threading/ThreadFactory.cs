@@ -1,4 +1,6 @@
-﻿namespace Surreal.Threading;
+﻿using Surreal.Diagnostics.Logging;
+
+namespace Surreal.Threading;
 
 /// <summary>
 /// Options for thead operations.
@@ -33,8 +35,10 @@ public sealed record ThreadOptions
 /// <summary>
 /// Static factory for common threading patterns.
 /// </summary>
-public static class ThreadFactory
+public sealed class ThreadFactory
 {
+  private static readonly ILog Log = LogFactory.GetLog<ThreadFactory>();
+
   /// <summary>
   /// Starts a new thread with the given cancellation token and returns a <see cref="Task" /> representing it's completion.
   /// </summary>
@@ -63,6 +67,8 @@ public static class ThreadFactory
       catch (Exception exception)
       {
         completionSource.SetException(exception);
+
+        Log.Error(exception, $"Unhandled exception in thread {Environment.CurrentManagedThreadId}");
       }
     }
 
@@ -111,6 +117,8 @@ public static class ThreadFactory
       catch (Exception exception)
       {
         completionSource.SetException(exception);
+
+        Log.Error(exception, $"Unhandled exception in thread {Environment.CurrentManagedThreadId}");
       }
     }
 

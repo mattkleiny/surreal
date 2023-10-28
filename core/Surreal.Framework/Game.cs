@@ -212,6 +212,8 @@ public class Game : IDisposable
       // eventually this will end up blocking when a main loop takes over
       PumpEventLoop();
     }
+
+    Callbacks.Clear();
   }
 
   /// <summary>
@@ -277,6 +279,8 @@ public class Game : IDisposable
         // eventually this will end up blocking when a main loop takes over
         PumpEventLoop();
       }
+
+      Callbacks.Clear();
     }
     finally
     {

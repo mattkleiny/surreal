@@ -203,7 +203,11 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
   {
   }
 
-  public void BlitToBackBuffer(FrameBufferHandle handle, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public void BlitFromBackBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  {
+  }
+
+  public void BlitToBackBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
   {
   }
 

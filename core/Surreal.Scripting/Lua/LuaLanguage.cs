@@ -48,9 +48,6 @@ internal sealed class LuaLanguage : IScriptLanguage
       lua.DoString("import ('Surreal', 'Surreal.Text')");
       lua.DoString("import ('System.Numerics.Vectors', 'System.Numerics')");
 
-      // replace default functions
-      lua["print"] = (string message) => Log.Debug(message);
-
       // run the initial script code
       lua.DoString(code);
 

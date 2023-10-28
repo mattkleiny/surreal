@@ -729,9 +729,37 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     }
   }
 
-  public void BlitToBackBuffer(FrameBufferHandle handle, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public void BlitFromBackBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
   {
-    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, handle.FrameBuffer);
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, targetFrameBuffer);
+
+    gl.BlitFramebuffer(
+      srcX0: 0,
+      srcY0: 0,
+      srcX1: (int)sourceWidth,
+      srcY1: (int)sourceHeight,
+      dstX0: 0,
+      dstY0: 0,
+      dstX1: (int)destWidth,
+      dstY1: (int)destHeight,
+      mask: ConvertBlitMask(mask),
+      filter: filterMode switch
+      {
+        TextureFilterMode.Linear => BlitFramebufferFilter.Linear,
+        TextureFilterMode.Point => BlitFramebufferFilter.Nearest,
+
+        _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
+      }
+    );
+
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+  }
+
+  public void BlitToBackBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  {
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, sourceFrameBuffer);
     gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
 
     gl.BlitFramebuffer(

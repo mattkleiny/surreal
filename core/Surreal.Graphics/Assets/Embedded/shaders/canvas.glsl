@@ -21,6 +21,8 @@ void main()
 
 #shader_type fragment
 
+layout(location = 0) out vec4 color;
+
 uniform sampler2D u_texture;
 
 in vec2 v_uv;
@@ -28,5 +30,5 @@ in vec4 v_color;
 
 void main()
 {
-  gl_FragColor = texture(u_texture, v_uv) * v_color;
+  color = texture(u_texture, v_uv) * v_color;
 }

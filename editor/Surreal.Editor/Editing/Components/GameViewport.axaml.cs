@@ -3,10 +3,11 @@ using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
 using Avalonia.Threading;
 using Surreal.Audio;
-using Surreal.Editing.Backends;
 using Surreal.Editing.Common;
 using Surreal.Graphics;
 using Surreal.Hosting;
+using Surreal.Input.Keyboard;
+using Surreal.Input.Mouse;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -21,27 +22,21 @@ internal partial class GameViewport : UserControl
   {
     InitializeComponent();
 
-    DataContext = new GameViewportViewModel(this, Host);
+    var viewModel = new GameViewportViewModel(this);
+
+    DataContext = viewModel;
+    Display.DataContext = viewModel;
   }
 }
 
 /// <summary>
-/// An <see cref="OpenGlControlBase"/> that hosts the game viewport.
+/// A control that hosts the game viewport display.
 /// </summary>
-internal sealed class GameViewportHost : OpenGlControlBase
+internal sealed class GameViewportDisplay : OpenGlControlBase
 {
-  /// <summary>
-  /// The <see cref="GlInterface"/> for the control.
-  /// </summary>
-  public GlInterface? OpenGl { get; private set; }
-
-  protected override void OnOpenGlInit(GlInterface gl)
-  {
-    OpenGl = gl;
-  }
-
   protected override void OnOpenGlRender(GlInterface gl, int fb)
   {
+    // TODO: get the game's display into here
   }
 }
 
@@ -50,16 +45,12 @@ internal sealed class GameViewportHost : OpenGlControlBase
 /// </summary>
 internal sealed class GameViewportViewModel : EditorViewModel
 {
-  private readonly GameViewport _viewport;
-  private readonly GameViewportHost _viewportHost;
   private readonly HostingContext _context;
   private bool _isRunning;
 
-  public GameViewportViewModel(GameViewport viewport, GameViewportHost viewportHost)
+  public GameViewportViewModel(GameViewport viewport)
   {
-    _viewport = viewport;
-    _viewportHost = viewportHost;
-
+    Viewport = viewport;
     _context = new EditorHostingContext(this);
 
     StartGame = new EditorCommand(OnStartGame, () => !IsRunning);
@@ -68,6 +59,11 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
   public EditorCommand StartGame { get; }
   public EditorCommand StopGame { get; }
+
+  /// <summary>
+  /// The <see cref="GameViewport"/> that this view model is for.
+  /// </summary>
+  public GameViewport Viewport { get; }
 
   /// <summary>
   /// True if the game is currently running.
@@ -123,23 +119,27 @@ internal sealed class GameViewportViewModel : EditorViewModel
       public EditorPlatformHost(GameViewportViewModel owner)
       {
         _owner = owner;
-
-        // TODO: forward resize events
-        // _viewModel._viewport.RResized += (_, e) => { Resized?.Invoke((int)e.ClientSize.Width, (int)e.ClientSize.Height); };
+        _owner.Viewport.SizeChanged += (_, e) =>
+        {
+          // forward resize events
+          Resized?.Invoke((int)e.NewSize.Width, (int)e.NewSize.Height);
+        };
       }
 
       public event Action<int, int>? Resized;
 
-      public int Width => (int)_owner._viewport.Width;
-      public int Height => (int)_owner._viewport.Height;
-      public bool IsVisible => _owner._viewport.IsVisible;
+      public int Width => (int)_owner.Viewport.Width;
+      public int Height => (int)_owner.Viewport.Height;
+      public bool IsVisible => _owner.Viewport.IsVisible;
       public bool IsFocused => true; // TODO: implement me
       public bool IsClosing => !_owner.IsRunning;
 
       public void RegisterServices(IServiceRegistry services)
       {
         services.AddService(IAudioBackend.Headless);
-        services.AddService<IGraphicsBackend>(new EditorGraphicsBackend(_owner._viewportHost.OpenGl!));
+        services.AddService(IGraphicsBackend.Headless);
+        services.AddService<IKeyboardDevice>(new HeadlessKeyboardDevice());
+        services.AddService<IMouseDevice>(new HeadlessMouseDevice());
       }
 
       public void BeginFrame(DeltaTime deltaTime)

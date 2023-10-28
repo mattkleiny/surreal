@@ -15,7 +15,7 @@
         <MenuItem Header="S_top Game" Command="{Binding StopGame}" />
       </MenuItem>
     </Menu>
-    <components:GameViewportHost x:Name="Host" />
+    <components:GameViewportDisplay x:Name="Display" />
   </DockPanel>
 
 </UserControl>

@@ -23,19 +23,7 @@ public abstract class HostingContext
     set => ThreadLocalContext.Value = value;
   }
 
-  /// <summary>
-  /// Invoked when the hosting context has been hot reloaded.
-  /// </summary>
   public event Action? HotReloaded;
-
-  /// <summary>
-  /// Invoked when the hosting context has requested the next frame.
-  /// </summary>
-  public event Action? NextFrameRequested;
-
-  /// <summary>
-  /// Invoked when the hosting context has been cancelled.
-  /// </summary>
   public event Action? Cancelled;
 
   /// <summary>
@@ -43,35 +31,18 @@ public abstract class HostingContext
   /// </summary>
   public abstract IPlatformHost PlatformHost { get; }
 
-  /// <summary>
-  /// Notifies the context that the game has started.
-  /// </summary>
   public abstract void OnStarted();
-
-  /// <summary>
-  /// Notifies the context that the game has stopped.
-  /// </summary>
   public abstract void OnStopped();
 
-  /// <summary>
-  /// Notifies the context that the next frame has been requested.
-  /// </summary>
-  public void NotifyNextFrameRequested()
-  {
-    NextFrameRequested?.Invoke();
-  }
-
-  /// <summary>
-  /// Notifies the context that the game has been cancelled.
-  /// </summary>
   public void NotifyCancelled()
   {
     Cancelled?.Invoke();
   }
 
   /// <summary>
-  /// Notifies the context that the game has been updated.
+  /// Notifies the application of a .NET hot reload.
   /// </summary>
+  [UsedImplicitly]
   internal static void UpdateApplication(Type[] updatedTypes)
   {
     Current?.HotReloaded?.Invoke();
