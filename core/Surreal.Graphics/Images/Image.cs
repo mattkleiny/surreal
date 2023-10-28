@@ -95,7 +95,7 @@ public sealed class Image : IDisposable
   /// </summary>
   public static async ValueTask<Image> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenInputStreamAsync();
+    await using var stream =  path.OpenInputStream();
 
     // load the image
     var image = await SixLabors.ImageSharp.Image.LoadAsync(Configuration.Default, stream, cancellationToken);
@@ -127,7 +127,7 @@ public sealed class Image : IDisposable
   /// </summary>
   public async ValueTask SaveAsync(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenOutputStreamAsync();
+    await using var stream = path.OpenOutputStream();
 
     await _image.SaveAsPngAsync(stream, cancellationToken);
   }

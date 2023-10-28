@@ -12,8 +12,7 @@ public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
   public override async Task<ColorPalette> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
-    await using var stream = await context.Path.OpenInputStreamAsync();
-    using var reader = new StreamReader(stream);
+    using var reader = context.Path.OpenInputStreamReader();
 
     if (await reader.ReadLineAsync(cancellationToken) != "JASC-PAL")
     {

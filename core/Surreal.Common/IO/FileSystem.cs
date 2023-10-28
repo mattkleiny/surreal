@@ -27,13 +27,6 @@ public interface IFileSystem
   IPathWatcher WatchPath(VirtualPath path);
 
   // asynchronous API
-  ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard);
-  ValueTask<Size> GetSizeAsync(string path);
-  ValueTask<bool> ExistsAsync(string path);
-  ValueTask<bool> IsFileAsync(string path);
-  ValueTask<bool> IsDirectoryAsync(string path);
-  ValueTask<Stream> OpenInputStreamAsync(string path);
-  ValueTask<Stream> OpenOutputStreamAsync(string path);
 }
 
 /// <summary>
@@ -105,40 +98,6 @@ public abstract class FileSystem : IFileSystem
   }
 
   // asynchronous API
-  public virtual ValueTask<VirtualPath[]> EnumerateAsync(string path, string wildcard)
-  {
-    return new ValueTask<VirtualPath[]>(Enumerate(path, wildcard));
-  }
-
-  public virtual ValueTask<Size> GetSizeAsync(string path)
-  {
-    return new ValueTask<Size>(GetSize(path));
-  }
-
-  public virtual ValueTask<bool> IsDirectoryAsync(string path)
-  {
-    return new ValueTask<bool>(IsDirectory(path));
-  }
-
-  public virtual ValueTask<bool> ExistsAsync(string path)
-  {
-    return new ValueTask<bool>(Exists(path));
-  }
-
-  public virtual ValueTask<bool> IsFileAsync(string path)
-  {
-    return new ValueTask<bool>(IsFile(path));
-  }
-
-  public virtual ValueTask<Stream> OpenInputStreamAsync(string path)
-  {
-    return new ValueTask<Stream>(OpenInputStream(path));
-  }
-
-  public virtual ValueTask<Stream> OpenOutputStreamAsync(string path)
-  {
-    return new ValueTask<Stream>(OpenOutputStream(path));
-  }
 
   public static IFileSystem? GetForScheme(string scheme)
   {

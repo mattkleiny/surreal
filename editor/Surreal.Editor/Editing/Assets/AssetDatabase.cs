@@ -1,15 +1,18 @@
 ﻿using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 using Surreal.Utilities;
 
-namespace Surreal.Editing.Projects;
+namespace Surreal.Editing.Assets;
 
 /// <summary>
 /// An asset database is a collection of files and folders that are used to create a game.
 /// </summary>
 public sealed class AssetDatabase(string sourcePath, string targetPath)
 {
+  private static readonly ILog Log = LogFactory.GetLog<AssetDatabase>();
+
   private readonly AssetEntryCollection _entries = new();
 
   /// <summary>
@@ -142,6 +145,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
     {
       if (importer.CanHandle(metadata))
       {
+        Log.Trace($"Importing asset {metadata.AssetId} from path {absolutePath}");
+
         var asset = await importer.ImportAsync(absolutePath, cancellationToken);
 
         // create a new asset entry
@@ -158,6 +163,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
           // write the metadata to disk
           VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
 
+          Log.Trace($"Writing asset {metadata.AssetId} metadata to disk {metadataPath}");
+
           await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
         }
 
@@ -173,6 +180,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   /// </summary>
   public async Task ImportAssetsAsync(CancellationToken cancellationToken = default, bool writeMetadataToDisk = false)
   {
+    Log.Trace($"Importing asset database from {SourcePath}");
+
     // recursively search for all files in the source path
     foreach (var absolutePath in Directory.GetFiles(SourcePath, "*", SearchOption.AllDirectories))
     {
@@ -181,10 +190,12 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
 
       VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
 
-      if (await metadataPath.ExistsAsync())
+      if (metadataPath.Exists())
       {
         // refresh this entry
         var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
+
+        Log.Trace($"Importing asset {metadata.AssetId} from path {absolutePath}");
 
         _entries.Add(new AssetEntry
         {
@@ -199,8 +210,10 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
         // import anew
         foreach (var importer in Importers)
         {
-          if (importer.TryDetermineType(absolutePath, out var typeId))
+          if (importer.TryGetTypeId(absolutePath, out var typeId))
           {
+            Log.Trace($"Importing new asset {typeId} from path {absolutePath}");
+
             _entries.Add(new AssetEntry
             {
               AbsolutePath = absolutePath,
@@ -217,6 +230,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
                 TypeId = typeId
               };
 
+              Log.Trace($"Writing asset {metadata.AssetId} metadata to disk {metadataPath}");
+
               await metadataPath.SerializeAsync(metadata, FileFormat.Yml, cancellationToken);
             }
           }
@@ -230,6 +245,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
   /// </summary>
   public async Task RefreshAssetsAsync(CancellationToken cancellationToken = default)
   {
+    Log.Trace($"Refreshing asset database from {SourcePath}");
+
     _entries.Clear();
 
     // recursively search for all files in the source path
@@ -238,7 +255,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
       VirtualPath metadataPath = Path.ChangeExtension(absolutePath, "meta");
 
       if (absolutePath.EndsWith(".meta")) continue; // we don't want to import metadata directly
-      if (!await metadataPath.ExistsAsync()) continue; // we don't want to import assets without metadata
+      if (!metadataPath.Exists()) continue; // we don't want to import assets without metadata
 
       var metadata = await metadataPath.DeserializeAsync<AssetMetadata>(FileFormat.Yml, cancellationToken);
 
@@ -246,6 +263,8 @@ public sealed class AssetDatabase(string sourcePath, string targetPath)
       {
         if (importer.CanHandle(metadata))
         {
+          Log.Trace($"Refreshing asset {metadata.AssetId} from path {absolutePath}");
+
           _entries.Add(new AssetEntry
           {
             AssetId = metadata.AssetId,

@@ -30,8 +30,7 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
   /// </summary>
   public async ValueTask ExportToCsvAsync(VirtualPath path)
   {
-    await using var stream = await path.OpenOutputStreamAsync();
-    await using var writer = new StreamWriter(stream, Encoding.UTF8);
+    await using var writer = path.OpenOutputStreamWriter();
 
     Log.Trace($"Exporting profiler report to {path}");
 

@@ -12,7 +12,7 @@ public sealed class AsepriteFileLoader : AssetLoader<AsepriteFile>
 {
   public override async Task<AsepriteFile> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
-    await using var stream = await context.Path.OpenInputStreamAsync();
+    await using var stream = context.Path.OpenInputStream();
 
     return AsepriteFile.Load(stream);
   }

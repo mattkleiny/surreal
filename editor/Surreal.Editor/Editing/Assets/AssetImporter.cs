@@ -2,7 +2,7 @@
 using Surreal.IO;
 using Surreal.Utilities;
 
-namespace Surreal.Editing.Projects;
+namespace Surreal.Editing.Assets;
 
 /// <summary>
 /// An asset importer is capable of loading raw assets from disk.
@@ -14,7 +14,7 @@ public interface IAssetImporter
   /// <summary>
   /// Determines if the given path can be handled by this importer, and returns the expected type id.
   /// </summary>
-  bool TryDetermineType(string absolutePath, out Guid typeId);
+  bool TryGetTypeId(string absolutePath, out Guid typeId);
 
   /// <summary>
   /// Determines if the importer can handle an asset.
@@ -36,7 +36,7 @@ public abstract class AssetImporter<[MeansImplicitUse] TAsset> : IAssetImporter
   /// <summary>
   /// Determines if the importer can handle an asset at the given path.
   /// </summary>
-  protected abstract bool CanHandlePath(string absolutePath);
+  protected abstract bool CanHandlePath(string path);
 
   /// <summary>
   /// Imports a raw <see cref="TAsset"/> from disk.
@@ -44,9 +44,9 @@ public abstract class AssetImporter<[MeansImplicitUse] TAsset> : IAssetImporter
   public abstract Task<TAsset> ImportAsync(VirtualPath path, CancellationToken cancellationToken = default);
 
   /// <inheritdoc/>
-  bool IAssetImporter.TryDetermineType(string absolutePath, out Guid typeId)
+  bool IAssetImporter.TryGetTypeId(string path, out Guid typeId)
   {
-    if (CanHandlePath(absolutePath))
+    if (CanHandlePath(path))
     {
       typeId = GetTypeId();
       return true;

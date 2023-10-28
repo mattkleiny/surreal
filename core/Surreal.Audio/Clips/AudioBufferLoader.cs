@@ -18,7 +18,7 @@ public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
   public override async Task<AudioBuffer> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
-    await using var stream = await context.Path.OpenInputStreamAsync();
+    await using var stream =  context.Path.OpenInputStream();
 
     await using WaveStream reader = context.Path.Extension switch
     {

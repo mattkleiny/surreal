@@ -40,8 +40,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   /// </summary>
   public static ShaderProgram Load(IGraphicsBackend backend, VirtualPath path)
   {
-    using var stream = path.OpenInputStream();
-    using var reader = new StreamReader(stream, Encoding.UTF8);
+    using var reader = path.OpenInputStreamReader();
 
     var kernels = ParseCode(reader);
     var program = new ShaderProgram(backend);
@@ -56,8 +55,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   /// </summary>
   public static async Task<ShaderProgram> LoadAsync(IGraphicsBackend backend, VirtualPath path, CancellationToken cancellationToken = default)
   {
-    await using var stream = await path.OpenInputStreamAsync();
-    using var reader = new StreamReader(stream, Encoding.UTF8);
+    using var reader = path.OpenInputStreamReader();
 
     var kernels = await ParseCodeAsync(reader, cancellationToken);
     var program = new ShaderProgram(backend);

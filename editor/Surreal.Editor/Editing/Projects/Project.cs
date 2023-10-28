@@ -1,4 +1,7 @@
-﻿namespace Surreal.Editing.Projects;
+﻿using Surreal.Editing.Assets;
+using Surreal.Editing.Assets.Importers;
+
+namespace Surreal.Editing.Projects;
 
 /// <summary>
 /// A project is a collection of files and folders that are used to create a game.
@@ -8,10 +11,18 @@ public sealed class Project
   public Project(string rootPath)
   {
     RootPath = Path.GetFullPath(rootPath);
-    Assets = new AssetDatabase(SourcePath, TargetPath);
+    Assets = new AssetDatabase(SourcePath, TargetPath)
+    {
+      Importers =
+      {
+        new AudioClipImporter(),
+        new ColorPaletteImporter(),
+        new TextureImporter()
+      }
+    };
 
     // import assets in the background
-    Task.Run(() => Assets.ImportAssetsAsync());
+    Task.Run(() => Assets.ImportAssetsAsync(writeMetadataToDisk: true));
   }
 
   /// <summary>

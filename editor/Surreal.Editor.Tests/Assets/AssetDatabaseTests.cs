@@ -1,4 +1,5 @@
-﻿using Surreal.Editing.Projects;
+﻿using Surreal.Editing.Assets;
+using Surreal.Editing.Projects;
 using Surreal.IO;
 
 namespace Surreal.Assets;
@@ -88,14 +89,14 @@ public class AssetDatabaseTests
 
   private sealed class BlueprintSchemaImporter : AssetImporter<BlueprintSchema>
   {
-    protected override bool CanHandlePath(string absolutePath)
+    protected override bool CanHandlePath(string path)
     {
-      return absolutePath.EndsWith(".json");
+      return path.EndsWith(".json");
     }
 
     public override async Task<BlueprintSchema> ImportAsync(VirtualPath path, CancellationToken cancellationToken = default)
     {
-      await using var stream = await path.OpenInputStreamAsync();
+      await using var stream = path.OpenInputStream();
 
       var schema = await JsonSerializer.DeserializeAsync<BlueprintSchema>(stream, cancellationToken: cancellationToken);
       if (schema == null)
