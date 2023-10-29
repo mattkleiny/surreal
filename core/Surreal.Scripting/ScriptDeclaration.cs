@@ -1,5 +1,4 @@
-﻿using Surreal.Assets;
-using static Surreal.Scripting.ScriptSyntaxTree;
+﻿using static Surreal.Scripting.ScriptSyntaxTree;
 using static Surreal.Scripting.ScriptSyntaxTree.Statement;
 
 namespace Surreal.Scripting;
@@ -8,66 +7,6 @@ namespace Surreal.Scripting;
 /// A declaration for a script and it's parsed AST.
 /// </summary>
 public sealed record ScriptDeclaration(string Path, CompilationUnit CompilationUnit);
-
-/// <summary>
-/// The <see cref="AssetLoader{T}"/> for raw <see cref="ScriptDeclaration"/>s.
-/// </summary>
-public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
-{
-  private readonly IScriptParser _parser;
-  private readonly ImmutableHashSet<string> _extensions;
-  private readonly Encoding _encoding;
-
-  public ScriptDeclarationLoader(IScriptParser parser)
-    : this(parser, parser.SupportedExtensions)
-  {
-  }
-
-  public ScriptDeclarationLoader(IScriptParser parser, params string[] extensions)
-    : this(parser, extensions.AsEnumerable())
-  {
-  }
-
-  public ScriptDeclarationLoader(IScriptParser parser, IEnumerable<string> extensions)
-    : this(parser, extensions, Encoding.UTF8)
-  {
-  }
-
-  public ScriptDeclarationLoader(IScriptParser parser, IEnumerable<string> extensions, Encoding encoding)
-  {
-    _parser = parser;
-    _extensions = extensions.ToImmutableHashSet();
-    _encoding = encoding;
-  }
-
-  /// <summary>The <see cref="IScriptTransformer"/>s to apply to the loaded scripts.</summary>
-  public List<IScriptTransformer> Transformers { get; init; } = new();
-
-  public override bool CanHandle(AssetContext context)
-  {
-    return base.CanHandle(context) && _extensions.Contains(context.Path.Extension);
-  }
-
-  public override async Task<ScriptDeclaration> LoadAsync(AssetContext context, CancellationToken cancellationToken)
-  {
-    var declaration = await _parser.ParseScriptAsync(context.Path, _encoding, cancellationToken);
-
-    return await TransformScriptAsync(declaration, cancellationToken);
-  }
-
-  private async Task<ScriptDeclaration> TransformScriptAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default)
-  {
-    foreach (var transformer in Transformers)
-    {
-      if (transformer.CanTransform(declaration))
-      {
-        declaration = await transformer.TransformAsync(declaration, cancellationToken);
-      }
-    }
-
-    return declaration;
-  }
-}
 
 /// <summary>
 /// Common AST graph root for all scripting languages.

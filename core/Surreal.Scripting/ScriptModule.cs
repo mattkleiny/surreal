@@ -13,13 +13,12 @@ public sealed class ScriptModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService(new BytecodeVirtualMachine());
+    var compiler = new BytecodeScriptCompiler();
 
-    registry.AddService<IAssetLoader>(new ScriptLoader(new BytecodeScriptCompiler()));
-    registry.AddService<IAssetLoader>(new ScriptDeclarationLoader(new BasicScriptParser()));
-    registry.AddService<IAssetLoader>(new ScriptDeclarationLoader(new LispScriptParser()));
-    registry.AddService<IAssetLoader>(new ScriptDeclarationLoader(new LoxScriptParser()));
-    registry.AddService<IAssetLoader>(new ScriptDeclarationLoader(new LuaScriptParser()));
-    registry.AddService<IAssetLoader>(new ScriptDeclarationLoader(new WrenScriptParser()));
+    registry.AddService<IAssetLoader>(new ScriptLoader(new BasicScriptParser(), compiler));
+    registry.AddService<IAssetLoader>(new ScriptLoader(new LispScriptParser(), compiler));
+    registry.AddService<IAssetLoader>(new ScriptLoader(new LoxScriptParser(), compiler));
+    registry.AddService<IAssetLoader>(new ScriptLoader(new LuaScriptParser(), compiler));
+    registry.AddService<IAssetLoader>(new ScriptLoader(new WrenScriptParser(), compiler));
   }
 }

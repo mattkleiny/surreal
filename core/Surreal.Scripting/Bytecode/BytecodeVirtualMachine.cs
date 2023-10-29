@@ -5,7 +5,14 @@
 /// </summary>
 public sealed class BytecodeVirtualMachine
 {
+  /// <summary>
+  /// The intrinsic functions available to the virtual machine.
+  /// </summary>
   public List<IntrinsicFunction> IntrinsicFunctions { get; } = new();
+
+  /// <summary>
+  /// The extrinsic functions available to the virtual machine.
+  /// </summary>
   public List<ExtrinsicFunction> ExtrinsicFunctions { get; } = new();
 
   /// <summary>

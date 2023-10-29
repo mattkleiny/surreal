@@ -14,19 +14,31 @@ public interface IScript
 /// </summary>
 public sealed class ScriptLoader : AssetLoader<IScript>
 {
+  private readonly IScriptParser _parser;
   private readonly IScriptCompiler _compiler;
   private readonly ImmutableHashSet<string> _extensions;
 
-  public ScriptLoader(IScriptCompiler compiler, params string[] extensions)
-    : this(compiler, extensions.AsEnumerable())
+  public ScriptLoader(IScriptParser parser, IScriptCompiler compiler)
+    : this(parser, compiler, parser.SupportedExtensions)
   {
   }
 
-  public ScriptLoader(IScriptCompiler compiler, IEnumerable<string> extensions)
+  public ScriptLoader(IScriptParser parser, IScriptCompiler compiler, params string[] extensions)
+    : this(parser, compiler, extensions.AsEnumerable())
   {
+  }
+
+  public ScriptLoader(IScriptParser parser, IScriptCompiler compiler, IEnumerable<string> extensions)
+  {
+    _parser = parser;
     _compiler = compiler;
     _extensions = extensions.ToImmutableHashSet();
   }
+
+  /// <summary>
+  /// The <see cref="IScriptTransformer"/>s to apply to the loaded scripts.
+  /// </summary>
+  public List<IScriptTransformer> Transformers { get; init; } = new();
 
   public override bool CanHandle(AssetContext context)
   {
@@ -35,11 +47,22 @@ public sealed class ScriptLoader : AssetLoader<IScript>
 
   public override async Task<IScript> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
-    // TODO: support pre-built binary scripts?
+    var baseDeclaration = await _parser.ParseScriptAsync(context.Path, cancellationToken);
+    var finalDeclaration = await TransformScriptAsync(baseDeclaration, cancellationToken);
 
-    var declaration = await context.Manager.LoadAssetAsync<ScriptDeclaration>(context.Path, cancellationToken);
-    var compilation = await _compiler.CompileAsync(declaration, cancellationToken);
+    return await _compiler.CompileAsync(finalDeclaration, cancellationToken);
+  }
 
-    throw new NotImplementedException();
+  private async Task<ScriptDeclaration> TransformScriptAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default)
+  {
+    foreach (var transformer in Transformers)
+    {
+      if (transformer.CanTransform(declaration))
+      {
+        declaration = await transformer.TransformAsync(declaration, cancellationToken);
+      }
+    }
+
+    return declaration;
   }
 }
