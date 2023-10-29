@@ -103,6 +103,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Behaviou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.BehaviourTrees.Tests", "extensions\Surreal.Extensions.BehaviourTrees.Tests\Surreal.Extensions.BehaviourTrees.Tests.csproj", "{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Networking", "core\Surreal.Networking\Surreal.Networking.csproj", "{073E64AC-AA40-484D-A599-A10420E84EF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Networking.Tests", "core\Surreal.Networking.Tests\Surreal.Networking.Tests.csproj", "{34164A9A-1B56-4CA7-AA30-611DD6683EC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -249,6 +253,14 @@ Global
 		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{073E64AC-AA40-484D-A599-A10420E84EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{073E64AC-AA40-484D-A599-A10420E84EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{073E64AC-AA40-484D-A599-A10420E84EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{073E64AC-AA40-484D-A599-A10420E84EF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34164A9A-1B56-4CA7-AA30-611DD6683EC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34164A9A-1B56-4CA7-AA30-611DD6683EC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34164A9A-1B56-4CA7-AA30-611DD6683EC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34164A9A-1B56-4CA7-AA30-611DD6683EC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -294,5 +306,7 @@ Global
 		{3DA0C557-630E-4E68-909D-93F2E5736563} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 		{1146D31B-E070-41F4-B7B9-F616F6A25E07} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
+		{073E64AC-AA40-484D-A599-A10420E84EF6} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{34164A9A-1B56-4CA7-AA30-611DD6683EC0} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 	EndGlobalSection
 EndGlobal
