@@ -1,13 +1,11 @@
 ﻿using Surreal.Assets;
 using Surreal.IO;
-using Surreal.Utilities;
 
 namespace Surreal.Colors;
 
 /// <summary>
 /// The <see cref="AssetLoader{T}" /> for <see cref="ColorPalette" />s.s
 /// </summary>
-[RegisterService(typeof(IAssetLoader))]
 public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
   public override async Task<ColorPalette> LoadAsync(AssetContext context, CancellationToken cancellationToken)

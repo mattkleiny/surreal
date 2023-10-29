@@ -1,32 +1,9 @@
-﻿using Surreal.Collections;
-
-namespace Surreal.Utilities;
+﻿namespace Surreal.Utilities;
 
 /// <summary>
 /// Indicates a service is not available.
 /// </summary>
 public class ServiceNotFoundException(string message) : ApplicationException(message);
-
-/// <summary>
-/// Indicates that the class should be registered as a service.
-/// </summary>
-[MeansImplicitUse(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
-[AttributeUsage(AttributeTargets.Class)]
-public class RegisterServiceAttribute(Type? serviceType = null) : Attribute
-{
-  /// <summary>
-  /// The type of the service to register.
-  /// </summary>
-  public Type? ServiceType { get; } = serviceType;
-
-  /// <summary>
-  /// Registers the service in the given <see cref="IServiceRegistry"/>.
-  /// </summary>
-  public virtual void RegisterService(IServiceRegistry registry, Type implementationType)
-  {
-    registry.AddService(ServiceType ?? implementationType, implementationType);
-  }
-}
 
 /// <summary>
 /// Indicates a module that can be registered in a <see cref="IServiceRegistry"/>.
@@ -59,20 +36,6 @@ public static class ServiceExtensions
   public static void AddModule(this IServiceRegistry registry, IServiceModule module)
   {
     module.RegisterServices(registry);
-  }
-
-  /// <summary>
-  /// Registers all services marked with <see cref="RegisterServiceAttribute"/> in the given assembly.
-  /// </summary>
-  public static void AddAssemblyServices(this IServiceRegistry registry, Assembly assembly)
-  {
-    foreach (var type in assembly.GetTypes())
-    {
-      if (type.TryGetCustomAttribute(out RegisterServiceAttribute attribute))
-      {
-        attribute.RegisterService(registry, type);
-      }
-    }
   }
 
   /// <summary>

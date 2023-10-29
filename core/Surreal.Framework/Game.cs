@@ -48,10 +48,12 @@ public sealed record GameConfiguration
   /// </summary>
   public List<IServiceModule> Modules { get; init; } = new()
   {
-    new AudioModule(),
-    new GraphicsModule(),
+    // TODO: get the right backend into here?
+    new AudioModule(IAudioBackend.Headless),
+    new GraphicsModule(IGraphicsBackend.Headless),
     new InputModule(),
-    new PhysicsModule()
+    new PhysicsModule(),
+    new ScriptModule()
   };
 }
 

@@ -45,6 +45,23 @@ public readonly record struct StringSpan(string? Source, int Offset, int Length)
   /// <summary>
   /// Accesses a single character in the span.
   /// </summary>
+  public char this[int index]
+  {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    get
+    {
+      if (Source != null)
+      {
+        return Source[Offset + index];
+      }
+
+      return default;
+    }
+  }
+
+  /// <summary>
+  /// Accesses a single character in the span.
+  /// </summary>
   public char this[Index index]
   {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -135,4 +152,132 @@ public static class StringSpanExtensions
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static StringSpan AsStringSpan(this string source, int offset, int length)
     => new(source, offset, length);
+
+  /// <summary>
+  /// Consumes all of the next contiguous digits in the span.
+  /// </summary>
+  public static StringSpan ConsumeNumeric(this StringSpan span)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (!char.IsDigit(span[i]))
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>
+  /// Consumes all of the next contiguous digits, including decimal places in the span.
+  /// </summary>
+  public static StringSpan ConsumeNumericWithFractions(this StringSpan span)
+  {
+    var offset = 1;
+    var hasFraction = false;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (span[i] == '.')
+      {
+        if (hasFraction) break;
+        hasFraction = true;
+      }
+      else if (!char.IsDigit(span[i]))
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>
+  /// Consumes all alpha-numeric characters in the span.
+  /// </summary>
+  public static StringSpan ConsumeAlphaNumeric(this StringSpan span)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      var character = span[i];
+
+      if (!char.IsLetterOrDigit(character) && character != '_')
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>
+  /// Consumes all alpha-numeric characters in the span.
+  /// </summary>
+  public static StringSpan ConsumeAny(this StringSpan span, HashSet<char> characters)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (!characters.Contains(span[i]))
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>
+  /// Consumes all of the given characters from the span.
+  /// </summary>
+  public static StringSpan ConsumeWhile(this StringSpan span, char token)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      if (span[i] != token)
+      {
+        break;
+      }
+
+      offset++;
+    }
+
+    return span[..offset];
+  }
+
+  /// <summary>
+  /// Consumes all characters until the given token is detected.
+  /// </summary>
+  public static StringSpan ConsumeUntil(this StringSpan span, char token)
+  {
+    var offset = 1;
+
+    for (var i = 1; i < span.Length; i++)
+    {
+      offset++;
+
+      if (span[i] == token)
+      {
+        break;
+      }
+    }
+
+    return span[..offset];
+  }
 }

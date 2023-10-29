@@ -1,6 +1,5 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
-using Surreal.Utilities;
 
 namespace Surreal.Graphics.Textures;
 
@@ -17,7 +16,6 @@ public sealed record TextureLoaderSettings
 /// <summary>
 /// The <see cref="AssetLoader{T}" /> for <see cref="Texture" />s.
 /// </summary>
-[RegisterService(typeof(IAssetLoader))]
 public sealed class TextureLoader(IGraphicsBackend graphics) : AssetLoader<Texture>
 {
   /// <summary>

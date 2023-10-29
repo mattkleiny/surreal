@@ -10,6 +10,5 @@ public sealed class InputModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddAssemblyServices(Assembly.GetExecutingAssembly());
   }
 }

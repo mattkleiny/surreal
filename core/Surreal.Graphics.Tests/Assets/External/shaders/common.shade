@@ -1,0 +1,14 @@
+﻿// Common utilities used by all shader programs.
+
+uniform sampler2d _PaletteTexture;
+uniform float _PaletteWidth;
+
+// Samples the color palette texture and returns the
+// mapped color for the given input color.
+//
+// N.B: This requires a texture lookup, so try and minimize
+// the number of calls.
+vec3 sample_palette(vec3 color)
+{
+  return SAMPLE(_PaletteTexture, color.xy);
+}

@@ -82,6 +82,12 @@ public sealed class FastBinaryWriter(Stream stream, Encoding encoding) : IDispos
 /// </summary>
 public static class FastBinaryWriterExtensions
 {
+  public static void WriteBytes(this FastBinaryWriter writer, ReadOnlySpan<byte> bytes)
+  {
+    writer.WriteInt32(bytes.Length);
+    writer.WriteBytes(bytes.ToArray());
+  }
+
   public static void WriteVector2(this FastBinaryWriter writer, Vector2 vector)
   {
     writer.WriteFloat(vector.X);

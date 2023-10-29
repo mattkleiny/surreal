@@ -1,7 +1,6 @@
 ﻿using NAudio.Wave;
 using Surreal.Assets;
 using Surreal.IO;
-using Surreal.Utilities;
 
 namespace Surreal.Audio.Clips;
 
@@ -13,7 +12,6 @@ public sealed class UnsupportedAudioFormatException(string message) : Applicatio
 /// <summary>
 /// The <see cref="AssetLoader{T}" /> for <see cref="AudioBuffer" />s.
 /// </summary>
-[RegisterService(typeof(IAssetLoader))]
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
   public override async Task<AudioBuffer> LoadAsync(AssetContext context, CancellationToken cancellationToken)

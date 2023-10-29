@@ -1,23 +1,16 @@
-﻿using Surreal.Graphics.Sprites;
-
-var configuration = new GameConfiguration
+﻿var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
   {
     Configuration =
     {
-      Title = "Sprite Sheest",
+      Title = "Sprite Sheets",
       IsVsyncEnabled = true,
       ShowFpsInTitle = true,
       Width = 1920,
       Height = 1080,
       IsTransparent = true
     }
-  },
-  Modules =
-  {
-    // we'll use aseprite files directly in this example
-    new AsepriteModule()
   }
 };
 

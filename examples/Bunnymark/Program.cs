@@ -1,5 +1,4 @@
 ﻿using Bunnymark;
-using Surreal.Graphics.Sprites;
 
 const int width = 1920;
 const int height = 1080;

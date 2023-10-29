@@ -1,4 +1,6 @@
-﻿using Surreal.Utilities;
+﻿using Surreal.Assets;
+using Surreal.Audio.Clips;
+using Surreal.Utilities;
 
 namespace Surreal.Audio;
 
@@ -6,10 +8,11 @@ namespace Surreal.Audio;
 /// A <see cref="IServiceModule"/> for the <see cref="Audio"/> namespace.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public sealed class AudioModule : IServiceModule
+public sealed class AudioModule(IAudioBackend backend) : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddAssemblyServices(Assembly.GetExecutingAssembly());
+    registry.AddService<IAssetLoader>(new AudioBufferLoader());
+    registry.AddService<IAssetLoader>(new AudioClipLoader(backend));
   }
 }

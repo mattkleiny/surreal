@@ -2,14 +2,12 @@
 using Surreal.Colors;
 using Surreal.Diagnostics.Gizmos;
 using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal.Physics;
 
 /// <summary>
 /// A lightweight C#-based implementation of the physics backend.
 /// </summary>
-[RegisterService(typeof(IPhysicsBackend))]
 internal sealed class PhysicsBackend : IPhysicsBackend
 {
   public IPhysicsWorld2d CreatePhysicsWorld2d()
