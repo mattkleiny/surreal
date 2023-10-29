@@ -97,6 +97,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloEditor", "examples\Hel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Sdk", "core\Surreal.Sdk\Surreal.Sdk.csproj", "{E314AD10-D2C2-4D7C-B464-A00FC652DB41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Animations", "extensions\Surreal.Extensions.Animations\Surreal.Extensions.Animations.csproj", "{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Animations.Tests", "extensions\Surreal.Extensions.Animations.Tests\Surreal.Extensions.Animations.Tests.csproj", "{3DA0C557-630E-4E68-909D-93F2E5736563}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -231,6 +235,14 @@ Global
 		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DA0C557-630E-4E68-909D-93F2E5736563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DA0C557-630E-4E68-909D-93F2E5736563}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DA0C557-630E-4E68-909D-93F2E5736563}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DA0C557-630E-4E68-909D-93F2E5736563}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -273,5 +285,7 @@ Global
 		{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{E314AD10-D2C2-4D7C-B464-A00FC652DB41} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
+		{3DA0C557-630E-4E68-909D-93F2E5736563} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 	EndGlobalSection
 EndGlobal
