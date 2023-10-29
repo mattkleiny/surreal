@@ -1,6 +1,4 @@
 <Project>
-  <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" Condition="$(ShouldImportBaseSdk) == 'true'" />
-
   <PropertyGroup Condition="'$(TargetPlatform)' == ''">
     <!-- auto-detect the target platform from the desired target platform -->
     <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('browser'))">web</SurrealPlatform>
@@ -66,4 +64,6 @@
     <PackageReference Include="Surreal.Framework" Version="$(SurrealVersion)" />
     <PackageReference Include="Surreal.Platform.Desktop" Version="$(SurrealVersion)" Condition="$(SurrealPlatform) == 'desktop'" />
   </ItemGroup>
+
+  <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" Condition="$(ShouldImportBaseSdk) == 'true'" />
 </Project>

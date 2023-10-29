@@ -18,7 +18,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ApplicationIcon>$(MSBuildThisFileDirectory)/surreal.ico</ApplicationIcon>
     <RootNamespace>Surreal</RootNamespace>
 
