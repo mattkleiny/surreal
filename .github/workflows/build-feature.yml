@@ -1,8 +1,14 @@
-name: Master Build and Package
+name: Feature Build
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - '**'
+      - '!master'
+  pull_request:
+    branches:
+      - '**'
+      - '!master'
 
 jobs:
   build:
@@ -26,7 +32,5 @@ jobs:
             ${{ runner.os }}-nuget
 
       - run: dotnet restore
-      - run: dotnet build /p:Version=0.1.${{ github.run_number }} --no-restore
-      - run: dotnet test /p:Version=0.1.${{ github.run_number }} --no-build --verbosity normal
-      - run: dotnet pack /p:Version=0.1.${{ github.run_number }} --output nuget-packages --configuration Release
-      - run: dotnet nuget push **/*nupkg --skip-duplicate --api-key ${{ github.token }} --source https://nuget.pkg.github.com/mattkleiny/index.json
+      - run: dotnet build --no-restore
+      - run: dotnet test --no-build --verbosity normal

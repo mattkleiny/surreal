@@ -22,10 +22,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld", "examples\HelloWorld\HelloWorld.csproj", "{7570FF55-0C5D-4E52-BE67-ED3307EAD128}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{DDEB73C7-6BB8-4F6F-822B-FDD77637B89D}"
-ProjectSection(SolutionItems) = preProject
-	.github\workflows\build-and-package.yml = .github\workflows\build-and-package.yml
-	.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-feature.yml = .github\workflows\build-feature.yml
+		.github\workflows\build-master.yml = .github\workflows\build-master.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{B9125AD4-8943-45DC-993A-5D1B179F9041}"
 EndProject
