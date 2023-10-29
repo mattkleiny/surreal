@@ -2,7 +2,6 @@
   <PropertyGroup>
     <Product>Surreal</Product>
     <Authors>Matthew Kleinschafer</Authors>
-    <Version>0.1</Version>
     <Company>MK Productions</Company>
     <Description>.NET SDK for working with the Surreal game engine.</Description>
     <Copyright>Copyright© 2021, All Rights Reserved.</Copyright>

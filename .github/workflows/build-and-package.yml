@@ -28,5 +28,5 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore
       - run: dotnet test --no-build --verbosity normal
-      - run: dotnet pack /p:Version=0.1.${{ github.run_number }} --configuration Release --include-symbols --output nuget-packages
-      - run: dotnet nuget push **/*.nupkg --skip-duplicate --api-key ${{ github.token }} --source https://nuget.pkg.github.com/mattkleiny/index.json
+      - run: dotnet pack /p:Version=0.1.${{ github.run_number }} --configuration Release --output nuget-packages
+      - run: dotnet nuget push **/*nupkg --skip-duplicate --api-key ${{ github.token }} --source https://nuget.pkg.github.com/mattkleiny/index.json
