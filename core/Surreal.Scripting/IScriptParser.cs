@@ -7,6 +7,11 @@ namespace Surreal.Scripting;
 public interface IScriptParser
 {
   /// <summary>
+  /// The file extensions supported by the language that this parser handles.
+  /// </summary>
+  string[] SupportedExtensions { get; }
+
+  /// <summary>
   /// Parses a script from the given <see cref="TextReader" />.
   /// </summary>
   ValueTask<ScriptDeclaration> ParseScriptAsync(string path, TextReader reader, CancellationToken cancellationToken = default);

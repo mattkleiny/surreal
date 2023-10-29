@@ -18,6 +18,11 @@ public sealed class ScriptDeclarationLoader : AssetLoader<ScriptDeclaration>
   private readonly ImmutableHashSet<string> _extensions;
   private readonly Encoding _encoding;
 
+  public ScriptDeclarationLoader(IScriptParser parser)
+    : this(parser, parser.SupportedExtensions)
+  {
+  }
+
   public ScriptDeclarationLoader(IScriptParser parser, params string[] extensions)
     : this(parser, extensions.AsEnumerable())
   {
@@ -74,9 +79,19 @@ public abstract record ScriptSyntaxTree
   /// </summary>
   public sealed record CompilationUnit : ScriptSyntaxTree
   {
+    /// <summary>
+    /// The includes for this compilation unit.
+    /// </summary>
     public ImmutableArray<Include> Includes { get; init; } = ImmutableArray<Include>.Empty;
+
+    /// <summary>
+    /// The top-level statements for this compilation unit.
+    /// </summary>
     public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
 
+    /// <summary>
+    /// Merge this compilation unit with another.
+    /// </summary>
     public CompilationUnit MergeWith(CompilationUnit other) => this with
     {
       Includes = Includes.AddRange(other.Includes),
