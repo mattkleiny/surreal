@@ -1,4 +1,3 @@
-<!-- common targets for all projects -->
 <Project>
   <!-- conveniences for .NET projects -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8'))">

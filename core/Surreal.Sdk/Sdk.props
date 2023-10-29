@@ -1,0 +1,19 @@
+<Project>
+  <!-- get generated properties during the build -->
+  <Import Project="$(MSBuildThisFileDirectory)\SdkVersions.props"/>
+
+  <PropertyGroup>
+    <!-- determine if we need to also import the base .NET build sdk -->
+    <ShouldImportBaseSdk Condition="$(UsingMicrosoftNETSdk) != 'true'">true</ShouldImportBaseSdk>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- shared default properties for the project -->
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SurrealVersion>$(Version)</SurrealVersion>
+  </PropertyGroup>
+
+  <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props" Condition="$(ShouldImportBaseSdk) == 'true'" />
+</Project>

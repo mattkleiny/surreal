@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
+  <PropertyGroup>
+    <Product>Surreal</Product>
+    <Authors>Matthew Kleinschafer</Authors>
+    <Version>0.1</Version>
+    <Company>MK Productions</Company>
+    <Description>.NET SDK for working with the Surreal game engine.</Description>
+    <Copyright>Copyright© 2021, All Rights Reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
+
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageType>MSBuildSdk</PackageType>
+    <PackageTags>MSBuildSdk</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- Exclude target framework from the package dependencies as we don't include the build output -->
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Sdk.props" Pack="true" PackagePath="Sdk" />
+    <None Include="Sdk.targets" Pack="true" PackagePath="Sdk" />
+    <None Include="SdkVersions.props" Pack="true" PackagePath="Sdk" />
+  </ItemGroup>
+
+  <Target Name="WriteBuildProperties" BeforeTargets="Build">
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="true"  Lines="&lt;Project&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="  &lt;PropertyGroup&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="    &lt;SurrealVersion&gt;$(Version)&lt;/SurrealVersion&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="  &lt;/PropertyGroup&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="&lt;/Project&gt;" />
+  </Target>
+</Project>

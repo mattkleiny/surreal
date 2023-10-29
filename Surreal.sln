@@ -96,6 +96,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Aseprite
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloEditor", "examples\HelloEditor\HelloEditor.csproj", "{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Sdk", "core\Surreal.Sdk\Surreal.Sdk.csproj", "{E314AD10-D2C2-4D7C-B464-A00FC652DB41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -226,6 +228,10 @@ Global
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -267,5 +273,6 @@ Global
 		{BD841CF6-D8B1-4892-8108-969F841D86A1} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
 		{D1E55A39-E7F1-4A08-8A52-7E7DA7AB965E} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
+		{E314AD10-D2C2-4D7C-B464-A00FC652DB41} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 	EndGlobalSection
 EndGlobal
