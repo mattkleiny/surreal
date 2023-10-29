@@ -1,7 +1,8 @@
 ﻿using Surreal.Assets;
+using Surreal.Colors;
 using Surreal.IO;
 
-namespace Surreal.Colors;
+namespace Surreal.Graphics.Utilities;
 
 /// <summary>
 /// The <see cref="AssetLoader{T}" /> for <see cref="ColorPalette" />s.s

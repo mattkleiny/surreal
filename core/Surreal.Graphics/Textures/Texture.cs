@@ -107,7 +107,9 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
     }
   }
 
-  /// <inheritdoc/>
+  /// <summary>
+  /// The size of the texture, in bytes.
+  /// </summary>
   public Size Size { get; private set; }
 
   /// <summary>

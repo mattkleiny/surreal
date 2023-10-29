@@ -135,10 +135,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
       foreach (var body in _bodies)
       {
-        var velocity = body.CurrentPosition - body.PreviousPosition;
-
         gizmos.DrawWireCircle(body.CurrentPosition, BodyRadius, Color.White);
-        // gizmos.DrawLine(body.CurrentPosition, body.CurrentPosition + velocity * 10f, Color.Green);
       }
     }
 

@@ -221,6 +221,7 @@ public class Game : IDisposable
   /// <summary>
   /// Runs this game inside of a <see cref="HostingContext"/>.
   /// </summary>
+  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   private static void RunInsideHost(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)
   {
     try
