@@ -1,7 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <!-- shared package versions for the whole solution -->
-    <AvaloniaVersion>11.0.5</AvaloniaVersion>
-    <SilkVersion>2.17</SilkVersion>
-  </PropertyGroup>
-</Project>

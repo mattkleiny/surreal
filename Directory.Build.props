@@ -2,6 +2,7 @@
   <PropertyGroup>
     <!-- shared project properties -->
     <Product>Surreal</Product>
+    <RootNamespace>Surreal</RootNamespace>
     <Authors>Matthew Kleinschafer</Authors>
     <Company>MK Productions</Company>
     <Copyright>Copyright© 2021, All Rights Reserved.</Copyright>
@@ -18,7 +19,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
     <ApplicationIcon>$(MSBuildThisFileDirectory)/surreal.ico</ApplicationIcon>
-    <RootNamespace>Surreal</RootNamespace>
 
     <!-- analysis and warnings -->
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>
@@ -29,10 +29,15 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- build configuration -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  <PropertyGroup>
+    <!-- shared package versions for the whole solution -->
+    <AvaloniaVersion>11.0.5</AvaloniaVersion>
+    <SilkVersion>2.17</SilkVersion>
   </PropertyGroup>
 
   <ItemGroup>
