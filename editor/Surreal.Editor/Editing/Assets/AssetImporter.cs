@@ -48,7 +48,12 @@ public abstract class AssetImporter<[MeansImplicitUse] TAsset> : IAssetImporter
   {
     if (CanHandlePath(path))
     {
-      typeId = GetTypeId();
+      if (!typeof(TAsset).TryGetCustomAttribute(out AssetTypeAttribute attribute))
+      {
+        throw new InvalidOperationException($"The associated class {typeof(TAsset)} has no {nameof(AssetTypeAttribute)}");
+      }
+
+      typeId = attribute.Id;
       return true;
     }
 
@@ -64,26 +69,13 @@ public abstract class AssetImporter<[MeansImplicitUse] TAsset> : IAssetImporter
       throw new InvalidOperationException($"The associated class {typeof(TAsset)} has no {nameof(AssetTypeAttribute)}");
     }
 
-    return GetTypeId() == metadata.TypeId;
+    return attribute.Id == metadata.TypeId;
   }
 
   /// <inheritdoc/>
   async Task<object> IAssetImporter.ImportAsync(VirtualPath path, CancellationToken cancellationToken)
   {
     return await ImportAsync(path, cancellationToken);
-  }
-
-  /// <summary>
-  /// The type id of the asset.
-  /// </summary>
-  private static Guid GetTypeId()
-  {
-    if (!typeof(TAsset).TryGetCustomAttribute(out AssetTypeAttribute attribute))
-    {
-      throw new InvalidOperationException($"The associated class {typeof(TAsset)} has no {nameof(AssetTypeAttribute)}");
-    }
-
-    return attribute.Id;
   }
 }
 

@@ -23,7 +23,7 @@ public abstract class PhysicsBody2D : Node2D
     {
       if (_physicsWorld == null)
       {
-        var world = Root?.Physics as IPhysicsWorld2d;
+        var world = Root.Physics as IPhysicsWorld2d;
 
         _physicsWorld = world ?? throw new InvalidOperationException("A 2d physics world is not available");
       }
