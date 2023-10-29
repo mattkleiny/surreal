@@ -101,6 +101,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Animatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Animations.Tests", "extensions\Surreal.Extensions.Animations.Tests\Surreal.Extensions.Animations.Tests.csproj", "{3DA0C557-630E-4E68-909D-93F2E5736563}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.BehaviourTrees", "extensions\Surreal.Extensions.BehaviourTrees\Surreal.Extensions.BehaviourTrees.csproj", "{1146D31B-E070-41F4-B7B9-F616F6A25E07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.BehaviourTrees.Tests", "extensions\Surreal.Extensions.BehaviourTrees.Tests\Surreal.Extensions.BehaviourTrees.Tests.csproj", "{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,6 +247,14 @@ Global
 		{3DA0C557-630E-4E68-909D-93F2E5736563}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DA0C557-630E-4E68-909D-93F2E5736563}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DA0C557-630E-4E68-909D-93F2E5736563}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1146D31B-E070-41F4-B7B9-F616F6A25E07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1146D31B-E070-41F4-B7B9-F616F6A25E07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1146D31B-E070-41F4-B7B9-F616F6A25E07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1146D31B-E070-41F4-B7B9-F616F6A25E07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,5 +299,7 @@ Global
 		{E314AD10-D2C2-4D7C-B464-A00FC652DB41} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 		{3DA0C557-630E-4E68-909D-93F2E5736563} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
+		{1146D31B-E070-41F4-B7B9-F616F6A25E07} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
+		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 	EndGlobalSection
 EndGlobal

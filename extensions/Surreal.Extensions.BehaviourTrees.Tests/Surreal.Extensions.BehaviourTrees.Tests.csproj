@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Surreal.Extensions.BehaviourTrees\Surreal.Extensions.BehaviourTrees.csproj" />
+  </ItemGroup>
+</Project>
