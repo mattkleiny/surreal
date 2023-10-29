@@ -22,10 +22,7 @@ internal partial class GameViewport : UserControl
   {
     InitializeComponent();
 
-    var viewModel = new GameViewportViewModel(this);
-
-    DataContext = viewModel;
-    Display.DataContext = viewModel;
+    DataContext = new GameViewportViewModel(this);
   }
 }
 
@@ -34,9 +31,18 @@ internal partial class GameViewport : UserControl
 /// </summary>
 internal sealed class GameViewportDisplay : OpenGlControlBase
 {
-  protected override void OnOpenGlRender(GlInterface gl, int fb)
+  public delegate void RenderCallback(GlInterface gl, GraphicsHandle frameBuffer);
+
+  /// <summary>
+  /// Invoked when the control is rendered.
+  /// </summary>
+  public event RenderCallback? Rendering;
+
+  protected override void OnOpenGlRender(GlInterface gl, int frameBufferId)
   {
-    // TODO: get the game's display into here
+    var frameBuffer = GraphicsHandle.FromInt(frameBufferId);
+
+    Rendering?.Invoke(gl, frameBuffer);
   }
 }
 
@@ -119,11 +125,14 @@ internal sealed class GameViewportViewModel : EditorViewModel
       public EditorPlatformHost(GameViewportViewModel owner)
       {
         _owner = owner;
+
         _owner.Viewport.SizeChanged += (_, e) =>
         {
           // forward resize events
           Resized?.Invoke((int)e.NewSize.Width, (int)e.NewSize.Height);
         };
+
+        _owner.Viewport.Display.Rendering += OnDisplayRendering;
       }
 
       public event Action<int, int>? Resized;
@@ -136,6 +145,8 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
       public void RegisterServices(IServiceRegistry services)
       {
+        // TODO: get a valid graphics backend into the game that can be displayed in the viewport
+
         services.AddService(IAudioBackend.Headless);
         services.AddService(IGraphicsBackend.Headless);
         services.AddService<IKeyboardDevice>(new HeadlessKeyboardDevice());
@@ -151,6 +162,10 @@ internal sealed class GameViewportViewModel : EditorViewModel
       }
 
       public void Dispose()
+      {
+      }
+
+      private void OnDisplayRendering(GlInterface gl, GraphicsHandle frameBuffer)
       {
       }
     }
