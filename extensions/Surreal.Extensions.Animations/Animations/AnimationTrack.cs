@@ -1,5 +1,4 @@
-﻿using Surreal.Colors;
-using Surreal.Maths;
+﻿using Surreal.Maths;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -32,7 +31,15 @@ public interface IAnimationTrack
 /// </summary>
 public interface IAnimationTrackDelegate<T>
 {
+  /// <summary>
+  /// Gets the current value.
+  /// </summary>
   T GetValue();
+
+  /// <summary>
+  /// Sets the current value.
+  /// </summary>
+  /// <param name="value"></param>
   void SetValue(T value);
 }
 
@@ -50,16 +57,20 @@ public static class AnimationTrack
   public static AnimationTrack<double> Create<TRoot>(TRoot root, Expression<Func<TRoot, double>> expression)
     where TRoot : class => Create(root, MathE.Lerp, expression);
 
-  public static AnimationTrack<Color> Create<TRoot>(TRoot root, Expression<Func<TRoot, Color>> expression)
-    where TRoot : class => Create(root, MathE.Lerp, expression);
-
-  public static AnimationTrack<Color32> Create<TRoot>(TRoot root, Expression<Func<TRoot, Color32>> expression)
-    where TRoot : class => Create(root, MathE.Lerp, expression);
+  public static AnimationTrack<T> Create<TRoot, T>(TRoot root, Expression<Func<TRoot, T?>> expression)
+    where TRoot : class
+    where T :IInterpolated<T>
+  {
+    return Create(root, T.Lerp, expression);
+  }
 
   public static AnimationTrack<T> Create<TRoot, T>(TRoot root, InterpolationFunction<T> interpolator, Expression<Func<TRoot, T?>> expression)
-    where TRoot : class => new(CreateDelegate(root, expression)) { Interpolator = interpolator };
+    where TRoot : class
+  {
+    return new AnimationTrack<T>(CreateDelegate(root, expression)) { Interpolator = interpolator };
+  }
 
-  private static IAnimationTrackDelegate<T> CreateDelegate<TRoot, T>(TRoot root, Expression<Func<TRoot, T?>> expression)
+  private static AnimationTrackDelegate<T> CreateDelegate<TRoot, T>(TRoot root, Expression<Func<TRoot, T?>> expression)
     where TRoot : class
   {
     if (!expression.TryResolveProperty(out var propertyInfo))
@@ -69,7 +80,7 @@ public static class AnimationTrack
 
     if (propertyInfo.GetMethod == null || propertyInfo.SetMethod == null)
     {
-      throw new InvalidOperationException($"The given1 property {propertyInfo} doesn't have a valid getter and setter");
+      throw new InvalidOperationException($"The given property {propertyInfo} doesn't have a valid getter and setter");
     }
 
     var getter = propertyInfo.GetMethod.CreateDelegate<Func<T>>(root);

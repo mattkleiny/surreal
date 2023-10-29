@@ -5,9 +5,7 @@ namespace Surreal.Scripting;
 /// <summary>
 /// Represents an executable script with a convenient API for internal use.
 /// </summary>
-public interface IScript
-{
-}
+public interface IScript;
 
 /// <summary>
 /// The <see cref="AssetLoader{T}"/> for different <see cref="IScript"/> types.
