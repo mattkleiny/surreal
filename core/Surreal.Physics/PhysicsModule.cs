@@ -3,7 +3,7 @@
 namespace Surreal.Physics;
 
 /// <summary>
-/// A <see cref="IServiceModule"/> for the <see cref="Physics"/> namespace.
+/// A <see cref="IServiceModule"/> for the physics system.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public sealed class PhysicsModule : IServiceModule

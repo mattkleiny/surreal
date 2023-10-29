@@ -5,7 +5,7 @@ namespace Surreal.Graphics.Sprites;
 /// <summary>
 /// The <see cref="IAssetLoader"/> for <see cref="AsepriteFile"/>-based <see cref="SpriteSheet"/>s.
 /// </summary>
-public sealed class AsepriteSpriteSheetLoader(IGraphicsBackend backend) : AssetLoader<SpriteSheet>
+public sealed class AsepriteSpriteSheetLoader : AssetLoader<SpriteSheet>
 {
   public override bool CanHandle(AssetContext context)
   {

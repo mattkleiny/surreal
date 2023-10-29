@@ -7,6 +7,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Rendering;
 using Surreal.Hosting;
 using Surreal.Input;
+using Surreal.Networking;
 using Surreal.Physics;
 using Surreal.Scenes;
 using Surreal.Scripting;
@@ -48,10 +49,10 @@ public sealed record GameConfiguration
   /// </summary>
   public List<IServiceModule> Modules { get; init; } = new()
   {
-    // TODO: get the right backend into here?
-    new AudioModule(IAudioBackend.Headless),
-    new GraphicsModule(IGraphicsBackend.Headless),
+    new AudioModule(),
+    new GraphicsModule(),
     new InputModule(),
+    new NetworkModule(),
     new PhysicsModule(),
     new ScriptModule()
   };

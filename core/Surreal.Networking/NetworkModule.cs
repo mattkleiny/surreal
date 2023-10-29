@@ -1,12 +1,12 @@
 ﻿using Surreal.Utilities;
 
-namespace Surreal.Input;
+namespace Surreal.Networking;
 
 /// <summary>
-/// A <see cref="IServiceModule"/> for the input system.
+/// A <see cref="IServiceModule"/> for the networking system.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public sealed class InputModule : IServiceModule
+public sealed class NetworkModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {

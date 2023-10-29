@@ -1,17 +1,16 @@
 ﻿using Surreal.Assets;
-using Surreal.Graphics;
 using Surreal.Graphics.Sprites;
 using Surreal.Utilities;
 
 namespace Surreal;
 
 /// <summary>
-/// A <see cref="IServiceModule"/> for the Aseprite assembly.
+/// A <see cref="IServiceModule"/> for the Aseprite helpers.
 /// </summary>
-public sealed class AsepriteModule(IGraphicsBackend backend) : IServiceModule
+public sealed class AsepriteModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IAssetLoader>(new AsepriteSpriteSheetLoader(backend));
+    registry.AddService<IAssetLoader>(new AsepriteSpriteSheetLoader());
   }
 }
