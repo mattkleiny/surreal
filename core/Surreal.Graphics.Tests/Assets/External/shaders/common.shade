@@ -10,5 +10,5 @@ uniform float _PaletteWidth;
 // the number of calls.
 vec3 sample_palette(vec3 color)
 {
-  return SAMPLE(_PaletteTexture, color.xy);
+  //return SAMPLE(_PaletteTexture, color.xy);
 }

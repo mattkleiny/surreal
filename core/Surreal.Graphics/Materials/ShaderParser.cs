@@ -7,14 +7,9 @@ using static Surreal.Graphics.Materials.ShaderSyntaxTree.Statement;
 namespace Surreal.Graphics.Materials;
 
 /// <summary>
-/// Base class for any <see cref="StringParser{T}"/> for shader programs.
+/// A parser for a simple shading language, similar to Godot's language.
 /// </summary>
-public abstract class ShaderParser : StringParser<ShaderDeclaration>;
-
-/// <summary>
-/// A <see cref="ShaderParser"/> that parses a simple shading language, similar to Godot's language.
-/// </summary>
-public sealed class StandardShaderParser : ShaderParser
+public sealed class ShaderParser : StringParser<ShaderDeclaration>
 {
   private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE" }.ToImmutableHashSet();
   private static ImmutableHashSet<string> Stages   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
@@ -26,8 +21,7 @@ public sealed class StandardShaderParser : ShaderParser
 
   public override async ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
-    var tokens  = await TokenizeAsync(Keywords, reader, cancellationToken);
-    var context = new ShaderParserContext(tokens);
+    var context = new ShaderParserContext(await TokenizeAsync(Keywords, reader, cancellationToken));
 
     // parse the main compilation unit
     var compilationUnit = context.ParseCompilationUnit();
