@@ -5,11 +5,11 @@ namespace Surreal.BehaviourTrees.Decorators;
 /// <summary>
 /// A <see cref="BehaviourDecorator"/> that always returns failure on child nodes.
 /// </summary>
-public sealed record AlwaysFailure(BehaviourNode Child) : BehaviourDecorator(Child)
+public sealed class AlwaysFailure(BehaviourNode child) : BehaviourDecorator
 {
   protected override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)
   {
-    var status = Child.Update(context, deltaTime);
+    var status = child.Update(context, deltaTime);
 
     return status switch
     {

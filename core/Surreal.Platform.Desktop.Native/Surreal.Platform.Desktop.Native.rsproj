@@ -1,0 +1,31 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Description>Native desktop components for the Surreal project.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>target/debug/</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>target/release/</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src\**\*.rs" />
+    <Compile Include="Cargo.toml" />
+    <Compile Include="Cargo.lock" />
+  </ItemGroup>
+  
+  <Target Name="Restore">
+    <!-- no-op -->
+  </Target>
+
+  <Target Name="Clean">
+    <Exec Command="cargo clean" />
+  </Target>
+
+  <Target Name="Build" Inputs="@(Compile)" Outputs="$(OutputPath)/surreal_native.lib">
+    <Exec Command="cargo build" Condition="$(Configuration) != 'Release'" />
+    <Exec Command="cargo build --release" Condition="$(Configuration) == 'Release'" />
+  </Target>
+</Project>

@@ -5,7 +5,7 @@ namespace Surreal.BehaviourTrees.Composite;
 /// <summary>
 /// A <see cref="BehaviourComposite"/> that executes nodes in order.
 /// </summary>
-public sealed record Sequence : BehaviourComposite
+public sealed class Sequence : BehaviourComposite
 {
   private int _lastIndex;
 

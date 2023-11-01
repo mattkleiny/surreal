@@ -148,7 +148,6 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
     base.Dispose(managed);
   }
 
-
   /// <summary>
   /// Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.
   /// </summary>

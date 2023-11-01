@@ -5,7 +5,7 @@ namespace Surreal.BehaviourTrees.Composite;
 /// <summary>
 /// A <see cref="BehaviourComposite"/> that executes the first successful task from among children.
 /// </summary>
-public sealed record Selector : BehaviourComposite
+public sealed class Selector : BehaviourComposite
 {
   private int _lastIndex;
 

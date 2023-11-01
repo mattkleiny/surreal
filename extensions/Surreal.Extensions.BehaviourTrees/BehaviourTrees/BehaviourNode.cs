@@ -5,7 +5,7 @@ namespace Surreal.BehaviourTrees;
 /// <summary>
 /// A node of a <see cref="BehaviourTree"/>.
 /// </summary>
-public abstract record BehaviourNode
+public abstract class BehaviourNode
 {
   /// <summary>
   /// The current status of the node.
