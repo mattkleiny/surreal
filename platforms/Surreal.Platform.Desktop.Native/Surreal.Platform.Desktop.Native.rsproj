@@ -15,10 +15,8 @@
     <Compile Include="Cargo.toml" />
     <Compile Include="Cargo.lock" />
   </ItemGroup>
-  
-  <Target Name="Restore">
-    <!-- no-op -->
-  </Target>
+
+  <Target Name="Restore" />
 
   <Target Name="Clean">
     <Exec Command="cargo clean" />
@@ -27,5 +25,9 @@
   <Target Name="Build" Inputs="@(Compile)" Outputs="$(OutputPath)/surreal_native.lib">
     <Exec Command="cargo build" Condition="$(Configuration) != 'Release'" />
     <Exec Command="cargo build --release" Condition="$(Configuration) == 'Release'" />
+  </Target>
+
+  <Target Name="VSTest" DependsOnTargets="Build">
+    <Exec Command="cargo test" LogStandardErrorAsError="true" />
   </Target>
 </Project>

@@ -6,3 +6,11 @@ pub unsafe extern "C" fn say_hello(name: *const u8, length: usize) {
 
     println!("Hello, {}!", message);
 }
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 3);
+    }
+}

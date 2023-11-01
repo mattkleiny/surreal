@@ -107,7 +107,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Networking", "core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Networking.Tests", "core\Surreal.Networking.Tests\Surreal.Networking.Tests.csproj", "{34164A9A-1B56-4CA7-AA30-611DD6683EC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.Native", "core\Surreal.Platform.Desktop.Native\Surreal.Platform.Desktop.Native.rsproj", "{4D5CD834-D45D-4F03-912B-947C9A4FFF72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.Native", "platforms\Surreal.Platform.Desktop.Native\Surreal.Platform.Desktop.Native.rsproj", "{4D5CD834-D45D-4F03-912B-947C9A4FFF72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
