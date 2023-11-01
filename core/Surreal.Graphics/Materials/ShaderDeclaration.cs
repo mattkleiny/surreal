@@ -35,7 +35,6 @@ public enum ShaderPrimitiveType
 public enum ShaderKind
 {
   Vertex,
-  Geometry,
   Fragment,
 }
 
