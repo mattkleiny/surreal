@@ -1,4 +1,5 @@
 ﻿using Bunnymark;
+using Surreal.Graphics.Canvases;
 
 const int width = 1920;
 const int height = 1080;
@@ -25,7 +26,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
   var log = LogFactory.GetLog<Program>();
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
 
-  using var material = new Material(graphics, ShaderProgram.LoadDefaultSpriteShader(graphics))
+  using var material = new Material(graphics, ShaderProgram.LoadDefaultCanvasShader(graphics))
   {
     BlendState = BlendState.OneMinusSourceAlpha,
     Properties =
@@ -35,7 +36,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
     }
   };
 
-  using var batch = new SpriteBatch(graphics)
+  using var batch = new CanvasBatch(graphics)
   {
     Material = material
   };
@@ -62,7 +63,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
 
     foreach (ref var bunny in bunnies.AsSpan())
     {
-      batch.Draw(sprite, bunny.Position, size, bunny.Rotation.Radians, bunny.Tint);
+      batch.DrawQuad(sprite, bunny.Position, size, bunny.Rotation.Radians, bunny.Tint);
     }
 
     batch.Flush();

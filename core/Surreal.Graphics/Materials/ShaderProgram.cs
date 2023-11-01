@@ -18,12 +18,6 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
     => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/canvas.glsl");
 
   /// <summary>
-  /// Loads the built-in default sprite shader.
-  /// </summary>
-  public static ShaderProgram LoadDefaultSpriteShader(IGraphicsBackend backend)
-    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/sprite.glsl");
-
-  /// <summary>
   /// Loads the built-in default wire shader.
   /// </summary>
   public static ShaderProgram LoadDefaultWireShader(IGraphicsBackend backend)

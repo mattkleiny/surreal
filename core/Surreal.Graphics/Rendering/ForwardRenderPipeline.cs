@@ -1,5 +1,6 @@
 ﻿using Surreal.Colors;
 using Surreal.Diagnostics.Gizmos;
+using Surreal.Graphics.Canvases;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Sprites;
@@ -20,7 +21,7 @@ public sealed class ForwardRenderPipeline : MultiPassRenderPipeline
     Passes.Add(new ColorPass(backend, this));
     Passes.Add(new GizmoPass(backend, this));
 
-    Contexts.Add(new SpriteContext(backend));
+    Contexts.Add(new CanvasContext(backend));
   }
 
   /// <summary>

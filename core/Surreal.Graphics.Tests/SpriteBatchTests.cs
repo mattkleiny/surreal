@@ -1,4 +1,5 @@
-﻿using Surreal.Graphics.Materials;
+﻿using Surreal.Graphics.Canvases;
+using Surreal.Graphics.Materials;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 
@@ -11,7 +12,7 @@ public class SpriteBatchTests
   {
     var backend = IGraphicsBackend.Headless;
 
-    using var batch = new SpriteBatch(backend);
+    using var batch = new CanvasBatch(backend);
     using var shader = new ShaderProgram(backend);
     using var material = new Material(backend, shader);
     using var texture1 = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
@@ -22,12 +23,12 @@ public class SpriteBatchTests
 
     batch.Reset();
 
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
 
     batch.Flush();
 
@@ -39,7 +40,7 @@ public class SpriteBatchTests
   {
     var backend = IGraphicsBackend.Headless;
 
-    using var batch = new SpriteBatch(backend);
+    using var batch = new CanvasBatch(backend);
     using var shader = new ShaderProgram(backend);
     using var material = new Material(backend, shader);
     using var texture1 = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
@@ -51,12 +52,12 @@ public class SpriteBatchTests
 
     batch.Reset();
 
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture1, Vector2.Zero);
-    batch.Draw(texture2, Vector2.Zero);
-    batch.Draw(texture2, Vector2.Zero);
-    batch.Draw(texture2, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture1, Vector2.Zero);
+    batch.DrawQuad(texture2, Vector2.Zero);
+    batch.DrawQuad(texture2, Vector2.Zero);
+    batch.DrawQuad(texture2, Vector2.Zero);
 
     batch.Flush();
 
