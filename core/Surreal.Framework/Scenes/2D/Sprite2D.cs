@@ -1,7 +1,7 @@
 ﻿using Surreal.Colors;
+using Surreal.Graphics.Canvases;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Rendering;
-using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 
@@ -43,9 +43,9 @@ public class Sprite2D : Node2D, ICullableObject, IRenderObject
     set => SetField(ref _tint, value);
   }
 
-  protected virtual void OnRender(in RenderFrame frame, SpriteBatch batch)
+  protected virtual void OnRender(in RenderFrame frame, CanvasBatch batch)
   {
-    batch.Draw(
+    batch.DrawQuad(
       region: Sprite,
       position: GlobalPosition,
       size: GlobalScale * Sprite.Size,
@@ -64,9 +64,9 @@ public class Sprite2D : Node2D, ICullableObject, IRenderObject
 
   void IRenderObject.Render(in RenderFrame frame)
   {
-    if (frame.Contexts.TryGetContext(in frame, out SpriteContext context))
+    if (frame.Contexts.TryGetContext(in frame, out CanvasContext context))
     {
-      OnRender(in frame, context.SpriteBatch);
+      OnRender(in frame, context.Batch);
     }
   }
 }

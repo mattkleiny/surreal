@@ -3,29 +3,32 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
+using Surreal.Maths;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Sprites;
+namespace Surreal.Graphics.Canvases;
 
 /// <summary>
-/// A <see cref="RenderContext"/> for <see cref="Sprites.SpriteBatch"/>es.
+/// A <see cref="RenderContext"/> for <see cref="CanvasBatch"/>es.
 /// </summary>
-public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
+public sealed class CanvasContext(IGraphicsBackend backend) : RenderContext
 {
   /// <summary>
-  /// The <see cref="Sprites.SpriteBatch"/> used by this context.
+  /// The <see cref="CanvasBatch"/> used by this context.
   /// </summary>
-  public SpriteBatch SpriteBatch { get; } = new(backend);
+  public CanvasBatch Batch { get; } = new(backend);
 
   /// <summary>
   /// The property to use for the projection view matrix.
+  /// <para/>
+  /// If not specified, the identity matrix will be used.
   /// </summary>
-  public MaterialProperty<Matrix4x4> TransformProperty { get; } = MaterialProperty.Transform;
+  public MaterialProperty<Matrix4x4>? TransformProperty { get; set; }
 
   /// <summary>
   /// The material used by this context.
   /// </summary>
-  public Material Material { get; init; } = new(backend, ShaderProgram.LoadDefaultSpriteShader(backend))
+  public Material Material { get; init; } = new(backend, ShaderProgram.LoadDefaultCanvasShader(backend))
   {
     BlendState = BlendState.OneMinusSourceAlpha
   };
@@ -34,22 +37,25 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
   {
     base.OnBeginPass(in frame, viewport);
 
-    Material.Properties.SetProperty(TransformProperty, viewport.ProjectionView);
+    if (TransformProperty != null)
+    {
+      Material.Properties.SetProperty(TransformProperty.Value, viewport.ProjectionView);
+    }
 
-    SpriteBatch.Material = Material;
-    SpriteBatch.Reset();
+    Batch.Material = Material;
+    Batch.Reset();
   }
 
   public override void OnEndPass(in RenderFrame frame, IRenderViewport viewport)
   {
     base.OnEndPass(in frame, viewport);
 
-    SpriteBatch.Flush();
+    Batch.Flush();
   }
 
   public override void Dispose()
   {
-    SpriteBatch.Dispose();
+    Batch.Dispose();
     Material.Dispose();
 
     base.Dispose();
@@ -57,12 +63,12 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
 }
 
 /// <summary>
-/// A batched mesh of sprites for rendering to the GPU.
+/// A batched mesh of quads for rendering to the GPU.
 /// </summary>
-public sealed class SpriteBatch : IDisposable
+public sealed class CanvasBatch : IDisposable
 {
-  private const int DefaultSpriteCount = 200;
-  private const int MaximumSpriteCount = int.MaxValue / 6;
+  private const int DefaultQuadCount = 200;
+  private const int MaximumQuadCount = int.MaxValue / 6;
 
   private readonly Mesh<Vertex2> _mesh;
   private readonly IDisposableBuffer<Vertex2> _vertices;
@@ -71,17 +77,17 @@ public sealed class SpriteBatch : IDisposable
   private Material? _material;
   private int _vertexCount;
 
-  public SpriteBatch(IGraphicsBackend backend, int spriteCount = DefaultSpriteCount)
+  public CanvasBatch(IGraphicsBackend backend, int quadCount = DefaultQuadCount)
   {
-    Debug.Assert(spriteCount > 0, "spriteCount > 0");
-    Debug.Assert(spriteCount <= MaximumSpriteCount, "spriteCount < MaximumSpriteCount");
+    Debug.Assert(quadCount > 0);
+    Debug.Assert(quadCount <= MaximumQuadCount);
 
     Backend = backend;
 
-    _vertices = Buffers.AllocateNative<Vertex2>(spriteCount * 4);
+    _vertices = Buffers.AllocateNative<Vertex2>(quadCount * 4);
     _mesh = new Mesh<Vertex2>(backend);
 
-    CreateIndices(spriteCount * 6); // sprites are simple quads; we can create the indices up-front
+    CreateIndices(quadCount * 6);
   }
 
   /// <summary>
@@ -116,34 +122,29 @@ public sealed class SpriteBatch : IDisposable
   }
 
   /// <summary>
-  /// Draws a sprite at the given position.
+  /// Draws a quad at the given position.
   /// </summary>
-  public void Draw(in TextureRegion region, Vector2 position)
-    => Draw(region, position, region.Size);
+  public void DrawQuad(in TextureRegion region, Vector2 position)
+    => DrawQuad(region, position, region.Size);
 
   /// <summary>
-  /// Draws a sprite at the given position.
+  /// Draws a quad at the given position.
   /// </summary>
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size)
-    => Draw(region, position, size, Color32.White);
+  public void DrawQuad(in TextureRegion region, Vector2 position, Vector2 size)
+    => DrawQuad(region, position, size, Color32.White);
 
   /// <summary>
-  /// Draws a sprite at the given position.
+  /// Draws a quad at the given position.
   /// </summary>
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, Color32 color)
-    => Draw(region, position, size, 0f, color);
+  public void DrawQuad(in TextureRegion region, Vector2 position, Vector2 size, Color32 color)
+    => DrawQuad(region, position, size, 0f, color);
 
   /// <summary>
-  /// Draws a sprite at the given position.
+  /// Draws a quad at the given position.
   /// </summary>
   [SkipLocalsInit]
-  public void Draw(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color32 color)
+  public void DrawQuad(in TextureRegion region, Vector2 position, Vector2 size, float angle, Color32 color)
   {
-    if (region.Texture == null)
-    {
-      return; // empty region? don't bother
-    }
-
     if (region.Texture != _lastTexture)
     {
       // if we're switching texture, we'll need to flush and start again
@@ -164,19 +165,69 @@ public sealed class SpriteBatch : IDisposable
     // compute UV texture bounds
     var uv = region.UV;
 
-    // add results to sprite batch
-    var output = new SpanList<Vertex2>(_vertices.Span[_vertexCount..]);
-
-    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(-0.5f, -0.5f), transform), color, uv.BottomLeft));
-    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(-0.5f, 0.5f), transform), color, uv.TopLeft));
-    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(0.5f, 0.5f), transform), color, uv.TopRight));
-    output.AddUnchecked(new Vertex2(Vector2.Transform(new Vector2(0.5f, -0.5f), transform), color, uv.BottomRight));
-
-    _vertexCount += output.Count;
+    AddQuad(color, uv, stackalloc Vector2[]
+    {
+      Vector2.Transform(new Vector2(-0.5f, -0.5f), transform),
+      Vector2.Transform(new Vector2(-0.5f, 0.5f), transform),
+      Vector2.Transform(new Vector2(0.5f, 0.5f), transform),
+      Vector2.Transform(new Vector2(0.5f, -0.5f), transform)
+    });
   }
 
   /// <summary>
-  /// Resets the batch, discarding any pending sprites.
+  /// Draws a quad at the given absolute position.
+  /// </summary>
+  [SkipLocalsInit]
+  public void DrawQuadAbs(in TextureRegion region, Vector2 topLeft, Vector2 bottomRight, float angle, Color32 color)
+  {
+    if (region.Texture == null)
+    {
+      return; // empty region? don't bother
+    }
+
+    if (region.Texture != _lastTexture)
+    {
+      // if we're switching texture, we'll need to flush and start again
+      Flush();
+      _lastTexture = region.Texture;
+    }
+    else if (_vertexCount + 4 >= _vertices.Span.Length)
+    {
+      // if we've exceeded the batch capacity, we'll need to flush and start again
+      Flush();
+    }
+
+    // compute UV texture bounds
+    var uv = region.UV;
+
+    AddQuad(color, uv, stackalloc Vector2[4]
+    {
+      new(topLeft.X, bottomRight.Y),
+      new(topLeft.X, topLeft.Y),
+      new(bottomRight.X, topLeft.Y),
+      new(bottomRight.X, bottomRight.Y)
+    });
+  }
+
+  /// <summary>
+  /// Adds a quad to the batch.
+  /// </summary>
+  [SkipLocalsInit]
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private void AddQuad(Color32 color, Rectangle uv, ReadOnlySpan<Vector2> vertices)
+  {
+    var storage = _vertices.Span[_vertexCount..];
+
+    storage[0] = new Vertex2(vertices[0], color, uv.BottomLeft);
+    storage[1] = new Vertex2(vertices[1], color, uv.TopLeft);
+    storage[2] = new Vertex2(vertices[2], color, uv.TopRight);
+    storage[3] = new Vertex2(vertices[3], color, uv.BottomRight);
+
+    _vertexCount += 4;
+  }
+
+  /// <summary>
+  /// Resets the batch, discarding any pending quads.
   /// </summary>
   public void Reset()
   {
@@ -184,7 +235,7 @@ public sealed class SpriteBatch : IDisposable
   }
 
   /// <summary>
-  /// Flushes any pending sprites to the GPU.
+  /// Flushes any pending quads to the GPU.
   /// </summary>
   public void Flush()
   {
@@ -197,8 +248,8 @@ public sealed class SpriteBatch : IDisposable
         _material.Properties.SetProperty(Texture, _lastTexture);
       }
 
-      var spriteCount = _vertexCount / 4;
-      var indexCount = spriteCount * 6;
+      var quadCount = _vertexCount / 4;
+      var indexCount = quadCount * 6;
 
       _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
       _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
