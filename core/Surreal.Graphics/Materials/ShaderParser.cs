@@ -138,7 +138,6 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
         {
           "vertex"   => ShaderKind.Vertex,
           "fragment" => ShaderKind.Fragment,
-          "geometry" => ShaderKind.Geometry,
 
           _ => throw Error($"An unrecognized shader kind was specified {name}"),
         };
