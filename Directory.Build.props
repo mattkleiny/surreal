@@ -21,8 +21,8 @@
     <ApplicationIcon>$(MSBuildThisFileDirectory)/surreal.ico</ApplicationIcon>
 
     <!-- analysis and warnings -->
-    <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>
-    <NoWarn>CS0067</NoWarn>
+    <WarningsAsErrors>$(WarningsAsErrors);CS8600;CS8602;CS8603;CS8604;CS8625;CS8610;CS8618</WarningsAsErrors>
+    <NoWarn>$(NoWarn),CS0067</NoWarn>
 
     <!-- enable source link for all projects -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -65,7 +65,7 @@
 
     <!-- automatically reference analyzers -->
     <ProjectReference
-      Include="$(MSBuildThisFileDirectory)\core\Surreal.Analyzers\Surreal.Analyzers.csproj"
+      Include="$(MSBuildThisFileDirectory)\tools\Surreal.Analyzers\Surreal.Analyzers.csproj"
       PrivateAssets="all"
       ReferenceOutputAssembly="false"
       OutputItemType="Analyzer"

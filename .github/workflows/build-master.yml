@@ -25,7 +25,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget
 
-      - run: dotnet restore
+      - run: dotnet restore ./Surreal.proj
       - run: dotnet build ./Surreal.proj /p:Version=0.2.${{ github.run_number }} --no-restore
       - run: dotnet test ./Surreal.proj /p:Version=0.2.${{ github.run_number }} --no-build --verbosity normal
       - run: dotnet pack ./Surreal.proj /p:Version=0.2.${{ github.run_number }} --output nuget-packages --configuration Release

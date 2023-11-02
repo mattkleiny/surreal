@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Solution Items)", "(Soluti
 		Directory.Build.props = Directory.Build.props
 		.gitattributes = .gitattributes
 		Directory.Build.targets = Directory.Build.targets
+		Surreal.proj = Surreal.proj
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5B995C24-B8BE-46E8-8B0B-1254641F31A0}"
@@ -53,8 +54,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor", "editor\Su
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor.Tests", "editor\Surreal.Editor.Tests\Surreal.Editor.Tests.csproj", "{43C18284-AD7B-4BBD-BDD4-F5A84A599288}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Analyzers", "core\Surreal.Analyzers\Surreal.Analyzers.csproj", "{C4F0D565-745B-4A29-9B73-04947B74D839}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop", "platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj", "{3ACDEBAF-04A9-4601-9B35-6332EFC10514}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.Tests", "platforms\Surreal.Platform.Desktop.Tests\Surreal.Platform.Desktop.Tests.csproj", "{8DB8A3B2-64A3-4994-A429-0960C1EBDC74}"
@@ -93,8 +92,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Aseprite
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloEditor", "examples\HelloEditor\HelloEditor.csproj", "{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Sdk", "core\Surreal.Sdk\Surreal.Sdk.csproj", "{E314AD10-D2C2-4D7C-B464-A00FC652DB41}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Animations", "extensions\Surreal.Extensions.Animations\Surreal.Extensions.Animations.csproj", "{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Extensions.Animations.Tests", "extensions\Surreal.Extensions.Animations.Tests\Surreal.Extensions.Animations.Tests.csproj", "{3DA0C557-630E-4E68-909D-93F2E5736563}"
@@ -106,6 +103,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Networking", "core\Surreal.Networking\Surreal.Networking.csproj", "{073E64AC-AA40-484D-A599-A10420E84EF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Networking.Tests", "core\Surreal.Networking.Tests\Surreal.Networking.Tests.csproj", "{34164A9A-1B56-4CA7-AA30-611DD6683EC0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}"
+	ProjectSection(SolutionItems) = preProject
+		tools\Directory.Build.props = tools\Directory.Build.props
+		tools\Directory.Build.targets = tools\Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Analyzers", "tools\Surreal.Analyzers\Surreal.Analyzers.csproj", "{48BFD547-9FE2-4F05-B0CE-9DA192C835F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Sdk", "tools\Surreal.Sdk\Surreal.Sdk.csproj", "{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.MSBuild", "tools\Surreal.MSBuild\Surreal.MSBuild.csproj", "{103CE4C2-85D8-449F-9D38-E96E55851703}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -157,10 +166,6 @@ Global
 		{43C18284-AD7B-4BBD-BDD4-F5A84A599288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43C18284-AD7B-4BBD-BDD4-F5A84A599288}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43C18284-AD7B-4BBD-BDD4-F5A84A599288}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4F0D565-745B-4A29-9B73-04947B74D839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4F0D565-745B-4A29-9B73-04947B74D839}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4F0D565-745B-4A29-9B73-04947B74D839}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4F0D565-745B-4A29-9B73-04947B74D839}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3ACDEBAF-04A9-4601-9B35-6332EFC10514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3ACDEBAF-04A9-4601-9B35-6332EFC10514}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ACDEBAF-04A9-4601-9B35-6332EFC10514}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -233,10 +238,6 @@ Global
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF9D4F1A-C09C-4C76-B773-CB46911C8A9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E314AD10-D2C2-4D7C-B464-A00FC652DB41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C448FD4-0381-4EA1-B018-EBD9EC8E609D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -261,6 +262,18 @@ Global
 		{34164A9A-1B56-4CA7-AA30-611DD6683EC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34164A9A-1B56-4CA7-AA30-611DD6683EC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34164A9A-1B56-4CA7-AA30-611DD6683EC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48BFD547-9FE2-4F05-B0CE-9DA192C835F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48BFD547-9FE2-4F05-B0CE-9DA192C835F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48BFD547-9FE2-4F05-B0CE-9DA192C835F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48BFD547-9FE2-4F05-B0CE-9DA192C835F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{103CE4C2-85D8-449F-9D38-E96E55851703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{103CE4C2-85D8-449F-9D38-E96E55851703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{103CE4C2-85D8-449F-9D38-E96E55851703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{103CE4C2-85D8-449F-9D38-E96E55851703}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -282,7 +295,6 @@ Global
 		{880CA129-5D4F-4943-B4C9-01FE06565518} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{25A12BCA-E063-4859-B1F5-97123F9128A8} = {1E288146-6AEB-4601-AD70-A006A99C5588}
 		{43C18284-AD7B-4BBD-BDD4-F5A84A599288} = {1E288146-6AEB-4601-AD70-A006A99C5588}
-		{C4F0D565-745B-4A29-9B73-04947B74D839} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{3ACDEBAF-04A9-4601-9B35-6332EFC10514} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
 		{8DB8A3B2-64A3-4994-A429-0960C1EBDC74} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
 		{355EA963-5BAA-4B90-8E42-9A7098F0E671} = {5B995C24-B8BE-46E8-8B0B-1254641F31A0}
@@ -307,5 +319,8 @@ Global
 		{194BBBAA-4A6B-43A2-A44F-4C9B135E2756} = {6A3EBB72-4ED5-43D4-89D1-4B94A4CCE423}
 		{073E64AC-AA40-484D-A599-A10420E84EF6} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
 		{34164A9A-1B56-4CA7-AA30-611DD6683EC0} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{48BFD547-9FE2-4F05-B0CE-9DA192C835F8} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
+		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
+		{103CE4C2-85D8-449F-9D38-E96E55851703} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
 	EndGlobalSection
 EndGlobal

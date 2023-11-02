@@ -1,0 +1,25 @@
+<!-- opt-out of solution wide build settings, since these tools are specialized -->
+<Project>
+  <PropertyGroup>
+    <!-- shared project properties -->
+    <Product>Surreal</Product>
+    <RootNamespace>Surreal</RootNamespace>
+    <Authors>Matthew Kleinschafer</Authors>
+    <Company>MK Productions</Company>
+    <Copyright>Copyright© 2021, All Rights Reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- annotations for JetBrains IDEs -->
+    <Using Include="JetBrains.Annotations"/>
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" PrivateAssets="all"/>
+  </ItemGroup>
+</Project>

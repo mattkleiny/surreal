@@ -1,0 +1,4 @@
+<!-- opt-out of solution wide build settings, since these tools are specialized -->
+<Project>
+  <!-- no-op -->
+</Project>
