@@ -31,6 +31,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget
 
-      - run: dotnet restore
-      - run: dotnet build --no-restore
-      - run: dotnet test --no-build --verbosity normal
+      - run: dotnet restore ./Surreal.proj
+      - run: dotnet build ./Surreal.proj --no-restore
+      - run: dotnet test ./Surreal.proj --no-build --verbosity normal

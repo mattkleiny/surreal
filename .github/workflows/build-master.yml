@@ -26,7 +26,7 @@ jobs:
             ${{ runner.os }}-nuget
 
       - run: dotnet restore
-      - run: dotnet build /p:Version=0.2.${{ github.run_number }} --no-restore
-      - run: dotnet test /p:Version=0.2.${{ github.run_number }} --no-build --verbosity normal
-      - run: dotnet pack /p:Version=0.2.${{ github.run_number }} --output nuget-packages --configuration Release
+      - run: dotnet build ./Surreal.proj /p:Version=0.2.${{ github.run_number }} --no-restore
+      - run: dotnet test ./Surreal.proj /p:Version=0.2.${{ github.run_number }} --no-build --verbosity normal
+      - run: dotnet pack ./Surreal.proj /p:Version=0.2.${{ github.run_number }} --output nuget-packages --configuration Release
       - run: dotnet nuget push **/*nupkg --skip-duplicate --api-key ${{ github.token }} --source https://nuget.pkg.github.com/mattkleiny/index.json

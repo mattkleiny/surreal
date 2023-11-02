@@ -1,0 +1,6 @@
+﻿<!-- top-level MSBuild traversal project for entire solution -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Sdk="Microsoft.Build.Traversal/4.1.0">
+  <ItemGroup>
+    <ProjectReference Include="**\*.*proj"/>
+  </ItemGroup>
+</Project>
