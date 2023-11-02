@@ -5,7 +5,7 @@ namespace Surreal.BehaviourTrees.Tasks;
 /// <summary>
 /// A <see cref="BehaviourTask"/> that delays a fixed amount of time.
 /// </summary>
-public sealed record FixedDelay(TimeSpan Duration) : BehaviourTask
+public sealed class FixedDelay(TimeSpan duration) : BehaviourTask
 {
   private IntervalTimer _timer;
 
@@ -13,7 +13,7 @@ public sealed record FixedDelay(TimeSpan Duration) : BehaviourTask
   {
     base.OnEnter(context);
 
-    _timer = new IntervalTimer(Duration);
+    _timer = new IntervalTimer(duration);
   }
 
   protected override BehaviourStatus OnUpdate(in BehaviourContext context, DeltaTime deltaTime)

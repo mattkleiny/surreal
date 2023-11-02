@@ -3,7 +3,7 @@
 /// <summary>
 /// Represent a <see cref="BehaviourNode"/> that implements some composite.
 /// </summary>
-public abstract record BehaviourComposite : BehaviourNode
+public abstract class BehaviourComposite : BehaviourNode
 {
   /// <summary>
   /// The children of the <see cref="BehaviourComposite"/>.

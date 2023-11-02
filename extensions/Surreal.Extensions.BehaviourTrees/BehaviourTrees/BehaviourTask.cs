@@ -3,4 +3,4 @@
 /// <summary>
 /// Represent a <see cref="BehaviourNode"/> that implements some task.
 /// </summary>
-public abstract record BehaviourTask : BehaviourNode;
+public abstract class BehaviourTask : BehaviourNode;

@@ -21,7 +21,7 @@ public readonly record struct BehaviourContext(object Owner, BehaviourTree Behav
 /// <summary>
 /// An behaviour tree.
 /// </summary>
-public sealed record BehaviourTree(object Owner) : BehaviourNode
+public sealed class BehaviourTree(object owner) : BehaviourNode
 {
   /// <summary>
   /// The root node of the <see cref="BehaviourTree"/>.
@@ -33,7 +33,7 @@ public sealed record BehaviourTree(object Owner) : BehaviourNode
   /// </summary>
   public BehaviourStatus Update(DeltaTime deltaTime)
   {
-    var context = new BehaviourContext(Owner, this);
+    var context = new BehaviourContext(owner, this);
 
     return base.Update(context, deltaTime);
   }
