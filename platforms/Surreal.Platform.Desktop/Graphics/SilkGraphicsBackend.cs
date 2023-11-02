@@ -151,6 +151,22 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     return result;
   }
 
+  public unsafe void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged
+  {
+    var kind = ConvertBufferType(type);
+
+    gl.BindBuffer(kind, handle);
+
+    fixed (T* pointer = buffer)
+    {
+      gl.GetBufferSubData(
+        target: kind,
+        offset: 0,
+        size: (uint)(buffer.Length * sizeof(T)),
+        data: pointer
+      );
+    }
+  }
 
   public unsafe void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
     where T : unmanaged

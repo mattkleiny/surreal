@@ -78,6 +78,14 @@ public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType t
   }
 
   /// <summary>
+  /// Reads the buffer into a <see cref="Span{T}" />.
+  /// </summary>
+  public void Read(Span<TData> buffer)
+  {
+    backend.ReadBufferData(Handle, Type, buffer);
+  }
+
+  /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the buffer.
   /// </summary>
   public void Write(ReadOnlySpan<TData> buffer)

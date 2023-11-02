@@ -78,6 +78,11 @@ internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
     return Memory<T>.Empty;
   }
 
+  public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged
+  {
+    // no-op
+  }
+
   public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
     where T : unmanaged
   {
