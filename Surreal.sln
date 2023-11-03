@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Solution Items)", "(Soluti
 		.gitattributes = .gitattributes
 		Directory.Build.targets = Directory.Build.targets
 		Surreal.proj = Surreal.proj
+		Cargo.Build.targets = Cargo.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5B995C24-B8BE-46E8-8B0B-1254641F31A0}"
@@ -115,6 +116,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.MSBuild", "tools\Surreal.MSBuild\Surreal.MSBuild.csproj", "{103CE4C2-85D8-449F-9D38-E96E55851703}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Benchmarks", "tools\Surreal.Benchmarks\Surreal.Benchmarks.csproj", "{EED336F8-280A-43CE-B65F-B3BC46522B3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Desktop.Native", "platforms\Surreal.Platform.Desktop.Native\Surreal.Platform.Desktop.Native.rsproj", "{4D5CD834-D45D-4F03-912B-947C9A4FFF72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -274,6 +277,10 @@ Global
 		{EED336F8-280A-43CE-B65F-B3BC46522B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EED336F8-280A-43CE-B65F-B3BC46522B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EED336F8-280A-43CE-B65F-B3BC46522B3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D5CD834-D45D-4F03-912B-947C9A4FFF72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D5CD834-D45D-4F03-912B-947C9A4FFF72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D5CD834-D45D-4F03-912B-947C9A4FFF72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D5CD834-D45D-4F03-912B-947C9A4FFF72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -322,5 +329,6 @@ Global
 		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
 		{103CE4C2-85D8-449F-9D38-E96E55851703} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
 		{EED336F8-280A-43CE-B65F-B3BC46522B3E} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
+		{4D5CD834-D45D-4F03-912B-947C9A4FFF72} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
 	EndGlobalSection
 EndGlobal

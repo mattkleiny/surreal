@@ -1,0 +1,30 @@
+﻿<!-- enable native projects to build using Rust and Cargo -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>target/debug/</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>target/release/</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildProjectDirectory)\src\**\*.rs" />
+    <Compile Include="$(MSBuildProjectDirectory)\*.toml" />
+    <Compile Include="$(MSBuildProjectDirectory)\Cargo.lock" />
+  </ItemGroup>
+
+  <Target Name="Restore" />
+
+  <Target Name="Clean">
+    <Exec Command="cargo clean" />
+  </Target>
+
+  <Target Name="Build" Inputs="@(Compile)" Outputs="$(OutputPath)/surreal_native.lib">
+    <Exec Command="cargo build" Condition="$(Configuration) != 'Release'" />
+    <Exec Command="cargo build --release" Condition="$(Configuration) == 'Release'" />
+  </Target>
+
+  <Target Name="VSTest" DependsOnTargets="Build">
+    <Exec Command="cargo test" />
+  </Target>
+</Project>

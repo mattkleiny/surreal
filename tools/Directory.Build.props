@@ -1,5 +1,5 @@
 <!-- opt-out of solution wide build settings, since these tools are specialized -->
-<Project>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- shared project properties -->
     <Product>Surreal</Product>
