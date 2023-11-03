@@ -5,5 +5,9 @@
 /// </summary>
 public interface IClientTransport : ITransport
 {
-  ValueTask ConnectToServerAsync();
+  /// <summary>
+  /// Attempts to connect to the server.
+  /// </summary>
+  /// <param name="cancellationToken"></param>
+  ValueTask ConnectToServerAsync(CancellationToken cancellationToken = default);
 }

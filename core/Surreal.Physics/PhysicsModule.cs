@@ -10,6 +10,6 @@ public sealed class PhysicsModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IPhysicsBackend>(new PhysicsBackend());
+    registry.AddService<IPhysicsBackend, PhysicsBackend>();
   }
 }

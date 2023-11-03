@@ -5,5 +5,8 @@
 /// </summary>
 public interface IServerTransport : ITransport
 {
-  ValueTask StartServerAsync();
+  /// <summary>
+  /// Attempts to start the server.
+  /// </summary>
+  ValueTask StartServerAsync(CancellationToken cancellationToken = default);
 }

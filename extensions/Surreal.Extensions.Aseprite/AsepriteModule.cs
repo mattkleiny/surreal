@@ -11,7 +11,6 @@ public sealed class AsepriteModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IAssetLoader>(new AsepriteFileLoader());
-    registry.AddService<IAssetLoader>(new AsepriteSpriteSheetLoader());
-  }
+    registry.AddService<IAssetLoader, AsepriteFileLoader>();
+    registry.AddService<IAssetLoader, AsepriteSpriteSheetLoader>(); }
 }

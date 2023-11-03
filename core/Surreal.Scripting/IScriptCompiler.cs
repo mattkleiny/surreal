@@ -16,5 +16,10 @@ public interface ICompiledScript : IScript
 /// </summary>
 public interface IScriptCompiler
 {
-  ValueTask<ICompiledScript> CompileAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default);
+  /// <summary>
+  /// Compiles a script from the given declaration.
+  /// </summary>
+  ValueTask<ICompiledScript> CompileAsync(
+    ScriptDeclaration declaration,
+    CancellationToken cancellationToken = default);
 }

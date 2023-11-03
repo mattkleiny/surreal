@@ -12,8 +12,8 @@ public sealed class EditorModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IAssetImporter>(new AudioClipImporter());
-    registry.AddService<IAssetImporter>(new ColorPaletteImporter());
-    registry.AddService<IAssetImporter>(new TextureImporter());
+    registry.AddService<IAssetImporter, AudioClipImporter>();
+    registry.AddService<IAssetImporter, ColorPaletteImporter>();
+    registry.AddService<IAssetImporter, TextureImporter>();
   }
 }

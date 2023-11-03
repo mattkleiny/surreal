@@ -33,7 +33,7 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
     return new ShaderDeclaration(path, compilationUnit);
   }
 
-  private async Task<CompilationUnit> ApplyTransformersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
+  private async ValueTask<CompilationUnit> ApplyTransformersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
   {
     foreach (var transformer in Transformers)
     {
@@ -46,7 +46,7 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
     return compilationUnit;
   }
 
-  private async Task<CompilationUnit> MergeIncludedShadersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
+  private async ValueTask<CompilationUnit> MergeIncludedShadersAsync(CompilationUnit compilationUnit, CancellationToken cancellationToken)
   {
     var includedPaths = new HashSet<VirtualPath>();
 

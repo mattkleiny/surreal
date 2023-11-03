@@ -31,6 +31,25 @@ public static class ServiceExtensions
   }
 
   /// <summary>
+  /// Adds a service to the registry.
+  /// </summary>
+  public static void AddService<TService>(this IServiceRegistry registry)
+    where TService : class
+  {
+    registry.AddService(typeof(TService), typeof(TService));
+  }
+
+  /// <summary>
+  /// Adds a service to the registry.
+  /// </summary>
+  public static void AddService<TService, TImpl>(this IServiceRegistry registry)
+    where TService : class
+    where TImpl : TService
+  {
+    registry.AddService(typeof(TService), typeof(TImpl));
+  }
+
+  /// <summary>
   /// Registers a <see cref="IServiceModule"/>.
   /// </summary>
   public static void AddModule(this IServiceRegistry registry, IServiceModule module)

@@ -66,20 +66,4 @@
     <!-- automatically exclude test projects from code coverage -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
   </ItemGroup>
-
-  <!-- conveniences for benchmark projects -->
-  <PropertyGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
-    <OutputType>Exe</OutputType>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-  <ItemGroup Condition="$(ProjectName.EndsWith('Benchmarks'))">
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.9"/>
-
-    <Using Include="BenchmarkDotNet"/>
-    <Using Include="BenchmarkDotNet.Attributes"/>
-    <Using Include="BenchmarkDotNet.Running"/>
-
-    <!-- automatically exclude benchmark projects from code coverage -->
-    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage"/>
-  </ItemGroup>
 </Project>

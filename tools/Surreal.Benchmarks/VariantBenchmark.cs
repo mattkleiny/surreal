@@ -1,4 +1,5 @@
-﻿using Surreal.Benchmarks;
+﻿using System.Numerics;
+using Surreal.Benchmarks;
 using Surreal.Maths;
 
 BenchmarkRunner.Run<VariantBenchmark>();
@@ -18,7 +19,7 @@ namespace Surreal.Benchmarks
       _vector = random.NextVector4(0f, 1f);
     }
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public Vector4 Baseline() => PassNormal(_vector);
 
     [Benchmark]

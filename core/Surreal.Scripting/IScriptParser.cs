@@ -22,11 +22,17 @@ public interface IScriptParser
 /// </summary>
 public static class ScriptParserExtensions
 {
+  /// <summary>
+  /// Parses a script from the given <see cref="VirtualPath" />.
+  /// </summary>
   public static ValueTask<ScriptDeclaration> ParseScriptAsync(this IScriptParser parser, VirtualPath path, CancellationToken cancellationToken = default)
   {
     return ParseScriptAsync(parser, path, Encoding.UTF8, cancellationToken);
   }
 
+  /// <summary>
+  /// Parses a script from the given <see cref="VirtualPath" />.
+  /// </summary>
   public static async ValueTask<ScriptDeclaration> ParseScriptAsync(this IScriptParser parser, VirtualPath path, Encoding encoding, CancellationToken cancellationToken = default)
   {
     await using var stream =  path.OpenInputStream();
@@ -34,11 +40,17 @@ public static class ScriptParserExtensions
     return await ParseScriptAsync(parser, path.ToString(), stream, encoding, cancellationToken);
   }
 
+  /// <summary>
+  /// Parses a script from the given <see cref="Stream" />.
+  /// </summary>
   public static ValueTask<ScriptDeclaration> ParseScriptAsync(this IScriptParser parser, string path, Stream stream, CancellationToken cancellationToken = default)
   {
     return ParseScriptAsync(parser, path, stream, Encoding.UTF8, cancellationToken);
   }
 
+  /// <summary>
+  /// Parses a script from the given <see cref="Stream" />.
+  /// </summary>
   public static async ValueTask<ScriptDeclaration> ParseScriptAsync(this IScriptParser parser, string path, Stream stream, Encoding encoding, CancellationToken cancellationToken = default)
   {
     using var reader = new StreamReader(stream, encoding);
@@ -46,6 +58,9 @@ public static class ScriptParserExtensions
     return await parser.ParseScriptAsync(path, reader, cancellationToken);
   }
 
+  /// <summary>
+  /// Parses a script from the given raw code.
+  /// </summary>
   public static async ValueTask<ScriptDeclaration> ParseScriptAsync(this IScriptParser parser, string path, string sourceCode, CancellationToken cancellationToken = default)
   {
     var reader = new StringReader(sourceCode);

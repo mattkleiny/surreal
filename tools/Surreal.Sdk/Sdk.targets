@@ -60,7 +60,9 @@
     <Content Include="$(ProjectDir)\Assets\External\**" CopyToOutputDirectory="PreserveNewest" />
     <EmbeddedResource Include="$(ProjectDir)\Assets\Embedded\**" />
 
-    <!-- include the platform specific codebase -->
+    <!-- include relevant core dependencies -->
+    <PackageReference Include="Surreal.Analyzers" Version="$(SurrealVersion)" />
+    <PackageReference Include="Surreal.MSBuild" Version="$(SurrealVersion)" />
     <PackageReference Include="Surreal.Framework" Version="$(SurrealVersion)" />
     <PackageReference Include="Surreal.Platform.Desktop" Version="$(SurrealVersion)" Condition="$(SurrealPlatform) == 'desktop'" />
   </ItemGroup>

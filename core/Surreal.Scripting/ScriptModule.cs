@@ -15,6 +15,7 @@ public sealed class ScriptModule : IServiceModule
   {
     var compiler = new BytecodeScriptCompiler();
 
+    registry.AddService<IScriptCompiler>(new BytecodeScriptCompiler());
     registry.AddService<IAssetLoader>(new ScriptLoader(new BasicScriptParser(), compiler));
     registry.AddService<IAssetLoader>(new ScriptLoader(new LispScriptParser(), compiler));
     registry.AddService<IAssetLoader>(new ScriptLoader(new LoxScriptParser(), compiler));
