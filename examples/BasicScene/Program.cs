@@ -1,4 +1,6 @@
-﻿var configuration = new GameConfiguration
+﻿using Surreal.Physics;
+
+var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
   {
@@ -14,9 +16,11 @@
   }
 };
 
-Game.StartScene<CustomPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline) =>
+Game.StartScene<ForwardRenderPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline, IPhysicsBackend physics) =>
 {
   pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+
+  scene.Physics = physics.CreatePhysicsWorld2d();
 
   scene.Add(new CameraViewport
   {
@@ -50,14 +54,5 @@ public sealed class RigidBodySpawner : Node2D
 
       _spawnTimer.Reset();
     }
-  }
-}
-
-public class CustomPipeline : ForwardRenderPipeline
-{
-  public CustomPipeline(IGraphicsBackend backend)
-    : base(backend)
-  {
-    Passes.Remove<DepthPass>();
   }
 }

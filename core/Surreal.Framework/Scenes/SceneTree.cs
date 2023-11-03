@@ -1,5 +1,7 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Assets;
+using Surreal.Collections;
 using Surreal.Graphics.Rendering;
+using Surreal.Physics;
 using Surreal.Timing;
 
 namespace Surreal.Scenes;
@@ -7,12 +9,24 @@ namespace Surreal.Scenes;
 /// <summary>
 /// A <see cref="IScene"/> that uses <see cref="SceneNode"/>s as it's core building block.
 /// </summary>
-public sealed class SceneTree(ISceneRoot root) : SceneNode, IScene
+public sealed class SceneTree : SceneNode, IScene, ISceneRoot
 {
+  /// <inheritdoc/>
+  public new required IAssetProvider Assets { get; init; }
+
+  /// <inheritdoc/>
+  public new required IServiceProvider Services { get; init; }
+
+  /// <inheritdoc/>
+  public IRenderPipeline? Renderer { get; set; }
+
+  /// <inheritdoc/>
+  public IPhysicsWorld? Physics { get; set; }
+
   /// <inheritdoc/>
   public new void Update(DeltaTime deltaTime)
   {
-    root.Physics?.Tick(deltaTime);
+    Physics?.Tick(deltaTime);
 
     base.Update(deltaTime);
   }
@@ -20,7 +34,7 @@ public sealed class SceneTree(ISceneRoot root) : SceneNode, IScene
   /// <inheritdoc/>
   public void Render(DeltaTime deltaTime)
   {
-    root.Renderer?.Render(this, deltaTime);
+    Renderer?.Render(this, deltaTime);
   }
 
   /// <summary>
@@ -29,7 +43,7 @@ public sealed class SceneTree(ISceneRoot root) : SceneNode, IScene
   public void Reset()
   {
     Children.Clear();
-    root.Physics?.Reset();
+    Physics?.Reset();
   }
 
   /// <inheritdoc/>
@@ -41,7 +55,7 @@ public sealed class SceneTree(ISceneRoot root) : SceneNode, IScene
   /// <inheritdoc/>
   protected override bool TryResolveRoot(out ISceneRoot result)
   {
-    result = root;
+    result = this;
     return true;
   }
 

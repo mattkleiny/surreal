@@ -1,4 +1,6 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Assets;
+using Surreal.Timing;
+using Surreal.Utilities;
 
 namespace Surreal.Scenes;
 
@@ -7,7 +9,11 @@ public class SceneNodeTests
   [Test]
   public void it_should_notify_node_of_attachment_to_active_tree()
   {
-    var scene = new SceneTree(new TestSceneRoot());
+    var scene = new SceneTree
+    {
+      Assets = new AssetManager(),
+      Services = new ServiceRegistry()
+    };
 
     scene.Update(DeltaTime.OneOver60);
 
@@ -23,7 +29,11 @@ public class SceneNodeTests
   [Test]
   public void it_should_notify_node_of_removal_from_active_tree()
   {
-    var scene = new SceneTree(new TestSceneRoot());
+    var scene = new SceneTree
+    {
+      Assets = new AssetManager(),
+      Services = new ServiceRegistry()
+    };
 
     scene.Update(DeltaTime.OneOver60);
 
@@ -41,7 +51,11 @@ public class SceneNodeTests
   [Test]
   public void it_should_awake_node_on_first_attachment_to_active_tree()
   {
-    var scene = new SceneTree(new TestSceneRoot());
+    var scene = new SceneTree
+    {
+      Assets = new AssetManager(),
+      Services = new ServiceRegistry()
+    };
 
     scene.Update(DeltaTime.OneOver60);
 
@@ -61,7 +75,11 @@ public class SceneNodeTests
   [Test]
   public void it_should_notify_ready_on_first_update()
   {
-    var scene = new SceneTree(new TestSceneRoot());
+    var scene = new SceneTree
+    {
+      Assets = new AssetManager(),
+      Services = new ServiceRegistry()
+    };
     var node = new SceneNode();
 
     scene.Add(node);
@@ -76,7 +94,11 @@ public class SceneNodeTests
   [Test]
   public void it_should_propagate_destruction_up_to_root()
   {
-    var scene = new SceneTree(new TestSceneRoot());
+    var scene = new SceneTree
+    {
+      Assets = new AssetManager(),
+      Services = new ServiceRegistry()
+    };
 
     scene.Add(new SceneNode
     {
@@ -100,7 +122,11 @@ public class SceneNodeTests
   [Test]
   public void it_should_propagate_disposal_down_to_children()
   {
-    var scene = new SceneTree(new TestSceneRoot());
+    var scene = new SceneTree
+    {
+      Assets = new AssetManager(),
+      Services = new ServiceRegistry()
+    };
 
     scene.Add(new SceneNode
     {
