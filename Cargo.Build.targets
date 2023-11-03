@@ -27,4 +27,6 @@
   <Target Name="VSTest" DependsOnTargets="Build">
     <Exec Command="cargo test" />
   </Target>
+
+  <Target Name="Pack"/>
 </Project>
