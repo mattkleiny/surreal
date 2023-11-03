@@ -84,11 +84,11 @@ public abstract class FileFormat
   private sealed class YmlFileFormat : FileFormat
   {
     private readonly ISerializer _serializer = new SerializerBuilder()
-      .WithNamingConvention(UnderscoredNamingConvention.Instance)
+      .WithNamingConvention(CamelCaseNamingConvention.Instance)
       .Build();
 
     private readonly IDeserializer _deserializer = new DeserializerBuilder()
-      .WithNamingConvention(UnderscoredNamingConvention.Instance)
+      .WithNamingConvention(CamelCaseNamingConvention.Instance)
       .Build();
 
     public override void Serialize(Stream stream, object value)

@@ -25,6 +25,17 @@ public abstract class ProjectHost
   }
 
   /// <summary>
+  /// Creates an out-of-process <see cref="ProjectHost"/> from the given <see cref="Assembly"/>.
+  /// <para/>
+  /// It's expected that the assembly will establish a connection with the editor upon loading.
+  /// The given <paramref name="args"/>s will be passed like command line arguments.
+  /// </summary>
+  public static ProjectHost OutOfProcess(Assembly assembly, string[]? args = null)
+  {
+    throw new NotImplementedException();
+  }
+
+  /// <summary>
   /// True if the host is running, otherwise false.
   /// </summary>
   public bool IsRunning { get; private set; }
