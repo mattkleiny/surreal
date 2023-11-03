@@ -1,6 +1,7 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
-  <Import Project="../../Cargo.Build.targets" />
+﻿<Project DefaultTargets="Build">
   <PropertyGroup>
     <Description>Native desktop components for the Surreal project.</Description>
+    <OutputName>surreal_native.lib</OutputName>
   </PropertyGroup>
+  <Import Project="../../Cargo.Build.targets" />
 </Project>

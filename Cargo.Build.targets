@@ -1,10 +1,13 @@
 ﻿<!-- enable native projects to build using Rust and Cargo -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <OutputPath>target/debug/</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputPath>target/release/</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ArtifactPath>$(OutputPath)/$(OutputName)</ArtifactPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,16 +19,18 @@
   <Target Name="Restore" />
 
   <Target Name="Clean">
-    <Exec Command="cargo clean" />
+    <Exec Command="cargo clean" Condition="$(Configuration) != 'Release'" />
+    <Exec Command="cargo clean --release" Condition="$(Configuration) == 'Release'" />
   </Target>
 
-  <Target Name="Build" Inputs="@(Compile)" Outputs="$(OutputPath)/surreal_native.lib">
+  <Target Name="Build" Inputs="@(Compile)" Outputs="$(ArtifactPath)">
     <Exec Command="cargo build" Condition="$(Configuration) != 'Release'" />
     <Exec Command="cargo build --release" Condition="$(Configuration) == 'Release'" />
   </Target>
 
   <Target Name="VSTest" DependsOnTargets="Build">
-    <Exec Command="cargo test" />
+    <Exec Command="cargo test" Condition="$(Configuration) != 'Release'" />
+    <Exec Command="cargo test --release" Condition="$(Configuration) == 'Release'" />
   </Target>
 
   <Target Name="Pack"/>
