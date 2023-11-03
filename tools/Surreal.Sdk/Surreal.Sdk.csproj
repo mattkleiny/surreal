@@ -1,16 +1,9 @@
 ﻿<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
   <PropertyGroup>
-    <Product>Surreal</Product>
-    <Authors>Matthew Kleinschafer</Authors>
-    <Company>MK Productions</Company>
-    <Description>.NET SDK for working with the Surreal game engine.</Description>
-    <Copyright>Copyright© 2021, All Rights Reserved.</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/mattkleiny/surreal</RepositoryUrl>
-
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageType>MSBuildSdk</PackageType>
     <PackageTags>MSBuildSdk</PackageTags>
+    <ImplicitUsings>false</ImplicitUsings>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 

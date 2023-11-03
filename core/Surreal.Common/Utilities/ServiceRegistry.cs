@@ -9,6 +9,11 @@ namespace Surreal.Utilities;
 public interface IServiceRegistry : IServiceProvider
 {
   /// <summary>
+  /// Attempts to get the service of type. If the service is not found, returns <c>false</c>.
+  /// </summary>
+  bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance);
+
+  /// <summary>
   /// Registers a service.
   /// </summary>
   void AddService(Type serviceType, Type implementationType);
@@ -21,7 +26,7 @@ public interface IServiceRegistry : IServiceProvider
   /// <summary>
   /// Instantiates a type and populates it's service without adding it to the container.
   /// </summary>
-  T Instantiate<T>() where T : class;
+  object Instantiate(Type serviceType);
 
   /// <summary>
   /// Invokes the given <see cref="Delegate"/> with services available in the container, as
@@ -41,7 +46,14 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
   public object? GetService(Type serviceType)
   {
-    return _container.TryGetInstance(serviceType);
+    return _container.GetInstance(serviceType);
+  }
+
+  public bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance)
+  {
+    instance = _container.TryGetInstance(serviceType);
+
+    return instance != null;
   }
 
   public void AddService(Type serviceType, Type implementationType)
@@ -98,10 +110,10 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     return methodInfo.Invoke(@delegate.Target, parameters);
   }
 
-  public T Instantiate<T>()
-    where T : class
+  public object Instantiate(Type serviceType)
   {
-    var constructors = typeof(T).GetConstructors()
+    var constructors = serviceType
+      .GetConstructors()
       .Where(c => c.IsPublic)
       .OrderByDescending(c => c.GetParameters().Length);
 
@@ -121,7 +133,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
     if (candidates.Count == 0)
     {
-      return Activator.CreateInstance<T>();
+      return Activator.CreateInstance(serviceType)!;
     }
 
     var constructorInfo = candidates[0];
@@ -133,7 +145,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
       parameters[i] = _container.GetInstance(parameterInfos[i].ParameterType);
     }
 
-    return (T)constructorInfo.Invoke(parameters);
+    return constructorInfo.Invoke(parameters);
   }
 
   public void Dispose()

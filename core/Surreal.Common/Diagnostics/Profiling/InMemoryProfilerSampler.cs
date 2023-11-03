@@ -11,14 +11,7 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
 {
   private static readonly ILog Log = LogFactory.GetLog<InMemoryProfilerSampler>();
 
-  public InMemoryProfilerSampler(int sampleCount = 30)
-  {
-    Debug.Assert(sampleCount > 0, "sampleCount > 0");
-
-    Samplers = new SamplerCollection(sampleCount);
-  }
-
-  public SamplerCollection Samplers { get; }
+  public SamplerCollection Samplers { get; } = new();
 
   public void Sample(string category, string task, TimeSpan duration)
   {
@@ -49,9 +42,9 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
   /// <summary>
   /// A sampler that records details about an operation.
   /// </summary>
-  public sealed class Sampler(string category, string task, int sampleCount) : IEnumerable<TimeSpan>
+  public sealed class Sampler(string category, string task) : IEnumerable<TimeSpan>
   {
-    private readonly RingBuffer<TimeSpan> _samples = new(sampleCount);
+    private readonly RingBuffer<TimeSpan> _samples = new(capacity: 30);
 
     public string Category { get; } = category;
     public string Task { get; } = task;
@@ -59,16 +52,6 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     public TimeSpan Maximum => _samples.FastMax();
     public TimeSpan Minimum => _samples.FastMin();
     public TimeSpan Average => _samples.FastAverage();
-
-    IEnumerator<TimeSpan> IEnumerable<TimeSpan>.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
 
     public void Record(TimeSpan duration)
     {
@@ -86,6 +69,16 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     {
       return _samples.GetEnumerator();
     }
+
+    IEnumerator<TimeSpan> IEnumerable<TimeSpan>.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
   }
 
   /// <summary>
@@ -93,14 +86,14 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
   /// </summary>
   public sealed class SamplerCollection : IEnumerable<Sampler>
   {
-    private readonly int _sampleCount;
     private readonly ConcurrentDictionary<(string Category, string Task), Sampler> _samplers = new();
 
-    public SamplerCollection(int sampleCount)
+    public Sampler GetSampler(string category, string task)
     {
-      Debug.Assert(sampleCount > 0, "sampleCount > 0");
-
-      _sampleCount = sampleCount;
+      return _samplers.GetOrAdd((category, task), static key =>
+      {
+        return new Sampler(key.Category, key.Task);
+      });
     }
 
     public IEnumerator<Sampler> GetEnumerator()
@@ -111,16 +104,6 @@ public sealed class InMemoryProfilerSampler : IProfileSampler
     IEnumerator IEnumerable.GetEnumerator()
     {
       return GetEnumerator();
-    }
-
-    public Sampler GetSampler(string category, string task)
-    {
-      return _samplers.GetOrAdd((category, task), CreateSampler);
-    }
-
-    private Sampler CreateSampler((string Category, string Task) key)
-    {
-      return new Sampler(key.Category, key.Task, _sampleCount);
     }
   }
 }

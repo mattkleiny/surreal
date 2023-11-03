@@ -94,4 +94,12 @@ public static class ServiceExtensions
 
     return result;
   }
+
+  /// <summary>
+  /// Instantiates the given type using the container.
+  /// </summary>
+  public static T Instantiate<T>(this IServiceRegistry registry)
+  {
+    return (T)registry.Instantiate(typeof(T));
+  }
 }

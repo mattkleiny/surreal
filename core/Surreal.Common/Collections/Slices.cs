@@ -4,6 +4,7 @@ namespace Surreal.Collections;
 /// A slice of a <see cref="List{T}" />.
 /// </summary>
 [DebuggerDisplay("Slice ({Length} items)")]
+[CollectionBuilder(typeof(SliceFactory), nameof(SliceFactory.Create))]
 public readonly struct Slice<T> : IEnumerable<T>
 {
   public static Slice<T> Empty => default;
@@ -105,6 +106,7 @@ public readonly struct Slice<T> : IEnumerable<T>
 /// A read-only <see cref="Slice{T}" /> variant.
 /// </summary>
 [DebuggerDisplay("ReadOnlySlice ({Length} items)")]
+[CollectionBuilder(typeof(SliceFactory), nameof(SliceFactory.CreateReadOnly))]
 public readonly struct ReadOnlySlice<T> : IEnumerable<T>
 {
   public static ReadOnlySlice<T> Empty => default;
@@ -265,4 +267,36 @@ public static class SliceExtensions
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Swap<T>(this Slice<T> slice, int fromIndex, int toIndex)
     => (slice[fromIndex], slice[toIndex]) = (slice[toIndex], slice[fromIndex]);
+}
+
+/// <summary>
+/// Collection builder for <see cref="Slice{T}"/>s.
+/// </summary>
+public static class SliceFactory
+{
+  /// <summary>
+  /// Creates a new <see cref="Slice{T}"/> from the given values.
+  /// </summary>
+  public static Slice<T> Create<T>(ReadOnlySpan<T> values)
+  {
+    if (values.Length == 0)
+    {
+      return Slice<T>.Empty;
+    }
+
+    return new Slice<T>(new List<T>(values.ToArray()));
+  }
+
+  /// <summary>
+  /// Creates a new <see cref="ReadOnlySlice{T}"/> from the given values.
+  /// </summary>
+  public static ReadOnlySlice<T> CreateReadOnly<T>(ReadOnlySpan<T> values)
+  {
+    if (values.Length == 0)
+    {
+      return ReadOnlySlice<T>.Empty;
+    }
+
+    return new ReadOnlySlice<T>(values.ToArray());
+  }
 }

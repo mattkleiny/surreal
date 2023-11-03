@@ -97,6 +97,23 @@ public sealed class RenderPassList : Collection<IRenderPass>
   }
 
   /// <summary>
+  /// Replaces another existing pass with the given pass.
+  /// </summary>
+  public void Replace<TOtherPass>(IRenderPass pass)
+    where TOtherPass : IRenderPass
+  {
+    for (var i = 0; i < Count; i++)
+    {
+      var instance = this[i];
+      if (instance is TOtherPass)
+      {
+        this[i] = pass;
+        return;
+      }
+    }
+  }
+
+  /// <summary>
   /// Inserts a render pass after a specific pass.
   /// </summary>
   public void InsertAfter<TOtherPass>(IRenderPass pass)
@@ -119,5 +136,22 @@ public sealed class RenderPassList : Collection<IRenderPass>
     }
 
     Add(pass);
+  }
+
+  /// <summary>
+  /// Removes an existing pass of the given type.
+  /// </summary>
+  public void Remove<TOtherPass>()
+    where TOtherPass : IRenderPass
+  {
+    for (var i = 0; i < Count; i++)
+    {
+      var instance = this[i];
+      if (instance is TOtherPass)
+      {
+        RemoveAt(i);
+        return;
+      }
+    }
   }
 }

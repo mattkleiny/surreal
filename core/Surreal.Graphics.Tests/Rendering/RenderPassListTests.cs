@@ -17,6 +17,20 @@ public class RenderPassListTests
   }
 
   [Test]
+  public void it_should_replace_existing_pass()
+  {
+    var list = new RenderPassList
+    {
+      new TestPass1(),
+      new TestPass2()
+    };
+
+    list.Replace<TestPass2>(new TestPass3());
+
+    list[1].Should().BeOfType<TestPass3>();
+  }
+
+  [Test]
   public void it_should_insert_after_other_pass()
   {
     var list = new RenderPassList

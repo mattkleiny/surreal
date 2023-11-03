@@ -14,7 +14,7 @@
   }
 };
 
-Game.StartScene<ForwardRenderPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline) =>
+Game.StartScene<CustomPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline) =>
 {
   pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
@@ -50,5 +50,14 @@ public sealed class RigidBodySpawner : Node2D
 
       _spawnTimer.Reset();
     }
+  }
+}
+
+public class CustomPipeline : ForwardRenderPipeline
+{
+  public CustomPipeline(IGraphicsBackend backend)
+    : base(backend)
+  {
+    Passes.Remove<DepthPass>();
   }
 }

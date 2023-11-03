@@ -62,7 +62,7 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
   /// <summary>
   /// The associated <see cref="ShaderProgram" /> for the material.
   /// </summary>
-  public ShaderProgram Shader { get; } = shader;
+  public ShaderProgram Shader => shader;
 
   /// <summary>
   /// The blend state for this material.

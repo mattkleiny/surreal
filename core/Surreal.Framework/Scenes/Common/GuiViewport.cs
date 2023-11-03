@@ -17,7 +17,7 @@ public sealed class GuiViewport : SceneNode, IRenderViewport, IRenderObject
   {
     if (this is T instance)
     {
-      return new ReadOnlySlice<T>(new[] { instance });
+      return new[] { instance };
     }
 
     return ReadOnlySlice<T>.Empty;
