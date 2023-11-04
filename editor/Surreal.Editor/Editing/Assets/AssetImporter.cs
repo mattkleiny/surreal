@@ -78,19 +78,3 @@ public abstract class AssetImporter<[MeansImplicitUse] TAsset> : IAssetImporter
     return await ImportAsync(path, cancellationToken);
   }
 }
-
-/// <summary>
-/// Metadata about how to read and process an asset.
-/// </summary>
-public sealed record AssetMetadata
-{
-  /// <summary>
-  /// A unique identifier for this asset.
-  /// </summary>
-  public required Guid AssetId { get; init; }
-
-  /// <summary>
-  /// The type of the asset.
-  /// </summary>
-  public required Guid TypeId { get; init; }
-}

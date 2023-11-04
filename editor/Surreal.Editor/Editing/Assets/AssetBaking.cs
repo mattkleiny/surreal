@@ -13,7 +13,23 @@ public readonly record struct AssetBakingTarget(string Name, string Path)
 /// <summary>
 /// Represents a kind of asset that can be baked with an <see cref="IAssetBaker"/>.
 /// </summary>
-public interface IBakeableAsset;
+public interface IBakeableAsset
+{
+  /// <summary>
+  /// The ID of the asset.
+  /// </summary>
+  Guid AssetId { get; }
+
+  /// <summary>
+  /// The type ID of the asset.
+  /// </summary>
+  Guid TypeId { get; }
+
+  /// <summary>
+  /// True if the asset is embedded in the game executable.
+  /// </summary>
+  bool IsEmbedded { get; }
+}
 
 /// <summary>
 /// A service for baking assets into a target platform's preferred format.
