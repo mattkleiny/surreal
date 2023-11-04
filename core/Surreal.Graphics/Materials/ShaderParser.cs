@@ -21,7 +21,8 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
 
   public override async ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {
-    var context = new ShaderParserContext(await TokenizeAsync(Keywords, reader, cancellationToken));
+    var tokens = await TokenizeAsync(path, Keywords, reader, cancellationToken);
+    var context = new ShaderParserContext(path, tokens);
 
     // parse the main compilation unit
     var compilationUnit = context.ParseCompilationUnit();
@@ -69,8 +70,8 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
   /// </summary>
   private sealed class ShaderParserContext : ParserContext
   {
-    public ShaderParserContext(IEnumerable<Token> tokens)
-      : base(tokens)
+    public ShaderParserContext(string path, IEnumerable<Token> tokens)
+      : base(path, tokens)
     {
     }
 

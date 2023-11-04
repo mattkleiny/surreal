@@ -19,6 +19,11 @@ public sealed class LocalFileSystem() : FileSystem("local")
     return path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
   }
 
+  public override string ToAbsolutePath(VirtualPath path)
+  {
+    return Path.GetFullPath(path.Target.ToString());
+  }
+
   public override VirtualPath[] Enumerate(string path, string wildcard)
   {
     return Directory

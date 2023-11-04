@@ -19,6 +19,11 @@ public sealed class ResourceFileSystem : FileSystem
     return path with { Target = $"{path.Target}{Separator}{string.Join(Separator, paths)}" };
   }
 
+  public override string ToAbsolutePath(VirtualPath path)
+  {
+    return path.Target.ToString();
+  }
+
   public override VirtualPath[] Enumerate(string path, string wildcard)
   {
     throw new NotSupportedException();

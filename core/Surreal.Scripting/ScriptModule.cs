@@ -1,6 +1,6 @@
 ﻿using Surreal.Assets;
-using Surreal.Scripting.Bytecode;
 using Surreal.Scripting.Languages;
+using Surreal.Scripting.VirtualMachine;
 using Surreal.Utilities;
 
 namespace Surreal.Scripting;

@@ -14,8 +14,8 @@ public interface IFileSystem
   bool SupportsMemoryMapping { get; }
 
   VirtualPath Resolve(VirtualPath path, params string[] paths);
+  string ToAbsolutePath(VirtualPath path);
 
-  // synchronous API
   VirtualPath[] Enumerate(string path, string wildcard);
   Size GetSize(string path);
   bool Exists(string path);
@@ -25,8 +25,6 @@ public interface IFileSystem
   Stream OpenOutputStream(string path);
   MemoryMappedFile OpenMemoryMappedFile(string path);
   IPathWatcher WatchPath(VirtualPath path, bool includeSubPaths);
-
-  // asynchronous API
 }
 
 /// <summary>
@@ -87,8 +85,8 @@ public abstract class FileSystem : IFileSystem
   public virtual bool SupportsMemoryMapping => false;
 
   public abstract VirtualPath Resolve(VirtualPath path, params string[] paths);
+  public abstract string ToAbsolutePath(VirtualPath path);
 
-  // synchronous API
   public abstract VirtualPath[] Enumerate(string path, string wildcard);
   public abstract Size GetSize(string path);
   public abstract bool Exists(string path);

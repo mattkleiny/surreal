@@ -1,4 +1,4 @@
-﻿namespace Surreal.Scripting.Bytecode;
+﻿namespace Surreal.Scripting.VirtualMachine;
 
 /// <summary>
 /// A virtual machine for bytecode execution.

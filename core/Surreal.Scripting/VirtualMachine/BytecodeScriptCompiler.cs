@@ -1,4 +1,4 @@
-﻿namespace Surreal.Scripting.Bytecode;
+﻿namespace Surreal.Scripting.VirtualMachine;
 
 /// <summary>
 /// A <see cref="IScriptCompiler"/> that lowers script code to byte code.

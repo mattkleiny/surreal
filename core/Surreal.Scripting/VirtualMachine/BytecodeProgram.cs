@@ -1,7 +1,7 @@
 ﻿using Surreal.Assets;
 using Surreal.IO;
 
-namespace Surreal.Scripting.Bytecode;
+namespace Surreal.Scripting.VirtualMachine;
 
 /// <summary>
 /// Different kinds of <see cref="BytecodeInstruction"/>s.

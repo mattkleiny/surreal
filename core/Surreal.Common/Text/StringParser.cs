@@ -17,7 +17,7 @@ public abstract class StringParser<T>
   {
     await using var stream = path.OpenInputStream();
 
-    return await ParseAsync(path.ToString(), stream, encoding, cancellationToken);
+    return await ParseAsync(path.ToAbsolutePath(), stream, encoding, cancellationToken);
   }
 
   public ValueTask<T> ParseAsync(string path, Stream stream, CancellationToken cancellationToken = default)
@@ -102,7 +102,11 @@ public abstract class StringParser<T>
   }
 
   [SuppressMessage("ReSharper", "CognitiveComplexity")]
-  protected static async Task<IEnumerable<Token>> TokenizeAsync(ImmutableHashSet<string> keywords, TextReader reader, CancellationToken cancellationToken)
+  protected static async Task<IEnumerable<Token>> TokenizeAsync(
+    string path,
+    ImmutableHashSet<string> keywords,
+    TextReader reader,
+    CancellationToken cancellationToken)
   {
     var results = new List<Token>();
 
@@ -118,7 +122,7 @@ public abstract class StringParser<T>
       for (var column = 0; column < span.Length; column++)
       {
         var position = new LinePosition(line + 1, column + 1);
-        var token = ScanToken(keywords, position, span[column..]);
+        var token = ScanToken(path, keywords, position, span[column..]);
 
         if (token != null)
         {
@@ -134,7 +138,7 @@ public abstract class StringParser<T>
     return results;
 
     // Scans a single token from the given string span
-    static Token? ScanToken(ImmutableHashSet<string> keywords, LinePosition position, StringSpan span)
+    static Token? ScanToken(string path, ImmutableHashSet<string> keywords, LinePosition position, StringSpan span)
     {
       var character = span[0];
 
@@ -201,7 +205,7 @@ public abstract class StringParser<T>
           var literal = span.ConsumeUntil('"');
 
           if (literal[^1] != '"')
-            throw new ParseException(position, span, $"Unterminated string literal: {literal}");
+            throw new ParseException(path, position, span, $"Unterminated string literal: {literal}");
 
           return new Token(TokenType.String, position, literal, literal[1..^1].ToString());
         }
@@ -234,7 +238,7 @@ public abstract class StringParser<T>
             return new Token(TokenType.Identifier, position, identifier, literal);
           }
 
-          throw new ParseException(position, span, $"Unknown token '{character}'");
+          throw new ParseException(path, position, span, $"Unknown token '{character}'");
         }
       }
     }
@@ -245,13 +249,13 @@ public abstract class StringParser<T>
   /// </summary>
   protected sealed class ParseException : Exception
   {
-    public ParseException(Token token, string message)
-      : this(token.Position, token.Span, message)
+    public ParseException(string path, Token token, string message)
+      : this(path, token.Position, token.Span, message)
     {
     }
 
-    public ParseException(LinePosition position, StringSpan span, string message)
-      : base($"{message} (at {position} in {span})")
+    public ParseException(string path, LinePosition position, StringSpan span, string message)
+      : base($"{message} in {path} (at {position} in {span})")
     {
       Position = position;
       Span = span;
@@ -266,11 +270,13 @@ public abstract class StringParser<T>
   /// </summary>
   protected abstract class ParserContext
   {
+    private readonly string _path;
     private readonly Queue<Token> _tokens;
     private Token _lastToken;
 
-    protected ParserContext(IEnumerable<Token> tokens)
+    protected ParserContext(string path, IEnumerable<Token> tokens)
     {
+      _path = path;
       _tokens = new Queue<Token>(tokens);
     }
 
@@ -365,7 +371,7 @@ public abstract class StringParser<T>
 
     protected Exception Error(string message)
     {
-      return new ParseException(_lastToken, message);
+      return new ParseException(_path, _lastToken, message);
     }
   }
 }

@@ -1,4 +1,4 @@
-﻿namespace Surreal.Scripting.Bytecode;
+﻿namespace Surreal.Scripting.VirtualMachine;
 
 /// <summary>
 /// An optimization strategy for the <see cref="BytecodeScriptCompiler"/>.

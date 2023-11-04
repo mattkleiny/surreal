@@ -55,6 +55,9 @@ public static class VirtualPathExtensions
   public static IPathWatcher Watch(this VirtualPath path, bool includeSubPaths = false)
     => path.GetFileSystem().WatchPath(path, includeSubPaths);
 
+  public static string ToAbsolutePath(this VirtualPath path)
+    => path.GetFileSystem().ToAbsolutePath(path);
+
   public static VirtualPath ChangeExtension(this VirtualPath path, string newExtension)
   {
     return path with
