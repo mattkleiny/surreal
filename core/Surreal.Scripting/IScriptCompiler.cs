@@ -19,7 +19,5 @@ public interface IScriptCompiler
   /// <summary>
   /// Compiles a script from the given declaration.
   /// </summary>
-  ValueTask<ICompiledScript> CompileAsync(
-    ScriptDeclaration declaration,
-    CancellationToken cancellationToken = default);
+  ValueTask<ICompiledScript> CompileAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default);
 }
