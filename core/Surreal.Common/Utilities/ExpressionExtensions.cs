@@ -1,4 +1,6 @@
-﻿namespace Surreal.Utilities;
+﻿using System.Linq.Expressions;
+
+namespace Surreal.Utilities;
 
 /// <summary>
 /// Helpers for working with C# expressions.

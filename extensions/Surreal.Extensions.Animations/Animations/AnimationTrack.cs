@@ -92,18 +92,20 @@ public static class AnimationTrack
   /// <summary>
   /// A <see cref="IAnimationTrackDelegate{T}"/> that uses a getter and setter to access a value.
   /// </summary>
-  private sealed record AnimationTrackDelegate<T>(Func<T> Getter, Action<T> Setter) : IAnimationTrackDelegate<T>
+  private sealed class AnimationTrackDelegate<T>(Func<T> getter, Action<T> setter) : IAnimationTrackDelegate<T>
   {
     /// <inheritdoc/>
-    public T GetValue() => Getter();
+    public T GetValue() => getter();
 
     /// <inheritdoc/>
-    public void SetValue(T value) => Setter(value);
+    public void SetValue(T value) => setter(value);
   }
 }
 
-/// <summary>A single <see cref="IAnimationTrack"/> for a single target type, <see cref="T"/>.</summary>
-public sealed record AnimationTrack<T>(IAnimationTrackDelegate<T> Delegate) : IAnimationTrack
+/// <summary>
+/// A single <see cref="IAnimationTrack"/> for a single target type, <see cref="T"/>.
+/// </summary>
+public sealed class AnimationTrack<T>(IAnimationTrackDelegate<T> @delegate) : IAnimationTrack
 {
   /// <summary>
   /// The interpolation function to use for this track.
@@ -131,8 +133,8 @@ public sealed record AnimationTrack<T>(IAnimationTrackDelegate<T> Delegate) : IA
   /// </summary>
   public T CurrentValue
   {
-    get => Delegate.GetValue();
-    set => Delegate.SetValue(value);
+    get => @delegate.GetValue();
+    set => @delegate.SetValue(value);
   }
 
   /// <summary>

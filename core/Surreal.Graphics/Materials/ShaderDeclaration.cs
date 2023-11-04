@@ -144,12 +144,11 @@ public abstract record ShaderSyntaxTree
     /// <summary>Standard control flow variants.</summary>
     public abstract record ControlFlow : Statement
     {
-      /// <summary>Checks if a value is true or false, with a single optional else clause.</summary>
-      /// <example>if (test) { ... } else { ... }</example>
+      /// <summary>Checks if a value is true or false.</summary>
+      /// <example>if (test) { ... }</example>
       public sealed record If(Expression Condition) : ControlFlow
       {
-        public ImmutableArray<Statement> TrueBranch { get; init; } = ImmutableArray<Statement>.Empty;
-        public ImmutableArray<Statement> FalseBranch { get; init; } = ImmutableArray<Statement>.Empty;
+        public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
       }
 
       /// <summary>Evaluates the given statements in a standard 'while' loop</summary>
@@ -160,8 +159,8 @@ public abstract record ShaderSyntaxTree
       }
 
       /// <summary>Evaluates the given statements in a standard 'for' loop</summary>
-      /// <example>if (test) { ... } else { ... }</example>
-      public sealed record For(Expression Condition) : ControlFlow
+      /// <example>for (var i = 100; i >= 0; i--) { ... }</example>
+      public sealed record For(Expression Initializer, Expression Condition, Expression Increment) : ControlFlow
       {
         public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
       }

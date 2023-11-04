@@ -28,6 +28,7 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
 
   public override string ToString() => $"{Scheme}://{Target}";
 
+  [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator VirtualPath(string uri) => Parse(uri);
 
   /// <summary>

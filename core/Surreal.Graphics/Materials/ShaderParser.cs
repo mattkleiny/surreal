@@ -11,8 +11,8 @@ namespace Surreal.Graphics.Materials;
 /// </summary>
 public sealed class ShaderParser : StringParser<ShaderDeclaration>
 {
-  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "#shader_type", "uniform", "varying", "const", "return", "SAMPLE" }.ToImmutableHashSet();
-  private static ImmutableHashSet<string> Stages   { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Keywords { get; } = new[] { "#include", "#shader_type", "uniform", "varying", "const", "if", "while", "for", "return", "SAMPLE" }.ToImmutableHashSet();
+  private static ImmutableHashSet<string> Stages { get; } = new[] { "vertex", "fragment", "geometry" }.ToImmutableHashSet();
 
   /// <summary>
   /// The <see cref="IShaderTransformer"/>s to apply to the resultant parsed shader programs.
@@ -82,9 +82,9 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
       {
         var node = token.Type switch
         {
-          TokenType.Keyword    => ParseKeyword(),
+          TokenType.Keyword => ParseKeyword(),
           TokenType.Identifier => ParseFunction(),
-          _                    => ParseNull(),
+          _ => ParseNull(),
         };
 
         if (node != null)
@@ -96,12 +96,12 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
       return new CompilationUnit
       {
         ShaderType = nodes.OfType<ShaderTypeDeclaration>().FirstOrDefault(new ShaderTypeDeclaration("none")),
-        Includes   = nodes.OfType<Include>().ToImmutableHashSet(),
-        Uniforms   = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
-        Varyings   = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
-        Constants  = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
-        Functions  = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
-        Stages     = nodes.OfType<StageDeclaration>().ToImmutableArray(),
+        Includes = nodes.OfType<Include>().ToImmutableHashSet(),
+        Uniforms = nodes.OfType<UniformDeclaration>().ToImmutableArray(),
+        Varyings = nodes.OfType<VaryingDeclaration>().ToImmutableArray(),
+        Constants = nodes.OfType<ConstantDeclaration>().ToImmutableArray(),
+        Functions = nodes.OfType<FunctionDeclaration>().ToImmutableArray(),
+        Stages = nodes.OfType<StageDeclaration>().ToImmutableArray(),
       };
     }
 
@@ -111,12 +111,12 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
 
       return literal switch
       {
-        "#include"     => ParseInclude(),
+        "#include" => ParseInclude(),
         "#shader_type" => ParseShaderTypeDeclaration(),
-        "uniform"      => ParseUniformDeclaration(),
-        "varying"      => ParseVaryingDeclaration(),
-        "const"        => ParseConstantDeclaration(),
-        "SAMPLE"       => ParseSampleOperation(),
+        "uniform" => ParseUniformDeclaration(),
+        "varying" => ParseVaryingDeclaration(),
+        "const" => ParseConstantDeclaration(),
+        "SAMPLE" => ParseSampleOperation(),
 
         _ => throw Error($"An unrecognized keyword was encountered: {literal}"),
       };
@@ -125,7 +125,7 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
     private Statement ParseFunction()
     {
       var returnType = ParsePrimitive();
-      var name       = ParseIdentifier();
+      var name = ParseIdentifier();
       var parameters = ParseParameters();
       var statements = ParseStatements();
 
@@ -136,7 +136,7 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
 
         var shaderKind = name switch
         {
-          "vertex"   => ShaderKind.Vertex,
+          "vertex" => ShaderKind.Vertex,
           "fragment" => ShaderKind.Fragment,
 
           _ => throw Error($"An unrecognized shader kind was specified {name}"),
@@ -210,9 +210,9 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
       {
         return keyword switch
         {
-          "if"     => ParseIfStatement(),
-          "while"  => ParseWhileStatement(),
-          "for"    => ParseForStatement(),
+          "if" => ParseIfStatement(),
+          "while" => ParseWhileStatement(),
+          "for" => ParseForStatement(),
           "return" => ParseReturnStatement(),
 
           _ => throw Error($"An unrecognized keyword was encountered: {keyword}"),
@@ -228,22 +228,61 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
 
     private Statement ParseIfStatement()
     {
-      throw new NotImplementedException();
+      Consume(TokenType.LeftParenthesis);
+
+      var condition = ParseCondition();
+
+      Consume(TokenType.RightParenthesis);
+
+      return new ControlFlow.If(condition)
+      {
+        Statements = ParseStatements()
+      };
     }
 
     private Statement ParseWhileStatement()
     {
-      throw new NotImplementedException();
+      Consume(TokenType.LeftParenthesis);
+
+      var condition = ParseExpression();
+
+      Consume(TokenType.RightParenthesis);
+
+      return new ControlFlow.While(condition)
+      {
+        Statements = ParseStatements()
+      };
     }
 
     private Statement ParseForStatement()
     {
-      throw new NotImplementedException();
+      Consume(TokenType.LeftParenthesis);
+
+      var initializer = ParseExpression();
+
+      Consume(TokenType.SemiColon);
+
+      var condition = ParseCondition();
+
+      Consume(TokenType.SemiColon);
+
+      var increment = ParseExpression();
+
+      return new ControlFlow.For(initializer, condition, increment)
+      {
+        Statements = ParseStatements()
+      };
     }
 
     private Statement ParseReturnStatement()
     {
       return new Return(ParseExpression());
+    }
+
+    private Expression ParseCondition()
+    {
+      // TODO: ensure this is a boolean expression
+      return ParseExpression();
     }
 
     private Include ParseInclude()
@@ -278,14 +317,14 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
 
     private ConstantDeclaration ParseConstantDeclaration()
     {
-      var type  = ParsePrimitive();
-      var name  = ParseIdentifier();
+      var type = ParsePrimitive();
+      var name = ParseIdentifier();
       var value = ParseExpression();
 
       return new ConstantDeclaration(type, name, value);
     }
 
-    private ShaderSyntaxTree.Expression ParseExpression()
+    private Expression ParseExpression()
     {
       if (TryConsumeLiteral(TokenType.Number, out decimal number))
         return new Constant(number);
@@ -296,20 +335,22 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
       if (TryConsumeLiteral(TokenType.Identifier, out string symbol))
         return new Symbol(symbol);
 
-      throw new NotImplementedException();
+      // TODO: support parsing different types of expressions
+
+      throw Error("An invalid expression was encountered");
     }
 
     private ShaderPrimitive ParsePrimitive()
     {
       var precision = default(ShaderPrecision?);
-      var literal   = ConsumeLiteral<string>(TokenType.Identifier);
+      var literal = ConsumeLiteral<string>(TokenType.Identifier);
 
       if (literal is "lowp" or "medp" or "highp")
       {
         precision = literal switch
         {
-          "lowp"  => ShaderPrecision.Low,
-          "medp"  => ShaderPrecision.Medium,
+          "lowp" => ShaderPrecision.Low,
+          "medp" => ShaderPrecision.Medium,
           "highp" => ShaderPrecision.High,
 
           _ => throw Error($"An unrecognized precision was specified {literal}"),
@@ -320,22 +361,22 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
 
       var type = literal switch
       {
-        "void"      => new ShaderPrimitive(ShaderPrimitiveType.Void, null, precision),
-        "bool"      => new ShaderPrimitive(ShaderPrimitiveType.Bool, null, precision),
-        "bool2"     => new ShaderPrimitive(ShaderPrimitiveType.Bool, 2, precision),
-        "bool3"     => new ShaderPrimitive(ShaderPrimitiveType.Bool, 3, precision),
-        "bool4"     => new ShaderPrimitive(ShaderPrimitiveType.Bool, 4, precision),
-        "int"       => new ShaderPrimitive(ShaderPrimitiveType.Int, null, precision),
-        "int2"      => new ShaderPrimitive(ShaderPrimitiveType.Int, 2, precision),
-        "int3"      => new ShaderPrimitive(ShaderPrimitiveType.Int, 3, precision),
-        "int4"      => new ShaderPrimitive(ShaderPrimitiveType.Int, 4, precision),
-        "float"     => new ShaderPrimitive(ShaderPrimitiveType.Float, null, precision),
-        "float2"    => new ShaderPrimitive(ShaderPrimitiveType.Float, 2, precision),
-        "float3"    => new ShaderPrimitive(ShaderPrimitiveType.Float, 3, precision),
-        "float4"    => new ShaderPrimitive(ShaderPrimitiveType.Float, 4, precision),
-        "vec2"      => new ShaderPrimitive(ShaderPrimitiveType.Float, 2, precision),
-        "vec3"      => new ShaderPrimitive(ShaderPrimitiveType.Float, 3, precision),
-        "vec4"      => new ShaderPrimitive(ShaderPrimitiveType.Float, 4, precision),
+        "void" => new ShaderPrimitive(ShaderPrimitiveType.Void, null, precision),
+        "bool" => new ShaderPrimitive(ShaderPrimitiveType.Bool, null, precision),
+        "bool2" => new ShaderPrimitive(ShaderPrimitiveType.Bool, 2, precision),
+        "bool3" => new ShaderPrimitive(ShaderPrimitiveType.Bool, 3, precision),
+        "bool4" => new ShaderPrimitive(ShaderPrimitiveType.Bool, 4, precision),
+        "int" => new ShaderPrimitive(ShaderPrimitiveType.Int, null, precision),
+        "int2" => new ShaderPrimitive(ShaderPrimitiveType.Int, 2, precision),
+        "int3" => new ShaderPrimitive(ShaderPrimitiveType.Int, 3, precision),
+        "int4" => new ShaderPrimitive(ShaderPrimitiveType.Int, 4, precision),
+        "float" => new ShaderPrimitive(ShaderPrimitiveType.Float, null, precision),
+        "float2" => new ShaderPrimitive(ShaderPrimitiveType.Float, 2, precision),
+        "float3" => new ShaderPrimitive(ShaderPrimitiveType.Float, 3, precision),
+        "float4" => new ShaderPrimitive(ShaderPrimitiveType.Float, 4, precision),
+        "vec2" => new ShaderPrimitive(ShaderPrimitiveType.Float, 2, precision),
+        "vec3" => new ShaderPrimitive(ShaderPrimitiveType.Float, 3, precision),
+        "vec4" => new ShaderPrimitive(ShaderPrimitiveType.Float, 4, precision),
         "sampler1d" => new ShaderPrimitive(ShaderPrimitiveType.Sampler, 1),
         "sampler2d" => new ShaderPrimitive(ShaderPrimitiveType.Sampler, 2),
         "sampler3d" => new ShaderPrimitive(ShaderPrimitiveType.Sampler, 3),
@@ -353,7 +394,7 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
 
     private SampleOperation ParseSampleOperation()
     {
-      var name  = ParseIdentifier();
+      var name = ParseIdentifier();
       var value = ParseExpression();
 
       return new SampleOperation(name, value);
