@@ -1,29 +1,21 @@
 <Project>
   <PropertyGroup Condition="'$(TargetPlatform)' == ''">
     <!-- auto-detect the target platform from the desired target platform -->
-    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('browser'))">web</SurrealPlatform>
-    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('android'))">mobile</SurrealPlatform>
-    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('ios'))">mobile</SurrealPlatform>
-    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('linux'))">desktop</SurrealPlatform>
-    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('freebsd'))">desktop</SurrealPlatform>
-    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('osx'))">desktop</SurrealPlatform>
-    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(TargetPlatformIdentifier.StartsWith('win'))">desktop</SurrealPlatform>
+    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(RuntimeIdentifier.StartsWith('browser'))">web</SurrealPlatform>
+    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(RuntimeIdentifier.StartsWith('android'))">mobile</SurrealPlatform>
+    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(RuntimeIdentifier.StartsWith('ios'))">mobile</SurrealPlatform>
+    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(RuntimeIdentifier.StartsWith('linux'))">desktop</SurrealPlatform>
+    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(RuntimeIdentifier.StartsWith('freebsd'))">desktop</SurrealPlatform>
+    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(RuntimeIdentifier.StartsWith('osx'))">desktop</SurrealPlatform>
+    <SurrealPlatform Condition="$(SurrealPlatform) == '' and $(RuntimeIdentifier.StartsWith('win'))">desktop</SurrealPlatform>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetPlatform)' == ''">
-    <!-- auto-detect the target platform if it was not specified -->
+  <PropertyGroup Condition="'$(SurrealPlatform)' == ''">
+    <!-- auto-detect the target platform based on the build host, if it was not specified -->
     <SurrealPlatform Condition="'$([MSBuild]::IsOsPlatform(Linux))'">desktop</SurrealPlatform>
     <SurrealPlatform Condition="'$([MSBuild]::IsOsPlatform(FreeBSD))'">desktop</SurrealPlatform>
     <SurrealPlatform Condition="'$([MSBuild]::IsOsPlatform(OSX))'">desktop</SurrealPlatform>
     <SurrealPlatform Condition="'$([MSBuild]::IsOsPlatform(Windows))'">desktop</SurrealPlatform>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(TargetPlatformIdentifier) == ''">
-    <!-- set an implicit target platform if none was specified -->
-    <TargetPlatformIdentifier Condition="'$([MSBuild]::IsOsPlatform(Linux))'">linux</TargetPlatformIdentifier>
-    <TargetPlatformIdentifier Condition="'$([MSBuild]::IsOsPlatform(FreeBSD))'">linux</TargetPlatformIdentifier>
-    <TargetPlatformIdentifier Condition="'$([MSBuild]::IsOsPlatform(OSX))'">macos</TargetPlatformIdentifier>
-    <TargetPlatformIdentifier Condition="'$([MSBuild]::IsOsPlatform(Windows))'">windows</TargetPlatformIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
