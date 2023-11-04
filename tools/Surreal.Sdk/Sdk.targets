@@ -57,6 +57,8 @@
     <PackageReference Include="Surreal.MSBuild" Version="$(SurrealVersion)" />
     <PackageReference Include="Surreal.Framework" Version="$(SurrealVersion)" />
     <PackageReference Include="Surreal.Platform.Desktop" Version="$(SurrealVersion)" Condition="$(SurrealPlatform) == 'desktop'" />
+    <PackageReference Include="Surreal.Platform.Mobile" Version="$(SurrealVersion)" Condition="$(SurrealPlatform) == 'mobile'" />
+    <PackageReference Include="Surreal.Platform.Web" Version="$(SurrealVersion)" Condition="$(SurrealPlatform) == 'web'" />
   </ItemGroup>
 
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" Condition="$(ShouldImportBaseSdk) == 'true'" />

@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A Surreal platform implementation for Web environments.</Description>
+    <RuntimeIdentifier>browser</RuntimeIdentifier>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj"/>
+  </ItemGroup>
+</Project>

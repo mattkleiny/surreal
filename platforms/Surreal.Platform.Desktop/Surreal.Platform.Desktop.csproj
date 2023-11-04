@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>A Surreal platform implementation for desktop environments using Silk .NET.</Description>
+    <Description>A Surreal platform implementation for Desktop environments.</Description>
+    <RuntimeIdentifiers>win;linux;osx</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Silk.NET.Core" Version="$(SilkVersion)" PrivateAssets="compile"/>

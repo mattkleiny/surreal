@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A Surreal platform implementation for Mobile environments.</Description>
+    <RuntimeIdentifiers>android;ios</RuntimeIdentifiers>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj"/>
+  </ItemGroup>
+</Project>

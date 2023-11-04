@@ -2,6 +2,7 @@
   <PropertyGroup>
     <Description>Native desktop components for the Surreal project.</Description>
     <OutputName>surreal_native.lib</OutputName>
+    <RuntimeIdentifiers>win;linux;osx</RuntimeIdentifiers>
   </PropertyGroup>
   <Import Project="../../Cargo.Build.targets" />
 </Project>
