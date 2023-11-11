@@ -36,7 +36,6 @@ public static class ServiceExtensions
   public static void AddService<TService>(this IServiceRegistry registry)
     where TService : class
   {
-    registry.AddService(typeof(TService), typeof(TService));
   }
 
   /// <summary>
@@ -46,7 +45,6 @@ public static class ServiceExtensions
     where TService : class
     where TImpl : TService
   {
-    registry.AddService(typeof(TService), typeof(TImpl));
   }
 
   /// <summary>

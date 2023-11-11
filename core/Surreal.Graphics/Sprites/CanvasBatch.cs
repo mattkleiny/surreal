@@ -6,7 +6,7 @@ using Surreal.Graphics.Textures;
 using Surreal.Maths;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Canvases;
+namespace Surreal.Graphics.Sprites;
 
 /// <summary>
 /// A <see cref="RenderContext"/> for <see cref="CanvasBatch"/>es.

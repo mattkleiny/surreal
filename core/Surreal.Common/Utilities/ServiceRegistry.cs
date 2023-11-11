@@ -16,11 +16,6 @@ public interface IServiceRegistry : IServiceProvider
   /// <summary>
   /// Registers a service.
   /// </summary>
-  void AddService(Type serviceType, Type implementationType);
-
-  /// <summary>
-  /// Registers a service.
-  /// </summary>
   void AddService(Type serviceType, object instance);
 
   /// <summary>
@@ -42,39 +37,23 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<ServiceRegistry>();
 
-  private readonly ServiceContainer _container = new();
+  private readonly ConcurrentDictionary<Type, object> _container = new();
 
   public object? GetService(Type serviceType)
   {
-    return _container.GetInstance(serviceType);
+    return _container.GetValueOrDefault(serviceType);
   }
 
   public bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance)
   {
-    instance = _container.TryGetInstance(serviceType);
-
-    return instance != null;
-  }
-
-  public void AddService(Type serviceType, Type implementationType)
-  {
-    if (implementationType != serviceType)
-    {
-      Log.Trace($"Registering service {serviceType} with implementation {implementationType}");
-    }
-    else
-    {
-      Log.Trace($"Registering service {serviceType}");
-    }
-
-    _container.RegisterSingleton(serviceType, implementationType, GenerateName());
+    return _container.TryGetValue(serviceType, out instance);
   }
 
   public void AddService(Type serviceType, object instance)
   {
     Log.Trace($"Registering service {serviceType} with instance {instance}");
 
-    _container.RegisterInstance(serviceType, instance, GenerateName());
+    _container[serviceType] = instance;
   }
 
   /// <summary>
@@ -93,11 +72,11 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
       var parameterInfo = parameterInfos[i];
       var parameterType = parameterInfo.ParameterType;
 
-      if (_container.CanGetInstance(parameterType, null))
+      if (_container.TryGetValue(parameterType, out var instance))
       {
-        parameters[i] = _container.GetInstance(parameterType);
+        parameters[i] = instance;
       }
-      else if (servicesByType.TryGetValue(parameterType, out var instance))
+      else if (servicesByType.TryGetValue(parameterType, out instance))
       {
         parameters[i] = instance;
       }
@@ -123,7 +102,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     {
       foreach (var parameter in candidates[i].GetParameters())
       {
-        if (!_container.CanGetInstance(parameter.ParameterType, null))
+        if (!_container.ContainsKey(parameter.ParameterType))
         {
           candidates.RemoveAt(i);
           break;
@@ -142,7 +121,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
     for (var i = 0; i < parameterInfos.Length; i++)
     {
-      parameters[i] = _container.GetInstance(parameterInfos[i].ParameterType);
+      parameters[i] = _container[parameterInfos[i].ParameterType];
     }
 
     return constructorInfo.Invoke(parameters);
@@ -150,8 +129,14 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
   public void Dispose()
   {
-    _container.Dispose();
-  }
+    foreach (var value in _container.Values)
+    {
+      if (value is IDisposable disposable)
+      {
+        disposable.Dispose();
+      }
+    }
 
-  private static string GenerateName() => Guid.NewGuid().ToString();
+    _container.Clear();
+  }
 }

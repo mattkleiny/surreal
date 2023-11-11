@@ -2,10 +2,9 @@
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Textures;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Utilities;
+namespace Surreal.Graphics.Textures;
 
 /// <summary>
 /// A utility for rendering pixels to the screen.

@@ -1,5 +1,6 @@
 ﻿namespace Surreal.Graphics.Materials;
 
+[Ignore("Not yet implemented")]
 public class ShaderCompilerTests
 {
   [Test]

@@ -1,7 +1,8 @@
 ﻿using Surreal.Colors;
-using Surreal.Graphics.Canvases;
+using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Rendering;
+using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Maths;
 

@@ -17,7 +17,7 @@ public static class VirtualPathExtensions
     => path.GetFileSystem().SupportsMemoryMapping;
 
   public static IFileSystem GetFileSystem(this VirtualPath path)
-    => FileSystem.GetForScheme(path.Scheme.ToString())!;
+    => FileSystem.Registry.GetByScheme(path.Scheme.ToString())!;
 
   public static VirtualPath Resolve(this VirtualPath path, params string[] name)
     => path.GetFileSystem().Resolve(path, name);

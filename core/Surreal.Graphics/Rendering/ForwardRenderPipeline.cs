@@ -1,6 +1,5 @@
 ﻿using Surreal.Colors;
 using Surreal.Diagnostics.Gizmos;
-using Surreal.Graphics.Canvases;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Sprites;
@@ -44,9 +43,6 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// </summary>
   protected sealed class DepthPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
-    /// <summary>
-    /// The main color target for the pass.
-    /// </summary>
     private readonly RenderTarget _depthTarget = new(backend, new RenderTargetDescriptor
     {
       Format = TextureFormat.R,
@@ -55,7 +51,6 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
       DepthStencilFormat = DepthStencilFormat.Depth24
     });
 
-    /// <inheritdoc/>
     public override bool IsEnabled => pipeline.RequireDepthPass;
 
     public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
@@ -89,14 +84,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// </summary>
   protected sealed class ColorPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
-    /// <summary>
-    /// The material used to blit the color target to the back buffer.
-    /// </summary>
     private readonly Material _blitMaterial = new(backend, ShaderProgram.LoadDefaultBlitShader(backend));
-
-    /// <summary>
-    /// The main color target for the pass.
-    /// </summary>
     private readonly RenderTarget _colorTarget = new(backend, new RenderTargetDescriptor
     {
       Format = TextureFormat.Rgba8,
@@ -137,17 +125,9 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// </summary>
   protected sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
-    /// <summary>
-    /// The  material used to render gizmos.
-    /// </summary>
     private readonly Material _gizmoMaterial = new(backend, ShaderProgram.LoadDefaultWireShader(backend));
-
-    /// <summary>
-    /// The batch used to render gizmos.
-    /// </summary>
     private readonly GeometryBatch _geometryBatch = new(backend);
 
-    /// <inheritdoc/>
     public override bool IsEnabled => pipeline.EnableGizmos;
 
     public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)

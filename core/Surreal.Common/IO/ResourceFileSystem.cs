@@ -5,14 +5,9 @@ namespace Surreal.IO;
 /// <summary>
 /// A <see cref="FileSystem" /> that uses embed assembly resources.
 /// </summary>
-public sealed class ResourceFileSystem : FileSystem
+public sealed class ResourceFileSystem() : FileSystem("resource", "resources", "embedded", "resx")
 {
   private const string Separator = "/";
-
-  public ResourceFileSystem()
-    : base("resource", "resources", "embedded", "resx")
-  {
-  }
 
   public override VirtualPath Resolve(VirtualPath path, params string[] paths)
   {

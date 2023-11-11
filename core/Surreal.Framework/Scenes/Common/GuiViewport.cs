@@ -1,6 +1,7 @@
 ﻿using Surreal.Collections;
-using Surreal.Graphics.Canvases;
+using Surreal.Graphics;
 using Surreal.Graphics.Rendering;
+using Surreal.Graphics.Sprites;
 
 namespace Surreal.Scenes;
 

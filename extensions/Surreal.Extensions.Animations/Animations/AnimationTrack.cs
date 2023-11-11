@@ -1,4 +1,5 @@
-﻿using Surreal.Maths;
+﻿using System.Linq.Expressions;
+using Surreal.Maths;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -105,7 +106,7 @@ public static class AnimationTrack
 /// <summary>
 /// A single <see cref="IAnimationTrack"/> for a single target type, <see cref="T"/>.
 /// </summary>
-public sealed class AnimationTrack<T>(IAnimationTrackDelegate<T> @delegate) : IAnimationTrack
+public sealed record AnimationTrack<T>(IAnimationTrackDelegate<T> Delegate) : IAnimationTrack
 {
   /// <summary>
   /// The interpolation function to use for this track.
@@ -133,8 +134,8 @@ public sealed class AnimationTrack<T>(IAnimationTrackDelegate<T> @delegate) : IA
   /// </summary>
   public T CurrentValue
   {
-    get => @delegate.GetValue();
-    set => @delegate.SetValue(value);
+    get => Delegate.GetValue();
+    set => Delegate.SetValue(value);
   }
 
   /// <summary>

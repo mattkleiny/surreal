@@ -72,7 +72,7 @@ public abstract class FileSystem : IFileSystem
 {
   protected FileSystem(params string[] schemes)
   {
-    Debug.Assert(schemes.Length > 0, "schemes.Length > 0");
+    Debug.Assert(schemes.Length > 0);
 
     Schemes = new HashSet<string>(schemes);
   }
@@ -103,13 +103,6 @@ public abstract class FileSystem : IFileSystem
   public virtual IPathWatcher WatchPath(VirtualPath path, bool includeSubPaths)
   {
     throw new NotSupportedException("This file system does not support path watching.");
-  }
-
-  // asynchronous API
-
-  public static IFileSystem? GetForScheme(string scheme)
-  {
-    return Registry.GetByScheme(scheme);
   }
 
   private sealed class FileSystemRegistry : IFileSystemRegistry
