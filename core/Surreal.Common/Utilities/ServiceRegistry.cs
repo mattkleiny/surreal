@@ -1,5 +1,4 @@
-﻿using LightInject;
-using Surreal.Diagnostics.Logging;
+﻿using Surreal.Diagnostics.Logging;
 
 namespace Surreal.Utilities;
 
@@ -37,6 +36,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<ServiceRegistry>();
 
+  private readonly List<IDisposable> _orderedDisposables = new();
   private readonly ConcurrentDictionary<Type, object> _container = new();
 
   public object? GetService(Type serviceType)
@@ -54,6 +54,12 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     Log.Trace($"Registering service {serviceType} with instance {instance}");
 
     _container[serviceType] = instance;
+
+    // remember the order in which services were added, so we can dispose them in reverse order
+    if (instance is IDisposable disposable)
+    {
+      _orderedDisposables.Add(disposable);
+    }
   }
 
   /// <summary>
@@ -129,14 +135,12 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
   public void Dispose()
   {
-    foreach (var value in _container.Values)
+    for (var i = _orderedDisposables.Count - 1; i >= 0; i--)
     {
-      if (value is IDisposable disposable)
-      {
-        disposable.Dispose();
-      }
+      _orderedDisposables[i].Dispose();
     }
 
+    _orderedDisposables.Clear();
     _container.Clear();
   }
 }

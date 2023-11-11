@@ -12,6 +12,7 @@ namespace Surreal.Diagnostics.Debugging;
 internal sealed class SilkDebuggerOverlay(SilkWindow window) : IDisposable, IDebuggerOverlay, IDebuggerWindow, IDebuggerMenu
 {
   private readonly ImGuiController _controller = new(window.OpenGL, window.InnerWindow, window.Input);
+  private bool _isDisposed;
 
   /// <summary>
   /// Updates the GUI.
@@ -30,11 +31,6 @@ internal sealed class SilkDebuggerOverlay(SilkWindow window) : IDisposable, IDeb
     {
       _controller.Render();
     }
-  }
-
-  public void Dispose()
-  {
-    _controller.Dispose();
   }
 
   public void ShowMenuBar(Action<IDebuggerMenu> builder)
@@ -85,5 +81,14 @@ internal sealed class SilkDebuggerOverlay(SilkWindow window) : IDisposable, IDeb
     }
 
     ImGui.EndMenu();
+  }
+
+  public void Dispose()
+  {
+    if (!_isDisposed)
+    {
+      _controller.Dispose();
+      _isDisposed = true;
+    }
   }
 }

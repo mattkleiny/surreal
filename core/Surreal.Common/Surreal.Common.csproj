@@ -4,7 +4,6 @@
     <RootNamespace>Surreal</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LightInject" Version="6.6.4" PrivateAssets="compile"/>
     <PackageReference Include="YamlDotNet" Version="13.7.1" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

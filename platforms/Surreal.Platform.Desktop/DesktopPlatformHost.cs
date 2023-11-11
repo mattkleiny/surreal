@@ -142,7 +142,9 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public void Dispose()
   {
+    DebuggerOverlay.Dispose();
     AudioBackend.Dispose();
+
     Window.Dispose();
   }
 
