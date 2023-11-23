@@ -3,7 +3,7 @@ using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Textures;
 using Surreal.Graphics.Utilities;
-using Surreal.Utilities;
+using Surreal.Services;
 
 namespace Surreal.Graphics;
 
@@ -15,10 +15,12 @@ public sealed class GraphicsModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IAssetLoader, ColorPaletteLoader>();
-    registry.AddService<IAssetLoader, ImageLoader>();
-    registry.AddService<IAssetLoader, MaterialLoader>();
-    registry.AddService<IAssetLoader, ShaderProgramLoader>();
-    registry.AddService<IAssetLoader, TextureLoader>();
+    var backend = registry.GetServiceOrThrow<IGraphicsBackend>();
+
+    registry.AddService<IAssetLoader>(new ColorPaletteLoader());
+    registry.AddService<IAssetLoader>(new ImageLoader());
+    registry.AddService<IAssetLoader>(new MaterialLoader(backend));
+    registry.AddService<IAssetLoader>(new ShaderProgramLoader(backend));
+    registry.AddService<IAssetLoader>(new TextureLoader(backend));
   }
 }

@@ -8,8 +8,8 @@ using Surreal.Graphics;
 using Surreal.Hosting;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
+using Surreal.Services;
 using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal.Editing.Components;
 

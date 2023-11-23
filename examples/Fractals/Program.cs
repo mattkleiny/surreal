@@ -1,6 +1,4 @@
-﻿using Surreal.Graphics.Utilities;
-
-const int maxIterations = 35;
+﻿const int maxIterations = 35;
 
 var configuration = new GameConfiguration
 {

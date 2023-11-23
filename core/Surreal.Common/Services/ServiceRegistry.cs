@@ -1,6 +1,7 @@
-﻿using Surreal.Diagnostics.Logging;
+﻿using Surreal.Collections;
+using Surreal.Diagnostics.Logging;
 
-namespace Surreal.Utilities;
+namespace Surreal.Services;
 
 /// <summary>
 /// Abstracts over a service registry, allowing different IoC container depending on game host.
@@ -8,7 +9,12 @@ namespace Surreal.Utilities;
 public interface IServiceRegistry : IServiceProvider
 {
   /// <summary>
-  /// Attempts to get the service of type. If the service is not found, returns <c>false</c>.
+  /// Attempts to get all services of the given type. If the service is not found, returns an empty enumerable.
+  /// </summary>
+  IEnumerable<object> GetServices(Type serviceType);
+
+  /// <summary>
+  /// Attempts to get a service of the given type. If the service is not found, returns <c>false</c>.
   /// </summary>
   bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance);
 
@@ -37,23 +43,45 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
   private static readonly ILog Log = LogFactory.GetLog<ServiceRegistry>();
 
   private readonly List<IDisposable> _orderedDisposables = new();
-  private readonly ConcurrentDictionary<Type, object> _container = new();
+  private readonly MultiDictionary<Type, object> _container = new();
 
   public object? GetService(Type serviceType)
   {
-    return _container.GetValueOrDefault(serviceType);
+    if (!_container.TryGetValues(serviceType, out var services))
+    {
+      return null;
+    }
+
+    return services[0];
+  }
+
+  public IEnumerable<object> GetServices(Type serviceType)
+  {
+    if (!_container.TryGetValues(serviceType, out var services))
+    {
+      return ReadOnlySlice<object>.Empty;
+    }
+
+    return services;
   }
 
   public bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance)
   {
-    return _container.TryGetValue(serviceType, out instance);
+    if (!_container.TryGetValues(serviceType, out var services))
+    {
+      instance = default;
+      return false;
+    }
+
+    instance = services[0];
+    return true;
   }
 
   public void AddService(Type serviceType, object instance)
   {
     Log.Trace($"Registering service {serviceType} with instance {instance}");
 
-    _container[serviceType] = instance;
+    _container.Add(serviceType, instance);
 
     // remember the order in which services were added, so we can dispose them in reverse order
     if (instance is IDisposable disposable)
@@ -78,7 +106,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
       var parameterInfo = parameterInfos[i];
       var parameterType = parameterInfo.ParameterType;
 
-      if (_container.TryGetValue(parameterType, out var instance))
+      if (TryGetService(parameterType, out var instance))
       {
         parameters[i] = instance;
       }

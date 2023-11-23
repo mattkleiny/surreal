@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 8.0.*
-          include-prerelease: true
 
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:

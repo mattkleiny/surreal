@@ -1,6 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Audio.Clips;
-using Surreal.Utilities;
+using Surreal.Services;
 
 namespace Surreal.Audio;
 
@@ -12,7 +12,9 @@ public sealed class AudioModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IAssetLoader, AudioBufferLoader>();
-    registry.AddService<IAssetLoader, AudioClipLoader>();
+    var backend = registry.GetServiceOrThrow<IAudioBackend>();
+
+    registry.AddService<IAssetLoader>(new AudioBufferLoader());
+    registry.AddService<IAssetLoader>(new AudioClipLoader(backend));
   }
 }

@@ -1,5 +1,5 @@
-﻿using Surreal.Timing;
-using Surreal.Utilities;
+﻿using Surreal.Services;
+using Surreal.Timing;
 
 namespace Surreal;
 

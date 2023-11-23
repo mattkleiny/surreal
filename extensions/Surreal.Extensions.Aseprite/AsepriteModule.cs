@@ -1,6 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Sprites;
-using Surreal.Utilities;
+using Surreal.Services;
 
 namespace Surreal;
 
@@ -11,7 +11,7 @@ public sealed class AsepriteModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IAssetLoader, AsepriteFileLoader>();
-    registry.AddService<IAssetLoader, AsepriteSpriteSheetLoader>();
+    registry.AddService<IAssetLoader>(new AsepriteFileLoader());
+    registry.AddService<IAssetLoader>(new AsepriteSpriteSheetLoader());
   }
 }

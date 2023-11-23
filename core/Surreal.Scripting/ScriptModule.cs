@@ -1,7 +1,7 @@
 ﻿using Surreal.Assets;
 using Surreal.Scripting.Languages;
 using Surreal.Scripting.VirtualMachine;
-using Surreal.Utilities;
+using Surreal.Services;
 
 namespace Surreal.Scripting;
 

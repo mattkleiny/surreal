@@ -1,4 +1,4 @@
-﻿using Surreal.Utilities;
+﻿using Surreal.Services;
 
 namespace Surreal.Physics;
 
@@ -10,6 +10,6 @@ public sealed class PhysicsModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IPhysicsBackend, PhysicsBackend>();
+    registry.AddService<IPhysicsBackend>(new PhysicsBackend());
   }
 }

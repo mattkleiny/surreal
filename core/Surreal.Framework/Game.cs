@@ -11,8 +11,8 @@ using Surreal.Networking;
 using Surreal.Physics;
 using Surreal.Scenes;
 using Surreal.Scripting;
+using Surreal.Services;
 using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal;
 
@@ -204,7 +204,11 @@ public class Game : IDisposable
     }));
 
     Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
-    Log.Trace($"Running main event pump");
+    Log.Trace("Initializing services");
+
+    game.Services.Initialize();
+
+    Log.Trace("Running main event pump");
 
     while (!game.Host.IsClosing && !game.IsClosing)
     {
@@ -272,7 +276,11 @@ public class Game : IDisposable
       }));
 
       Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
-      Log.Trace($"Running main event pump");
+      Log.Trace("Initializing services");
+
+      game.Services.Initialize();
+
+      Log.Trace("Running main event pump");
 
       while (!game.Host.IsClosing && !game.IsClosing)
       {

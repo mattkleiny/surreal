@@ -6,8 +6,8 @@ using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.Graphics.Images;
 using Surreal.Input;
+using Surreal.Services;
 using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal;
 

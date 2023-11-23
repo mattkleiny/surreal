@@ -1,5 +1,4 @@
 ﻿using Surreal.Colors;
-using Surreal.Graphics;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Sprites;

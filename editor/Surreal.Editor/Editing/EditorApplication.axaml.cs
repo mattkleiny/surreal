@@ -2,7 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Surreal.Editing.Projects;
-using Surreal.Utilities;
+using Surreal.Services;
 
 namespace Surreal.Editing;
 

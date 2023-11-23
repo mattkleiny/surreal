@@ -4,6 +4,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Scripting\Surreal.Scripting.csproj"/>
-    <ProjectReference Include="..\Surreal.Scripting.LSP\Surreal.Scripting.LSP.csproj" />
   </ItemGroup>
 </Project>

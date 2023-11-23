@@ -119,7 +119,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Mobile", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Web", "platforms\Surreal.Platform.Web\Surreal.Platform.Web.csproj", "{940C37A7-FB0D-4D90-BD2E-C57E67363E24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Scripting.LSP", "core\Surreal.Scripting.LSP\Surreal.Scripting.LSP.csproj", "{26DDFF9C-1789-4BD3-86BE-562D9DC8B27F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.DiagnosticServer", "tools\Surreal.DiagnosticServer\Surreal.DiagnosticServer.csproj", "{DFB0FE46-CE4B-46AC-90DA-6CFE1E9BDBBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -283,10 +283,10 @@ Global
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26DDFF9C-1789-4BD3-86BE-562D9DC8B27F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26DDFF9C-1789-4BD3-86BE-562D9DC8B27F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26DDFF9C-1789-4BD3-86BE-562D9DC8B27F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26DDFF9C-1789-4BD3-86BE-562D9DC8B27F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB0FE46-CE4B-46AC-90DA-6CFE1E9BDBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB0FE46-CE4B-46AC-90DA-6CFE1E9BDBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB0FE46-CE4B-46AC-90DA-6CFE1E9BDBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB0FE46-CE4B-46AC-90DA-6CFE1E9BDBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -336,6 +336,6 @@ Global
 		{EED336F8-280A-43CE-B65F-B3BC46522B3E} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
 		{BB37B4C9-CD6D-4CF4-9744-2BCDEA884E23} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
-		{26DDFF9C-1789-4BD3-86BE-562D9DC8B27F} = {F21AB6AB-D52B-4AFA-A2A4-1848E44D3ACE}
+		{DFB0FE46-CE4B-46AC-90DA-6CFE1E9BDBBE} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
 	EndGlobalSection
 EndGlobal

@@ -1,6 +1,6 @@
 ﻿using Surreal.Editing.Assets;
 using Surreal.Editing.Assets.Importers;
-using Surreal.Utilities;
+using Surreal.Services;
 
 namespace Surreal;
 
@@ -12,8 +12,8 @@ public sealed class EditorModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IAssetImporter, AudioClipImporter>();
-    registry.AddService<IAssetImporter, ColorPaletteImporter>();
-    registry.AddService<IAssetImporter, TextureImporter>();
+    registry.AddService<IAssetImporter>(new AudioClipImporter());
+    registry.AddService<IAssetImporter>(new ColorPaletteImporter());
+    registry.AddService<IAssetImporter>(new TextureImporter());
   }
 }

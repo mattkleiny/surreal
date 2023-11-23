@@ -1,20 +1,9 @@
-﻿namespace Surreal.Utilities;
+﻿namespace Surreal.Services;
 
 /// <summary>
 /// Indicates a service is not available.
 /// </summary>
 public class ServiceNotFoundException(string message) : ApplicationException(message);
-
-/// <summary>
-/// Indicates a module that can be registered in a <see cref="IServiceRegistry"/>.
-/// </summary>
-public interface IServiceModule
-{
-  /// <summary>
-  /// Registers all services in the module.
-  /// </summary>
-  void RegisterServices(IServiceRegistry registry);
-}
 
 /// <summary>
 /// Helpers for working with <see cref="IServiceProvider"/> and <see cref="IServiceRegistry"/>.
@@ -28,23 +17,6 @@ public static class ServiceExtensions
     where T : class
   {
     registry.AddService(typeof(T), service);
-  }
-
-  /// <summary>
-  /// Adds a service to the registry.
-  /// </summary>
-  public static void AddService<TService>(this IServiceRegistry registry)
-    where TService : class
-  {
-  }
-
-  /// <summary>
-  /// Adds a service to the registry.
-  /// </summary>
-  public static void AddService<TService, TImpl>(this IServiceRegistry registry)
-    where TService : class
-    where TImpl : TService
-  {
   }
 
   /// <summary>
@@ -67,10 +39,15 @@ public static class ServiceExtensions
   /// <summary>
   /// Gets all services of type <typeparamref name="T"/>.
   /// </summary>
-  public static T[] GetServices<T>(this IServiceProvider provider)
+  public static IEnumerable<T> GetServices<T>(this IServiceProvider provider)
     where T : class
   {
-    return GetService<IEnumerable<T>>(provider)?.ToArray() ?? Array.Empty<T>();
+    if (provider is IServiceRegistry registry)
+    {
+      return registry.GetServices(typeof(T)).Cast<T>();
+    }
+
+    return GetService<IEnumerable<T>>(provider)?.ToArray() ?? Enumerable.Empty<T>();
   }
 
   /// <summary>
@@ -118,5 +95,16 @@ public static class ServiceExtensions
   public static T Instantiate<T>(this IServiceRegistry registry)
   {
     return (T)registry.Instantiate(typeof(T));
+  }
+
+  /// <summary>
+  /// Initializes all services that implement <see cref="IInitializable"/>.
+  /// </summary>
+  public static void Initialize(this IServiceRegistry registry)
+  {
+    foreach (var service in registry.GetServices<IInitializable>())
+    {
+      service.Initialize();
+    }
   }
 }
