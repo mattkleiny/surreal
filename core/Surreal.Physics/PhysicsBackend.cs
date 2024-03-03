@@ -139,6 +139,9 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       }
     }
 
+    /// <summary>
+    /// A simple verlet body for the 2d physics world.
+    /// </summary>
     private struct VerletBody
     {
       public Vector2 PreviousPosition;

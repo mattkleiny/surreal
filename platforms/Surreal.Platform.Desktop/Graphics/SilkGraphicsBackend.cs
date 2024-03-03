@@ -714,6 +714,10 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
       _activeFrameBuffer = handle;
     }
+    else
+    {
+      gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+    }
   }
 
   public unsafe void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height)
