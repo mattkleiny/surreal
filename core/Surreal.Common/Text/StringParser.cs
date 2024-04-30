@@ -247,38 +247,25 @@ public abstract class StringParser<T>
   /// <summary>
   /// Indicates an error whilst parsing.
   /// </summary>
-  protected sealed class ParseException : Exception
+  protected sealed class ParseException(string path, LinePosition position, StringSpan span, string message)
+    : Exception($"{message} in {path} (at {position} in {span})")
   {
     public ParseException(string path, Token token, string message)
       : this(path, token.Position, token.Span, message)
     {
     }
 
-    public ParseException(string path, LinePosition position, StringSpan span, string message)
-      : base($"{message} in {path} (at {position} in {span})")
-    {
-      Position = position;
-      Span = span;
-    }
-
-    public LinePosition Position { get; }
-    public StringSpan Span { get; }
+    public LinePosition Position { get; } = position;
+    public StringSpan   Span     { get; } = span;
   }
 
   /// <summary>
   /// Base class for a recursive descent parse context.
   /// </summary>
-  protected abstract class ParserContext
+  protected abstract class ParserContext(string path, IEnumerable<Token> tokens)
   {
-    private readonly string _path;
-    private readonly Queue<Token> _tokens;
+    private readonly Queue<Token> _tokens = new(tokens);
     private Token _lastToken;
-
-    protected ParserContext(string path, IEnumerable<Token> tokens)
-    {
-      _path = path;
-      _tokens = new Queue<Token>(tokens);
-    }
 
     protected bool TryPeek(out Token token)
     {
@@ -371,7 +358,7 @@ public abstract class StringParser<T>
 
     protected Exception Error(string message)
     {
-      return new ParseException(_path, _lastToken, message);
+      return new ParseException(path, _lastToken, message);
     }
   }
 }

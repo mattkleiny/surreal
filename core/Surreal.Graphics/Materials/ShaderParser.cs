@@ -68,13 +68,8 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
   /// Context for syntax parsing operations.
   /// This is a recursive descent style parser.
   /// </summary>
-  private sealed class ShaderParserContext : ParserContext
+  private sealed class ShaderParserContext(string path, IEnumerable<Token> tokens) : ParserContext(path, tokens)
   {
-    public ShaderParserContext(string path, IEnumerable<Token> tokens)
-      : base(path, tokens)
-    {
-    }
-
     public CompilationUnit ParseCompilationUnit()
     {
       var nodes = new List<ShaderSyntaxTree>();

@@ -30,7 +30,7 @@ public readonly record struct GameTime
   /// <summary>
   /// The total time elapsed since the game started.
   /// </summary>
-  public required DeltaTime TotalTime { get; init; }
+  public required TimeSpan TotalTime { get; init; }
 }
 
 /// <summary>

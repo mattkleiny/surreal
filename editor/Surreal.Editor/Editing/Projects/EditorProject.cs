@@ -3,17 +3,12 @@
 /// <summary>
 /// A project is a collection of files and folders that are used to create a game.
 /// </summary>
-public sealed class EditorProject
+public sealed class EditorProject(string rootPath)
 {
-  public EditorProject(string rootPath)
-  {
-    RootPath = Path.GetFullPath(rootPath);
-  }
-
   /// <summary>
   /// The root folder for the project.
   /// </summary>
-  public string RootPath { get; }
+  public string RootPath { get; } = Path.GetFullPath(rootPath);
 
   /// <summary>
   /// Source path where assets are loaded.

@@ -24,14 +24,9 @@ public sealed class LispScriptParser : IScriptParser
   /// <summary>
   /// A context for parsing <see cref="SymbolicExpression"/>s to the <see cref="ScriptSyntaxTree"/>.
   /// </summary>
-  private sealed class LispParserContext
+  private sealed class LispParserContext(IEnumerable<SymbolicExpression> expressions)
   {
-    private readonly Queue<SymbolicExpression> _expressions;
-
-    public LispParserContext(IEnumerable<SymbolicExpression> expressions)
-    {
-      _expressions = new Queue<SymbolicExpression>(expressions);
-    }
+    private readonly Queue<SymbolicExpression> _expressions = new(expressions);
 
     public CompilationUnit ParseCompilationUnit()
     {
@@ -155,11 +150,5 @@ public sealed class LispScriptParser : IScriptParser
   /// <summary>
   /// Indicates an error whilst parsing a lisp program.
   /// </summary>
-  private sealed class LispParseException : Exception
-  {
-    public LispParseException(string message)
-      : base(message)
-    {
-    }
-  }
+  private sealed class LispParseException(string message) : Exception(message);
 }

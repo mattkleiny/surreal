@@ -18,6 +18,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
   private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");
   private readonly ExtDebugMarker _debugMarker = new(gl.Context);
   private readonly Stack<FrameBufferHandle> _activeFrameBuffers = new();
+
   private Mesh? _quadMesh;
   private FrameBufferHandle _activeFrameBuffer;
 

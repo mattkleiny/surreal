@@ -24,7 +24,7 @@ public interface ICamera
 /// <summary>
 /// A node that renders scene elements to the screen via a camera.
 /// </summary>
-public class CameraViewport : SceneNode, IRenderViewport, IGizmoObject
+public class CameraViewport : SceneNode, IRenderViewport
 {
   private static readonly Matrix4x4 Identity = Matrix4x4.Identity;
 
@@ -75,14 +75,5 @@ public class CameraViewport : SceneNode, IRenderViewport, IGizmoObject
     }
 
     return ReadOnlySlice<T>.Empty;
-  }
-
-  /// <inheritdoc/>
-  void IGizmoObject.RenderGizmos(IGizmoBatch gizmos)
-  {
-    if (Root.Physics is IGizmoObject physicsGizmos)
-    {
-      physicsGizmos.RenderGizmos(gizmos);
-    }
   }
 }

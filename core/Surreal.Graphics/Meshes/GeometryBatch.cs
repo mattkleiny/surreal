@@ -39,10 +39,16 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
   }
 
   /// <summary>
+  /// Draws the given gizmo object.
+  /// </summary>
+  public void DrawObject(IGizmoObject gizmoObject)
+    => gizmoObject.RenderGizmos(this);
+
+  /// <summary>
   /// Draws a point at the given position.
   /// </summary>
   public void DrawPoint(Vector2 position, Color color)
-    => DrawTriangleFan(stackalloc[] { position }, color, PolygonMode.Lines);
+    => DrawTriangleFan([position], color, PolygonMode.Lines);
 
   /// <summary>
   /// Draws a line from the given start to end points.
@@ -86,7 +92,7 @@ public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCou
     => DrawTriangle(a, b, c, color, PolygonMode.Lines);
 
   private void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Color color, PolygonMode type)
-    => DrawTriangleFan(stackalloc[] { a, b, c }, color, type);
+    => DrawTriangleFan([a, b, c], color, type);
 
   /// <summary>
   /// Draws a solid quad.

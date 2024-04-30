@@ -9,6 +9,8 @@ namespace Surreal.Diagnostics.Gizmos;
 /// </summary>
 public interface IGizmoBatch
 {
+  void DrawObject(IGizmoObject gizmoObject);
+
   void DrawPoint(Vector2 position, Color color);
   void DrawLine(Vector2 from, Vector2 to, Color color);
   void DrawLineStrip(SpanList<Vector2> points, Color color);

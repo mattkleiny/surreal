@@ -21,6 +21,7 @@ Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice
 
   var color1 = Random.Shared.Next<Color>();
   var color2 = Random.Shared.Next<Color>();
+  var timer = 0f;
 
   var model = Matrix4x4.CreateRotationZ(Angle.FromDegrees(45f), Vector3.Zero);
 
@@ -43,7 +44,9 @@ Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice
   {
     graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
 
-    var color = Color.Lerp(color1, color2, MathE.PingPong(time.TotalTime));
+    timer += time.DeltaTime;
+
+    var color = Color.Lerp(color1, color2, MathE.PingPong(timer));
 
     material.Properties.SetProperty(MaterialProperty.Transform,  modelViewProjection);
     material.Properties.SetProperty(MaterialProperty.Color, color);

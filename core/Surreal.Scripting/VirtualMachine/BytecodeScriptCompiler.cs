@@ -3,18 +3,13 @@
 /// <summary>
 /// A <see cref="IScriptCompiler"/> that lowers script code to byte code.
 /// </summary>
-public sealed class BytecodeScriptCompiler : IScriptCompiler
+public sealed class BytecodeScriptCompiler(IBytecodeScriptOptimizer optimizer) : IScriptCompiler
 {
-  private readonly IBytecodeScriptOptimizer _optimizer;
+  private readonly IBytecodeScriptOptimizer _optimizer = optimizer;
 
   public BytecodeScriptCompiler()
     : this(NullBytecodeScriptOptimizer.Instance)
   {
-  }
-
-  public BytecodeScriptCompiler(IBytecodeScriptOptimizer optimizer)
-  {
-    _optimizer = optimizer;
   }
 
   public ValueTask<ICompiledScript> CompileAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default)

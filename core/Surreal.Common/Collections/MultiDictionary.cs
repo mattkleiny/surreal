@@ -6,7 +6,7 @@ namespace Surreal.Collections;
 public sealed class MultiDictionary<TKey, TValue>(IEqualityComparer<TKey> comparer)
   where TKey : notnull
 {
-  private readonly Dictionary<TKey, List<TValue>> _dictionary = new Dictionary<TKey, List<TValue>>(comparer);
+  private readonly Dictionary<TKey, List<TValue>> _dictionary = new(comparer);
 
   public MultiDictionary()
     : this(EqualityComparer<TKey>.Default)

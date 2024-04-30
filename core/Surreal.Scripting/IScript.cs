@@ -10,11 +10,9 @@ public interface IScript;
 /// <summary>
 /// The <see cref="AssetLoader{T}"/> for different <see cref="IScript"/> types.
 /// </summary>
-public sealed class ScriptLoader : AssetLoader<IScript>
+public sealed class ScriptLoader(IScriptParser parser, IScriptCompiler compiler, IEnumerable<string> extensions) : AssetLoader<IScript>
 {
-  private readonly IScriptParser _parser;
-  private readonly IScriptCompiler _compiler;
-  private readonly ImmutableHashSet<string> _extensions;
+  private readonly ImmutableHashSet<string> _extensions = extensions.ToImmutableHashSet();
 
   public ScriptLoader(IScriptParser parser, IScriptCompiler compiler)
     : this(parser, compiler, parser.SupportedExtensions)
@@ -24,13 +22,6 @@ public sealed class ScriptLoader : AssetLoader<IScript>
   public ScriptLoader(IScriptParser parser, IScriptCompiler compiler, params string[] extensions)
     : this(parser, compiler, extensions.AsEnumerable())
   {
-  }
-
-  public ScriptLoader(IScriptParser parser, IScriptCompiler compiler, IEnumerable<string> extensions)
-  {
-    _parser = parser;
-    _compiler = compiler;
-    _extensions = extensions.ToImmutableHashSet();
   }
 
   /// <summary>
@@ -45,10 +36,10 @@ public sealed class ScriptLoader : AssetLoader<IScript>
 
   public override async Task<IScript> LoadAsync(AssetContext context, CancellationToken cancellationToken)
   {
-    var baseDeclaration = await _parser.ParseScriptAsync(context.Path, cancellationToken);
+    var baseDeclaration = await parser.ParseScriptAsync(context.Path, cancellationToken);
     var finalDeclaration = await TransformScriptAsync(baseDeclaration, cancellationToken);
 
-    return await _compiler.CompileAsync(finalDeclaration, cancellationToken);
+    return await compiler.CompileAsync(finalDeclaration, cancellationToken);
   }
 
   private async Task<ScriptDeclaration> TransformScriptAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default)

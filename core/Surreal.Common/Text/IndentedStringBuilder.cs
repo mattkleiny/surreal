@@ -5,17 +5,11 @@
 /// <para />
 /// Useful for building up human-readable code in string form.
 /// </summary>
-public sealed class IndentedStringBuilder
+public sealed class IndentedStringBuilder(int indentSize = 2)
 {
   private readonly StringBuilder _builder = new();
-  private readonly int _indentSize;
 
   private int _indentLevel;
-
-  public IndentedStringBuilder(int indentSize = 2)
-  {
-    _indentSize = indentSize;
-  }
 
   /// <summary>
   /// Starts a new indentation level. Disposing of the scope will return to the previous indentation level.
@@ -80,7 +74,7 @@ public sealed class IndentedStringBuilder
 
   private void AppendIndent()
   {
-    _builder.Append(new string(' ', _indentLevel * _indentSize));
+    _builder.Append(new string(' ', _indentLevel * indentSize));
   }
 
   public override string ToString()
@@ -96,18 +90,11 @@ public sealed class IndentedStringBuilder
   /// <summary>
   /// Scopes a single indentation level in the <see cref="IndentedStringBuilder" />.
   /// </summary>
-  public readonly struct IndentScope : IDisposable
+  public readonly struct IndentScope(IndentedStringBuilder builder) : IDisposable
   {
-    private readonly IndentedStringBuilder _builder;
-
-    public IndentScope(IndentedStringBuilder builder)
-    {
-      _builder = builder;
-    }
-
     public void Dispose()
     {
-      _builder.Dedent();
+      builder.Dedent();
     }
   }
 }

@@ -23,7 +23,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
   /// <summary>
   /// The <see cref="IPhysicsWorld2d"/> implementation for this backend.
   /// </summary>
-  private sealed class PhysicsWorld2d : IPhysicsWorld2d, IGizmoObject
+  private sealed class PhysicsWorld2d : IPhysicsWorld2d
   {
     private const float BodyRadius = 5f;
     private const float WorldRadius = 80f;
@@ -103,8 +103,8 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       {
         var velocity = body.CurrentPosition - body.PreviousPosition;
 
-        body.PreviousPosition = body.CurrentPosition;
-        body.CurrentPosition += velocity + Gravity * (deltaTime * deltaTime);
+        body.PreviousPosition =  body.CurrentPosition;
+        body.CurrentPosition  += velocity + Gravity * (deltaTime * deltaTime);
       }
     }
 
@@ -112,7 +112,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     {
       var index = _bodies.Add(new VerletBody
       {
-        CurrentPosition = initialPosition,
+        CurrentPosition  = initialPosition,
         PreviousPosition = initialPosition
       });
 
@@ -127,16 +127,6 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     public void DeleteBody(PhysicsHandle handle)
     {
       _bodies.Remove(handle);
-    }
-
-    void IGizmoObject.RenderGizmos(IGizmoBatch gizmos)
-    {
-      gizmos.DrawWireCircle(Vector2.Zero, WorldRadius, Color.White);
-
-      foreach (var body in _bodies)
-      {
-        gizmos.DrawWireCircle(body.CurrentPosition, BodyRadius, Color.White);
-      }
     }
 
     /// <summary>

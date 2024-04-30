@@ -5,20 +5,11 @@ namespace Surreal.Editing.Common;
 /// <summary>
 /// A <see cref="ICommand"/> that executes a delegate, with an optional predicate.
 /// </summary>
-public sealed class EditorCommand : ICommand
+public sealed class EditorCommand(Action callback, Func<bool> predicate) : ICommand
 {
-  private readonly Action _callback;
-  private readonly Func<bool> _predicate;
-
   public EditorCommand(Action callback)
     : this(callback, static () => true)
   {
-  }
-
-  public EditorCommand(Action callback, Func<bool> predicate)
-  {
-    _callback = callback;
-    _predicate = predicate;
   }
 
   /// <inheritdoc/>
@@ -27,13 +18,13 @@ public sealed class EditorCommand : ICommand
   /// <inheritdoc/>
   public bool CanExecute(object? parameter)
   {
-    return _predicate();
+    return predicate();
   }
 
   /// <inheritdoc/>
   public void Execute(object? parameter)
   {
-    _callback();
+    callback();
   }
 
   /// <summary>
