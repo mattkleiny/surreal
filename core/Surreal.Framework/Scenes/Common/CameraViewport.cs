@@ -31,7 +31,7 @@ public class CameraViewport : SceneNode, IRenderViewport
   /// <summary>
   /// The active camera stack.
   /// </summary>
-  public LinkedList<ICamera> ActiveCameras { get; } = new();
+  public LinkedList<ICamera> ActiveCameras { get; } = [];
 
   /// <inheritdoc/>
   public ref readonly Matrix4x4 ProjectionView

@@ -8,12 +8,12 @@ public sealed class BytecodeVirtualMachine
   /// <summary>
   /// The intrinsic functions available to the virtual machine.
   /// </summary>
-  public List<IntrinsicFunction> IntrinsicFunctions { get; } = new();
+  public List<IntrinsicFunction> IntrinsicFunctions { get; } = [];
 
   /// <summary>
   /// The extrinsic functions available to the virtual machine.
   /// </summary>
-  public List<ExtrinsicFunction> ExtrinsicFunctions { get; } = new();
+  public List<ExtrinsicFunction> ExtrinsicFunctions { get; } = [];
 
   /// <summary>
   /// Executes a <see cref="BytecodeProgram"/>.

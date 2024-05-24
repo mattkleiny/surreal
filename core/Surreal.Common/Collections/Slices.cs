@@ -284,7 +284,7 @@ public static class SliceFactory
       return Slice<T>.Empty;
     }
 
-    return new Slice<T>(new List<T>(values.ToArray()));
+    return new Slice<T>([..values.ToArray()]);
   }
 
   /// <summary>

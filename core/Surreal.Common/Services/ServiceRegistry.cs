@@ -42,7 +42,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<ServiceRegistry>();
 
-  private readonly List<IDisposable> _orderedDisposables = new();
+  private readonly List<IDisposable> _orderedDisposables = [];
   private readonly MultiDictionary<Type, object> _container = new();
 
   public object? GetService(Type serviceType)

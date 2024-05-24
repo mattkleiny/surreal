@@ -114,7 +114,7 @@ public sealed class MultiDictionary<TKey, TValue>(IEqualityComparer<TKey> compar
   {
     if (!_dictionary.TryGetValue(key, out var list))
     {
-      _dictionary[key] = list = new List<TValue>();
+      _dictionary[key] = list = [];
     }
 
     return list;

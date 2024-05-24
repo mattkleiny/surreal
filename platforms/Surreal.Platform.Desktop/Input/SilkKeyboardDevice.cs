@@ -6,8 +6,8 @@ namespace Surreal.Input;
 
 internal sealed class SilkKeyboardDevice : IKeyboardDevice
 {
-  private readonly HashSet<Key> _pressedKeys = new();
-  private readonly HashSet<Key> _pressedKeysThisFrame = new();
+  private readonly HashSet<Key> _pressedKeys = [];
+  private readonly HashSet<Key> _pressedKeysThisFrame = [];
 
   public SilkKeyboardDevice(IKeyboard keyboard)
   {

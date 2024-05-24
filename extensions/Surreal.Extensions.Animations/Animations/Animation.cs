@@ -10,7 +10,7 @@ public sealed record Animation
   /// <summary>
   /// The tracks that make up this animation.
   /// </summary>
-  public List<IAnimationTrack> Tracks { get; init; } = new();
+  public List<IAnimationTrack> Tracks { get; init; } = [];
 
   /// <summary>
   /// The total time of this animation.

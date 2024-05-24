@@ -44,7 +44,7 @@ public sealed class AsepriteFile
   /// <summary>
   /// The frames of the file.
   /// </summary>
-  public List<AsepriteFrame> Frames { get; } = new();
+  public List<AsepriteFrame> Frames { get; } = [];
 
   /// <summary>
   /// The top-level header for the file.
@@ -156,7 +156,7 @@ public sealed class AsepriteFile
     /// <summary>
     /// The chunks of the frame.
     /// </summary>
-    public List<AsepriteChunk> Chunks { get; } = new();
+    public List<AsepriteChunk> Chunks { get; } = [];
   }
 
   /// <summary>

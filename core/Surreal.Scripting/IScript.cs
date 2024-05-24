@@ -27,7 +27,7 @@ public sealed class ScriptLoader(IScriptParser parser, IScriptCompiler compiler,
   /// <summary>
   /// The <see cref="IScriptTransformer"/>s to apply to the loaded scripts.
   /// </summary>
-  public List<IScriptTransformer> Transformers { get; init; } = new();
+  public List<IScriptTransformer> Transformers { get; init; } = [];
 
   public override bool CanHandle(AssetContext context)
   {

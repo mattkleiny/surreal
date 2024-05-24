@@ -47,15 +47,15 @@ public sealed record GameConfiguration
   /// <summary>
   /// The <see cref="IServiceModule"/>s to use for the game.
   /// </summary>
-  public List<IServiceModule> Modules { get; init; } = new()
-  {
+  public List<IServiceModule> Modules { get; init; } =
+  [
     new AudioModule(),
     new GraphicsModule(),
     new InputModule(),
     new NetworkModule(),
     new PhysicsModule(),
     new ScriptModule()
-  };
+  ];
 }
 
 /// <summary>

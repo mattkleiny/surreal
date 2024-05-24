@@ -98,7 +98,7 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
   /// <summary>
   /// The list of render passes in the pipeline.
   /// </summary>
-  public RenderPassList Passes { get; } = new();
+  public RenderPassList Passes { get; } = [];
 
   protected override void OnBeginFrame(in RenderFrame frame)
   {

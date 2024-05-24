@@ -9,7 +9,7 @@ namespace Surreal.Input;
 [ExcludeFromCodeCoverage]
 internal sealed class HeadlessInputBackend : IInputBackend
 {
-  private readonly List<IInputDevice> _devices = new();
+  private readonly List<IInputDevice> _devices = [];
 
   public HeadlessInputBackend()
   {

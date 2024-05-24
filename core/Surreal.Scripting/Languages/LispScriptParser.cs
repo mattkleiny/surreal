@@ -9,7 +9,7 @@ namespace Surreal.Scripting.Languages;
 /// </summary>
 public sealed class LispScriptParser : IScriptParser
 {
-  public string[] SupportedExtensions { get; } = { ".lsp", ".lisp" };
+  public string[] SupportedExtensions { get; } = [".lsp", ".lisp"];
 
   public async ValueTask<ScriptDeclaration> ParseScriptAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {

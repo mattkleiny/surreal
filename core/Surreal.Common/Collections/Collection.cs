@@ -13,7 +13,7 @@ public class Collection<T> : IList<T>
 
   public Collection()
   {
-    _items = new List<T>();
+    _items = [];
   }
 
   public Collection(int capacity)

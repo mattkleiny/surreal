@@ -13,7 +13,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
 {
   private static readonly ILog Log = LogFactory.GetLog<AssetDatabase>();
 
-  private readonly AssetEntryCollection _entries = new();
+  private readonly AssetEntryCollection _entries = [];
   private IPathWatcher? _pathWatcher;
 
   /// <summary>
@@ -29,7 +29,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
   /// <summary>
   /// A list of <see cref="IAssetImporter"/>s that are capable of loading raw assets from disk.
   /// </summary>
-  public List<IAssetImporter> Importers { get; init; } = new();
+  public List<IAssetImporter> Importers { get; init; } = [];
 
   /// <summary>
   /// All of the assets in the database.
@@ -370,7 +370,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
   /// </summary>
   private sealed class AssetEntryCollection : IEnumerable<AssetEntry>
   {
-    private readonly Arena<AssetEntry> _entries = new();
+    private readonly Arena<AssetEntry> _entries = [];
     private readonly Dictionary<Guid, ArenaIndex> _assetsById = new();
     private readonly MultiDictionary<string, ArenaIndex> _assetsByPath = new();
     private readonly MultiDictionary<Guid, ArenaIndex> _assetsByTypeId = new();

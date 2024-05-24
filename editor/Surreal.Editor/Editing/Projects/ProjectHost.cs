@@ -72,10 +72,7 @@ public abstract class ProjectHost
         try
         {
           // run the main entry point
-          var result = entryPoint.Invoke(null, new object?[]
-          {
-            Environment.GetCommandLineArgs()
-          });
+          var result = entryPoint.Invoke(null, [Environment.GetCommandLineArgs()]);
 
           // observe the result if it's a task
           if (result is Task task) await task;

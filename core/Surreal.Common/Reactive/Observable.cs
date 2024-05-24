@@ -5,7 +5,7 @@
 /// </summary>
 public sealed class Observable<T> : IObservable<T>
 {
-  private readonly List<IObserver<T>> _observers = new();
+  private readonly List<IObserver<T>> _observers = [];
 
   /// <inheritdoc/>
   public IDisposable Subscribe(IObserver<T> observer)

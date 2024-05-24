@@ -17,7 +17,7 @@ public readonly record struct Frustum(Plane[] Planes)
     var near = new Plane(projection.M13, projection.M23, projection.M33, projection.M43);
     var far = new Plane(projection.M14 - projection.M13, projection.M24 - projection.M23, projection.M34 - projection.M33, projection.M44 - projection.M43);
 
-    return new Frustum(new[] { left, right, bottom, top, near, far });
+    return new Frustum([left, right, bottom, top, near, far]);
   }
 
   /// <summary>

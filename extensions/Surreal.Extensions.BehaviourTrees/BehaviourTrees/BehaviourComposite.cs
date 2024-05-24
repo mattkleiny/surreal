@@ -8,5 +8,5 @@ public abstract class BehaviourComposite : BehaviourNode
   /// <summary>
   /// The children of the <see cref="BehaviourComposite"/>.
   /// </summary>
-  public List<BehaviourNode> Children { get; init; } = new();
+  public List<BehaviourNode> Children { get; init; } = [];
 }

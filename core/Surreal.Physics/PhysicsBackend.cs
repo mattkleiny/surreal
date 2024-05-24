@@ -28,7 +28,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     private const float BodyRadius = 5f;
     private const float WorldRadius = 80f;
 
-    private readonly Arena<VerletBody> _bodies = new();
+    private readonly Arena<VerletBody> _bodies = [];
 
     /// <summary>
     /// The number of iterations to perform per tick.

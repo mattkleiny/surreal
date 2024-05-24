@@ -15,19 +15,19 @@ public class AnimationTests
       {
         AnimationTrack.Create(instance, it => it.Color) with
         {
-          KeyFrames = new[]
-          {
+          KeyFrames =
+          [
             new KeyFrame<Color>(0f, Color.Black),
-            new KeyFrame<Color>(1f, Color.White),
-          },
+            new KeyFrame<Color>(1f, Color.White)
+          ],
         },
         AnimationTrack.Create(instance, it => it.Depth) with
         {
-          KeyFrames = new[]
-          {
+          KeyFrames =
+          [
             new KeyFrame<float>(0f, 0f),
-            new KeyFrame<float>(1f, 1f),
-          },
+            new KeyFrame<float>(1f, 1f)
+          ],
         },
       },
     };

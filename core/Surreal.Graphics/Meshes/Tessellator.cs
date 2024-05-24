@@ -8,8 +8,8 @@ namespace Surreal.Graphics.Meshes;
 public sealed class Tessellator<TVertex>
   where TVertex : unmanaged
 {
-  private readonly List<uint> _indices = new();
-  private readonly List<TVertex> _vertices = new();
+  private readonly List<uint> _indices = [];
+  private readonly List<TVertex> _vertices = [];
 
   public uint VertexCount => (uint)_vertices.Count;
   public uint IndexCount => (uint)_indices.Count;

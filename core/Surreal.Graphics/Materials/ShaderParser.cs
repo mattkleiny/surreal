@@ -17,7 +17,7 @@ public sealed class ShaderParser : StringParser<ShaderDeclaration>
   /// <summary>
   /// The <see cref="IShaderTransformer"/>s to apply to the resultant parsed shader programs.
   /// </summary>
-  public List<IShaderTransformer> Transformers { get; } = new();
+  public List<IShaderTransformer> Transformers { get; } = [];
 
   public override async ValueTask<ShaderDeclaration> ParseAsync(string path, TextReader reader, CancellationToken cancellationToken = default)
   {

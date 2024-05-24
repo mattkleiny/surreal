@@ -22,5 +22,5 @@ public class SceneNodeDefinition
   /// The child nodes of this node.
   /// </summary>
   [XmlArray]
-  public List<SceneNodeDefinition> Children { get; init; } = new();
+  public List<SceneNodeDefinition> Children { get; init; } = [];
 }

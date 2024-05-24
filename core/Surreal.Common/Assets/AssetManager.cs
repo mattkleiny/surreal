@@ -24,8 +24,8 @@ public sealed class AssetManager : IAssetProvider, IDisposable
   private static readonly ILog Log = LogFactory.GetLog<AssetManager>();
 
   private readonly Dictionary<AssetId, Entry> _entriesById = new();
-  private readonly List<IAssetLoader> _loaders = new();
-  private readonly List<IPathWatcher> _watchers = new();
+  private readonly List<IAssetLoader> _loaders = [];
+  private readonly List<IPathWatcher> _watchers = [];
 
   /// <summary>
   /// Determines if hot reloading assets are enabled.
