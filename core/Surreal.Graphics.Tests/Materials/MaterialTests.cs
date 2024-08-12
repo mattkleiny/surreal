@@ -4,8 +4,8 @@ namespace Surreal.Graphics.Materials;
 
 public class MaterialTests
 {
-  private static MaterialProperty<Matrix4x4> Transform { get; } = new("u_transform");
-  private static MaterialProperty<Color32> ClearColor { get; } = new("u_clearColor");
+  private static UniformProperty<Matrix4x4> Transform { get; } = new("u_transform");
+  private static UniformProperty<Color32> ClearColor { get; } = new("u_clearColor");
 
   [Test]
   public void it_should_apply_uniforms_to_backend_when_rendering()
@@ -78,8 +78,8 @@ public class MaterialTests
 
     backend.GetShaderUniformLocation(shader.Handle, Arg.Any<string>()).Returns(2);
 
-    material.Properties.SetProperty(Transform, Matrix4x4.Identity);
-    material.Properties.SetProperty(ClearColor, Color32.White);
+    material.Uniforms.Set(Transform, Matrix4x4.Identity);
+    material.Uniforms.Set(ClearColor, Color32.White);
 
     material.ApplyMaterial();
 

@@ -165,7 +165,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    BlitToBackBuffer(material, MaterialProperty.Texture, filterMode, wrapMode);
+    BlitToBackBuffer(material, UniformProperty.Texture, filterMode, wrapMode);
   }
 
   /// <summary>
@@ -173,7 +173,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   /// </summary>
   public void BlitToBackBuffer(
     Material material,
-    MaterialProperty<TextureSampler> textureProperty,
+    UniformProperty<TextureSampler> textureProperty,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {

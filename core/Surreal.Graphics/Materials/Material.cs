@@ -85,9 +85,9 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
   public CullingMode CullingMode { get; set; } = CullingMode.Disabled;
 
   /// <summary>
-  /// The properties of the material.
+  /// The <see cref="UniformSet"/> of the material.
   /// </summary>
-  public MaterialPropertySet Properties { get; } = new();
+  public UniformSet Uniforms { get; } = new();
 
   /// <summary>
   /// Applies the material properties to the underlying shader.
@@ -98,7 +98,7 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
     backend.SetActiveShader(Shader.Handle);
 
     // apply shader properties
-    foreach (var (name, value) in Properties)
+    foreach (var (name, value) in Uniforms)
     {
       shader.SetUniform(name, value);
     }

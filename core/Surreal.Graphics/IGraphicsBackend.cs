@@ -123,7 +123,7 @@ public interface IGraphicsBackend
 
   void BlitToBackBuffer(FrameBufferHandle handle,
     Material material,
-    MaterialProperty<TextureSampler> samplerProperty,
+    UniformProperty<TextureSampler> samplerProperty,
     Optional<TextureFilterMode> filterMode,
     Optional<TextureWrapMode> wrapMode);
 

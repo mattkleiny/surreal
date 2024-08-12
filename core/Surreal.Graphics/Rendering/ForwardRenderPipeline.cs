@@ -134,7 +134,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
     {
       base.OnExecutePass(in frame, viewport);
 
-      _gizmoMaterial.Properties.SetProperty("u_transform", viewport.ProjectionView);
+      _gizmoMaterial.Uniforms.Set("u_transform", viewport.ProjectionView);
 
       _geometryBatch.Material = _gizmoMaterial;
 

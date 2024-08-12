@@ -18,7 +18,7 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
   /// <para/>
   /// If not specified, the identity matrix will be used.
   /// </summary>
-  public MaterialProperty<Matrix4x4>? TransformProperty { get; set; }
+  public UniformProperty<Matrix4x4>? TransformProperty { get; set; }
 
   /// <summary>
   /// The material used by this context.
@@ -34,7 +34,7 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
 
     if (TransformProperty != null)
     {
-      Material.Properties.SetProperty(TransformProperty.Value, viewport.ProjectionView);
+      Material.Uniforms.Set(TransformProperty.Value, viewport.ProjectionView);
     }
 
     Batch.Material = Material;

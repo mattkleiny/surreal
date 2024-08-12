@@ -809,7 +809,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
 
   public void BlitToBackBuffer(FrameBufferHandle handle,
     Material material,
-    MaterialProperty<TextureSampler> samplerProperty,
+    UniformProperty<TextureSampler> samplerProperty,
     Optional<TextureFilterMode> filterMode,
     Optional<TextureWrapMode> wrapMode)
   {
@@ -822,7 +822,7 @@ internal sealed class SilkGraphicsBackend(GL gl) : IGraphicsBackend
     };
 
     material.ApplyMaterial();
-    material.Properties.SetProperty(samplerProperty, sampler);
+    material.Uniforms.Set(samplerProperty, sampler);
 
     mesh.Draw(material);
   }

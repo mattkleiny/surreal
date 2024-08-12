@@ -48,7 +48,7 @@ public sealed class SpriteBatch : IDisposable
   /// <summary>
   /// The property to use for the texture.
   /// </summary>
-  public MaterialProperty<Texture> Texture { get; set; } = new("u_texture");
+  public UniformProperty<Texture> Texture { get; set; } = new("u_texture");
 
   /// <summary>
   /// The material used by this batch.
@@ -190,7 +190,7 @@ public sealed class SpriteBatch : IDisposable
     {
       if (_lastTexture != null)
       {
-        _material.Properties.SetProperty(Texture, _lastTexture);
+        _material.Uniforms.Set(Texture, _lastTexture);
       }
 
       var quadCount = _vertexCount / 4;

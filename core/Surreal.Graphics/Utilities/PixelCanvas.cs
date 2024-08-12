@@ -28,7 +28,7 @@ public class PixelCanvas : IDisposable
       BlendState = BlendState.OneMinusSourceAlpha
     };
 
-    _material.Properties.SetProperty("u_texture", _texture);
+    _material.Uniforms.Set("u_texture", _texture);
   }
 
   /// <summary>

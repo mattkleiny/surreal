@@ -28,7 +28,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
   using var material = new Material(graphics, ShaderProgram.LoadDefaultCanvasShader(graphics))
   {
     BlendState = BlendState.OneMinusSourceAlpha,
-    Properties =
+    Uniforms =
     {
       { "u_texture", sprite },
       { "u_transform", Matrix4x4.CreateOrthographic(width, -height, 0, 100f) }
