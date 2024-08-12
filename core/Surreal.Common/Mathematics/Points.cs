@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Surreal.Mathematics;
+﻿namespace Surreal.Mathematics;
 
 #pragma warning disable S1104
 #pragma warning disable S2328

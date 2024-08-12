@@ -1,6 +1,5 @@
 ﻿using Surreal.Colors;
 using Surreal.Mathematics;
-using Surreal.Maths;
 using Surreal.Services;
 
 namespace Surreal;

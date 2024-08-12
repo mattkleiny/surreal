@@ -69,6 +69,37 @@ internal struct VariantValue
 }
 
 /// <summary>
+/// A nan-boxed value.
+/// </summary>
+[StructLayout(LayoutKind.Explicit, Size = 8)]
+internal struct NanBox
+{
+  private const ulong MaskNan = 0x7FFC000000000000;
+  private const ulong MaskBool = 0xFFE8000000000002;
+  private const ulong MaskTrue = 0xFFF8000000000000;
+  private const ulong MaskFalse = 0x7FF8000000000000;
+  private const ulong MaskInt = 0x7FFC000000000000;
+  private const ulong MaskPointer = 0xFFFC000000000000;
+  private const ulong MaskNull = 0x7FFE000000000000;
+
+  [FieldOffset(0)] public double Double;
+  [FieldOffset(0)] public ulong Ulong;
+
+  public static NanBox FromDouble(double value) => new() { Double = value };
+  public static NanBox FromUlong(ulong value) => new() { Ulong = value };
+  public static NanBox FromBool(bool value) => new() { Ulong = value ? MaskTrue : MaskFalse };
+  public static NanBox FromInt(int value) => new() { Ulong = (ulong)value | MaskInt };
+  public static NanBox FromNull() => new() { Ulong = MaskNull };
+
+  public bool IsDouble => (Ulong & MaskNan) != MaskNan;
+  public bool IsInt => (Ulong & MaskInt) == MaskInt;
+  public bool IsBool => Ulong is MaskTrue or MaskFalse;
+  public bool IsTrue => Ulong == MaskTrue;
+  public bool IsFalse => Ulong == MaskFalse;
+  public bool IsNull => Ulong == MaskNull;
+}
+
+/// <summary>
 /// A variant type that can hold any type of common data in at most 16 bytes.
 /// </summary>
 public struct Variant

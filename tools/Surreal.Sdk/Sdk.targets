@@ -57,7 +57,7 @@
 
     <!-- include relevant core dependencies -->
     <PackageReference Include="Surreal.Analyzers" Version="$(SurrealVersion)" />
-    <PackageReference Include="Surreal.MSBuild" Version="$(SurrealVersion)" />
+    <PackageReference Include="Surreal.Editor.MSBuild" Version="$(SurrealVersion)" />
     <PackageReference Include="Surreal.Framework" Version="$(SurrealVersion)" />
     <PackageReference Include="Surreal.Platform.Desktop" Version="$(SurrealVersion)" Condition="$(SurrealPlatform) == 'desktop'" />
     <PackageReference Include="Surreal.Platform.Mobile" Version="$(SurrealVersion)" Condition="$(SurrealPlatform) == 'mobile'" />

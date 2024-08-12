@@ -1,5 +1,4 @@
 ﻿using Bunnymark;
-using Surreal.Mathematics;
 
 const int width = 1920;
 const int height = 1080;

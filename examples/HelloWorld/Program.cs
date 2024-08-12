@@ -1,5 +1,3 @@
-using Surreal.Mathematics;
-
 var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
