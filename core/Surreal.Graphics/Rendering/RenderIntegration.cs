@@ -1,4 +1,4 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Collections.Slices;
 using Surreal.Maths;
 
 namespace Surreal.Graphics.Rendering;

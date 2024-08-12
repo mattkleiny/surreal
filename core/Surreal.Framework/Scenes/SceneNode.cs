@@ -1,5 +1,6 @@
 ﻿using Surreal.Assets;
 using Surreal.Collections;
+using Surreal.Collections.Slices;
 using Surreal.Timing;
 
 namespace Surreal.Scenes;

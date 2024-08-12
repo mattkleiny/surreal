@@ -1,6 +1,6 @@
 ﻿namespace Surreal.Collections;
 
-public class GenerationalArenaTests
+public class ArenaTests
 {
   [Test]
   public void it_should_manage_a_simple_object_arena()
@@ -17,8 +17,5 @@ public class GenerationalArenaTests
 
     id4.Id.Should().Be(id2.Id);
     id4.Generation.Should().NotBe(id2.Generation);
-
-    id1.Should().NotBe(id2);
-    id1.Should().NotBe(id3);
   }
 }

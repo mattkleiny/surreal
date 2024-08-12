@@ -1,13 +1,13 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Collections.Slices;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Sprites;
 
 namespace Surreal.Scenes;
 
 /// <summary>
-/// A node that renders a GUI in screen space.
+/// A node that renders a GUI in canvas space.
 /// </summary>
-public sealed class GuiViewport : SceneNode, IRenderViewport, IRenderObject
+public sealed class CanvasViewport : SceneNode, IRenderViewport, IRenderObject
 {
   private readonly Matrix4x4 _projectionView = Matrix4x4.Identity;
 

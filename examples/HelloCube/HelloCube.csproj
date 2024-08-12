@@ -1,5 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>A super basic example of rendering a cube.</Description>
-  </PropertyGroup>
-</Project>

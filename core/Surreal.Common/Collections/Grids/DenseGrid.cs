@@ -1,7 +1,7 @@
 ﻿using Surreal.Maths;
 using Surreal.Memory;
 
-namespace Surreal.Collections;
+namespace Surreal.Collections.Grids;
 
 /// <summary>
 /// A dense 2d grid of <see cref="T" />.
@@ -29,6 +29,11 @@ public sealed class DenseGrid<T> : IEnumerable<T>
 
   public int Width { get; }
   public int Height { get; }
+
+  /// <summary>
+  /// Converts the grid to a <see cref="SpanGrid{T}" />.
+  /// </summary>
+  public SpanGrid<T> Span => new(_elements, Width);
 
   /// <summary>
   /// Returns a reference to the element at the given position.
@@ -60,24 +65,6 @@ public sealed class DenseGrid<T> : IEnumerable<T>
   public void Fill(T value)
   {
     Array.Fill(_elements, value);
-  }
-
-  /// <summary>
-  /// Returns a <see cref="Span{T}" /> of the grid's elements.
-  /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Span<T> AsSpan()
-  {
-    return _elements;
-  }
-
-  /// <summary>
-  /// Converts the grid to a <see cref="SpanGrid{T}" />.
-  /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public SpanGrid<T> AsSpanGrid()
-  {
-    return new SpanGrid<T>(_elements, Width);
   }
 
   public Enumerator GetEnumerator()

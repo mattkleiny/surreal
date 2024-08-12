@@ -1,4 +1,4 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Collections.Slices;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;

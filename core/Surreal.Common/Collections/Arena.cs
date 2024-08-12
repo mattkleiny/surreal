@@ -36,9 +36,7 @@ public readonly record struct ArenaIndex(ushort Id, uint Generation)
 public sealed class Arena<T> : IEnumerable<T>
   where T : notnull
 {
-  private const int CompactFactor = 1024;
-
-  private Entry[] _entries = Array.Empty<Entry>();
+  private Entry[] _entries = [];
   private int _count;
   private uint _generation = 1;
   private bool _hasDirtyGeneration;
@@ -50,9 +48,20 @@ public sealed class Arena<T> : IEnumerable<T>
   public int Count => _count;
 
   /// <summary>
-  /// Returns the item at the given index.
+  /// Gets the value at the given arena index.
   /// </summary>
-  public ref T this[ArenaIndex index] => ref _entries[index.Offset].Value;
+  public T this[ArenaIndex index]
+  {
+    get
+    {
+      if (!TryGet(index, out var entry))
+      {
+        throw new InvalidOperationException("The given arena index is not valid.");
+      }
+
+      return entry;
+    }
+  }
 
   /// <summary>
   /// Determines if the given index is contained in the arena.
@@ -67,6 +76,31 @@ public sealed class Arena<T> : IEnumerable<T>
     }
 
     return index.Generation == _entries[offset].Generation;
+  }
+
+  /// <summary>
+  /// Attempts to get the entry with index <see cref="index"/>.
+  /// </summary>
+  public bool TryGet(ArenaIndex index, [MaybeNullWhen(false)] out T result)
+  {
+    var offset = index.Offset;
+
+    if (offset >= _entries.Length)
+    {
+      result = default;
+      return false;
+    }
+
+    ref var entry = ref _entries[offset];
+
+    if (entry.Generation != index.Generation)
+    {
+      result = default;
+      return false;
+    }
+
+    result = entry.Value;
+    return true;
   }
 
   /// <summary>
@@ -121,15 +155,13 @@ public sealed class Arena<T> : IEnumerable<T>
   }
 
   /// <summary>
-  /// Clears all items from the arena.
+  /// Clears the arena of all items.
   /// </summary>
   public void Clear()
   {
-    _entries = Array.Empty<Entry>();
+    _entries = [];
     _count = 0;
     _nextIndex = 0;
-
-    // bump the generation when we need to allocate and we've since removed all items
     _hasDirtyGeneration = true;
   }
 
@@ -152,7 +184,7 @@ public sealed class Arena<T> : IEnumerable<T>
     }
 
     _entries = newEntries;
-    _count = newCount;
+    _count   = newCount;
   }
 
   /// <summary>
@@ -166,15 +198,9 @@ public sealed class Arena<T> : IEnumerable<T>
       Interlocked.Increment(ref _generation);
 
       _hasDirtyGeneration = false;
-
-      if (_entries.Length > CompactFactor)
-      {
-        Compact();
-      }
     }
 
     // try and re-use an existing index
-    // TODO: keep a separate free list
     for (var i = 0; i < _entries.Length; i++)
     {
       ref var entry = ref _entries[i];
@@ -186,7 +212,6 @@ public sealed class Arena<T> : IEnumerable<T>
     }
 
     // otherwise allocate a new one and make space if necessary
-    // TODO: consider allocating in chunks
     var id = (ushort)Interlocked.Increment(ref _nextIndex);
     if (id >= _entries.Length)
     {
@@ -216,12 +241,12 @@ public sealed class Arena<T> : IEnumerable<T>
   /// </summary>
   [SuppressMessage("ReSharper", "ConvertToConstant.Local")]
   [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
-  private struct Entry(T value, uint generation)
+  private record struct Entry(T Value, uint Generation)
   {
     /// <summary>
     /// The value of the entry.
     /// </summary>
-    public T Value = value;
+    public T Value = Value;
 
     /// <summary>
     /// True if the entry is occupied.
@@ -231,7 +256,7 @@ public sealed class Arena<T> : IEnumerable<T>
     /// <summary>
     /// The generation that the entry was created in.
     /// </summary>
-    public uint Generation = generation;
+    public uint Generation = Generation;
   }
 
   /// <summary>

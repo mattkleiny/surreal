@@ -19,7 +19,7 @@ public interface IAssetLoader
 }
 
 /// <summary>
-/// Base class for any <see cref="IAssetLoader" /> implementation.
+/// Base class for any <see cref="IAssetLoader"/> implementation.
 /// </summary>
 public abstract class AssetLoader<T> : IAssetLoader
   where T : notnull

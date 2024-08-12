@@ -1,4 +1,6 @@
-﻿namespace Surreal.Collections;
+﻿using Surreal.Collections.Bounded;
+
+namespace Surreal.Collections;
 
 public class BoundedStackTests
 {

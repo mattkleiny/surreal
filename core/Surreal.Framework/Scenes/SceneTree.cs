@@ -1,5 +1,5 @@
 ﻿using Surreal.Assets;
-using Surreal.Collections;
+using Surreal.Collections.Slices;
 using Surreal.Graphics.Rendering;
 using Surreal.Physics;
 using Surreal.Timing;

@@ -1,4 +1,6 @@
-﻿namespace Surreal.Collections;
+﻿using Surreal.Collections.Slices;
+
+namespace Surreal.Collections;
 
 /// <summary>
 /// A generic collection of objects that can be individually accessed by index.
@@ -21,8 +23,8 @@ public class Collection<T> : IList<T>
     _items = new List<T>(capacity);
   }
 
-  public event ItemChangeHandler? Added;
-  public event ItemChangeHandler? Removed;
+  public event ItemChangeHandler? ItemAdded;
+  public event ItemChangeHandler? ItemRemoved;
 
   public int Count => _items.Count;
   public bool IsReadOnly => false;
@@ -51,12 +53,12 @@ public class Collection<T> : IList<T>
 
   protected virtual void OnItemAdded(T item)
   {
-    Added?.Invoke(this, item);
+    ItemAdded?.Invoke(this, item);
   }
 
   protected virtual void OnItemRemoved(T item)
   {
-    Removed?.Invoke(this, item);
+    ItemRemoved?.Invoke(this, item);
   }
 
   public bool Contains(T item)

@@ -38,5 +38,7 @@ public sealed class VertexDescriptorAnalyzer : DiagnosticAnalyzer
   {
     context.EnableConcurrentExecution();
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+
+    // TODO: implement me
   }
 }

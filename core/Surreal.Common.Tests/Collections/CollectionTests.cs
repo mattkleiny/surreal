@@ -28,7 +28,7 @@ public class CollectionTests
 
     var collection = new Collection<int>();
 
-    collection.Added += (_, _) => addedCount += 1;
+    collection.ItemAdded += (_, _) => addedCount += 1;
 
     collection.Add(1);
     collection.Add(2);
@@ -43,7 +43,7 @@ public class CollectionTests
 
     var collection = new Collection<int>();
 
-    collection.Removed += (_, _) => removedCount += 1;
+    collection.ItemRemoved += (_, _) => removedCount += 1;
 
     collection.Add(1);
     collection.Add(2);
@@ -60,7 +60,7 @@ public class CollectionTests
 
     var collection = new Collection<int>();
 
-    collection.Removed += (_, _) => removedCount += 1;
+    collection.ItemRemoved += (_, _) => removedCount += 1;
 
     collection.Add(1);
     collection.Add(2);
@@ -78,7 +78,7 @@ public class CollectionTests
 
     var collection = new Collection<int>();
 
-    collection.Added += (_, _) => addedCount += 1;
+    collection.ItemAdded += (_, _) => addedCount += 1;
 
     collection.Insert(0, 1);
     collection.Insert(0, 2);
@@ -94,7 +94,7 @@ public class CollectionTests
 
     var collection = new Collection<int>();
 
-    collection.Removed += (_, _) => removedCount += 1;
+    collection.ItemRemoved += (_, _) => removedCount += 1;
 
     collection.Add(1);
     collection.Add(2);

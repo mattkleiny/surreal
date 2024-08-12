@@ -1,4 +1,4 @@
-﻿namespace Surreal.Collections;
+﻿namespace Surreal.Collections.Bounded;
 
 /// <summary>
 /// A <see cref="Queue{T}" /> with a fixed-sized upper bound.
@@ -9,8 +9,8 @@ public sealed class BoundedQueue<T> : IEnumerable<T>
 
   public BoundedQueue(int capacity = 0, int maxCapacity = 32)
   {
-    Debug.Assert(capacity >= 0, "capacity >= 0");
-    Debug.Assert(maxCapacity >= capacity, "maxCapacity >= capacity");
+    Debug.Assert(capacity >= 0);
+    Debug.Assert(maxCapacity >= capacity);
 
     _queue = new Queue<T>(capacity);
 

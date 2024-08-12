@@ -1,4 +1,4 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Collections.Grids;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
@@ -33,14 +33,14 @@ public class PixelCanvas : IDisposable
   /// <summary>
   /// The pixels in the canvas.
   /// </summary>
-  public SpanGrid<Color32> Pixels => _pixels.AsSpanGrid();
+  public SpanGrid<Color32> Pixels => _pixels.Span;
 
   /// <summary>
   /// Draws the canvas to the screen as a fullscreen quad.
   /// </summary>
   public void DrawQuad()
   {
-    _texture.WritePixels<Color32>(_pixels.Width, _pixels.Height, _pixels.AsSpan());
+    _texture.WritePixels<Color32>(_pixels.Width, _pixels.Height, _pixels.Span);
 
     _mesh.Draw(_material);
   }

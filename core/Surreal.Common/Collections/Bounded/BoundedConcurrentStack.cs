@@ -1,4 +1,4 @@
-﻿namespace Surreal.Collections;
+﻿namespace Surreal.Collections.Bounded;
 
 /// <summary>
 /// A <see cref="ConcurrentStack{T}" /> with a fixed-sized upper bound.

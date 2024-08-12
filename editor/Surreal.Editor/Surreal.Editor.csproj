@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <Description>The editor host for the Surreal project.</Description>
     <StartWorkingDirectory>$(MSBuildThisFileDirectory)</StartWorkingDirectory>
   </PropertyGroup>

@@ -6,9 +6,16 @@
 public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
 {
   private T[] _elements = new T[capacity];
-  private int _writePos;
+  private int _head;
 
+  /// <summary>
+  /// The number of elements in the buffer.
+  /// </summary>
   public int Count { get; private set; }
+
+  /// <summary>
+  /// The total number of elements that can fit in the buffer.
+  /// </summary>
   public int Capacity => _elements.Length;
 
   /// <summary>
@@ -19,15 +26,15 @@ public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
   /// <summary>
   /// Accesses the last element in the buffer.
   /// </summary>
-  public ref T Last => ref _elements[Math.Max(_writePos - 1, 0)];
+  public ref T Last => ref _elements[Math.Max(_head - 1, 0)];
 
   public void Add(T element)
   {
-    _elements[_writePos++] = element;
+    _elements[_head++] = element;
 
-    if (_writePos >= Capacity)
+    if (_head >= Capacity)
     {
-      _writePos = 0; // wrap around ring end
+      _head = 0; // wrap around ring end
     }
 
     if (Count < Capacity)
@@ -38,9 +45,16 @@ public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
 
   public void Clear()
   {
-    for (var i = 0; i < _elements.Length; i++) _elements[i] = default!; // help the GC
+    // help the GC if the type is a reference type
+    if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+    {
+      for (var i = 0; i < _elements.Length; i++)
+      {
+        _elements[i] = default!;
+      }
+    }
 
-    _writePos = 0;
+    _head = 0;
     Count = 0;
   }
 
@@ -48,7 +62,7 @@ public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
   {
     if (size < _elements.Length)
     {
-      _writePos = Math.Max(_writePos, size - 1);
+      _head = Math.Max(_head, size - 1);
     }
 
     Array.Resize(ref _elements, size);
@@ -103,7 +117,7 @@ public sealed class RingBuffer<T>(int capacity) : IEnumerable<T>
     public void Reset()
     {
       _touched = 0;
-      _currentPos = _buffer._writePos;
+      _currentPos = _buffer._head;
     }
 
     public void Dispose()

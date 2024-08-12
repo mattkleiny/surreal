@@ -1,4 +1,4 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Collections.Pooling;
 
 namespace Surreal.Diagnostics.Logging;
 

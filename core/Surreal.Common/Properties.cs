@@ -1,4 +1,4 @@
-﻿namespace Surreal.Collections;
+﻿namespace Surreal;
 
 /// <summary>
 /// A delegate that can handle property change events.

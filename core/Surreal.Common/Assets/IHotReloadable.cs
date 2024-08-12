@@ -3,7 +3,7 @@
 /// <summary>
 /// Allows a type to be hot-reloaded by the asset system.
 /// </summary>
-public interface IHotReloadable<T>
+public interface IHotReloadable<in T>
 {
   /// <summary>
   /// Invoked when an asset has been reloaded by the manager.

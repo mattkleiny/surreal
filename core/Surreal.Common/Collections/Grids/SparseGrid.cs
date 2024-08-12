@@ -1,6 +1,6 @@
 ﻿using Surreal.Maths;
 
-namespace Surreal.Collections;
+namespace Surreal.Collections.Grids;
 
 /// <summary>
 /// A sparse 2d grid of <see cref="T" />.
@@ -17,15 +17,7 @@ public sealed class SparseGrid<T> : IEnumerable<T>
 
   public T? this[Point2 position]
   {
-    get
-    {
-      if (!_items.TryGetValue(position, out var item))
-      {
-        return default;
-      }
-
-      return item;
-    }
+    get => _items.GetValueOrDefault(position);
     set
     {
       if (value != null)
@@ -37,6 +29,11 @@ public sealed class SparseGrid<T> : IEnumerable<T>
         _items.Remove(position);
       }
     }
+  }
+
+  public bool TryGetValue(Point2 point, out T? value)
+  {
+    return _items.TryGetValue(point, out value);
   }
 
   public void Clear()

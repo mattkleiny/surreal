@@ -1,10 +1,10 @@
 ﻿namespace Surreal.Collections;
 
 /// <summary>
-/// Represents a node in a <see cref="IntrusiveLinkedList{TNode}" />.
+/// Represents a node in a <see cref="LinkedObjectList{TNode}" />.
 /// </summary>
-public interface IIntrusiveLinkedListNode<TSelf>
-  where TSelf : class, IIntrusiveLinkedListNode<TSelf>
+public interface ILinkedListNode<TSelf>
+  where TSelf : class, ILinkedListNode<TSelf>
 {
   TSelf? Previous { get; set; }
   TSelf? Next { get; set; }
@@ -13,10 +13,17 @@ public interface IIntrusiveLinkedListNode<TSelf>
 /// <summary>
 /// A linked list where each node contains pointers to/from each other, in-structure.
 /// </summary>
-public sealed class IntrusiveLinkedList<TNode> : IEnumerable<TNode>
-  where TNode : class, IIntrusiveLinkedListNode<TNode>
+public sealed class LinkedObjectList<TNode> : IEnumerable<TNode>
+  where TNode : class, ILinkedListNode<TNode>
 {
+  /// <summary>
+  /// The first node in the list.
+  /// </summary>
   public TNode? Head { get; private set; }
+
+  /// <summary>
+  /// Is the list empty?
+  /// </summary>
   public bool IsEmpty => Head == null;
 
   public void Add(TNode newHead)
@@ -84,9 +91,9 @@ public sealed class IntrusiveLinkedList<TNode> : IEnumerable<TNode>
   }
 
   /// <summary>
-  /// Enumerates the <see cref="IntrusiveLinkedList{TNode}" /> from head to tail.
+  /// Enumerates the <see cref="LinkedObjectList{TNode}" /> from head to tail.
   /// </summary>
-  public struct Enumerator(IntrusiveLinkedList<TNode> list) : IEnumerator<TNode>
+  public struct Enumerator(LinkedObjectList<TNode> list) : IEnumerator<TNode>
   {
     public TNode? Current { get; private set; } = default;
 

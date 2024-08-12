@@ -1,6 +1,7 @@
 ﻿using Silk.NET.OpenGL;
 using Silk.NET.OpenGL.Extensions.EXT;
 using Surreal.Collections;
+using Surreal.Collections.Slices;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;

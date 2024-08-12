@@ -167,6 +167,8 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
       private void OnDisplayRendering(GlInterface gl, GraphicsHandle frameBuffer)
       {
+        gl.BindFramebuffer(GlConsts.GL_READ_FRAMEBUFFER, 0);
+        gl.BindFramebuffer(GlConsts.GL_DRAW_FRAMEBUFFER, frameBuffer);
       }
     }
   }

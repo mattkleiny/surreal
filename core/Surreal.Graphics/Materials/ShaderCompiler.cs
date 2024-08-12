@@ -1,4 +1,4 @@
-﻿using Surreal.Collections;
+﻿using Surreal.Collections.Slices;
 using Surreal.Text;
 using static Surreal.Graphics.Materials.ShaderSyntaxTree.Statement;
 

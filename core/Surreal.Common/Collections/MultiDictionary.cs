@@ -1,3 +1,5 @@
+using Surreal.Collections.Slices;
+
 namespace Surreal.Collections;
 
 /// <summary>
@@ -44,38 +46,50 @@ public sealed class MultiDictionary<TKey, TValue>(IEqualityComparer<TKey> compar
   /// <summary>
   /// The values of the dictionary.
   /// </summary>
-  public IEnumerable<TValue> Values => _dictionary.Values.SelectMany(x => x);
+  public IEnumerable<TValue> Values => _dictionary.Values.SelectMany(_ => _);
 
+  /// <summary>
+  /// Gets the values associated with the given key.
+  /// </summary>
   public ReadOnlySlice<TValue> this[TKey key]
   {
     get
     {
-      if (_dictionary.TryGetValue(key, out var collection))
+      if (!_dictionary.TryGetValue(key, out var collection))
       {
-        return collection;
+        return ReadOnlySlice<TValue>.Empty;
       }
 
-      return ReadOnlySlice<TValue>.Empty;
+      return collection;
     }
   }
 
+  /// <summary>
+  /// Gets the values associated with the given key.
+  /// </summary>
   public bool TryGetValues(TKey key, out ReadOnlySlice<TValue> result)
   {
-    if (_dictionary.TryGetValue(key, out var collection))
+    if (!_dictionary.TryGetValue(key, out var collection))
     {
-      result = collection;
-      return true;
+      result = ReadOnlySlice<TValue>.Empty;
+      return false;
     }
 
-    result = ReadOnlySlice<TValue>.Empty;
-    return false;
+    result = collection;
+    return true;
   }
 
+  /// <summary>
+  /// Determines if the dictionary contains the given key.
+  /// </summary>
   public bool ContainsKey(TKey key)
   {
     return _dictionary.ContainsKey(key);
   }
 
+  /// <summary>
+  /// Adds a new value to the dictionary.
+  /// </summary>
   public void Add(TKey key, TValue value)
   {
     GetOrCreateList(key).Add(value);
@@ -100,11 +114,17 @@ public sealed class MultiDictionary<TKey, TValue>(IEqualityComparer<TKey> compar
     }
   }
 
+  /// <summary>
+  /// Removes all values associated with the given key.
+  /// </summary>
   public void RemoveAll(TKey key)
   {
     _dictionary.Remove(key);
   }
 
+  /// <summary>
+  /// Clears the dictionary.
+  /// </summary>
   public void Clear()
   {
     _dictionary.Clear();
