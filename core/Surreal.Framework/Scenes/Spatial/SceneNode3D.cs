@@ -1,4 +1,4 @@
-﻿namespace Surreal.Scenes;
+﻿namespace Surreal.Scenes.Spatial;
 
 /// <summary>
 /// A <see cref="SceneNode"/> that represents a 3D object.

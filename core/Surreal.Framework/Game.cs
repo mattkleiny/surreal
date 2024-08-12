@@ -147,7 +147,7 @@ public class Game : IDisposable
   [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
   private static void Run(GameConfiguration configuration, Func<Game, Task> gameSetup)
   {
-    // if a hosting context is attached, we're attempting to be run inside of some
+    // if a hosting context is attached, we're attempting to be run inside some
     // environment. kick-off a different main loop in that case.
     var hostingContext = HostingContext.Current;
     if (hostingContext != null)
@@ -220,7 +220,7 @@ public class Game : IDisposable
   }
 
   /// <summary>
-  /// Runs this game inside of a <see cref="HostingContext"/>.
+  /// Runs this game inside a <see cref="HostingContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   private static void RunInsideHost(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)

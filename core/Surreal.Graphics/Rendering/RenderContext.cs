@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Graphics.Rendering;
 
 /// <summary>
-/// Convenience class for <see cref="RenderContext"/>.
+/// Base class for any <see cref="RenderContext"/> in the engine.
 /// </summary>
 public abstract class RenderContext : IDisposable
 {

@@ -34,8 +34,6 @@
     <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Physics" />
     <Using Include="Surreal.Scenes" />
-    <Using Include="Surreal.Scenes.Audio" />
-    <Using Include="Surreal.Scenes.Physics" />
     <Using Include="Surreal.Scripting" />
     <Using Include="Surreal.Services" />
     <Using Include="Surreal.Timing" />

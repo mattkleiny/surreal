@@ -8,7 +8,7 @@ namespace Surreal.Graphics.Sprites.Aseprite;
 /// <summary>
 /// Defines an Aseprite file and allows it to be parsed from disk.
 /// <para/>
-/// Aseprite stores it's data in a proprietary binary format, which
+/// Aseprite stores its data in a proprietary binary format, which
 /// can be found here: https://github.com/aseprite/aseprite/blob/main/docs/ase-file-specs.md.
 /// </summary>
 [AssetType("1fd9692f-30b7-432d-902c-6c56a6dbb387")]

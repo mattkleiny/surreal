@@ -1,7 +1,7 @@
 ﻿using Surreal.Mathematics;
 using Surreal.Timing;
 
-namespace Surreal.Scenes;
+namespace Surreal.Scenes.Canvas;
 
 /// <summary>
 /// A <see cref="SceneNode"/> that represents a 2D object.

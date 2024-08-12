@@ -1,7 +1,8 @@
 ﻿using Surreal.Mathematics;
+using Surreal.Scenes.Viewports;
 using Surreal.Timing;
 
-namespace Surreal.Scenes;
+namespace Surreal.Scenes.Canvas;
 
 /// <summary>
 /// A <see cref="Node2D"/> that represents a camera.

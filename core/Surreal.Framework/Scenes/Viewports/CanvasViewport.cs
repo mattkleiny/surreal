@@ -2,7 +2,7 @@
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Sprites;
 
-namespace Surreal.Scenes;
+namespace Surreal.Scenes.Viewports;
 
 /// <summary>
 /// A node that renders a GUI in canvas space.

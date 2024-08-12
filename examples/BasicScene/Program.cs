@@ -1,4 +1,8 @@
-﻿var configuration = new GameConfiguration
+﻿using Surreal.Scenes.Canvas;
+using Surreal.Scenes.Canvas.Physics;
+using Surreal.Scenes.Viewports;
+
+var configuration = new GameConfiguration
 {
   Platform = new DesktopPlatform
   {

@@ -2,7 +2,7 @@
 using Surreal.Graphics.Rendering;
 using Surreal.Mathematics;
 
-namespace Surreal.Scenes;
+namespace Surreal.Scenes.Viewports;
 
 /// <summary>
 /// A camera that renders scene elements to the screen.

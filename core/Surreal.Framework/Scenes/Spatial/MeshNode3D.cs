@@ -3,7 +3,7 @@ using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Mathematics;
 
-namespace Surreal.Scenes;
+namespace Surreal.Scenes.Spatial;
 
 /// <summary>
 /// A node which renders a mesh.

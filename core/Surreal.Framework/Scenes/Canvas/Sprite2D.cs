@@ -5,7 +5,7 @@ using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 
-namespace Surreal.Scenes;
+namespace Surreal.Scenes.Canvas;
 
 /// <summary>
 /// A node that renders a sprite.

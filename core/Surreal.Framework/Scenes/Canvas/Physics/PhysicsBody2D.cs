@@ -1,6 +1,6 @@
 ﻿using Surreal.Physics;
 
-namespace Surreal.Scenes.Physics;
+namespace Surreal.Scenes.Canvas.Physics;
 
 /// <summary>
 /// A physical body in 2D space.

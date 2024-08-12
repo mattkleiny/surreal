@@ -6,27 +6,6 @@ using Surreal.Timing;
 namespace Surreal.Scenes;
 
 /// <summary>
-/// A list of <see cref="SceneNode"/>s.
-/// </summary>
-[DebuggerDisplay("SceneNodeList (Count = {Count})")]
-public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
-{
-  protected override void OnItemAdded(SceneNode item)
-  {
-    base.OnItemAdded(item);
-
-    item.OnNodeAdded(owner);
-  }
-
-  protected override void OnItemRemoved(SceneNode item)
-  {
-    base.OnItemRemoved(item);
-
-    item.OnNodeRemoved(owner);
-  }
-}
-
-/// <summary>
 /// A single node in a scene tree.
 /// </summary>
 public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPropertyChangedEvents, IDisposable
@@ -78,13 +57,13 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   /// </summary>
   public IAssetProvider Assets => Root.Assets;
 
-  public bool IsAwake => _states.HasFlag(SceneNodeStates.Awake);
-  public bool IsReady => _states.HasFlag(SceneNodeStates.Ready);
-  public bool IsInTree => _states.HasFlag(SceneNodeStates.InTree);
+  public bool IsAwake     => _states.HasFlag(SceneNodeStates.Awake);
+  public bool IsReady     => _states.HasFlag(SceneNodeStates.Ready);
+  public bool IsInTree    => _states.HasFlag(SceneNodeStates.InTree);
   public bool IsDestroyed => _states.HasFlag(SceneNodeStates.Destroyed);
 
   // messages that are flowing either to or from this node
-  internal Queue<Message> MessagesForParents { get; } = new();
+  internal Queue<Message> MessagesForParents  { get; } = new();
   internal Queue<Message> MessagesForChildren { get; } = new();
 
   /// <summary>
@@ -532,4 +511,50 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
     SceneNode Sender,
     bool IsRecursive
   );
+}
+
+/// <summary>
+/// A list of <see cref="SceneNode"/>s.
+/// </summary>
+[DebuggerDisplay("SceneNodeList (Count = {Count})")]
+public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
+{
+  protected override void OnItemAdded(SceneNode item)
+  {
+    base.OnItemAdded(item);
+
+    item.OnNodeAdded(owner);
+  }
+
+  protected override void OnItemRemoved(SceneNode item)
+  {
+    base.OnItemRemoved(item);
+
+    item.OnNodeRemoved(owner);
+  }
+}
+
+/// <summary>
+/// A single node in a <see cref="SceneTreeDefinition"/>.
+/// </summary>
+[XmlRoot("SceneNode")]
+public class SceneNodeDefinition
+{
+  /// <summary>
+  /// A user-friendly name for the scene.
+  /// </summary>
+  [XmlAttribute]
+  public string? Name { get; set; }
+
+  /// <summary>
+  /// An optional description for the scene.
+  /// </summary>
+  [XmlAttribute]
+  public string? Description { get; set; }
+
+  /// <summary>
+  /// The child nodes of this node.
+  /// </summary>
+  [XmlArray]
+  public List<SceneNodeDefinition> Children { get; init; } = [];
 }
