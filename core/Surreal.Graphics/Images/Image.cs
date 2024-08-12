@@ -17,6 +17,50 @@ public sealed class Image : IDisposable
 {
   private Image<Rgba32> _image;
 
+  /// <summary>
+  /// Loads an image from the given path.
+  /// </summary>
+  public static Image Load(VirtualPath path)
+  {
+    using var stream = path.OpenInputStream();
+
+    // load the image
+    var image = SixLabors.ImageSharp.Image.Load(stream);
+    if (image is Image<Rgba32> rgba)
+    {
+      // we're already in the right format
+      return new Image(rgba);
+    }
+
+    using (image)
+    {
+      // we need to convert to RGBA
+      return new Image(image.CloneAs<Rgba32>());
+    }
+  }
+
+  /// <summary>
+  /// Asynchronously loads an image from the given path.
+  /// </summary>
+  public static async ValueTask<Image> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    await using var stream = path.OpenInputStream();
+
+    // load the image
+    var image = await SixLabors.ImageSharp.Image.LoadAsync(Configuration.Default, stream, cancellationToken);
+    if (image is Image<Rgba32> rgba)
+    {
+      // we're already in the right format
+      return new Image(rgba);
+    }
+
+    // we need to convert to RGBA
+    using (image)
+    {
+      return new Image(image.CloneAs<Rgba32>());
+    }
+  }
+
   public Image(int width, int height)
   {
     Debug.Assert(width > 0, "width > 0");
@@ -63,55 +107,6 @@ public sealed class Image : IDisposable
     }
   }
 
-  public void Dispose()
-  {
-    _image.Dispose();
-  }
-
-  /// <summary>
-  /// Loads an image from the given path.
-  /// </summary>
-  public static Image Load(VirtualPath path)
-  {
-    using var stream = path.OpenInputStream();
-
-    // load the image
-    var image = SixLabors.ImageSharp.Image.Load(stream);
-    if (image is Image<Rgba32> rgba)
-    {
-      // we're already in the right format
-      return new Image(rgba);
-    }
-
-    using (image)
-    {
-      // we need to convert to RGBA
-      return new Image(image.CloneAs<Rgba32>());
-    }
-  }
-
-  /// <summary>
-  /// Asynchronously loads an image from the given path.
-  /// </summary>
-  public static async ValueTask<Image> LoadAsync(VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    await using var stream =  path.OpenInputStream();
-
-    // load the image
-    var image = await SixLabors.ImageSharp.Image.LoadAsync(Configuration.Default, stream, cancellationToken);
-    if (image is Image<Rgba32> rgba)
-    {
-      // we're already in the right format
-      return new Image(rgba);
-    }
-
-    // we need to convert to RGBA
-    using (image)
-    {
-      return new Image(image.CloneAs<Rgba32>());
-    }
-  }
-
   /// <summary>
   /// Saves the image to the given path.
   /// </summary>
@@ -130,6 +125,11 @@ public sealed class Image : IDisposable
     await using var stream = path.OpenOutputStream();
 
     await _image.SaveAsPngAsync(stream, cancellationToken);
+  }
+
+  public void Dispose()
+  {
+    _image.Dispose();
   }
 
   /// <summary>

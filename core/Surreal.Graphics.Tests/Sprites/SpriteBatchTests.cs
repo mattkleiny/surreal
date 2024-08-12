@@ -1,8 +1,7 @@
 ﻿using Surreal.Graphics.Materials;
-using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 
-namespace Surreal.Graphics;
+namespace Surreal.Graphics.Sprites;
 
 public class SpriteBatchTests
 {
@@ -11,7 +10,7 @@ public class SpriteBatchTests
   {
     var backend = IGraphicsBackend.Headless;
 
-    using var batch = new CanvasBatch(backend);
+    using var batch = new SpriteBatch(backend);
     using var shader = new ShaderProgram(backend);
     using var material = new Material(backend, shader);
     using var texture1 = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
@@ -39,7 +38,7 @@ public class SpriteBatchTests
   {
     var backend = IGraphicsBackend.Headless;
 
-    using var batch = new CanvasBatch(backend);
+    using var batch = new SpriteBatch(backend);
     using var shader = new ShaderProgram(backend);
     using var material = new Material(backend, shader);
     using var texture1 = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);

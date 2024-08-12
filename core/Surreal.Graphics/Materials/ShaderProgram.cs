@@ -15,19 +15,19 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   /// Loads the built-in default canvas shader.
   /// </summary>
   public static ShaderProgram LoadDefaultCanvasShader(IGraphicsBackend backend)
-    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/canvas.glsl");
+    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-canvas.glsl");
 
   /// <summary>
   /// Loads the built-in default wire shader.
   /// </summary>
   public static ShaderProgram LoadDefaultWireShader(IGraphicsBackend backend)
-    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/wire.glsl");
+    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-wire.glsl");
 
   /// <summary>
   /// Loads the built-in default blit shader.
   /// </summary>
   public static ShaderProgram LoadDefaultBlitShader(IGraphicsBackend backend)
-    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/blit.glsl");
+    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-blit.glsl");
 
   /// <summary>
   /// Loads a <see cref="ShaderProgram"/> from the given <see cref="VirtualPath"/>.

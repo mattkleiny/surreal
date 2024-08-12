@@ -8,7 +8,7 @@ namespace Surreal.Physics;
 public interface IPhysicsBackend
 {
   IPhysicsWorld2d CreatePhysicsWorld2d();
-  IPhysicsWorld2d CreatePhysicsWorld3d();
+  IPhysicsWorld3d CreatePhysicsWorld3d();
 }
 
 /// <summary>
@@ -38,5 +38,19 @@ public interface IPhysicsWorld2d : IPhysicsWorld
   // bodies
   PhysicsHandle CreateBody(Vector2 initialPosition);
   Vector2 GetBodyPosition(PhysicsHandle handle);
+  void DeleteBody(PhysicsHandle handle);
+}
+
+/// <summary>
+/// A 3d world in a <see cref="IPhysicsBackend"/>.
+/// </summary>
+public interface IPhysicsWorld3d : IPhysicsWorld
+{
+  // top-level properties
+  Vector3 Gravity { get; set; }
+
+  // bodies
+  PhysicsHandle CreateBody(Vector3 initialPosition);
+  Vector3 GetBodyPosition(PhysicsHandle handle);
   void DeleteBody(PhysicsHandle handle);
 }

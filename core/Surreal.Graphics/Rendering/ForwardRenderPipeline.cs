@@ -20,7 +20,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
     Passes.Add(new ColorPass(backend, this));
     Passes.Add(new GizmoPass(backend, this));
 
-    Contexts.Add(new CanvasContext(backend));
+    Contexts.Add(new SpriteContext(backend));
   }
 
   /// <summary>

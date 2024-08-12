@@ -30,9 +30,9 @@ public enum InstructionType : ushort
 public readonly record struct BytecodeInstruction(InstructionType Type);
 
 /// <summary>
-/// A <see cref="ICompiledScript"/> in the form of bytecode that can be executed by our <see cref="BytecodeVirtualMachine"/>.
+/// A <see cref="BytecodeProgram"/> in the form of bytecode that can be executed by our <see cref="BytecodeVirtualMachine"/>.
 /// </summary>
-public sealed record BytecodeProgram(string Path) : ICompiledScript
+public sealed record BytecodeProgram(string Path) : IScript
 {
   /// <summary>
   /// The instructions that make up this program.

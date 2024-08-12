@@ -7,7 +7,7 @@ namespace Surreal.Graphics.Images;
 /// </summary>
 public sealed class ImageLoader : AssetLoader<Image>
 {
-  private static ImmutableHashSet<string> Extensions { get; } = ImmutableHashSet.Create(".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga");
+  private static ImmutableHashSet<string> Extensions { get; } = [".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga"];
 
   public override bool CanHandle(AssetContext context)
   {

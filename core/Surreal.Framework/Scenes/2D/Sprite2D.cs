@@ -43,7 +43,7 @@ public class Sprite2D : Node2D, ICullableObject, IRenderObject
     set => SetField(ref _tint, value);
   }
 
-  protected virtual void OnRender(in RenderFrame frame, CanvasBatch batch)
+  protected virtual void OnRender(in RenderFrame frame, SpriteBatch batch)
   {
     batch.DrawQuad(
       region: Sprite,
@@ -64,7 +64,7 @@ public class Sprite2D : Node2D, ICullableObject, IRenderObject
 
   void IRenderObject.Render(in RenderFrame frame)
   {
-    if (frame.Contexts.TryGetContext(in frame, out CanvasContext context))
+    if (frame.Contexts.TryGetContext(in frame, out SpriteContext context))
     {
       OnRender(in frame, context.Batch);
     }

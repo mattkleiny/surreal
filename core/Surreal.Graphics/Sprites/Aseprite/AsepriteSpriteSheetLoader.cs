@@ -1,6 +1,6 @@
 ﻿using Surreal.Assets;
 
-namespace Surreal.Graphics.Sprites;
+namespace Surreal.Graphics.Sprites.Aseprite;
 
 /// <summary>
 /// The <see cref="IAssetLoader"/> for <see cref="AsepriteFile"/>-based <see cref="SpriteSheet"/>s.

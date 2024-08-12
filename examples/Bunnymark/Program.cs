@@ -36,7 +36,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
     }
   };
 
-  using var batch = new CanvasBatch(graphics)
+  using var batch = new SpriteBatch(graphics)
   {
     Material = material
   };

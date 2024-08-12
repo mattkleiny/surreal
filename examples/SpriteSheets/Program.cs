@@ -11,10 +11,6 @@
       Height = 1080,
       IsTransparent = true
     }
-  },
-  Modules =
-  {
-    new AsepriteModule()
   }
 };
 

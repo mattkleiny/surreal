@@ -12,7 +12,7 @@ public sealed class BytecodeScriptCompiler(IBytecodeScriptOptimizer optimizer) :
   {
   }
 
-  public ValueTask<ICompiledScript> CompileAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default)
+  public ValueTask<BytecodeProgram> CompileAsync(ScriptDeclaration declaration, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }

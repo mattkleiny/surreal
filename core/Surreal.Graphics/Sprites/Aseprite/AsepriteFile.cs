@@ -3,7 +3,7 @@ using Surreal.Colors;
 using Surreal.IO;
 using Surreal.Memory;
 
-namespace Surreal.Graphics.Sprites;
+namespace Surreal.Graphics.Sprites.Aseprite;
 
 /// <summary>
 /// Defines an Aseprite file and allows it to be parsed from disk.

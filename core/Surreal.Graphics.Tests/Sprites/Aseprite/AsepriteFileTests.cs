@@ -1,6 +1,6 @@
 ﻿using Surreal.IO;
 
-namespace Surreal.Graphics.Sprites;
+namespace Surreal.Graphics.Sprites.Aseprite;
 
 public class AsepriteFileTests
 {

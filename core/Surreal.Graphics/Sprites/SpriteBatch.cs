@@ -9,14 +9,14 @@ using Surreal.Memory;
 namespace Surreal.Graphics.Sprites;
 
 /// <summary>
-/// A <see cref="RenderContext"/> for <see cref="CanvasBatch"/>es.
+/// A <see cref="RenderContext"/> for <see cref="SpriteBatch"/>es.
 /// </summary>
-public sealed class CanvasContext(IGraphicsBackend backend) : RenderContext
+public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
 {
   /// <summary>
-  /// The <see cref="CanvasBatch"/> used by this context.
+  /// The <see cref="SpriteBatch"/> used by this context.
   /// </summary>
-  public CanvasBatch Batch { get; } = new(backend);
+  public SpriteBatch Batch { get; } = new(backend);
 
   /// <summary>
   /// The property to use for the projection view matrix.
@@ -65,7 +65,7 @@ public sealed class CanvasContext(IGraphicsBackend backend) : RenderContext
 /// <summary>
 /// A batched mesh of quads for rendering to the GPU.
 /// </summary>
-public sealed class CanvasBatch : IDisposable
+public sealed class SpriteBatch : IDisposable
 {
   private const int DefaultQuadCount = 200;
   private const int MaximumQuadCount = int.MaxValue / 6;
@@ -77,7 +77,7 @@ public sealed class CanvasBatch : IDisposable
   private Material? _material;
   private int _vertexCount;
 
-  public CanvasBatch(IGraphicsBackend backend, int quadCount = DefaultQuadCount)
+  public SpriteBatch(IGraphicsBackend backend, int quadCount = DefaultQuadCount)
   {
     Debug.Assert(quadCount > 0);
     Debug.Assert(quadCount <= MaximumQuadCount);

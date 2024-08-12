@@ -13,7 +13,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     return new PhysicsWorld2d();
   }
 
-  public IPhysicsWorld2d CreatePhysicsWorld3d()
+  public IPhysicsWorld3d CreatePhysicsWorld3d()
   {
     throw new NotImplementedException();
   }
