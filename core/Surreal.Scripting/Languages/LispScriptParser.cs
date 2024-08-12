@@ -39,8 +39,8 @@ public sealed class LispScriptParser : IScriptParser
 
       return new CompilationUnit
       {
-        Includes = nodes.OfType<Include>().ToImmutableArray(),
-        Statements = nodes.OfType<Statement>().ToImmutableArray(),
+        Includes = [..nodes.OfType<Include>()],
+        Statements = [..nodes.OfType<Statement>()],
       };
     }
 

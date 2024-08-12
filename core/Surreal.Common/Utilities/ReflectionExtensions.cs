@@ -39,7 +39,7 @@ public static class ReflectionExtensions
 
     if (attributes.Length <= 0)
     {
-      result = Array.Empty<T>();
+      result = [];
       return false;
     }
 

@@ -506,11 +506,7 @@ public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPrope
   /// <summary>
   /// A message to be processed by a <see cref="SceneNode"/>.
   /// </summary>
-  internal readonly record struct Message(
-    MessageType Type,
-    SceneNode Sender,
-    bool IsRecursive
-  );
+  internal readonly record struct Message(MessageType Type, SceneNode Sender, bool IsRecursive);
 }
 
 /// <summary>

@@ -116,7 +116,7 @@ public sealed record AnimationTrack<T>(IAnimationTrackDelegate<T> Delegate) : IA
   /// <summary>
   /// The key-frames that make up this track.
   /// </summary>
-  public KeyFrame<T>[] KeyFrames { get; init; } = Array.Empty<KeyFrame<T>>();
+  public KeyFrame<T>[] KeyFrames { get; init; } = [];
 
   /// <inheritdoc/>
   public float StartTime => KeyFrames.Length > 0 ? KeyFrames[0].Time : 0f;

@@ -95,7 +95,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
 
     if (!_entries.TryGetByPath(absolutePath, out var entries))
     {
-      return Enumerable.Empty<AssetEntry>();
+      return [];
     }
 
     return entries;
@@ -113,7 +113,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
 
     if (!_entries.TryGetByType(attribute.Id, out var entries))
     {
-      return Enumerable.Empty<AssetEntry>();
+      return [];
     }
 
     return entries;
