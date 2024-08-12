@@ -1,4 +1,4 @@
-﻿namespace Surreal.Maths;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>
 /// Helpers for working with planes.

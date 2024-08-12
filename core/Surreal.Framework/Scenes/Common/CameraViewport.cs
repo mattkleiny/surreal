@@ -1,6 +1,6 @@
 ﻿using Surreal.Collections.Slices;
 using Surreal.Graphics.Rendering;
-using Surreal.Maths;
+using Surreal.Mathematics;
 
 namespace Surreal.Scenes;
 

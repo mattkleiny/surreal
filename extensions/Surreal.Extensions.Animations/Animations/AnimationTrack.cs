@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Surreal.Maths;
+using Surreal.Mathematics;
 using Surreal.Timing;
 using Surreal.Utilities;
 
@@ -21,7 +21,7 @@ public readonly record struct KeyFrame<T>(float Time, T Value);
 public interface IAnimationTrack
 {
   float StartTime { get; }
-  float EndTime { get; }
+  float EndTime   { get; }
 
   void Advance(DeltaTime deltaTime);
   void Rewind(DeltaTime deltaTime);
@@ -60,7 +60,7 @@ public static class AnimationTrack
 
   public static AnimationTrack<T> Create<TRoot, T>(TRoot root, Expression<Func<TRoot, T?>> expression)
     where TRoot : class
-    where T :IInterpolated<T>
+    where T : IFromLerp<T>
   {
     return Create(root, T.Lerp, expression);
   }

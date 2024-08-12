@@ -1,14 +1,16 @@
-﻿namespace Surreal.Maths;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>
 /// A bounding rectangle in 2-space.
 /// </summary>
 public readonly record struct Rectangle(float Left, float Top, float Right, float Bottom)
 {
+  public static Rectangle Empty => new(Vector2.Zero, Vector2.Zero);
+
   /// <summary>
   /// Creates a rectangle from the given coordinates.
   /// </summary>
-  public static Rectangle Create(Vector2 center, Vector2 size)
+  public static Rectangle FromCenterSize(Vector2 center, Vector2 size)
   {
     var left = center.X - size.X / 2f;
     var top = center.Y - size.Y / 2f;
@@ -22,8 +24,6 @@ public readonly record struct Rectangle(float Left, float Top, float Right, floa
     : this(min.X, max.Y, max.X, min.Y)
   {
   }
-
-  public static Rectangle Empty => new(Vector2.Zero, Vector2.Zero);
 
   public Vector2 Min => BottomLeft;
   public Vector2 Max => TopRight;

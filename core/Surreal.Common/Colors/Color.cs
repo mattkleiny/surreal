@@ -1,4 +1,4 @@
-﻿using Surreal.Maths;
+﻿using Surreal.Mathematics;
 
 namespace Surreal.Colors;
 
@@ -6,7 +6,7 @@ namespace Surreal.Colors;
 /// A floating-point representation of color.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public record struct Color(float R, float G, float B, float A = 1f) : IFromRandom<Color>, IInterpolated<Color>
+public record struct Color(float R, float G, float B, float A = 1f) : IFromRandom<Color>, IFromLerp<Color>
 {
   public static readonly Color Black = new(0, 0, 0);
   public static readonly Color Red = new(1f, 0, 0);

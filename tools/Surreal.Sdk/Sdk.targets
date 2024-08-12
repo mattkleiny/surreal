@@ -40,7 +40,7 @@
     <Using Include="Surreal.Input" />
     <Using Include="Surreal.Input.Keyboard" />
     <Using Include="Surreal.Input.Mouse" />
-    <Using Include="Surreal.Maths" />
+    <Using Include="Surreal.Mathematics" />
     <Using Include="Surreal.Memory" />
     <Using Include="Surreal.Physics" />
     <Using Include="Surreal.Scenes" />

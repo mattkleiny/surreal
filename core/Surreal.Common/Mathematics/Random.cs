@@ -1,9 +1,12 @@
-﻿namespace Surreal.Maths;
+﻿using Surreal.Colors;
+
+namespace Surreal.Mathematics;
 
 /// <summary>
 /// Allows for generating a value from a <see cref="Random"/> instance.
 /// </summary>
 public interface IFromRandom<out TSelf>
+  where TSelf : IFromRandom<TSelf>
 {
   /// <summary>
   /// Creates a new instance from a <see cref="Random"/> instance.
@@ -16,10 +19,6 @@ public interface IFromRandom<out TSelf>
 /// </summary>
 public static class RandomExtensions
 {
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static byte NextByte(this Random random)
-    => (byte)(random.Next() % 255);
-
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static int NextInt(this Random random)
     => random.Next();
@@ -81,16 +80,24 @@ public static class RandomExtensions
     => new(random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Vector4 NextVector4(this Random random, float min, float max)
-    => new(random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max), random.NextFloat(min, max));
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Vector2 NextUnitCircle(this Random random)
     => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Vector3 NextUnitSphere(this Random random)
     => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f), random.NextFloat(-1f, 1f));
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Vector3 NextXZUnitCircle(this Random random)
+    => new(random.NextFloat(-1, 1f), 0f, random.NextFloat(-1f, 1f));
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Vector3 NextXYUnitCircle(this Random random)
+    => new(random.NextFloat(-1, 1f), random.NextFloat(-1f, 1f), 0f);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Color NextColor(this Random random, float a = 1.0f)
+    => new(random.NextFloat(0f, 1f), random.NextFloat(0f, 1f), random.NextFloat(0f, 1f), a);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static T Next<T>(this Random random)

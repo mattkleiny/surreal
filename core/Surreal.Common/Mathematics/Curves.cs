@@ -1,4 +1,4 @@
-namespace Surreal.Maths;
+namespace Surreal.Mathematics;
 
 /// <summary>
 /// Describes a 1d curve over a normalised parameter, T.

@@ -1,4 +1,5 @@
 ﻿using Surreal.IO;
+using Surreal.Mathematics;
 
 namespace Surreal.Maths;
 

@@ -1,4 +1,4 @@
-﻿using Surreal.Maths;
+﻿using Surreal.Mathematics;
 using Surreal.Timing;
 
 namespace Surreal.Scenes;

@@ -1,4 +1,4 @@
-﻿namespace Surreal.Maths;
+﻿namespace Surreal.Mathematics;
 
 /// <summary>
 /// A frustum is a geometric shape that defines the viewing volume of a camera.

@@ -1,4 +1,6 @@
-﻿namespace Surreal.Maths;
+﻿using Surreal.Mathematics;
+
+namespace Surreal.Maths;
 
 public class AngleTests
 {

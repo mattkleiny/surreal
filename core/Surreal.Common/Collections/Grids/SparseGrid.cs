@@ -1,4 +1,4 @@
-﻿using Surreal.Maths;
+﻿using Surreal.Mathematics;
 
 namespace Surreal.Collections.Grids;
 

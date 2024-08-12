@@ -1,4 +1,4 @@
-﻿using Surreal.Maths;
+﻿using Surreal.Mathematics;
 
 namespace Surreal.Colors;
 
@@ -6,7 +6,7 @@ namespace Surreal.Colors;
 /// A 32-bit representation of color.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public record struct Color32(byte R, byte G, byte B, byte A = 255) : IFromRandom<Color32>, IInterpolated<Color32>
+public record struct Color32(byte R, byte G, byte B, byte A = 255) : IFromRandom<Color32>, IFromLerp<Color32>
 {
   public static readonly Color32 Black = new(0, 0, 0);
   public static readonly Color32 Red = new(255, 0, 0);
@@ -29,9 +29,9 @@ public record struct Color32(byte R, byte G, byte B, byte A = 255) : IFromRandom
   public static Color32 FromRandom(Random random)
   {
     return new Color32(
-      random.NextByte(),
-      random.NextByte(),
-      random.NextByte(),
+      (byte)(random.NextInt() % 255),
+      (byte)(random.NextInt() % 255),
+      (byte)(random.NextInt() % 255),
       A: 255
     );
   }

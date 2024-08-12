@@ -1,5 +1,5 @@
 ﻿using Surreal.Assets;
-using Surreal.Maths;
+using Surreal.Mathematics;
 using Surreal.Memory;
 using Color = Surreal.Colors.Color;
 using Image = Surreal.Graphics.Images.Image;

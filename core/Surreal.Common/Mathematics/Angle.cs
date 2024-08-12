@@ -1,33 +1,39 @@
-namespace Surreal.Maths;
+namespace Surreal.Mathematics;
 
 /// <summary>
 /// An angle, stored as radians with conversions to degrees.
 /// </summary>
-public readonly record struct Angle(float Radians) : IFromRandom<Angle>, IInterpolated<Angle>, IComparable<Angle>
+public readonly record struct Angle(float Radians) : IFromRandom<Angle>, IFromLerp<Angle>
 {
   public static Angle Zero => default;
+  public static Angle MinValue => new(0f);
+  public static Angle MaxValue => new(MathF.PI * 2f);
 
   /// <summary>
   /// Creates an angle from radians.
   /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Angle FromRadians(float radians)
     => new(radians);
 
   /// <summary>
   /// Creates an angle from degrees.
   /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Angle FromDegrees(float degrees)
     => new(MathE.DegreesToRadians(degrees));
 
   /// <summary>
   /// Creates an angle from a random number generator.
   /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Angle FromRandom(Random random)
     => new(MathE.DegreesToRadians(random.NextFloat(0f, 359f)));
 
   /// <summary>
   /// Interpolates between two angles.
   /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Angle Lerp(Angle a, Angle b, float t)
     => FromRadians(MathE.Lerp(a.Radians, b.Radians, t));
 
@@ -59,27 +65,6 @@ public readonly record struct Angle(float Radians) : IFromRandom<Angle>, IInterp
     var radians = MathF.Acos(dot / (mag1 * mag2));
 
     return FromRadians(radians);
-  }
-
-  /// <summary>
-  /// Sweeps a circle of the given radius around the origin, returning the points in the given storage.
-  /// </summary>
-  public Span<Vector2> SweepArc(float radius, Span<Vector2> storage)
-  {
-    var theta = 0f;
-    var delta = Radians / storage.Length;
-
-    for (var i = 0; i < storage.Length; i++)
-    {
-      theta += delta;
-
-      var x = radius * MathF.Cos(theta);
-      var y = radius * MathF.Sin(theta);
-
-      storage[i] = new Vector2(x, y);
-    }
-
-    return storage;
   }
 
   /// <summary>

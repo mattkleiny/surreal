@@ -1,4 +1,6 @@
-﻿namespace Surreal.Maths;
+﻿using System.Runtime.InteropServices;
+
+namespace Surreal.Mathematics;
 
 #pragma warning disable S1104
 #pragma warning disable S2328
@@ -114,5 +116,7 @@ public record struct Point4(int X, int Y, int Z, int W)
 
   // implicit conversion
   public static implicit operator Vector4(Point4 self) => new(self.X, self.Y, self.Z, self.W);
-  public static implicit operator Point4((int, int, int, int) value) => new(value.Item1, value.Item2, value.Item3, value.Item4);
+
+  public static implicit operator Point4((int, int, int, int) value) =>
+    new(value.Item1, value.Item2, value.Item3, value.Item4);
 }

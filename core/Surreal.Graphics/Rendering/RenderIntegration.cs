@@ -1,5 +1,5 @@
 ﻿using Surreal.Collections.Slices;
-using Surreal.Maths;
+using Surreal.Mathematics;
 
 namespace Surreal.Graphics.Rendering;
 

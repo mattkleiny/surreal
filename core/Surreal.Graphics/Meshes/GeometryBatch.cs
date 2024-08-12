@@ -1,7 +1,7 @@
 using Surreal.Colors;
 using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
-using Surreal.Maths;
+using Surreal.Mathematics;
 using Surreal.Memory;
 
 namespace Surreal.Graphics.Meshes;

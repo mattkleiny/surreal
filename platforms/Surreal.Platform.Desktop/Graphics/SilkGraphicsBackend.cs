@@ -7,7 +7,7 @@ using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
-using Surreal.Maths;
+using Surreal.Mathematics;
 using PolygonMode = Surreal.Graphics.Materials.PolygonMode;
 using ShaderType = Surreal.Graphics.Materials.ShaderType;
 using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;

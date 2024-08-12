@@ -1,12 +1,12 @@
 ﻿using Surreal.Collections;
-using Surreal.Maths;
+using Surreal.Mathematics;
 
 namespace Surreal.IO;
 
 /// <summary>
-/// A reader for binary data that wraps the .NET <see cref="System.IO.BinaryReader"/>.
+/// A writer for binary data that wraps the .NET <see cref="System.IO.BinaryReader"/>.
 /// </summary>
-public sealed class FastBinaryReader(Stream stream, Encoding encoding) : IDisposable
+public sealed class FastBinaryReader(Stream stream, Encoding encoding) : IDisposable, IAsyncDisposable
 {
   private readonly BinaryReader _reader = new(stream, encoding);
 
@@ -34,7 +34,7 @@ public sealed class FastBinaryReader(Stream stream, Encoding encoding) : IDispos
   public byte ReadByte() => _reader.ReadByte();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public byte[] ReadBytes(int count) => _reader.ReadBytes(count);
+  public Span<byte> ReadBytes(int count) => _reader.ReadBytes(count);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public bool ReadBool() => _reader.ReadBoolean();
@@ -70,6 +70,13 @@ public sealed class FastBinaryReader(Stream stream, Encoding encoding) : IDispos
   {
     _reader.Dispose();
   }
+
+  public ValueTask DisposeAsync()
+  {
+    _reader.Dispose();
+
+    return ValueTask.CompletedTask;
+  }
 }
 
 /// <summary>Commonly used extensions for <see cref="FastBinaryReader"/>.</summary>
@@ -80,7 +87,7 @@ public static class FastBinaryReaderExtensions
     var x = reader.ReadFloat();
     var y = reader.ReadFloat();
 
-    return new Vector2(x, y);
+    return new(x, y);
   }
 
   public static Point2 ReadPoint2(this FastBinaryReader reader)
@@ -88,7 +95,7 @@ public static class FastBinaryReaderExtensions
     var x = reader.ReadInt32();
     var y = reader.ReadInt32();
 
-    return new Point2(x, y);
+    return new(x, y);
   }
 
   public static Vector3 ReadVector3(this FastBinaryReader reader)
@@ -97,7 +104,7 @@ public static class FastBinaryReaderExtensions
     var y = reader.ReadFloat();
     var z = reader.ReadFloat();
 
-    return new Vector3(x, y, z);
+    return new(x, y, z);
   }
 
   public static Point3 ReadPoint3(this FastBinaryReader reader)
@@ -106,7 +113,7 @@ public static class FastBinaryReaderExtensions
     var y = reader.ReadInt32();
     var z = reader.ReadInt32();
 
-    return new Point3(x, y, z);
+    return new(x, y, z);
   }
 
   public static Vector4 ReadVector4(this FastBinaryReader reader)
@@ -116,7 +123,7 @@ public static class FastBinaryReaderExtensions
     var z = reader.ReadFloat();
     var w = reader.ReadFloat();
 
-    return new Vector4(x, y, z, w);
+    return new(x, y, z, w);
   }
 
   public static Point4 ReadPoint4(this FastBinaryReader reader)
@@ -126,7 +133,7 @@ public static class FastBinaryReaderExtensions
     var z = reader.ReadInt32();
     var w = reader.ReadInt32();
 
-    return new Point4(x, y, z, w);
+    return new(x, y, z, w);
   }
 
   public static Quaternion ReadQuaternion(this FastBinaryReader reader)
@@ -136,7 +143,7 @@ public static class FastBinaryReaderExtensions
     var z = reader.ReadFloat();
     var w = reader.ReadFloat();
 
-    return new Quaternion(x, y, z, w);
+    return new(x, y, z, w);
   }
 
   public static T ReadEnum<T>(this FastBinaryReader reader)
@@ -201,8 +208,8 @@ public static class FastBinaryReaderExtensions
   public static List<T> ReadList<T>(this FastBinaryReader reader)
     where T : IBinarySerializable<T>
   {
-    var collection = new List<T>();
     var count = reader.ReadInt32();
+    var collection = new List<T>(count);
 
     for (var i = 0; i < count; i++)
     {
@@ -215,8 +222,8 @@ public static class FastBinaryReaderExtensions
   public static HashSet<T> ReadHashSet<T>(this FastBinaryReader reader)
     where T : IBinarySerializable<T>
   {
-    var collection = new HashSet<T>();
     var count = reader.ReadInt32();
+    var collection = new HashSet<T>(count);
 
     for (var i = 0; i < count; i++)
     {
@@ -226,14 +233,8 @@ public static class FastBinaryReaderExtensions
     return collection;
   }
 
-  public static T ReadSerializable<T>(this FastBinaryReader reader)
-    where T : IBinarySerializable<T>
-  {
-    return T.FromBinary(reader);
-  }
-
   public static void ReadSpan<T>(this FastBinaryReader reader, Span<T> span)
-    where T : IBinarySerializable<T>, new()
+    where T : IBinarySerializable<T>
   {
     var array = new T[span.Length];
 
@@ -241,5 +242,11 @@ public static class FastBinaryReaderExtensions
     {
       array[i] = reader.ReadSerializable<T>();
     }
+  }
+
+  public static T ReadSerializable<T>(this FastBinaryReader reader)
+    where T : IBinarySerializable<T>
+  {
+    return T.FromBinary(reader);
   }
 }
