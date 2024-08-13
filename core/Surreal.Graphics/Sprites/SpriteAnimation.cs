@@ -1,3 +1,8 @@
+using System.Linq.Expressions;
+using Surreal.Animations;
+using Surreal.Timing;
+using Surreal.Utilities;
+
 namespace Surreal.Graphics.Sprites;
 
 /// <summary>
@@ -22,4 +27,20 @@ public sealed record SpriteAnimation
 public sealed class SpriteAnimationSet
 {
   private readonly List<SpriteAnimation> _animations = [];
+}
+
+/// <summary>
+/// An <see cref="IAnimationTrack"/> for a <see cref="SpriteAnimation"/>.
+/// </summary>
+public sealed class SpriteAnimationTrack(IAnimationTrackDelegate<SpriteFrame> trackDelegate) : AnimationTrack<SpriteFrame>(trackDelegate)
+{
+  /// <summary>
+  /// The underlying animation.
+  /// </summary>
+  public required SpriteAnimation Animation { get; init; }
+
+  protected override SpriteFrame UpdateCurrentValue(float currentTime)
+  {
+    throw new NotImplementedException();
+  }
 }

@@ -1,4 +1,5 @@
 ﻿using Surreal.Colors;
+using Surreal.Mathematics;
 
 namespace Surreal.Animations;
 
@@ -13,23 +14,25 @@ public class AnimationTests
     {
       Tracks =
       {
-        AnimationTrack.Create(instance, it => it.Color) with
+        new LerpAnimationTrack<Color>(AnimationTrackDelegate.Create(instance, it => it.Color))
         {
+          Lerp = Color.Lerp,
           KeyFrames =
-          [
+          {
             new KeyFrame<Color>(0f, Color.Black),
             new KeyFrame<Color>(1f, Color.White)
-          ],
+          }
         },
-        AnimationTrack.Create(instance, it => it.Depth) with
+        new LerpAnimationTrack<float>(AnimationTrackDelegate.Create(instance, it => it.Depth))
         {
+          Lerp = MathE.Lerp,
           KeyFrames =
-          [
+          {
             new KeyFrame<float>(0f, 0f),
             new KeyFrame<float>(1f, 1f)
-          ],
-        },
-      },
+          }
+        }
+      }
     };
 
     animation.Advance(TimeSpan.FromSeconds(1f));

@@ -16,7 +16,7 @@ public class RenderContextManagerTests
     var context = Substitute.For<RenderContext>();
     var frame = new RenderFrame
     {
-      DeltaTime = DeltaTime.OneOver60,
+      DeltaTime = DeltaTime.Default,
       TotalTime = DeltaTime.One,
       Backend = backend,
       Contexts = manager,

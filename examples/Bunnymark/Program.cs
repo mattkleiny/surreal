@@ -1,7 +1,7 @@
 ﻿using Bunnymark;
 
-const int width = 1920;
-const int height = 1080;
+const int width = 1024;
+const int height = 768;
 const int batchSize = 512;
 
 var configuration = new GameConfiguration

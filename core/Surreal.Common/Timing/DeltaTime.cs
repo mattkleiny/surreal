@@ -7,7 +7,7 @@ public readonly record struct DeltaTime(float Seconds)
 {
   public static readonly DeltaTime Zero = new(0);
   public static readonly DeltaTime One = new(1);
-  public static readonly DeltaTime OneOver60 = new(1f / 60f);
+  public static readonly DeltaTime Default = new(1f / 60f);
 
   public DeltaTime(TimeSpan timeSpan)
     : this((float)timeSpan.TotalSeconds)
