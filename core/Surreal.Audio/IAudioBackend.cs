@@ -10,7 +10,7 @@ public interface IAudioBackend
   /// <summary>
   /// A no-op <see cref="IAudioBackend" /> for headless environments and testing.
   /// </summary>
-  static IAudioBackend Headless { get; } = new HeadlessAudioBackend();
+  static IAudioBackend Null { get; } = new NullAudioBackend();
 
   // listeners
   void SetAudioListenerGain(float gain);

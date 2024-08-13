@@ -471,7 +471,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     }
 
     /// <summary>
-    /// Adds all of the given entries.
+    /// Adds all the given entries.
     /// </summary>
     public void AddAll(IEnumerable<AssetEntry> entries)
     {
@@ -496,7 +496,7 @@ public sealed class AssetDatabase(string sourcePath, string targetPath) : IDispo
     }
 
     /// <summary>
-    /// Removes all of the given entries.
+    /// Removes all the given entries.
     /// </summary>
     public void RemoveAll(IEnumerable<AssetEntry> entries)
     {

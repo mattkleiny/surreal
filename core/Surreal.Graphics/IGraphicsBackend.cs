@@ -34,7 +34,7 @@ public interface IGraphicsBackend
   /// <summary>
   /// A no-op <see cref="IGraphicsBackend" /> for headless environments and testing.
   /// </summary>
-  static IGraphicsBackend Headless { get; } = new HeadlessGraphicsBackend();
+  static IGraphicsBackend Headless { get; } = new NullGraphicsBackend();
 
   // intrinsics
   Viewport GetViewportSize();

@@ -154,7 +154,7 @@ public static class StringSpanExtensions
     => new(source, offset, length);
 
   /// <summary>
-  /// Consumes all of the next contiguous digits in the span.
+  /// Consumes all the next contiguous digits in the span.
   /// </summary>
   public static StringSpan ConsumeNumeric(this StringSpan span)
   {
@@ -174,7 +174,7 @@ public static class StringSpanExtensions
   }
 
   /// <summary>
-  /// Consumes all of the next contiguous digits, including decimal places in the span.
+  /// Consumes all the next contiguous digits, including decimal places in the span.
   /// </summary>
   public static StringSpan ConsumeNumericWithFractions(this StringSpan span)
   {
@@ -242,7 +242,7 @@ public static class StringSpanExtensions
   }
 
   /// <summary>
-  /// Consumes all of the given characters from the span.
+  /// Consumes all the given characters from the span.
   /// </summary>
   public static StringSpan ConsumeWhile(this StringSpan span, char token)
   {

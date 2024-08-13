@@ -7,18 +7,15 @@ namespace Surreal.Input;
 /// A no-op <see cref="IInputBackend" /> for headless environments and testing.
 /// </summary>
 [ExcludeFromCodeCoverage]
-internal sealed class HeadlessInputBackend : IInputBackend
+internal sealed class NullInputBackend : IInputBackend
 {
   private readonly List<IInputDevice> _devices = [];
 
-  public HeadlessInputBackend()
+  public NullInputBackend()
   {
-    _devices.Add(Keyboard);
-    _devices.Add(Mouse);
+    _devices.Add(IKeyboardDevice.Null);
+    _devices.Add(IMouseDevice.Null);
   }
-
-  public HeadlessKeyboardDevice Keyboard { get; } = new();
-  public HeadlessMouseDevice Mouse { get; } = new();
 
   public IEnumerable<IInputDevice> DiscoverAllDevices() => _devices;
 }

@@ -5,6 +5,8 @@
 /// </summary>
 public interface IMouseDevice : IInputDevice
 {
+  static IMouseDevice Null { get; } = new NullMouseDevice();
+
   Type IInputDevice.Type => typeof(IMouseDevice);
 
   Vector2 Position { get; }
@@ -20,4 +22,39 @@ public interface IMouseDevice : IInputDevice
   bool IsButtonUp(MouseButton button);
   bool IsButtonPressed(MouseButton button);
   bool IsButtonReleased(MouseButton button);
+
+  /// <summary>
+  /// A no-op <see cref="IMouseDevice" />.
+  /// </summary>
+  [ExcludeFromCodeCoverage]
+  private sealed class NullMouseDevice : IMouseDevice
+  {
+    public event Action<MouseButton>? ButtonPressed;
+    public event Action<MouseButton>? ButtonReleased;
+    public event Action<Vector2>? Moved;
+
+    public Vector2 Position => Vector2.Zero;
+    public Vector2 NormalisedPosition => Position;
+    public float ScrollAmount => 0f;
+
+    public bool IsButtonDown(MouseButton button)
+    {
+      return false;
+    }
+
+    public bool IsButtonUp(MouseButton button)
+    {
+      return false;
+    }
+
+    public bool IsButtonPressed(MouseButton button)
+    {
+      return false;
+    }
+
+    public bool IsButtonReleased(MouseButton button)
+    {
+      return false;
+    }
+  }
 }

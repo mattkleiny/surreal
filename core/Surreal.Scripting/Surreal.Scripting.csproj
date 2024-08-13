@@ -6,4 +6,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Surreal.Common\Surreal.Common.csproj"/>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Jint" Version="4.0.1" PrivateAssets="compile" />
+  </ItemGroup>
 </Project>

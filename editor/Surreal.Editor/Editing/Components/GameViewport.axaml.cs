@@ -157,10 +157,10 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
     public void RegisterServices(IServiceRegistry services)
     {
-      services.AddService(IAudioBackend.Headless);
+      services.AddService(IAudioBackend.Null);
       services.AddService<IGraphicsBackend>(new SilkGraphicsBackend(_owner.Viewport.Display.OpenGL!));
-      services.AddService<IKeyboardDevice>(new HeadlessKeyboardDevice());
-      services.AddService<IMouseDevice>(new HeadlessMouseDevice());
+      services.AddService(IKeyboardDevice.Null);
+      services.AddService(IMouseDevice.Null);
     }
 
     public void BeginFrame(DeltaTime deltaTime)

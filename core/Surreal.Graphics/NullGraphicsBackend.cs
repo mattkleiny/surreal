@@ -11,7 +11,7 @@ namespace Surreal.Graphics;
 /// <summary>
 /// A no-op <see cref="IGraphicsBackend" /> for headless environments and testing.
 /// </summary>
-internal sealed class HeadlessGraphicsBackend : IGraphicsBackend
+internal sealed class NullGraphicsBackend : IGraphicsBackend
 {
   private Viewport _viewportSize = new(0, 0, 1920, 1080);
   private int _nextBufferId;
