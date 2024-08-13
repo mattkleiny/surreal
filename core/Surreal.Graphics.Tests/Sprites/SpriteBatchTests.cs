@@ -8,7 +8,7 @@ public class SpriteBatchTests
   [Test]
   public void it_should_not_flush_when_texture_is_same()
   {
-    var backend = IGraphicsBackend.Headless;
+    var backend = IGraphicsBackend.Null;
 
     using var batch = new SpriteBatch(backend);
     using var shader = new ShaderProgram(backend);
@@ -36,7 +36,7 @@ public class SpriteBatchTests
   [Test]
   public void it_should_flush_when_texture_is_changing()
   {
-    var backend = IGraphicsBackend.Headless;
+    var backend = IGraphicsBackend.Null;
 
     using var batch = new SpriteBatch(backend);
     using var shader = new ShaderProgram(backend);

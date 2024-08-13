@@ -25,7 +25,7 @@ public interface IServiceRegistry : IServiceProvider
   void AddService(Type serviceType, object instance);
 
   /// <summary>
-  /// Instantiates a type and populates it's service without adding it to the container.
+  /// Instantiates a type and populates its service without adding it to the container.
   /// </summary>
   object Instantiate(Type serviceType);
 

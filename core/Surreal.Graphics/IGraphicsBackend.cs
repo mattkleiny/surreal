@@ -31,10 +31,7 @@ public readonly record struct FrameBufferHandle
 /// </summary>
 public interface IGraphicsBackend
 {
-  /// <summary>
-  /// A no-op <see cref="IGraphicsBackend" /> for headless environments and testing.
-  /// </summary>
-  static IGraphicsBackend Headless { get; } = new NullGraphicsBackend();
+  static IGraphicsBackend Null { get; } = new NullGraphicsBackend();
 
   // intrinsics
   Viewport GetViewportSize();

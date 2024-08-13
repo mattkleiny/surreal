@@ -94,7 +94,7 @@ public abstract class StringParser<T>
   );
 
   /// <summary>
-  /// A position of a token in it's source text.
+  /// A position of a token in its source text.
   /// </summary>
   protected readonly record struct LinePosition(int Line, int Column)
   {

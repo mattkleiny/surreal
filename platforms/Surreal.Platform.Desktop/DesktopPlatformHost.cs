@@ -17,8 +17,6 @@ namespace Surreal;
 public interface IDesktopPlatformHost : IPlatformHost
 {
   IDesktopWindow PrimaryWindow { get; }
-
-  // TODO: allow creating other windows?
 }
 
 /// <summary>

@@ -1,7 +1,7 @@
 ﻿namespace Surreal.Diagnostics.Gizmos;
 
 /// <summary>
-/// Represents a kind of object that can render it's own gizmos.
+/// Represents a kind of object that can render its own gizmos.
 /// </summary>
 public interface IGizmoObject
 {

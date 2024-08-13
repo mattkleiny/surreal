@@ -104,7 +104,7 @@ public sealed class Arena<T> : IEnumerable<T>
   }
 
   /// <summary>
-  /// Adds a new item to the arena and returns it's <see cref="ArenaIndex" />.
+  /// Adds a new item to the arena and returns its <see cref="ArenaIndex" />.
   /// </summary>
   public ArenaIndex Add(T value)
   {

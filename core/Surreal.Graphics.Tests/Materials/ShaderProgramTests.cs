@@ -34,7 +34,7 @@ public class ShaderProgramTests
   [TestCase("local://Assets/External/shaders/test01.glsl")]
   public void it_should_parse_shader_programs(VirtualPath path)
   {
-    var backend = IGraphicsBackend.Headless;
+    var backend = IGraphicsBackend.Null;
     var program = ShaderProgram.Load(backend, path);
 
     program.Should().NotBeNull();

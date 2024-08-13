@@ -8,7 +8,7 @@ public interface IInputBackend
   /// <summary>
   /// A no-op <see cref="IInputBackend" /> for headless environments and testing.
   /// </summary>
-  static IInputBackend Headless { get; } = new NullInputBackend();
+  static IInputBackend Null { get; } = new NullInputBackend();
 
   /// <summary>
   /// All the attached <see cref="IInputDevice" />s.

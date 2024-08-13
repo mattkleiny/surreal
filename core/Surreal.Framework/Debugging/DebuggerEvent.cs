@@ -34,6 +34,22 @@ public sealed class DebuggerEvent
   /// The actual payload contents that are being sent for this particular event.
   /// </summary>
   public required string Payload { get; init; }
+
+  /// <summary>
+  /// Determines if this event is of the given kind.
+  /// </summary>
+  public bool Is<T>(DebuggerEventKind<T> kind)
+  {
+    return string.Equals(Kind, kind.Name, StringComparison.OrdinalIgnoreCase);
+  }
+
+  /// <summary>
+  /// Converts this event to the given kind.
+  /// </summary>
+  public T? As<T>(DebuggerEventKind<T> kind)
+  {
+    return Is(kind) ? JsonSerializer.Deserialize<T>(Payload) : default;
+  }
 }
 
 /// <summary>
