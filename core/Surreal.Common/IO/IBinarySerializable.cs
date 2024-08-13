@@ -32,22 +32,6 @@ public interface IBinarySerializable<out TSelf> : IBinarySerializable
 }
 
 /// <summary>
-/// A type capable of serializing and deserializing binary data.
-/// </summary>
-public abstract class BinarySerializer<T>
-{
-  /// <summary>
-  /// Serializes the given value into binary data.
-  /// </summary>
-  public abstract ValueTask SerializeAsync(T value, FastBinaryWriter writer, CancellationToken cancellationToken = default);
-
-  /// <summary>
-  /// Deserializes the given binary data into the type.
-  /// </summary>
-  public abstract ValueTask<T> DeserializeAsync(FastBinaryReader reader, CancellationToken cancellationToken = default);
-}
-
-/// <summary>
 /// Helpers for working with <see cref="IBinarySerializable"/> types.
 /// </summary>
 public static class BinarySerializableExtensions

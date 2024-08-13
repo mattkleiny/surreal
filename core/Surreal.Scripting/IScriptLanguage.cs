@@ -11,7 +11,12 @@ public interface IScriptLanguage
   string Name { get; }
 
   /// <summary>
-  /// Creates a new <see cref="IScriptParser"/> for this language.
+  /// The file extensions supported by the language that this parser handles.
   /// </summary>
-  IScriptParser CreateParser();
+  ImmutableHashSet<string> SupportedExtensions { get; }
+
+  /// <summary>
+  /// Parses a script from the given <see cref="TextReader" />.
+  /// </summary>
+  ValueTask<ScriptDeclaration> ParseScriptAsync(TextReader reader, CancellationToken cancellationToken = default);
 }

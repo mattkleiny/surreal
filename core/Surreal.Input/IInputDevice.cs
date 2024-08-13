@@ -8,5 +8,5 @@ public interface IInputDevice
   /// <summary>
   /// The type of device.
   /// </summary>
-  Type DeviceType { get; }
+  Type Type { get; }
 }

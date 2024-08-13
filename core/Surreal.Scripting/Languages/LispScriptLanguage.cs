@@ -7,8 +7,10 @@ public sealed class LispScriptLanguage : IScriptLanguage
 {
   public string Name => "Lisp";
 
-  public IScriptParser CreateParser()
+  public ImmutableHashSet<string> SupportedExtensions { get; } = ["lisp"];
+
+  public ValueTask<ScriptDeclaration> ParseScriptAsync(TextReader reader, CancellationToken cancellationToken = default)
   {
-    return new LispScriptParser();
+    throw new NotImplementedException();
   }
 }

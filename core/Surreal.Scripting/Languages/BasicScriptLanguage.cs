@@ -7,8 +7,10 @@ public sealed class BasicScriptLanguage : IScriptLanguage
 {
   public string Name => "BASIC";
 
-  public IScriptParser CreateParser()
+  public ImmutableHashSet<string> SupportedExtensions { get; } = ["bas"];
+
+  public ValueTask<ScriptDeclaration> ParseScriptAsync(TextReader reader, CancellationToken cancellationToken = default)
   {
-    return new BasicScriptParser();
+    throw new NotImplementedException();
   }
 }

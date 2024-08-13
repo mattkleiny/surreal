@@ -54,7 +54,7 @@ public sealed record GameConfiguration
     new InputModule(),
     new NetworkModule(),
     new PhysicsModule(),
-    new ScriptModule()
+    new ScriptingModule()
   ];
 }
 

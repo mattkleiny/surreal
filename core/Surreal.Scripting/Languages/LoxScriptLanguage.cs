@@ -7,8 +7,10 @@ public sealed class LoxScriptLanguage : IScriptLanguage
 {
   public string Name => "Lox";
 
-  public IScriptParser CreateParser()
+  public ImmutableHashSet<string> SupportedExtensions { get; } = ["lox"];
+
+  public ValueTask<ScriptDeclaration> ParseScriptAsync(TextReader reader, CancellationToken cancellationToken = default)
   {
-    return new LoxScriptParser();
+    throw new NotImplementedException();
   }
 }

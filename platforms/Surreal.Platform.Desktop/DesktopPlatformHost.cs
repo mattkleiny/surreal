@@ -103,7 +103,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     foreach (var device in InputBackend.DiscoverAllDevices())
     {
       services.AddService(device);
-      services.AddService(device.DeviceType, device);
+      services.AddService(device.Type, device);
     }
   }
 

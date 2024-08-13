@@ -7,8 +7,10 @@ public sealed class LuaScriptLanguage : IScriptLanguage
 {
   public string Name => "Lua";
 
-  public IScriptParser CreateParser()
+  public ImmutableHashSet<string> SupportedExtensions { get; } = ["lua"];
+
+  public ValueTask<ScriptDeclaration> ParseScriptAsync(TextReader reader, CancellationToken cancellationToken = default)
   {
-    return new LuaScriptParser();
+    throw new NotImplementedException();
   }
 }

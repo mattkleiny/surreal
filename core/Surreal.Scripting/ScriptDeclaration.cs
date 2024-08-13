@@ -21,21 +21,12 @@ public abstract record ScriptSyntaxTree
     /// <summary>
     /// The includes for this compilation unit.
     /// </summary>
-    public ImmutableArray<Include> Includes { get; init; } = ImmutableArray<Include>.Empty;
+    public ImmutableArray<Include> Includes { get; init; } = [];
 
     /// <summary>
     /// The top-level statements for this compilation unit.
     /// </summary>
-    public ImmutableArray<Statement> Statements { get; init; } = ImmutableArray<Statement>.Empty;
-
-    /// <summary>
-    /// Merge this compilation unit with another.
-    /// </summary>
-    public CompilationUnit MergeWith(CompilationUnit other) => this with
-    {
-      Includes = Includes.AddRange(other.Includes),
-      Statements = Statements.AddRange(other.Statements),
-    };
+    public ImmutableArray<Statement> Statements { get; init; } = [];
   }
 
   /// <summary>

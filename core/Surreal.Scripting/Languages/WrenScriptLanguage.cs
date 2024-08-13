@@ -7,8 +7,10 @@ public sealed class WrenScriptLanguage : IScriptLanguage
 {
   public string Name => "Wren";
 
-  public IScriptParser CreateParser()
+  public ImmutableHashSet<string> SupportedExtensions { get; } = ["wren"];
+
+  public ValueTask<ScriptDeclaration> ParseScriptAsync(TextReader reader, CancellationToken cancellationToken = default)
   {
-    return new WrenScriptParser();
+    throw new NotImplementedException();
   }
 }
