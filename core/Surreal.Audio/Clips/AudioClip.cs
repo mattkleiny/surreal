@@ -1,4 +1,3 @@
-using Surreal.Assets;
 using Surreal.Memory;
 
 namespace Surreal.Audio.Clips;
@@ -6,7 +5,6 @@ namespace Surreal.Audio.Clips;
 /// <summary>
 /// A clip of audio that can be played back via an audio device.
 /// </summary>
-[AssetType("bff38f41-a594-4a08-8f2e-8705ec134d89")]
 public sealed class AudioClip(IAudioBackend backend) : Disposable
 {
   /// <summary>

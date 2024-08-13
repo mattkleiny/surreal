@@ -12,10 +12,10 @@ public class ImageLoaderTests
 
     manager.AddLoader(new ImageLoader());
 
-    var image = await manager.LoadAssetAsync<Image>(path);
+    var image = await manager.LoadAsync<Image>(path);
 
-    image.Width.Should().BeGreaterThan(0);
-    image.Height.Should().BeGreaterThan(0);
-    image.Size.Bytes.Should().BeGreaterThan(0);
+    image.Value.Width.Should().BeGreaterThan(0);
+    image.Value.Height.Should().BeGreaterThan(0);
+    image.Value.Size.Bytes.Should().BeGreaterThan(0);
   }
 }

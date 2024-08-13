@@ -67,11 +67,9 @@ public sealed class AssetManager : IAssetProvider, IDisposable
   }
 
   /// <inheritdoc/>
-  public async Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
+  public async Task<Asset<T>> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
   {
-    var entry = await LoadEntryAsync<T>(path, cancellationToken);
-
-    return (T)entry.Asset!; // by this point the asset should be loaded
+    return new Asset<T>(await LoadEntryAsync<T>(path, cancellationToken));
   }
 
   /// <summary>
@@ -99,7 +97,7 @@ public sealed class AssetManager : IAssetProvider, IDisposable
       _entriesById[assetId] = entry;
       _entriesByPath.Add(normalizedPath, entry);
 
-      entry.Asset = await loader.LoadAsync(context, cancellationToken);
+      entry.Value = await loader.LoadAsync(context, cancellationToken);
     }
 
     return entry;
@@ -174,7 +172,7 @@ public sealed class AssetManager : IAssetProvider, IDisposable
   /// <summary>
   /// An entry in the <see cref="AssetManager"/>.
   /// </summary>
-  private sealed class AssetEntry(AssetId id) : IDisposable
+  private sealed class AssetEntry(AssetId id) : IAssetEntry, IDisposable
   {
     public event Action? Changed;
 
@@ -186,7 +184,7 @@ public sealed class AssetManager : IAssetProvider, IDisposable
     /// <summary>
     /// The actual asset data.
     /// </summary>
-    public object? Asset { get; set; }
+    public object? Value { get; set; }
 
     /// <summary>
     /// Notifies that the asset path has been changed.
@@ -200,7 +198,7 @@ public sealed class AssetManager : IAssetProvider, IDisposable
 
     public void Dispose()
     {
-      if (Asset is IDisposable disposable)
+      if (Value is IDisposable disposable)
       {
         disposable.Dispose();
       }
@@ -215,14 +213,9 @@ public sealed class AssetManager : IAssetProvider, IDisposable
     public Type Type => Entry.Id.Type;
     public VirtualPath Path => Entry.Id.Path;
 
-    public async Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
+    public async Task<Asset<T>> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
     {
-      return await Manager.LoadAssetAsync<T>(path, cancellationToken);
-    }
-
-    public async Task<IAssetDependency<T>> LoadDependencyAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
-    {
-      return new AssetDependency<T>(await Manager.LoadEntryAsync<T>(path, cancellationToken));
+      return new Asset<T>(await Manager.LoadEntryAsync<T>(path, cancellationToken));
     }
 
     /// <summary>
@@ -234,7 +227,6 @@ public sealed class AssetManager : IAssetProvider, IDisposable
       {
         try
         {
-          // TODO: pass a cancellation token
           await callback(CancellationToken.None);
         }
         catch (Exception exception)
@@ -242,19 +234,6 @@ public sealed class AssetManager : IAssetProvider, IDisposable
           Log.Error(exception, "Failed to reload asset");
         }
       };
-    }
-
-    /// <summary>
-    /// A <see cref="IAssetDependency{T}"/> implementation for the manager.
-    /// </summary>
-    private sealed record AssetDependency<T>(AssetEntry Entry) : IAssetDependency<T>
-    {
-      public T Value => (T)Entry.Asset!;
-
-      public void WhenChanged(Action callback)
-      {
-        Entry.Changed += callback;
-      }
     }
   }
 

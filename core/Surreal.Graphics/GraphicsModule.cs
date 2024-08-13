@@ -1,6 +1,7 @@
 ﻿using Surreal.Assets;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Sprites.Aseprite;
 using Surreal.Graphics.Textures;
 using Surreal.Graphics.Utilities;
 using Surreal.Services;
@@ -17,6 +18,11 @@ public sealed class GraphicsModule : IServiceModule
   {
     var backend = registry.GetServiceOrThrow<IGraphicsBackend>();
 
+    registry.AddService<IAssetLoader>(new AsepriteFileLoader());
+    registry.AddService<IAssetLoader>(new AsepriteSpriteAnimationLoader());
+    registry.AddService<IAssetLoader>(new AsepriteSpriteAnimationSetLoader());
+    registry.AddService<IAssetLoader>(new AsepriteTextureLoader());
+    registry.AddService<IAssetLoader>(new AsepriteTextureAtlasLoader());
     registry.AddService<IAssetLoader>(new ColorPaletteLoader());
     registry.AddService<IAssetLoader>(new ImageLoader());
     registry.AddService<IAssetLoader>(new MaterialLoader(backend));

@@ -35,6 +35,11 @@ public readonly record struct TextureRegion(Texture? Texture)
     (float)(Offset.Y + Size.Y) / Texture?.Height ?? 1
   );
 
+  /// <summary>
+  /// Creates a new texture region that is a sub-region of this region.
+  /// </summary>
+  public TextureRegion Slice(Point2 offset, Point2 size) => new(Texture) { Offset = Offset + offset, Size = size };
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static implicit operator TextureRegion(Texture texture) => texture.ToRegion();
 }

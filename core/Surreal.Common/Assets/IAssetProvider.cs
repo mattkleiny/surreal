@@ -10,5 +10,5 @@ public interface IAssetProvider
   /// <summary>
   /// Loads an asset from the given path.
   /// </summary>
-  Task<T> LoadAssetAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  Task<Asset<T>> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
 }

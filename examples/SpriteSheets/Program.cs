@@ -16,7 +16,7 @@
 
 Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
 {
-  var spriteSheet = await game.Assets.LoadAssetAsync<SpriteSheet>("Assets/External/sprites/crab.aseprite");
+  var sprites = await game.Assets.LoadAsync<SpriteAnimationSet>("Assets/External/sprites/crab.aseprite");
 
   game.ExecuteVariableStep(_ =>
   {

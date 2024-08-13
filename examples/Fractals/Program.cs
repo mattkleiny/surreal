@@ -22,7 +22,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
 {
   using var canvas = new PixelCanvas(graphics, 256, 144);
 
-  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://Fractals/Assets/Embedded/palettes/raspberry.pal");
+  var palette = await game.Assets.LoadAsync<ColorPalette>("resx://Fractals/Assets/Embedded/palettes/raspberry.pal");
   var constant = new Vector2(0.285f, 0.01f);
 
   game.ExecuteVariableStep(time =>

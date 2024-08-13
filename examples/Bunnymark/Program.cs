@@ -23,7 +23,7 @@ var configuration = new GameConfiguration
 Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
 {
   var log = LogFactory.GetLog<Program>();
-  var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
+  var sprite = await game.Assets.LoadAsync<Texture>("Assets/External/sprites/bunny.png");
 
   game.Assets.WatchAssets("./Assets");
 
@@ -43,7 +43,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
   };
 
   var bunnies = new List<Bunny>();
-  var size = new Vector2(sprite.Width, sprite.Height);
+  var size = new Vector2(sprite.Value.Width, sprite.Value.Height);
 
   game.ExecuteVariableStep(time =>
   {
@@ -64,7 +64,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
 
     foreach (ref var bunny in bunnies.AsSpan())
     {
-      batch.DrawQuad(sprite, bunny.Position, size, bunny.Rotation.Radians, bunny.Tint);
+      batch.DrawQuad(sprite.Value, bunny.Position, size, bunny.Rotation.Radians, bunny.Tint);
     }
 
     batch.Flush();

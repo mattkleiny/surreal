@@ -1,5 +1,4 @@
-﻿using Surreal.Assets;
-using Surreal.Mathematics;
+﻿using Surreal.Mathematics;
 using Surreal.Memory;
 using Color = Surreal.Colors.Color;
 using Image = Surreal.Graphics.Images.Image;
@@ -57,7 +56,6 @@ public readonly record struct TextureSampler(GraphicsHandle Texture, uint Sample
 /// <summary>
 /// A texture that can be uploaded to the GPU.
 /// </summary>
-[AssetType("12ddba3c-ddfd-4c21-80ac-2ef859ae0d24")]
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
 public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : Disposable
 {

@@ -1,4 +1,3 @@
-using Surreal.Assets;
 using Surreal.Collections.Slices;
 using Surreal.Graphics.Textures;
 using Surreal.IO;
@@ -8,7 +7,6 @@ namespace Surreal.Graphics.Materials;
 /// <summary>
 /// A low-level shader program on the GPU.
 /// </summary>
-[AssetType("df6f03bd-d2fd-4a96-a05f-fc480bc4da40")]
 public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
 {
   /// <summary>

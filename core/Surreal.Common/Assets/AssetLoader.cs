@@ -8,22 +8,6 @@ namespace Surreal.Assets;
 public delegate ValueTask ReloadCallback(CancellationToken cancellationToken);
 
 /// <summary>
-/// Represents a dependency on some other component <see cref="T"/>.
-/// </summary>
-public interface IAssetDependency<out T>
-{
-  /// <summary>
-  /// The value of the dependency.
-  /// </summary>
-  T Value { get; }
-
-  /// <summary>
-  /// Adds a callback to be invoked when the dependency's data has changed.
-  /// </summary>
-  void WhenChanged(Action callback);
-}
-
-/// <summary>
 /// Context for <see cref="IAssetLoader" /> operations.
 /// </summary>
 public interface IAssetContext
@@ -39,14 +23,9 @@ public interface IAssetContext
   Type Type { get; }
 
   /// <summary>
-  /// Loads an asset from the context.
-  /// </summary>
-  Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
-
-  /// <summary>
   /// Loads a dependent asset from the context.
   /// </summary>
-  Task<IAssetDependency<T>> LoadDependencyAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
+  Task<Asset<T>> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Adds a reload action to the context.

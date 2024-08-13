@@ -12,7 +12,7 @@ public sealed class AudioClipLoader(IAudioBackend backend) : AssetLoader<AudioCl
     var buffer = await context.LoadAsync<AudioBuffer>(context.Path, cancellationToken);
     var clip = new AudioClip(backend);
 
-    clip.Write<byte>(buffer.Duration, buffer.Rate, buffer.Span);
+    clip.Write<byte>(buffer.Value.Duration, buffer.Value.Rate, buffer.Value.Span);
 
     return clip;
   }

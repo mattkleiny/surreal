@@ -18,7 +18,7 @@ var configuration = new GameConfiguration
 
 Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
 {
-  var palette = await game.Assets.LoadAssetAsync<ColorPalette>("resx://FallingSand/Assets/Embedded/palettes/kule-16.pal");
+  var palette = await game.Assets.LoadAsync<ColorPalette>("resx://FallingSand/Assets/Embedded/palettes/kule-16.pal");
 
   using var canvas = new SandCanvas(graphics);
 
@@ -38,7 +38,7 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
 
       if (isLeftButtonDown)
       {
-        canvas.DrawSand(relativePosition, 3, palette.SelectRandom());
+        canvas.DrawSand(relativePosition, 3, palette.Value.SelectRandom());
       }
       else if (isRightButtonDown)
       {

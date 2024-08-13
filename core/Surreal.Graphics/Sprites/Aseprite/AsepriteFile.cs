@@ -1,5 +1,4 @@
-﻿using Surreal.Assets;
-using Surreal.Colors;
+﻿using Surreal.Colors;
 using Surreal.IO;
 using Surreal.Memory;
 
@@ -11,7 +10,6 @@ namespace Surreal.Graphics.Sprites.Aseprite;
 /// Aseprite stores its data in a proprietary binary format, which
 /// can be found here: https://github.com/aseprite/aseprite/blob/main/docs/ase-file-specs.md.
 /// </summary>
-[AssetType("1fd9692f-30b7-432d-902c-6c56a6dbb387")]
 public sealed class AsepriteFile
 {
   /// <summary>
@@ -21,10 +19,8 @@ public sealed class AsepriteFile
   {
     using var reader = new FastBinaryReader(stream);
 
-    var file = new AsepriteFile
-    {
-      Header = AsepriteHeader.Load(reader)
-    };
+    var header = AsepriteHeader.Load(reader);
+    var file = new AsepriteFile(header);
 
     while (reader.Position < reader.Length)
     {
@@ -36,10 +32,15 @@ public sealed class AsepriteFile
     return file;
   }
 
+  private AsepriteFile(AsepriteHeader header)
+  {
+    Header = header;
+  }
+
   /// <summary>
   /// The header of the file.
   /// </summary>
-  public required AsepriteHeader Header { get; init; }
+  public AsepriteHeader Header { get; init; }
 
   /// <summary>
   /// The frames of the file.
@@ -194,7 +195,7 @@ public sealed class AsepriteFile
   /// <summary>
   /// A chunk representing a single layer in the file.
   /// </summary>
-  private sealed class AsepriteLayerChunk(AsepriteFrame frame) : AsepriteChunk(frame)
+  public sealed class AsepriteLayerChunk(AsepriteFrame frame) : AsepriteChunk(frame)
   {
     public new static AsepriteLayerChunk Load(FastBinaryReader reader, AsepriteFrame frame)
     {
@@ -236,7 +237,7 @@ public sealed class AsepriteFile
   /// <summary>
   /// A chunk representing a single cel in the file.
   /// </summary>
-  private sealed class AsepriteCelChunk(AsepriteFrame frame) : AsepriteChunk(frame)
+  public sealed class AsepriteCelChunk(AsepriteFrame frame) : AsepriteChunk(frame)
   {
     public new static AsepriteCelChunk Load(FastBinaryReader reader, AsepriteFrame frame)
     {
@@ -255,7 +256,7 @@ public sealed class AsepriteFile
   /// <summary>
   /// A chunk representing a single cel in the file.
   /// </summary>
-  private sealed class AsepriteCelExtraChunk(AsepriteFrame frame) : AsepriteChunk(frame)
+  public sealed class AsepriteCelExtraChunk(AsepriteFrame frame) : AsepriteChunk(frame)
   {
     public new static AsepriteCelExtraChunk Load(FastBinaryReader reader, AsepriteFrame frame)
     {
@@ -274,7 +275,7 @@ public sealed class AsepriteFile
   /// <summary>
   /// A chunk containing tag data for the file.
   /// </summary>
-  private sealed class AsepriteTagsChunk(AsepriteFrame frame) : AsepriteChunk(frame)
+  public sealed class AsepriteTagsChunk(AsepriteFrame frame) : AsepriteChunk(frame)
   {
     public new static AsepriteTagsChunk Load(FastBinaryReader reader, AsepriteFrame frame)
     {
@@ -343,7 +344,7 @@ public sealed class AsepriteFile
   /// <summary>
   /// A chunk containing palette data for the file.
   /// </summary>
-  private sealed class AsepritePaletteChunk(AsepriteFrame frame) : AsepriteChunk(frame)
+  public sealed class AsepritePaletteChunk(AsepriteFrame frame) : AsepriteChunk(frame)
   {
     public new static AsepritePaletteChunk Load(FastBinaryReader reader, AsepriteFrame frame)
     {
@@ -393,8 +394,6 @@ public sealed class AsepriteFile
     }
   }
 
-  // enums and constants
-
   public enum ColorDepth
   {
     Rgba = 32,
@@ -416,13 +415,13 @@ public sealed class AsepriteFile
     UserData = 0x2020,
   }
 
-  private enum LayerType
+  public enum LayerType
   {
     Normal = 0,
     Group = 1,
   }
 
-  private enum LayerBlendMode
+  public enum LayerBlendMode
   {
     Normal = 0,
     Multiply = 1,
@@ -452,7 +451,7 @@ public sealed class AsepriteFile
     Compressed = 2,
   }
 
-  private enum LoopType
+  public enum LoopType
   {
     Forward = 0,
     Reverse = 1,
