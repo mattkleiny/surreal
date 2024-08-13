@@ -1,8 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Description>Behaviour tree support for Surreal</Description>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
-  </ItemGroup>
-</Project>

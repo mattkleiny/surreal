@@ -14,7 +14,7 @@
   }
 };
 
-Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
+return Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
 {
   var sprites = await game.Assets.LoadAsync<SpriteAnimationSet>("Assets/External/sprites/crab.aseprite");
 

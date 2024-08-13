@@ -94,9 +94,9 @@ public class Game : IDisposable
   /// <summary>
   /// Starts the game.
   /// </summary>
-  public static void Start(GameConfiguration configuration, Delegate setup)
+  public static int Start(GameConfiguration configuration, Delegate setup)
   {
-    Run(configuration, async game =>
+    return Run(configuration, async game =>
     {
       // set up the game
       var result = game.Services.ExecuteDelegate(setup, game);
@@ -111,10 +111,10 @@ public class Game : IDisposable
   /// Starts the game with a blank <see cref="SceneTree"/> and the given <see cref="IRenderPipeline"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  public static void StartScene<TPipeline>(GameConfiguration configuration, Delegate setup)
+  public static int StartScene<TPipeline>(GameConfiguration configuration, Delegate setup)
     where TPipeline : class, IRenderPipeline
   {
-    Run(configuration, async game =>
+    return Run(configuration, async game =>
     {
       // build the scene tree
       using var pipeline = game.Services.Instantiate<TPipeline>();
@@ -145,15 +145,14 @@ public class Game : IDisposable
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
-  private static void Run(GameConfiguration configuration, Func<Game, Task> gameSetup)
+  private static int Run(GameConfiguration configuration, Func<Game, Task> gameSetup)
   {
     // if a hosting context is attached, we're attempting to be run inside some
     // environment. kick-off a different main loop in that case.
     var hostingContext = HostingContext.Current;
     if (hostingContext != null)
     {
-      RunInsideHost(configuration, hostingContext, gameSetup);
-      return;
+      return RunInsideHost(configuration, hostingContext, gameSetup);
     }
 
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
@@ -217,13 +216,14 @@ public class Game : IDisposable
     }
 
     Callbacks.Clear();
+    return 0;
   }
 
   /// <summary>
   /// Runs this game inside a <see cref="HostingContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  private static void RunInsideHost(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)
+  private static int RunInsideHost(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)
   {
     try
     {
@@ -294,6 +294,8 @@ public class Game : IDisposable
     {
       context.OnStopped();
     }
+
+    return 0;
   }
 
   /// <summary>

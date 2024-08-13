@@ -1,5 +1,8 @@
 ﻿using Surreal.IO;
 
+// we use the desktop platform in the editor itself
+[assembly: InternalsVisibleTo("Surreal.Editor")]
+
 namespace Surreal;
 
 /// <summary>

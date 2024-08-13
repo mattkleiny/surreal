@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.BehaviourTrees.Tasks;
+namespace Surreal.Behaviours.Tasks;
 
 /// <summary>
 /// A <see cref="BehaviourTask"/> that delays a fixed amount of time.

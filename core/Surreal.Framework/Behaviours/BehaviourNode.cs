@@ -1,6 +1,6 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.BehaviourTrees;
+namespace Surreal.Behaviours;
 
 /// <summary>
 /// A node of a <see cref="BehaviourTree"/>.

@@ -20,7 +20,7 @@ var configuration = new GameConfiguration
   },
 };
 
-Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
+return Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
 {
   var log = LogFactory.GetLog<Program>();
   var sprite = await game.Assets.LoadAsync<Texture>("Assets/External/sprites/bunny.png");

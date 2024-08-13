@@ -18,7 +18,7 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.StartScene<ForwardRenderPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline, IPhysicsBackend physics) =>
+return Game.StartScene<ForwardRenderPipeline>(configuration, (SceneTree scene, ForwardRenderPipeline pipeline, IPhysicsBackend physics) =>
 {
   pipeline.ClearColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 

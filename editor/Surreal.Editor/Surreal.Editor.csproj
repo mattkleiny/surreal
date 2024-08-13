@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <Description>The editor host for the Surreal project.</Description>
     <StartWorkingDirectory>$(MSBuildThisFileDirectory)</StartWorkingDirectory>
   </PropertyGroup>
@@ -8,10 +7,12 @@
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Silk.NET.OpenGL" Version="$(SilkVersion)" PrivateAssets="compile"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

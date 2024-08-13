@@ -1,11 +1,11 @@
 ﻿using Surreal.Timing;
 
-namespace Surreal.BehaviourTrees.Composite;
+namespace Surreal.Behaviours.Composite;
 
 /// <summary>
-/// A <see cref="BehaviourComposite"/> that executes the first successful task from among children.
+/// A <see cref="BehaviourComposite"/> that executes nodes in order.
 /// </summary>
-public sealed class Selector : BehaviourComposite
+public sealed class Sequence : BehaviourComposite
 {
   private int _lastIndex;
 
@@ -27,14 +27,11 @@ public sealed class Selector : BehaviourComposite
         case BehaviourStatus.Running:
           return BehaviourStatus.Running;
 
-        case BehaviourStatus.Success:
-          return BehaviourStatus.Success;
-
         case BehaviourStatus.Failure:
-          continue;
+          return BehaviourStatus.Failure;
       }
     }
 
-    return BehaviourStatus.Failure;
+    return BehaviourStatus.Success;
   }
 }

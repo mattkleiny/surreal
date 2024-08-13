@@ -1,6 +1,6 @@
 ﻿using Surreal.Editing.Projects;
 
-Editor.Start(new EditorConfiguration
+return Editor.Start(new EditorConfiguration
 {
   WindowTitle = "Custom Editor",
   DefaultProject = new EditorProject(Environment.CurrentDirectory)

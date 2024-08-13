@@ -13,7 +13,7 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
+return Game.Start(configuration, (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
 {
   var color1 = Random.Shared.Next<Color>();
   var color2 = Random.Shared.Next<Color>();

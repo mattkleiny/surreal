@@ -156,7 +156,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
     for (var i = 0; i < parameterInfos.Length; i++)
     {
-      parameters[i] = _container[parameterInfos[i].ParameterType];
+      parameters[i] = _container[parameterInfos[i].ParameterType].FirstOrDefault()!;
     }
 
     return constructorInfo.Invoke(parameters);

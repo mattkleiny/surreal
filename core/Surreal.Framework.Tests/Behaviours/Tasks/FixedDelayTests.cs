@@ -1,4 +1,4 @@
-﻿namespace Surreal.BehaviourTrees.Tasks;
+﻿namespace Surreal.Behaviours.Tasks;
 
 public class FixedDelayTests
 {
