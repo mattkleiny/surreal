@@ -10,14 +10,14 @@ namespace Surreal.Services;
 public interface IServiceRegistry : IServiceProvider
 {
   /// <summary>
-  /// Attempts to get all services of the given type. If the service is not found, returns an empty enumerable.
-  /// </summary>
-  IEnumerable<object> GetServices(Type serviceType);
-
-  /// <summary>
   /// Attempts to get a service of the given type. If the service is not found, returns <c>false</c>.
   /// </summary>
   bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance);
+
+  /// <summary>
+  /// Attempts to get all services of the given type. If the service is not found, returns an empty enumerable.
+  /// </summary>
+  IEnumerable<object> GetServices(Type serviceType);
 
   /// <summary>
   /// Registers a service.

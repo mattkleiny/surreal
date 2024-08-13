@@ -15,7 +15,7 @@ public readonly record struct ClockTimeRange(ClockTime Start, ClockTime End)
 }
 
 /// <summary>
-/// Represents a discrete time in a 24 hour clock with hours, minutes and seconds.
+/// Represents a discrete time in a 24-hour clock with hours, minutes and seconds.
 /// </summary>
 public readonly record struct ClockTime(int Ticks) : IComparable<ClockTime>, IParsable<ClockTime>
 {

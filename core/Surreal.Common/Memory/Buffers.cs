@@ -34,26 +34,45 @@ public interface IDisposableBuffer<T> : IBuffer<T>, IDisposable;
 /// </summary>
 public static class Buffers
 {
+  /// <summary>
+  /// Allocates a new <see cref="IBuffer{T}"/> on the managed heap.
+  /// </summary>
   public static IBuffer<T> Allocate<T>(int length)
   {
     return new ManagedBuffer<T>(length);
   }
 
+  /// <summary>
+  /// Allocates a new <see cref="IBuffer{T}"/> on the pinned managed heap.
+  /// </summary>
   public static IBuffer<T> AllocatePinned<T>(int length, bool zeroFill = false)
   {
     return new PinnedBuffer<T>(length, zeroFill);
   }
 
+  /// <summary>
+  /// Allocates a new <see cref="IBuffer{T}"/> on the native heap.
+  /// </summary>
   public static IDisposableBuffer<T> AllocateNative<T>(int length, bool zeroFill = false)
     where T : unmanaged
   {
     return new NativeBuffer<T>(length, zeroFill);
   }
 
+  /// <summary>
+  /// Allocates a new <see cref="IBuffer{T}"/> from the given <see cref="VirtualPath"/> as memory-mapped.
+  /// </summary>
   public static IDisposableBuffer<T> AllocateMapped<T>(VirtualPath path, int offset = 0, int length = 0)
     where T : unmanaged
   {
-    return new MappedBuffer<T>(path, offset, length);
+    if (!path.SupportsMemoryMapping())
+    {
+      throw new InvalidOperationException($"The given path does not support memory mapped files: {path}");
+    }
+
+    var mappedFile = path.OpenMemoryMappedFile();
+
+    return new MappedBuffer<T>(mappedFile, offset, length);
   }
 
   /// <summary>
@@ -151,33 +170,28 @@ public static class Buffers
   private sealed unsafe class MappedBuffer<T> : MemoryManager<T>, IDisposableBuffer<T>
     where T : unmanaged
   {
-    private readonly MemoryMappedViewAccessor _accessor;
     private readonly MemoryMappedFile _file;
+    private readonly MemoryMappedViewAccessor _accessor;
     private readonly byte* _pointer;
 
     private bool _isDisposed;
 
-    public MappedBuffer(VirtualPath path, int offset, int length)
+    public MappedBuffer(MemoryMappedFile file, int offset, int length)
     {
-      if (!path.SupportsMemoryMapping())
-      {
-        throw new InvalidOperationException($"The given path does not support memory mapped files: {path}");
-      }
+      _file = file;
 
-      _file = path.OpenMemoryMappedFile();
       _accessor = _file.CreateViewAccessor(offset, length, MemoryMappedFileAccess.ReadWrite);
-
       _accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref _pointer);
     }
 
     public Span<T> Span => GetSpan();
 
+    Memory<T> IBuffer<T>.Memory => base.Memory;
+
     public void Resize(int newLength)
     {
       throw new NotSupportedException("Unable to resize mapped buffers!");
     }
-
-    Memory<T> IBuffer<T>.Memory => base.Memory;
 
     public override Span<T> GetSpan()
     {
