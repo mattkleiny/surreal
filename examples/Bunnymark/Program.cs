@@ -25,6 +25,8 @@ Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboard
   var log = LogFactory.GetLog<Program>();
   var sprite = await game.Assets.LoadAssetAsync<Texture>("Assets/External/sprites/bunny.png");
 
+  game.Assets.WatchAssets("./Assets");
+
   using var material = new Material(graphics, ShaderProgram.LoadDefaultCanvasShader(graphics))
   {
     BlendState = BlendState.OneMinusSourceAlpha,

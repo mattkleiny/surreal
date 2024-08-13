@@ -127,16 +127,29 @@ public sealed class Image : IDisposable
     await _image.SaveAsPngAsync(stream, cancellationToken);
   }
 
+  /// <summary>
+  /// Reloads the image data from the given path.
+  /// </summary>
+  public async ValueTask ReloadAsync(VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    await using var stream = path.OpenInputStream();
+
+    var image = await SixLabors.ImageSharp.Image.LoadAsync(Configuration.Default, stream, cancellationToken);
+    if (image is Image<Rgba32> rgba)
+    {
+      _image = rgba;
+    }
+    else
+    {
+      using (image)
+      {
+        _image = image.CloneAs<Rgba32>();
+      }
+    }
+  }
+
   public void Dispose()
   {
     _image.Dispose();
-  }
-
-  /// <summary>
-  /// Swaps the underlying image content; for hot-reloading.
-  /// </summary>
-  internal void ReplaceImage(Image other)
-  {
-    _image = other._image;
   }
 }

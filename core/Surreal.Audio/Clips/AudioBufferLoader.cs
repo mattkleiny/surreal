@@ -14,7 +14,7 @@ public sealed class UnsupportedAudioFormatException(string message) : Applicatio
 /// </summary>
 public sealed class AudioBufferLoader : AssetLoader<AudioBuffer>
 {
-  public override async Task<AudioBuffer> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<AudioBuffer> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     await using var stream =  context.Path.OpenInputStream();
 

@@ -11,6 +11,14 @@ public static class VirtualPathExtensions
   private static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
   /// <summary>
+  /// Normalizes a <see cref="VirtualPath"/>.
+  /// </summary>
+  public static VirtualPath Normalize(this VirtualPath path)
+  {
+    return path with { Target = Path.GetFullPath(path.Target.ToString()) };
+  }
+
+  /// <summary>
   /// Gets the <see cref="IFileSystem"/> associated with the <see cref="VirtualPath" />.
   /// </summary>
   public static IFileSystem GetFileSystem(this VirtualPath path)

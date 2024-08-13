@@ -9,7 +9,7 @@ namespace Surreal.Graphics.Utilities;
 /// </summary>
 public sealed class ColorPaletteLoader : AssetLoader<ColorPalette>
 {
-  public override async Task<ColorPalette> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<ColorPalette> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     using var reader = context.Path.OpenInputStreamReader();
 

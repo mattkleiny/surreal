@@ -85,7 +85,7 @@ public sealed class LocalFileSystem() : FileSystem("local")
 
   public override IPathWatcher WatchPath(VirtualPath path, bool includeSubPaths)
   {
-    return new PathWatcher(path.GetDirectory(), includeSubPaths);
+    return new PathWatcher(path, includeSubPaths);
   }
 
   /// <summary>

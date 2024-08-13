@@ -3,6 +3,58 @@
 namespace Surreal.Assets;
 
 /// <summary>
+/// A callback for reloading an asset.
+/// </summary>
+public delegate ValueTask ReloadCallback(CancellationToken cancellationToken);
+
+/// <summary>
+/// Represents a dependency on some other component <see cref="T"/>.
+/// </summary>
+public interface IAssetDependency<out T>
+{
+  /// <summary>
+  /// The value of the dependency.
+  /// </summary>
+  T Value { get; }
+
+  /// <summary>
+  /// Adds a callback to be invoked when the dependency's data has changed.
+  /// </summary>
+  void WhenChanged(Action callback);
+}
+
+/// <summary>
+/// Context for <see cref="IAssetLoader" /> operations.
+/// </summary>
+public interface IAssetContext
+{
+  /// <summary>
+  /// The path of the asset being loaded.
+  /// </summary>
+  VirtualPath Path { get; }
+
+  /// <summary>
+  /// The type of the asset being loaded.
+  /// </summary>
+  Type Type { get; }
+
+  /// <summary>
+  /// Loads an asset from the context.
+  /// </summary>
+  Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Loads a dependent asset from the context.
+  /// </summary>
+  Task<IAssetDependency<T>> LoadDependencyAsync<T>(VirtualPath path, CancellationToken cancellationToken = default);
+
+  /// <summary>
+  /// Adds a reload action to the context.
+  /// </summary>
+  void WhenPathChanged(ReloadCallback callback);
+}
+
+/// <summary>
 /// Allows loading assets from storage.
 /// </summary>
 public interface IAssetLoader
@@ -10,12 +62,12 @@ public interface IAssetLoader
   /// <summary>
   /// Determines if the loader can handle the given asset.
   /// </summary>
-  bool CanHandle(AssetContext context);
+  bool CanHandle(AssetId id);
 
   /// <summary>
   /// Loads an asset from storage.
   /// </summary>
-  Task<object> LoadAsync(AssetContext context, CancellationToken cancellationToken);
+  Task<object> LoadAsync(IAssetContext context, CancellationToken cancellationToken);
 }
 
 /// <summary>
@@ -24,50 +76,15 @@ public interface IAssetLoader
 public abstract class AssetLoader<T> : IAssetLoader
   where T : notnull
 {
-  public virtual bool CanHandle(AssetContext context)
+  public virtual bool CanHandle(AssetId id)
   {
-    return context.Type == typeof(T);
+    return id.Type == typeof(T);
   }
 
-  public abstract Task<T> LoadAsync(AssetContext context, CancellationToken cancellationToken);
+  public abstract Task<T> LoadAsync(IAssetContext context, CancellationToken cancellationToken);
 
-  async Task<object> IAssetLoader.LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  async Task<object> IAssetLoader.LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     return await LoadAsync(context, cancellationToken);
-  }
-}
-
-/// <summary>
-/// Context for <see cref="IAssetLoader" /> operations.
-/// </summary>
-public readonly record struct AssetContext(AssetId AssetId, AssetManager Manager)
-{
-  /// <summary>
-  /// The type of the asset being loaded.
-  /// </summary>
-  public Type Type => AssetId.Type;
-
-  /// <summary>
-  /// The path of the asset being loaded.
-  /// </summary>
-  public VirtualPath Path => AssetId.Path;
-
-  /// <summary>
-  /// Loads a dependent asset from the manager.
-  /// </summary>
-  public Task<T> LoadAsync<T>(VirtualPath path, CancellationToken cancellationToken = default)
-  {
-    return Manager.LoadAssetAsync<T>(path, cancellationToken);
-  }
-
-  /// <summary>
-  /// Watches for changes on the given path and notifies the given <see cref="IHotReloadable{T}"/> when a change occurs.
-  /// </summary>
-  public void ReloadWhenChanged<T>(IHotReloadable<T> reloadable)
-  {
-    if (Manager.IsHotReloadEnabled)
-    {
-      Manager.WatchForChanges(AssetId, reloadable);
-    }
   }
 }

@@ -59,7 +59,7 @@ public readonly record struct TextureSampler(GraphicsHandle Texture, uint Sample
 /// </summary>
 [AssetType("12ddba3c-ddfd-4c21-80ac-2ef859ae0d24")]
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
-public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : Disposable, IHotReloadable<Texture>
+public sealed class Texture(IGraphicsBackend backend, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : Disposable
 {
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying texture.
@@ -232,10 +232,5 @@ public sealed class Texture(IGraphicsBackend backend, TextureFormat format, Text
     }
 
     base.Dispose(managed);
-  }
-
-  void IHotReloadable<Texture>.OnHotReload(Texture asset)
-  {
-    throw new NotImplementedException();
   }
 }

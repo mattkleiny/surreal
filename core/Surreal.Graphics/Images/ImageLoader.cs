@@ -9,13 +9,20 @@ public sealed class ImageLoader : AssetLoader<Image>
 {
   private static ImmutableHashSet<string> Extensions { get; } = [".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga"];
 
-  public override bool CanHandle(AssetContext context)
+  public override bool CanHandle(AssetId id)
   {
-    return base.CanHandle(context) && Extensions.Contains(context.Path.Extension);
+    return base.CanHandle(id) && Extensions.Contains(id.Path.Extension);
   }
 
-  public override async Task<Image> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<Image> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
-    return await Image.LoadAsync(context.Path, cancellationToken);
+    var image = await Image.LoadAsync(context.Path, cancellationToken);
+
+    context.WhenPathChanged(async reloadToken =>
+    {
+      await image.ReloadAsync(context.Path, reloadToken);
+    });
+
+    return image;
   }
 }

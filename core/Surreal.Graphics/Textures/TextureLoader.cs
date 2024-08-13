@@ -23,12 +23,17 @@ public sealed class TextureLoader(IGraphicsBackend graphics) : AssetLoader<Textu
   /// </summary>
   public TextureLoaderSettings Settings { get; init; } = new();
 
-  public override async Task<Texture> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<Texture> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
-    var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
+    var image = await context.LoadDependencyAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(graphics, Settings.Format, Settings.FilterMode, Settings.WrapMode);
 
-    texture.WritePixels(image);
+    texture.WritePixels(image.Value);
+
+    image.WhenChanged(() =>
+    {
+      texture.WritePixels(image.Value);
+    });
 
     return texture;
   }

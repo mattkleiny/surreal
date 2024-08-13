@@ -65,6 +65,18 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   public GraphicsHandle Handle { get; } = backend.CreateShader();
 
   /// <summary>
+  /// Reloads the shader program from the given path.
+  /// </summary>
+  public async Task ReloadAsync(VirtualPath path, CancellationToken cancellationToken = default)
+  {
+    using var reader = path.OpenInputStreamReader();
+
+    var kernels = await ParseCodeAsync(reader, cancellationToken);
+
+    LinkKernels(kernels);
+  }
+
+  /// <summary>
   /// Links the given <see cref="ShaderKernel"/>s to the program.
   /// </summary>
   private void LinkKernels(ReadOnlySlice<ShaderKernel> kernels)
@@ -141,7 +153,6 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
 
     base.Dispose(managed);
   }
-
 
   /// <summary>
   /// Processes a GLSL program in the given <see cref="TextReader" /> and pre processes it with some useful features.

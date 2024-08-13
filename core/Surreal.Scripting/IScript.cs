@@ -29,12 +29,12 @@ public sealed class ScriptLoader(IScriptParser parser, IScriptCompiler compiler,
   /// </summary>
   public List<IScriptTransformer> Transformers { get; init; } = [];
 
-  public override bool CanHandle(AssetContext context)
+  public override bool CanHandle(AssetId id)
   {
-    return base.CanHandle(context) && _extensions.Contains(context.Path.Extension);
+    return base.CanHandle(id) && _extensions.Contains(id.Path.Extension);
   }
 
-  public override async Task<IScript> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<IScript> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     var baseDeclaration = await parser.ParseScriptAsync(context.Path, cancellationToken);
     var finalDeclaration = await TransformScriptAsync(baseDeclaration, cancellationToken);

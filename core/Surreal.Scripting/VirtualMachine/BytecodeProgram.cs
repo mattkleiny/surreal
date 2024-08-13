@@ -45,7 +45,7 @@ public sealed record BytecodeProgram(string Path) : IScript
 /// </summary>
 public sealed class BytecodeProgramLoader : AssetLoader<BytecodeProgram>
 {
-  public override Task<BytecodeProgram> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override Task<BytecodeProgram> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     throw new NotImplementedException();
   }

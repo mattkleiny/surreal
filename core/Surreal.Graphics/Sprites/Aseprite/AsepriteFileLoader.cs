@@ -8,7 +8,7 @@ namespace Surreal.Graphics.Sprites.Aseprite;
 /// </summary>
 public sealed class AsepriteFileLoader : AssetLoader<AsepriteFile>
 {
-  public override async Task<AsepriteFile> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<AsepriteFile> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     await using var stream = context.Path.OpenInputStream();
 

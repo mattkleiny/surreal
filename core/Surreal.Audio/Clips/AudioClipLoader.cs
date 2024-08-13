@@ -7,7 +7,7 @@ namespace Surreal.Audio.Clips;
 /// </summary>
 public sealed class AudioClipLoader(IAudioBackend backend) : AssetLoader<AudioClip>
 {
-  public override async Task<AudioClip> LoadAsync(AssetContext context, CancellationToken cancellationToken)
+  public override async Task<AudioClip> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     var buffer = await context.LoadAsync<AudioBuffer>(context.Path, cancellationToken);
     var clip = new AudioClip(backend);
