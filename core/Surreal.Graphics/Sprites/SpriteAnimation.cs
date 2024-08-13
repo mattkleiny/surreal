@@ -32,7 +32,7 @@ public sealed class SpriteAnimationSet
 /// <summary>
 /// An <see cref="IAnimationTrack"/> for a <see cref="SpriteAnimation"/>.
 /// </summary>
-public sealed class SpriteAnimationTrack(IAnimationTrackDelegate<SpriteFrame> trackDelegate) : AnimationTrack<SpriteFrame>(trackDelegate)
+public sealed class SpriteAnimationTrack(IProperty<SpriteFrame> property) : KeyFrameAnimationTrack<SpriteFrame>(property)
 {
   /// <summary>
   /// The underlying animation.

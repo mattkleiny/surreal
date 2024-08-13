@@ -5,10 +5,10 @@ namespace Surreal.Animations;
 /// <summary>
 /// A single animation that can be played over time.
 /// </summary>
-public sealed record Animation
+public sealed class Animation
 {
   /// <summary>
-  /// The tracks that make up this animation.
+  /// The individual <see cref="IAnimationTrack"/>s that make up this animation.
   /// </summary>
   public List<IAnimationTrack> Tracks { get; init; } = [];
 
