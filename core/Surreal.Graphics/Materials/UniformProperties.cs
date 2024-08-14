@@ -4,49 +4,49 @@ using Surreal.Graphics.Textures;
 namespace Surreal.Graphics.Materials;
 
 /// <summary>
-/// Indicates that a <see cref="UniformProperty{T}"/> does not exist on a material.
+/// Indicates that a <see cref="ShaderProperty{T}"/> does not exist on a material.
 /// </summary>
-public sealed class InvalidUniformException(string? message = "An invalid uniform was specified") : ApplicationException(message);
+public sealed class InvalidShaderPropertyException(string? message = "An invalid shader property was specified") : ApplicationException(message);
 
 /// <summary>
-/// Commonly used <see cref="UniformProperty{T}"/>s.
+/// Commonly used <see cref="ShaderProperty{T}"/>s.
 /// </summary>
-public static class UniformProperty
+public static class ShaderProperty
 {
-  public static UniformProperty<Matrix4x4> Transform { get; } = new("u_transform");
-  public static UniformProperty<TextureSampler> Texture { get; } = new("u_texture");
-  public static UniformProperty<Color> Color { get; } = new("u_color");
+  public static ShaderProperty<Matrix4x4> Transform { get; } = new("u_transform");
+  public static ShaderProperty<TextureSampler> Texture { get; } = new("u_texture");
+  public static ShaderProperty<Color> Color { get; } = new("u_color");
 }
 
 /// <summary>
-/// A property of a <see cref="Material" />.
+/// A property of a <see cref="Material"/>.
 /// </summary>
 [SuppressMessage("ReSharper", "UnusedTypeParameter")]
-public readonly record struct UniformProperty<T>(string Name)
+public readonly record struct ShaderProperty<T>(string Name)
 {
-  public static implicit operator UniformProperty<T>(string value) => new(value);
+  public static implicit operator ShaderProperty<T>(string value) => new(value);
 }
 
 /// <summary>
-/// A set of <see cref="UniformProperty{T}" />s in a <see cref="Material" />.
+/// A set of <see cref="ShaderProperty{T}"/>s in a <see cref="Material" />.
 /// </summary>
 [DebuggerDisplay("UniformSet ({_uniforms.Count} uniforms)")]
-public sealed class UniformSet : IEnumerable<KeyValuePair<string, Variant>>
+public sealed class ShaderPropertySet : IEnumerable<KeyValuePair<string, Variant>>
 {
   private readonly Dictionary<string, Variant> _uniforms = new();
 
   /// <summary>
-  /// Determines if the material contains the given property.
+  /// Determines if the set contains the given property.
   /// </summary>
-  public bool Contains<T>(UniformProperty<T> property)
+  public bool Contains<T>(ShaderProperty<T> property)
   {
     return _uniforms.ContainsKey(property.Name);
   }
 
   /// <summary>
-  /// Attempts to get a property from the material.
+  /// Attempts to get a property from the set.
   /// </summary>
-  public bool TryGet<T>(UniformProperty<T> property, out T value)
+  public bool TryGet<T>(ShaderProperty<T> property, out T value)
   {
     if (_uniforms.TryGetValue(property.Name, out var variant))
     {
@@ -59,9 +59,9 @@ public sealed class UniformSet : IEnumerable<KeyValuePair<string, Variant>>
   }
 
   /// <summary>
-  /// Attempts to get a property from the material, returning a default value if it does not exist.
+  /// Attempts to get a property from the set, returning a default value if it does not exist.
   /// </summary>
-  public T GetOrDefault<T>(UniformProperty<T> property, T defaultValue = default!)
+  public T GetOrDefault<T>(ShaderProperty<T> property, T defaultValue = default!)
   {
     if (!TryGet(property, out var value))
     {
@@ -72,44 +72,44 @@ public sealed class UniformSet : IEnumerable<KeyValuePair<string, Variant>>
   }
 
   /// <summary>
-  /// Attempts to get a property from the material, throwing if it does not exist.
+  /// Attempts to get a property from the set, throwing if it does not exist.
   /// </summary>
-  public T GetOrThrow<T>(UniformProperty<T> property)
+  public T GetOrThrow<T>(ShaderProperty<T> property)
   {
     if (!TryGet(property, out var value))
     {
-      throw new InvalidUniformException($"Unable to locate uniform {property.Name}");
+      throw new InvalidShaderPropertyException($"Unable to locate uniform {property.Name}");
     }
 
     return value;
   }
 
   /// <summary>
-  /// Adds a property to the material.
+  /// Adds a property to the set.
   /// </summary>
-  public void Add<T>(UniformProperty<T> property, T value)
+  public void Add<T>(ShaderProperty<T> property, T value)
   {
     _uniforms.Add(property.Name, Variant.From(value));
   }
 
   /// <summary>
-  /// Sets a property on the material.
+  /// Sets a property on the set.
   /// </summary>
-  public void Set<T>(UniformProperty<T> property, T value)
+  public void Set<T>(ShaderProperty<T> property, T value)
   {
     _uniforms[property.Name] = Variant.From(value);
   }
 
   /// <summary>
-  /// Removes a property from the material.
+  /// Removes a property from the set.
   /// </summary>
-  public void Remove<T>(UniformProperty<T> property)
+  public void Remove<T>(ShaderProperty<T> property)
   {
     _uniforms.Remove(property.Name);
   }
 
   /// <summary>
-  /// Clears all uniform properties from the material.
+  /// Clears all uniform properties from the set.
   /// </summary>
   public void Clear()
   {

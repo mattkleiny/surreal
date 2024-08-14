@@ -18,7 +18,7 @@ public sealed class SpriteContext(IGraphicsDevice device) : RenderContext
   /// <para/>
   /// If not specified, the identity matrix will be used.
   /// </summary>
-  public UniformProperty<Matrix4x4>? TransformProperty { get; set; }
+  public ShaderProperty<Matrix4x4>? TransformProperty { get; set; }
 
   /// <summary>
   /// The material used by this context.

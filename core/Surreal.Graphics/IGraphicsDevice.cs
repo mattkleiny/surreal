@@ -116,9 +116,10 @@ public interface IGraphicsDevice : IDisposable
     BlitMask mask,
     TextureFilterMode filterMode);
 
-  void BlitToBackBuffer(FrameBufferHandle handle,
+  void BlitToBackBuffer(
+    FrameBufferHandle handle,
     Material material,
-    UniformProperty<TextureSampler> samplerProperty,
+    ShaderProperty<TextureSampler> samplerProperty,
     Optional<TextureFilterMode> filterMode,
     Optional<TextureWrapMode> wrapMode);
 
@@ -332,7 +333,7 @@ public interface IGraphicsDevice : IDisposable
 
     public void BlitToBackBuffer(FrameBufferHandle handle,
       Material material,
-      UniformProperty<TextureSampler> samplerProperty,
+      ShaderProperty<TextureSampler> samplerProperty,
       Optional<TextureFilterMode> filterMode,
       Optional<TextureWrapMode> wrapMode)
     {

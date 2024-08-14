@@ -613,7 +613,7 @@ internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
     }
   }
 
-  public void SetActiveShader(GraphicsHandle handle)
+  void IGraphicsDevice.SetActiveShader(GraphicsHandle handle)
   {
     gl.UseProgram(handle);
   }
@@ -804,7 +804,7 @@ internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
 
   public void BlitToBackBuffer(FrameBufferHandle handle,
     Material material,
-    UniformProperty<TextureSampler> samplerProperty,
+    ShaderProperty<TextureSampler> samplerProperty,
     Optional<TextureFilterMode> filterMode,
     Optional<TextureWrapMode> wrapMode)
   {

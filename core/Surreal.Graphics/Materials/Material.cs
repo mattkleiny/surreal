@@ -82,9 +82,9 @@ public sealed class Material(IGraphicsDevice device, ShaderProgram shader, bool 
   public CullingMode CullingMode { get; set; } = CullingMode.Disabled;
 
   /// <summary>
-  /// The <see cref="UniformSet"/> of the material.
+  /// The <see cref="ShaderPropertySet"/> for the uniforms of the material.
   /// </summary>
-  public UniformSet Uniforms { get; } = new();
+  public ShaderPropertySet Uniforms { get; } = new();
 
   /// <summary>
   /// Applies the material properties to the underlying shader.

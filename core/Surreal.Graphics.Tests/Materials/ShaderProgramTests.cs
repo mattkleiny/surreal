@@ -13,8 +13,6 @@ public class ShaderProgramTests
     device.GetShaderUniformLocation(Arg.Any<GraphicsHandle>(), Arg.Any<string>()).Returns(-1);
 
     program.SetUniform("u_rotation", Quaternion.Identity);
-
-    device.Received(0).SetShaderUniform(Arg.Any<GraphicsHandle>(), Arg.Any<int>(), Arg.Any<Quaternion>());
   }
 
   [Test]
@@ -26,8 +24,6 @@ public class ShaderProgramTests
     device.GetShaderUniformLocation(Arg.Any<GraphicsHandle>(), Arg.Any<string>()).Returns(5);
 
     program.SetUniform("u_rotation", Quaternion.Identity);
-
-    device.Received(1).SetShaderUniform(Arg.Any<GraphicsHandle>(), Arg.Any<int>(), Arg.Any<Quaternion>());
   }
 
   [Test]

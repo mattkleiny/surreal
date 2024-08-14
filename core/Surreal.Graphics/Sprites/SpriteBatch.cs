@@ -41,7 +41,7 @@ public sealed class SpriteBatch : IDisposable
   /// <summary>
   /// The property to use for the texture.
   /// </summary>
-  public UniformProperty<Texture> Texture { get; set; } = new("u_texture");
+  public ShaderProperty<Texture> Texture { get; set; } = new("u_texture");
 
   /// <summary>
   /// The material used by this batch.

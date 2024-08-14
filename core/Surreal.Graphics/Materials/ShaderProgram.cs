@@ -136,7 +136,7 @@ public sealed class ShaderProgram(IGraphicsDevice device) : Disposable
         case VariantType.Object when value.AsObject() is Texture texture: device.SetShaderSampler(Handle, location, texture.Handle, 0u); break;
         case VariantType.Object when value.AsObject() is TextureSampler sampler: device.SetShaderSampler(Handle, location, sampler); break;
 
-        default: throw new InvalidUniformException($"The material property type for {name} is not supported.");
+        default: throw new InvalidShaderPropertyException($"The material property type for {name} is not supported.");
       }
       // @formatter:on
     }
