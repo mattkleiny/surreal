@@ -15,8 +15,8 @@ public sealed class SpriteBatch : IDisposable
   private const int DefaultQuadCount = 200;
   private const int MaximumQuadCount = int.MaxValue / 6;
 
-  private readonly Mesh<Vertex2> _mesh;
-  private readonly IDisposableBuffer<Vertex2> _vertices;
+  private readonly Mesh<SpriteVertex> _mesh;
+  private readonly IDisposableBuffer<SpriteVertex> _vertices;
 
   private Texture? _lastTexture;
   private Material? _material;
@@ -27,8 +27,8 @@ public sealed class SpriteBatch : IDisposable
     Debug.Assert(quadCount > 0);
     Debug.Assert(quadCount <= MaximumQuadCount);
 
-    _vertices = Buffers.AllocateNative<Vertex2>(quadCount * 4);
-    _mesh = new Mesh<Vertex2>(device);
+    _vertices = Buffers.AllocateNative<SpriteVertex>(quadCount * 4);
+    _mesh = new Mesh<SpriteVertex>(device);
 
     CreateIndices(quadCount * 6);
   }
@@ -156,10 +156,10 @@ public sealed class SpriteBatch : IDisposable
   {
     var storage = _vertices.Span[_vertexCount..];
 
-    storage[0] = new Vertex2(vertices[0], color, uv.BottomLeft);
-    storage[1] = new Vertex2(vertices[1], color, uv.TopLeft);
-    storage[2] = new Vertex2(vertices[2], color, uv.TopRight);
-    storage[3] = new Vertex2(vertices[3], color, uv.BottomRight);
+    storage[0] = new SpriteVertex(vertices[0], color, uv.BottomLeft);
+    storage[1] = new SpriteVertex(vertices[1], color, uv.TopLeft);
+    storage[2] = new SpriteVertex(vertices[2], color, uv.TopRight);
+    storage[3] = new SpriteVertex(vertices[3], color, uv.BottomRight);
 
     _vertexCount += 4;
   }
@@ -228,7 +228,7 @@ public sealed class SpriteBatch : IDisposable
   /// A common 2d vertex type for primitive shapes.
   /// </summary>
   [StructLayout(LayoutKind.Sequential)]
-  private record struct Vertex2(Vector2 Position, Color32 Color, Vector2 UV)
+  private record struct SpriteVertex(Vector2 Position, Color32 Color, Vector2 UV)
   {
     [VertexDescriptor(2, VertexType.Float)]
     public Vector2 Position = Position;

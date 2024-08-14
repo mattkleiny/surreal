@@ -27,31 +27,19 @@ public abstract class Mesh : Disposable
   public abstract Size Size { get; }
 
   /// <summary>
-  /// Convenience method for building <see cref="Mesh{TVertex}" />s with a <see cref="Tessellator{TVertex}" />.
-  /// </summary>
-  public static Mesh<TVertex> Create<TVertex>(IGraphicsDevice device, Action<Tessellator<TVertex>> builder)
-    where TVertex : unmanaged
-  {
-    var mesh = new Mesh<TVertex>(device);
-
-    mesh.Tessellate(builder);
-
-    return mesh;
-  }
-
-  /// <summary>
   /// Builds a simple triangle <see cref="Mesh" />.
   /// </summary>
   public static Mesh<Vertex2> CreateTriangle(IGraphicsDevice device, float size = 1f)
   {
-    return Create<Vertex2>(device, tessellator =>
-    {
-      tessellator.AddTriangle(
-        new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 0f)),
-        new Vertex2(new Vector2(0f, size), Color.White, new Vector2(0.5f, 1f)),
-        new Vertex2(new Vector2(size, -size), Color.White, new Vector2(1f, 0f))
-      );
-    });
+    var tessellator = new MeshTessellator<Vertex2>();
+
+    tessellator.AddTriangle(
+      new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 0f)),
+      new Vertex2(new Vector2(0f, size), Color.White, new Vector2(0.5f, 1f)),
+      new Vertex2(new Vector2(size, -size), Color.White, new Vector2(1f, 0f))
+    );
+
+    return tessellator.ToMesh(device);
   }
 
   /// <summary>
@@ -59,15 +47,16 @@ public abstract class Mesh : Disposable
   /// </summary>
   public static Mesh<Vertex2> CreateQuad(IGraphicsDevice device, float size = 1f)
   {
-    return Create<Vertex2>(device, tessellator =>
-    {
-      tessellator.AddQuad(
-        new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 1f)),
-        new Vertex2(new Vector2(-size, size), Color.White, new Vector2(0f, 0f)),
-        new Vertex2(new Vector2(size, size), Color.White, new Vector2(1f, 0f)),
-        new Vertex2(new Vector2(size, -size), Color.White, new Vector2(1f, 1f))
-      );
-    });
+    var tessellator = new MeshTessellator<Vertex2>();
+
+    tessellator.AddQuad(
+      new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 1f)),
+      new Vertex2(new Vector2(-size, size), Color.White, new Vector2(0f, 0f)),
+      new Vertex2(new Vector2(size, size), Color.White, new Vector2(1f, 0f)),
+      new Vertex2(new Vector2(size, -size), Color.White, new Vector2(1f, 1f))
+    );
+
+    return tessellator.ToMesh(device);
   }
 
   /// <summary>
@@ -75,29 +64,30 @@ public abstract class Mesh : Disposable
   /// </summary>
   public static Mesh<Vertex2> CreateCircle(IGraphicsDevice device, float radius = 1f, int segments = 16)
   {
-    return Create<Vertex2>(device, tessellator =>
+    var tessellator = new MeshTessellator<Vertex2>();
+
+    var vertices = new SpanList<Vertex2>(stackalloc Vertex2[segments]);
+    var theta = 0f;
+
+    for (var i = 0; i < segments; i++)
     {
-      var vertices = new SpanList<Vertex2>(stackalloc Vertex2[segments]);
-      var theta = 0f;
+      theta += 2 * MathF.PI / segments;
 
-      for (var i = 0; i < segments; i++)
-      {
-        theta += 2 * MathF.PI / segments;
+      var cos = MathF.Cos(theta);
+      var sin = MathF.Sin(theta);
 
-        var cos = MathF.Cos(theta);
-        var sin = MathF.Sin(theta);
+      var x = radius * cos;
+      var y = radius * sin;
 
-        var x = radius * cos;
-        var y = radius * sin;
+      var u = (cos + 1f) / 2f;
+      var v = (sin + 1f) / 2f;
 
-        var u = (cos + 1f) / 2f;
-        var v = (sin + 1f) / 2f;
+      vertices.Add(new Vertex2(new Vector2(x, y), Color.White, new Vector2(u, v)));
+    }
 
-        vertices.Add(new Vertex2(new Vector2(x, y), Color.White, new Vector2(u, v)));
-      }
+    tessellator.AddTriangleFan(vertices);
 
-      tessellator.AddTriangleFan(vertices);
-    });
+    return tessellator.ToMesh(device);
   }
 
   /// <summary>
@@ -105,62 +95,62 @@ public abstract class Mesh : Disposable
   /// </summary>
   public static Mesh<Vertex3> CreateCube(IGraphicsDevice device, float size = 1f)
   {
-    return Create<Vertex3>(device, tessellator =>
-    {
-      // build a cube mesh from 6 faces
-      var vertices = new SpanList<Vertex3>(stackalloc Vertex3[6]);
+    var tessellator = new MeshTessellator<Vertex3>();
 
-      // front
-      vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(0f, 0f)));
-      vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(0f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(1f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(1f, 0f)));
+    var vertices = new SpanList<Vertex3>(stackalloc Vertex3[6]);
 
-      tessellator.AddTriangleFan(vertices);
-      vertices.Clear();
+    // front
+    vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(0f, 0f)));
+    vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(0f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(1f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(1f, 0f)));
 
-      // back
-      vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(0f, 0f)));
-      vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(0f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(1f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(1f, 0f)));
+    tessellator.AddTriangleFan(vertices);
+    vertices.Clear();
 
-      tessellator.AddTriangleFan(vertices);
-      vertices.Clear();
+    // back
+    vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(0f, 0f)));
+    vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(0f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(1f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(1f, 0f)));
 
-      // left
-      vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(0f, 0f)));
-      vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(0f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(1f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(1f, 0f)));
+    tessellator.AddTriangleFan(vertices);
+    vertices.Clear();
 
-      tessellator.AddTriangleFan(vertices);
-      vertices.Clear();
+    // left
+    vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(0f, 0f)));
+    vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(0f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(1f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(1f, 0f)));
 
-      // right
-      vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(0f, 0f)));
-      vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(0f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(1f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(1f, 0f)));
+    tessellator.AddTriangleFan(vertices);
+    vertices.Clear();
 
-      tessellator.AddTriangleFan(vertices);
-      vertices.Clear();
+    // right
+    vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(0f, 0f)));
+    vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(0f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(1f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(1f, 0f)));
 
-      // top
-      vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(0f, 0f)));
-      vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(0f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(1f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(1f, 0f)));
+    tessellator.AddTriangleFan(vertices);
+    vertices.Clear();
 
-      tessellator.AddTriangleFan(vertices);
-      vertices.Clear();
+    // top
+    vertices.Add(new Vertex3(new Vector3(-size, size, size), Color.White, new Vector2(0f, 0f)));
+    vertices.Add(new Vertex3(new Vector3(-size, size, -size), Color.White, new Vector2(0f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, size, -size), Color.White, new Vector2(1f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, size, size), Color.White, new Vector2(1f, 0f)));
 
-      // bottom
-      vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(0f, 0f)));
-      vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(0f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(1f, 1f)));
-      vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(1f, 0f)));
-    });
+    tessellator.AddTriangleFan(vertices);
+    vertices.Clear();
+
+    // bottom
+    vertices.Add(new Vertex3(new Vector3(-size, -size, -size), Color.White, new Vector2(0f, 0f)));
+    vertices.Add(new Vertex3(new Vector3(-size, -size, size), Color.White, new Vector2(0f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, -size, size), Color.White, new Vector2(1f, 1f)));
+    vertices.Add(new Vertex3(new Vector3(size, -size, -size), Color.White, new Vector2(1f, 0f)));
+
+    return tessellator.ToMesh(device);
   }
 
   /// <summary>
@@ -220,18 +210,6 @@ public sealed class Mesh<TVertex> : Mesh
 
   /// <inheritdoc/>
   public override Size Size => Vertices.Size + Indices.Size;
-
-  /// <summary>
-  /// Tessellates a shape given by a <see cref="Tessellator{TVertex}" /> into this <see cref="Mesh{TVertex}" />.
-  /// </summary>
-  public void Tessellate(Action<Tessellator<TVertex>> builder)
-  {
-    var tessellator = new Tessellator<TVertex>();
-
-    builder(tessellator);
-
-    tessellator.WriteTo(this);
-  }
 
   /// <inheritdoc/>
   public override void Draw(Material material, MeshType type = MeshType.Triangles)

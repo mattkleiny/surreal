@@ -5,7 +5,7 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>
 /// A utility for tessellating shapes into meshes of vertex geometry.
 /// </summary>
-public sealed class Tessellator<TVertex>
+public sealed class MeshTessellator<TVertex>
   where TVertex : unmanaged
 {
   private readonly List<uint> _indices = [];
@@ -47,17 +47,29 @@ public sealed class Tessellator<TVertex>
     mesh.Vertices.Write(_vertices.AsSpan());
     mesh.Indices.Write(_indices.AsSpan());
   }
+
+  /// <summary>
+  /// Creates a <see cref="Mesh{TVertex}"/> from the tessellator.
+  /// </summary>
+  public Mesh<TVertex> ToMesh(IGraphicsDevice device, BufferUsage usage = BufferUsage.Static)
+  {
+    var mesh = new Mesh<TVertex>(device, usage);
+
+    WriteTo(mesh);
+
+    return mesh;
+  }
 }
 
 /// <summary>
-/// Common extensions for <see cref="Tessellator{TVertex}" />s.
+/// Common extensions for <see cref="MeshTessellator{TVertex}" />s.
 /// </summary>
-public static class TessellatorExtensions
+public static class MeshTessellatorExtensions
 {
   /// <summary>
   /// Adds a simple line.
   /// </summary>
-  public static void AddLine<TVertex>(this Tessellator<TVertex> tessellator, TVertex a, TVertex b)
+  public static void AddLine<TVertex>(this MeshTessellator<TVertex> tessellator, TVertex a, TVertex b)
     where TVertex : unmanaged
   {
     var offset = tessellator.VertexCount;
@@ -73,7 +85,7 @@ public static class TessellatorExtensions
   /// <summary>
   /// Adds a simple triangle.
   /// </summary>
-  public static void AddTriangle<TVertex>(this Tessellator<TVertex> tessellator, TVertex a, TVertex b, TVertex c)
+  public static void AddTriangle<TVertex>(this MeshTessellator<TVertex> tessellator, TVertex a, TVertex b, TVertex c)
     where TVertex : unmanaged
   {
     var offset = tessellator.VertexCount;
@@ -90,7 +102,7 @@ public static class TessellatorExtensions
   /// <summary>
   /// Adds a fan of triangles, starting at the first vertex.
   /// </summary>
-  public static void AddTriangleFan<TVertex>(this Tessellator<TVertex> tessellator, ReadOnlySpan<TVertex> vertices)
+  public static void AddTriangleFan<TVertex>(this MeshTessellator<TVertex> tessellator, ReadOnlySpan<TVertex> vertices)
     where TVertex : unmanaged
   {
     var first = tessellator.VertexCount;
@@ -113,7 +125,7 @@ public static class TessellatorExtensions
   /// <summary>
   /// Adds a quad formed from 2 triangles.
   /// </summary>
-  public static void AddQuad<TVertex>(this Tessellator<TVertex> tessellator, TVertex a, TVertex b, TVertex c, TVertex d)
+  public static void AddQuad<TVertex>(this MeshTessellator<TVertex> tessellator, TVertex a, TVertex b, TVertex c, TVertex d)
     where TVertex : unmanaged
   {
     var offset = tessellator.VertexCount;
