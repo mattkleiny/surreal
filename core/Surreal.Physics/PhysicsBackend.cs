@@ -15,7 +15,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
   public IPhysicsWorld3d CreatePhysicsWorld3d()
   {
-    throw new NotImplementedException();
+    return new PhysicsWorld3d();
   }
 
   /// <summary>
@@ -26,7 +26,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     private const float BodyRadius = 5f;
     private const float WorldRadius = 80f;
 
-    private readonly Arena<VerletBody> _bodies = [];
+    private readonly Arena<Body> _bodies = [];
 
     /// <summary>
     /// The number of iterations to perform per tick.
@@ -59,7 +59,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     {
       var position = Vector2.Zero;
 
-      foreach (ref var body in _bodies)
+      foreach (var body in _bodies)
       {
         var delta = body.CurrentPosition - position;
         var distance = delta.Length();
@@ -73,12 +73,12 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       }
     }
 
-    private unsafe void ApplyCollisions()
+    private void ApplyCollisions()
     {
-      foreach (ref var a in _bodies)
-      foreach (ref var b in _bodies)
+      foreach (var a in _bodies)
+      foreach (var b in _bodies)
       {
-        if (Unsafe.AsPointer(ref a) == Unsafe.AsPointer(ref b))
+        if (a == b)
           continue;
 
         var axis = a.CurrentPosition - b.CurrentPosition;
@@ -97,20 +97,20 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
     private void ApplyVerlet(float deltaTime)
     {
-      foreach (ref var body in _bodies)
+      foreach (var body in _bodies)
       {
         var velocity = body.CurrentPosition - body.PreviousPosition;
 
-        body.PreviousPosition =  body.CurrentPosition;
-        body.CurrentPosition  += velocity + Gravity * (deltaTime * deltaTime);
+        body.PreviousPosition = body.CurrentPosition;
+        body.CurrentPosition += velocity + Gravity * (deltaTime * deltaTime);
       }
     }
 
     public PhysicsHandle CreateBody(Vector2 initialPosition)
     {
-      var index = _bodies.Add(new VerletBody
+      var index = _bodies.Add(new Body
       {
-        CurrentPosition  = initialPosition,
+        CurrentPosition = initialPosition,
         PreviousPosition = initialPosition
       });
 
@@ -127,13 +127,56 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       _bodies.Remove(handle);
     }
 
-    /// <summary>
-    /// A simple verlet body for the 2d physics world.
-    /// </summary>
-    private struct VerletBody
+    private sealed class Body
     {
       public Vector2 PreviousPosition;
       public Vector2 CurrentPosition;
+    }
+  }
+
+  /// <summary>
+  /// The <see cref="IPhysicsWorld3d"/> implementation for this backend.
+  /// </summary>
+  private sealed class PhysicsWorld3d : IPhysicsWorld3d
+  {
+    private readonly Arena<Body> _bodies = [];
+
+    public Vector3 Gravity { get; set; }
+
+    /// <inheritdoc/>
+    public void Tick(DeltaTime deltaTime)
+    {
+    }
+
+    /// <inheritdoc/>
+    public void Reset()
+    {
+      _bodies.Clear();
+    }
+
+    public PhysicsHandle CreateBody(Vector3 initialPosition)
+    {
+      var index = _bodies.Add(new Body
+      {
+        Position = initialPosition
+      });
+
+      return PhysicsHandle.FromArenaIndex(index);
+    }
+
+    public Vector3 GetBodyPosition(PhysicsHandle handle)
+    {
+      return _bodies[handle].Position;
+    }
+
+    public void DeleteBody(PhysicsHandle handle)
+    {
+      _bodies.Remove(handle);
+    }
+
+    private sealed class Body
+    {
+      public Vector3 Position;
     }
   }
 }

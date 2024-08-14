@@ -9,21 +9,15 @@ namespace Surreal;
 public delegate void PropertyEventHandler(object sender, string name);
 
 /// <summary>
-/// Allows listening to changes in a property value.
+/// A property that can be listened to for changes.
 /// </summary>
-public interface IPropertyChangingEvents
+public interface IProperty
 {
   /// <summary>
   /// Notifies listeners of dynamic changes to a property value,
   /// </summary>
   event PropertyEventHandler? PropertyChanging;
-}
 
-/// <summary>
-/// Allows listening to changes in a property value.
-/// </summary>
-public interface IPropertyChangedEvents
-{
   /// <summary>
   /// Notifies listeners of dynamic changes to a property value,
   /// </summary>

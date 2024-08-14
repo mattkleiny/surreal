@@ -6,7 +6,7 @@ namespace Surreal.Networking;
 /// A <see cref="IServiceModule"/> for the networking system.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public sealed class NetworkModule : IServiceModule
+public sealed class NetworkingModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {

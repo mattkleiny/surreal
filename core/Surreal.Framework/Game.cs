@@ -52,7 +52,7 @@ public sealed record GameConfiguration
     new AudioModule(),
     new GraphicsModule(),
     new InputModule(),
-    new NetworkModule(),
+    new NetworkingModule(),
     new PhysicsModule(),
     new ScriptingModule()
   ];

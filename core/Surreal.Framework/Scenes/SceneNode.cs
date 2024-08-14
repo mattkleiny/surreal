@@ -8,7 +8,7 @@ namespace Surreal.Scenes;
 /// <summary>
 /// A single node in a scene tree.
 /// </summary>
-public class SceneNode : IEnumerable<SceneNode>, IPropertyChangingEvents, IPropertyChangedEvents, IDisposable
+public class SceneNode : IEnumerable<SceneNode>, IDisposable
 {
   private SceneNodeStates _states = SceneNodeStates.Dormant;
   private ISceneRoot? _root;

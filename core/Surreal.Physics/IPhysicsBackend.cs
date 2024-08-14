@@ -7,7 +7,16 @@ namespace Surreal.Physics;
 /// </summary>
 public interface IPhysicsBackend
 {
+  static IPhysicsBackend Null { get; } = new NullPhysicsBackend();
+
+  /// <summary>
+  /// Creates a new <see cref="IPhysicsWorld3d"/>.
+  /// </summary>
   IPhysicsWorld2d CreatePhysicsWorld2d();
+
+  /// <summary>
+  /// Creates a new <see cref="IPhysicsWorld3d"/>.
+  /// </summary>
   IPhysicsWorld3d CreatePhysicsWorld3d();
 }
 
