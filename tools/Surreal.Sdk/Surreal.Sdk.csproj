@@ -17,14 +17,14 @@
   <ItemGroup>
     <None Include="Sdk.props" Pack="true" PackagePath="Sdk" />
     <None Include="Sdk.targets" Pack="true" PackagePath="Sdk" />
-    <None Include="Versions.props" Pack="true" PackagePath="Sdk" />
+    <None Include="SdkVersions.props" Pack="true" PackagePath="Sdk" />
   </ItemGroup>
 
   <Target Name="WriteBuildProperties" BeforeTargets="Build">
-    <WriteLinesToFile File="Versions.props" Overwrite="true"  Lines="&lt;Project&gt;" />
-    <WriteLinesToFile File="Versions.props" Overwrite="false" Lines="  &lt;PropertyGroup&gt;" />
-    <WriteLinesToFile File="Versions.props" Overwrite="false" Lines="    &lt;SurrealVersion&gt;$(Version)&lt;/SurrealVersion&gt;" />
-    <WriteLinesToFile File="Versions.props" Overwrite="false" Lines="  &lt;/PropertyGroup&gt;" />
-    <WriteLinesToFile File="Versions.props" Overwrite="false" Lines="&lt;/Project&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="true"  Lines="&lt;Project&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="  &lt;PropertyGroup&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="    &lt;SurrealVersion&gt;$(Version)&lt;/SurrealVersion&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="  &lt;/PropertyGroup&gt;" />
+    <WriteLinesToFile File="SdkVersions.props" Overwrite="false" Lines="&lt;/Project&gt;" />
   </Target>
 </Project>
