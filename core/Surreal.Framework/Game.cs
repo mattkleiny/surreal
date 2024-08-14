@@ -204,7 +204,7 @@ public class Game : IDisposable
 
     game.Services.Initialize();
 
-    Log.Trace("Running main event pump");
+    Log.Trace("Running main event loop");
 
     while (!game.Host.IsClosing && !game.IsClosing)
     {
@@ -213,6 +213,10 @@ public class Game : IDisposable
     }
 
     Callbacks.Clear();
+
+    Log.Trace("Exiting main event loop");
+    Log.Trace("Completed successfully");
+
     return 0;
   }
 
@@ -277,7 +281,7 @@ public class Game : IDisposable
 
       game.Services.Initialize();
 
-      Log.Trace("Running main event pump");
+      Log.Trace("Running main event loop");
 
       while (!game.Host.IsClosing && !game.IsClosing)
       {
@@ -285,12 +289,16 @@ public class Game : IDisposable
         PumpEventLoop();
       }
 
+      Log.Trace("Exiting main event loop");
+
       Callbacks.Clear();
     }
     finally
     {
       context.OnStopped();
     }
+
+    Log.Trace("Completed successfully");
 
     return 0;
   }

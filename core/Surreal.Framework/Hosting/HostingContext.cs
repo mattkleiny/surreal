@@ -6,9 +6,9 @@ using Surreal.Hosting;
 namespace Surreal.Hosting;
 
 /// <summary>
-/// Permits hosting of a project inside of another context.
+/// Permits hosting of a project inside another context.
 /// <para/>
-/// This is mainly used to facilitate executing of a game inside of the editor.
+/// This is mainly used to facilitate executing of a game inside the editor.
 /// </summary>
 public abstract class HostingContext
 {

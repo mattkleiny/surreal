@@ -51,6 +51,7 @@ public class CameraViewport : SceneNode, IRenderViewport
   /// </summary>
   public bool TryGetActiveCamera([MaybeNullWhen(false)] out ICamera camera)
   {
+    // TODO: blend between the active cameras?
     camera = ActiveCameras.First?.Value;
 
     return camera != null;

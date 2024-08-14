@@ -8,7 +8,7 @@ namespace Surreal.Scenes.Spatial;
 /// <summary>
 /// A node which renders a mesh.
 /// </summary>
-public class MeshNode3D : SceneNode3D, ICullableObject, IRenderObject
+public class MeshNode3D : Node3D, ICullableObject, IRenderObject
 {
   private Mesh? _mesh;
   private Material? _material;

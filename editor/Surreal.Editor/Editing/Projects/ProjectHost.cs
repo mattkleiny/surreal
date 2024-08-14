@@ -9,7 +9,7 @@ namespace Surreal.Editing.Projects;
 public abstract class ProjectHost
 {
   /// <summary>
-  /// Creates a in-process <see cref="ProjectHost"/> from the given <see cref="Assembly"/>.
+  /// Creates an in-process <see cref="ProjectHost"/> from the given <see cref="Assembly"/>.
   /// <para/>
   /// It's expected that the assembly contains a static entry point method.
   /// </summary>

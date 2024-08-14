@@ -35,14 +35,14 @@ internal sealed class GameViewportDisplay : OpenGlControlBase
   public delegate void RenderCallback(GlInterface gl, GraphicsHandle frameBuffer);
 
   /// <summary>
-  /// The Silk.NET OpenGL interface.
-  /// </summary>
-  public GL? OpenGL { get; private set; }
-
-  /// <summary>
   /// Invoked when the control is rendered.
   /// </summary>
   public event RenderCallback? Rendering;
+
+  /// <summary>
+  /// The Silk.NET OpenGL interface.
+  /// </summary>
+  public GL? OpenGL { get; private set; }
 
   protected override void OnOpenGlInit(GlInterface gl)
   {
