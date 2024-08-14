@@ -1,6 +1,5 @@
 ﻿using ImGuiNET;
 using Silk.NET.OpenGL.Extensions.ImGui;
-using Surreal.Debugging;
 using Surreal.Graphics;
 using Surreal.Timing;
 

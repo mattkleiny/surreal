@@ -125,8 +125,8 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// </summary>
   protected sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
   {
-    private readonly Material _gizmoMaterial = new(backend, ShaderProgram.LoadDefaultWireShader(backend));
-    private readonly GeometryBatch _geometryBatch = new(backend);
+    private readonly Material _material = new(backend, ShaderProgram.LoadDefaultWireShader(backend));
+    private readonly GeometryBatch _batch = new(backend);
 
     public override bool IsEnabled => pipeline.EnableGizmos;
 
@@ -134,26 +134,20 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
     {
       base.OnExecutePass(in frame, viewport);
 
-      _gizmoMaterial.Uniforms.Set("u_transform", viewport.ProjectionView);
-
-      _geometryBatch.Material = _gizmoMaterial;
-
-      if (viewport is IGizmoObject viewportGizmos)
-      {
-        viewportGizmos.RenderGizmos(_geometryBatch);
-      }
+      _material.Uniforms.Set("u_transform", viewport.ProjectionView);
+      _batch.Material = _material;
 
       foreach (var gizmoObject in viewport.CullVisibleObjects<IGizmoObject>())
       {
-        gizmoObject.RenderGizmos(_geometryBatch);
+        gizmoObject.RenderGizmos(_batch);
       }
 
-      _geometryBatch.Flush();
+      _batch.Flush();
     }
 
     public override void Dispose()
     {
-      _geometryBatch.Dispose();
+      _batch.Dispose();
 
       base.Dispose();
     }

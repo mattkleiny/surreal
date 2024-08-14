@@ -27,8 +27,6 @@ public sealed class SpriteBatch : IDisposable
     Debug.Assert(quadCount > 0);
     Debug.Assert(quadCount <= MaximumQuadCount);
 
-    Backend = backend;
-
     _vertices = Buffers.AllocateNative<Vertex2>(quadCount * 4);
     _mesh = new Mesh<Vertex2>(backend);
 
@@ -39,11 +37,6 @@ public sealed class SpriteBatch : IDisposable
   /// Invoked when the batch is flushed.
   /// </summary>
   public event Action? Flushed;
-
-  /// <summary>
-  /// The underlying <see cref="IGraphicsBackend" />.
-  /// </summary>
-  public IGraphicsBackend Backend { get; }
 
   /// <summary>
   /// The property to use for the texture.

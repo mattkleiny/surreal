@@ -19,16 +19,18 @@ public class PixelCanvas : IDisposable
 
   public PixelCanvas(IGraphicsBackend backend, int width, int height)
   {
-    _pixels = new DenseGrid<Color32>(width, height, Color32.Clear);
-
     _mesh = Mesh.CreateQuad(backend);
+
+    _pixels = new DenseGrid<Color32>(width, height, Color32.Clear);
     _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
     _material = new Material(backend, ShaderProgram.LoadDefaultCanvasShader(backend))
     {
-      BlendState = BlendState.OneMinusSourceAlpha
+      BlendState = BlendState.OneMinusSourceAlpha,
+      Uniforms =
+      {
+        { "u_texture", _texture }
+      }
     };
-
-    _material.Uniforms.Set("u_texture", _texture);
   }
 
   /// <summary>

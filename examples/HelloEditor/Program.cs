@@ -1,4 +1,5 @@
-﻿using Surreal.Editing.Projects;
+﻿using HelloEditor.Workloads;
+using Surreal.Editing.Projects;
 
 return Editor.Start(new EditorConfiguration
 {
@@ -6,5 +7,9 @@ return Editor.Start(new EditorConfiguration
   DefaultProject = new EditorProject(Environment.CurrentDirectory)
   {
     Host = ProjectHost.InProcess(Assembly.Load("Fractals"))
-  }
+  },
+  Workloads =
+  [
+    new TestWorkload()
+  ]
 });

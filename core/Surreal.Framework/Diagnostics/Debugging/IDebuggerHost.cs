@@ -1,4 +1,4 @@
-﻿namespace Surreal.Debugging;
+﻿namespace Surreal.Diagnostics.Debugging;
 
 /// <summary>
 /// A host for debugging and interprocess communication.

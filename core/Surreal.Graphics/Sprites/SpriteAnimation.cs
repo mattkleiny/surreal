@@ -1,7 +1,4 @@
-using System.Linq.Expressions;
 using Surreal.Animations;
-using Surreal.Timing;
-using Surreal.Utilities;
 
 namespace Surreal.Graphics.Sprites;
 

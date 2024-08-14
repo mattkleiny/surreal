@@ -1,7 +1,7 @@
 ﻿using Surreal.Reactive;
 using TinyIpc.Messaging;
 
-namespace Surreal.Debugging;
+namespace Surreal.Diagnostics.Debugging;
 
 // TODO: replace TinyIpc with something even lighter
 

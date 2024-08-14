@@ -157,9 +157,6 @@ public class Game : IDisposable
 
     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
-    // use the base directory as the current directory
-    Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
-
     // prepare core services
     var startTime = TimeStamp.Now;
 
