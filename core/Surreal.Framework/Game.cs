@@ -81,7 +81,7 @@ public class Game : IDisposable
   /// </summary>
   public static int Start(GameConfiguration configuration, Delegate setup)
   {
-    return Run(configuration, GameHostingContext.Current, async game =>
+    return Run(configuration, GameContext.Current, async game =>
     {
       var result = game.Services.ExecuteDelegate(setup, game);
       if (result is Task task)
@@ -92,10 +92,10 @@ public class Game : IDisposable
   }
 
   /// <summary>
-  /// Runs this game inside a <see cref="GameHostingContext"/>.
+  /// Runs this game inside a <see cref="GameContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  private static int Run(GameConfiguration configuration, GameHostingContext context, Func<Game, Task> gameSetup)
+  private static int Run(GameConfiguration configuration, GameContext context, Func<Game, Task> gameSetup)
   {
     try
     {
@@ -119,11 +119,20 @@ public class Game : IDisposable
       }
 
       // create the main devices and register them
-      using var audioDevice = services.GetServiceOrThrow<IAudioBackend>().CreateDevice();
-      using var graphicsDevice = services.GetServiceOrThrow<IGraphicsBackend>().CreateDevice();
+      var audioBackend = services.GetServiceOrThrow<IAudioBackend>();
+      var graphicsBackend = services.GetServiceOrThrow<IGraphicsBackend>();
+      var inputBackend = services.GetServiceOrThrow<IInputBackend>();
+
+      using var audioDevice = audioBackend.CreateDevice();
+      using var graphicsDevice = graphicsBackend.CreateDevice();
 
       services.AddService(audioDevice);
       services.AddService(graphicsDevice);
+
+      foreach (var device in inputBackend.CreateDevices())
+      {
+        services.AddService(device.Type, device);
+      }
 
       // register asset loaders
       foreach (var loader in services.GetServices<IAssetLoader>())

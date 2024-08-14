@@ -14,9 +14,9 @@ public interface IInputBackend
   static IInputBackend Null { get; } = new NullInputBackend();
 
   /// <summary>
-  /// All the attached <see cref="IInputDevice" />s.
+  /// Creates all the attached <see cref="IInputDevice" />s.
   /// </summary>
-  IEnumerable<IInputDevice> DiscoverAllDevices();
+  IEnumerable<IInputDevice> CreateDevices();
 
   /// <summary>
   /// A no-op <see cref="IInputBackend" /> for headless environments and testing.
@@ -32,6 +32,6 @@ public interface IInputBackend
       _devices.Add(IMouseDevice.Null);
     }
 
-    public IEnumerable<IInputDevice> DiscoverAllDevices() => _devices;
+    public IEnumerable<IInputDevice> CreateDevices() => _devices;
   }
 }

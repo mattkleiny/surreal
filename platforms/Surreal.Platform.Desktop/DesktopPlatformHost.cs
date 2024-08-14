@@ -92,12 +92,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IAudioBackend>(AudioBackend);
     services.AddService<IGraphicsBackend>(GraphicsBackend);
     services.AddService<IInputBackend>(InputBackend);
-
-    foreach (var device in InputBackend.DiscoverAllDevices())
-    {
-      services.AddService(device);
-      services.AddService(device.Type, device);
-    }
   }
 
   public void BeginFrame(DeltaTime deltaTime)

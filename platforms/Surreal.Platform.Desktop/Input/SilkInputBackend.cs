@@ -9,7 +9,7 @@ internal sealed class SilkInputBackend(IWindow window, IInputContext context) : 
   private readonly SilkMouseDevice _mouseDevice = new(window, context.Mice.Single());
 
   /// <inheritdoc/>
-  public IEnumerable<IInputDevice> DiscoverAllDevices()
+  public IEnumerable<IInputDevice> CreateDevices()
   {
     return
     [

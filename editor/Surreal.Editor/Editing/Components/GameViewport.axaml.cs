@@ -61,7 +61,7 @@ internal sealed class GameViewportDisplay : OpenGlControlBase
 /// </summary>
 internal sealed class GameViewportViewModel : EditorViewModel
 {
-  private readonly GameHostingContext _context;
+  private readonly GameContext _context;
   private bool _isRunning;
 
   public GameViewportViewModel(GameViewport viewport)
@@ -108,9 +108,9 @@ internal sealed class GameViewportViewModel : EditorViewModel
   }
 
   /// <summary>
-  /// The <see cref="GameHostingContext"/> for the main window.
+  /// The <see cref="GameContext"/> for the main window.
   /// </summary>
-  private sealed class EditorHostingContext(GameViewportViewModel owner) : GameHostingContext
+  private sealed class EditorHostingContext(GameViewportViewModel owner) : GameContext
   {
     /// <inheritdoc/>
     public override IPlatformHost PlatformHost { get; } = new EditorPlatformHost(owner);

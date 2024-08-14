@@ -204,6 +204,9 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     return methodInfo.Invoke(@delegate.Target, parameters);
   }
 
+  /// <summary>
+  /// Instantiates an object of the given type, resolving its dependencies from the container.
+  /// </summary>
   public object Instantiate(Type serviceType)
   {
     var constructors = serviceType
