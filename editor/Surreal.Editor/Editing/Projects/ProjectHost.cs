@@ -1,5 +1,4 @@
-﻿using Surreal.Hosting;
-using Surreal.Threading;
+﻿using Surreal.Threading;
 
 namespace Surreal.Editing.Projects;
 
@@ -43,7 +42,7 @@ public abstract class ProjectHost
   /// <summary>
   /// Starts the project and returns a task that represents it's execution.
   /// </summary>
-  public abstract Task StartAsync(HostingContext context, CancellationToken cancellationToken = default);
+  public abstract Task StartAsync(GameHostingContext context, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// A <see cref="ProjectHost"/> that uses an <see cref="Assembly"/> as the entry point.
@@ -51,7 +50,7 @@ public abstract class ProjectHost
   private sealed class InProcessHost(MethodBase entryPoint) : ProjectHost
   {
     /// <inheritdoc/>
-    public override Task StartAsync(HostingContext context, CancellationToken cancellationToken = default)
+    public override Task StartAsync(GameHostingContext context, CancellationToken cancellationToken = default)
     {
       var options = new ThreadOptions
       {
@@ -63,7 +62,7 @@ public abstract class ProjectHost
 
       return ThreadFactory.Create(options, async () =>
       {
-        HostingContext.Current = context;
+        GameHostingContext.Current = context;
 
         cancellationToken.Register(context.NotifyCancelled);
 
@@ -82,7 +81,7 @@ public abstract class ProjectHost
         {
           IsRunning = false;
 
-          HostingContext.Current = HostingContext.Null;
+          GameHostingContext.Current = GameHostingContext.Null;
         }
       });
     }

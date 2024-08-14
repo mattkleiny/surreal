@@ -1,28 +1,28 @@
 ﻿using System.Reflection.Metadata;
-using Surreal.Hosting;
+using Surreal;
 
-[assembly: MetadataUpdateHandler(typeof(HostingContext))]
+[assembly: MetadataUpdateHandler(typeof(GameHostingContext))]
 
-namespace Surreal.Hosting;
+namespace Surreal;
 
 /// <summary>
 /// Permits hosting of a project inside another context.
 /// <para/>
 /// This is mainly used to facilitate executing of a game inside the editor.
 /// </summary>
-public abstract class HostingContext
+public abstract class GameHostingContext
 {
-  private static ThreadLocal<HostingContext?> ThreadLocalContext { get; } = new();
+  private static ThreadLocal<GameHostingContext?> ThreadLocalContext { get; } = new();
 
   /// <summary>
-  /// A no-op <see cref="HostingContext"/>.
+  /// A no-op <see cref="GameHostingContext"/>.
   /// </summary>
-  public static HostingContext Null { get; } = new NullHostingContext();
+  public static GameHostingContext Null { get; } = new NullHostingContext();
 
   /// <summary>
-  /// The active <see cref="HostingContext"/>.
+  /// The active <see cref="GameHostingContext"/>.
   /// </summary>
-  public static HostingContext Current
+  public static GameHostingContext Current
   {
     get => ThreadLocalContext.Value ?? Null;
     set => ThreadLocalContext.Value = value;
@@ -54,10 +54,10 @@ public abstract class HostingContext
   }
 
   /// <summary>
-  /// A no-op <see cref="HostingContext"/>.
+  /// A no-op <see cref="GameHostingContext"/>.
   /// </summary>
   [ExcludeFromCodeCoverage]
-  private sealed class NullHostingContext : HostingContext
+  private sealed class NullHostingContext : GameHostingContext
   {
     public override IPlatformHost? PlatformHost => null;
 

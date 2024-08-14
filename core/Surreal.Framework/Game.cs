@@ -1,10 +1,8 @@
-﻿using System.Runtime;
-using Surreal.Assets;
+﻿using Surreal.Assets;
 using Surreal.Audio;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Graphics;
-using Surreal.Hosting;
 using Surreal.Input;
 using Surreal.Networking;
 using Surreal.Physics;
@@ -17,7 +15,6 @@ namespace Surreal;
 /// <summary>
 /// A timing snapshot for the main game loop.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public readonly record struct GameTime
 {
   /// <summary>
@@ -34,7 +31,6 @@ public readonly record struct GameTime
 /// <summary>
 /// Configuration for the game.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public sealed record GameConfiguration
 {
   /// <summary>
@@ -59,7 +55,6 @@ public sealed record GameConfiguration
 /// <summary>
 /// Entry point for the game.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class Game : IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<Game>();
@@ -97,19 +92,19 @@ public class Game : IDisposable
   }
 
   /// <summary>
-  /// Runs this game inside a <see cref="HostingContext"/>.
+  /// Runs this game inside a <see cref="GameHostingContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
   private static int Run(GameConfiguration configuration, Func<Game, Task> gameSetup)
   {
-    return Run(configuration, HostingContext.Current, gameSetup);
+    return Run(configuration, GameHostingContext.Current, gameSetup);
   }
 
   /// <summary>
-  /// Runs this game inside a <see cref="HostingContext"/>.
+  /// Runs this game inside a <see cref="GameHostingContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  private static int Run(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)
+  private static int Run(GameConfiguration configuration, GameHostingContext context, Func<Game, Task> gameSetup)
   {
     try
     {

@@ -6,7 +6,6 @@ using Silk.NET.OpenGL;
 using Surreal.Audio;
 using Surreal.Editing.Common;
 using Surreal.Graphics;
-using Surreal.Hosting;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Services;
@@ -62,7 +61,7 @@ internal sealed class GameViewportDisplay : OpenGlControlBase
 /// </summary>
 internal sealed class GameViewportViewModel : EditorViewModel
 {
-  private readonly HostingContext _context;
+  private readonly GameHostingContext _context;
   private bool _isRunning;
 
   public GameViewportViewModel(GameViewport viewport)
@@ -109,9 +108,9 @@ internal sealed class GameViewportViewModel : EditorViewModel
   }
 
   /// <summary>
-  /// The <see cref="HostingContext"/> for the main window.
+  /// The <see cref="GameHostingContext"/> for the main window.
   /// </summary>
-  private sealed class EditorHostingContext(GameViewportViewModel owner) : HostingContext
+  private sealed class EditorHostingContext(GameViewportViewModel owner) : GameHostingContext
   {
     /// <inheritdoc/>
     public override IPlatformHost PlatformHost { get; } = new EditorPlatformHost(owner);
