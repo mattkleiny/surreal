@@ -20,9 +20,9 @@ public class AudioListener2D : Node2D
     {
       SetField(ref _volume, value);
 
-      if (IsInTree && Services.TryGetService(out IAudioBackend backend))
+      if (IsInTree && Services.TryGetService(out IAudioDevice device))
       {
-        backend.SetAudioListenerGain(_volume);
+        device.SetAudioListenerGain(_volume);
       }
     }
   }
@@ -31,10 +31,10 @@ public class AudioListener2D : Node2D
   {
     base.OnEnterTree();
 
-    if (Services.TryGetService(out IAudioBackend backend))
+    if (Services.TryGetService(out IAudioDevice device))
     {
-      backend.SetAudioListenerGain(_volume);
-      backend.SetAudioListenerPosition(new Vector3(GlobalPosition, 0f));
+      device.SetAudioListenerGain(_volume);
+      device.SetAudioListenerPosition(new Vector3(GlobalPosition, 0f));
     }
   }
 
@@ -42,9 +42,9 @@ public class AudioListener2D : Node2D
   {
     base.OnTransformUpdated();
 
-    if (Services.TryGetService(out IAudioBackend backend))
+    if (Services.TryGetService(out IAudioDevice device))
     {
-      backend.SetAudioListenerPosition(new Vector3(GlobalPosition, 0f));
+      device.SetAudioListenerPosition(new Vector3(GlobalPosition, 0f));
     }
   }
 }

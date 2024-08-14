@@ -23,11 +23,6 @@ public sealed record GameConfiguration
   public required IPlatform Platform { get; init; }
 
   /// <summary>
-  /// The performance mode to use for the game.
-  /// </summary>
-  public PerformanceMode PerformanceMode { get; init; } = PerformanceMode.Universal;
-
-  /// <summary>
   /// The <see cref="IServiceModule"/>s to use for the game.
   /// </summary>
   public List<IServiceModule> Modules { get; init; } =
@@ -123,15 +118,12 @@ public class Game : IDisposable
         services.AddModule(module);
       }
 
-      // create the main graphics device and register it
-      var graphics = services.GetServiceOrThrow<IGraphicsBackend>();
+      // create the main devices and register them
+      using var audioDevice = services.GetServiceOrThrow<IAudioBackend>().CreateDevice();
+      using var graphicsDevice = services.GetServiceOrThrow<IGraphicsBackend>().CreateDevice();
 
-      using var device = graphics.CreateDevice(new GraphicsDeviceDescriptor
-      {
-        Mode = configuration.PerformanceMode
-      });
-
-      services.AddService(device);
+      services.AddService(audioDevice);
+      services.AddService(graphicsDevice);
 
       // register asset loaders
       foreach (var loader in services.GetServices<IAssetLoader>())

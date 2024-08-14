@@ -117,7 +117,7 @@ public class AudioPlayer2D : Node2D
   {
     base.OnEnterTree();
 
-    _source = new AudioSource(Services.GetServiceOrThrow<IAudioBackend>())
+    _source = new AudioSource(Services.GetServiceOrThrow<IAudioDevice>())
     {
       Volume = _volume,
       Position = new Vector3(GlobalPosition, 0f),
