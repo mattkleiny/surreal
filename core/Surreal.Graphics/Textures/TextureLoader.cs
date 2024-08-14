@@ -8,8 +8,19 @@ namespace Surreal.Graphics.Textures;
 /// </summary>
 public sealed record TextureLoaderSettings
 {
+  /// <summary>
+  /// The format to use for loaded textures.
+  /// </summary>
   public TextureFormat Format { get; init; } = TextureFormat.Rgba8;
+
+  /// <summary>
+  /// The filter mode to use for loaded textures.
+  /// </summary>
   public TextureFilterMode FilterMode { get; init; } = TextureFilterMode.Point;
+
+  /// <summary>
+  /// The wrap mode to use for loaded textures.
+  /// </summary>
   public TextureWrapMode WrapMode { get; init; } = TextureWrapMode.ClampToEdge;
 }
 
@@ -19,7 +30,7 @@ public sealed record TextureLoaderSettings
 public sealed class TextureLoader(IGraphicsDevice device) : AssetLoader<Texture>
 {
   /// <summary>
-  /// Default settings for <see cref="Texture" />s loaded via this loader.
+  /// Default settings for <see cref="Texture"/>s loaded via this loader.
   /// </summary>
   public TextureLoaderSettings Settings { get; init; } = new();
 

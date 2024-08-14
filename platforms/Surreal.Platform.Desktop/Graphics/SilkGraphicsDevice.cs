@@ -122,11 +122,6 @@ internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
     gl.Clear(ClearBufferMask.StencilBufferBit);
   }
 
-  public void FlushToDevice()
-  {
-    gl.Flush();
-  }
-
   public GraphicsHandle CreateBuffer()
   {
     return GraphicsHandle.FromUInt(gl.GenBuffer());

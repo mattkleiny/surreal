@@ -42,7 +42,6 @@ public interface IGraphicsDevice : IDisposable
   void ClearColorBuffer(Color color);
   void ClearDepthBuffer(float depth);
   void ClearStencilBuffer(int amount);
-  void FlushToDevice();
 
   // buffers
   GraphicsHandle CreateBuffer();
@@ -132,6 +131,7 @@ public interface IGraphicsDevice : IDisposable
   /// <summary>
   /// A no-op <see cref="IGraphicsDevice" /> for headless environments and testing.
   /// </summary>
+  [ExcludeFromCodeCoverage]
   private sealed class NullGraphicsDevice : IGraphicsDevice
   {
     private Viewport _viewportSize = new(0, 0, 1920, 1080);
@@ -177,10 +177,6 @@ public interface IGraphicsDevice : IDisposable
     }
 
     public void ClearStencilBuffer(int amount)
-    {
-    }
-
-    public void FlushToDevice()
     {
     }
 
@@ -416,7 +412,6 @@ public interface IGraphicsDevice : IDisposable
 
     public void Dispose()
     {
-      throw new NotImplementedException();
     }
   }
 }
