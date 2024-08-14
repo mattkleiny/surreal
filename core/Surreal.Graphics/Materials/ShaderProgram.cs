@@ -7,35 +7,35 @@ namespace Surreal.Graphics.Materials;
 /// <summary>
 /// A low-level shader program on the GPU.
 /// </summary>
-public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
+public sealed class ShaderProgram(IGraphicsDevice device) : Disposable
 {
   /// <summary>
   /// Loads the built-in default canvas shader.
   /// </summary>
-  public static ShaderProgram LoadDefaultCanvasShader(IGraphicsBackend backend)
-    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-canvas.glsl");
+  public static ShaderProgram LoadDefaultCanvasShader(IGraphicsDevice device)
+    => Load(device, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-canvas.glsl");
 
   /// <summary>
   /// Loads the built-in default wire shader.
   /// </summary>
-  public static ShaderProgram LoadDefaultWireShader(IGraphicsBackend backend)
-    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-wire.glsl");
+  public static ShaderProgram LoadDefaultWireShader(IGraphicsDevice device)
+    => Load(device, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-wire.glsl");
 
   /// <summary>
   /// Loads the built-in default blit shader.
   /// </summary>
-  public static ShaderProgram LoadDefaultBlitShader(IGraphicsBackend backend)
-    => Load(backend, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-blit.glsl");
+  public static ShaderProgram LoadDefaultBlitShader(IGraphicsDevice device)
+    => Load(device, "resx://Surreal.Graphics/Assets/Embedded/shaders/shader-blit.glsl");
 
   /// <summary>
   /// Loads a <see cref="ShaderProgram"/> from the given <see cref="VirtualPath"/>.
   /// </summary>
-  public static ShaderProgram Load(IGraphicsBackend backend, VirtualPath path)
+  public static ShaderProgram Load(IGraphicsDevice device, VirtualPath path)
   {
     using var reader = path.OpenInputStreamReader();
 
     var kernels = ParseCode(reader);
-    var program = new ShaderProgram(backend);
+    var program = new ShaderProgram(device);
 
     program.LinkKernels(kernels);
 
@@ -45,12 +45,12 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   /// <summary>
   /// Loads a <see cref="ShaderProgram"/> asynchronously from the given <see cref="VirtualPath"/>.
   /// </summary>
-  public static async Task<ShaderProgram> LoadAsync(IGraphicsBackend backend, VirtualPath path, CancellationToken cancellationToken = default)
+  public static async Task<ShaderProgram> LoadAsync(IGraphicsDevice device, VirtualPath path, CancellationToken cancellationToken = default)
   {
     using var reader = path.OpenInputStreamReader();
 
     var kernels = await ParseCodeAsync(reader, cancellationToken);
-    var program = new ShaderProgram(backend);
+    var program = new ShaderProgram(device);
 
     program.LinkKernels(kernels);
 
@@ -60,7 +60,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the shader itself.
   /// </summary>
-  public GraphicsHandle Handle { get; } = backend.CreateShader();
+  public GraphicsHandle Handle { get; } = device.CreateShader();
 
   /// <summary>
   /// Reloads the shader program from the given path.
@@ -79,7 +79,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   /// </summary>
   private void LinkKernels(ReadOnlySlice<ShaderKernel> kernels)
   {
-    backend.LinkShader(Handle, kernels);
+    device.LinkShader(Handle, kernels);
   }
 
   /// <summary>
@@ -87,7 +87,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   /// </summary>
   public int GetUniformLocation(string name)
   {
-    return backend.GetShaderUniformLocation(Handle, name);
+    return device.GetShaderUniformLocation(Handle, name);
   }
 
   /// <summary>
@@ -111,30 +111,30 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
       switch (value.Type)
       {
         case VariantType.Null: break; // no-op
-        case VariantType.Bool: backend.SetShaderUniform(Handle, location, value.AsBool() ? 1 : 0); break;
-        case VariantType.Byte: backend.SetShaderUniform(Handle, location, value.AsByte()); break;
-        case VariantType.Short: backend.SetShaderUniform(Handle, location, value.AsShort()); break;
-        case VariantType.Ushort: backend.SetShaderUniform(Handle, location, value.AsUshort()); break;
-        case VariantType.Int: backend.SetShaderUniform(Handle, location, value.AsInt()); break;
-        case VariantType.Uint: backend.SetShaderUniform(Handle, location, value.AsUint()); break;
-        case VariantType.Long: backend.SetShaderUniform(Handle, location, value.AsLong()); break;
-        case VariantType.Ulong: backend.SetShaderUniform(Handle, location, value.AsUlong()); break;
-        case VariantType.Float: backend.SetShaderUniform(Handle, location, value.AsFloat()); break;
-        case VariantType.Double: backend.SetShaderUniform(Handle, location, value.AsDouble()); break;
-        case VariantType.Decimal: backend.SetShaderUniform(Handle, location, (double) value.AsDecimal()); break;
-        case VariantType.Point2: backend.SetShaderUniform(Handle, location, value.AsPoint2()); break;
-        case VariantType.Point3: backend.SetShaderUniform(Handle, location, value.AsPoint3()); break;
-        case VariantType.Point4: backend.SetShaderUniform(Handle, location, value.AsPoint4()); break;
-        case VariantType.Vector2: backend.SetShaderUniform(Handle, location, value.AsVector2()); break;
-        case VariantType.Vector3: backend.SetShaderUniform(Handle, location, value.AsVector3()); break;
-        case VariantType.Vector4: backend.SetShaderUniform(Handle, location, value.AsVector4()); break;
-        case VariantType.Quaternion: backend.SetShaderUniform(Handle, location, value.AsQuaternion()); break;
-        case VariantType.Color: backend.SetShaderUniform(Handle, location, value.AsColor()); break;
-        case VariantType.Color32: backend.SetShaderUniform(Handle, location, value.AsColor32()); break;
-        case VariantType.Object when value.AsObject() is Matrix3x2 matrix: backend.SetShaderUniform(Handle, location, matrix); break;
-        case VariantType.Object when value.AsObject() is Matrix4x4 matrix: backend.SetShaderUniform(Handle, location, matrix); break;
-        case VariantType.Object when value.AsObject() is Texture texture: backend.SetShaderSampler(Handle, location, texture.Handle, 0u); break;
-        case VariantType.Object when value.AsObject() is TextureSampler sampler: backend.SetShaderSampler(Handle, location, sampler); break;
+        case VariantType.Bool: device.SetShaderUniform(Handle, location, value.AsBool() ? 1 : 0); break;
+        case VariantType.Byte: device.SetShaderUniform(Handle, location, value.AsByte()); break;
+        case VariantType.Short: device.SetShaderUniform(Handle, location, value.AsShort()); break;
+        case VariantType.Ushort: device.SetShaderUniform(Handle, location, value.AsUshort()); break;
+        case VariantType.Int: device.SetShaderUniform(Handle, location, value.AsInt()); break;
+        case VariantType.Uint: device.SetShaderUniform(Handle, location, value.AsUint()); break;
+        case VariantType.Long: device.SetShaderUniform(Handle, location, value.AsLong()); break;
+        case VariantType.Ulong: device.SetShaderUniform(Handle, location, value.AsUlong()); break;
+        case VariantType.Float: device.SetShaderUniform(Handle, location, value.AsFloat()); break;
+        case VariantType.Double: device.SetShaderUniform(Handle, location, value.AsDouble()); break;
+        case VariantType.Decimal: device.SetShaderUniform(Handle, location, (double) value.AsDecimal()); break;
+        case VariantType.Point2: device.SetShaderUniform(Handle, location, value.AsPoint2()); break;
+        case VariantType.Point3: device.SetShaderUniform(Handle, location, value.AsPoint3()); break;
+        case VariantType.Point4: device.SetShaderUniform(Handle, location, value.AsPoint4()); break;
+        case VariantType.Vector2: device.SetShaderUniform(Handle, location, value.AsVector2()); break;
+        case VariantType.Vector3: device.SetShaderUniform(Handle, location, value.AsVector3()); break;
+        case VariantType.Vector4: device.SetShaderUniform(Handle, location, value.AsVector4()); break;
+        case VariantType.Quaternion: device.SetShaderUniform(Handle, location, value.AsQuaternion()); break;
+        case VariantType.Color: device.SetShaderUniform(Handle, location, value.AsColor()); break;
+        case VariantType.Color32: device.SetShaderUniform(Handle, location, value.AsColor32()); break;
+        case VariantType.Object when value.AsObject() is Matrix3x2 matrix: device.SetShaderUniform(Handle, location, matrix); break;
+        case VariantType.Object when value.AsObject() is Matrix4x4 matrix: device.SetShaderUniform(Handle, location, matrix); break;
+        case VariantType.Object when value.AsObject() is Texture texture: device.SetShaderSampler(Handle, location, texture.Handle, 0u); break;
+        case VariantType.Object when value.AsObject() is TextureSampler sampler: device.SetShaderSampler(Handle, location, sampler); break;
 
         default: throw new InvalidUniformException($"The material property type for {name} is not supported.");
       }
@@ -146,7 +146,7 @@ public sealed class ShaderProgram(IGraphicsBackend backend) : Disposable
   {
     if (managed)
     {
-      backend.DeleteShader(Handle);
+      device.DeleteShader(Handle);
     }
 
     base.Dispose(managed);

@@ -5,17 +5,17 @@
 /// </summary>
 public readonly struct GraphicsDebugScope : IDisposable
 {
-  private readonly IGraphicsBackend _backend;
+  private readonly IGraphicsDevice _device;
 
-  public GraphicsDebugScope(IGraphicsBackend backend, string name)
+  public GraphicsDebugScope(IGraphicsDevice device, string name)
   {
-    _backend = backend;
+    _device = device;
 
-    backend.BeginDebugScope(name);
+    device.BeginDebugScope(name);
   }
 
   public void Dispose()
   {
-    _backend.EndDebugScope();
+    _device.EndDebugScope();
   }
 }

@@ -8,8 +8,13 @@ namespace Surreal.Physics;
 [ExcludeFromCodeCoverage]
 public sealed class PhysicsModule : IServiceModule
 {
+  /// <summary>
+  /// The <see cref="IPhysicsBackend"/> to be used.
+  /// </summary>
+  public IPhysicsBackend Backend { get; } = new PhysicsBackend();
+
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IPhysicsBackend>(new PhysicsBackend());
+    registry.AddService(Backend);
   }
 }

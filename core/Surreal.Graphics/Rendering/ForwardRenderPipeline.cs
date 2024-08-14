@@ -13,14 +13,14 @@ namespace Surreal.Graphics.Rendering;
 [RenderPipeline("Forward")]
 public class ForwardRenderPipeline : MultiPassRenderPipeline
 {
-  public ForwardRenderPipeline(IGraphicsBackend backend)
-    : base(backend)
+  public ForwardRenderPipeline(IGraphicsDevice device)
+    : base(device)
   {
-    Passes.Add(new DepthPass(backend, this));
-    Passes.Add(new ColorPass(backend, this));
-    Passes.Add(new GizmoPass(backend, this));
+    Passes.Add(new DepthPass(device, this));
+    Passes.Add(new ColorPass(device, this));
+    Passes.Add(new GizmoPass(device, this));
 
-    Contexts.Add(new SpriteContext(backend));
+    Contexts.Add(new SpriteContext(device));
   }
 
   /// <summary>
@@ -41,9 +41,9 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that collects depth data.
   /// </summary>
-  protected sealed class DepthPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
+  private sealed class DepthPass(IGraphicsDevice device, ForwardRenderPipeline pipeline) : RenderPass
   {
-    private readonly RenderTarget _depthTarget = new(backend, new RenderTargetDescriptor
+    private readonly RenderTarget _depthTarget = new(device, new RenderTargetDescriptor
     {
       Format = TextureFormat.R,
       FilterMode = TextureFilterMode.Linear,
@@ -82,10 +82,10 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that collects color data.
   /// </summary>
-  protected sealed class ColorPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
+  private sealed class ColorPass(IGraphicsDevice device, ForwardRenderPipeline pipeline) : RenderPass
   {
-    private readonly Material _blitMaterial = new(backend, ShaderProgram.LoadDefaultBlitShader(backend));
-    private readonly RenderTarget _colorTarget = new(backend, new RenderTargetDescriptor
+    private readonly Material _blitMaterial = new(device, ShaderProgram.LoadDefaultBlitShader(device));
+    private readonly RenderTarget _colorTarget = new(device, new RenderTargetDescriptor
     {
       Format = TextureFormat.Rgba8,
       FilterMode = TextureFilterMode.Point,
@@ -123,10 +123,10 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A <see cref="RenderPass"/> that renders gizmos.
   /// </summary>
-  protected sealed class GizmoPass(IGraphicsBackend backend, ForwardRenderPipeline pipeline) : RenderPass
+  private sealed class GizmoPass(IGraphicsDevice device, ForwardRenderPipeline pipeline) : RenderPass
   {
-    private readonly Material _material = new(backend, ShaderProgram.LoadDefaultWireShader(backend));
-    private readonly GeometryBatch _batch = new(backend);
+    private readonly Material _material = new(device, ShaderProgram.LoadDefaultWireShader(device));
+    private readonly GeometryBatch _batch = new(device);
 
     public override bool IsEnabled => pipeline.EnableGizmos;
 

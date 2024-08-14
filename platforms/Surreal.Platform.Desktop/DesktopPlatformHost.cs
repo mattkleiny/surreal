@@ -62,7 +62,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     AudioBackend = new SilkAudioBackend();
     GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
-    DebuggerOverlay = new SilkDebuggerOverlay(Window);
 
     Resized += OnResized;
   }
@@ -71,7 +70,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public SilkAudioBackend AudioBackend { get; }
   public SilkGraphicsBackend GraphicsBackend { get; }
   public SilkInputBackend InputBackend { get; }
-  public SilkDebuggerOverlay DebuggerOverlay { get; set; }
 
   IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
 
@@ -95,7 +93,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IAudioBackend>(AudioBackend);
     services.AddService<IGraphicsBackend>(GraphicsBackend);
     services.AddService<IInputBackend>(InputBackend);
-    services.AddService<IDebuggerOverlay>(DebuggerOverlay);
 
     foreach (var device in InputBackend.DiscoverAllDevices())
     {
@@ -111,7 +108,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     if (!IsClosing)
     {
       Window.Update();
-      DebuggerOverlay.Update(deltaTime);
 
       // show the game's FPS in the window title
       if (_configuration.ShowFpsInTitle)
@@ -130,7 +126,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   {
     if (!IsClosing)
     {
-      DebuggerOverlay.Render(GraphicsBackend);
       Window.Present();
 
       InputBackend.Update();
@@ -139,7 +134,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public void Dispose()
   {
-    DebuggerOverlay.Dispose();
     AudioBackend.Dispose();
 
     Window.Dispose();
@@ -149,7 +143,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   {
     Log.Trace($"Resizing window to {width}x{height}");
 
-    GraphicsBackend.SetViewportSize(new Viewport(0, 0, (uint)width, (uint)height));
+    // TODO: Implement this
+    // GraphicsBackend.SetViewportSize(new Viewport(0, 0, (uint)width, (uint)height));
   }
 }
 

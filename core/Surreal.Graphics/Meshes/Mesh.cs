@@ -29,10 +29,10 @@ public abstract class Mesh : Disposable
   /// <summary>
   /// Convenience method for building <see cref="Mesh{TVertex}" />s with a <see cref="Tessellator{TVertex}" />.
   /// </summary>
-  public static Mesh<TVertex> Create<TVertex>(IGraphicsBackend backend, Action<Tessellator<TVertex>> builder)
+  public static Mesh<TVertex> Create<TVertex>(IGraphicsDevice device, Action<Tessellator<TVertex>> builder)
     where TVertex : unmanaged
   {
-    var mesh = new Mesh<TVertex>(backend);
+    var mesh = new Mesh<TVertex>(device);
 
     mesh.Tessellate(builder);
 
@@ -42,9 +42,9 @@ public abstract class Mesh : Disposable
   /// <summary>
   /// Builds a simple triangle <see cref="Mesh" />.
   /// </summary>
-  public static Mesh<Vertex2> CreateTriangle(IGraphicsBackend backend, float size = 1f)
+  public static Mesh<Vertex2> CreateTriangle(IGraphicsDevice device, float size = 1f)
   {
-    return Create<Vertex2>(backend, tessellator =>
+    return Create<Vertex2>(device, tessellator =>
     {
       tessellator.AddTriangle(
         new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 0f)),
@@ -57,9 +57,9 @@ public abstract class Mesh : Disposable
   /// <summary>
   /// Builds a simple quad <see cref="Mesh" /> quad.
   /// </summary>
-  public static Mesh<Vertex2> CreateQuad(IGraphicsBackend backend, float size = 1f)
+  public static Mesh<Vertex2> CreateQuad(IGraphicsDevice device, float size = 1f)
   {
-    return Create<Vertex2>(backend, tessellator =>
+    return Create<Vertex2>(device, tessellator =>
     {
       tessellator.AddQuad(
         new Vertex2(new Vector2(-size, -size), Color.White, new Vector2(0f, 1f)),
@@ -73,9 +73,9 @@ public abstract class Mesh : Disposable
   /// <summary>
   /// Builds a simple circle <see cref="Mesh" />.
   /// </summary>
-  public static Mesh<Vertex2> CreateCircle(IGraphicsBackend backend, float radius = 1f, int segments = 16)
+  public static Mesh<Vertex2> CreateCircle(IGraphicsDevice device, float radius = 1f, int segments = 16)
   {
-    return Create<Vertex2>(backend, tessellator =>
+    return Create<Vertex2>(device, tessellator =>
     {
       var vertices = new SpanList<Vertex2>(stackalloc Vertex2[segments]);
       var theta = 0f;
@@ -103,9 +103,9 @@ public abstract class Mesh : Disposable
   /// <summary>
   /// Builds a simple cube <see cref="Mesh" />.
   /// </summary>
-  public static Mesh<Vertex3> CreateCube(IGraphicsBackend backend, float size = 1f)
+  public static Mesh<Vertex3> CreateCube(IGraphicsDevice device, float size = 1f)
   {
-    return Create<Vertex3>(backend, tessellator =>
+    return Create<Vertex3>(device, tessellator =>
     {
       // build a cube mesh from 6 faces
       var vertices = new SpanList<Vertex3>(stackalloc Vertex3[6]);
@@ -186,16 +186,16 @@ public sealed class Mesh<TVertex> : Mesh
   /// </summary>
   private static readonly VertexDescriptorSet VertexDescriptors = VertexDescriptorSet.Create<TVertex>();
 
-  private readonly IGraphicsBackend _backend;
+  private readonly IGraphicsDevice _device;
 
-  public Mesh(IGraphicsBackend backend, BufferUsage usage = BufferUsage.Static)
+  public Mesh(IGraphicsDevice device, BufferUsage usage = BufferUsage.Static)
   {
-    _backend = backend;
+    _device = device;
 
-    Vertices = new GraphicsBuffer<TVertex>(backend, BufferType.Vertex, usage);
-    Indices = new GraphicsBuffer<uint>(backend, BufferType.Index, usage);
+    Vertices = new GraphicsBuffer<TVertex>(device, BufferType.Vertex, usage);
+    Indices = new GraphicsBuffer<uint>(device, BufferType.Index, usage);
 
-    Handle = backend.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
+    Handle = device.CreateMesh(Vertices.Handle, Indices.Handle, VertexDescriptors);
   }
 
   /// <summary>
@@ -244,7 +244,7 @@ public sealed class Mesh<TVertex> : Mesh
   {
     material.ApplyMaterial();
 
-    _backend.DrawMesh(
+    _device.DrawMesh(
       mesh: Handle,
       vertexCount: vertexCount,
       indexCount: indexCount,
@@ -257,7 +257,7 @@ public sealed class Mesh<TVertex> : Mesh
   {
     if (managed)
     {
-      _backend.DeleteMesh(Handle);
+      _device.DeleteMesh(Handle);
 
       Vertices.Dispose();
       Indices.Dispose();

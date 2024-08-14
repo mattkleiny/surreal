@@ -58,6 +58,7 @@ public static class LogFactory
     /// <summary>
     /// A <see cref="ILog" /> that does nothing.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     private sealed class NullLog : ILog
     {
       public bool IsLevelEnabled(LogLevel level)

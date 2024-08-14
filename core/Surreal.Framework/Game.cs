@@ -4,12 +4,10 @@ using Surreal.Audio;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Graphics;
-using Surreal.Graphics.Rendering;
 using Surreal.Hosting;
 using Surreal.Input;
 using Surreal.Networking;
 using Surreal.Physics;
-using Surreal.Scenes;
 using Surreal.Scripting;
 using Surreal.Services;
 using Surreal.Timing;
@@ -84,21 +82,12 @@ public class Game : IDisposable
   }
 
   /// <summary>
-  /// Schedules a function to be invoked at the start of the next frame.
-  /// </summary>
-  public static void Schedule(Action callback)
-  {
-    Callbacks.Enqueue(callback);
-  }
-
-  /// <summary>
   /// Starts the game.
   /// </summary>
   public static int Start(GameConfiguration configuration, Delegate setup)
   {
     return Run(configuration, async game =>
     {
-      // set up the game
       var result = game.Services.ExecuteDelegate(setup, game);
       if (result is Task task)
       {
@@ -108,123 +97,19 @@ public class Game : IDisposable
   }
 
   /// <summary>
-  /// Starts the game with a blank <see cref="SceneTree"/> and the given <see cref="IRenderPipeline"/>.
+  /// Runs this game inside a <see cref="HostingContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  public static int StartScene<TPipeline>(GameConfiguration configuration, Delegate setup)
-    where TPipeline : class, IRenderPipeline
-  {
-    return Run(configuration, async game =>
-    {
-      // build the scene tree
-      using var pipeline = game.Services.Instantiate<TPipeline>();
-      using var sceneTree = new SceneTree
-      {
-        Assets = game.Assets,
-        Services = game.Services,
-        Renderer = pipeline
-      };
-
-      // set up the scene
-      var result = game.Services.ExecuteDelegate(setup, game, pipeline, sceneTree);
-      if (result is Task task)
-      {
-        await task;
-      }
-
-      // run the game loop
-      game.ExecuteFixedStep(
-        updateLoop: time => sceneTree.Update(time.DeltaTime),
-        drawLoop: time => sceneTree.Render(time.DeltaTime)
-      );
-    });
-  }
-
-  /// <summary>
-  /// Starts the game.
-  /// </summary>
-  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
   private static int Run(GameConfiguration configuration, Func<Game, Task> gameSetup)
   {
-    // if a hosting context is attached, we're attempting to be run inside some
-    // environment. kick-off a different main loop in that case.
-    var hostingContext = HostingContext.Current;
-    if (hostingContext != null)
-    {
-      return RunInsideHost(configuration, hostingContext, gameSetup);
-    }
-
-    GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
-
-    // prepare core services
-    var startTime = TimeStamp.Now;
-
-    using var services = new ServiceRegistry();
-    using var host = configuration.Platform.BuildHost();
-
-    using var game = new Game
-    {
-      Services = services,
-      Host = host
-    };
-
-    // configure the game services
-    host.RegisterServices(services);
-
-    foreach (var module in configuration.Modules)
-    {
-      services.AddModule(module);
-    }
-
-    // prepare asset manager
-    foreach (var loader in services.GetServices<IAssetLoader>())
-    {
-      game.Assets.AddLoader(loader);
-    }
-
-    // marshal all async work back to the main thread
-    SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
-
-    // prepare the game setup on the first frame of the loop
-    Schedule(() => gameSetup(game).ContinueWith(task =>
-    {
-      if (task.IsFaulted)
-      {
-        Log.Error(task.Exception is { InnerExceptions.Count: 1 }
-          ? $"An unhandled top-level exception occurred: {task.Exception.InnerExceptions.Single()}"
-          : $"An unhandled top-level exception occurred: {task.Exception}");
-
-        game.Exit();
-      }
-    }));
-
-    Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
-    Log.Trace("Initializing services");
-
-    game.Services.Initialize();
-
-    Log.Trace("Running main event loop");
-
-    while (!game.Host.IsClosing && !game.IsClosing)
-    {
-      // eventually this will end up blocking when a main loop takes over
-      PumpEventLoop();
-    }
-
-    Callbacks.Clear();
-
-    Log.Trace("Exiting main event loop");
-    Log.Trace("Completed successfully");
-
-    return 0;
+    return Run(configuration, HostingContext.Current, gameSetup);
   }
 
   /// <summary>
   /// Runs this game inside a <see cref="HostingContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  private static int RunInsideHost(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)
+  private static int Run(GameConfiguration configuration, HostingContext context, Func<Game, Task> gameSetup)
   {
     try
     {
@@ -234,7 +119,7 @@ public class Game : IDisposable
 
       // build the game using the hosting context
       using var services = new ServiceRegistry();
-      using var host = context.PlatformHost;
+      using var host = context.PlatformHost ?? configuration.Platform.BuildHost();
 
       using var game = new Game
       {
@@ -242,7 +127,6 @@ public class Game : IDisposable
         Host = host
       };
 
-      // TODO: handle hot reloading?
       context.Cancelled += () => game.Exit();
       context.HotReloaded += () => Log.Trace("The game has hot reloaded!");
 
@@ -254,7 +138,6 @@ public class Game : IDisposable
         services.AddModule(module);
       }
 
-      // prepare asset manager
       foreach (var loader in services.GetServices<IAssetLoader>())
       {
         game.Assets.AddLoader(loader);
@@ -277,10 +160,6 @@ public class Game : IDisposable
       }));
 
       Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
-      Log.Trace("Initializing services");
-
-      game.Services.Initialize();
-
       Log.Trace("Running main event loop");
 
       while (!game.Host.IsClosing && !game.IsClosing)
@@ -301,6 +180,14 @@ public class Game : IDisposable
     Log.Trace("Completed successfully");
 
     return 0;
+  }
+
+  /// <summary>
+  /// Schedules a function to be invoked at the start of the next frame.
+  /// </summary>
+  public static void Schedule(Action callback)
+  {
+    Callbacks.Enqueue(callback);
   }
 
   /// <summary>

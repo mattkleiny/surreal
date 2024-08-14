@@ -15,7 +15,7 @@ public class RenderContextManagerTests
     {
       DeltaTime = DeltaTime.Default,
       TotalTime = DeltaTime.One,
-      Backend = IGraphicsBackend.Null,
+      Device = IGraphicsDevice.Null,
       Contexts = manager,
       Scene = Substitute.For<IRenderScene>(),
       Viewport = new Viewport(0, 0, 640, 480)

@@ -1,29 +1,32 @@
-﻿using Surreal.Collections.Slices;
-using Surreal.Colors;
-using Surreal.Graphics.Materials;
-using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Rendering;
-using Surreal.Graphics.Textures;
-using Surreal.Mathematics;
-
-namespace Surreal.Graphics;
+﻿namespace Surreal.Graphics;
 
 /// <summary>
-/// A viewport size for camera rendering.
+/// Performance mode for the graphics backend.
 /// </summary>
-public readonly record struct Viewport(int X, int Y, uint Width, uint Height);
-
-/// <summary>
-/// An opaque handle to a render target in the underling <see cref="IGraphicsBackend" /> implementation,
-/// and it's accompanying color and depth/stencil attachments.
-/// </summary>
-public readonly record struct FrameBufferHandle
+public enum PerformanceMode
 {
-  public static FrameBufferHandle None => default;
+  /// <summary>
+  /// A universal performance mode that should work on all devices.
+  /// </summary>
+  Universal,
+  /// <summary>
+  /// A high-definition performance mode that should work on high-end devices.
+  /// </summary>
+  HighDefinition,
+}
 
-  public required GraphicsHandle FrameBuffer { get; init; }
-  public readonly GraphicsHandle ColorAttachment { get; init; }
-  public readonly GraphicsHandle DepthStencilAttachment { get; init; }
+/// <summary>
+/// A descriptor for a graphics device.
+/// </summary>
+public record struct GraphicsDeviceDescriptor
+{
+  /// <summary>
+  /// The desired performance mode for the graphics device.
+  /// <para/>
+  /// This might be used to select a different rendering pipeline or set of shaders
+  /// depending on the underlying implementation.
+  /// </summary>
+  public required PerformanceMode Mode { get; set; }
 }
 
 /// <summary>
@@ -33,100 +36,20 @@ public interface IGraphicsBackend
 {
   static IGraphicsBackend Null { get; } = new NullGraphicsBackend();
 
-  // intrinsics
-  Viewport GetViewportSize();
-  void SetViewportSize(Viewport viewport);
-  void SetBlendState(BlendState? state);
-  void SetScissorState(ScissorState? state);
-  void SetPolygonMode(PolygonMode mode);
-  void SetCullingMode(CullingMode mode);
-  void ClearColorBuffer(Color color);
-  void ClearDepthBuffer(float depth);
-  void ClearStencilBuffer(int amount);
-  void FlushToDevice();
+  /// <summary>
+  /// Creates a new <see cref="IGraphicsDevice"/>.
+  /// </summary>
+  IGraphicsDevice CreateDevice(GraphicsDeviceDescriptor descriptor);
 
-  // buffers
-  GraphicsHandle CreateBuffer();
-  Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length) where T : unmanaged;
-  void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged;
-  void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged;
-  void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data) where T : unmanaged;
-  void DeleteBuffer(GraphicsHandle handle);
-
-  // textures
-  GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode);
-  Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged;
-  void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0) where T : unmanaged;
-  Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged;
-  void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged;
-  void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
-  void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0) where T : unmanaged;
-  void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode);
-  void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode);
-  void DeleteTexture(GraphicsHandle handle);
-
-  // meshes
-  GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors);
-  void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType);
-  void DeleteMesh(GraphicsHandle handle);
-
-  // shaders
-  GraphicsHandle CreateShader();
-  void LinkShader(GraphicsHandle handle, ReadOnlySlice<ShaderKernel> kernels);
-  int GetShaderUniformLocation(GraphicsHandle handle, string name);
-  void SetShaderUniform(GraphicsHandle handle, int location, int value);
-  void SetShaderUniform(GraphicsHandle handle, int location, float value);
-  void SetShaderUniform(GraphicsHandle handle, int location, double value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Point2 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Point3 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Point4 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Vector2 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Vector3 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Vector4 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Color value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Color32 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, Quaternion value);
-  void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value);
-  void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value);
-  void SetShaderSampler(GraphicsHandle handle, int location, GraphicsHandle texture, uint samplerSlot);
-  void SetShaderSampler(GraphicsHandle handle, int location, TextureSampler sampler);
-  void SetActiveShader(GraphicsHandle handle);
-  void DeleteShader(GraphicsHandle handle);
-
-  // frame buffers
-  FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor);
-  bool IsActiveFrameBuffer(FrameBufferHandle handle);
-  void BindFrameBuffer(FrameBufferHandle handle);
-  void UnbindFrameBuffer();
-  void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
-
-  void BlitFromBackBuffer(
-    GraphicsHandle targetFrameBuffer,
-    uint sourceWidth,
-    uint sourceHeight,
-    uint destWidth,
-    uint destHeight,
-    BlitMask mask,
-    TextureFilterMode filterMode);
-
-  void BlitToBackBuffer(
-    GraphicsHandle sourceFrameBuffer,
-    uint sourceWidth,
-    uint sourceHeight,
-    uint destWidth,
-    uint destHeight,
-    BlitMask mask,
-    TextureFilterMode filterMode);
-
-  void BlitToBackBuffer(FrameBufferHandle handle,
-    Material material,
-    UniformProperty<TextureSampler> samplerProperty,
-    Optional<TextureFilterMode> filterMode,
-    Optional<TextureWrapMode> wrapMode);
-
-  void DeleteFrameBuffer(FrameBufferHandle handle);
-
-  // debugging
-  void BeginDebugScope(string name);
-  void EndDebugScope();
+  /// <summary>
+  /// A no-op <see cref="IGraphicsBackend" /> for headless environments and testing.
+  /// </summary>
+  [ExcludeFromCodeCoverage]
+  private sealed class NullGraphicsBackend : IGraphicsBackend
+  {
+    public IGraphicsDevice CreateDevice(GraphicsDeviceDescriptor descriptor)
+    {
+      return IGraphicsDevice.Null;
+    }
+  }
 }

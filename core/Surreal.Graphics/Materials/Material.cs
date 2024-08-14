@@ -54,7 +54,7 @@ public readonly record struct ScissorState(int Left, int Top, int Right, int Bot
 /// <summary>
 /// A material is a configuration of the graphics state and properties used for rendering.
 /// </summary>
-public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, bool ownsShader = true) : Disposable
+public sealed class Material(IGraphicsDevice device, ShaderProgram shader, bool ownsShader = true) : Disposable
 {
   /// <summary>
   /// The associated <see cref="ShaderProgram" /> for the material.
@@ -92,7 +92,7 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
   public void ApplyMaterial()
   {
     // bind the shader
-    backend.SetActiveShader(Shader.Handle);
+    device.SetActiveShader(Shader.Handle);
 
     // apply shader properties
     foreach (var (name, value) in Uniforms)
@@ -101,10 +101,10 @@ public sealed class Material(IGraphicsBackend backend, ShaderProgram shader, boo
     }
 
     // apply blend state
-    backend.SetBlendState(BlendState);
-    backend.SetScissorState(ScissorState);
-    backend.SetPolygonMode(PolygonMode);
-    backend.SetCullingMode(CullingMode);
+    device.SetBlendState(BlendState);
+    device.SetScissorState(ScissorState);
+    device.SetPolygonMode(PolygonMode);
+    device.SetCullingMode(CullingMode);
   }
 
   protected override void Dispose(bool managed)

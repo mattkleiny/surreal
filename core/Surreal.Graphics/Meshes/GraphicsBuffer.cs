@@ -44,7 +44,7 @@ public abstract class GraphicsBuffer : Disposable
 /// <summary>
 /// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="TData" />.
 /// </summary>
-public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
+public sealed class GraphicsBuffer<TData>(IGraphicsDevice device, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
   where TData : unmanaged
 {
   /// <inheritdoc/>
@@ -53,7 +53,7 @@ public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType t
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying buffer.
   /// </summary>
-  public GraphicsHandle Handle { get; } = backend.CreateBuffer();
+  public GraphicsHandle Handle { get; } = device.CreateBuffer();
 
   /// <summary>
   /// The type of the <see cref="GraphicsBuffer" />.
@@ -74,7 +74,7 @@ public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType t
       .GetOrDefault(Range.All)
       .GetOffsetAndLength((int)Length);
 
-    return backend.ReadBufferData<TData>(Handle, Type, offset, length);
+    return device.ReadBufferData<TData>(Handle, Type, offset, length);
   }
 
   /// <summary>
@@ -82,7 +82,7 @@ public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType t
   /// </summary>
   public void Read(Span<TData> buffer)
   {
-    backend.ReadBufferData(Handle, Type, buffer);
+    device.ReadBufferData(Handle, Type, buffer);
   }
 
   /// <summary>
@@ -93,7 +93,7 @@ public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType t
     Length = (uint)buffer.Length;
     Size   = buffer.CalculateSize();
 
-    backend.WriteBufferData(Handle, Type, buffer, Usage);
+    device.WriteBufferData(Handle, Type, buffer, Usage);
   }
 
   /// <summary>
@@ -101,14 +101,14 @@ public sealed class GraphicsBuffer<TData>(IGraphicsBackend backend, BufferType t
   /// </summary>
   public void Write(nint offset, ReadOnlySpan<TData> buffer)
   {
-    backend.WriteBufferSubData(Handle, Type, offset, buffer);
+    device.WriteBufferSubData(Handle, Type, offset, buffer);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      backend.DeleteBuffer(Handle);
+      device.DeleteBuffer(Handle);
     }
 
     base.Dispose(managed);

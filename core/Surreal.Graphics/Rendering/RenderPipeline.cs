@@ -27,7 +27,7 @@ public interface IRenderPipeline : IDisposable
 /// <summary>
 /// Convenience base class for <see cref="IRenderPipeline"/> implementations.
 /// </summary>
-public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
+public abstract class RenderPipeline(IGraphicsDevice device) : IRenderPipeline
 {
   private readonly TimeStamp _startTime = TimeStamp.Now;
 
@@ -43,10 +43,10 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
     {
       DeltaTime = deltaTime,
       TotalTime = TimeStamp.Now - _startTime,
-      Backend = backend,
+      Device = device,
       Contexts = Contexts,
       Scene = scene,
-      Viewport = backend.GetViewportSize()
+      Viewport = device.GetViewportSize()
     };
 
     OnBeginFrame(in frame);
@@ -91,7 +91,7 @@ public abstract class RenderPipeline(IGraphicsBackend backend) : IRenderPipeline
 /// <summary>
 /// A basic <see cref="RenderPipeline"/> that supports multiple render passes.
 /// </summary>
-public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : RenderPipeline(backend)
+public abstract class MultiPassRenderPipeline(IGraphicsDevice device) : RenderPipeline(device)
 {
   private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<MultiPassRenderPipeline>();
 
@@ -146,7 +146,7 @@ public abstract class MultiPassRenderPipeline(IGraphicsBackend backend) : Render
       if (pass.IsEnabled)
       {
         using (Profiler.Track(pass.Name))
-        using (new GraphicsDebugScope(frame.Backend, pass.Name))
+        using (new GraphicsDebugScope(frame.Device, pass.Name))
         {
           Contexts.OnBeginPass(in frame, viewport);
 

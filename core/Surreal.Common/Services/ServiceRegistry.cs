@@ -25,6 +25,11 @@ public interface IServiceRegistry : IServiceProvider
   void AddService(Type serviceType, object instance);
 
   /// <summary>
+  /// Registers a service.
+  /// </summary>
+  void AddService(Type serviceType, Type implType, ServiceLifetime lifetime);
+
+  /// <summary>
   /// Instantiates a type and populates its service without adding it to the container.
   /// </summary>
   object Instantiate(Type serviceType);
@@ -44,6 +49,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
   private static readonly ILog Log = LogFactory.GetLog<ServiceRegistry>();
 
   private readonly List<IDisposable> _orderedDisposables = [];
+  private readonly List<ServiceRegistration> _registrations = [];
   private readonly MultiDictionary<Type, object> _container = new();
 
   public object? GetService(Type serviceType)
@@ -68,10 +74,29 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
   public bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance)
   {
+    // use active registrations
     if (!_container.TryGetValues(serviceType, out var services))
     {
       instance = default;
       return false;
+    }
+
+    // resolve new registrations
+    foreach (var registration in _registrations)
+    {
+      if (registration.ServiceType != serviceType)
+      {
+        continue;
+      }
+
+      // TODO: handle dependencies?
+      instance = registration.Lifetime switch
+      {
+        ServiceLifetime.Singleton => Instantiate(registration.ImplementationType),
+        ServiceLifetime.Transient => Instantiate(registration.ImplementationType),
+
+        _ => throw new InvalidOperationException($"Unsupported lifetime {registration.Lifetime}")
+      };
     }
 
     instance = services[0];
@@ -89,6 +114,18 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
     {
       _orderedDisposables.Add(disposable);
     }
+  }
+
+  public void AddService(Type serviceType, Type implType, ServiceLifetime lifetime)
+  {
+    Log.Trace($"Registering service {serviceType} with implementation {implType} and lifetime {lifetime}");
+
+    _registrations.Add(new ServiceRegistration
+    {
+      ServiceType = serviceType,
+      ImplementationType = implType,
+      Lifetime = lifetime
+    });
   }
 
   /// <summary>
@@ -171,5 +208,19 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
     _orderedDisposables.Clear();
     _container.Clear();
+  }
+
+  /// <summary>
+  /// A single registration for a type in the registry.
+  /// </summary>
+  private sealed class ServiceRegistration
+  {
+    public required Type ServiceType { get; init; }
+    public required Type ImplementationType { get; init; }
+
+    /// <summary>
+    /// The lifetime to assign to the created service.
+    /// </summary>
+    public required ServiceLifetime Lifetime { get; init; }
   }
 }

@@ -66,42 +66,42 @@ public sealed record RenderTargetDescriptor
 /// <summary>
 /// A render target is a texture that can be rendered to.
 /// </summary>
-public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescriptor descriptor) : Disposable
+public sealed class RenderTarget(IGraphicsDevice device, RenderTargetDescriptor descriptor) : Disposable
 {
   /// <summary>
   /// The handle to the underlying render target.
   /// </summary>
-  public FrameBufferHandle Handle { get; } = backend.CreateFrameBuffer(descriptor);
+  public FrameBufferHandle Handle { get; } = device.CreateFrameBuffer(descriptor);
 
   /// <summary>
-  /// Is this render target currently bound to the graphics backend?
+  /// Is this render target currently bound to the graphics device?
   /// </summary>
-  public bool IsActive => backend.IsActiveFrameBuffer(Handle);
+  public bool IsActive => device.IsActiveFrameBuffer(Handle);
 
   /// <summary>
   /// The width of this render target, in pixels.
   /// </summary>
-  public uint Width { get; private set; } = descriptor.Width.GetOrDefault(backend.GetViewportSize().Width);
+  public uint Width { get; private set; } = descriptor.Width.GetOrDefault(device.GetViewportSize().Width);
 
   /// <summary>
   /// The height of this render target, in pixels.
   /// </summary>
-  public uint Height { get; private set; } = descriptor.Height.GetOrDefault(backend.GetViewportSize().Height);
+  public uint Height { get; private set; } = descriptor.Height.GetOrDefault(device.GetViewportSize().Height);
 
   /// <summary>
-  /// Binds this render target to the graphics backend.
+  /// Binds this render target to the graphics device.
   /// </summary>
   public void BindToDisplay()
   {
-    backend.BindFrameBuffer(Handle);
+    device.BindFrameBuffer(Handle);
   }
 
   /// <summary>
-  /// Unbinds this render target from the graphics backend.
+  /// Unbinds this render target from the graphics device.
   /// </summary>
   public void UnbindFromDisplay()
   {
-    backend.UnbindFrameBuffer();
+    device.UnbindFrameBuffer();
   }
 
   /// <summary>
@@ -111,7 +111,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
   {
     if (Width != width || Height != height)
     {
-      backend.ResizeFrameBuffer(Handle, width, height);
+      device.ResizeFrameBuffer(Handle, width, height);
 
       Width = width;
       Height = height;
@@ -128,7 +128,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
       throw new InvalidOperationException("Cannot clear a render target that is not bound.");
     }
 
-    backend.ClearColorBuffer(color);
+    device.ClearColorBuffer(color);
   }
 
   /// <summary>
@@ -141,7 +141,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
       throw new InvalidOperationException("Cannot clear a render target that is not bound.");
     }
 
-    backend.ClearDepthBuffer(depth);
+    device.ClearDepthBuffer(depth);
   }
 
   /// <summary>
@@ -154,7 +154,7 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
       throw new InvalidOperationException("Cannot clear a render target that is not bound.");
     }
 
-    backend.ClearStencilBuffer(amount);
+    device.ClearStencilBuffer(amount);
   }
 
   /// <summary>
@@ -177,14 +177,14 @@ public sealed class RenderTarget(IGraphicsBackend backend, RenderTargetDescripto
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    backend.BlitToBackBuffer(Handle, material, textureProperty, filterMode, wrapMode);
+    device.BlitToBackBuffer(Handle, material, textureProperty, filterMode, wrapMode);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      backend.DeleteFrameBuffer(Handle);
+      device.DeleteFrameBuffer(Handle);
     }
 
     base.Dispose(managed);

@@ -9,11 +9,11 @@ namespace Surreal.Graphics.Meshes;
 /// <summary>
 /// An efficient batch of geometric primitives for rendering to the GPU.
 /// </summary>
-public sealed class GeometryBatch(IGraphicsBackend backend, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IGizmoBatch, IDisposable
+public sealed class GeometryBatch(IGraphicsDevice device, int maximumVertexCount = GeometryBatch.DefaultVertexCount) : IGizmoBatch, IDisposable
 {
   private const int DefaultVertexCount = 512;
 
-  private readonly Mesh<Vertex2> _mesh = new(backend);
+  private readonly Mesh<Vertex2> _mesh = new(device);
   private readonly IDisposableBuffer<Vertex2> _vertices = Buffers.AllocateNative<Vertex2>(maximumVertexCount);
   private readonly IDisposableBuffer<uint> _indices = Buffers.AllocateNative<uint>((maximumVertexCount - 1) * 3);
 

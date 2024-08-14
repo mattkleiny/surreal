@@ -9,14 +9,14 @@ internal sealed class SilkKeyboardDevice : IKeyboardDevice
   private readonly HashSet<Key> _pressedKeys = [];
   private readonly HashSet<Key> _pressedKeysThisFrame = [];
 
+  public event Action<Key>? KeyPressed;
+  public event Action<Key>? KeyReleased;
+
   public SilkKeyboardDevice(IKeyboard keyboard)
   {
     keyboard.KeyDown += OnKeyDown;
     keyboard.KeyUp += OnKeyUp;
   }
-
-  public event Action<Key>? KeyPressed;
-  public event Action<Key>? KeyReleased;
 
   public void Update()
   {

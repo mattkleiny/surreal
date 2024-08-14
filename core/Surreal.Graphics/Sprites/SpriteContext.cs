@@ -6,12 +6,12 @@ namespace Surreal.Graphics.Sprites;
 /// <summary>
 /// A <see cref="RenderContext"/> for <see cref="SpriteBatch"/>es.
 /// </summary>
-public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
+public sealed class SpriteContext(IGraphicsDevice device) : RenderContext
 {
   /// <summary>
   /// The <see cref="SpriteBatch"/> used by this context.
   /// </summary>
-  public SpriteBatch Batch { get; } = new(backend);
+  public SpriteBatch Batch { get; } = new(device);
 
   /// <summary>
   /// The property to use for the projection view matrix.
@@ -23,7 +23,7 @@ public sealed class SpriteContext(IGraphicsBackend backend) : RenderContext
   /// <summary>
   /// The material used by this context.
   /// </summary>
-  public Material Material { get; init; } = new(backend, ShaderProgram.LoadDefaultCanvasShader(backend))
+  public Material Material { get; init; } = new(device, ShaderProgram.LoadDefaultCanvasShader(device))
   {
     BlendState = BlendState.OneMinusSourceAlpha
   };

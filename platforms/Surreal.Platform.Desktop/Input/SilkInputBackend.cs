@@ -11,11 +11,11 @@ internal sealed class SilkInputBackend(IWindow window, IInputContext context) : 
   /// <inheritdoc/>
   public IEnumerable<IInputDevice> DiscoverAllDevices()
   {
-    return new IInputDevice[]
-    {
+    return
+    [
       _keyboardDevice,
       _mouseDevice
-    };
+    ];
   }
 
   public void Update()

@@ -17,13 +17,13 @@ public class PixelCanvas : IDisposable
   private readonly Texture _texture;
   private readonly Mesh<Vertex2> _mesh;
 
-  public PixelCanvas(IGraphicsBackend backend, int width, int height)
+  public PixelCanvas(IGraphicsDevice device, int width, int height)
   {
-    _mesh = Mesh.CreateQuad(backend);
+    _mesh = Mesh.CreateQuad(device);
 
     _pixels = new DenseGrid<Color32>(width, height, Color32.Clear);
-    _texture = new Texture(backend, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
-    _material = new Material(backend, ShaderProgram.LoadDefaultCanvasShader(backend))
+    _texture = new Texture(device, TextureFormat.Rgba8, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
+    _material = new Material(device, ShaderProgram.LoadDefaultCanvasShader(device))
     {
       BlendState = BlendState.OneMinusSourceAlpha,
       Uniforms =

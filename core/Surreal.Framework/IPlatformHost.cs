@@ -1,18 +1,7 @@
-﻿using Surreal.Services;
+using Surreal.Services;
 using Surreal.Timing;
 
 namespace Surreal;
-
-/// <summary>
-/// Represents the underlying platform.
-/// </summary>
-public interface IPlatform
-{
-  /// <summary>
-  /// Builds the main host for the platform.
-  /// </summary>
-  IPlatformHost BuildHost();
-}
 
 /// <summary>
 /// Represents the underlying platform host for the engine.
@@ -23,6 +12,7 @@ public interface IPlatformHost : IDisposable
 
   int Width { get; }
   int Height { get; }
+
   bool IsVisible { get; }
   bool IsFocused { get; }
   bool IsClosing { get; }

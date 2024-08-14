@@ -1,6 +1,15 @@
 ﻿namespace Surreal.Services;
 
 /// <summary>
+/// Possible lifetimes for a service.
+/// </summary>
+public enum ServiceLifetime
+{
+  Transient,
+  Singleton,
+}
+
+/// <summary>
 /// Indicates a service is not available.
 /// </summary>
 public class ServiceNotFoundException(string message) : ApplicationException(message);
@@ -17,6 +26,25 @@ public static class ServiceExtensions
     where T : class
   {
     registry.AddService(typeof(T), service);
+  }
+
+  /// <summary>
+  /// Adds a service to the registry.
+  /// </summary>
+  public static void AddService<TService>(this IServiceRegistry registry, ServiceLifetime lifetime = ServiceLifetime.Transient)
+    where TService : class
+  {
+    registry.AddService(typeof(TService), typeof(TService), lifetime);
+  }
+
+  /// <summary>
+  /// Adds a service to the registry.
+  /// </summary>
+  public static void AddService<TService, [MeansImplicitUse] TImpl>(this IServiceRegistry registry, ServiceLifetime lifetime = ServiceLifetime.Transient)
+    where TService : class
+    where TImpl : class, TService
+  {
+    registry.AddService(typeof(TService), typeof(TImpl), lifetime);
   }
 
   /// <summary>
@@ -87,24 +115,5 @@ public static class ServiceExtensions
     }
 
     return result;
-  }
-
-  /// <summary>
-  /// Instantiates the given type using the container.
-  /// </summary>
-  public static T Instantiate<T>(this IServiceRegistry registry)
-  {
-    return (T)registry.Instantiate(typeof(T));
-  }
-
-  /// <summary>
-  /// Initializes all services that implement <see cref="IInitializable"/>.
-  /// </summary>
-  public static void Initialize(this IServiceRegistry registry)
-  {
-    foreach (var service in registry.GetServices<IInitializable>())
-    {
-      service.Initialize();
-    }
   }
 }

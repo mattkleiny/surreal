@@ -16,17 +16,15 @@ public sealed class GraphicsModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    var backend = registry.GetServiceOrThrow<IGraphicsBackend>();
-
-    registry.AddService<IAssetLoader>(new AsepriteFileLoader());
-    registry.AddService<IAssetLoader>(new AsepriteSpriteAnimationLoader());
-    registry.AddService<IAssetLoader>(new AsepriteSpriteAnimationSetLoader());
-    registry.AddService<IAssetLoader>(new AsepriteTextureLoader());
-    registry.AddService<IAssetLoader>(new AsepriteTextureAtlasLoader());
-    registry.AddService<IAssetLoader>(new ColorPaletteLoader());
-    registry.AddService<IAssetLoader>(new ImageLoader());
-    registry.AddService<IAssetLoader>(new MaterialLoader(backend));
-    registry.AddService<IAssetLoader>(new ShaderProgramLoader(backend));
-    registry.AddService<IAssetLoader>(new TextureLoader(backend));
+    registry.AddService<IAssetLoader, AsepriteFileLoader>();
+    registry.AddService<IAssetLoader, AsepriteSpriteAnimationLoader>();
+    registry.AddService<IAssetLoader, AsepriteSpriteAnimationSetLoader>();
+    registry.AddService<IAssetLoader, AsepriteTextureLoader>();
+    registry.AddService<IAssetLoader, AsepriteTextureAtlasLoader>();
+    registry.AddService<IAssetLoader, ColorPaletteLoader>();
+    registry.AddService<IAssetLoader, ImageLoader>();
+    registry.AddService<IAssetLoader, MaterialLoader>();
+    registry.AddService<IAssetLoader, ShaderProgramLoader>();
+    registry.AddService<IAssetLoader, TextureLoader>();
   }
 }

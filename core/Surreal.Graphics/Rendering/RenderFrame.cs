@@ -20,7 +20,7 @@ public readonly record struct RenderFrame
   /// <summary>
   /// The <see cref="IGraphicsBackend"/> for this frame.
   /// </summary>
-  public required IGraphicsBackend Backend { get; init; }
+  public required IGraphicsDevice Device { get; init; }
 
   /// <summary>
   /// The <see cref="IRenderContextManager"/> for this frame.

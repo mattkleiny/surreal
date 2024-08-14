@@ -16,7 +16,7 @@ public sealed record TextureLoaderSettings
 /// <summary>
 /// The <see cref="AssetLoader{T}" /> for <see cref="Texture" />s.
 /// </summary>
-public sealed class TextureLoader(IGraphicsBackend graphics) : AssetLoader<Texture>
+public sealed class TextureLoader(IGraphicsDevice device) : AssetLoader<Texture>
 {
   /// <summary>
   /// Default settings for <see cref="Texture" />s loaded via this loader.
@@ -26,7 +26,7 @@ public sealed class TextureLoader(IGraphicsBackend graphics) : AssetLoader<Textu
   public override async Task<Texture> LoadAsync(IAssetContext context, CancellationToken cancellationToken)
   {
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
-    var texture = new Texture(graphics, Settings.Format, Settings.FilterMode, Settings.WrapMode);
+    var texture = new Texture(device, Settings.Format, Settings.FilterMode, Settings.WrapMode);
 
     texture.WritePixels(image.Value);
 

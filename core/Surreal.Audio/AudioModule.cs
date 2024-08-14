@@ -12,9 +12,7 @@ public sealed class AudioModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    var backend = registry.GetServiceOrThrow<IAudioBackend>();
-
-    registry.AddService<IAssetLoader>(new AudioBufferLoader());
-    registry.AddService<IAssetLoader>(new AudioClipLoader(backend));
+    registry.AddService<IAssetLoader, AudioBufferLoader>();
+    registry.AddService<IAssetLoader, AudioClipLoader>();
   }
 }

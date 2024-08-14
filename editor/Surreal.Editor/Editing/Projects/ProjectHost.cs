@@ -82,7 +82,7 @@ public abstract class ProjectHost
         {
           IsRunning = false;
 
-          HostingContext.Current = null;
+          HostingContext.Current = HostingContext.Null;
         }
       });
     }

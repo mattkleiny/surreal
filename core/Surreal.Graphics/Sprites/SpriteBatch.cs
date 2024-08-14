@@ -22,13 +22,13 @@ public sealed class SpriteBatch : IDisposable
   private Material? _material;
   private int _vertexCount;
 
-  public SpriteBatch(IGraphicsBackend backend, int quadCount = DefaultQuadCount)
+  public SpriteBatch(IGraphicsDevice device, int quadCount = DefaultQuadCount)
   {
     Debug.Assert(quadCount > 0);
     Debug.Assert(quadCount <= MaximumQuadCount);
 
     _vertices = Buffers.AllocateNative<Vertex2>(quadCount * 4);
-    _mesh = new Mesh<Vertex2>(backend);
+    _mesh = new Mesh<Vertex2>(device);
 
     CreateIndices(quadCount * 6);
   }

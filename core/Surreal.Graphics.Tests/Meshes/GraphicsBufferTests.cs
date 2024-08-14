@@ -5,21 +5,21 @@ public class GraphicsBufferTests
   [Test]
   public void it_should_create_a_buffer()
   {
-    var backend = Substitute.For<IGraphicsBackend>();
+    var device = Substitute.For<IGraphicsDevice>();
 
-    using var buffer = new GraphicsBuffer<int>(backend, BufferType.Vertex);
+    using var buffer = new GraphicsBuffer<int>(device, BufferType.Vertex);
 
-    backend.Received(1).CreateBuffer();
+    device.Received(1).CreateBuffer();
   }
 
   [Test]
   public void it_should_dispose_buffer()
   {
-    var backend = Substitute.For<IGraphicsBackend>();
-    var buffer = new GraphicsBuffer<int>(backend, BufferType.Vertex);
+    var device = Substitute.For<IGraphicsDevice>();
+    var buffer = new GraphicsBuffer<int>(device, BufferType.Vertex);
 
     buffer.Dispose();
 
-    backend.Received(1).DeleteBuffer(buffer.Handle);
+    device.Received(1).DeleteBuffer(buffer.Handle);
   }
 }
