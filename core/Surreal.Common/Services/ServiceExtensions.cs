@@ -31,7 +31,7 @@ public static class ServiceExtensions
   /// <summary>
   /// Adds a service to the registry.
   /// </summary>
-  public static void AddService<TService>(this IServiceRegistry registry, ServiceLifetime lifetime = ServiceLifetime.Transient)
+  public static void AddService<TService>(this IServiceRegistry registry, ServiceLifetime lifetime = ServiceLifetime.Singleton)
     where TService : class
   {
     registry.AddService(typeof(TService), typeof(TService), lifetime);
@@ -40,7 +40,7 @@ public static class ServiceExtensions
   /// <summary>
   /// Adds a service to the registry.
   /// </summary>
-  public static void AddService<TService, [MeansImplicitUse] TImpl>(this IServiceRegistry registry, ServiceLifetime lifetime = ServiceLifetime.Transient)
+  public static void AddService<TService, [MeansImplicitUse] TImpl>(this IServiceRegistry registry, ServiceLifetime lifetime = ServiceLifetime.Singleton)
     where TService : class
     where TImpl : class, TService
   {

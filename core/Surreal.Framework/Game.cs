@@ -13,22 +13,6 @@ using Surreal.Timing;
 namespace Surreal;
 
 /// <summary>
-/// A timing snapshot for the main game loop.
-/// </summary>
-public readonly record struct GameTime
-{
-  /// <summary>
-  /// The time since the last frame.
-  /// </summary>
-  public required DeltaTime DeltaTime { get; init; }
-
-  /// <summary>
-  /// The total time elapsed since the game started.
-  /// </summary>
-  public required TimeSpan TotalTime { get; init; }
-}
-
-/// <summary>
 /// Configuration for the game.
 /// </summary>
 public sealed record GameConfiguration
@@ -37,6 +21,11 @@ public sealed record GameConfiguration
   /// The <see cref="IPlatform"/> to use for the game.
   /// </summary>
   public required IPlatform Platform { get; init; }
+
+  /// <summary>
+  /// The performance mode to use for the game.
+  /// </summary>
+  public PerformanceMode PerformanceMode { get; init; } = PerformanceMode.Universal;
 
   /// <summary>
   /// The <see cref="IServiceModule"/>s to use for the game.
@@ -53,17 +42,33 @@ public sealed record GameConfiguration
 }
 
 /// <summary>
+/// A timing snapshot for the main game loop.
+/// </summary>
+public readonly record struct GameTime
+{
+  /// <summary>
+  /// The time since the last frame.
+  /// </summary>
+  public required DeltaTime DeltaTime { get; init; }
+
+  /// <summary>
+  /// The total time elapsed since the game started.
+  /// </summary>
+  public required TimeSpan TotalTime { get; init; }
+}
+
+/// <summary>
+/// A function that runs the game loop.
+/// </summary>
+public delegate void GameLoop(GameTime time);
+
+/// <summary>
 /// Entry point for the game.
 /// </summary>
 public class Game : IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<Game>();
   private static readonly ConcurrentQueue<Action> Callbacks = new();
-
-  /// <summary>
-  /// A function that runs the game loop.
-  /// </summary>
-  public delegate void GameLoop(GameTime time);
 
   /// <summary>
   /// Sets up the logging and profiling systems.
@@ -81,7 +86,7 @@ public class Game : IDisposable
   /// </summary>
   public static int Start(GameConfiguration configuration, Delegate setup)
   {
-    return Run(configuration, async game =>
+    return Run(configuration, GameHostingContext.Current, async game =>
     {
       var result = game.Services.ExecuteDelegate(setup, game);
       if (result is Task task)
@@ -89,15 +94,6 @@ public class Game : IDisposable
         await task;
       }
     });
-  }
-
-  /// <summary>
-  /// Runs this game inside a <see cref="GameHostingContext"/>.
-  /// </summary>
-  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  private static int Run(GameConfiguration configuration, Func<Game, Task> gameSetup)
-  {
-    return Run(configuration, GameHostingContext.Current, gameSetup);
   }
 
   /// <summary>
@@ -112,15 +108,9 @@ public class Game : IDisposable
 
       var startTime = TimeStamp.Now;
 
-      // build the game using the hosting context
       using var services = new ServiceRegistry();
       using var host = context.PlatformHost ?? configuration.Platform.BuildHost();
-
-      using var game = new Game
-      {
-        Services = services,
-        Host = host
-      };
+      using var game = new Game { Services = services, Host = host };
 
       context.Cancelled += () => game.Exit();
       context.HotReloaded += () => Log.Trace("The game has hot reloaded!");
@@ -133,6 +123,17 @@ public class Game : IDisposable
         services.AddModule(module);
       }
 
+      // create the main graphics device and register it
+      var graphics = services.GetServiceOrThrow<IGraphicsBackend>();
+
+      using var device = graphics.CreateDevice(new GraphicsDeviceDescriptor
+      {
+        Mode = configuration.PerformanceMode
+      });
+
+      services.AddService(device);
+
+      // register asset loaders
       foreach (var loader in services.GetServices<IAssetLoader>())
       {
         game.Assets.AddLoader(loader);

@@ -52,55 +52,98 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
   private readonly List<ServiceRegistration> _registrations = [];
   private readonly MultiDictionary<Type, object> _container = new();
 
-  public object? GetService(Type serviceType)
+  /// <summary>
+  /// Resolves the service of the given type.
+  /// </summary>
+  private bool TryResolveService(Type serviceType, out object? result)
   {
-    if (!_container.TryGetValues(serviceType, out var services))
+    if (_container.TryGetValues(serviceType, out var services))
     {
-      return null;
+      result = services[0];
+      return true;
     }
 
-    return services[0];
+    for (var i = 0; i < _registrations.Count; i++)
+    {
+      var registration = _registrations[i];
+      if (registration.ServiceType == serviceType)
+      {
+        var instance = Instantiate(registration.ImplementationType);
+        if (registration.Lifetime == ServiceLifetime.Singleton)
+        {
+          _container.Add(serviceType, instance);
+          _registrations.RemoveAt(i);
+
+          // remember the order in which services were added, so we can dispose them in reverse order
+          if (instance is IDisposable disposable)
+          {
+            _orderedDisposables.Add(disposable);
+          }
+        }
+
+        result = instance;
+        return true;
+      }
+    }
+
+    result = default;
+    return false;
+  }
+
+  /// <summary>
+  /// Resolves the services of the given type.
+  /// </summary>
+  private IEnumerable<object> ResolveServices(Type serviceType)
+  {
+    if (_container.TryGetValues(serviceType, out var services))
+    {
+      foreach (var service in services)
+      {
+        yield return service;
+      }
+    }
+
+    for (var i = _registrations.Count - 1; i >= 0; i--)
+    {
+      var registration = _registrations[i];
+      if (registration.ServiceType == serviceType)
+      {
+        var instance = Instantiate(registration.ImplementationType);
+        if (registration.Lifetime == ServiceLifetime.Singleton)
+        {
+          _container.Add(serviceType, instance);
+          _registrations.RemoveAt(i);
+
+          // remember the order in which services were added, so we can dispose them in reverse order
+          if (instance is IDisposable disposable)
+          {
+            _orderedDisposables.Add(disposable);
+          }
+        }
+
+        yield return instance;
+      }
+    }
+  }
+
+  public object? GetService(Type serviceType)
+  {
+    if (!TryResolveService(serviceType, out var service))
+    {
+      return default;
+    }
+
+    return service;
   }
 
   public IEnumerable<object> GetServices(Type serviceType)
   {
-    if (!_container.TryGetValues(serviceType, out var services))
-    {
-      return ReadOnlySlice<object>.Empty;
-    }
-
-    return services;
+    return ResolveServices(serviceType);
   }
 
   public bool TryGetService(Type serviceType, [MaybeNullWhen(false)] out object instance)
   {
-    // use active registrations
-    if (!_container.TryGetValues(serviceType, out var services))
-    {
-      instance = default;
-      return false;
-    }
-
-    // resolve new registrations
-    foreach (var registration in _registrations)
-    {
-      if (registration.ServiceType != serviceType)
-      {
-        continue;
-      }
-
-      // TODO: handle dependencies?
-      instance = registration.Lifetime switch
-      {
-        ServiceLifetime.Singleton => Instantiate(registration.ImplementationType),
-        ServiceLifetime.Transient => Instantiate(registration.ImplementationType),
-
-        _ => throw new InvalidOperationException($"Unsupported lifetime {registration.Lifetime}")
-      };
-    }
-
-    instance = services[0];
-    return true;
+    return TryResolveService(serviceType, out instance);
   }
 
   public void AddService(Type serviceType, object instance)

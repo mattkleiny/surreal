@@ -16,7 +16,6 @@
     <Using Include="Surreal.Collections" />
     <Using Include="Surreal.Colors" />
     <Using Include="Surreal.Diagnostics" />
-    <Using Include="Surreal.Diagnostics.Debugging" />
     <Using Include="Surreal.Diagnostics.Gizmos" />
     <Using Include="Surreal.Diagnostics.Logging" />
     <Using Include="Surreal.Diagnostics.Profiling" />
