@@ -12,7 +12,7 @@ public abstract class PhysicsBody2D : Node2D
   /// <summary>
   /// The <see cref="PhysicsHandle"/> for the body.
   /// </summary>
-  public PhysicsHandle PhysicsBody { get; private set; }
+  public PhysicsHandle Handle { get; private set; }
 
   /// <summary>
   /// The <see cref="IPhysicsWorld2d"/> that the body belongs to.
@@ -36,12 +36,12 @@ public abstract class PhysicsBody2D : Node2D
   {
     base.OnEnterTree();
 
-    PhysicsBody = PhysicsWorld.CreateBody(GlobalPosition);
+    Handle = PhysicsWorld.CreateBody(GlobalPosition);
   }
 
   protected override void OnExitTree()
   {
-    PhysicsWorld.DeleteBody(PhysicsBody);
+    PhysicsWorld.DeleteBody(Handle);
 
     base.OnExitTree();
 

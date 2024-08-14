@@ -12,8 +12,8 @@
 
   <PropertyGroup>
     <!-- core build properties -->
-    <TargetFramework>net9.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>

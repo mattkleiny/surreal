@@ -11,6 +11,6 @@ public class RigidBody2D : PhysicsBody2D
   {
     base.OnUpdate(deltaTime);
 
-    GlobalPosition = PhysicsWorld.GetBodyPosition(PhysicsBody);
+    GlobalPosition = PhysicsWorld.GetBodyPosition(Handle);
   }
 }
