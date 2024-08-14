@@ -20,14 +20,14 @@ var configuration = new GameConfiguration
   },
 };
 
-return Game.Start(configuration, async (Game game, IGraphicsDevice device, IKeyboardDevice keyboard, IMouseDevice mouse) =>
+return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
 {
   var log = LogFactory.GetLog<Program>();
   var sprite = await game.Assets.LoadAsync<Texture>("Assets/External/sprites/bunny.png");
 
   game.Assets.WatchAssets("./Assets");
 
-  using var material = new Material(device, ShaderProgram.LoadDefaultCanvasShader(device))
+  using var material = new Material(graphics, ShaderProgram.LoadDefaultCanvasShader(graphics))
   {
     BlendState = BlendState.OneMinusSourceAlpha,
     Uniforms =
@@ -37,7 +37,7 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice device, IKeyb
     }
   };
 
-  using var batch = new SpriteBatch(device)
+  using var batch = new SpriteBatch(graphics)
   {
     Material = material
   };
@@ -47,7 +47,7 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice device, IKeyb
 
   game.ExecuteVariableStep(time =>
   {
-    device.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
+    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
 
     foreach (ref var bunny in bunnies.AsSpan())
     {

@@ -18,7 +18,7 @@ var configuration = new GameConfiguration
   }
 };
 
-return Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard) =>
+return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard) =>
 {
   using var canvas = new PixelCanvas(graphics, 256, 144);
 

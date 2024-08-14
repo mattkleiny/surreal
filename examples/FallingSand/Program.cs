@@ -16,7 +16,7 @@ var configuration = new GameConfiguration
   }
 };
 
-return Game.Start(configuration, async (Game game, IGraphicsBackend graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
+return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard, IMouseDevice mouse) =>
 {
   var palette = await game.Assets.LoadAsync<ColorPalette>("resx://FallingSand/Assets/Embedded/palettes/kule-16.pal");
 

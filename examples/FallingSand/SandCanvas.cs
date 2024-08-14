@@ -5,7 +5,7 @@ namespace FallingSand;
 /// <summary>
 /// A simple canvas of 'sand' pixels that can be simulated.
 /// </summary>
-public sealed class SandCanvas(IGraphicsDevice device, int width = 256, int height = 144) : PixelCanvas(backend, width, height)
+public sealed class SandCanvas(IGraphicsDevice device, int width = 256, int height = 144) : PixelCanvas(device, width, height)
 {
   private IntervalTimer _updateTimer = new(TimeSpan.FromMilliseconds(16));
 
