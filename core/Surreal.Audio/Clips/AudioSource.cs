@@ -3,7 +3,7 @@
 /// <summary>
 /// An audio source allows <see cref="AudioClip" />s to be played.
 /// </summary>
-public sealed class AudioSource(IAudioBackend backend) : Disposable
+public sealed class AudioSource(IAudioDevice device) : Disposable
 {
   private bool _isLooping;
   private Vector3 _position;
@@ -13,12 +13,12 @@ public sealed class AudioSource(IAudioBackend backend) : Disposable
   /// <summary>
   /// The handle of the audio source in the underlying audio backend.
   /// </summary>
-  public AudioHandle Handle { get; } = backend.CreateAudioSource();
+  public AudioHandle Handle { get; } = device.CreateAudioSource();
 
   /// <summary>
   /// True if the audio source is currently playing.
   /// </summary>
-  public bool IsPlaying => backend.IsAudioSourcePlaying(Handle);
+  public bool IsPlaying => device.IsAudioSourcePlaying(Handle);
 
   /// <summary>
   /// The normalized volume of the audio source.
@@ -29,7 +29,7 @@ public sealed class AudioSource(IAudioBackend backend) : Disposable
     set
     {
       _volume = value;
-      backend.SetAudioSourceGain(Handle, value);
+      device.SetAudioSourceGain(Handle, value);
     }
   }
 
@@ -42,7 +42,7 @@ public sealed class AudioSource(IAudioBackend backend) : Disposable
     set
     {
       _position = value;
-      backend.SetAudioSourcePosition(Handle, value);
+      device.SetAudioSourcePosition(Handle, value);
     }
   }
 
@@ -55,7 +55,7 @@ public sealed class AudioSource(IAudioBackend backend) : Disposable
     set
     {
       _isLooping = value;
-      backend.SetAudioSourceLooping(Handle, value);
+      device.SetAudioSourceLooping(Handle, value);
     }
   }
 
@@ -68,7 +68,7 @@ public sealed class AudioSource(IAudioBackend backend) : Disposable
     set
     {
       _distanceFalloff = value;
-      backend.SetAudioSourceDistanceFalloff(Handle, value);
+      device.SetAudioSourceDistanceFalloff(Handle, value);
     }
   }
 
@@ -77,7 +77,7 @@ public sealed class AudioSource(IAudioBackend backend) : Disposable
   /// </summary>
   public void Play(AudioClip clip)
   {
-    backend.PlayAudioSource(Handle, clip.Handle);
+    device.PlayAudioSource(Handle, clip.Handle);
   }
 
   /// <summary>
@@ -85,14 +85,14 @@ public sealed class AudioSource(IAudioBackend backend) : Disposable
   /// </summary>
   public void Stop()
   {
-    backend.StopAudioSource(Handle);
+    device.StopAudioSource(Handle);
   }
 
   protected override void Dispose(bool managed)
   {
     if (managed)
     {
-      backend.DeleteAudioSource(Handle);
+      device.DeleteAudioSource(Handle);
     }
 
     base.Dispose(managed);
