@@ -98,7 +98,7 @@ public interface IGraphicsDevice : IDisposable
   void UnbindFrameBuffer();
   void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
 
-  void BlitFromBackBuffer(
+  void BlitFromFrameBuffer(
     GraphicsHandle targetFrameBuffer,
     uint sourceWidth,
     uint sourceHeight,
@@ -107,7 +107,7 @@ public interface IGraphicsDevice : IDisposable
     BlitMask mask,
     TextureFilterMode filterMode);
 
-  void BlitToBackBuffer(
+  void BlitToFrameBuffer(
     GraphicsHandle sourceFrameBuffer,
     uint sourceWidth,
     uint sourceHeight,
@@ -116,8 +116,8 @@ public interface IGraphicsDevice : IDisposable
     BlitMask mask,
     TextureFilterMode filterMode);
 
-  void BlitToBackBuffer(
-    FrameBufferHandle handle,
+  void BlitToFrameBuffer(
+    FrameBufferHandle sourceFrameBuffer,
     Material material,
     ShaderProperty<TextureSampler> samplerProperty,
     Optional<TextureFilterMode> filterMode,
@@ -323,15 +323,15 @@ public interface IGraphicsDevice : IDisposable
     {
     }
 
-    public void BlitFromBackBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+    public void BlitFromFrameBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
     {
     }
 
-    public void BlitToBackBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+    public void BlitToFrameBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
     {
     }
 
-    public void BlitToBackBuffer(FrameBufferHandle handle,
+    public void BlitToFrameBuffer(FrameBufferHandle sourceFrameBuffer,
       Material material,
       ShaderProperty<TextureSampler> samplerProperty,
       Optional<TextureFilterMode> filterMode,

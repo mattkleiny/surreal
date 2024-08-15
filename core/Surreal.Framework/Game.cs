@@ -6,6 +6,7 @@ using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.Networking;
 using Surreal.Physics;
+using Surreal.Scenes;
 using Surreal.Scripting;
 using Surreal.Services;
 using Surreal.Timing;
@@ -271,6 +272,50 @@ public class Game : IDisposable
           DeltaTime = deltaTime,
           TotalTime = TimeStamp.Now - startTime
         });
+      }
+
+      Host.EndFrame(deltaTime);
+
+      PumpEventLoop();
+    }
+  }
+
+  /// <summary>
+  /// Executes the given <see cref="SceneTree"/> in a fixed step frequency.
+  /// </summary>
+  public void ExecuteScene(SceneTree scene, bool runInBackground = false)
+  {
+    var fixedStep = TimeSpan.FromMilliseconds(30);
+
+    ExecuteScene(scene, fixedStep, runInBackground);
+  }
+
+  /// <summary>
+  /// Executes the given <see cref="SceneTree"/> in a fixed step frequency.
+  /// </summary>
+  public void ExecuteScene(SceneTree scene, DeltaTime fixedStep, bool runInBackground = false)
+  {
+    var deltaTimeClock = new DeltaTimeClock();
+    var accumulator = 0f;
+
+    while (!Host.IsClosing && !IsClosing)
+    {
+      var deltaTime = deltaTimeClock.Tick();
+
+      accumulator += deltaTime;
+
+      Host.BeginFrame(deltaTime);
+
+      if (Host.IsFocused || runInBackground)
+      {
+        while (accumulator >= fixedStep)
+        {
+          scene.Update(fixedStep);
+
+          accumulator -= fixedStep;
+        }
+
+        scene.Render(deltaTime);
       }
 
       Host.EndFrame(deltaTime);

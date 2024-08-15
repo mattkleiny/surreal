@@ -1,9 +1,11 @@
 using Jint;
 using Jint.Native;
 
-namespace Surreal.Scripting.Javascript;
+namespace Surreal.Scripting.JavaScript;
 
-
+/// <summary>
+/// Helpers for working with <see cref="JsValue"/>s.
+/// </summary>
 internal static class JsValueExtensions
 {
   public static Variant ToVariant(this JsValue value)

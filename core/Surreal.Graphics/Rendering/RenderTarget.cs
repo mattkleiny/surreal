@@ -158,26 +158,26 @@ public sealed class RenderTarget(IGraphicsDevice device, RenderTargetDescriptor 
   }
 
   /// <summary>
-  /// Blits this render target to the main back buffer.
+  /// Blits this render target to the main frame buffer.
   /// </summary>
-  public void BlitToBackBuffer(
+  public void BlitToFrameBuffer(
     Material material,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    BlitToBackBuffer(material, ShaderProperty.Texture, filterMode, wrapMode);
+    BlitToFrameBuffer(material, ShaderProperty.Texture, filterMode, wrapMode);
   }
 
   /// <summary>
-  /// Blits this render target to the main back buffer.
+  /// Blits this render target to the main frame buffer.
   /// </summary>
-  public void BlitToBackBuffer(
+  public void BlitToFrameBuffer(
     Material material,
     ShaderProperty<TextureSampler> textureProperty,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    device.BlitToBackBuffer(Handle, material, textureProperty, filterMode, wrapMode);
+    device.BlitToFrameBuffer(Handle, material, textureProperty, filterMode, wrapMode);
   }
 
   protected override void Dispose(bool managed)

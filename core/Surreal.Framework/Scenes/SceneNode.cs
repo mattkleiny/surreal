@@ -135,12 +135,9 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
 
       foreach (var child in node.Children)
       {
-        if (child is T instance)
+        if (child is T instance && predicate(instance))
         {
-          if (predicate(instance))
-          {
-            results.Add(instance);
-          }
+          results.Add(instance);
         }
 
         ResolveRecursive(child, results, predicate);

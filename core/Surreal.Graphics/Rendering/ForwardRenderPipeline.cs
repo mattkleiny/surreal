@@ -93,22 +93,34 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
       DepthStencilFormat = DepthStencilFormat.None
     });
 
-    public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
+    public override void OnBeginFrame(in RenderFrame frame)
     {
-      base.OnExecutePass(in frame, viewport);
+      base.OnBeginFrame(in frame);
 
       _colorTarget.ResizeFrameBuffer(frame.Viewport.Width, frame.Viewport.Height);
       _colorTarget.BindToDisplay();
 
       _colorTarget.ClearColorBuffer(pipeline.ClearColor);
+    }
+
+    public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
+    {
+      base.OnExecutePass(in frame, viewport);
+
+      _colorTarget.BindToDisplay();
 
       foreach (var renderObject in viewport.CullVisibleObjects<IRenderObject>())
       {
         renderObject.Render(in frame);
       }
+    }
 
+    public override void OnEndFrame(in RenderFrame frame)
+    {
       _colorTarget.UnbindFromDisplay();
-      _colorTarget.BlitToBackBuffer(_blitMaterial);
+      _colorTarget.BlitToFrameBuffer(_blitMaterial);
+
+      base.OnEndFrame(in frame);
     }
 
     public override void Dispose()

@@ -7,24 +7,23 @@
       Title = "Sprite Sheets",
       IsVsyncEnabled = true,
       ShowFpsInTitle = true,
-      Width = 1920,
-      Height = 1080,
-      IsTransparent = true
+      Width = 1024,
+      Height = 768,
     }
   }
 };
 
 return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard) =>
 {
-  var sprites = await game.Assets.LoadAsync<SpriteAnimationSet>("Assets/External/sprites/crab.aseprite");
-
-  game.ExecuteVariableStep(_ =>
+  var scene = new SceneTree
   {
-    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-
-    if (keyboard.IsKeyPressed(Key.Escape))
+    Assets = game.Assets,
+    Services = game.Services,
+    Renderer = new ForwardRenderPipeline(graphics)
     {
-      game.Exit();
+      ClearColor = Color.Black
     }
-  });
+  };
+
+  game.ExecuteScene(scene);
 });

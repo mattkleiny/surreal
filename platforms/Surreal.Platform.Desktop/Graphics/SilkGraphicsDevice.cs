@@ -746,7 +746,7 @@ internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
     }
   }
 
-  public void BlitFromBackBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public void BlitFromFrameBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
   {
     gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
     gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, targetFrameBuffer);
@@ -774,7 +774,7 @@ internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
     gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
   }
 
-  public void BlitToBackBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public void BlitToFrameBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
   {
     gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, sourceFrameBuffer);
     gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
@@ -802,7 +802,8 @@ internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
     gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
   }
 
-  public void BlitToBackBuffer(FrameBufferHandle handle,
+  public void BlitToFrameBuffer(
+    FrameBufferHandle sourceFrameBuffer,
     Material material,
     ShaderProperty<TextureSampler> samplerProperty,
     Optional<TextureFilterMode> filterMode,
@@ -810,7 +811,7 @@ internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
   {
     var mesh = GetOrCreateQuadMesh();
 
-    var sampler = new TextureSampler(handle.ColorAttachment, 0)
+    var sampler = new TextureSampler(sourceFrameBuffer.ColorAttachment, 0)
     {
       FilterMode = filterMode,
       WrapMode = wrapMode
