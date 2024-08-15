@@ -57,7 +57,7 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
     Window = new SilkWindow(configuration);
     AudioBackend = new SilkAudioBackend();
-    GraphicsBackend = new SilkGraphicsBackend(Window.InnerWindow);
+    GraphicsBackend = new SilkGraphicsBackend(configuration, Window.InnerWindow);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
   }
 

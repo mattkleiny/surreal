@@ -33,6 +33,11 @@ public sealed record GameConfiguration
     new PhysicsModule(),
     new ScriptingModule()
   ];
+
+  /// <summary>
+  /// The graphics mode to use for the game.
+  /// </summary>
+  public GraphicsMode GraphicsMode { get; init; } = GraphicsMode.Universal;
 }
 
 /// <summary>
@@ -123,7 +128,7 @@ public class Game : IDisposable
       var inputBackend = services.GetServiceOrThrow<IInputBackend>();
 
       using var audioDevice = audioBackend.CreateDevice();
-      using var graphicsDevice = graphicsBackend.CreateDevice(GraphicsMode.Universal);
+      using var graphicsDevice = graphicsBackend.CreateDevice(configuration.GraphicsMode);
 
       services.AddService(audioDevice);
       services.AddService(graphicsDevice);

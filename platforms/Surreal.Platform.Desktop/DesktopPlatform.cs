@@ -3,10 +3,21 @@
 namespace Surreal;
 
 /// <summary>
+/// The different graphics modes available.
+/// </summary>
+public enum GraphicsProvider
+{
+  OpenGL,
+  WebGPU,
+}
+
+/// <summary>
 /// Configuration for the <see cref="DesktopPlatform" />.
 /// </summary>
 public sealed record DesktopConfiguration
 {
+  public GraphicsProvider GraphicsProvider { get; set; } = GraphicsProvider.OpenGL;
+
   public string Title { get; set; } = "Surreal";
 
   public int Width { get; set; } = 1920;

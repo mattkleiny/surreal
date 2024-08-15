@@ -1,7 +1,6 @@
 ﻿using Silk.NET.Core;
 using Silk.NET.Input;
 using Silk.NET.Maths;
-using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using Surreal.Graphics.Images;
 
@@ -14,7 +13,20 @@ internal sealed class SilkWindow : IDesktopWindow
 
   public SilkWindow(DesktopConfiguration configuration)
   {
-    var windowOptions = WindowOptions.Default with
+    var defaultOptions = configuration.GraphicsProvider switch
+    {
+      GraphicsProvider.OpenGL => WindowOptions.Default,
+      GraphicsProvider.WebGPU => WindowOptions.Default with
+      {
+        API = GraphicsAPI.None,
+        IsContextControlDisabled = true,
+        ShouldSwapAutomatically = false
+      },
+
+      _ => throw new InvalidOperationException("An unsupported GraphicsProvider was provided")
+    };
+
+    var windowOptions = defaultOptions with
     {
       Title = configuration.Title,
       Size = new Vector2D<int>(configuration.Width, configuration.Height),
@@ -125,8 +137,6 @@ internal sealed class SilkWindow : IDesktopWindow
 
   public void Dispose()
   {
-    Input.Dispose();
-
     _window.Reset();
     _window.Dispose();
   }

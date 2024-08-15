@@ -1,18 +1,19 @@
 ﻿namespace Surreal.Graphics;
 
 /// <summary>
-/// The graphics mode to use.
+/// Possible graphics modes for the backend.
 /// </summary>
 public enum GraphicsMode
 {
   /// <summary>
-  /// A mode that works on all platforms.
+  /// The graphics backend should be universal and work on all platforms.
   /// </summary>
   Universal,
+
   /// <summary>
-  /// A mode that enables high-definition graphics.
+  /// The graphics backend should high-fidelity rendering.
   /// </summary>
-  HighDefinition,
+  HighFidelity,
 }
 
 /// <summary>

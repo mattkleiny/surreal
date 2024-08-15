@@ -36,8 +36,8 @@
 
   <PropertyGroup>
     <!-- shared package versions for the whole solution -->
-    <AvaloniaVersion>11.0.5</AvaloniaVersion>
-    <SilkVersion>2.17</SilkVersion>
+    <AvaloniaVersion>11.1.3</AvaloniaVersion>
+    <SilkVersion>2.21</SilkVersion>
   </PropertyGroup>
 
   <ItemGroup>

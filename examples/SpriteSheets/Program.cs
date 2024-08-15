@@ -9,11 +9,12 @@
       ShowFpsInTitle = true,
       Width = 1024,
       Height = 768,
-    }
-  }
+      GraphicsProvider = GraphicsProvider.WebGPU
+    },
+  },
 };
 
-return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard) =>
+return Game.Start(configuration, (Game game, IGraphicsDevice graphics) =>
 {
   var scene = new SceneTree
   {
