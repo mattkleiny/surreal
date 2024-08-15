@@ -3,7 +3,10 @@ using Surreal.Audio.Clips;
 
 namespace Surreal.Audio;
 
-internal sealed unsafe class SilkAudioDevice : IAudioDevice
+/// <summary>
+/// A <see cref="IAudioDevice"/> implementation that uses OpenAL via Silk.NET.
+/// </summary>
+internal sealed unsafe class SilkAudioDeviceOpenAL : IAudioDevice
 {
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   private static readonly ALContext alc = ALContext.GetApi(soft: true);
@@ -13,7 +16,7 @@ internal sealed unsafe class SilkAudioDevice : IAudioDevice
 
   private readonly Context* _context;
 
-  public SilkAudioDevice()
+  public SilkAudioDeviceOpenAL()
   {
     var device = alc.OpenDevice(string.Empty); // the default device
 

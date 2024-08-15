@@ -5,6 +5,9 @@ using MouseButton = Surreal.Input.Mouse.MouseButton;
 
 namespace Surreal.Input;
 
+/// <summary>
+/// A <see cref="IMouseDevice"/> implementation that uses Silk.NET.
+/// </summary>
 internal sealed class SilkMouseDevice(IWindow window, IMouse mouse) : IMouseDevice
 {
   public event Action<MouseButton>? ButtonPressed;

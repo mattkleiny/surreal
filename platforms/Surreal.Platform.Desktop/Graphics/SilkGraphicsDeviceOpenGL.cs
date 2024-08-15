@@ -14,6 +14,10 @@ using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Graphics;
 
+/// <summary>
+/// A <see cref="IGraphicsDevice"/> implementation that uses OpenGL via Silk.NET.
+/// </summary>
+
 internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 {
   private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");

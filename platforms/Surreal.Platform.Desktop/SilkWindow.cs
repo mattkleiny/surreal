@@ -6,6 +6,9 @@ using Surreal.Graphics.Images;
 
 namespace Surreal;
 
+/// <summary>
+/// A <see cref="IDesktopWindow"/> implementation that uses Silk.NET.
+/// </summary>
 internal sealed class SilkWindow : IDesktopWindow
 {
   private readonly IWindow _window;

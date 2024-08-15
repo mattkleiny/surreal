@@ -4,6 +4,9 @@ using Key = Surreal.Input.Keyboard.Key;
 
 namespace Surreal.Input;
 
+/// <summary>
+/// A <see cref="IKeyboardDevice"/> implementation that uses Silk.NET.
+/// </summary>
 internal sealed class SilkKeyboardDevice : IKeyboardDevice
 {
   private readonly HashSet<Key> _pressedKeys = [];

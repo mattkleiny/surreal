@@ -1,5 +1,7 @@
+using Silk.NET.Core.Native;
 using Silk.NET.WebGPU;
 using Silk.NET.Windowing;
+using Surreal.Collections;
 using Surreal.Collections.Slices;
 using Surreal.Colors;
 using Surreal.Graphics.Materials;
@@ -15,7 +17,10 @@ using TextureFormat = Surreal.Graphics.Textures.TextureFormat;
 
 namespace Surreal.Graphics;
 
-internal sealed unsafe class SilkGraphicsDeviceWebGpu : IGraphicsDevice
+/// <summary>
+/// A <see cref="IGraphicsDevice"/> implementation that uses WGPU via Silk.NET.
+/// </summary>
+internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 {
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   private readonly WebGPU wgpu = WebGPU.GetApi();
@@ -25,7 +30,10 @@ internal sealed unsafe class SilkGraphicsDeviceWebGpu : IGraphicsDevice
   private Adapter* _adapter;
   private Device* _device;
 
-  public SilkGraphicsDeviceWebGpu(IWindow window, GraphicsMode mode)
+  private readonly Arena<BufferState> _buffers = new();
+  private readonly Arena<TextureState> _textures = new();
+
+  public SilkGraphicsDeviceWGPU(IWindow window, GraphicsMode mode)
   {
     var instanceDescriptor = new InstanceDescriptor();
 
@@ -60,6 +68,8 @@ internal sealed unsafe class SilkGraphicsDeviceWebGpu : IGraphicsDevice
       callback: new PfnRequestDeviceCallback((_, device, _, _) => _device = device),
       userdata: null
     );
+
+    wgpu.DeviceSetUncapturedErrorCallback(_device, new PfnErrorCallback(OnUnhandledError), userdata: null);
   }
 
   public Viewport GetViewportSize()
@@ -101,7 +111,7 @@ internal sealed unsafe class SilkGraphicsDeviceWebGpu : IGraphicsDevice
 
   public GraphicsHandle CreateBuffer()
   {
-    return GraphicsHandle.None;
+    return GraphicsHandle.FromArenaIndex(_buffers.Add(new BufferState()));
   }
 
   public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, int length) where T : unmanaged
@@ -123,11 +133,16 @@ internal sealed unsafe class SilkGraphicsDeviceWebGpu : IGraphicsDevice
 
   public void DeleteBuffer(GraphicsHandle handle)
   {
+    _buffers.Remove(handle);
   }
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
-    return GraphicsHandle.None;
+    return GraphicsHandle.FromArenaIndex(_textures.Add(new TextureState
+    {
+      FilterMode = filterMode,
+      WrapMode = wrapMode
+    }));
   }
 
   public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
@@ -158,14 +173,17 @@ internal sealed unsafe class SilkGraphicsDeviceWebGpu : IGraphicsDevice
 
   public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
   {
+    _textures[handle].FilterMode = mode;
   }
 
   public void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode)
   {
+    _textures[handle].WrapMode = mode;
   }
 
   public void DeleteTexture(GraphicsHandle handle)
   {
+    _textures.Remove(handle);
   }
 
   public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
@@ -315,6 +333,35 @@ internal sealed unsafe class SilkGraphicsDeviceWebGpu : IGraphicsDevice
 
   public void Dispose()
   {
-    wgpu.DeviceDestroy(_device);
+    wgpu.DeviceRelease(_device);
+    wgpu.AdapterRelease(_adapter);
+    wgpu.SurfaceRelease(_surface);
+    wgpu.InstanceRelease(_instance);
+
+    wgpu.Dispose();
+  }
+
+  /// <summary>
+  /// A callback for when an error is not captured.
+  /// </summary>
+  private void OnUnhandledError(ErrorType arg0, byte* messagePtr, void* userData)
+  {
+    Console.WriteLine(SilkMarshal.PtrToString((nint)messagePtr));
+  }
+
+  /// <summary>
+  /// Internal state for a buffer.
+  /// </summary>
+  private sealed class BufferState
+  {
+  }
+
+  /// <summary>
+  /// Internal state for a texture.
+  /// </summary>
+  private sealed class TextureState
+  {
+    public TextureFilterMode FilterMode { get; set; }
+    public TextureWrapMode WrapMode { get; set; }
   }
 }
