@@ -157,7 +157,7 @@ internal sealed class GameViewportViewModel : EditorViewModel
     public void RegisterServices(IServiceRegistry services)
     {
       services.AddService(IAudioBackend.Null);
-      services.AddService<IGraphicsBackend>(new SilkGraphicsBackend(_owner.Viewport.Display.OpenGL!));
+      services.AddService(IGraphicsBackend.Null);
       services.AddService(IKeyboardDevice.Null);
       services.AddService(IMouseDevice.Null);
     }

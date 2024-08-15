@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A Surreal platform implementation for Desktop environments.</Description>
-    <RuntimeIdentifiers>win;linux;osx</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-arm64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Silk.NET.Core" Version="$(SilkVersion)" PrivateAssets="compile"/>
@@ -11,6 +11,7 @@
     <PackageReference Include="Silk.NET.OpenAL.Soft.Native" Version="1.21.1.2" PrivateAssets="compile"/>
     <PackageReference Include="Silk.NET.OpenGL" Version="$(SilkVersion)" PrivateAssets="compile"/>
     <PackageReference Include="Silk.NET.OpenGL.Extensions.EXT" Version="$(SilkVersion)" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.Vulkan" Version="$(SilkVersion)" PrivateAssets="compile"/>
     <PackageReference Include="Silk.NET.Windowing" Version="$(SilkVersion)" PrivateAssets="compile"/>
   </ItemGroup>
   <ItemGroup>

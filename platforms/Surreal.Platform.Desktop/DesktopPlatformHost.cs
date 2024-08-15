@@ -1,10 +1,10 @@
 using Surreal.Audio;
 using Surreal.Diagnostics;
-using Surreal.Diagnostics.Logging;
 using Surreal.Graphics;
 using Surreal.Graphics.Images;
 using Surreal.Input;
 using Surreal.Services;
+using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
@@ -43,8 +43,6 @@ public interface IDesktopWindow : IDisposable
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 {
-  private static readonly ILog Log = LogFactory.GetLog<DesktopPlatformHost>();
-
   private readonly ThreadAffineSynchronizationContext _syncContext = new(Thread.CurrentThread);
   private readonly FrameCounter _frameCounter = new();
   private readonly DesktopConfiguration _configuration;
@@ -59,10 +57,8 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
     Window = new SilkWindow(configuration);
     AudioBackend = new SilkAudioBackend();
-    GraphicsBackend = new SilkGraphicsBackend(Window.OpenGL);
+    GraphicsBackend = new SilkGraphicsBackend(Window.InnerWindow);
     InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
-
-    Resized += OnResized;
   }
 
   public SilkWindow Window { get; }
@@ -128,62 +124,5 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public void Dispose()
   {
     Window.Dispose();
-  }
-
-  private void OnResized(int width, int height)
-  {
-    Log.Trace($"Resizing window to {width}x{height}");
-
-    // TODO: Implement this
-    // GraphicsBackend.SetViewportSize(new Viewport(0, 0, (uint)width, (uint)height));
-  }
-}
-
-/// <summary>
-/// A <see cref="SynchronizationContext"/> that prefers to schedule work back onto the main thread.
-/// </summary>
-internal sealed class ThreadAffineSynchronizationContext(Thread mainThread) : SynchronizationContext
-{
-  private readonly Queue<Continuation> _continuations = new();
-  private readonly Queue<Continuation> _buffer = new();
-
-  public void Process()
-  {
-    if (Thread.CurrentThread != mainThread)
-    {
-      throw new InvalidOperationException("Cannot process continuations from a non-main thread.");
-    }
-
-    while (_continuations.TryDequeue(out var continuation))
-    {
-      _buffer.Enqueue(continuation);
-    }
-
-    while (_buffer.TryDequeue(out var continuation))
-    {
-      continuation.Execute();
-    }
-  }
-
-  public override void Post(SendOrPostCallback callback, object? state)
-  {
-    _continuations.Enqueue(new Continuation(callback, state));
-  }
-
-  public override void Send(SendOrPostCallback callback, object? state)
-  {
-    if (Thread.CurrentThread == mainThread)
-    {
-      callback(state);
-    }
-    else
-    {
-      _continuations.Enqueue(new Continuation(callback, state));
-    }
-  }
-
-  private readonly record struct Continuation(SendOrPostCallback Callback, object? State)
-  {
-    public void Execute() => Callback(State);
   }
 }

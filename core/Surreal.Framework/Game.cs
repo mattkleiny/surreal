@@ -123,7 +123,7 @@ public class Game : IDisposable
       var inputBackend = services.GetServiceOrThrow<IInputBackend>();
 
       using var audioDevice = audioBackend.CreateDevice();
-      using var graphicsDevice = graphicsBackend.CreateDevice();
+      using var graphicsDevice = graphicsBackend.CreateDevice(GraphicsMode.Universal);
 
       services.AddService(audioDevice);
       services.AddService(graphicsDevice);
@@ -132,6 +132,12 @@ public class Game : IDisposable
       {
         services.AddService(device.Type, device);
       }
+
+      // resize the viewport
+      host.Resized += (newWidth, newHeight) =>
+      {
+        graphicsDevice.SetViewportSize(new Viewport(0, 0, (uint) newWidth, (uint) newHeight));
+      };
 
       // register asset loaders
       foreach (var loader in services.GetServices<IAssetLoader>())
@@ -281,17 +287,17 @@ public class Game : IDisposable
   /// <summary>
   /// Executes the given <see cref="SceneTree"/> in a fixed step frequency.
   /// </summary>
-  public void ExecuteScene(SceneTree scene, bool runInBackground = false)
+  public void ExecuteScene(ISceneProvider provider, bool runInBackground = false)
   {
     var fixedStep = TimeSpan.FromMilliseconds(30);
 
-    ExecuteScene(scene, fixedStep, runInBackground);
+    ExecuteScene(provider, fixedStep, runInBackground);
   }
 
   /// <summary>
-  /// Executes the given <see cref="SceneTree"/> in a fixed step frequency.
+  /// Executes the given <see cref="ISceneProvider"/> in a fixed step frequency.
   /// </summary>
-  public void ExecuteScene(SceneTree scene, DeltaTime fixedStep, bool runInBackground = false)
+  public void ExecuteScene(ISceneProvider provider, DeltaTime fixedStep, bool runInBackground = false)
   {
     var deltaTimeClock = new DeltaTimeClock();
     var accumulator = 0f;
@@ -306,14 +312,18 @@ public class Game : IDisposable
 
       if (Host.IsFocused || runInBackground)
       {
-        while (accumulator >= fixedStep)
+        // update and render the current scene
+        if (provider.CurrentScene is { } scene)
         {
-          scene.Update(fixedStep);
+          while (accumulator >= fixedStep)
+          {
+            scene.Update(fixedStep);
 
-          accumulator -= fixedStep;
+            accumulator -= fixedStep;
+          }
+
+          scene.Render(deltaTime);
         }
-
-        scene.Render(deltaTime);
       }
 
       Host.EndFrame(deltaTime);
@@ -330,18 +340,20 @@ public class Game : IDisposable
     IsClosing = true;
   }
 
-  public void Dispose()
-  {
-    Assets.Dispose();
-  }
-
-  /// <summary>Pumps the main event loop a single frame.</summary>
+  /// <summary>
+  /// Pumps the main event loop a single frame.
+  /// </summary>
   protected static void PumpEventLoop()
   {
     while (Callbacks.TryDequeue(out var callback))
     {
       callback.Invoke();
     }
+  }
+
+  public void Dispose()
+  {
+    Assets.Dispose();
   }
 
   /// <summary>

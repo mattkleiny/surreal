@@ -14,7 +14,7 @@ using TextureWrapMode = Surreal.Graphics.Textures.TextureWrapMode;
 
 namespace Surreal.Graphics;
 
-internal sealed class SilkGraphicsDevice(GL gl) : IGraphicsDevice
+internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 {
   private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");
   private readonly ExtDebugMarker _debugMarker = new(gl.Context);

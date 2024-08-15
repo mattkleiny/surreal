@@ -38,11 +38,9 @@ internal sealed class SilkWindow : IDesktopWindow
       SetWindowIcon(image);
     }
 
-    OpenGL = _window.CreateOpenGL();
     Input = _window.CreateInput();
   }
 
-  public GL OpenGL { get; }
   public IInputContext Input { get; }
   public IWindow InnerWindow => _window;
 

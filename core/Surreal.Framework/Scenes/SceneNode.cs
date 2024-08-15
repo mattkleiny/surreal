@@ -6,6 +6,27 @@ using Surreal.Timing;
 namespace Surreal.Scenes;
 
 /// <summary>
+/// A list of <see cref="SceneNode"/>s.
+/// </summary>
+[DebuggerDisplay("SceneNodeList (Count = {Count})")]
+public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
+{
+  protected override void OnItemAdded(SceneNode item)
+  {
+    base.OnItemAdded(item);
+
+    item.OnNodeAdded(owner);
+  }
+
+  protected override void OnItemRemoved(SceneNode item)
+  {
+    base.OnItemRemoved(item);
+
+    item.OnNodeRemoved(owner);
+  }
+}
+
+/// <summary>
 /// A single node in a scene tree.
 /// </summary>
 public class SceneNode : IEnumerable<SceneNode>, IDisposable
@@ -504,50 +525,4 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   /// A message to be processed by a <see cref="SceneNode"/>.
   /// </summary>
   internal readonly record struct Message(MessageType Type, SceneNode Sender, bool IsRecursive);
-}
-
-/// <summary>
-/// A list of <see cref="SceneNode"/>s.
-/// </summary>
-[DebuggerDisplay("SceneNodeList (Count = {Count})")]
-public sealed class SceneNodeList(SceneNode owner) : Collection<SceneNode>
-{
-  protected override void OnItemAdded(SceneNode item)
-  {
-    base.OnItemAdded(item);
-
-    item.OnNodeAdded(owner);
-  }
-
-  protected override void OnItemRemoved(SceneNode item)
-  {
-    base.OnItemRemoved(item);
-
-    item.OnNodeRemoved(owner);
-  }
-}
-
-/// <summary>
-/// A single node in a <see cref="SceneTreeDefinition"/>.
-/// </summary>
-[XmlRoot("SceneNode")]
-public class SceneNodeDefinition
-{
-  /// <summary>
-  /// A user-friendly name for the scene.
-  /// </summary>
-  [XmlAttribute]
-  public string? Name { get; set; }
-
-  /// <summary>
-  /// An optional description for the scene.
-  /// </summary>
-  [XmlAttribute]
-  public string? Description { get; set; }
-
-  /// <summary>
-  /// The child nodes of this node.
-  /// </summary>
-  [XmlArray]
-  public List<SceneNodeDefinition> Children { get; init; } = [];
 }
