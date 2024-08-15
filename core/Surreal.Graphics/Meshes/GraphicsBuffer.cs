@@ -53,7 +53,7 @@ public sealed class GraphicsBuffer<TData>(IGraphicsDevice device, BufferType typ
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying buffer.
   /// </summary>
-  public GraphicsHandle Handle { get; } = device.CreateBuffer();
+  public GraphicsHandle Handle { get; } = device.CreateBuffer(type, usage);
 
   /// <summary>
   /// The type of the <see cref="GraphicsBuffer" />.

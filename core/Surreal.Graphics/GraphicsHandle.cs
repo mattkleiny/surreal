@@ -22,5 +22,10 @@ public readonly record struct GraphicsHandle(ulong Id)
   public static implicit operator nint(GraphicsHandle handle) => (nint)handle.Id;
   public static implicit operator ulong(GraphicsHandle handle) => handle.Id;
   public static implicit operator ArenaIndex(GraphicsHandle handle) => ArenaIndex.FromUlong(handle);
-  public static unsafe implicit operator void*(GraphicsHandle handle) => (void*)handle.Id;
+
+  /// <summary>
+  /// Converts the handle to a pointer of type <typeparamref name="T" />.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public unsafe T* AsPointer<T>() where T : unmanaged => (T*)(void*)Id;
 }

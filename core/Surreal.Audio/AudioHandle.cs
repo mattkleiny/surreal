@@ -22,5 +22,10 @@ public readonly record struct AudioHandle(ulong Id)
   public static implicit operator nint(AudioHandle handle) => (nint)handle.Id;
   public static implicit operator ulong(AudioHandle handle) => handle.Id;
   public static implicit operator ArenaIndex(AudioHandle handle) => ArenaIndex.FromUlong(handle);
-  public static unsafe implicit operator void*(AudioHandle handle) => (void*)handle.Id;
+
+  /// <summary>
+  /// Converts the handle to a pointer of type <typeparamref name="T" />.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public unsafe T* AsPointer<T>() where T : unmanaged => (T*)(void*)Id;
 }

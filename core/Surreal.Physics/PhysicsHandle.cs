@@ -22,5 +22,10 @@ public readonly record struct PhysicsHandle(ulong Id)
   public static implicit operator nint(PhysicsHandle handle) => (nint)handle.Id;
   public static implicit operator ulong(PhysicsHandle handle) => handle.Id;
   public static implicit operator ArenaIndex(PhysicsHandle handle) => ArenaIndex.FromUlong(handle);
-  public static unsafe implicit operator void*(PhysicsHandle handle) => (void*)handle.Id;
+
+  /// <summary>
+  /// Converts the handle to a pointer of type <typeparamref name="T" />.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public unsafe T* AsPointer<T>() where T : unmanaged => (T*)(void*)Id;
 }

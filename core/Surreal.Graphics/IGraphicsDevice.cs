@@ -26,49 +26,6 @@ public readonly record struct FrameBufferHandle(GraphicsHandle FrameBuffer)
 }
 
 /// <summary>
-/// Describes how to build a pipeline.
-/// </summary>
-public readonly record struct PipelineDescriptor
-{
-  /// <summary>
-  /// A label for the pipeline, for debugging purposes.
-  /// </summary>
-  public string? Label { get; init; }
-
-  /// <summary>
-  /// The rasterizer mode to use for the pipeline.
-  /// </summary>
-  public RasterizerMode Rasterizer { get; init; }
-
-  /// <summary>
-  /// The shader program to use for the pipeline.
-  /// </summary>
-  public GraphicsHandle? Shader { get; init; }
-}
-
-/// <summary>
-/// Represents the mode of the rasterization pipeline.
-/// </summary>
-public readonly record struct RasterizerMode
-{
-  /// <summary>
-  /// The default graphics state.
-  /// </summary>
-  public static RasterizerMode Default { get; } = new()
-  {
-    Blending = BlendState.OneMinusSourceAlpha,
-    Scissor = null,
-    PolygonMode = PolygonMode.Filled,
-    CullingMode = CullingMode.Back,
-  };
-
-  public BlendState? Blending { get; init; }
-  public ScissorState? Scissor { get; init; }
-  public PolygonMode PolygonMode { get; init; }
-  public CullingMode CullingMode { get; init; }
-}
-
-/// <summary>
 /// Represents a graphics device in the underlying operating system.
 /// </summary>
 public interface IGraphicsDevice : IDisposable
@@ -86,12 +43,8 @@ public interface IGraphicsDevice : IDisposable
   void ClearDepthBuffer(float depth);
   void ClearStencilBuffer(int amount);
 
-  // pipelines
-  GraphicsHandle CreatePipeline(PipelineDescriptor descriptor);
-  void DeletePipeline(GraphicsHandle handle);
-
   // buffers
-  GraphicsHandle CreateBuffer();
+  GraphicsHandle CreateBuffer(BufferType type, BufferUsage usage);
   Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length) where T : unmanaged;
   void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged;
   void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged;
@@ -229,16 +182,7 @@ public interface IGraphicsDevice : IDisposable
     {
     }
 
-    public GraphicsHandle CreatePipeline(PipelineDescriptor descriptor)
-    {
-      return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextPipelineId));
-    }
-
-    public void DeletePipeline(GraphicsHandle handle)
-    {
-    }
-
-    public GraphicsHandle CreateBuffer()
+    public GraphicsHandle CreateBuffer(BufferType type, BufferUsage usage)
     {
       return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextBufferId));
     }

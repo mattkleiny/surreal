@@ -125,17 +125,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     gl.Clear(ClearBufferMask.StencilBufferBit);
   }
 
-  public GraphicsHandle CreatePipeline(PipelineDescriptor descriptor)
-  {
-    throw new NotImplementedException();
-  }
-
-  public void DeletePipeline(GraphicsHandle handle)
-  {
-    throw new NotImplementedException();
-  }
-
-  public GraphicsHandle CreateBuffer()
+  public GraphicsHandle CreateBuffer(BufferType type, BufferUsage usage)
   {
     return GraphicsHandle.FromUInt(gl.GenBuffer());
   }

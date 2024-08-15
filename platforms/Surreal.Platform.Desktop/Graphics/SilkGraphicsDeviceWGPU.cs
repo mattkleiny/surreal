@@ -11,6 +11,7 @@ using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using BlendState = Surreal.Graphics.Materials.BlendState;
+using Buffer = Silk.NET.WebGPU.Buffer;
 using BufferUsage = Surreal.Graphics.Meshes.BufferUsage;
 using Color = Surreal.Colors.Color;
 using PolygonMode = Surreal.Graphics.Materials.PolygonMode;
@@ -76,7 +77,11 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       userdata: null
     );
 
-    wgpu.DeviceSetUncapturedErrorCallback(_device, new PfnErrorCallback(OnUnhandledError), userdata: null);
+    wgpu.DeviceSetUncapturedErrorCallback(
+      device: _device,
+      callback: new PfnErrorCallback(OnUnhandledError),
+      userdata: null
+    );
   }
 
   public Viewport GetViewportSize()
@@ -116,73 +121,22 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   {
   }
 
-  public GraphicsHandle CreatePipeline(PipelineDescriptor descriptor)
+  public GraphicsHandle CreateBuffer(BufferType type, BufferUsage usage)
   {
-    var vertexState = new VertexState();
-    var fragmentState = new FragmentState();
-
-    var primitiveState = new PrimitiveState
+    var descriptor = new BufferDescriptor
     {
-      Topology = descriptor.Rasterizer.PolygonMode switch
+      Usage = type switch
       {
-        PolygonMode.Lines => PrimitiveTopology.LineStrip,
-        PolygonMode.Filled => PrimitiveTopology.TriangleList,
+        BufferType.Vertex => Silk.NET.WebGPU.BufferUsage.Vertex,
+        BufferType.Index => Silk.NET.WebGPU.BufferUsage.Index,
 
-        _ => throw new ArgumentOutOfRangeException()
-      },
-      FrontFace = FrontFace.CW,
-      CullMode = descriptor.Rasterizer.CullingMode switch
-      {
-        CullingMode.Disabled => CullMode.None,
-        CullingMode.Front => CullMode.Front,
-        CullingMode.Back => CullMode.Back,
-
-        _ => throw new ArgumentOutOfRangeException()
+        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
       }
     };
 
-    if (descriptor is { Shader: { } shader } &&
-        _shaders.TryGet(shader, out var shaderState))
-    {
-      vertexState.Module = shaderState.VertexModule;
-      fragmentState.Module = shaderState.FragmentModule;
-    }
+    var buffer = wgpu.DeviceCreateBuffer(_device, &descriptor);
 
-    var pipelineDescriptor = new RenderPipelineDescriptor
-    {
-      Label = (byte*)SilkMarshal.StringToPtr(descriptor.Label),
-      Fragment = &fragmentState,
-      Vertex = vertexState,
-      Primitive = primitiveState,
-    };
-
-    var pipeline = wgpu.DeviceCreateRenderPipeline(_device, &pipelineDescriptor);
-    if (pipeline == null)
-    {
-      throw new InvalidOperationException("Failed to create pipeline");
-    }
-
-    var index = _pipelines.Add(new PipelineState
-    {
-      Pipeline = pipeline
-    });
-
-    return GraphicsHandle.FromArenaIndex(index);
-  }
-
-  public void DeletePipeline(GraphicsHandle handle)
-  {
-    if (_pipelines.TryRemove(handle, out var state))
-    {
-      wgpu.RenderPipelineRelease(state.Pipeline);
-    }
-  }
-
-  public GraphicsHandle CreateBuffer()
-  {
-    var index = _buffers.Add(new BufferState());
-
-    return GraphicsHandle.FromArenaIndex(index);
+    return GraphicsHandle.FromPointer(buffer);
   }
 
   public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, int length) where T : unmanaged
@@ -204,10 +158,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void DeleteBuffer(GraphicsHandle handle)
   {
-    if (_buffers.TryRemove(handle, out var state))
-    {
-      // TODO: Release buffer
-    }
+    wgpu.BufferRelease(handle.AsPointer<Buffer>());
   }
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
@@ -439,7 +390,10 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   /// <summary>
   /// Internal state for a buffer.
   /// </summary>
-  private sealed class BufferState;
+  private sealed class BufferState
+  {
+    public required Buffer* Buffer { get; init; }
+  }
 
   /// <summary>
   /// Internal state for a pipeline.
