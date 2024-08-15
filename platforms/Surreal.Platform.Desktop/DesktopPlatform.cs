@@ -8,7 +8,7 @@ namespace Surreal;
 public enum GraphicsProvider
 {
   OpenGL,
-  WebGPU,
+  WGPU,
 }
 
 /// <summary>

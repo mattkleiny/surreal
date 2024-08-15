@@ -14,6 +14,6 @@ public sealed class SpriteAnimationTrack(IProperty<SpriteFrame> property) : KeyF
 
   protected override SpriteFrame UpdateCurrentValue(float currentTime)
   {
-    throw new NotImplementedException();
+    return PreviousKeyFrame.Value;
   }
 }

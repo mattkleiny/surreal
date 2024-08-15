@@ -34,10 +34,10 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   private Adapter* _adapter;
   private Device* _device;
 
-  private readonly Arena<PipelineState> _pipelines = new();
-  private readonly Arena<BufferState> _buffers = new();
-  private readonly Arena<TextureState> _textures = new();
-  private readonly Arena<ShaderState> _shaders = new();
+  private readonly Arena<PipelineState> _pipelines = [];
+  private readonly Arena<BufferState> _buffers = [];
+  private readonly Arena<TextureState> _textures = [];
+  private readonly Arena<ShaderState> _shaders = [];
 
   public SilkGraphicsDeviceWGPU(IWindow window, GraphicsMode mode)
   {

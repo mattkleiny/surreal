@@ -1,3 +1,5 @@
+using Surreal.Input.Gamepad;
+using Surreal.Input.Joystick;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 
@@ -24,14 +26,12 @@ public interface IInputBackend
   [ExcludeFromCodeCoverage]
   internal sealed class NullInputBackend : IInputBackend
   {
-    private readonly List<IInputDevice> _devices = [];
-
-    public NullInputBackend()
-    {
-      _devices.Add(IKeyboardDevice.Null);
-      _devices.Add(IMouseDevice.Null);
-    }
-
-    public IEnumerable<IInputDevice> CreateDevices() => _devices;
+    public IEnumerable<IInputDevice> CreateDevices() =>
+    [
+      IKeyboardDevice.Null,
+      IMouseDevice.Null,
+      IJoystickDevice.Null,
+      IGamepadDevice.Null,
+    ];
   }
 }

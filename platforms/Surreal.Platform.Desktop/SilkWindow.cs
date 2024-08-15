@@ -19,7 +19,7 @@ internal sealed class SilkWindow : IDesktopWindow
     var defaultOptions = configuration.GraphicsProvider switch
     {
       GraphicsProvider.OpenGL => WindowOptions.Default,
-      GraphicsProvider.WebGPU => WindowOptions.Default with
+      GraphicsProvider.WGPU => WindowOptions.Default with
       {
         API = GraphicsAPI.None,
         IsContextControlDisabled = true,

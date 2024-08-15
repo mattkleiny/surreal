@@ -13,7 +13,7 @@ internal sealed class SilkGraphicsBackend(DesktopConfiguration configuration, IW
     return configuration.GraphicsProvider switch
     {
       GraphicsProvider.OpenGL => new SilkGraphicsDeviceOpenGL(window.CreateOpenGL()),
-      GraphicsProvider.WebGPU => new SilkGraphicsDeviceWGPU(window, mode),
+      GraphicsProvider.WGPU => new SilkGraphicsDeviceWGPU(window, mode),
 
       _ => throw new InvalidOperationException("An unsupported GraphicsProvider was provided")
     };
