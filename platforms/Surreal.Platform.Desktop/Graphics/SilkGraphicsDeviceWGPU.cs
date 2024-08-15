@@ -4,6 +4,7 @@ using Silk.NET.Windowing;
 using Surreal.Collections;
 using Surreal.Collections.Slices;
 using Surreal.Colors;
+using Surreal.Diagnostics.Logging;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
 using Surreal.Graphics.Rendering;
@@ -13,6 +14,7 @@ using BlendState = Surreal.Graphics.Materials.BlendState;
 using BufferUsage = Surreal.Graphics.Meshes.BufferUsage;
 using Color = Surreal.Colors.Color;
 using PolygonMode = Surreal.Graphics.Materials.PolygonMode;
+using RenderPipeline = Silk.NET.WebGPU.RenderPipeline;
 using TextureFormat = Surreal.Graphics.Textures.TextureFormat;
 
 namespace Surreal.Graphics;
@@ -22,6 +24,8 @@ namespace Surreal.Graphics;
 /// </summary>
 internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 {
+  private static readonly ILog Log = LogFactory.GetLog<SilkGraphicsDeviceWGPU>();
+
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   private readonly WebGPU wgpu = WebGPU.GetApi();
 
@@ -30,8 +34,10 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   private Adapter* _adapter;
   private Device* _device;
 
+  private readonly Arena<PipelineState> _pipelines = new();
   private readonly Arena<BufferState> _buffers = new();
   private readonly Arena<TextureState> _textures = new();
+  private readonly Arena<ShaderState> _shaders = new();
 
   public SilkGraphicsDeviceWGPU(IWindow window, GraphicsMode mode)
   {
@@ -60,6 +66,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
     var deviceDescriptor = new DeviceDescriptor
     {
+      DeviceLostCallback = new PfnDeviceLostCallback(OnDeviceLost)
     };
 
     wgpu.AdapterRequestDevice(
@@ -109,9 +116,73 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   {
   }
 
+  public GraphicsHandle CreatePipeline(PipelineDescriptor descriptor)
+  {
+    var vertexState = new VertexState();
+    var fragmentState = new FragmentState();
+
+    var primitiveState = new PrimitiveState
+    {
+      Topology = descriptor.Rasterizer.PolygonMode switch
+      {
+        PolygonMode.Lines => PrimitiveTopology.LineStrip,
+        PolygonMode.Filled => PrimitiveTopology.TriangleList,
+
+        _ => throw new ArgumentOutOfRangeException()
+      },
+      FrontFace = FrontFace.CW,
+      CullMode = descriptor.Rasterizer.CullingMode switch
+      {
+        CullingMode.Disabled => CullMode.None,
+        CullingMode.Front => CullMode.Front,
+        CullingMode.Back => CullMode.Back,
+
+        _ => throw new ArgumentOutOfRangeException()
+      }
+    };
+
+    if (descriptor is { Shader: { } shader } &&
+        _shaders.TryGet(shader, out var shaderState))
+    {
+      vertexState.Module = shaderState.VertexModule;
+      fragmentState.Module = shaderState.FragmentModule;
+    }
+
+    var pipelineDescriptor = new RenderPipelineDescriptor
+    {
+      Label = (byte*)SilkMarshal.StringToPtr(descriptor.Label),
+      Fragment = &fragmentState,
+      Vertex = vertexState,
+      Primitive = primitiveState,
+    };
+
+    var pipeline = wgpu.DeviceCreateRenderPipeline(_device, &pipelineDescriptor);
+    if (pipeline == null)
+    {
+      throw new InvalidOperationException("Failed to create pipeline");
+    }
+
+    var index = _pipelines.Add(new PipelineState
+    {
+      Pipeline = pipeline
+    });
+
+    return GraphicsHandle.FromArenaIndex(index);
+  }
+
+  public void DeletePipeline(GraphicsHandle handle)
+  {
+    if (_pipelines.TryRemove(handle, out var state))
+    {
+      wgpu.RenderPipelineRelease(state.Pipeline);
+    }
+  }
+
   public GraphicsHandle CreateBuffer()
   {
-    return GraphicsHandle.FromArenaIndex(_buffers.Add(new BufferState()));
+    var index = _buffers.Add(new BufferState());
+
+    return GraphicsHandle.FromArenaIndex(index);
   }
 
   public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, int length) where T : unmanaged
@@ -133,16 +204,21 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void DeleteBuffer(GraphicsHandle handle)
   {
-    _buffers.Remove(handle);
+    if (_buffers.TryRemove(handle, out var state))
+    {
+      // TODO: Release buffer
+    }
   }
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
   {
-    return GraphicsHandle.FromArenaIndex(_textures.Add(new TextureState
+    var index = _textures.Add(new TextureState
     {
       FilterMode = filterMode,
       WrapMode = wrapMode
-    }));
+    });
+
+    return GraphicsHandle.FromArenaIndex(index);
   }
 
   public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
@@ -183,7 +259,10 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void DeleteTexture(GraphicsHandle handle)
   {
-    _textures.Remove(handle);
+    if (_textures.TryRemove(handle, out var state))
+    {
+      // TODO: Release texture
+    }
   }
 
   public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
@@ -342,18 +421,41 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   }
 
   /// <summary>
+  /// A callback for when the device is lost.
+  /// </summary>
+  private static void OnDeviceLost(DeviceLostReason reason, byte* message, void* userData)
+  {
+    Log.Warn($"Device lost {SilkMarshal.PtrToString((nint)message)}");
+  }
+
+  /// <summary>
   /// A callback for when an error is not captured.
   /// </summary>
-  private void OnUnhandledError(ErrorType arg0, byte* messagePtr, void* userData)
+  private static void OnUnhandledError(ErrorType arg0, byte* message, void* userData)
   {
-    Console.WriteLine(SilkMarshal.PtrToString((nint)messagePtr));
+    Log.Error($"Unhandled error {SilkMarshal.PtrToString((nint)message)}");
   }
 
   /// <summary>
   /// Internal state for a buffer.
   /// </summary>
-  private sealed class BufferState
+  private sealed class BufferState;
+
+  /// <summary>
+  /// Internal state for a pipeline.
+  /// </summary>
+  private sealed class PipelineState
   {
+    public required RenderPipeline* Pipeline { get; init; }
+  }
+
+  /// <summary>
+  /// Internal state for a shader.
+  /// </summary>
+  private sealed class ShaderState
+  {
+    public required ShaderModule* VertexModule { get; init; }
+    public required ShaderModule* FragmentModule { get; init; }
   }
 
   /// <summary>

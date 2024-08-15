@@ -17,7 +17,6 @@ namespace Surreal.Graphics;
 /// <summary>
 /// A <see cref="IGraphicsDevice"/> implementation that uses OpenGL via Silk.NET.
 /// </summary>
-
 internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 {
   private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");
@@ -124,6 +123,16 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
   {
     gl.ClearStencil(amount);
     gl.Clear(ClearBufferMask.StencilBufferBit);
+  }
+
+  public GraphicsHandle CreatePipeline(PipelineDescriptor descriptor)
+  {
+    throw new NotImplementedException();
+  }
+
+  public void DeletePipeline(GraphicsHandle handle)
+  {
+    throw new NotImplementedException();
   }
 
   public GraphicsHandle CreateBuffer()

@@ -26,6 +26,49 @@ public readonly record struct FrameBufferHandle(GraphicsHandle FrameBuffer)
 }
 
 /// <summary>
+/// Describes how to build a pipeline.
+/// </summary>
+public readonly record struct PipelineDescriptor
+{
+  /// <summary>
+  /// A label for the pipeline, for debugging purposes.
+  /// </summary>
+  public string? Label { get; init; }
+
+  /// <summary>
+  /// The rasterizer mode to use for the pipeline.
+  /// </summary>
+  public RasterizerMode Rasterizer { get; init; }
+
+  /// <summary>
+  /// The shader program to use for the pipeline.
+  /// </summary>
+  public GraphicsHandle? Shader { get; init; }
+}
+
+/// <summary>
+/// Represents the mode of the rasterization pipeline.
+/// </summary>
+public readonly record struct RasterizerMode
+{
+  /// <summary>
+  /// The default graphics state.
+  /// </summary>
+  public static RasterizerMode Default { get; } = new()
+  {
+    Blending = BlendState.OneMinusSourceAlpha,
+    Scissor = null,
+    PolygonMode = PolygonMode.Filled,
+    CullingMode = CullingMode.Back,
+  };
+
+  public BlendState? Blending { get; init; }
+  public ScissorState? Scissor { get; init; }
+  public PolygonMode PolygonMode { get; init; }
+  public CullingMode CullingMode { get; init; }
+}
+
+/// <summary>
 /// Represents a graphics device in the underlying operating system.
 /// </summary>
 public interface IGraphicsDevice : IDisposable
@@ -42,6 +85,10 @@ public interface IGraphicsDevice : IDisposable
   void ClearColorBuffer(Color color);
   void ClearDepthBuffer(float depth);
   void ClearStencilBuffer(int amount);
+
+  // pipelines
+  GraphicsHandle CreatePipeline(PipelineDescriptor descriptor);
+  void DeletePipeline(GraphicsHandle handle);
 
   // buffers
   GraphicsHandle CreateBuffer();
@@ -136,6 +183,7 @@ public interface IGraphicsDevice : IDisposable
   private sealed class NullGraphicsDevice : IGraphicsDevice
   {
     private Viewport _viewportSize = new(0, 0, 1920, 1080);
+    private int _nextPipelineId;
     private int _nextBufferId;
     private int _nextMeshId;
     private int _nextShaderId;
@@ -178,6 +226,15 @@ public interface IGraphicsDevice : IDisposable
     }
 
     public void ClearStencilBuffer(int amount)
+    {
+    }
+
+    public GraphicsHandle CreatePipeline(PipelineDescriptor descriptor)
+    {
+      return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextPipelineId));
+    }
+
+    public void DeletePipeline(GraphicsHandle handle)
     {
     }
 
