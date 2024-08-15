@@ -7,8 +7,9 @@ namespace Surreal.Input;
 /// <summary>
 /// A <see cref="IKeyboardDevice"/> implementation that uses Silk.NET.
 /// </summary>
-internal sealed class SilkKeyboardDevice : IKeyboardDevice
+internal sealed class SilkKeyboardDevice : IKeyboardDevice, IDisposable
 {
+  private readonly IKeyboard _keyboard;
   private readonly HashSet<Key> _pressedKeys = [];
   private readonly HashSet<Key> _pressedKeysThisFrame = [];
 
@@ -17,6 +18,7 @@ internal sealed class SilkKeyboardDevice : IKeyboardDevice
 
   public SilkKeyboardDevice(IKeyboard keyboard)
   {
+    _keyboard = keyboard;
     keyboard.KeyDown += OnKeyDown;
     keyboard.KeyUp += OnKeyUp;
   }
@@ -39,6 +41,12 @@ internal sealed class SilkKeyboardDevice : IKeyboardDevice
   public bool IsKeyPressed(Key key)
   {
     return _pressedKeysThisFrame.Contains(key);
+  }
+
+  public void Dispose()
+  {
+    _keyboard.KeyDown -= OnKeyDown;
+    _keyboard.KeyUp -= OnKeyUp;
   }
 
   private void OnKeyDown(IKeyboard keyboard, Silk.NET.Input.Key key, int index)
