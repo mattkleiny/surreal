@@ -4,7 +4,6 @@ using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Graphics;
 using Surreal.Input;
-using Surreal.Networking;
 using Surreal.Physics;
 using Surreal.Scenes;
 using Surreal.Scripting;
@@ -31,7 +30,6 @@ public sealed record GameConfiguration
     new AudioModule(),
     new GraphicsModule(),
     new InputModule(),
-    new NetworkingModule(),
     new PhysicsModule(),
     new ScriptingModule()
   ];

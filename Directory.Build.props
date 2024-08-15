@@ -62,13 +62,5 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
     </AssemblyAttribute>
-
-    <!-- automatically reference analyzers -->
-    <ProjectReference
-      Include="$(MSBuildThisFileDirectory)\tools\Surreal.Analyzers\Surreal.Analyzers.csproj"
-      PrivateAssets="all"
-      ReferenceOutputAssembly="false"
-      OutputItemType="Analyzer"
-      Condition="$(ProjectName) != 'Surreal.Analyzers'" />
   </ItemGroup>
 </Project>

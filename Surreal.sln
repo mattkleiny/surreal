@@ -92,11 +92,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Analyzers", "tools\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Sdk", "tools\Surreal.Sdk\Surreal.Sdk.csproj", "{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor.MSBuild", "tools\Surreal.Editor.MSBuild\Surreal.Editor.MSBuild.csproj", "{103CE4C2-85D8-449F-9D38-E96E55851703}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Mobile", "platforms\Surreal.Platform.Mobile\Surreal.Platform.Mobile.csproj", "{BB37B4C9-CD6D-4CF4-9744-2BCDEA884E23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Platform.Web", "platforms\Surreal.Platform.Web\Surreal.Platform.Web.csproj", "{940C37A7-FB0D-4D90-BD2E-C57E67363E24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Surreal.Editor.MSBuild", "editor\Surreal.Editor.MSBuild\Surreal.Editor.MSBuild.csproj", "{0BADF506-4367-4941-9B68-1E2A2CE45673}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -212,10 +212,6 @@ Global
 		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{103CE4C2-85D8-449F-9D38-E96E55851703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{103CE4C2-85D8-449F-9D38-E96E55851703}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{103CE4C2-85D8-449F-9D38-E96E55851703}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{103CE4C2-85D8-449F-9D38-E96E55851703}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB37B4C9-CD6D-4CF4-9744-2BCDEA884E23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB37B4C9-CD6D-4CF4-9744-2BCDEA884E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB37B4C9-CD6D-4CF4-9744-2BCDEA884E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -224,6 +220,10 @@ Global
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BADF506-4367-4941-9B68-1E2A2CE45673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BADF506-4367-4941-9B68-1E2A2CE45673}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BADF506-4367-4941-9B68-1E2A2CE45673}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BADF506-4367-4941-9B68-1E2A2CE45673}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -263,6 +263,6 @@ Global
 		{A36E78EC-BB14-4EA0-873C-419CD85AFE0C} = {94F8C5DF-5273-48D2-AB9F-3EEBDDF188B7}
 		{BB37B4C9-CD6D-4CF4-9744-2BCDEA884E23} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
 		{940C37A7-FB0D-4D90-BD2E-C57E67363E24} = {B9125AD4-8943-45DC-993A-5D1B179F9041}
-		{103CE4C2-85D8-449F-9D38-E96E55851703} = {1E288146-6AEB-4601-AD70-A006A99C5588}
+		{0BADF506-4367-4941-9B68-1E2A2CE45673} = {1E288146-6AEB-4601-AD70-A006A99C5588}
 	EndGlobalSection
 EndGlobal
