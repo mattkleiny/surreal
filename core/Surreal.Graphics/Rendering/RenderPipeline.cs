@@ -51,9 +51,9 @@ public abstract class RenderPipeline(IGraphicsDevice device) : IRenderPipeline
 
     OnBeginFrame(in frame);
 
-    foreach (var camera in scene.CullActiveViewports())
+    foreach (var viewport in scene.CullActiveViewports())
     {
-      RenderViewport(in frame, camera);
+      RenderViewport(in frame, viewport);
     }
 
     OnEndFrame(in frame);
