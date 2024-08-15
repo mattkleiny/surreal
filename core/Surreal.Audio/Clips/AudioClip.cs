@@ -8,7 +8,7 @@ namespace Surreal.Audio.Clips;
 public sealed class AudioClip(IAudioDevice device) : Disposable
 {
   /// <summary>
-  /// The handle to the clip in the underlying audio backend.
+  /// The handle to the clip itself.
   /// </summary>
   public AudioHandle Handle { get; } = device.CreateAudioClip();
 

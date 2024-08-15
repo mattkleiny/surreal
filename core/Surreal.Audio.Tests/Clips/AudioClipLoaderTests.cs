@@ -2,7 +2,7 @@
 
 namespace Surreal.Audio.Clips;
 
-public class AudioBufferLoaderTests
+public class AudioClipLoaderTests
 {
   [Test]
   [TestCase("Assets/External/audio/test.wav")]
@@ -10,11 +10,11 @@ public class AudioBufferLoaderTests
   {
     using var manager = new AssetManager();
 
-    manager.AddLoader(new AudioBufferLoader());
+    manager.AddLoader(new AudioClipLoader(IAudioDevice.Null));
 
-    var buffer = await manager.LoadAsync<AudioBuffer>(path);
+    var buffer = await manager.LoadAsync<AudioClip>(path);
 
     buffer.Value.Rate.Frequency.Should().BeGreaterThan(0);
-    buffer.Value.Memory.Length.Should().BeGreaterThan(0);
+    buffer.Value.Duration.Should().BeGreaterThan(TimeSpan.Zero);
   }
 }

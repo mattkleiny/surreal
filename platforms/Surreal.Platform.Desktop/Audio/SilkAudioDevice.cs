@@ -3,7 +3,7 @@ using Surreal.Audio.Clips;
 
 namespace Surreal.Audio;
 
-internal sealed unsafe class SilkAudioDevice : IAudioDevice, IDisposable
+internal sealed unsafe class SilkAudioDevice : IAudioDevice
 {
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   private static readonly ALContext alc = ALContext.GetApi(soft: true);
