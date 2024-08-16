@@ -3,7 +3,7 @@ namespace Surreal.Graphics;
 /// <summary>
 /// Used to indicate the status of an asynchronous task in the GPU.
 /// </summary>
-public struct GraphicsTask(GraphicsTaskCompletionSource source) : INotifyCompletion
+public readonly struct GraphicsTask(GraphicsTaskCompletionSource source) : INotifyCompletion
 {
   public static GraphicsTask CompletedTask => GraphicsTaskCompletionSource.Completed;
 
@@ -16,6 +16,12 @@ public struct GraphicsTask(GraphicsTaskCompletionSource source) : INotifyComplet
   /// True if the operation is completed.
   /// </summary>
   public bool IsCompleted => source.IsCompleted;
+
+  [UsedImplicitly]
+  public GraphicsTask GetAwaiter()
+  {
+    return this;
+  }
 
   [UsedImplicitly]
   public void GetResult()
@@ -42,6 +48,8 @@ public sealed class GraphicsTaskCompletionSource
     IsCompleted = true
   };
 
+  private readonly Queue<Action> _continuations = new();
+
   public GraphicsTask Task => new(this);
 
   public bool IsCompleted { get; private set; }
@@ -49,18 +57,42 @@ public sealed class GraphicsTaskCompletionSource
 
   public void SignalCompletion()
   {
-    IsCompleted = true;
+    if (!IsCompleted)
+    {
+      IsCompleted = true;
+
+      ResumeContinuations();
+    }
   }
 
   public void SignalException(Exception exception)
   {
-    IsCompleted = true;
-    Result = exception;
+    if (!IsCompleted)
+    {
+      IsCompleted = true;
+      Result = exception;
+
+      ResumeContinuations();
+    }
   }
 
   public void AddContinuation(Action continuation)
   {
-    // TODO: implement me
+    lock (_continuations)
+    {
+      _continuations.Enqueue(continuation);
+    }
+  }
+
+  private void ResumeContinuations()
+  {
+    lock (_continuations)
+    {
+      while (_continuations.TryDequeue(out var continuation))
+      {
+        continuation.Invoke();
+      }
+    }
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,6 +108,12 @@ public readonly struct GraphicsTask<T>(GraphicsTaskCompletionSource<T> source) :
   /// True if the operation is completed.
   /// </summary>
   public bool IsCompleted => source.IsCompleted;
+
+  [UsedImplicitly]
+  public GraphicsTask<T> GetAwaiter()
+  {
+    return this;
+  }
 
   [UsedImplicitly]
   public T GetResult()
@@ -115,6 +153,8 @@ public sealed class GraphicsTaskCompletionSource<T>
 
   public GraphicsTask<T> Task => new(this);
 
+  private readonly Queue<Action> _continuations = new();
+
   public bool IsCompleted { get; private set; }
   public object? Result { get; private set; }
 
@@ -122,17 +162,35 @@ public sealed class GraphicsTaskCompletionSource<T>
   {
     IsCompleted = true;
     Result = result;
+
+    ResumeContinuations();
   }
 
   public void SignalException(Exception exception)
   {
     IsCompleted = true;
     Result = exception;
+
+    ResumeContinuations();
   }
 
   public void AddContinuation(Action continuation)
   {
-    // TODO: implement me
+    lock (_continuations)
+    {
+      _continuations.Enqueue(continuation);
+    }
+  }
+
+  private void ResumeContinuations()
+  {
+    lock (_continuations)
+    {
+      while (_continuations.TryDequeue(out var continuation))
+      {
+        continuation.Invoke();
+      }
+    }
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
