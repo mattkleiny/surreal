@@ -42,13 +42,13 @@ public abstract class GraphicsBuffer : Disposable
 }
 
 /// <summary>
-/// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="TData" />.
+/// A strongly-typed <see cref="GraphicsBuffer" /> of <see cref="T" />.
 /// </summary>
-public sealed class GraphicsBuffer<TData>(IGraphicsDevice device, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
-  where TData : unmanaged
+public sealed class GraphicsBuffer<T>(IGraphicsDevice device, BufferType type, BufferUsage usage = BufferUsage.Static) : GraphicsBuffer
+  where T : unmanaged
 {
   /// <inheritdoc/>
-  public override Type DataType => typeof(TData);
+  public override Type DataType => typeof(T);
 
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying buffer.
@@ -66,42 +66,30 @@ public sealed class GraphicsBuffer<TData>(IGraphicsDevice device, BufferType typ
   public BufferUsage Usage { get; } = usage;
 
   /// <summary>
-  /// Reads the entire buffer into a <see cref="Memory{T}" />.
+  /// Reads the buffer into a <see cref="Memory{T}" />.
   /// </summary>
-  public Memory<TData> Read(Optional<Range> range = default)
+  public GraphicsTask<Memory<T>> ReadAsync()
   {
-    var (offset, length) = range
-      .GetOrDefault(Range.All)
-      .GetOffsetAndLength((int)Length);
-
-    return device.ReadBufferData<TData>(Handle, Type, offset, length);
-  }
-
-  /// <summary>
-  /// Reads the buffer into a <see cref="Span{T}" />.
-  /// </summary>
-  public void Read(Span<TData> buffer)
-  {
-    device.ReadBufferData(Handle, Type, buffer);
+    return device.ReadBufferDataAsync<T>(Handle, Type);
   }
 
   /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the buffer.
   /// </summary>
-  public void Write(ReadOnlySpan<TData> buffer)
+  public GraphicsTask WriteAsync(ReadOnlySpan<T> span)
   {
-    Length = (uint)buffer.Length;
-    Size   = buffer.CalculateSize();
+    Length = (uint)span.Length;
+    Size = span.CalculateSize();
 
-    device.WriteBufferData(Handle, Type, buffer, Usage);
+    return device.WriteBufferDataAsync(Handle, Type, span, Usage);
   }
 
   /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the buffer at the given offset.
   /// </summary>
-  public void Write(uint offset, ReadOnlySpan<TData> buffer)
+  public GraphicsTask WriteAsync(uint offset, ReadOnlySpan<T> span)
   {
-    device.WriteBufferSubData(Handle, Type, offset, buffer);
+    return device.WriteBufferDataAsync(Handle, Type, offset, span);
   }
 
   protected override void Dispose(bool managed)

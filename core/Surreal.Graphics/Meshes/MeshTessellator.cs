@@ -44,8 +44,8 @@ public sealed class MeshTessellator<TVertex>
   /// </summary>
   public void WriteTo(Mesh<TVertex> mesh)
   {
-    mesh.Vertices.Write(_vertices.AsSpan());
-    mesh.Indices.Write(_indices.AsSpan());
+    mesh.Vertices.WriteAsync(_vertices.AsSpan());
+    mesh.Indices.WriteAsync(_indices.AsSpan());
   }
 
   /// <summary>

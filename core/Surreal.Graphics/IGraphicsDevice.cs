@@ -45,20 +45,17 @@ public interface IGraphicsDevice : IDisposable
 
   // buffers
   GraphicsHandle CreateBuffer(BufferType type, BufferUsage usage);
-  Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length) where T : unmanaged;
-  void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged;
-  void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged;
-  void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged;
+  GraphicsTask<Memory<T>> ReadBufferDataAsync<T>(GraphicsHandle handle, BufferType type) where T : unmanaged;
+  GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged;
+  GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged;
   void DeleteBuffer(GraphicsHandle handle);
 
   // textures
   GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode);
-  Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged;
-  void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0) where T : unmanaged;
-  Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged;
-  void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged;
-  void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
-  void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0) where T : unmanaged;
+  GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged;
+  GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged;
+  GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged;
+  GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0) where T : unmanaged;
   void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode);
   void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode);
   void DeleteTexture(GraphicsHandle handle);
@@ -97,32 +94,9 @@ public interface IGraphicsDevice : IDisposable
   void BindFrameBuffer(FrameBufferHandle handle);
   void UnbindFrameBuffer();
   void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
-
-  void BlitFromFrameBuffer(
-    GraphicsHandle targetFrameBuffer,
-    uint sourceWidth,
-    uint sourceHeight,
-    uint destWidth,
-    uint destHeight,
-    BlitMask mask,
-    TextureFilterMode filterMode);
-
-  void BlitToFrameBuffer(
-    GraphicsHandle sourceFrameBuffer,
-    uint sourceWidth,
-    uint sourceHeight,
-    uint destWidth,
-    uint destHeight,
-    BlitMask mask,
-    TextureFilterMode filterMode);
-
-  void BlitToFrameBuffer(
-    FrameBufferHandle sourceFrameBuffer,
-    Material material,
-    ShaderProperty<TextureSampler> samplerProperty,
-    Optional<TextureFilterMode> filterMode,
-    Optional<TextureWrapMode> wrapMode);
-
+  void BlitFromFrameBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
+  void BlitToFrameBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
+  void BlitToFrameBuffer(FrameBufferHandle sourceFrameBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode);
   void DeleteFrameBuffer(FrameBufferHandle handle);
 
   // debugging
@@ -136,7 +110,6 @@ public interface IGraphicsDevice : IDisposable
   private sealed class NullGraphicsDevice : IGraphicsDevice
   {
     private Viewport _viewportSize = new(0, 0, 1920, 1080);
-    private int _nextPipelineId;
     private int _nextBufferId;
     private int _nextMeshId;
     private int _nextShaderId;
@@ -187,29 +160,24 @@ public interface IGraphicsDevice : IDisposable
       return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextBufferId));
     }
 
+    public GraphicsTask<Memory<T>> ReadBufferDataAsync<T>(GraphicsHandle handle, BufferType type) where T : unmanaged
+    {
+      return GraphicsTask.FromResult(Memory<T>.Empty);
+    }
+
+    public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged
+    {
+      return GraphicsTask.CompletedTask;
+    }
+
     public void DeleteBuffer(GraphicsHandle handle)
     {
     }
 
-    public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
+    public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage)
       where T : unmanaged
     {
-      return Memory<T>.Empty;
-    }
-
-    public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged
-    {
-      // no-op
-    }
-
-    public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage)
-      where T : unmanaged
-    {
-    }
-
-    public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span)
-      where T : unmanaged
-    {
+      return GraphicsTask.CompletedTask;
     }
 
     public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
@@ -217,36 +185,27 @@ public interface IGraphicsDevice : IDisposable
       return GraphicsHandle.FromInt(Interlocked.Increment(ref _nextTextureId));
     }
 
-    public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
+    public GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int mipLevel = 0)
       where T : unmanaged
     {
-      return Memory<T>.Empty;
+      return GraphicsTask.FromResult(Memory<T>.Empty);
     }
 
-    public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
+    public GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
       where T : unmanaged
     {
+      return GraphicsTask.FromResult(Memory<T>.Empty);
     }
 
-    public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
-      where T : unmanaged
+    public GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
     {
-      return Memory<T>.Empty;
+      return GraphicsTask.CompletedTask;
     }
 
-    public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
+    public GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0)
       where T : unmanaged
     {
-    }
-
-    public void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
-      where T : unmanaged
-    {
-    }
-
-    public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0)
-      where T : unmanaged
-    {
+      return GraphicsTask.CompletedTask;
     }
 
     public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)

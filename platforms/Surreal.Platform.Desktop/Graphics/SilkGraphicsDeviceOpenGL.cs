@@ -17,7 +17,7 @@ namespace Surreal.Graphics;
 /// <summary>
 /// A <see cref="IGraphicsDevice"/> implementation that uses OpenGL via Silk.NET.
 /// </summary>
-internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
+internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 {
   private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");
   private readonly ExtDebugMarker _debugMarker = new(gl.Context);
@@ -130,45 +130,27 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     return GraphicsHandle.FromUInt(gl.GenBuffer());
   }
 
-  public unsafe Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length)
-    where T : unmanaged
+  public GraphicsTask<Memory<T>> ReadBufferDataAsync<T>(GraphicsHandle handle, BufferType type) where T : unmanaged
   {
     var kind = ConvertBufferType(type);
-    var result = new T[length];
+    var memory = new Memory<T>([]); // TODO: allocate the right size
 
     gl.BindBuffer(kind, handle);
 
-    fixed (T* pointer = result)
-    {
-      gl.GetBufferSubData(
-        target: kind,
-        offset: offset * sizeof(T),
-        size: (uint)(length * sizeof(T)),
-        data: pointer
-      );
-    }
-
-    return result;
-  }
-
-  public unsafe void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged
-  {
-    var kind = ConvertBufferType(type);
-
-    gl.BindBuffer(kind, handle);
-
-    fixed (T* pointer = span)
+    fixed (T* pointer = memory.Span)
     {
       gl.GetBufferSubData(
         target: kind,
         offset: 0,
-        size: (uint)(span.Length * sizeof(T)),
+        size: (uint)(memory.Length * sizeof(T)),
         data: pointer
       );
     }
+
+    return GraphicsTask.FromResult(memory);
   }
 
-  public unsafe void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage)
+  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage)
     where T : unmanaged
   {
     var kind = ConvertBufferType(type);
@@ -188,9 +170,11 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     {
       gl.BufferData(kind, bytes, pointer, bufferUsage);
     }
+
+    return GraphicsTask.CompletedTask;
   }
 
-  public unsafe void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span)
+  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span)
     where T : unmanaged
   {
     var kind = ConvertBufferType(type);
@@ -202,6 +186,8 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     {
       gl.BufferSubData(kind, (nint)offset, bytes, pointer);
     }
+
+    return GraphicsTask.CompletedTask;
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
@@ -227,7 +213,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     return GraphicsHandle.FromUInt(texture);
   }
 
-  public unsafe Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0)
+  public GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int mipLevel = 0)
     where T : unmanaged
   {
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
@@ -249,29 +235,10 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
       );
     }
 
-    return results;
+    return GraphicsTask.FromResult(results.AsMemory());
   }
 
-  public unsafe void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0)
-    where T : unmanaged
-  {
-    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
-
-    gl.BindTexture(TextureTarget.Texture2D, handle);
-
-    fixed (T* pointer = buffer)
-    {
-      gl.GetTexImage(
-        target: TextureTarget.Texture2D,
-        level: mipLevel,
-        format: pixelFormat,
-        type: pixelType,
-        pixels: pointer
-      );
-    }
-  }
-
-  public unsafe Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
+  public GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
     where T : unmanaged
   {
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
@@ -298,36 +265,10 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
       );
     }
 
-    return results;
+    return GraphicsTask.FromResult(results.AsMemory());
   }
 
-  public unsafe void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0)
-    where T : unmanaged
-  {
-    var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
-
-    gl.BindTexture(TextureTarget.Texture2D, handle);
-
-    fixed (T* pointer = buffer)
-    {
-      gl.GetTextureSubImage(
-        texture: handle,
-        level: mipLevel,
-        xoffset: offsetX,
-        yoffset: offsetY,
-        zoffset: 0,
-        width: width,
-        height: height,
-        depth: 1,
-        format: pixelFormat,
-        type: pixelType,
-        pixels: pointer,
-        bufSize: (uint)buffer.Length
-      );
-    }
-  }
-
-  public unsafe void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
+  public GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0)
     where T : unmanaged
   {
     var internalFormat = GetInternalFormat(format);
@@ -349,9 +290,11 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
         pixels: pointer
       );
     }
+
+    return GraphicsTask.CompletedTask;
   }
 
-  public unsafe void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0)
+  public GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0)
     where T : unmanaged
   {
     var (pixelFormat, pixelType) = GetPixelFormatAndType(typeof(T));
@@ -372,6 +315,8 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
         pixels: pointer
       );
     }
+
+    return GraphicsTask.CompletedTask;
   }
 
   public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
@@ -399,7 +344,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     gl.DeleteTexture(handle);
   }
 
-  public unsafe GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
+  public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
   {
     var array = gl.GenVertexArray();
 
@@ -429,7 +374,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     return GraphicsHandle.FromUInt(array);
   }
 
-  public unsafe void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
+  public void DrawMesh(GraphicsHandle mesh, uint vertexCount, uint indexCount, MeshType meshType, Type indexType)
   {
     gl.BindVertexArray(mesh);
 
@@ -563,7 +508,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     gl.ProgramUniform4(handle, location, value.X, value.Y, value.Z, value.W);
   }
 
-  public unsafe void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix3x2 value)
   {
     fixed (float* pointer = &value.M11)
     {
@@ -571,7 +516,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     }
   }
 
-  public unsafe void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
+  public void SetShaderUniform(GraphicsHandle handle, int location, in Matrix4x4 value)
   {
     fixed (float* pointer = &value.M11)
     {
@@ -626,7 +571,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     gl.DeleteProgram(handle);
   }
 
-  public unsafe FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor)
+  public FrameBufferHandle CreateFrameBuffer(RenderTargetDescriptor descriptor)
   {
     var framebuffer = gl.GenFramebuffer();
     var viewportSize = GetViewportSize();
@@ -720,7 +665,7 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     }
   }
 
-  public unsafe void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height)
+  public void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height)
   {
     gl.BindTexture(TextureTarget.Texture2D, handle.ColorAttachment);
 

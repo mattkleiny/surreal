@@ -138,18 +138,43 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     return GraphicsHandle.FromPointer(buffer);
   }
 
-  public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, int length) where T : unmanaged
+  public GraphicsTask<Memory<T>> ReadBufferDataAsync<T>(GraphicsHandle handle, BufferType type) where T : unmanaged
   {
-    return Memory<T>.Empty;
+    var task = GraphicsTask.Create<Memory<T>>();
+    var buffer = handle.AsPointer<Buffer>();
+    var size = (uint)wgpu.BufferGetSize(buffer);
+
+    var memory = new Memory<T>(GC.AllocateArray<T>((int)size));
+
+    wgpu.BufferMapAsync(
+      buffer: buffer,
+      mode: MapMode.Read,
+      offset: 0,
+      size: size,
+      callback: new PfnBufferMapCallback((status, result) =>
+      {
+        if (status == BufferMapAsyncStatus.Success)
+        {
+          fixed (T* pointer = memory.Span)
+          {
+            Unsafe.CopyBlock(pointer, result, size);
+          }
+
+          task.SignalCompletion(memory);
+        }
+        else
+          task.SignalException(new Exception("Failed to read buffer data."));
+      }),
+      userdata: null
+    );
+
+    return task;
   }
 
-  public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged
-  {
-  }
-
-  public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged
+  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged
   {
     // TODO: how to get the right size in advance?
+    var task = GraphicsTask.Create();
     var buffer = handle.AsPointer<Buffer>();
 
     fixed (T* pointer = span)
@@ -157,11 +182,25 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       var size = (nuint)(span.Length * sizeof(T));
 
       wgpu.QueueWriteBuffer(_queue, buffer, 0, pointer, size);
+      wgpu.QueueOnSubmittedWorkDone(
+        queue: _queue,
+        callback: new PfnQueueWorkDoneCallback((status, _) =>
+        {
+          if (status == QueueWorkDoneStatus.Success)
+            task.SignalCompletion();
+          else
+            task.SignalException(new Exception("Failed to write buffer sub data."));
+        }),
+        userdata: null
+      );
     }
+
+    return task;
   }
 
-  public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged
+  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged
   {
+    var task = GraphicsTask.Create();
     var buffer = handle.AsPointer<Buffer>();
 
     fixed (T* pointer = span)
@@ -169,7 +208,20 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       var size = (nuint)(span.Length * sizeof(T));
 
       wgpu.QueueWriteBuffer(_queue, buffer, offset, pointer, size);
+      wgpu.QueueOnSubmittedWorkDone(
+        queue: _queue,
+        callback: new PfnQueueWorkDoneCallback((status, _) =>
+        {
+          if (status == QueueWorkDoneStatus.Success)
+            task.SignalCompletion();
+          else
+            task.SignalException(new Exception("Failed to write buffer sub data."));
+        }),
+        userdata: null
+      );
     }
+
+    return task;
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
@@ -188,30 +240,24 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     return GraphicsHandle.FromObject(state);
   }
 
-  public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
+  public GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
   {
-    return Memory<T>.Empty;
+    return GraphicsTask.FromResult(Memory<T>.Empty);
   }
 
-  public void ReadTextureData<T>(GraphicsHandle handle, Span<T> buffer, int mipLevel = 0) where T : unmanaged
+  public GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged
   {
+    return GraphicsTask.FromResult(Memory<T>.Empty);
   }
 
-  public Memory<T> ReadTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged
+  public GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
   {
-    return Memory<T>.Empty;
+    return GraphicsTask.CompletedTask;
   }
 
-  public void ReadTextureSubData<T>(GraphicsHandle handle, Span<T> buffer, int offsetX, int offsetY, uint width, uint height, int mipLevel = 0) where T : unmanaged
+  public GraphicsTask WriteTextureDataAsync<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0) where T : unmanaged
   {
-  }
-
-  public void WriteTextureData<T>(GraphicsHandle handle, uint width, uint height, ReadOnlySpan<T> pixels, TextureFormat format, int mipLevel = 0) where T : unmanaged
-  {
-  }
-
-  public void WriteTextureSubData<T>(GraphicsHandle handle, int offsetX, int offsetY, uint width, uint height, ReadOnlySpan<T> pixels, int mipLevel = 0) where T : unmanaged
-  {
+    return GraphicsTask.CompletedTask;
   }
 
   public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)

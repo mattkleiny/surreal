@@ -189,7 +189,7 @@ public sealed class SpriteBatch : IDisposable
       var quadCount = _vertexCount / 4;
       var indexCount = quadCount * 6;
 
-      _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
+      _mesh.Vertices.WriteAsync(_vertices.Span[.._vertexCount]);
       _mesh.Draw(_material, (uint)_vertexCount, (uint)indexCount);
     }
 
@@ -215,7 +215,7 @@ public sealed class SpriteBatch : IDisposable
       indices[i + 5] = (uint)j;
     }
 
-    _mesh.Indices.Write(indices);
+    _mesh.Indices.WriteAsync(indices);
   }
 
   public void Dispose()

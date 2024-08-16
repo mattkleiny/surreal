@@ -39,11 +39,11 @@ public sealed class TextureLoader(IGraphicsDevice device) : AssetLoader<Texture>
     var image = await context.LoadAsync<Image>(context.Path, cancellationToken);
     var texture = new Texture(device, Settings.Format, Settings.FilterMode, Settings.WrapMode);
 
-    texture.WritePixels(image.Value);
+    texture.WritePixelsAsync(image.Value);
 
     image.Changed += () =>
     {
-      texture.WritePixels(image.Value);
+      texture.WritePixelsAsync(image.Value);
     };
 
     return texture;

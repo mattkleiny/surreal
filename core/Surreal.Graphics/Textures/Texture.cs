@@ -1,6 +1,4 @@
-﻿using Surreal.Mathematics;
-using Surreal.Memory;
-using Color = Surreal.Colors.Color;
+﻿using Surreal.Memory;
 using Image = Surreal.Graphics.Images.Image;
 using Size = Surreal.Memory.Size;
 
@@ -59,6 +57,9 @@ public readonly record struct TextureSampler(GraphicsHandle Texture, uint Sample
 [DebuggerDisplay("Texture {Width}x{Height} (Format {Format})")]
 public sealed class Texture(IGraphicsDevice device, TextureFormat format, TextureFilterMode filterMode, TextureWrapMode wrapMode) : Disposable
 {
+  private TextureWrapMode _wrapMode = wrapMode;
+  private TextureFilterMode _filterMode = filterMode;
+
   /// <summary>
   /// The <see cref="GraphicsHandle"/> for the underlying texture.
   /// </summary>
@@ -84,10 +85,10 @@ public sealed class Texture(IGraphicsDevice device, TextureFormat format, Textur
   /// </summary>
   public TextureFilterMode FilterMode
   {
-    get => filterMode;
+    get => _filterMode;
     set
     {
-      filterMode = value;
+      _filterMode = value;
       device.SetTextureFilterMode(Handle, value);
     }
   }
@@ -97,10 +98,10 @@ public sealed class Texture(IGraphicsDevice device, TextureFormat format, Textur
   /// </summary>
   public TextureWrapMode WrapMode
   {
-    get => wrapMode;
+    get => _wrapMode;
     set
     {
-      wrapMode = value;
+      _wrapMode = value;
       device.SetTextureWrapMode(Handle, value);
     }
   }
@@ -109,41 +110,6 @@ public sealed class Texture(IGraphicsDevice device, TextureFormat format, Textur
   /// The size of the texture, in bytes.
   /// </summary>
   public Size Size { get; private set; }
-
-  /// <summary>
-  /// Creates a colored 1x1 texture.
-  /// </summary>
-  public static Texture CreateColored(IGraphicsDevice device, Color color, TextureFormat format = TextureFormat.Rgba8)
-  {
-    var texture = new Texture(device, format, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
-
-    texture.WritePixels<Color>(1, 1, stackalloc Color[] { color });
-
-    return texture;
-  }
-
-  /// <summary>
-  /// Creates a texture from random noise.
-  /// </summary>
-  public static Texture CreateNoise(IGraphicsDevice device, int width, int height, Seed seed = default, TextureFormat format = TextureFormat.Rgba8)
-  {
-    var texture = new Texture(device, format, TextureFilterMode.Point, TextureWrapMode.ClampToEdge);
-    var random = seed.ToRandom();
-
-    var pixels = new SpanGrid<Color>(new Color[width * height], width);
-
-    for (var y = 0; y < height; y++)
-    for (var x = 0; x < width; x++)
-    {
-      var color = random.NextFloat();
-
-      pixels[x, y] = new Color(color, color, color);
-    }
-
-    texture.WritePixels<Color>(width, height, pixels);
-
-    return texture;
-  }
 
   /// <summary>
   /// Converts the <see cref="Texture" /> to a <see cref="TextureRegion" />.
@@ -157,69 +123,49 @@ public sealed class Texture(IGraphicsDevice device, TextureFormat format, Textur
   /// <summary>
   /// Reads the entire texture into a <see cref="Memory{T}" />.
   /// </summary>
-  public Memory<T> ReadPixels<T>()
+  public GraphicsTask<Memory<T>> ReadPixelsAsync<T>()
     where T : unmanaged
   {
-    return device.ReadTextureData<T>(Handle);
-  }
-
-  /// <summary>
-  /// Reads the entire texture into a <see cref="Span{T}" />.
-  /// </summary>
-  public void ReadPixels<T>(Span<T> buffer)
-    where T : unmanaged
-  {
-    device.ReadTextureData(Handle, buffer);
+    return device.ReadTextureDataAsync<T>(Handle);
   }
 
   /// <summary>
   /// Reads a sub-region of the texture into a <see cref="Memory{T}" />.
   /// </summary>
-  public Memory<T> ReadPixelsSub<T>(int offsetX, int offsetY, int width, int height)
+  public GraphicsTask<Memory<T>> ReadPixelsAsync<T>(int offsetX, int offsetY, int width, int height)
     where T : unmanaged
   {
-    return device.ReadTextureSubData<T>(Handle, offsetX, offsetY, (uint)width, (uint)height);
-  }
-
-  /// <summary>
-  /// Reads a sub-region of the texture into a <see cref="Span{T}" />.
-  /// </summary>
-  public void ReadPixelsSub<T>(Span<T> buffer, int offsetX, int offsetY, int width, int height)
-    where T : unmanaged
-  {
-    device.ReadTextureSubData(Handle, buffer, offsetX, offsetY, (uint)width, (uint)height);
+    return device.ReadTextureDataAsync<T>(Handle, offsetX, offsetY, (uint)width, (uint)height);
   }
 
   /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the texture.
   /// </summary>
-  public void WritePixels<T>(int width, int height, ReadOnlySpan<T> pixels)
+  public GraphicsTask WritePixelsAsync<T>(int width, int height, ReadOnlySpan<T> span)
     where T : unmanaged
   {
     Width = width;
     Height = height;
-    Size = pixels.CalculateSize();
+    Size = span.CalculateSize();
 
-    device.WriteTextureData(Handle, (uint)width, (uint)height, pixels, Format);
-  }
-
-  /// <summary>
-  /// Writes the given <see cref="ReadOnlySpan{T}" /> to the texture at the given offset.
-  /// </summary>
-  public void WritePixelsSub<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> pixels)
-    where T : unmanaged
-  {
-    device.WriteTextureSubData(Handle, offsetX, offsetY, (uint)width, (uint)height, pixels);
+    return device.WriteTextureDataAsync(Handle, (uint)width, (uint)height, span, Format);
   }
 
   /// <summary>
   /// Writes the given <see cref="Image" /> to the texture.
   /// </summary>
-  public void WritePixels(Image image)
+  public GraphicsTask WritePixelsAsync(Image image)
   {
-    var pixels = image.Pixels.ToReadOnlySpan();
+    return WritePixelsAsync(image.Width, image.Height, image.Pixels.ToReadOnlySpan());
+  }
 
-    WritePixels(image.Width, image.Height, pixels);
+  /// <summary>
+  /// Writes the given <see cref="ReadOnlySpan{T}" /> to the texture at the given offset.
+  /// </summary>
+  public GraphicsTask WritePixelsAsync<T>(int offsetX, int offsetY, int width, int height, ReadOnlySpan<T> span)
+    where T : unmanaged
+  {
+    return device.WriteTextureDataAsync(Handle, offsetX, offsetY, (uint)width, (uint)height, span);
   }
 
   protected override void Dispose(bool managed)

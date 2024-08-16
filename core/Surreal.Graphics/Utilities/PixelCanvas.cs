@@ -43,7 +43,7 @@ public class PixelCanvas : IDisposable
   /// </summary>
   public void DrawQuad()
   {
-    _texture.WritePixels<Color32>(_pixels.Width, _pixels.Height, _pixels.Span);
+    _texture.WritePixelsAsync<Color32>(_pixels.Width, _pixels.Height, _pixels.Span);
 
     _mesh.Draw(_material);
   }

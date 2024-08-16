@@ -278,8 +278,8 @@ public sealed class GeometryBatch(IGraphicsDevice device, int maximumVertexCount
     {
       _material.PolygonMode = _lastPolygonMode;
 
-      _mesh.Vertices.Write(_vertices.Span[.._vertexCount]);
-      _mesh.Indices.Write(_indices.Span[.._indexCount]);
+      _mesh.Vertices.WriteAsync(_vertices.Span[.._vertexCount]);
+      _mesh.Indices.WriteAsync(_indices.Span[.._indexCount]);
 
       _mesh.Draw(_material);
     }
