@@ -1,5 +1,4 @@
 using Surreal.Input.Gamepad;
-using Surreal.Input.Joystick;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 
@@ -30,7 +29,6 @@ public interface IInputBackend
     [
       IKeyboardDevice.Null,
       IMouseDevice.Null,
-      IJoystickDevice.Null,
       IGamepadDevice.Null,
     ];
   }

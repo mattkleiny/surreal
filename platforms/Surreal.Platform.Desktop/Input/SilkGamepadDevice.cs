@@ -64,8 +64,8 @@ internal sealed class SilkGamepadDevice : IGamepadDevice, IDisposable
       GamepadButton.LeftBumper => _gamepad.LeftBumper().Pressed,
       GamepadButton.RightBumper => _gamepad.RightBumper().Pressed,
 
-      GamepadButton.LeftThumbstick => _gamepad.LeftThumbstickButton().Pressed,
-      GamepadButton.RightThumbstick => _gamepad.RightThumbstickButton().Pressed,
+      GamepadButton.LeftStick => _gamepad.LeftThumbstickButton().Pressed,
+      GamepadButton.RightStick => _gamepad.RightThumbstickButton().Pressed,
 
       GamepadButton.Back => _gamepad.Back().Pressed,
       GamepadButton.Start => _gamepad.Start().Pressed,
@@ -87,12 +87,12 @@ internal sealed class SilkGamepadDevice : IGamepadDevice, IDisposable
 
   private void OnButtonDown(IGamepad gamepad, Button button)
   {
-    // TODO: implement me
+    ButtonPressed?.Invoke(ConvertButton(button.Name));
   }
 
   private void OnButtonUp(IGamepad gamepad, Button button)
   {
-    // TODO: implement me
+    ButtonReleased?.Invoke(ConvertButton(button.Name));
   }
 
   /// <summary>
@@ -109,4 +109,27 @@ internal sealed class SilkGamepadDevice : IGamepadDevice, IDisposable
     result = _gamepad.Thumbsticks[index];
     return true;
   }
+
+  /// <summary>
+  /// Converts a Silk.NET <see cref="ButtonName"/> to a <see cref="GamepadButton"/>.
+  /// </summary>
+  private static GamepadButton ConvertButton(ButtonName button) => button switch
+  {
+    ButtonName.A => GamepadButton.A,
+    ButtonName.B => GamepadButton.B,
+    ButtonName.X => GamepadButton.X,
+    ButtonName.Y => GamepadButton.Y,
+    ButtonName.LeftBumper => GamepadButton.LeftBumper,
+    ButtonName.RightBumper => GamepadButton.RightBumper,
+    ButtonName.Back => GamepadButton.Back,
+    ButtonName.Start => GamepadButton.Start,
+    ButtonName.Home => GamepadButton.Home,
+    ButtonName.LeftStick => GamepadButton.LeftStick,
+    ButtonName.RightStick => GamepadButton.RightStick,
+    ButtonName.DPadUp => GamepadButton.DPadUp,
+    ButtonName.DPadRight => GamepadButton.DPadRight,
+    ButtonName.DPadDown => GamepadButton.DPadDown,
+    ButtonName.DPadLeft => GamepadButton.DPadLeft,
+    _ => GamepadButton.Unknown
+  };
 }

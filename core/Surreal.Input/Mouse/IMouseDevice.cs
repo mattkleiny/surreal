@@ -16,12 +16,8 @@ public interface IMouseDevice : IInputDevice
   event Action<MouseButton> ButtonPressed;
   event Action<MouseButton> ButtonReleased;
 
-  event Action<Vector2> Moved;
-
   bool IsButtonDown(MouseButton button);
   bool IsButtonUp(MouseButton button);
-  bool IsButtonPressed(MouseButton button);
-  bool IsButtonReleased(MouseButton button);
 
   /// <summary>
   /// A no-op <see cref="IMouseDevice" />.
@@ -31,7 +27,6 @@ public interface IMouseDevice : IInputDevice
   {
     public event Action<MouseButton>? ButtonPressed;
     public event Action<MouseButton>? ButtonReleased;
-    public event Action<Vector2>? Moved;
 
     public Vector2 Position => Vector2.Zero;
     public Vector2 NormalisedPosition => Position;
@@ -43,16 +38,6 @@ public interface IMouseDevice : IInputDevice
     }
 
     public bool IsButtonUp(MouseButton button)
-    {
-      return false;
-    }
-
-    public bool IsButtonPressed(MouseButton button)
-    {
-      return false;
-    }
-
-    public bool IsButtonReleased(MouseButton button)
     {
       return false;
     }

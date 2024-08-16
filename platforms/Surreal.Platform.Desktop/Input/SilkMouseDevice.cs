@@ -24,7 +24,6 @@ internal sealed class SilkMouseDevice : IMouseDevice, IDisposable
 
   public event Action<MouseButton>? ButtonPressed;
   public event Action<MouseButton>? ButtonReleased;
-  public event Action<Vector2>? Moved;
 
   public Vector2 Position => _mouse.Position;
   public Vector2 NormalisedPosition => _mouse.Position / new Vector2(_window.Size.X, _window.Size.Y);
@@ -33,22 +32,12 @@ internal sealed class SilkMouseDevice : IMouseDevice, IDisposable
 
   public bool IsButtonDown(MouseButton button)
   {
-    return _mouse.IsButtonPressed(ConvertMouseButton(button));
+    return _mouse.IsButtonPressed(ConvertButtonToSilk(button));
   }
 
   public bool IsButtonUp(MouseButton button)
   {
-    throw new NotImplementedException();
-  }
-
-  public bool IsButtonPressed(MouseButton button)
-  {
-    throw new NotImplementedException();
-  }
-
-  public bool IsButtonReleased(MouseButton button)
-  {
-    throw new NotImplementedException();
+    return !IsButtonDown(button);
   }
 
   public void Dispose()
@@ -59,22 +48,35 @@ internal sealed class SilkMouseDevice : IMouseDevice, IDisposable
 
   private void OnMouseDown(IMouse mouse, Silk.NET.Input.MouseButton button)
   {
-    // TODO: implement me
+    ButtonPressed?.Invoke(ConvertButtonFromSilk(button));
   }
 
   private void OnMouseUp(IMouse mouse, Silk.NET.Input.MouseButton button)
   {
-    // TODO: implement me
+    ButtonReleased?.Invoke(ConvertButtonFromSilk(button));
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static Silk.NET.Input.MouseButton ConvertMouseButton(MouseButton button)
+  private static Silk.NET.Input.MouseButton ConvertButtonToSilk(MouseButton button)
   {
     return button switch
     {
       MouseButton.Left => Silk.NET.Input.MouseButton.Left,
       MouseButton.Middle => Silk.NET.Input.MouseButton.Middle,
       MouseButton.Right => Silk.NET.Input.MouseButton.Right,
+
+      _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
+    };
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static MouseButton ConvertButtonFromSilk(Silk.NET.Input.MouseButton button)
+  {
+    return button switch
+    {
+      Silk.NET.Input.MouseButton.Left => MouseButton.Left,
+      Silk.NET.Input.MouseButton.Middle => MouseButton.Middle,
+      Silk.NET.Input.MouseButton.Right => MouseButton.Right,
 
       _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
     };

@@ -22,10 +22,12 @@ public enum GamepadButton : byte
   RightBumper,
 
   // thumb sticks
-  LeftThumbstick,
-  RightThumbstick,
+  LeftStick,
+  RightStick,
 
   // extra
   Back,
   Start,
+  Home,
+  Unknown,
 }

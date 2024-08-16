@@ -10,13 +10,12 @@ internal sealed class SilkInputBackend(IWindow window, IInputContext context) : 
 {
   private readonly SilkKeyboardDevice? _keyboardDevice = context.Keyboards.Select(keyboard => new SilkKeyboardDevice(keyboard)).SingleOrDefault();
   private readonly SilkMouseDevice? _mouseDevice = context.Mice.Select(mouse => new SilkMouseDevice(window, mouse)).SingleOrDefault();
-  private readonly SilkJoystickDevice? _joystickDevice = context.Joysticks.Select(joystick => new SilkJoystickDevice(joystick)).SingleOrDefault();
   private readonly SilkGamepadDevice? _gamepadDevice = context.Gamepads.Select(gamepad => new SilkGamepadDevice(gamepad)).SingleOrDefault();
 
   /// <summary>
   /// The underlying input devices.
   /// </summary>
-  private IEnumerable<IInputDevice?> Devices => [_keyboardDevice, _mouseDevice, _joystickDevice, _gamepadDevice];
+  private IEnumerable<IInputDevice?> Devices => [_keyboardDevice, _mouseDevice, _gamepadDevice];
 
   /// <inheritdoc/>
   public IEnumerable<IInputDevice> CreateDevices()
