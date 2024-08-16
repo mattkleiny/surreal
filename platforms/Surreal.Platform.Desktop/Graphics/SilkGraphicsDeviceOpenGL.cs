@@ -151,28 +151,28 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     return result;
   }
 
-  public unsafe void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged
+  public unsafe void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged
   {
     var kind = ConvertBufferType(type);
 
     gl.BindBuffer(kind, handle);
 
-    fixed (T* pointer = buffer)
+    fixed (T* pointer = span)
     {
       gl.GetBufferSubData(
         target: kind,
         offset: 0,
-        size: (uint)(buffer.Length * sizeof(T)),
+        size: (uint)(span.Length * sizeof(T)),
         data: pointer
       );
     }
   }
 
-  public unsafe void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
+  public unsafe void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage)
     where T : unmanaged
   {
     var kind = ConvertBufferType(type);
-    var bytes = (uint)(data.Length * sizeof(T));
+    var bytes = (uint)(span.Length * sizeof(T));
 
     var bufferUsage = usage switch
     {
@@ -184,23 +184,23 @@ internal sealed class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 
     gl.BindBuffer(kind, handle);
 
-    fixed (T* pointer = data)
+    fixed (T* pointer = span)
     {
       gl.BufferData(kind, bytes, pointer, bufferUsage);
     }
   }
 
-  public unsafe void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, ReadOnlySpan<T> data)
+  public unsafe void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span)
     where T : unmanaged
   {
     var kind = ConvertBufferType(type);
-    var bytes = (uint)(data.Length * sizeof(T));
+    var bytes = (uint)(span.Length * sizeof(T));
 
     gl.BindBuffer(kind, handle);
 
-    fixed (T* pointer = data)
+    fixed (T* pointer = span)
     {
-      gl.BufferSubData(kind, offset, bytes, pointer);
+      gl.BufferSubData(kind, (nint)offset, bytes, pointer);
     }
   }
 

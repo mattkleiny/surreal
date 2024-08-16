@@ -99,7 +99,7 @@ public sealed class GraphicsBuffer<TData>(IGraphicsDevice device, BufferType typ
   /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the buffer at the given offset.
   /// </summary>
-  public void Write(nint offset, ReadOnlySpan<TData> buffer)
+  public void Write(uint offset, ReadOnlySpan<TData> buffer)
   {
     device.WriteBufferSubData(Handle, Type, offset, buffer);
   }

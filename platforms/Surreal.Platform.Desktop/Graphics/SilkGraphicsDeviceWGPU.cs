@@ -1,7 +1,6 @@
 using Silk.NET.Core.Native;
 using Silk.NET.WebGPU;
 using Silk.NET.Windowing;
-using Surreal.Collections;
 using Surreal.Collections.Slices;
 using Surreal.Colors;
 using Surreal.Diagnostics.Logging;
@@ -12,9 +11,11 @@ using Surreal.Graphics.Textures;
 using Surreal.Mathematics;
 using BlendState = Surreal.Graphics.Materials.BlendState;
 using Buffer = Silk.NET.WebGPU.Buffer;
+using BufferUsageFlags = Silk.NET.WebGPU.BufferUsage;
 using BufferUsage = Surreal.Graphics.Meshes.BufferUsage;
 using Color = Surreal.Colors.Color;
 using PolygonMode = Surreal.Graphics.Materials.PolygonMode;
+using Queue = Silk.NET.WebGPU.Queue;
 using RenderPipeline = Silk.NET.WebGPU.RenderPipeline;
 using TextureFormat = Surreal.Graphics.Textures.TextureFormat;
 
@@ -34,6 +35,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   private readonly Surface* _surface;
   private Adapter* _adapter;
   private Device* _device;
+  private Queue* _queue;
 
   public SilkGraphicsDeviceWGPU(IWindow window, GraphicsMode mode)
   {
@@ -77,6 +79,8 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       callback: new PfnErrorCallback(OnUnhandledError),
       userdata: null
     );
+
+    _queue = wgpu.DeviceGetQueue(_device);
   }
 
   public Viewport GetViewportSize()
@@ -122,11 +126,11 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     {
       Usage = type switch
       {
-        BufferType.Vertex => Silk.NET.WebGPU.BufferUsage.Vertex,
-        BufferType.Index => Silk.NET.WebGPU.BufferUsage.Index,
+        BufferType.Vertex => BufferUsageFlags.Vertex | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
+        BufferType.Index => BufferUsageFlags.Index | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
 
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-      }
+      },
     };
 
     var buffer = wgpu.DeviceCreateBuffer(_device, &descriptor);
@@ -136,23 +140,36 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, int length) where T : unmanaged
   {
-    var buffer = handle.AsPointer<Buffer>();
-
-    // TODO: synchronization?
-
     return Memory<T>.Empty;
   }
 
-  public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged
+  public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged
   {
   }
 
-  public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged
+  public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged
   {
+    // TODO: how to get the right size in advance?
+    var buffer = handle.AsPointer<Buffer>();
+
+    fixed (T* pointer = span)
+    {
+      var size = (nuint)(span.Length * sizeof(T));
+
+      wgpu.QueueWriteBuffer(_queue, buffer, 0, pointer, size);
+    }
   }
 
-  public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, ReadOnlySpan<T> data) where T : unmanaged
+  public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged
   {
+    var buffer = handle.AsPointer<Buffer>();
+
+    fixed (T* pointer = span)
+    {
+      var size = (nuint)(span.Length * sizeof(T));
+
+      wgpu.QueueWriteBuffer(_queue, buffer, offset, pointer, size);
+    }
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
@@ -364,6 +381,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void Dispose()
   {
+    wgpu.QueueRelease(_queue);
     wgpu.DeviceRelease(_device);
     wgpu.AdapterRelease(_adapter);
     wgpu.SurfaceRelease(_surface);

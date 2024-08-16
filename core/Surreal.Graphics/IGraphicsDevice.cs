@@ -46,9 +46,9 @@ public interface IGraphicsDevice : IDisposable
   // buffers
   GraphicsHandle CreateBuffer(BufferType type, BufferUsage usage);
   Memory<T> ReadBufferData<T>(GraphicsHandle handle, BufferType type, nint offset, int length) where T : unmanaged;
-  void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged;
-  void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged;
-  void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data) where T : unmanaged;
+  void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged;
+  void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged;
+  void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged;
   void DeleteBuffer(GraphicsHandle handle);
 
   // textures
@@ -197,17 +197,17 @@ public interface IGraphicsDevice : IDisposable
       return Memory<T>.Empty;
     }
 
-    public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged
+    public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> span) where T : unmanaged
     {
       // no-op
     }
 
-    public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage)
+    public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage)
       where T : unmanaged
     {
     }
 
-    public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, nint offset, ReadOnlySpan<T> data)
+    public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span)
       where T : unmanaged
     {
     }
