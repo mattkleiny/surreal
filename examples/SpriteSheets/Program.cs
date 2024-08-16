@@ -9,7 +9,6 @@
       ShowFpsInTitle = true,
       Width = 1024,
       Height = 768,
-      GraphicsProvider = GraphicsProvider.WGPU
     },
   },
 };

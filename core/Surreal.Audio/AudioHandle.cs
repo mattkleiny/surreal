@@ -72,7 +72,14 @@ public readonly record struct AudioHandle(ulong Id) : IDisposable
   public void Dispose()
   {
     var handle = GCHandle.FromIntPtr(this);
+    if (handle.IsAllocated)
+    {
+      if (handle.Target is IDisposable disposable)
+      {
+        disposable.Dispose();
+      }
 
-    handle.Free();
+      handle.Free();
+    }
   }
 }

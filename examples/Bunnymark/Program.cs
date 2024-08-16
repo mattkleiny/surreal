@@ -15,7 +15,7 @@ var configuration = new GameConfiguration
       ShowFpsInTitle = true,
       Width = width,
       Height = height,
-      IsTransparent = true
+      GraphicsProvider = GraphicsProvider.WGPU
     }
   },
 };
