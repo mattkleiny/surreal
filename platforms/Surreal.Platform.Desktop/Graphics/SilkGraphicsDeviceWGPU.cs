@@ -83,15 +83,6 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     _queue = wgpu.DeviceGetQueue(_device);
   }
 
-  public void FrameStarted()
-  {
-  }
-
-  public void FrameEnded()
-  {
-    // TODO: submit the queue
-  }
-
   public Viewport GetViewportSize()
   {
     return new Viewport();

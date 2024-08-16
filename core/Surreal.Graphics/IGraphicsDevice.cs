@@ -32,10 +32,6 @@ public interface IGraphicsDevice : IDisposable
 {
   static IGraphicsDevice Null { get; } = new NullGraphicsDevice();
 
-  // notifications
-  void FrameStarted();
-  void FrameEnded();
-
   // intrinsics
   Viewport GetViewportSize();
   void SetViewportSize(Viewport viewport);
@@ -120,14 +116,6 @@ public interface IGraphicsDevice : IDisposable
     private int _nextTextureId;
     private int _nextFrameBufferId;
     private FrameBufferHandle _activeFrameBuffer;
-
-    public void FrameStarted()
-    {
-    }
-
-    public void FrameEnded()
-    {
-    }
 
     public Viewport GetViewportSize()
     {

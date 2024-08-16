@@ -26,16 +26,6 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
   private Mesh? _quadMesh;
   private FrameBufferHandle _activeFrameBuffer;
 
-  public void FrameStarted()
-  {
-    // no-op
-  }
-
-  public void FrameEnded()
-  {
-    // no-op
-  }
-
   public Viewport GetViewportSize()
   {
     Span<int> size = stackalloc int[4];
