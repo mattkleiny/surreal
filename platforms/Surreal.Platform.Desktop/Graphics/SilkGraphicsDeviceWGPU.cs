@@ -145,17 +145,14 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void ReadBufferData<T>(GraphicsHandle handle, BufferType type, Span<T> buffer) where T : unmanaged
   {
-    var buffer = handle.AsPointer<Buffer>();
   }
 
   public void WriteBufferData<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> data, BufferUsage usage) where T : unmanaged
   {
-    var buffer = handle.AsPointer<Buffer>();
   }
 
   public void WriteBufferSubData<T>(GraphicsHandle handle, BufferType type, IntPtr offset, ReadOnlySpan<T> data) where T : unmanaged
   {
-    var buffer = handle.AsPointer<Buffer>();
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
@@ -171,7 +168,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       WrapMode = wrapMode
     };
 
-    return GraphicsHandle.FromObject(state)
+    return GraphicsHandle.FromObject(state);
   }
 
   public Memory<T> ReadTextureData<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
@@ -216,7 +213,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void DeleteTexture(GraphicsHandle handle)
   {
-    handle.FreeObject();
+    handle.Dispose();
   }
 
   public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)

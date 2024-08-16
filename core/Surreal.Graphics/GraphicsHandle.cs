@@ -6,7 +6,7 @@ namespace Surreal.Graphics;
 /// An opaque handle to a resource in the underling <see cref="IGraphicsBackend" /> implementation.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public readonly record struct GraphicsHandle(ulong Id)
+public readonly record struct GraphicsHandle(ulong Id) : IDisposable
 {
   public static GraphicsHandle None => default;
 
@@ -17,7 +17,7 @@ public readonly record struct GraphicsHandle(ulong Id)
   public static GraphicsHandle FromArenaIndex(ArenaIndex index) => new(index);
   public static GraphicsHandle FromPointer(IntPtr pointer) => new((ulong)pointer);
   public static unsafe GraphicsHandle FromPointer(void* pointer) => new((ulong)pointer);
-  
+
   /// <summary>
   /// Creates a new handle from the given object by pinning it in memory and taking a pointer to it
   /// </summary>
@@ -35,8 +35,13 @@ public readonly record struct GraphicsHandle(ulong Id)
   public static implicit operator nint(GraphicsHandle handle) => (nint)handle.Id;
   public static implicit operator ulong(GraphicsHandle handle) => handle.Id;
   public static implicit operator ArenaIndex(GraphicsHandle handle) => ArenaIndex.FromUlong(handle);
-  public static implicit operator IntPtr(GraphicsHandle handle) => new IntPtr(handle.Id);
   public static unsafe implicit operator void*(GraphicsHandle handle) => (void*) handle.Id;
+
+  /// <summary>
+  /// Converts the handle to an integer.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public unsafe void* AsPointer() => (void*)Id;
 
   /// <summary>
   /// Converts the handle to a pointer of type <typeparamref name="T" />.
@@ -48,19 +53,26 @@ public readonly record struct GraphicsHandle(ulong Id)
   /// Converts the handle to an object of type <typeparamref name="T" />.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public unsafe T AsObject<T>()
+  public T AsObject<T>() where T : class
   {
     var handle = GCHandle.FromIntPtr(this);
+    var target = handle.Target;
 
-    return (T) handle.Target;
+    if (target == null)
+    {
+      throw new NullReferenceException("The object pointed at by this handle is null.");
+    }
+
+    return (T) target;
   }
 
   /// <summary>
   /// Frees the GC handle of the value pointed at by this handle, assuming it's a pointer.
   /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public unsafe void FreeObject()
+  public void Dispose()
   {
-    GCHandle.FromIntPtr(this).Free();
+    var handle = GCHandle.FromIntPtr(this);
+
+    handle.Free();
   }
 }
