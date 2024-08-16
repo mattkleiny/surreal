@@ -15,17 +15,52 @@ public readonly record struct GraphicsHandle(ulong Id)
   public static GraphicsHandle FromNInt(nint index) => new((ulong)index);
   public static GraphicsHandle FromULong(ulong index) => new(index);
   public static GraphicsHandle FromArenaIndex(ArenaIndex index) => new(index);
+  public static GraphicsHandle FromPointer(IntPtr pointer) => new((ulong)pointer);
   public static unsafe GraphicsHandle FromPointer(void* pointer) => new((ulong)pointer);
-
+  
   public static implicit operator int(GraphicsHandle handle) => (int)handle.Id;
   public static implicit operator uint(GraphicsHandle handle) => (uint)handle.Id;
   public static implicit operator nint(GraphicsHandle handle) => (nint)handle.Id;
   public static implicit operator ulong(GraphicsHandle handle) => handle.Id;
   public static implicit operator ArenaIndex(GraphicsHandle handle) => ArenaIndex.FromUlong(handle);
+  public static implicit operator IntPtr(GraphicsHandle handle) => new IntPtr(handle.Id);
+  public static unsafe implicit operator void*(GraphicsHandle handle) => (void*) handle.Id;
 
   /// <summary>
   /// Converts the handle to a pointer of type <typeparamref name="T" />.
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public unsafe T* AsPointer<T>() where T : unmanaged => (T*)(void*)Id;
+
+  /// <summary>
+  /// Converts the handle to an object of type <typeparamref name="T" />.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public unsafe T AsObject<T>()
+  {
+    var handle = GCHandle.FromIntPtr(this);
+
+    return (T) handle.Target;
+  }
+
+  /// <summary>
+  /// Creates a new handle from the given object by pinning it in memory and taking a pointer to it
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static GraphicsHandle FromObject(object? value)
+  {
+    var handle = GCHandle.Alloc(value, GCHandleType.Pinned);
+    var pointer = GCHandle.ToIntPtr(handle);
+
+    return FromPointer(pointer);
+  }
+
+  /// <summary>
+  /// Frees the GC handle of the value pointed at by this handle, assuming it's a pointer.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public unsafe void FreeObject()
+  {
+    GCHandle.FromIntPtr(this).Free();
+  }
 }
