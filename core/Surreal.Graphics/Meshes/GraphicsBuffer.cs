@@ -87,9 +87,9 @@ public sealed class GraphicsBuffer<T>(IGraphicsDevice device, BufferType type, B
   /// <summary>
   /// Writes the given <see cref="ReadOnlySpan{T}" /> to the buffer at the given offset.
   /// </summary>
-  public GraphicsTask WriteAsync(uint offset, ReadOnlySpan<T> span)
+  public GraphicsTask WriteAsync(ReadOnlySpan<T> span, uint offset)
   {
-    return device.WriteBufferDataAsync(Handle, Type, offset, span);
+    return device.WriteBufferDataAsync(Handle, Type, offset, span, Usage);
   }
 
   protected override void Dispose(bool managed)

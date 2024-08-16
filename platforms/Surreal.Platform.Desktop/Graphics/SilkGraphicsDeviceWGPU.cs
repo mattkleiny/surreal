@@ -83,6 +83,15 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     _queue = wgpu.DeviceGetQueue(_device);
   }
 
+  public void FrameStarted()
+  {
+  }
+
+  public void FrameEnded()
+  {
+    // TODO: submit the queue
+  }
+
   public Viewport GetViewportSize()
   {
     return new Viewport();
@@ -133,21 +142,24 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       },
     };
 
-    var buffer = wgpu.DeviceCreateBuffer(_device, &descriptor);
+    var state = new BufferState
+    {
+      Buffer = wgpu.DeviceCreateBuffer(_device, &descriptor)
+    };
 
-    return GraphicsHandle.FromPointer(buffer);
+    return GraphicsHandle.FromObject(state);
   }
 
   public GraphicsTask<Memory<T>> ReadBufferDataAsync<T>(GraphicsHandle handle, BufferType type) where T : unmanaged
   {
     var task = GraphicsTask.Create<Memory<T>>();
-    var buffer = handle.AsPointer<Buffer>();
-    var size = (uint)wgpu.BufferGetSize(buffer);
+    var state = handle.AsObject<BufferState>();
 
+    var size = (uint)wgpu.BufferGetSize(state.Buffer);
     var memory = new Memory<T>(GC.AllocateArray<T>((int)size));
 
     wgpu.BufferMapAsync(
-      buffer: buffer,
+      buffer: state.Buffer,
       mode: MapMode.Read,
       offset: 0,
       size: size,
@@ -156,14 +168,12 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
         if (status == BufferMapAsyncStatus.Success)
         {
           fixed (T* pointer = memory.Span)
-          {
             Unsafe.CopyBlock(pointer, result, size);
-          }
 
           task.SignalCompletion(memory);
         }
         else
-          task.SignalException(new Exception("Failed to read buffer data."));
+          task.SignalException(new Exception($"Failed to read buffer data with reason {status}"));
       }),
       userdata: null
     );
@@ -173,60 +183,62 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged
   {
-    // TODO: how to get the right size in advance?
-    var task = GraphicsTask.Create();
-    var buffer = handle.AsPointer<Buffer>();
-
-    fixed (T* pointer = span)
-    {
-      var size = (nuint)(span.Length * sizeof(T));
-
-      wgpu.QueueWriteBuffer(_queue, buffer, 0, pointer, size);
-      wgpu.QueueOnSubmittedWorkDone(
-        queue: _queue,
-        callback: new PfnQueueWorkDoneCallback((status, _) =>
-        {
-          if (status == QueueWorkDoneStatus.Success)
-            task.SignalCompletion();
-          else
-            task.SignalException(new Exception("Failed to write buffer sub data."));
-        }),
-        userdata: null
-      );
-    }
-
-    return task;
+    return WriteBufferDataAsync(handle, type, 0, span, usage);
   }
 
-  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged
+  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged
   {
     var task = GraphicsTask.Create();
-    var buffer = handle.AsPointer<Buffer>();
+    var state = handle.AsObject<BufferState>();
 
+    var currentSize = wgpu.BufferGetSize(state.Buffer);
+    var targetSize = (nuint) (span.Length * sizeof(T));
+
+    // resize the buffer if it's too small
+    if (currentSize < targetSize)
+    {
+      wgpu.BufferRelease(state.Buffer);
+
+      var descriptor = new BufferDescriptor
+      {
+        Usage = type switch
+        {
+          BufferType.Vertex => BufferUsageFlags.Vertex | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
+          BufferType.Index => BufferUsageFlags.Index | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
+
+          _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        },
+        Size = targetSize
+      };
+
+      state.Buffer = wgpu.DeviceCreateBuffer(_device, &descriptor);
+    }
+
+    // enqueue to write
     fixed (T* pointer = span)
     {
-      var size = (nuint)(span.Length * sizeof(T));
-
-      wgpu.QueueWriteBuffer(_queue, buffer, offset, pointer, size);
-      wgpu.QueueOnSubmittedWorkDone(
-        queue: _queue,
-        callback: new PfnQueueWorkDoneCallback((status, _) =>
-        {
-          if (status == QueueWorkDoneStatus.Success)
-            task.SignalCompletion();
-          else
-            task.SignalException(new Exception("Failed to write buffer sub data."));
-        }),
-        userdata: null
-      );
+      wgpu.QueueWriteBuffer(_queue, state.Buffer, offset, pointer, targetSize);
     }
+
+    // submit the work
+    wgpu.QueueOnSubmittedWorkDone(
+      queue: _queue,
+      callback: new PfnQueueWorkDoneCallback((status, _) =>
+      {
+        if (status == QueueWorkDoneStatus.Success)
+          task.SignalCompletion();
+        else
+          task.SignalException(new Exception($"Failed to write buffer sub data with reason {status}"));
+      }),
+      userdata: null
+    );
 
     return task;
   }
 
   public void DeleteBuffer(GraphicsHandle handle)
   {
-    wgpu.BufferRelease(handle.AsPointer<Buffer>());
+    handle.Dispose();
   }
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
@@ -308,7 +320,6 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
-    var shader = handle.AsObject<ShaderState>();
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, float value)
@@ -457,15 +468,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   /// </summary>
   private sealed class BufferState
   {
-    public required Buffer* Buffer { get; init; }
-  }
-
-  /// <summary>
-  /// Internal state for a pipeline.
-  /// </summary>
-  private sealed class PipelineState
-  {
-    public required RenderPipeline* Pipeline { get; init; }
+    public required Buffer* Buffer { get; set; }
   }
 
   /// <summary>

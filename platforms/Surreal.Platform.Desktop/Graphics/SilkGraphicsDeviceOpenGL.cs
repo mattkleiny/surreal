@@ -26,6 +26,16 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
   private Mesh? _quadMesh;
   private FrameBufferHandle _activeFrameBuffer;
 
+  public void FrameStarted()
+  {
+    // no-op
+  }
+
+  public void FrameEnded()
+  {
+    // no-op
+  }
+
   public Viewport GetViewportSize()
   {
     Span<int> size = stackalloc int[4];
@@ -174,7 +184,7 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     return GraphicsTask.CompletedTask;
   }
 
-  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span)
+  public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span, BufferUsage usage)
     where T : unmanaged
   {
     var kind = ConvertBufferType(type);

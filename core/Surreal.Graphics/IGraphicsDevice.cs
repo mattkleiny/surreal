@@ -32,6 +32,10 @@ public interface IGraphicsDevice : IDisposable
 {
   static IGraphicsDevice Null { get; } = new NullGraphicsDevice();
 
+  // notifications
+  void FrameStarted();
+  void FrameEnded();
+
   // intrinsics
   Viewport GetViewportSize();
   void SetViewportSize(Viewport viewport);
@@ -47,7 +51,7 @@ public interface IGraphicsDevice : IDisposable
   GraphicsHandle CreateBuffer(BufferType type, BufferUsage usage);
   GraphicsTask<Memory<T>> ReadBufferDataAsync<T>(GraphicsHandle handle, BufferType type) where T : unmanaged;
   GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged;
-  GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged;
+  GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged;
   void DeleteBuffer(GraphicsHandle handle);
 
   // textures
@@ -117,6 +121,14 @@ public interface IGraphicsDevice : IDisposable
     private int _nextFrameBufferId;
     private FrameBufferHandle _activeFrameBuffer;
 
+    public void FrameStarted()
+    {
+    }
+
+    public void FrameEnded()
+    {
+    }
+
     public Viewport GetViewportSize()
     {
       return _viewportSize;
@@ -165,7 +177,7 @@ public interface IGraphicsDevice : IDisposable
       return GraphicsTask.FromResult(Memory<T>.Empty);
     }
 
-    public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span) where T : unmanaged
+    public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged
     {
       return GraphicsTask.CompletedTask;
     }
