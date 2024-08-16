@@ -35,7 +35,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   private readonly Surface* _surface;
   private Adapter* _adapter;
   private Device* _device;
-  private Queue* _queue;
+  private readonly Queue* _queue;
 
   public SilkGraphicsDeviceWGPU(IWindow window, GraphicsMode mode)
   {
@@ -126,8 +126,8 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     {
       Usage = type switch
       {
-        BufferType.Vertex => BufferUsageFlags.Vertex | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
-        BufferType.Index => BufferUsageFlags.Index | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
+        BufferType.Vertex => BufferUsageFlags.Vertex | BufferUsageFlags.CopyDst,
+        BufferType.Index => BufferUsageFlags.Index | BufferUsageFlags.CopyDst,
 
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
       },
@@ -147,7 +147,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     var state = handle.AsObject<BufferState>();
 
     var size = (uint)wgpu.BufferGetSize(state.Buffer);
-    var memory = new Memory<T>(GC.AllocateArray<T>((int)size));
+    var memory = new Memory<T>(GC.AllocateArray<T>((int)(size / sizeof(T))));
 
     wgpu.BufferMapAsync(
       buffer: state.Buffer,
@@ -169,6 +169,8 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       userdata: null
     );
 
+    wgpu.QueueSubmit(_queue, 0, null);
+
     return task;
   }
 
@@ -183,7 +185,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
     var state = handle.AsObject<BufferState>();
 
     var currentSize = wgpu.BufferGetSize(state.Buffer);
-    var targetSize = (nuint) (span.Length * sizeof(T));
+    var targetSize = (nuint)(span.Length * sizeof(T));
 
     // resize the buffer if it's too small
     if (currentSize < targetSize)
@@ -194,8 +196,8 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       {
         Usage = type switch
         {
-          BufferType.Vertex => BufferUsageFlags.Vertex | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
-          BufferType.Index => BufferUsageFlags.Index | BufferUsageFlags.CopyDst | BufferUsageFlags.CopySrc,
+          BufferType.Vertex => BufferUsageFlags.Vertex | BufferUsageFlags.CopyDst,
+          BufferType.Index => BufferUsageFlags.Index | BufferUsageFlags.CopyDst,
 
           _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         },
@@ -223,6 +225,8 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       }),
       userdata: null
     );
+
+    wgpu.QueueSubmit(_queue, 0, null);
 
     return task;
   }
