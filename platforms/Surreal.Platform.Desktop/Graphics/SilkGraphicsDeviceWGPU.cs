@@ -35,11 +35,6 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   private Adapter* _adapter;
   private Device* _device;
 
-  private readonly Arena<PipelineState> _pipelines = [];
-  private readonly Arena<BufferState> _buffers = [];
-  private readonly Arena<TextureState> _textures = [];
-  private readonly Arena<ShaderState> _shaders = [];
-
   public SilkGraphicsDeviceWGPU(IWindow window, GraphicsMode mode)
   {
     var instanceDescriptor = new InstanceDescriptor();
@@ -207,12 +202,16 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
   {
-    _textures[handle].FilterMode = mode;
+    var state = handle.AsObject<TextureState>();
+
+    state.FilterMode = mode;
   }
 
   public void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode)
   {
-    _textures[handle].WrapMode = mode;
+    var state = handle.AsObject<TextureState>();
+
+    state.WrapMode = mode;
   }
 
   public void DeleteTexture(GraphicsHandle handle)
@@ -249,6 +248,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void SetShaderUniform(GraphicsHandle handle, int location, int value)
   {
+    var shader = handle.AsObject<ShaderState>();
   }
 
   public void SetShaderUniform(GraphicsHandle handle, int location, float value)

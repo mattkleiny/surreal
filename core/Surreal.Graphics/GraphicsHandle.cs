@@ -18,6 +18,18 @@ public readonly record struct GraphicsHandle(ulong Id)
   public static GraphicsHandle FromPointer(IntPtr pointer) => new((ulong)pointer);
   public static unsafe GraphicsHandle FromPointer(void* pointer) => new((ulong)pointer);
   
+  /// <summary>
+  /// Creates a new handle from the given object by pinning it in memory and taking a pointer to it
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static GraphicsHandle FromObject(object? value)
+  {
+    var handle = GCHandle.Alloc(value, GCHandleType.Pinned);
+    var pointer = GCHandle.ToIntPtr(handle);
+
+    return FromPointer(pointer);
+  }
+
   public static implicit operator int(GraphicsHandle handle) => (int)handle.Id;
   public static implicit operator uint(GraphicsHandle handle) => (uint)handle.Id;
   public static implicit operator nint(GraphicsHandle handle) => (nint)handle.Id;
@@ -41,18 +53,6 @@ public readonly record struct GraphicsHandle(ulong Id)
     var handle = GCHandle.FromIntPtr(this);
 
     return (T) handle.Target;
-  }
-
-  /// <summary>
-  /// Creates a new handle from the given object by pinning it in memory and taking a pointer to it
-  /// </summary>
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static GraphicsHandle FromObject(object? value)
-  {
-    var handle = GCHandle.Alloc(value, GCHandleType.Pinned);
-    var pointer = GCHandle.ToIntPtr(handle);
-
-    return FromPointer(pointer);
   }
 
   /// <summary>
