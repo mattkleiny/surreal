@@ -8,10 +8,26 @@ namespace Surreal.Graphics.Rendering;
 /// </summary>
 public interface IRenderScene
 {
+  static IRenderScene Null { get; } = new NullRenderScene();
+
   /// <summary>
   /// Culls active <see cref="IRenderViewport"/>s in the scene.
   /// </summary>
   ReadOnlySlice<IRenderViewport> CullActiveViewports();
+
+  /// <summary>
+  /// A no-op <see cref="IRenderScene"/>.
+  /// </summary>
+  [ExcludeFromCodeCoverage]
+  private sealed class NullRenderScene : IRenderScene
+  {
+    private static readonly IRenderViewport[] Viewports = [IRenderViewport.Null];
+
+    public ReadOnlySlice<IRenderViewport> CullActiveViewports()
+    {
+      return Viewports;
+    }
+  }
 }
 
 /// <summary>
@@ -19,6 +35,8 @@ public interface IRenderScene
 /// </summary>
 public interface IRenderViewport
 {
+  static IRenderViewport Null { get; } = new NullRenderViewport();
+
   /// <summary>
   /// The projection-view matrix for the camera.
   /// </summary>
@@ -29,6 +47,23 @@ public interface IRenderViewport
   /// </summary>
   ReadOnlySlice<T> CullVisibleObjects<T>()
     where T : class;
+
+  /// <summary>
+  /// A no-op <see cref="IRenderViewport"/>.
+  /// </summary>
+  [ExcludeFromCodeCoverage]
+  private sealed class NullRenderViewport : IRenderViewport
+  {
+    private readonly Matrix4x4 _projectionView = Matrix4x4.Identity;
+
+    public ref readonly Matrix4x4 ProjectionView => ref _projectionView;
+
+    public ReadOnlySlice<T> CullVisibleObjects<T>()
+      where T : class
+    {
+      return ReadOnlySlice<T>.Empty;
+    }
+  }
 }
 
 /// <summary>

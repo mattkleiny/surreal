@@ -94,9 +94,10 @@ public interface IGraphicsDevice : IDisposable
   void BindFrameBuffer(FrameBufferHandle handle);
   void UnbindFrameBuffer();
   void ResizeFrameBuffer(FrameBufferHandle handle, uint width, uint height);
-  void BlitFromFrameBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
-  void BlitToFrameBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
-  void BlitToFrameBuffer(FrameBufferHandle sourceFrameBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode);
+  GraphicsTask BlitFromDisplayFrameBufferAsync(GraphicsHandle targetBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
+  GraphicsTask BlitToTargetFrameBufferAsync(FrameBufferHandle sourceBuffer, FrameBufferHandle targetBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode);
+  GraphicsTask BlitToDisplayFrameBufferAsync(GraphicsHandle sourceBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode);
+  GraphicsTask BlitToDisplayFrameBufferAsync(FrameBufferHandle sourceBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode);
   void DeleteFrameBuffer(FrameBufferHandle handle);
 
   // debugging
@@ -283,20 +284,28 @@ public interface IGraphicsDevice : IDisposable
     {
     }
 
-    public void BlitFromFrameBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+    public GraphicsTask BlitFromDisplayFrameBufferAsync(GraphicsHandle targetBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
     {
+      return GraphicsTask.CompletedTask;
     }
 
-    public void BlitToFrameBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+    public GraphicsTask BlitToTargetFrameBufferAsync(FrameBufferHandle sourceBuffer, FrameBufferHandle targetBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode)
     {
+      return GraphicsTask.CompletedTask;
     }
 
-    public void BlitToFrameBuffer(FrameBufferHandle sourceFrameBuffer,
+    public GraphicsTask BlitToDisplayFrameBufferAsync(GraphicsHandle sourceBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+    {
+      return GraphicsTask.CompletedTask;
+    }
+
+    public GraphicsTask BlitToDisplayFrameBufferAsync(FrameBufferHandle sourceBuffer,
       Material material,
       ShaderProperty<TextureSampler> samplerProperty,
       Optional<TextureFilterMode> filterMode,
       Optional<TextureWrapMode> wrapMode)
     {
+      return GraphicsTask.CompletedTask;
     }
 
     public void DeleteFrameBuffer(FrameBufferHandle handle)

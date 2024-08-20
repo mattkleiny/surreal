@@ -30,7 +30,7 @@ public readonly record struct ShaderProperty<T>(string Name)
 /// <summary>
 /// A set of <see cref="ShaderProperty{T}"/>s in a <see cref="Material" />.
 /// </summary>
-[DebuggerDisplay("UniformSet ({_uniforms.Count} uniforms)")]
+[DebuggerDisplay("ShaderPropertySet ({_uniforms.Count} uniforms)")]
 public sealed class ShaderPropertySet : IEnumerable<KeyValuePair<string, Variant>>
 {
   private readonly Dictionary<string, Variant> _uniforms = new();

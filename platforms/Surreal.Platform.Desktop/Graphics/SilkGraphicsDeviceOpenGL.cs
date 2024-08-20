@@ -694,10 +694,10 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     }
   }
 
-  public void BlitFromFrameBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public GraphicsTask BlitFromDisplayFrameBufferAsync(GraphicsHandle targetBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
   {
     gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, targetFrameBuffer);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, targetBuffer);
 
     gl.BlitFramebuffer(
       srcX0: 0,
@@ -720,46 +720,18 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 
     gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
     gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+
+    return GraphicsTask.CompletedTask;
   }
 
-  public void BlitToFrameBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public GraphicsTask BlitToTargetFrameBufferAsync(FrameBufferHandle sourceBuffer, FrameBufferHandle targetBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode)
   {
-    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, sourceFrameBuffer);
-    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, sourceBuffer.FrameBuffer);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, targetBuffer.FrameBuffer);
 
-    gl.BlitFramebuffer(
-      srcX0: 0,
-      srcY0: 0,
-      srcX1: (int)sourceWidth,
-      srcY1: (int)sourceHeight,
-      dstX0: 0,
-      dstY0: 0,
-      dstX1: (int)destWidth,
-      dstY1: (int)destHeight,
-      mask: ConvertBlitMask(mask),
-      filter: filterMode switch
-      {
-        TextureFilterMode.Linear => BlitFramebufferFilter.Linear,
-        TextureFilterMode.Point => BlitFramebufferFilter.Nearest,
-
-        _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
-      }
-    );
-
-    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-  }
-
-  public void BlitToFrameBuffer(
-    FrameBufferHandle sourceFrameBuffer,
-    Material material,
-    ShaderProperty<TextureSampler> samplerProperty,
-    Optional<TextureFilterMode> filterMode,
-    Optional<TextureWrapMode> wrapMode)
-  {
     var mesh = GetOrCreateQuadMesh();
 
-    var sampler = new TextureSampler(sourceFrameBuffer.ColorAttachment, 0)
+    var sampler = new TextureSampler(sourceBuffer.ColorAttachment, 0)
     {
       FilterMode = filterMode,
       WrapMode = wrapMode
@@ -769,6 +741,63 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     material.Uniforms.Set(samplerProperty, sampler);
 
     mesh.Draw(material);
+
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+
+    return GraphicsTask.CompletedTask;
+  }
+
+  public GraphicsTask BlitToDisplayFrameBufferAsync(GraphicsHandle sourceBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  {
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, sourceBuffer);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+
+    gl.BlitFramebuffer(
+      srcX0: 0,
+      srcY0: 0,
+      srcX1: (int)sourceWidth,
+      srcY1: (int)sourceHeight,
+      dstX0: 0,
+      dstY0: 0,
+      dstX1: (int)destWidth,
+      dstY1: (int)destHeight,
+      mask: ConvertBlitMask(mask),
+      filter: filterMode switch
+      {
+        TextureFilterMode.Linear => BlitFramebufferFilter.Linear,
+        TextureFilterMode.Point => BlitFramebufferFilter.Nearest,
+
+        _ => throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null)
+      }
+    );
+
+    gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+    gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+
+    return GraphicsTask.CompletedTask;
+  }
+
+  public GraphicsTask BlitToDisplayFrameBufferAsync(FrameBufferHandle sourceBuffer,
+    Material material,
+    ShaderProperty<TextureSampler> samplerProperty,
+    Optional<TextureFilterMode> filterMode,
+    Optional<TextureWrapMode> wrapMode)
+  {
+    var mesh = GetOrCreateQuadMesh();
+
+    var sampler = new TextureSampler(sourceBuffer.ColorAttachment, 0)
+    {
+      FilterMode = filterMode,
+      WrapMode = wrapMode
+    };
+
+    material.ApplyMaterial();
+    material.Uniforms.Set(samplerProperty, sampler);
+
+    mesh.Draw(material);
+
+    return GraphicsTask.CompletedTask;
   }
 
   public void DeleteFrameBuffer(FrameBufferHandle handle)

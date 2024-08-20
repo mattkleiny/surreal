@@ -2,6 +2,7 @@
 using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
+using Surreal.Graphics.Rendering.Effects;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 
@@ -18,6 +19,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   {
     Passes.Add(new DepthPass(device, this));
     Passes.Add(new ColorPass(device, this));
+    Passes.Add(new EffectsPass(device, this));
     Passes.Add(new GizmoPass(device, this));
 
     Contexts.Add(new SpriteContext(device));
@@ -29,6 +31,11 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   public bool RequireDepthPass { get; set; } = true;
 
   /// <summary>
+  /// Determines if post-processing effects are enabled.
+  /// </summary>
+  public bool EnableEffects { get; set; } = true;
+
+  /// <summary>
   /// Determines if gizmos are enabled.
   /// </summary>
   public bool EnableGizmos { get; set; } = true;
@@ -37,6 +44,21 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// The color to clear the screen with.
   /// </summary>
   public Color ClearColor { get; set; } = Color.Black;
+
+  /// <summary>
+  /// A list of <see cref="IPostProcessingEffect"/>s to apply.
+  /// </summary>
+  public List<IPostProcessingEffect> Effects { get; } = new();
+
+  public override void Dispose()
+  {
+    foreach (var effect in Effects)
+    {
+      effect.Dispose();
+    }
+
+    base.Dispose();
+  }
 
   /// <summary>
   /// A <see cref="RenderPass"/> that collects depth data.
@@ -118,7 +140,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
     public override void OnEndFrame(in RenderFrame frame)
     {
       _colorTarget.UnbindFromDisplay();
-      _colorTarget.BlitToFrameBuffer(_blitMaterial);
+      _colorTarget.BlitToDisplayFrameBuffer(_blitMaterial);
 
       base.OnEndFrame(in frame);
     }
@@ -127,6 +149,58 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
     {
       _colorTarget.Dispose();
       _blitMaterial.Dispose();
+
+      base.Dispose();
+    }
+  }
+
+  /// <summary>
+  /// A <see cref="RenderPass"/> that renders post-processing effects.
+  /// </summary>
+  private sealed class EffectsPass(IGraphicsDevice device, ForwardRenderPipeline pipeline) : RenderPass
+  {
+    private readonly RenderTarget _effectTarget1 = new(device, new RenderTargetDescriptor
+    {
+      Format = TextureFormat.Rgba8,
+      FilterMode = TextureFilterMode.Point,
+      WrapMode = TextureWrapMode.ClampToEdge,
+      DepthStencilFormat = DepthStencilFormat.None
+    });
+
+    private readonly RenderTarget _effectTarget2 = new(device, new RenderTargetDescriptor
+    {
+      Format = TextureFormat.Rgba8,
+      FilterMode = TextureFilterMode.Point,
+      WrapMode = TextureWrapMode.ClampToEdge,
+      DepthStencilFormat = DepthStencilFormat.None
+    });
+
+    private PostProcessingContext? _context;
+
+    public override bool IsEnabled => pipeline.EnableEffects;
+
+    public override void OnBeginViewport(in RenderFrame frame, IRenderViewport viewport)
+    {
+      base.OnBeginViewport(in frame, viewport);
+
+      _context ??= new PostProcessingContext(_effectTarget1, _effectTarget2);
+      _context?.Reset();
+    }
+
+    public override void OnExecutePass(in RenderFrame frame, IRenderViewport viewport)
+    {
+      base.OnExecutePass(in frame, viewport);
+
+      foreach (var effect in pipeline.Effects)
+      {
+        effect.RenderEffect(in frame, _context!);
+      }
+    }
+
+    public override void Dispose()
+    {
+      _effectTarget1.Dispose();
+      _effectTarget2.Dispose();
 
       base.Dispose();
     }

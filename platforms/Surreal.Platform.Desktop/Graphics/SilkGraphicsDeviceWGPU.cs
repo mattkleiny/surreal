@@ -407,16 +407,24 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   {
   }
 
-  public void BlitFromFrameBuffer(GraphicsHandle targetFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public GraphicsTask BlitFromDisplayFrameBufferAsync(GraphicsHandle targetBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
   {
+    return GraphicsTask.CompletedTask;
   }
 
-  public void BlitToFrameBuffer(GraphicsHandle sourceFrameBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
+  public GraphicsTask BlitToTargetFrameBufferAsync(FrameBufferHandle sourceBuffer, FrameBufferHandle targetBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode)
   {
+    return GraphicsTask.CompletedTask;
   }
 
-  public void BlitToFrameBuffer(FrameBufferHandle sourceFrameBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode)
+  public GraphicsTask BlitToDisplayFrameBufferAsync(GraphicsHandle sourceBuffer, uint sourceWidth, uint sourceHeight, uint destWidth, uint destHeight, BlitMask mask, TextureFilterMode filterMode)
   {
+    return GraphicsTask.CompletedTask;
+  }
+
+  public GraphicsTask BlitToDisplayFrameBufferAsync(FrameBufferHandle sourceBuffer, Material material, ShaderProperty<TextureSampler> samplerProperty, Optional<TextureFilterMode> filterMode, Optional<TextureWrapMode> wrapMode)
+  {
+    return GraphicsTask.CompletedTask;
   }
 
   public void DeleteFrameBuffer(FrameBufferHandle handle)

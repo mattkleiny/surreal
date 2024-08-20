@@ -160,24 +160,37 @@ public sealed class RenderTarget(IGraphicsDevice device, RenderTargetDescriptor 
   /// <summary>
   /// Blits this render target to the main frame buffer.
   /// </summary>
-  public void BlitToFrameBuffer(
+  public GraphicsTask BlitToDisplayFrameBuffer(
     Material material,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    BlitToFrameBuffer(material, ShaderProperty.Texture, filterMode, wrapMode);
+    return BlitToDisplayFrameBuffer(material, ShaderProperty.Texture, filterMode, wrapMode);
   }
 
   /// <summary>
   /// Blits this render target to the main frame buffer.
   /// </summary>
-  public void BlitToFrameBuffer(
+  public GraphicsTask BlitToDisplayFrameBuffer(
     Material material,
     ShaderProperty<TextureSampler> textureProperty,
     Optional<TextureFilterMode> filterMode = default,
     Optional<TextureWrapMode> wrapMode = default)
   {
-    device.BlitToFrameBuffer(Handle, material, textureProperty, filterMode, wrapMode);
+    return device.BlitToDisplayFrameBufferAsync(Handle, material, textureProperty, filterMode, wrapMode);
+  }
+
+  /// <summary>
+  /// Blits this render target to another render target.
+  /// </summary>
+  public GraphicsTask BlitToRenderTarget(
+    RenderTarget target,
+    Material material,
+    ShaderProperty<TextureSampler> textureProperty,
+    Optional<TextureFilterMode> filterMode = default,
+    Optional<TextureWrapMode> wrapMode = default)
+  {
+    return device.BlitToTargetFrameBufferAsync(Handle, target.Handle, material, textureProperty, filterMode, wrapMode);
   }
 
   protected override void Dispose(bool managed)
