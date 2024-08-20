@@ -160,18 +160,24 @@ public sealed class GraphicsTaskCompletionSource<T>
 
   public void SignalCompletion(T result)
   {
-    IsCompleted = true;
-    Result = result;
+    if (!IsCompleted)
+    {
+      IsCompleted = true;
+      Result = result;
 
-    ResumeContinuations();
+      ResumeContinuations();
+    }
   }
 
   public void SignalException(Exception exception)
   {
-    IsCompleted = true;
-    Result = exception;
+    if (!IsCompleted)
+    {
+      IsCompleted = true;
+      Result = exception;
 
-    ResumeContinuations();
+      ResumeContinuations();
+    }
   }
 
   public void AddContinuation(Action continuation)
