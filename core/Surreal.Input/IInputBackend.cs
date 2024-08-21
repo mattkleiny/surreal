@@ -15,21 +15,28 @@ public interface IInputBackend
   static IInputBackend Null { get; } = new NullInputBackend();
 
   /// <summary>
-  /// Creates all the attached <see cref="IInputDevice" />s.
+  /// All the attached <see cref="IInputDevice" />s.
   /// </summary>
-  IEnumerable<IInputDevice> CreateDevices();
+  IEnumerable<IInputDevice> Devices { get; }
+
+  /// <summary>
+  /// An observable of all <see cref="IInputEvent" />s from all devices.
+  /// </summary>
+  IInputObservable Events { get; }
 
   /// <summary>
   /// A no-op <see cref="IInputBackend" /> for headless environments and testing.
   /// </summary>
   [ExcludeFromCodeCoverage]
-  internal sealed class NullInputBackend : IInputBackend
+  private sealed class NullInputBackend : IInputBackend
   {
-    public IEnumerable<IInputDevice> CreateDevices() =>
+    public IEnumerable<IInputDevice> Devices { get; } =
     [
       IKeyboardDevice.Null,
       IMouseDevice.Null,
       IGamepadDevice.Null,
     ];
+
+    public IInputObservable Events => IInputObservable.Null;
   }
 }

@@ -12,16 +12,20 @@ internal sealed class SilkKeyboardDevice : IKeyboardDevice, IDisposable
   private readonly IKeyboard _keyboard;
   private readonly HashSet<Key> _pressedKeys = [];
   private readonly HashSet<Key> _pressedKeysThisFrame = [];
-
-  public event Action<Key>? KeyPressed;
-  public event Action<Key>? KeyReleased;
+  private readonly InputEventSubject _events = new();
 
   public SilkKeyboardDevice(IKeyboard keyboard)
   {
     _keyboard = keyboard;
+
     keyboard.KeyDown += OnKeyDown;
     keyboard.KeyUp += OnKeyUp;
   }
+
+  public event Action<Key>? KeyPressed;
+  public event Action<Key>? KeyReleased;
+
+  public IInputObservable Events => _events;
 
   public void Update()
   {
@@ -59,6 +63,7 @@ internal sealed class SilkKeyboardDevice : IKeyboardDevice, IDisposable
         _pressedKeysThisFrame.Add(keyCode.Value);
 
         KeyPressed?.Invoke(keyCode.Value);
+        _events.NotifyNext(new KeyPressEvent(keyCode.Value, IsPressed: true));
       }
     }
   }
@@ -71,6 +76,7 @@ internal sealed class SilkKeyboardDevice : IKeyboardDevice, IDisposable
       if (_pressedKeys.Remove(keyCode.Value))
       {
         KeyReleased?.Invoke(keyCode.Value);
+        _events.NotifyNext(new KeyPressEvent(keyCode.Value, IsPressed: false));
       }
     }
   }

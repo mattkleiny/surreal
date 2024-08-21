@@ -6,25 +6,36 @@ namespace Surreal.Input;
 /// <summary>
 /// A <see cref="IInputBackend"/> implementation that uses Silk.NET.
 /// </summary>
-internal sealed class SilkInputBackend(IWindow window, IInputContext context) : IInputBackend
+internal sealed class SilkInputBackend : IInputBackend
 {
-  private readonly SilkKeyboardDevice? _keyboardDevice = context.Keyboards.Select(keyboard => new SilkKeyboardDevice(keyboard)).SingleOrDefault();
-  private readonly SilkMouseDevice? _mouseDevice = context.Mice.Select(mouse => new SilkMouseDevice(window, mouse)).SingleOrDefault();
-  private readonly SilkGamepadDevice? _gamepadDevice = context.Gamepads.Select(gamepad => new SilkGamepadDevice(gamepad)).SingleOrDefault();
+  private readonly List<IInputDevice> _devices = new();
 
   /// <summary>
-  /// The underlying input devices.
+  /// A <see cref="IInputBackend"/> implementation that uses Silk.NET.
   /// </summary>
-  private IEnumerable<IInputDevice?> Devices => [_keyboardDevice, _mouseDevice, _gamepadDevice];
+  public SilkInputBackend(IWindow window, IInputContext context)
+  {
+    _devices.AddRange(context.Keyboards.Select(keyboard => new SilkKeyboardDevice(keyboard)));
+    _devices.AddRange(context.Mice.Select(mouse => new SilkMouseDevice(window, mouse)));
+    _devices.AddRange(context.Gamepads.Select(gamepad => new SilkGamepadDevice(gamepad)));
+
+    Events = IInputObservable.Combine(_devices.Select(it => it.Events));
+  }
 
   /// <inheritdoc/>
-  public IEnumerable<IInputDevice> CreateDevices()
-  {
-    return Devices.Where(it => it != null).Cast<IInputDevice>();
-  }
+  public IEnumerable<IInputDevice> Devices => _devices;
+
+  /// <inheritdoc/>
+  public IInputObservable Events { get; }
 
   public void Update()
   {
-    _keyboardDevice?.Update();
+    foreach (var device in _devices)
+    {
+      if (device is SilkKeyboardDevice keyboardDevice)
+      {
+        keyboardDevice.Update();
+      }
+    }
   }
 }

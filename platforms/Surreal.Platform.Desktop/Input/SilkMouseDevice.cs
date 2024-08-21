@@ -12,6 +12,7 @@ internal sealed class SilkMouseDevice : IMouseDevice, IDisposable
 {
   private readonly IWindow _window;
   private readonly IMouse _mouse;
+  private readonly InputEventSubject _events = new();
 
   public SilkMouseDevice(IWindow window, IMouse mouse)
   {
@@ -24,6 +25,8 @@ internal sealed class SilkMouseDevice : IMouseDevice, IDisposable
 
   public event Action<MouseButton>? ButtonPressed;
   public event Action<MouseButton>? ButtonReleased;
+
+  public IInputObservable Events => _events;
 
   public Vector2 Position => _mouse.Position;
   public Vector2 NormalisedPosition => _mouse.Position / new Vector2(_window.Size.X, _window.Size.Y);
@@ -46,14 +49,22 @@ internal sealed class SilkMouseDevice : IMouseDevice, IDisposable
     _mouse.MouseUp -= OnMouseUp;
   }
 
-  private void OnMouseDown(IMouse mouse, Silk.NET.Input.MouseButton button)
+  private void OnMouseDown(IMouse mouse, Silk.NET.Input.MouseButton silkButton)
   {
-    ButtonPressed?.Invoke(ConvertButtonFromSilk(button));
+    var button = ConvertButtonFromSilk(silkButton);
+
+    ButtonPressed?.Invoke(button);
+
+    _events.NotifyNext(new MouseButtonEvent(button, IsPressed: true));
   }
 
-  private void OnMouseUp(IMouse mouse, Silk.NET.Input.MouseButton button)
+  private void OnMouseUp(IMouse mouse, Silk.NET.Input.MouseButton silkButton)
   {
-    ButtonReleased?.Invoke(ConvertButtonFromSilk(button));
+    var button = ConvertButtonFromSilk(silkButton);
+
+    ButtonReleased?.Invoke(button);
+
+    _events.NotifyNext(new MouseButtonEvent(button, IsPressed: false));
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

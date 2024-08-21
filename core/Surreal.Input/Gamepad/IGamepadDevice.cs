@@ -1,6 +1,11 @@
 namespace Surreal.Input.Gamepad;
 
 /// <summary>
+/// An event that is raised when a gamepad button is pressed or released.
+/// </summary>
+public readonly record struct GamepadButtonEvent(GamepadButton Button, bool IsPressed) : IInputEvent;
+
+/// <summary>
 /// Represents a gamepad device.
 /// </summary>
 public interface IGamepadDevice : IInputDevice
@@ -39,6 +44,8 @@ public interface IGamepadDevice : IInputDevice
   {
     public event Action<GamepadButton>? ButtonPressed;
     public event Action<GamepadButton>? ButtonReleased;
+
+    public IInputObservable Events => IInputObservable.Null;
 
     public Vector2 LeftSick => Vector2.Zero;
     public Vector2 RightSick => Vector2.Zero;

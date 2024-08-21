@@ -1,6 +1,11 @@
 ﻿namespace Surreal.Input.Mouse;
 
 /// <summary>
+/// An event that is raised when a mouse button is pressed or released.
+/// </summary>
+public readonly record struct MouseButtonEvent(MouseButton Button, bool IsPressed) : IInputEvent;
+
+/// <summary>
 /// A mouse <see cref="IInputDevice" />.
 /// </summary>
 public interface IMouseDevice : IInputDevice
@@ -28,8 +33,11 @@ public interface IMouseDevice : IInputDevice
     public event Action<MouseButton>? ButtonPressed;
     public event Action<MouseButton>? ButtonReleased;
 
+    public IInputObservable Events => IInputObservable.Null;
+
     public Vector2 Position => Vector2.Zero;
     public Vector2 NormalisedPosition => Position;
+
     public float ScrollAmount => 0f;
 
     public bool IsButtonDown(MouseButton button)

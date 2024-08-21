@@ -9,4 +9,9 @@ public interface IInputDevice
   /// The type of device.
   /// </summary>
   Type Type { get; }
+
+  /// <summary>
+  /// An observable of all <see cref="IInputEvent"/>s from this device.
+  /// </summary>
+  IInputObservable Events { get; }
 }

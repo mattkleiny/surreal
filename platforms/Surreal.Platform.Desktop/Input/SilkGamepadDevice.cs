@@ -9,6 +9,7 @@ namespace Surreal.Input;
 internal sealed class SilkGamepadDevice : IGamepadDevice, IDisposable
 {
   private readonly IGamepad _gamepad;
+  private readonly InputEventSubject _events = new();
 
   public SilkGamepadDevice(IGamepad gamepad)
   {
@@ -20,6 +21,8 @@ internal sealed class SilkGamepadDevice : IGamepadDevice, IDisposable
 
   public event Action<GamepadButton>? ButtonPressed;
   public event Action<GamepadButton>? ButtonReleased;
+
+  public IInputObservable Events => _events;
 
   public Vector2 LeftSick
   {
@@ -85,14 +88,20 @@ internal sealed class SilkGamepadDevice : IGamepadDevice, IDisposable
     _gamepad.ButtonUp -= OnButtonUp;
   }
 
-  private void OnButtonDown(IGamepad gamepad, Button button)
+  private void OnButtonDown(IGamepad gamepad, Button silkButton)
   {
-    ButtonPressed?.Invoke(ConvertButton(button.Name));
+    var button = ConvertButton(silkButton.Name);
+
+    ButtonPressed?.Invoke(button);
+    _events.NotifyNext(new GamepadButtonEvent(button, IsPressed: true));
   }
 
-  private void OnButtonUp(IGamepad gamepad, Button button)
+  private void OnButtonUp(IGamepad gamepad, Button silkButton)
   {
-    ButtonReleased?.Invoke(ConvertButton(button.Name));
+    var button = ConvertButton(silkButton.Name);
+
+    ButtonReleased?.Invoke(button);
+    _events.NotifyNext(new GamepadButtonEvent(button, IsPressed: false));
   }
 
   /// <summary>

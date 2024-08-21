@@ -5,8 +5,14 @@ namespace Surreal.Graphics;
 /// </summary>
 public readonly struct GraphicsTask(GraphicsTaskCompletionSource source) : INotifyCompletion
 {
+  /// <summary>
+  /// A task that is already completed.
+  /// </summary>
   public static GraphicsTask CompletedTask => GraphicsTaskCompletionSource.Completed;
 
+  /// <summary>
+  /// Creates a new task that is already completed with the given result.
+  /// </summary>
   public static GraphicsTask<T> FromResult<T>(T result) => GraphicsTaskCompletionSource<T>.FromResult(result);
 
   public static GraphicsTaskCompletionSource Create() => new();

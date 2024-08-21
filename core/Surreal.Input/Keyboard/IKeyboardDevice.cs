@@ -1,6 +1,11 @@
 ﻿namespace Surreal.Input.Keyboard;
 
 /// <summary>
+/// An event that is raised when a keyboard key is pressed or released.
+/// </summary>
+public readonly record struct KeyPressEvent(Key Key, bool IsPressed) : IInputEvent;
+
+/// <summary>
 /// A keyboard <see cref="IInputDevice" />.
 /// </summary>
 public interface IKeyboardDevice : IInputDevice
@@ -24,6 +29,8 @@ public interface IKeyboardDevice : IInputDevice
   {
     public event Action<Key>? KeyPressed;
     public event Action<Key>? KeyReleased;
+
+    public IInputObservable Events => IInputObservable.Null;
 
     public bool IsKeyDown(Key key)
     {

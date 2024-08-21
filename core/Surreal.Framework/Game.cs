@@ -133,7 +133,7 @@ public class Game : IDisposable
       services.AddService(audioDevice);
       services.AddService(graphicsDevice);
 
-      foreach (var device in inputBackend.CreateDevices())
+      foreach (var device in inputBackend.Devices)
       {
         services.AddService(device.Type, device);
       }
