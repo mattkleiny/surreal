@@ -13,6 +13,11 @@ public sealed class DeltaTimeClock
   public TimeSpan TargetDeltaTime { get; } = TimeSpan.FromMilliseconds(16);
 
   /// <summary>
+  /// The minimum delta time.
+  /// </summary>
+  public TimeSpan MinDeltaTime { get; } = TimeSpan.FromMilliseconds(1);
+
+  /// <summary>
   /// The maximum delta time.
   /// </summary>
   public TimeSpan MaxDeltaTime { get; } = TimeSpan.FromMilliseconds(16 * 10);

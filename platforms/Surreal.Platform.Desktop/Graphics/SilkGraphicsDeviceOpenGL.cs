@@ -1,5 +1,4 @@
 using Silk.NET.OpenGL;
-using Silk.NET.OpenGL.Extensions.EXT;
 using Surreal.Collections;
 using Surreal.Collections.Slices;
 using Surreal.Colors;
@@ -19,8 +18,8 @@ namespace Surreal.Graphics;
 /// </summary>
 internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 {
-  private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");
-  private readonly ExtDebugMarker _debugMarker = new(gl.Context);
+  // private readonly bool _isMarkersAvailable = gl.IsExtensionPresent("GL_EXT_debug_marker");
+  // private readonly ExtDebugMarker _debugMarker = new(gl.Context);
   private readonly Stack<FrameBufferHandle> _activeFrameBuffers = new();
 
   private Mesh? _quadMesh;
@@ -813,18 +812,18 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 
   public void BeginDebugScope(string name)
   {
-    if (_isMarkersAvailable)
-    {
-      _debugMarker.PushGroupMarker((uint)name.Length, name);
-    }
+    // if (_isMarkersAvailable)
+    // {
+    //   _debugMarker.PushGroupMarker((uint)name.Length, name);
+    // }
   }
 
   public void EndDebugScope()
   {
-    if (_isMarkersAvailable)
-    {
-      _debugMarker.PopGroupMarker();
-    }
+    // if (_isMarkersAvailable)
+    // {
+    //   _debugMarker.PopGroupMarker();
+    // }
   }
 
   /// <summary>
@@ -1004,7 +1003,7 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
 
   public void Dispose()
   {
-    _debugMarker.Dispose();
+    // _debugMarker.Dispose();
     _quadMesh?.Dispose();
 
     gl.Dispose();

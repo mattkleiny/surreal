@@ -61,10 +61,8 @@ public readonly record struct GameTime
 public sealed class Game : IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<Game>();
-  private static readonly ConcurrentQueue<Action> Callbacks = new();
 
   private readonly TimeStamp _startTime = TimeStamp.Now;
-  private readonly GameContext _context = GameContext.Current;
 
   /// <summary>
   /// Sets up the logging and profiling systems.
@@ -82,8 +80,6 @@ public sealed class Game : IDisposable
   /// </summary>
   public static Game Create(GameConfiguration configuration)
   {
-    SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
-
     var context = GameContext.Current;
     var services = new ServiceRegistry();
     var host = context.PlatformHost ?? configuration.Platform.BuildHost();
@@ -169,27 +165,15 @@ public sealed class Game : IDisposable
   public event Action<GameTime>? Render;
 
   /// <summary>
-  /// Schedules a function to be invoked at the start of the next frame.
-  /// </summary>
-  public static void Schedule(Action callback)
-  {
-    Callbacks.Enqueue(callback);
-  }
-
-  /// <summary>
   /// Starts the game.
   /// </summary>
   public async Task RunAsync()
   {
-    _context.OnStarted();
-
-    Log.Trace("Starting event loop");
+    Log.Trace("Starting main loop");
 
     await Host.RunAsync();
 
-    Log.Trace("Exiting event loop");
-
-    _context.OnStopped();
+    Log.Trace("Exiting main loop");
   }
 
   /// <summary>
@@ -211,11 +195,6 @@ public sealed class Game : IDisposable
     if (Host.IsFocused)
     {
       Update?.Invoke(time);
-    }
-
-    while (Callbacks.TryDequeue(out var callback))
-    {
-      callback.Invoke();
     }
   }
 
@@ -243,8 +222,6 @@ public sealed class Game : IDisposable
 
   public void Dispose()
   {
-    Callbacks.Clear();
-
     Host.Update -= OnHostUpdate;
     Host.Render -= OnHostRender;
     Host.Resized -= OnHostResized;
@@ -254,21 +231,5 @@ public sealed class Game : IDisposable
     Assets.Dispose();
     Host.Dispose();
     Services.Dispose();
-  }
-
-  /// <summary>
-  /// Synchronizes back to the main <see cref="Game"/>.
-  /// </summary>
-  private sealed class GameAffineSynchronizationContext : SynchronizationContext
-  {
-    public override void Post(SendOrPostCallback callback, object? state)
-    {
-      Schedule(() => callback(state));
-    }
-
-    public override void Send(SendOrPostCallback callback, object? state)
-    {
-      Schedule(() => callback(state));
-    }
   }
 }

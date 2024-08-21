@@ -116,16 +116,6 @@ internal sealed class GameViewportViewModel : EditorViewModel
     /// <inheritdoc/>
     public override IPlatformHost PlatformHost { get; } = new EditorPlatformHost(owner);
 
-    public override void OnStarted()
-    {
-      Dispatcher.UIThread.Post(() => owner.IsRunning = true);
-    }
-
-    public override void OnStopped()
-    {
-      Dispatcher.UIThread.Post(() => owner.IsRunning = false);
-    }
-
     public override void PostOnMainThread(Action action)
     {
       Dispatcher.UIThread.Post(action);
@@ -139,6 +129,9 @@ internal sealed class GameViewportViewModel : EditorViewModel
   {
     private readonly DeltaTimeClock _clock = new();
     private readonly GameViewportViewModel _owner;
+
+    private DeltaTime _deltaTime;
+    private int _timesPerTick;
 
     public EditorPlatformHost(GameViewportViewModel owner)
     {
@@ -160,9 +153,9 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
     public int Width => (int)_owner.Viewport.Width;
     public int Height => (int)_owner.Viewport.Height;
-    public bool IsVisible => _owner.Viewport.IsVisible;
-    public bool IsFocused => _owner.Viewport.IsFocused;
-    public bool IsClosing { get; private set; }
+    public bool IsVisible => true;
+    public bool IsFocused => true;
+    public bool IsClosing => !_owner.IsRunning;
 
     public void RegisterServices(IServiceRegistry services)
     {
@@ -173,19 +166,59 @@ internal sealed class GameViewportViewModel : EditorViewModel
       services.AddService(IMouseDevice.Null);
     }
 
-    public Task RunAsync()
+    public async Task RunAsync()
     {
-      return Task.CompletedTask;
+      var completionSource = new TaskCompletionSource();
+
+      Dispatcher.UIThread.Invoke(() =>
+      {
+        _owner.IsRunning = true;
+        _owner.Viewport.Display.RequestNextFrameRendering();
+
+        Task.Run(async () =>
+        {
+          try
+          {
+            while (_owner.IsRunning)
+            {
+              _deltaTime = _clock.Tick();
+              Update?.Invoke(_deltaTime);
+
+              if (_deltaTime < _clock.MinDeltaTime)
+              {
+                await Task.Delay(_clock.TargetDeltaTime - _deltaTime);
+              }
+              else
+              {
+                await Task.Yield();
+              }
+            }
+          }
+          catch (Exception exception)
+          {
+            completionSource.SetException(exception);
+          }
+
+          completionSource.SetResult();
+        });
+      });
+
+      await completionSource.Task;
+
+      Dispatcher.UIThread.Invoke(() =>
+      {
+        _owner.IsRunning = false;
+        _owner.Viewport.Display.RequestNextFrameRendering();
+      });
     }
 
     public void Close()
     {
-      IsClosing = true;
+      Dispatcher.UIThread.Post(() => _owner.IsRunning = false);
     }
 
     public void Dispose()
     {
-      IsClosing = false;
     }
 
     private void OnDisplayRendering(GlInterface gl, GraphicsHandle frameBuffer)
@@ -193,7 +226,18 @@ internal sealed class GameViewportViewModel : EditorViewModel
       gl.BindFramebuffer(GlConsts.GL_READ_FRAMEBUFFER, 0);
       gl.BindFramebuffer(GlConsts.GL_DRAW_FRAMEBUFFER, frameBuffer);
 
-      Render?.Invoke(_clock.Tick());
+      gl.ClearColor(0, 0, 0, 1);
+      gl.Clear(GlConsts.GL_COLOR_BUFFER_BIT | GlConsts.GL_DEPTH_BUFFER_BIT);
+
+      // continually re-render
+      if (_owner.IsRunning)
+      {
+        Render?.Invoke(_deltaTime);
+
+        _owner.Viewport.Display.RequestNextFrameRendering();
+
+        Interlocked.Exchange(ref _timesPerTick, 0);
+      }
     }
   }
 
@@ -204,7 +248,7 @@ internal sealed class GameViewportViewModel : EditorViewModel
   {
     public IGraphicsDevice CreateDevice(GraphicsMode mode)
     {
-      return IGraphicsDevice.Null;
+      return new SilkGraphicsDeviceOpenGL(gl);
     }
   }
 }

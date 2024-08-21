@@ -36,9 +36,6 @@ public abstract class GameContext
   /// </summary>
   public abstract IPlatformHost? PlatformHost { get; }
 
-  public abstract void OnStarted();
-  public abstract void OnStopped();
-
   /// <summary>
   /// Posts the given action to be run on the platform host's main thread.
   /// </summary>
@@ -65,14 +62,6 @@ public abstract class GameContext
   private sealed class NullHostingContext : GameContext
   {
     public override IPlatformHost? PlatformHost => null;
-
-    public override void OnStarted()
-    {
-    }
-
-    public override void OnStopped()
-    {
-    }
 
     public override void PostOnMainThread(Action action)
     {
