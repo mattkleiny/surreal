@@ -20,6 +20,9 @@ public class WebPlatform : IPlatform
 
 internal sealed class WebPlatformHost : IPlatformHost
 {
+  public event Action<DeltaTime>? Update;
+  public event Action<DeltaTime>? Render;
+
   public event Action<int, int>? Resized;
 
   public int Width => default;
@@ -28,15 +31,15 @@ internal sealed class WebPlatformHost : IPlatformHost
   public bool IsFocused => default;
   public bool IsClosing => default;
 
-  public void BeginFrame(DeltaTime deltaTime)
-  {
-  }
-
-  public void EndFrame(DeltaTime deltaTime)
-  {
-  }
-
   public void RegisterServices(IServiceRegistry services)
+  {
+  }
+
+  public void Run()
+  {
+  }
+
+  public void Close()
   {
   }
 

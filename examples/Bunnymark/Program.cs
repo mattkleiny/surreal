@@ -44,10 +44,8 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
   var bunnies = new List<Bunny>();
   var size = new Vector2(sprite.Value.Width, sprite.Value.Height);
 
-  game.ExecuteVariableStep(time =>
+  game.Update += time =>
   {
-    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-
     foreach (ref var bunny in bunnies.AsSpan())
     {
       // update position and rotation
@@ -60,13 +58,6 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
       if (bunny.Position.Y < -height / 2f) bunny.Velocity.Y *= -1f;
       if (bunny.Position.Y > height / 2f) bunny.Velocity.Y *= -1f;
     }
-
-    foreach (ref var bunny in bunnies.AsSpan())
-    {
-      batch.DrawQuad(sprite.Value, bunny.Position, size, bunny.Rotation.Radians, bunny.Tint);
-    }
-
-    batch.Flush();
 
     if (mouse.IsButtonDown(MouseButton.Left))
     {
@@ -106,7 +97,21 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
     {
       game.Exit();
     }
-  });
+  };
+
+  game.Render += _ =>
+  {
+    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
+
+    foreach (ref var bunny in bunnies.AsSpan())
+    {
+      batch.DrawQuad(sprite.Value, bunny.Position, size, bunny.Rotation.Radians, bunny.Tint);
+    }
+
+    batch.Flush();
+  };
+
+  game.ExecuteVariableStep();
 });
 
 namespace Bunnymark

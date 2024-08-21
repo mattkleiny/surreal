@@ -9,8 +9,8 @@ var configuration = new GameConfiguration
       Title = "Falling Sand",
       IsVsyncEnabled = true,
       ShowFpsInTitle = true,
-      Width = 1920,
-      Height = 1080,
+      Width = 1024,
+      Height = 768,
       IsTransparent = true
     }
   }
@@ -22,10 +22,8 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
 
   using var canvas = new SandCanvas(graphics);
 
-  game.ExecuteVariableStep(time =>
+  game.Update += time =>
   {
-    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-
     var isLeftButtonDown = mouse.IsButtonDown(MouseButton.Left);
     var isRightButtonDown = mouse.IsButtonDown(MouseButton.Right);
 
@@ -47,11 +45,19 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
     }
 
     canvas.Update(time.DeltaTime);
-    canvas.DrawQuad();
 
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       game.Exit();
     }
-  });
+  };
+
+  game.Render += _ =>
+  {
+    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
+
+    canvas.DrawQuad();
+  };
+
+  game.ExecuteVariableStep();
 });

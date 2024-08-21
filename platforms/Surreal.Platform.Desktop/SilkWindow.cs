@@ -57,7 +57,7 @@ internal sealed class SilkWindow : IDesktopWindow
   }
 
   public IInputContext Input { get; }
-  public IWindow InnerWindow => _window;
+  public IWindow View => _window;
 
   public event Action<int, int>? Resized;
 
@@ -120,22 +120,27 @@ internal sealed class SilkWindow : IDesktopWindow
     });
   }
 
-  public void Update()
+  public void Run()
   {
-    _window.DoEvents();
+    View.Initialize();
 
-    if (!IsClosing)
+    View.Run(onFrame: () =>
     {
-      _window.DoUpdate();
-    }
+      View.DoEvents();
+
+      if (!View.IsClosing)
+      {
+        View.DoUpdate();
+        View.DoRender();
+      }
+    });
+
+    View.DoEvents();
   }
 
-  public void Present()
+  public void Close()
   {
-    if (!IsClosing)
-    {
-      _window.DoRender();
-    }
+    _window.Close();
   }
 
   public void Dispose()

@@ -6,6 +6,7 @@ using Silk.NET.OpenGL;
 using Surreal.Audio;
 using Surreal.Editing.Common;
 using Surreal.Graphics;
+using Surreal.Input;
 using Surreal.Input.Keyboard;
 using Surreal.Input.Mouse;
 using Surreal.Services;
@@ -146,6 +147,9 @@ internal sealed class GameViewportViewModel : EditorViewModel
       _owner.Viewport.Display.Rendering += OnDisplayRendering;
     }
 
+    public event Action<DeltaTime>? Update;
+    public event Action<DeltaTime>? Render;
+
     public event Action<int, int>? Resized;
 
     public int Width => (int)_owner.Viewport.Width;
@@ -158,16 +162,18 @@ internal sealed class GameViewportViewModel : EditorViewModel
     {
       services.AddService(IAudioBackend.Null);
       services.AddService(IGraphicsBackend.Null);
+      services.AddService(IInputBackend.Null);
       services.AddService(IKeyboardDevice.Null);
       services.AddService(IMouseDevice.Null);
     }
 
-    public void BeginFrame(DeltaTime deltaTime)
+    public void Run()
     {
     }
 
-    public void EndFrame(DeltaTime deltaTime)
+    public void Close()
     {
+      // TODO: implement me
     }
 
     public void Dispose()

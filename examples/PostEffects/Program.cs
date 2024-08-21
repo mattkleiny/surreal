@@ -24,8 +24,10 @@ Game.Start(configuration, (Game game, IGraphicsDevice graphics) =>
     }
   };
 
-  game.ExecuteVariableStep(time =>
+  game.Render += _ =>
   {
     pipeline.Render(IRenderScene.Null, DeltaTime.Default);
-  });
+  };
+
+  game.ExecuteVariableStep();
 });

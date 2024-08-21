@@ -11,8 +11,8 @@ var configuration = new GameConfiguration
       Title = "Fractals",
       IsVsyncEnabled = true,
       ShowFpsInTitle = true,
-      Width = 1920,
-      Height = 1080,
+      Width = 1024,
+      Height = 768,
       IsTransparent = true
     }
   }
@@ -25,20 +25,24 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
   var palette = await game.Assets.LoadAsync<ColorPalette>("resx://Fractals/Assets/Embedded/palettes/raspberry.pal");
   var constant = new Vector2(0.285f, 0.01f);
 
-  game.ExecuteVariableStep(time =>
+  game.Update += _ =>
   {
-    constant += new Vector2(0.001f, 0.0f) * time.DeltaTime;
-    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
-
-    DrawFractal(palette, canvas, constant);
-
-    canvas.DrawQuad();
-
     if (keyboard.IsKeyPressed(Key.Escape))
     {
       game.Exit();
     }
-  });
+  };
+
+  game.Render += time =>
+  {
+    graphics.ClearColorBuffer(new Color(0.2f, 0.2f, 0.2f, 0.8f));
+    constant += new Vector2(0.001f, 0.0f) * time.DeltaTime;
+
+    DrawFractal(palette, canvas, constant);
+    canvas.DrawQuad();
+  };
+
+  game.ExecuteVariableStep();
 
   static void DrawFractal(ColorPalette palette, PixelCanvas canvas, Vector2 constant)
   {

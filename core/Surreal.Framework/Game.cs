@@ -5,7 +5,6 @@ using Surreal.Diagnostics.Profiling;
 using Surreal.Graphics;
 using Surreal.Input;
 using Surreal.Physics;
-using Surreal.Scenes;
 using Surreal.Scripting;
 using Surreal.Services;
 using Surreal.Timing;
@@ -139,10 +138,7 @@ public class Game : IDisposable
       }
 
       // resize the viewport
-      host.Resized += (newWidth, newHeight) =>
-      {
-        graphicsDevice.SetViewportSize(new Viewport(0, 0, (uint) newWidth, (uint) newHeight));
-      };
+      host.Resized += OnHostResized;
 
       // register asset loaders
       foreach (var loader in services.GetServices<IAssetLoader>())
@@ -167,17 +163,17 @@ public class Game : IDisposable
       }));
 
       Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
-      Log.Trace("Running main event loop");
 
-      while (!game.Host.IsClosing && !game.IsClosing)
-      {
-        // eventually this will end up blocking when a main loop takes over
-        PumpEventLoop();
-      }
-
-      Log.Trace("Exiting main event loop");
+      PumpEventLoop(); // start the event loop running
 
       Callbacks.Clear();
+
+      host.Resized -= OnHostResized;
+
+      void OnHostResized(int newWidth, int newHeight)
+      {
+        graphicsDevice.SetViewportSize(new Viewport(0, 0, (uint)newWidth, (uint)newHeight));
+      }
     }
     finally
     {
@@ -218,122 +214,55 @@ public class Game : IDisposable
   public bool IsClosing { get; private set; }
 
   /// <summary>
-  /// Executes the given <see cref="gameLoop"/> with a variable step frequency.
+  /// A callback for updating the game.
   /// </summary>
-  public void ExecuteVariableStep(GameLoop gameLoop, bool runInBackground = false)
+  public event Action<GameTime>? Update;
+
+  /// <summary>
+  /// A callback for rendering the game.
+  /// </summary>
+  public event Action<GameTime>? Render;
+
+  /// <summary>
+  /// Executes the game with a variable step frequency.
+  /// </summary>
+  public void ExecuteVariableStep(bool runInBackground = false)
   {
-    var deltaTimeClock = new DeltaTimeClock();
     var startTime = TimeStamp.Now;
 
-    while (!Host.IsClosing && !IsClosing)
-    {
-      var time = new GameTime
-      {
-        DeltaTime = deltaTimeClock.Tick(),
-        TotalTime = TimeStamp.Now - startTime
-      };
+    Host.Update += OnHostUpdate;
+    Host.Render += OnHostRender;
 
-      Host.BeginFrame(time.DeltaTime);
+    try
+    {
+      Host.Run();
+    }
+    finally
+    {
+      Host.Update -= OnHostUpdate;
+      Host.Render -= OnHostRender;
+    }
+
+    void OnHostUpdate(DeltaTime deltaTime)
+    {
+      var time = new GameTime { DeltaTime = deltaTime, TotalTime = TimeStamp.Now - startTime };
 
       if (Host.IsFocused || runInBackground)
       {
-        gameLoop(time);
+        Update?.Invoke(time);
       }
-
-      Host.EndFrame(time.DeltaTime);
 
       PumpEventLoop();
     }
-  }
 
-  /// <summary>
-  /// Executes the given <see cref="updateLoop"/>/<see cref="drawLoop"/> combo with a fixed step frequency.
-  /// </summary>
-  public void ExecuteFixedStep(GameLoop updateLoop, GameLoop drawLoop, bool runInBackground = false)
-  {
-    var startTime = TimeStamp.Now;
-    var deltaTimeClock = new DeltaTimeClock();
-    var accumulator = 0f;
-
-    while (!Host.IsClosing && !IsClosing)
+    void OnHostRender(DeltaTime deltaTime)
     {
-      var deltaTime = deltaTimeClock.Tick();
+      var time = new GameTime { DeltaTime = deltaTime, TotalTime = TimeStamp.Now - startTime };
 
-      accumulator += deltaTime;
-
-      Host.BeginFrame(deltaTime);
-
-      if (Host.IsFocused || runInBackground)
+      if (Host.IsVisible || runInBackground)
       {
-        while (accumulator >= deltaTime)
-        {
-          updateLoop(new GameTime
-          {
-            DeltaTime = deltaTime,
-            TotalTime = TimeStamp.Now - startTime
-          });
-
-          accumulator -= deltaTime;
-        }
-
-        drawLoop(new GameTime
-        {
-          DeltaTime = deltaTime,
-          TotalTime = TimeStamp.Now - startTime
-        });
+        Render?.Invoke(time);
       }
-
-      Host.EndFrame(deltaTime);
-
-      PumpEventLoop();
-    }
-  }
-
-  /// <summary>
-  /// Executes the given <see cref="SceneTree"/> in a fixed step frequency.
-  /// </summary>
-  public void ExecuteScene(ISceneProvider provider, bool runInBackground = false)
-  {
-    var fixedStep = TimeSpan.FromMilliseconds(30);
-
-    ExecuteScene(provider, fixedStep, runInBackground);
-  }
-
-  /// <summary>
-  /// Executes the given <see cref="ISceneProvider"/> in a fixed step frequency.
-  /// </summary>
-  public void ExecuteScene(ISceneProvider provider, DeltaTime fixedStep, bool runInBackground = false)
-  {
-    var deltaTimeClock = new DeltaTimeClock();
-    var accumulator = 0f;
-
-    while (!Host.IsClosing && !IsClosing)
-    {
-      var deltaTime = deltaTimeClock.Tick();
-
-      accumulator += deltaTime;
-
-      Host.BeginFrame(deltaTime);
-
-      if (Host.IsFocused || runInBackground)
-      {
-        // update and render the current scene
-        if (provider.CurrentScene is { } scene)
-        {
-          while (accumulator >= fixedStep)
-          {
-            scene.Update(fixedStep);
-
-            accumulator -= fixedStep;
-          }
-
-          scene.Render(deltaTime);
-        }
-      }
-
-      Host.EndFrame(deltaTime);
-
-      PumpEventLoop();
     }
   }
 
@@ -342,7 +271,7 @@ public class Game : IDisposable
   /// </summary>
   public void Exit()
   {
-    IsClosing = true;
+    Host.Close();
   }
 
   /// <summary>

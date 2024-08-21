@@ -57,8 +57,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
     Window = new SilkWindow(configuration);
     AudioBackend = new SilkAudioBackend();
-    GraphicsBackend = new SilkGraphicsBackend(configuration, Window.InnerWindow);
-    InputBackend = new SilkInputBackend(Window.InnerWindow, Window.Input);
+    GraphicsBackend = new SilkGraphicsBackend(configuration, Window.View);
+    InputBackend = new SilkInputBackend(Window.View, Window.Input);
+
+    Window.View.Update += OnUpdate;
+    Window.View.Render += OnRender;
   }
 
   public SilkWindow Window { get; }
@@ -67,6 +70,9 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
   public SilkInputBackend InputBackend { get; }
 
   IDesktopWindow IDesktopPlatformHost.PrimaryWindow => Window;
+
+  public event Action<DeltaTime>? Update;
+  public event Action<DeltaTime>? Render;
 
   public event Action<int, int> Resized
   {
@@ -90,39 +96,48 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     services.AddService<IInputBackend>(InputBackend);
   }
 
-  public void BeginFrame(DeltaTime deltaTime)
+  private void OnUpdate(double deltaTime)
   {
     _syncContext.Process();
 
-    if (!IsClosing)
+    if (!IsClosing && _configuration.ShowFpsInTitle)
     {
-      Window.Update();
+      _frameCounter.Tick(deltaTime);
 
-      // show the game's FPS in the window title
-      if (_configuration.ShowFpsInTitle)
+      if (_frameDisplayTimer.Tick(deltaTime))
       {
-        _frameCounter.Tick(deltaTime);
-
-        if (_frameDisplayTimer.Tick(deltaTime))
-        {
-          Window.Title = $"{_configuration.Title} - {_frameCounter.TicksPerSecond:F} FPS";
-        }
+        Window.Title = $"{_configuration.Title} - {_frameCounter.TicksPerSecond:F} FPS";
       }
     }
-  }
 
-  public void EndFrame(DeltaTime deltaTime)
-  {
+    Update?.Invoke(deltaTime);
+
     if (!IsClosing)
     {
-      Window.Present();
-
       InputBackend.Update();
     }
   }
 
+  private void OnRender(double deltaTime)
+  {
+    Render?.Invoke(deltaTime);
+  }
+
+  public void Run()
+  {
+    Window.Run();
+  }
+
+  public void Close()
+  {
+    Window.Close();
+  }
+
   public void Dispose()
   {
+    Window.View.Update -= OnUpdate;
+    Window.View.Render -= OnRender;
+
     Window.Dispose();
   }
 }

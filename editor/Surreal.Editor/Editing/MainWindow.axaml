@@ -9,9 +9,7 @@
         x:Class="Surreal.Editing.MainWindow"
         x:DataType="surreal:MainWindowViewModel"
         Width="{Binding Configuration.DefaultWidth, Mode=OneTime, FallbackValue=800}"
-        Height="{Binding Configuration.DefaultHeight, Mode=OneTime, FallbackValue=450}"
-        Background="Transparent"
-        TransparencyLevelHint="AcrylicBlur">
+        Height="{Binding Configuration.DefaultHeight, Mode=OneTime, FallbackValue=450}">
 
   <!-- format the window title based on the project name -->
   <Window.Title>

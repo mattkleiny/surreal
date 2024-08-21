@@ -16,7 +16,6 @@ using BufferUsage = Surreal.Graphics.Meshes.BufferUsage;
 using Color = Surreal.Colors.Color;
 using PolygonMode = Surreal.Graphics.Materials.PolygonMode;
 using Queue = Silk.NET.WebGPU.Queue;
-using RenderPipeline = Silk.NET.WebGPU.RenderPipeline;
 using TextureFormat = Surreal.Graphics.Textures.TextureFormat;
 
 namespace Surreal.Graphics;

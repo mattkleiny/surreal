@@ -8,6 +8,9 @@ namespace Surreal;
 /// </summary>
 public interface IPlatformHost : IDisposable
 {
+  event Action<DeltaTime> Update;
+  event Action<DeltaTime> Render;
+
   event Action<int, int> Resized;
 
   int Width { get; }
@@ -17,11 +20,18 @@ public interface IPlatformHost : IDisposable
   bool IsFocused { get; }
   bool IsClosing { get; }
 
-  void BeginFrame(DeltaTime deltaTime);
-  void EndFrame(DeltaTime deltaTime);
-
   /// <summary>
   /// Registers the platform's services in the given registry.
   /// </summary>
   void RegisterServices(IServiceRegistry services);
+
+  /// <summary>
+  /// Runs the platform's main loop.
+  /// </summary>
+  void Run();
+
+  /// <summary>
+  /// Asks the platform to close.
+  /// </summary>
+  void Close();
 }
