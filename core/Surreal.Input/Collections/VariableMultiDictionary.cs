@@ -1,11 +1,12 @@
+using Surreal.Collections;
 using Surreal.Collections.Slices;
 
-namespace Surreal.Collections;
+namespace Surreal.Input.Collections;
 
 /// <summary>
 /// A <see cref="MultiDictionary{TKey,TValue}"/> wrapper with support for variable key types.
 /// </summary>
-public sealed class VariableMultiDictionary<TValue>
+internal sealed class VariableMultiDictionary<TValue>
 {
   private readonly Dictionary<Type, object> _dictionaries = new();
 

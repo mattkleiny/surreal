@@ -1,4 +1,5 @@
 using Surreal.Collections;
+using Surreal.Input.Collections;
 
 namespace Surreal.Input;
 
@@ -6,8 +7,10 @@ namespace Surreal.Input;
 /// Manages dispatching <see cref="TAction"/>s from <see cref="IInputEvent"/>s.
 /// </summary>
 public sealed class InputManager<TAction> : IInputObserver, IDisposable
+  where TAction : notnull
 {
   private readonly VariableMultiDictionary<TAction> _actions = new();
+  private readonly MultiDictionary<TAction, Action> _handlers = new();
   private readonly Queue<TAction> _actionQueue = new();
   private readonly IInputObservable _observable;
 
@@ -42,6 +45,22 @@ public sealed class InputManager<TAction> : IInputObserver, IDisposable
   }
 
   /// <summary>
+  /// Adds a handler for the given action.
+  /// </summary>
+  public void AddHandler(TAction action, Action callback)
+  {
+    _handlers.Add(action, callback);
+  }
+
+  /// <summary>
+  /// Removes a handler from the given action.
+  /// </summary>
+  public void RemoveHandler(TAction action, Action callback)
+  {
+    _handlers.Remove(action, callback);
+  }
+
+  /// <summary>
   /// Processes the given event.
   /// </summary>
   public void ProcessEvent<TEvent>(TEvent @event)
@@ -65,6 +84,11 @@ public sealed class InputManager<TAction> : IInputObserver, IDisposable
     while (_actionQueue.TryDequeue(out var action))
     {
       ActionTriggered?.Invoke(action);
+
+      foreach (var handler in _handlers[action])
+      {
+        handler.Invoke();
+      }
     }
   }
 
@@ -72,6 +96,10 @@ public sealed class InputManager<TAction> : IInputObserver, IDisposable
   public void Dispose()
   {
     _observable.Unsubscribe(this);
+
+    _actions.Clear();
+    _handlers.Clear();
+    _actionQueue.Clear();
   }
 
   /// <inheritdoc/>

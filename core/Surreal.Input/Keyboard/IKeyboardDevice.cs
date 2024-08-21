@@ -6,6 +6,11 @@
 public readonly record struct KeyPressEvent(Key Key, bool IsPressed) : IInputEvent;
 
 /// <summary>
+/// An event that is raised whilst a keyboard key is held.
+/// </summary>
+public readonly record struct KeyHeldEvent(Key Key) : IInputEvent;
+
+/// <summary>
 /// A keyboard <see cref="IInputDevice" />.
 /// </summary>
 public interface IKeyboardDevice : IInputDevice

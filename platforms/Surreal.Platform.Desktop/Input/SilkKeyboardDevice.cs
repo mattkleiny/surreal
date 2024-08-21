@@ -29,6 +29,11 @@ internal sealed class SilkKeyboardDevice : IKeyboardDevice, IDisposable
 
   public void Update()
   {
+    foreach (var key in _pressedKeys)
+    {
+      _events.NotifyNext(new KeyHeldEvent(key));
+    }
+
     _pressedKeysThisFrame.Clear();
   }
 
