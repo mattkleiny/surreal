@@ -42,7 +42,7 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
     canvas.DrawQuad();
   };
 
-  game.ExecuteVariableStep();
+  await game.ExecuteAsync();
 
   static void DrawFractal(ColorPalette palette, PixelCanvas canvas, Vector2 constant)
   {

@@ -28,7 +28,7 @@ public interface IPlatformHost : IDisposable
   /// <summary>
   /// Runs the platform's main loop.
   /// </summary>
-  void Run();
+  Task RunAsync();
 
   /// <summary>
   /// Asks the platform to close.

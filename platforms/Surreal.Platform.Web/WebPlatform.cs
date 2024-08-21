@@ -35,8 +35,9 @@ internal sealed class WebPlatformHost : IPlatformHost
   {
   }
 
-  public void Run()
+  public Task RunAsync()
   {
+    return Task.CompletedTask;
   }
 
   public void Close()

@@ -59,5 +59,5 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
     canvas.DrawQuad();
   };
 
-  game.ExecuteVariableStep();
+  await game.ExecuteAsync();
 });

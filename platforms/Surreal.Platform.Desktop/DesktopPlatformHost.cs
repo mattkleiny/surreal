@@ -43,7 +43,6 @@ public interface IDesktopWindow : IDisposable
 
 internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 {
-  private readonly ThreadAffineSynchronizationContext _syncContext = new(Thread.CurrentThread);
   private readonly FrameCounter _frameCounter = new();
   private readonly DesktopConfiguration _configuration;
 
@@ -51,8 +50,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   public DesktopPlatformHost(DesktopConfiguration configuration)
   {
-    SynchronizationContext.SetSynchronizationContext(_syncContext);
-
     _configuration = configuration;
 
     Window = new SilkWindow(configuration);
@@ -98,8 +95,6 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
 
   private void OnUpdate(double deltaTime)
   {
-    _syncContext.Process();
-
     if (!IsClosing && _configuration.ShowFpsInTitle)
     {
       _frameCounter.Tick(deltaTime);
@@ -123,9 +118,11 @@ internal sealed class DesktopPlatformHost : IDesktopPlatformHost
     Render?.Invoke(deltaTime);
   }
 
-  public void Run()
+  public Task RunAsync()
   {
     Window.Run();
+
+    return Task.CompletedTask;
   }
 
   public void Close()

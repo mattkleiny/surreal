@@ -11,11 +11,17 @@
     <PackageReference Include="Silk.NET.OpenAL.Soft.Native" Version="1.21.1.2" PrivateAssets="compile"/>
     <PackageReference Include="Silk.NET.OpenGL" Version="$(SilkVersion)" PrivateAssets="compile"/>
     <PackageReference Include="Silk.NET.OpenGL.Extensions.EXT" Version="$(SilkVersion)" PrivateAssets="compile"/>
-    <PackageReference Include="Silk.NET.WebGPU" Version="$(SilkVersion)" PrivateAssets="compile" />
-    <PackageReference Include="Silk.NET.WebGPU.Native.WGPU" Version="$(SilkVersion)" PrivateAssets="compile" />
+    <PackageReference Include="Silk.NET.WebGPU" Version="$(SilkVersion)" PrivateAssets="compile"/>
+    <PackageReference Include="Silk.NET.WebGPU.Native.WGPU" Version="$(SilkVersion)" PrivateAssets="compile"/>
     <PackageReference Include="Silk.NET.Windowing" Version="$(SilkVersion)" PrivateAssets="compile"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- the editor makes use of the desktop platform's internals -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Surreal.Editor</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 </Project>

@@ -39,6 +39,11 @@ public abstract class GameContext
   public abstract void OnStarted();
   public abstract void OnStopped();
 
+  /// <summary>
+  /// Posts the given action to be run on the platform host's main thread.
+  /// </summary>
+  public abstract void PostOnMainThread(Action action);
+
   public void NotifyCancelled()
   {
     Cancelled?.Invoke();
@@ -67,6 +72,11 @@ public abstract class GameContext
 
     public override void OnStopped()
     {
+    }
+
+    public override void PostOnMainThread(Action action)
+    {
+      action.Invoke(); // no-op; run immediately.
     }
   }
 }

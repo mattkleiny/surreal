@@ -13,5 +13,6 @@
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Framework\Surreal.Framework.csproj" />
     <ProjectReference Include="..\..\core\Surreal.Graphics\Surreal.Graphics.csproj" />
+    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" PrivateAssets="compile" />
   </ItemGroup>
 </Project>

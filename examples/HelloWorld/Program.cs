@@ -13,7 +13,7 @@ var configuration = new GameConfiguration
   }
 };
 
-return Game.Start(configuration, (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard) =>
+return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard) =>
 {
   var color1 = Random.Shared.Next<Color>();
   var color2 = Random.Shared.Next<Color>();
@@ -36,5 +36,5 @@ return Game.Start(configuration, (Game game, IGraphicsDevice graphics, IKeyboard
     graphics.ClearColorBuffer(color);
   };
 
-  game.ExecuteVariableStep();
+  await game.ExecuteAsync();
 });

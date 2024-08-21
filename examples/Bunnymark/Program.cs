@@ -111,7 +111,7 @@ return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKe
     batch.Flush();
   };
 
-  game.ExecuteVariableStep();
+  await game.ExecuteAsync();
 });
 
 namespace Bunnymark

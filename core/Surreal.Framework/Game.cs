@@ -84,7 +84,7 @@ public class Game : IDisposable
   /// </summary>
   public static int Start(GameConfiguration configuration, Delegate setup)
   {
-    return Run(configuration, GameContext.Current, async game =>
+    return Run(GameContext.Current, configuration, async game =>
     {
       var result = game.Services.ExecuteDelegate(setup, game);
       if (result is Task task)
@@ -98,8 +98,10 @@ public class Game : IDisposable
   /// Runs this game inside a <see cref="GameContext"/>.
   /// </summary>
   [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  private static int Run(GameConfiguration configuration, GameContext context, Func<Game, Task> gameSetup)
+  private static int Run(GameContext context, GameConfiguration configuration, Func<Game, Task> gameSetup)
   {
+    SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
+
     try
     {
       context.OnStarted();
@@ -146,26 +148,27 @@ public class Game : IDisposable
         game.Assets.AddLoader(loader);
       }
 
-      // marshal all async work back to the main thread
-      SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
-
       // prepare the game setup on the first frame of the loop
-      Schedule(() => gameSetup(game).ContinueWith(task =>
+      Schedule(async () =>
       {
-        if (task.IsFaulted)
+        try
         {
-          Log.Error(task.Exception is { InnerExceptions.Count: 1 }
-            ? $"An unhandled top-level exception occurred: {task.Exception.InnerExceptions.Single()}"
-            : $"An unhandled top-level exception occurred: {task.Exception}");
+          await gameSetup(game);
+        }
+        catch (Exception exception)
+        {
+          Log.Error(exception, $"An unhandled top-level exception occurred");
 
           game.Exit();
         }
-      }));
+      });
 
       Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
+      Log.Trace("Starting event loop");
 
       PumpEventLoop(); // start the event loop running
 
+      Log.Trace("Exiting event loop");
       Callbacks.Clear();
 
       host.Resized -= OnHostResized;
@@ -179,8 +182,6 @@ public class Game : IDisposable
     {
       context.OnStopped();
     }
-
-    Log.Trace("Completed successfully");
 
     return 0;
   }
@@ -209,11 +210,6 @@ public class Game : IDisposable
   public required IPlatformHost Host { get; init; }
 
   /// <summary>
-  /// True if the game is getting ready to close.
-  /// </summary>
-  public bool IsClosing { get; private set; }
-
-  /// <summary>
   /// A callback for updating the game.
   /// </summary>
   public event Action<GameTime>? Update;
@@ -226,7 +222,7 @@ public class Game : IDisposable
   /// <summary>
   /// Executes the game with a variable step frequency.
   /// </summary>
-  public void ExecuteVariableStep(bool runInBackground = false)
+  public async Task ExecuteAsync(bool runInBackground = false)
   {
     var startTime = TimeStamp.Now;
 
@@ -235,7 +231,7 @@ public class Game : IDisposable
 
     try
     {
-      Host.Run();
+      await Host.RunAsync();
     }
     finally
     {

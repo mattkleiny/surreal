@@ -14,7 +14,7 @@ var configuration = new GameConfiguration
   }
 };
 
-Game.Start(configuration, (Game game, IGraphicsDevice graphics) =>
+Game.Start(configuration, async (Game game, IGraphicsDevice graphics) =>
 {
   var pipeline = new ForwardRenderPipeline(graphics)
   {
@@ -29,5 +29,5 @@ Game.Start(configuration, (Game game, IGraphicsDevice graphics) =>
     pipeline.Render(IRenderScene.Null, DeltaTime.Default);
   };
 
-  game.ExecuteVariableStep();
+  await game.ExecuteAsync();
 });

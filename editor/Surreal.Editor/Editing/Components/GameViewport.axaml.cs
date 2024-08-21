@@ -125,6 +125,11 @@ internal sealed class GameViewportViewModel : EditorViewModel
     {
       Dispatcher.UIThread.Post(() => owner.IsRunning = false);
     }
+
+    public override void PostOnMainThread(Action action)
+    {
+      Dispatcher.UIThread.Post(action);
+    }
   }
 
   /// <summary>
@@ -132,6 +137,7 @@ internal sealed class GameViewportViewModel : EditorViewModel
   /// </summary>
   private sealed class EditorPlatformHost : IPlatformHost
   {
+    private readonly DeltaTimeClock _clock = new();
     private readonly GameViewportViewModel _owner;
 
     public EditorPlatformHost(GameViewportViewModel owner)
@@ -156,34 +162,49 @@ internal sealed class GameViewportViewModel : EditorViewModel
     public int Height => (int)_owner.Viewport.Height;
     public bool IsVisible => _owner.Viewport.IsVisible;
     public bool IsFocused => _owner.Viewport.IsFocused;
-    public bool IsClosing => false;
+    public bool IsClosing { get; private set; }
 
     public void RegisterServices(IServiceRegistry services)
     {
       services.AddService(IAudioBackend.Null);
-      services.AddService(IGraphicsBackend.Null);
+      services.AddService<IGraphicsBackend>(new EditorGraphicsBackend(_owner.Viewport.Display.OpenGL!));
       services.AddService(IInputBackend.Null);
       services.AddService(IKeyboardDevice.Null);
       services.AddService(IMouseDevice.Null);
     }
 
-    public void Run()
+    public Task RunAsync()
     {
+      return Task.CompletedTask;
     }
 
     public void Close()
     {
-      // TODO: implement me
+      IsClosing = true;
     }
 
     public void Dispose()
     {
+      IsClosing = false;
     }
 
     private void OnDisplayRendering(GlInterface gl, GraphicsHandle frameBuffer)
     {
       gl.BindFramebuffer(GlConsts.GL_READ_FRAMEBUFFER, 0);
       gl.BindFramebuffer(GlConsts.GL_DRAW_FRAMEBUFFER, frameBuffer);
+
+      Render?.Invoke(_clock.Tick());
+    }
+  }
+
+  /// <summary>
+  /// A <see cref="IGraphicsBackend"/> implementation for the editor.
+  /// </summary>
+  private sealed class EditorGraphicsBackend(GL gl) : IGraphicsBackend
+  {
+    public IGraphicsDevice CreateDevice(GraphicsMode mode)
+    {
+      return IGraphicsDevice.Null;
     }
   }
 }
