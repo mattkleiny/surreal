@@ -1,4 +1,4 @@
-var configuration = new GameConfiguration
+using var game = Game.Create(new GameConfiguration
 {
   Platform = new DesktopPlatform
   {
@@ -11,30 +11,30 @@ var configuration = new GameConfiguration
       Height = 768
     }
   }
+});
+
+var graphics = game.Services.GetServiceOrThrow<IGraphicsDevice>();
+var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
+
+var color1 = Random.Shared.Next<Color>();
+var color2 = Random.Shared.Next<Color>();
+var timer = 0f;
+
+game.Update += time =>
+{
+  timer += time.DeltaTime;
+
+  if (keyboard.IsKeyPressed(Key.Escape))
+  {
+    game.Exit();
+  }
 };
 
-return Game.Start(configuration, async (Game game, IGraphicsDevice graphics, IKeyboardDevice keyboard) =>
+game.Render += _ =>
 {
-  var color1 = Random.Shared.Next<Color>();
-  var color2 = Random.Shared.Next<Color>();
-  var timer = 0f;
+  var color = Color.Lerp(color1, color2, MathE.PingPong(timer));
 
-  game.Update += time =>
-  {
-    timer += time.DeltaTime;
+  graphics.ClearColorBuffer(color);
+};
 
-    if (keyboard.IsKeyPressed(Key.Escape))
-    {
-      game.Exit();
-    }
-  };
-
-  game.Render += _ =>
-  {
-    var color = Color.Lerp(color1, color2, MathE.PingPong(timer));
-
-    graphics.ClearColorBuffer(color);
-  };
-
-  await game.ExecuteAsync();
-});
+await game.RunAsync();

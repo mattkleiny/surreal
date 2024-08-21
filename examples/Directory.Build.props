@@ -26,6 +26,7 @@
     <Using Include="Surreal.Graphics.Rendering" />
     <Using Include="Surreal.Graphics.Sprites" />
     <Using Include="Surreal.Graphics.Textures" />
+    <Using Include="Surreal.Graphics.Utilities" />
     <Using Include="Surreal.Input" />
     <Using Include="Surreal.Input.Keyboard" />
     <Using Include="Surreal.Input.Mouse" />

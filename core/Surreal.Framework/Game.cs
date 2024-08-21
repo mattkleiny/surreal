@@ -56,17 +56,15 @@ public readonly record struct GameTime
 }
 
 /// <summary>
-/// A function that runs the game loop.
-/// </summary>
-public delegate void GameLoop(GameTime time);
-
-/// <summary>
 /// Entry point for the game.
 /// </summary>
-public class Game : IDisposable
+public sealed class Game : IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<Game>();
   private static readonly ConcurrentQueue<Action> Callbacks = new();
+
+  private readonly TimeStamp _startTime = TimeStamp.Now;
+  private readonly GameContext _context = GameContext.Current;
 
   /// <summary>
   /// Sets up the logging and profiling systems.
@@ -80,118 +78,59 @@ public class Game : IDisposable
   }
 
   /// <summary>
-  /// Starts the game.
+  /// Creates a new game with the given <see cref="GameConfiguration"/>.
   /// </summary>
-  public static int Start(GameConfiguration configuration, Delegate setup)
-  {
-    return Run(GameContext.Current, configuration, async game =>
-    {
-      var result = game.Services.ExecuteDelegate(setup, game);
-      if (result is Task task)
-      {
-        await task;
-      }
-    });
-  }
-
-  /// <summary>
-  /// Runs this game inside a <see cref="GameContext"/>.
-  /// </summary>
-  [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-  private static int Run(GameContext context, GameConfiguration configuration, Func<Game, Task> gameSetup)
+  public static Game Create(GameConfiguration configuration)
   {
     SynchronizationContext.SetSynchronizationContext(new GameAffineSynchronizationContext());
 
-    try
+    var context = GameContext.Current;
+    var services = new ServiceRegistry();
+    var host = context.PlatformHost ?? configuration.Platform.BuildHost();
+
+    // configure the game services
+    host.RegisterServices(services);
+
+    foreach (var module in configuration.Modules)
     {
-      context.OnStarted();
-
-      var startTime = TimeStamp.Now;
-
-      using var services = new ServiceRegistry();
-      using var host = context.PlatformHost ?? configuration.Platform.BuildHost();
-      using var game = new Game { Services = services, Host = host };
-
-      context.Cancelled += () => game.Exit();
-      context.HotReloaded += () => Log.Trace("The game has hot reloaded!");
-
-      // configure the game services
-      host.RegisterServices(services);
-
-      foreach (var module in configuration.Modules)
-      {
-        services.AddModule(module);
-      }
-
-      // create the main devices and register them
-      var audioBackend = services.GetServiceOrThrow<IAudioBackend>();
-      var graphicsBackend = services.GetServiceOrThrow<IGraphicsBackend>();
-      var inputBackend = services.GetServiceOrThrow<IInputBackend>();
-
-      using var audioDevice = audioBackend.CreateDevice();
-      using var graphicsDevice = graphicsBackend.CreateDevice(configuration.GraphicsMode);
-
-      services.AddService(audioDevice);
-      services.AddService(graphicsDevice);
-
-      foreach (var device in inputBackend.Devices)
-      {
-        services.AddService(device.Type, device);
-      }
-
-      // resize the viewport
-      host.Resized += OnHostResized;
-
-      // register asset loaders
-      foreach (var loader in services.GetServices<IAssetLoader>())
-      {
-        game.Assets.AddLoader(loader);
-      }
-
-      // prepare the game setup on the first frame of the loop
-      Schedule(async () =>
-      {
-        try
-        {
-          await gameSetup(game);
-        }
-        catch (Exception exception)
-        {
-          Log.Error(exception, $"An unhandled top-level exception occurred");
-
-          game.Exit();
-        }
-      });
-
-      Log.Trace($"Startup took {TimeStamp.Now - startTime:g}");
-      Log.Trace("Starting event loop");
-
-      PumpEventLoop(); // start the event loop running
-
-      Log.Trace("Exiting event loop");
-      Callbacks.Clear();
-
-      host.Resized -= OnHostResized;
-
-      void OnHostResized(int newWidth, int newHeight)
-      {
-        graphicsDevice.SetViewportSize(new Viewport(0, 0, (uint)newWidth, (uint)newHeight));
-      }
-    }
-    finally
-    {
-      context.OnStopped();
+      services.AddModule(module);
     }
 
-    return 0;
-  }
+    // create the main devices and register them
+    var audioBackend = services.GetServiceOrThrow<IAudioBackend>();
+    var graphicsBackend = services.GetServiceOrThrow<IGraphicsBackend>();
+    var inputBackend = services.GetServiceOrThrow<IInputBackend>();
 
-  /// <summary>
-  /// Schedules a function to be invoked at the start of the next frame.
-  /// </summary>
-  public static void Schedule(Action callback)
-  {
-    Callbacks.Enqueue(callback);
+    var game = new Game
+    {
+      Services = services,
+      Host = host,
+      Audio = audioBackend.CreateDevice(),
+      Graphics = graphicsBackend.CreateDevice(configuration.GraphicsMode)
+    };
+
+    services.AddService(game.Audio);
+    services.AddService(game.Graphics);
+
+    foreach (var device in inputBackend.Devices)
+    {
+      services.AddService(device.Type, device);
+    }
+
+    foreach (var loader in services.GetServices<IAssetLoader>())
+    {
+      game.Assets.AddLoader(loader);
+    }
+
+    // resize the viewport
+    host.Update += game.OnHostUpdate;
+    host.Render += game.OnHostRender;
+    host.Resized += game.OnHostResized;
+
+    context.Cancelled += () => game.Exit();
+    context.HotReloaded += () => Log.Trace("The game has hot reloaded!");
+
+    return game;
   }
 
   /// <summary>
@@ -210,6 +149,16 @@ public class Game : IDisposable
   public required IPlatformHost Host { get; init; }
 
   /// <summary>
+  /// The audio device for the game.
+  /// </summary>
+  public required IAudioDevice Audio { get; init; }
+
+  /// <summary>
+  /// The graphics device for the game.
+  /// </summary>
+  public required IGraphicsDevice Graphics { get; init; }
+
+  /// <summary>
   /// A callback for updating the game.
   /// </summary>
   public event Action<GameTime>? Update;
@@ -220,46 +169,27 @@ public class Game : IDisposable
   public event Action<GameTime>? Render;
 
   /// <summary>
-  /// Executes the game with a variable step frequency.
+  /// Schedules a function to be invoked at the start of the next frame.
   /// </summary>
-  public async Task ExecuteAsync(bool runInBackground = false)
+  public static void Schedule(Action callback)
   {
-    var startTime = TimeStamp.Now;
+    Callbacks.Enqueue(callback);
+  }
 
-    Host.Update += OnHostUpdate;
-    Host.Render += OnHostRender;
+  /// <summary>
+  /// Starts the game.
+  /// </summary>
+  public async Task RunAsync()
+  {
+    _context.OnStarted();
 
-    try
-    {
-      await Host.RunAsync();
-    }
-    finally
-    {
-      Host.Update -= OnHostUpdate;
-      Host.Render -= OnHostRender;
-    }
+    Log.Trace("Starting event loop");
 
-    void OnHostUpdate(DeltaTime deltaTime)
-    {
-      var time = new GameTime { DeltaTime = deltaTime, TotalTime = TimeStamp.Now - startTime };
+    await Host.RunAsync();
 
-      if (Host.IsFocused || runInBackground)
-      {
-        Update?.Invoke(time);
-      }
+    Log.Trace("Exiting event loop");
 
-      PumpEventLoop();
-    }
-
-    void OnHostRender(DeltaTime deltaTime)
-    {
-      var time = new GameTime { DeltaTime = deltaTime, TotalTime = TimeStamp.Now - startTime };
-
-      if (Host.IsVisible || runInBackground)
-      {
-        Render?.Invoke(time);
-      }
-    }
+    _context.OnStopped();
   }
 
   /// <summary>
@@ -270,20 +200,60 @@ public class Game : IDisposable
     Host.Close();
   }
 
-  /// <summary>
-  /// Pumps the main event loop a single frame.
-  /// </summary>
-  protected static void PumpEventLoop()
+  private void OnHostUpdate(DeltaTime deltaTime)
   {
+    var time = new GameTime
+    {
+      DeltaTime = deltaTime,
+      TotalTime = TimeStamp.Now - _startTime
+    };
+
+    if (Host.IsFocused)
+    {
+      Update?.Invoke(time);
+    }
+
     while (Callbacks.TryDequeue(out var callback))
     {
       callback.Invoke();
     }
   }
 
+  private void OnHostRender(DeltaTime deltaTime)
+  {
+    var time = new GameTime
+    {
+      DeltaTime = deltaTime,
+      TotalTime = TimeStamp.Now - _startTime
+    };
+
+    if (Host.IsVisible)
+    {
+      Render?.Invoke(time);
+    }
+  }
+
+  private void OnHostResized(int newWidth, int newHeight)
+  {
+    if (Services.TryGetService(out IGraphicsDevice graphicsDevice))
+    {
+      graphicsDevice.SetViewportSize(new Viewport(0, 0, (uint)newWidth, (uint)newHeight));
+    }
+  }
+
   public void Dispose()
   {
+    Callbacks.Clear();
+
+    Host.Update -= OnHostUpdate;
+    Host.Render -= OnHostRender;
+    Host.Resized -= OnHostResized;
+
+    Graphics.Dispose();
+    Audio.Dispose();
     Assets.Dispose();
+    Host.Dispose();
+    Services.Dispose();
   }
 
   /// <summary>
