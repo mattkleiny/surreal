@@ -116,9 +116,10 @@ internal sealed class GameViewportViewModel : EditorViewModel
     /// <inheritdoc/>
     public override IPlatformHost PlatformHost { get; } = new EditorPlatformHost(owner);
 
-    public override void PostOnMainThread(Action action)
+    /// <inheritdoc/>
+    public override Task InvokeOnMainThread(Func<Task> action)
     {
-      Dispatcher.UIThread.Post(action);
+      return Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Background);
     }
   }
 
@@ -131,7 +132,6 @@ internal sealed class GameViewportViewModel : EditorViewModel
     private readonly GameViewportViewModel _owner;
 
     private DeltaTime _deltaTime;
-    private int _timesPerTick;
 
     public EditorPlatformHost(GameViewportViewModel owner)
     {
@@ -168,42 +168,30 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
     public async Task RunAsync()
     {
-      var completionSource = new TaskCompletionSource();
-
       Dispatcher.UIThread.Invoke(() =>
       {
         _owner.IsRunning = true;
         _owner.Viewport.Display.RequestNextFrameRendering();
-
-        Task.Run(async () =>
-        {
-          try
-          {
-            while (_owner.IsRunning)
-            {
-              _deltaTime = _clock.Tick();
-              Update?.Invoke(_deltaTime);
-
-              if (_deltaTime < _clock.MinDeltaTime)
-              {
-                await Task.Delay(_clock.TargetDeltaTime - _deltaTime);
-              }
-              else
-              {
-                await Task.Yield();
-              }
-            }
-          }
-          catch (Exception exception)
-          {
-            completionSource.SetException(exception);
-          }
-
-          completionSource.SetResult();
-        });
       });
 
-      await completionSource.Task;
+      // TODO: how to do this without blocking the main thread?
+      await Task.Run(async () =>
+      {
+        while (_owner.IsRunning)
+        {
+          _deltaTime = _clock.Tick();
+          Update?.Invoke(_deltaTime);
+
+          if (_deltaTime < _clock.MinDeltaTime)
+          {
+            await Task.Delay(_clock.TargetDeltaTime - _deltaTime);
+          }
+          else
+          {
+            await Task.Yield();
+          }
+        }
+      }).ConfigureAwait(false);
 
       Dispatcher.UIThread.Invoke(() =>
       {
@@ -235,8 +223,6 @@ internal sealed class GameViewportViewModel : EditorViewModel
         Render?.Invoke(_deltaTime);
 
         _owner.Viewport.Display.RequestNextFrameRendering();
-
-        Interlocked.Exchange(ref _timesPerTick, 0);
       }
     }
   }

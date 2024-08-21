@@ -39,7 +39,7 @@ public abstract class GameContext
   /// <summary>
   /// Posts the given action to be run on the platform host's main thread.
   /// </summary>
-  public abstract void PostOnMainThread(Action action);
+  public abstract Task InvokeOnMainThread(Func<Task> action);
 
   public void NotifyCancelled()
   {
@@ -63,9 +63,9 @@ public abstract class GameContext
   {
     public override IPlatformHost? PlatformHost => null;
 
-    public override void PostOnMainThread(Action action)
+    public override Task InvokeOnMainThread(Func<Task> action)
     {
-      action.Invoke(); // no-op; run immediately.
+      return action.Invoke(); // no-op; run immediately.
     }
   }
 }

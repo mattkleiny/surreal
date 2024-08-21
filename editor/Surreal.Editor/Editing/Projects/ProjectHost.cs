@@ -62,26 +62,34 @@ public abstract class ProjectHost
 
       return ThreadFactory.Create(options, async () =>
       {
-        GameContext.Current = context;
-
-        cancellationToken.Register(context.NotifyCancelled);
-
         IsRunning = true;
 
         try
         {
           // run the main entry point
-          var result = entryPoint.Invoke(null, [Environment.GetCommandLineArgs()]);
+          cancellationToken.Register(context.NotifyCancelled);
 
-          // observe the result if it's a task
-          if (result is Task task) await task;
-          if (result is Task<int> taskWithCode) await taskWithCode;
+          await context.InvokeOnMainThread(async () =>
+          {
+            GameContext.Current = context;
+
+            try
+            {
+              var result = entryPoint.Invoke(null, [Environment.GetCommandLineArgs()]);
+
+              // observe the result if it's a task
+              if (result is Task task) await task;
+              if (result is Task<int> taskWithCode) await taskWithCode;
+            }
+            finally
+            {
+              GameContext.Current = GameContext.Null;
+            }
+          });
         }
         finally
         {
           IsRunning = false;
-
-          GameContext.Current = GameContext.Null;
         }
       });
     }
