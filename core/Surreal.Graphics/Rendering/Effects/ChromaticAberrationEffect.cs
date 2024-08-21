@@ -19,7 +19,6 @@ public sealed class ChromaticAberrationEffect(IGraphicsDevice device) : IPostPro
     _material.Uniforms.Set("u_intensity", Intensity);
 
     context.BlitMaterial(_material);
-    context.FlipBuffers();
   }
 
   public void Dispose()

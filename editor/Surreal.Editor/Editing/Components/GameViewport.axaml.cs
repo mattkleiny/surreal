@@ -174,10 +174,14 @@ internal sealed class GameViewportViewModel : EditorViewModel
         _owner.Viewport.Display.RequestNextFrameRendering();
       });
 
-      // TODO: how to do this without blocking the main thread?
-      await Task.Run(async () =>
+      var frame = new DispatcherFrame();
+
+      frame.Dispatcher.Post(async () =>
       {
-        while (_owner.IsRunning)
+        _owner.IsRunning = true;
+        _owner.Viewport.Display.RequestNextFrameRendering();
+
+        while (frame.Continue && _owner.IsRunning)
         {
           _deltaTime = _clock.Tick();
           Update?.Invoke(_deltaTime);
@@ -191,7 +195,11 @@ internal sealed class GameViewportViewModel : EditorViewModel
             await Task.Yield();
           }
         }
-      }).ConfigureAwait(false);
+
+        frame.Continue = false;
+      });
+
+      Dispatcher.UIThread.PushFrame(frame);
 
       Dispatcher.UIThread.Invoke(() =>
       {

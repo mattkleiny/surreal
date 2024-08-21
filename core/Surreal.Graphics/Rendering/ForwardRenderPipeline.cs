@@ -194,6 +194,8 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
       foreach (var effect in pipeline.Effects)
       {
         effect.RenderEffect(in frame, _context!);
+
+        _context!.FlipBuffers();
       }
     }
 
