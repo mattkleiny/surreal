@@ -54,7 +54,7 @@ public sealed class Arena<T> : IEnumerable<T>
   {
     get
     {
-      if (!TryGet(index, out var entry))
+      if (!TryGetValue(index, out var entry))
       {
         throw new InvalidOperationException("The given arena index is not valid.");
       }
@@ -81,7 +81,7 @@ public sealed class Arena<T> : IEnumerable<T>
   /// <summary>
   /// Attempts to get the entry with index <see cref="index"/>.
   /// </summary>
-  public bool TryGet(ArenaIndex index, [MaybeNullWhen(false)] out T result)
+  public bool TryGetValue(ArenaIndex index, [MaybeNullWhen(false)] out T result)
   {
     var offset = index.Offset;
 
