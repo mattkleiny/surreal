@@ -1,6 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using Silk.NET.OpenGL;
 using Surreal.Audio;
@@ -13,6 +15,8 @@ using Surreal.Services;
 using Surreal.Timing;
 
 namespace Surreal.Editing.Components;
+
+#pragma warning disable CS0618 // Type or member is obsolete
 
 /// <summary>
 /// Hosts the game inside a viewport of the editor.
@@ -34,6 +38,9 @@ internal sealed class GameViewportDisplay : OpenGlControlBase
 {
   public delegate void RenderCallback(GlInterface gl, GraphicsHandle frameBuffer);
 
+  // the underlying graphics service from Avalonia.
+  private readonly IPlatformGraphics? _graphics = (IPlatformGraphics?)GetService(GetCurrentLocator(), typeof(IPlatformGraphics));
+
   /// <summary>
   /// Invoked when the control is rendered.
   /// </summary>
@@ -43,6 +50,19 @@ internal sealed class GameViewportDisplay : OpenGlControlBase
   /// The Silk.NET OpenGL interface.
   /// </summary>
   public GL? OpenGL { get; private set; }
+
+  /// <summary>
+  /// Makes the control's OpenGL context current.
+  /// </summary>
+  public IDisposable MakeCurrent()
+  {
+    if (_graphics == null)
+    {
+      throw new InvalidOperationException("The graphics service is not available.");
+    }
+
+    return _graphics.GetSharedContext().EnsureCurrent();
+  }
 
   protected override void OnOpenGlInit(GlInterface gl)
   {
@@ -55,6 +75,12 @@ internal sealed class GameViewportDisplay : OpenGlControlBase
 
     Rendering?.Invoke(gl, frameBuffer);
   }
+
+  [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "GetService")]
+  private static extern object? GetService(IAvaloniaDependencyResolver resolver, Type serviceType);
+
+  [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "get_Current")]
+  private static extern IAvaloniaDependencyResolver GetCurrentLocator(AvaloniaLocator locator = null!);
 }
 
 /// <summary>
@@ -119,6 +145,7 @@ internal sealed class GameViewportViewModel : EditorViewModel
     /// <inheritdoc/>
     public override Task InvokeOnMainThread(Func<Task> action)
     {
+      // TODO: make opengl context current
       return Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Background);
     }
   }
@@ -166,7 +193,7 @@ internal sealed class GameViewportViewModel : EditorViewModel
       services.AddService(IMouseDevice.Null);
     }
 
-    public async Task RunAsync()
+    public Task RunAsync()
     {
       Dispatcher.UIThread.Invoke(() =>
       {
@@ -187,13 +214,9 @@ internal sealed class GameViewportViewModel : EditorViewModel
           Update?.Invoke(_deltaTime);
 
           if (_deltaTime < _clock.MinDeltaTime)
-          {
             await Task.Delay(_clock.TargetDeltaTime - _deltaTime);
-          }
           else
-          {
             await Task.Yield();
-          }
         }
 
         frame.Continue = false;
@@ -206,6 +229,8 @@ internal sealed class GameViewportViewModel : EditorViewModel
         _owner.IsRunning = false;
         _owner.Viewport.Display.RequestNextFrameRendering();
       });
+
+      return Task.CompletedTask;
     }
 
     public void Close()
