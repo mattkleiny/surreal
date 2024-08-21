@@ -6,7 +6,7 @@ return Editor.Start(new EditorConfiguration
   WindowTitle = "Custom Editor",
   DefaultProject = new EditorProject(Environment.CurrentDirectory)
   {
-    Host = ProjectHost.InProcess(Assembly.Load("HelloWorld"))
+    Host = ProjectHost.InProcess(Assembly.Load("Fractals"))
   },
   Workloads =
   [

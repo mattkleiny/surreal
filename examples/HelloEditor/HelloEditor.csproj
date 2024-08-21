@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>An editor for the basic scene graph example</Description>
-    <StartWorkingDirectory>$(MSBuildThisFileDirectory)../HelloWorld</StartWorkingDirectory>
+    <StartWorkingDirectory>$(MSBuildThisFileDirectory)../Fractals</StartWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\editor\Surreal.Editor\Surreal.Editor.csproj" />
-    <ProjectReference Include="..\HelloWorld\HelloWorld.csproj" />
+    <ProjectReference Include="..\Fractals\Fractals.csproj" />
   </ItemGroup>
 </Project>

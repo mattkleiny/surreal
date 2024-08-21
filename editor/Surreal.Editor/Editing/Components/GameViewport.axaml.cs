@@ -145,9 +145,21 @@ internal sealed class GameViewportViewModel : EditorViewModel
     /// <inheritdoc/>
     public override Task InvokeOnMainThread(Func<Task> action)
     {
-      // TODO: make opengl context current
-      return Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Background);
+      return Dispatcher.UIThread.InvokeAsync(WithContextGuard(action), DispatcherPriority.Background);
     }
+
+    public IDisposable? ContextGuard { get; private set; }
+
+    /// <summary>
+    /// Runs the given action with the OpenGL context current.
+    /// </summary>
+    private Func<Task> WithContextGuard(Func<Task> action) => async () =>
+    {
+      // TODO: clean this up
+      ContextGuard = owner.Viewport.Display.MakeCurrent();
+
+      await action();
+    };
   }
 
   /// <summary>
@@ -195,13 +207,10 @@ internal sealed class GameViewportViewModel : EditorViewModel
 
     public Task RunAsync()
     {
-      Dispatcher.UIThread.Invoke(() =>
-      {
-        _owner.IsRunning = true;
-        _owner.Viewport.Display.RequestNextFrameRendering();
-      });
-
       var frame = new DispatcherFrame();
+      var context = (EditorHostingContext)_owner._context;
+
+      context.ContextGuard?.Dispose();
 
       frame.Dispatcher.Post(async () =>
       {
@@ -220,15 +229,12 @@ internal sealed class GameViewportViewModel : EditorViewModel
         }
 
         frame.Continue = false;
-      });
 
-      Dispatcher.UIThread.PushFrame(frame);
-
-      Dispatcher.UIThread.Invoke(() =>
-      {
         _owner.IsRunning = false;
         _owner.Viewport.Display.RequestNextFrameRendering();
       });
+
+      Dispatcher.UIThread.PushFrame(frame);
 
       return Task.CompletedTask;
     }
