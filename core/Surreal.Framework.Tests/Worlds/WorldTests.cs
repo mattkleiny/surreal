@@ -26,8 +26,13 @@ public class WorldTests
     transform.Position.Should().Be(Vector3.UnitY);
   }
 
-  private record struct Transform
+  private record struct Transform : IComponent<Transform>
   {
+    public static IComponentStorage<Transform> CreateStorage()
+    {
+      return new SparseComponentStorage<Transform>();
+    }
+
     public Vector3 Position { get; set; }
   }
 }
