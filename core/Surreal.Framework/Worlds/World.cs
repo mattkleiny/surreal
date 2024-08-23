@@ -311,6 +311,11 @@ public static class WorldExtensions
       {
         var parameterInfo = parameterInfos[i];
         var parameterType = parameterInfo.ParameterType;
+        
+        if (parameterType.IsByRef) 
+        {
+          parameterType = parameterType.GetElementType()!;
+        }
 
         if (parameterType.IsAssignableTo(typeof(IComponent)))
         {
