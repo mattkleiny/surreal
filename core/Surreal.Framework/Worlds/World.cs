@@ -12,7 +12,9 @@ public readonly record struct RenderEvent(DeltaTime DeltaTime);
 public interface IEntityQuery
 {
   internal IEnumerable<EntityHandle> EnumerateEntities(ComponentInfo?[] componentInfos);
-  internal object? GetComponent(EntityHandle entity, Type type);
+
+  internal object? ResolveComponent(EntityHandle entity, Type type);
+  internal object? ResolveService(Type type);
 }
 
 /// <summary>
@@ -115,13 +117,13 @@ public interface IEntitySystem<in TEvent> : IEntitySystem
 /// <summary>
 /// An ECS world that manages entities, components, and systems.
 /// </summary>
-public sealed class World
+public sealed class World(IServiceProvider services)
 {
   private readonly Arena<Entity> _entities = new();
   private readonly Dictionary<Type, IComponentStorage> _storages = new();
   private readonly MultiDictionary<Type, IEntitySystem> _systems = new();
 
-  public IEntityQuery Query => new EntityQuery(this);
+  public IEntityQuery Query => new EntityQuery(this, services);
 
   /// <summary>
   /// Spawns a new entity in the world.
@@ -248,17 +250,23 @@ public sealed class World
   /// <summary>
   /// The <see cref="IEntityQuery"/> implementation.
   /// </summary>
-  private sealed class EntityQuery(World world) : IEntityQuery
+  private sealed class EntityQuery(World world, IServiceProvider services) : IEntityQuery
   {
     public IEnumerable<EntityHandle> EnumerateEntities(ComponentInfo?[] componentInfos)
     {
       throw new NotImplementedException();
     }
 
-    public object? GetComponent(EntityHandle entity, Type type)
+    public object? ResolveComponent(EntityHandle entity, Type type)
     {
       throw new NotImplementedException();
     }
+
+    public object? ResolveService(Type serviceType)
+    {
+      return services.GetService(serviceType);
+    }
+
   }
 }
 
@@ -329,15 +337,23 @@ public static class WorldExtensions
         {
           for (var i = 0; i < parameterInfos.Length; i++)
           {
-            // forward the event in
-            if (parameterInfos[i].ParameterType == typeof(TEvent))
+            var parameterInfo = parameterInfos[i];
+            var parameterType = parameterInfo.ParameterType;
+
+            // otherwise, query for the component type
+            if (componentInfos[i] is { Type: var type })
             {
+              parameters[i] = query.ResolveComponent(entity, type);
+            }
+            else if (parameterType == typeof(TEvent))
+            {
+              // forward the event payload in
               parameters[i] = @event;
             }
-            // otherwise, query for the component type
-            else if (componentInfos[i] is { Type: var type })
+            else 
             {
-              parameters[i] = query.GetComponent(entity, type);
+            // otherwise, query for the service type
+              parameters[i] = query.ResolveService(parameterType);
             }
           }
 

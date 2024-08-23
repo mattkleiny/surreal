@@ -1,3 +1,4 @@
+using Surreal.Services;
 using Surreal.Timing;
 
 namespace Surreal.Worlds;
@@ -7,7 +8,8 @@ public class WorldTests
   [Test]
   public void it_should_work()
   {
-    var world = new World();
+    var services = new ServiceRegistry();
+    var world = new World(services);
     var entity = world.Spawn();
 
     world.AddComponent(entity, new Transform());
