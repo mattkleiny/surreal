@@ -2,7 +2,7 @@
 using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Rendering.Effects;
+using Surreal.Graphics.Effects;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 

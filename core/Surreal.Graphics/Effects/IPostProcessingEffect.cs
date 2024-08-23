@@ -1,6 +1,7 @@
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Rendering;
 
-namespace Surreal.Graphics.Rendering.Effects;
+namespace Surreal.Graphics.Effects;
 
 /// <summary>
 /// A post-processing effect.
