@@ -23,13 +23,13 @@ internal struct NanBox
   public static NanBox FromDouble(double value) => new() { Double = value };
   public static NanBox FromUlong(ulong value) => new() { Ulong = value };
   public static NanBox FromBool(bool value) => new() { Ulong = value ? MaskTrue : MaskFalse };
-  public static NanBox FromInt(int value) => new() { Ulong = (ulong)value | MaskInt };
+  public static NanBox FromInt(int value) => new() { Ulong = (uint)value | MaskInt };
   public static NanBox FromNull() => new() { Ulong = MaskNull };
 
-  public bool IsDouble => (Ulong & MaskNan) != MaskNan;
-  public bool IsInt    => (Ulong & MaskInt) == MaskInt;
-  public bool IsBool   => Ulong is MaskTrue or MaskFalse;
-  public bool IsTrue   => Ulong == MaskTrue;
-  public bool IsFalse  => Ulong == MaskFalse;
-  public bool IsNull   => Ulong == MaskNull;
+  public readonly bool IsDouble => (Ulong & MaskNan) != MaskNan;
+  public readonly bool IsInt    => (Ulong & MaskInt) == MaskInt;
+  public readonly bool IsBool   => Ulong is MaskTrue or MaskFalse;
+  public readonly bool IsTrue   => Ulong == MaskTrue;
+  public readonly bool IsFalse  => Ulong == MaskFalse;
+  public readonly bool IsNull   => Ulong == MaskNull;
 }
