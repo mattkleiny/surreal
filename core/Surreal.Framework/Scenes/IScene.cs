@@ -1,5 +1,6 @@
-﻿using Surreal.Graphics.Rendering;
-using Surreal.Timing;
+﻿using Surreal.Assets;
+using Surreal.Graphics.Rendering;
+using Surreal.Physics;
 
 namespace Surreal.Scenes;
 
@@ -16,17 +17,36 @@ namespace Surreal.Scenes;
 public interface IScene : IRenderScene
 {
   /// <summary>
-  /// Updates the scene.
+  /// Sends an event to the scene.
   /// </summary>
-  void Update(DeltaTime deltaTime);
-
-  /// <summary>
-  /// Renders the scene.
-  /// </summary>
-  void Render(DeltaTime deltaTime);
+  void Publish<T>(T @event)
+    where T : ISceneEvent;
 }
 
 /// <summary>
 /// Describes a scene, allowing it to be instantiated and loaded.
 /// </summary>
 public interface ISceneDefinition;
+
+/// <summary>
+/// The root of a scene.
+/// <para/>
+/// Provides services and assets to child nodes for access to game context.
+/// </summary>
+internal interface ISceneRoot
+{
+  /// <summary>
+  /// The assets to provide to the scene.
+  /// </summary>
+  IAssetProvider Assets { get; }
+
+  /// <summary>
+  /// The services to provide to the scene.
+  /// </summary>
+  IServiceProvider Services { get; }
+
+  /// <summary>
+  /// The <see cref="IPhysicsWorld"/> connected to the scene.
+  /// </summary>
+  IPhysicsWorld? Physics { get; }
+}

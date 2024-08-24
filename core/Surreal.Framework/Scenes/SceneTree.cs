@@ -2,7 +2,6 @@
 using Surreal.Collections.Slices;
 using Surreal.Graphics.Rendering;
 using Surreal.Physics;
-using Surreal.Timing;
 
 namespace Surreal.Scenes;
 
@@ -20,27 +19,10 @@ public sealed class SceneTree : SceneNode, IScene, ISceneRoot, ISceneProvider
   public new required IServiceProvider Services { get; init; }
 
   /// <inheritdoc/>
-  public IRenderPipeline? Renderer { get; set; }
-
-  /// <inheritdoc/>
   public IPhysicsWorld? Physics { get; set; }
 
-  /// <inheritdoc/>
-  public new void Update(DeltaTime deltaTime)
-  {
-    Physics?.Tick(deltaTime);
-
-    base.Update(deltaTime);
-  }
-
-  /// <inheritdoc/>
-  public void Render(DeltaTime deltaTime)
-  {
-    Renderer?.Render(this, deltaTime);
-  }
-
   /// <summary>
-  /// Resets the tree and removes all of it's children.
+  /// Resets the tree and removes all of its children.
   /// </summary>
   public void Reset()
   {
@@ -55,7 +37,7 @@ public sealed class SceneTree : SceneNode, IScene, ISceneRoot, ISceneProvider
   }
 
   /// <inheritdoc/>
-  protected override bool TryResolveRoot(out ISceneRoot result)
+  internal override bool TryResolveRoot(out ISceneRoot result)
   {
     result = this;
     return true;

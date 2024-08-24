@@ -62,7 +62,7 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   /// <summary>
   /// The root of the entire scene, which provides services and asset access.
   /// </summary>
-  public ISceneRoot Root
+  internal ISceneRoot Root
   {
     get => _root ?? throw new InvalidOperationException("A scene root is not available");
     private set => _root = value;
@@ -78,13 +78,13 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   /// </summary>
   public IAssetProvider Assets => Root.Assets;
 
-  public bool IsAwake     => _states.HasFlag(SceneNodeStates.Awake);
-  public bool IsReady     => _states.HasFlag(SceneNodeStates.Ready);
-  public bool IsInTree    => _states.HasFlag(SceneNodeStates.InTree);
+  public bool IsAwake => _states.HasFlag(SceneNodeStates.Awake);
+  public bool IsReady => _states.HasFlag(SceneNodeStates.Ready);
+  public bool IsInTree => _states.HasFlag(SceneNodeStates.InTree);
   public bool IsDestroyed => _states.HasFlag(SceneNodeStates.Destroyed);
 
   // messages that are flowing either to or from this node
-  internal Queue<Message> MessagesForParents  { get; } = new();
+  internal Queue<Message> MessagesForParents { get; } = new();
   internal Queue<Message> MessagesForChildren { get; } = new();
 
   /// <summary>
@@ -100,7 +100,7 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   /// <summary>
   /// Attempts to find the root <see cref="SceneTree"/> of the hierarchy.
   /// </summary>
-  protected virtual bool TryResolveRoot(out ISceneRoot result)
+  internal virtual bool TryResolveRoot(out ISceneRoot result)
   {
     if (Parent is { _root: { } root })
     {
@@ -173,9 +173,9 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   }
 
   /// <summary>
-  /// Updates this node and its children.
+  /// Publishes an event to this node and its children.
   /// </summary>
-  public void Update(DeltaTime deltaTime)
+  public void Publish<T>(T @event) where T : ISceneEvent
   {
     OnAwakeIfNecessary();
     OnEnterTreeIfNecessary();
@@ -184,14 +184,21 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
 
     OnReadyIfNecessary();
 
-    OnUpdate(deltaTime);
+    OnEventReceived(@event);
 
     foreach (var child in Children)
     {
-      child.Update(deltaTime);
+      child.Publish(@event);
     }
 
     DispatchMessagesToParents();
+  }
+
+  /// <summary>
+  /// Invoked when an event is sent to this node.
+  /// </summary>
+  protected virtual void OnEventReceived<T>(T @event) where T: ISceneEvent
+  {
   }
 
   /// <summary>

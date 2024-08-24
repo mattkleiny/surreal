@@ -21,7 +21,7 @@ public class SceneNode2DTests
       Children = { child1, child2 }
     };
 
-    node.Update(DeltaTime.Default);
+    node.Publish(new TickEvent(DeltaTime.Default));
 
     child1.GlobalPosition.Should().Be(Vector2.One);
     child1.GlobalRotation.Should().Be(Angle.FromDegrees(45f));
@@ -30,7 +30,7 @@ public class SceneNode2DTests
 
     node.GlobalPosition = -Vector2.One * 4f;
 
-    node.Update(DeltaTime.Default);
+    node.Publish(new TickEvent(DeltaTime.Default));
 
     child1.GlobalPosition.Should().Be(-Vector2.One * 4f);
     child1.GlobalRotation.Should().Be(Angle.FromDegrees(45f));

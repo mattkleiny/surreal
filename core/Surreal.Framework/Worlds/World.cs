@@ -11,7 +11,7 @@ public readonly record struct RenderEvent(DeltaTime DeltaTime);
 /// </summary>
 public interface IEntityQuery
 {
-  internal IEnumerable<EntityHandle> EnumerateEntities(ComponentInfo?[] componentInfos);
+  internal IEnumerable<EntityHandle> QueryEntities(ComponentInfo?[] componentInfos);
 
   internal object? ResolveComponent(EntityHandle entity, Type type);
   internal object? ResolveService(Type type);
@@ -252,7 +252,7 @@ public sealed class World(IServiceProvider services)
   /// </summary>
   private sealed class EntityQuery(World world, IServiceProvider services) : IEntityQuery
   {
-    public IEnumerable<EntityHandle> EnumerateEntities(ComponentInfo?[] componentInfos)
+    public IEnumerable<EntityHandle> QueryEntities(ComponentInfo?[] componentInfos)
     {
       throw new NotImplementedException();
     }
@@ -266,7 +266,6 @@ public sealed class World(IServiceProvider services)
     {
       return services.GetService(serviceType);
     }
-
   }
 }
 
@@ -311,8 +310,8 @@ public static class WorldExtensions
       {
         var parameterInfo = parameterInfos[i];
         var parameterType = parameterInfo.ParameterType;
-        
-        if (parameterType.IsByRef) 
+
+        if (parameterType.IsByRef)
         {
           parameterType = parameterType.GetElementType()!;
         }
@@ -338,7 +337,7 @@ public static class WorldExtensions
 
       return new AnonymousSystem<TEvent>((@event, query) =>
       {
-        foreach (var entity in query.EnumerateEntities(componentInfos))
+        foreach (var entity in query.QueryEntities(componentInfos))
         {
           for (var i = 0; i < parameterInfos.Length; i++)
           {
@@ -355,7 +354,7 @@ public static class WorldExtensions
               // forward the event payload in
               parameters[i] = @event;
             }
-            else 
+            else
             {
             // otherwise, query for the service type
               parameters[i] = query.ResolveService(parameterType);

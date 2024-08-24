@@ -15,7 +15,7 @@ public class SceneNodeTests
       Services = new ServiceRegistry()
     };
 
-    scene.Update(DeltaTime.Default);
+    scene.Publish(new TickEvent(DeltaTime.Default));
 
     var node = new SceneNode();
 
@@ -35,7 +35,7 @@ public class SceneNodeTests
       Services = new ServiceRegistry()
     };
 
-    scene.Update(DeltaTime.Default);
+    scene.Publish(new TickEvent(DeltaTime.Default));
 
     var node = new SceneNode();
 
@@ -57,7 +57,7 @@ public class SceneNodeTests
       Services = new ServiceRegistry()
     };
 
-    scene.Update(DeltaTime.Default);
+    scene.Publish(new TickEvent(DeltaTime.Default));
 
     var node = new SceneNode();
 
@@ -86,7 +86,7 @@ public class SceneNodeTests
 
     node.IsReady.Should().BeFalse();
 
-    scene.Update(DeltaTime.Default);
+    scene.Publish(new TickEvent(DeltaTime.Default));
 
     node.IsReady.Should().BeTrue();
   }
@@ -116,7 +116,7 @@ public class SceneNodeTests
 
     scene.Children[0].Destroy();
 
-    scene.Update(DeltaTime.Default);
+    scene.Publish(new TickEvent(DeltaTime.Default));
   }
 
   [Test]
