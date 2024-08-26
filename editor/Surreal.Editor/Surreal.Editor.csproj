@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>The editor host for the Surreal project.</Description>
-    <StartWorkingDirectory>$(MSBuildThisFileDirectory)</StartWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />

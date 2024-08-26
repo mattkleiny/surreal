@@ -94,6 +94,7 @@ internal sealed class GameViewportViewModel : EditorViewModel
   public GameViewportViewModel(GameViewport viewport)
   {
     Viewport = viewport;
+
     _context = new EditorHostingContext(this);
 
     StartGame = new EditorCommand(OnStartGame, () => !IsRunning);

@@ -49,7 +49,7 @@ public sealed record EditorConfiguration
 /// Entry point for the editor.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class Editor
+public sealed class Editor
 {
   private static readonly ILog Log = LogFactory.GetLog<Editor>();
 
