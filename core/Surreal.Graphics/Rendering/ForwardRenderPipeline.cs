@@ -2,7 +2,6 @@
 using Surreal.Diagnostics.Gizmos;
 using Surreal.Graphics.Materials;
 using Surreal.Graphics.Meshes;
-using Surreal.Graphics.Effects;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 
@@ -46,9 +45,9 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   public Color ClearColor { get; set; } = Color.Black;
 
   /// <summary>
-  /// A list of <see cref="IPostProcessingEffect"/>s to apply.
+  /// A list of <see cref="IRenderEffect"/>s to apply.
   /// </summary>
-  public List<IPostProcessingEffect> Effects { get; } = new();
+  public List<IRenderEffect> Effects { get; } = new();
 
   public override void Dispose()
   {
@@ -175,7 +174,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
       DepthStencilFormat = DepthStencilFormat.None
     });
 
-    private PostProcessingContext? _context;
+    private RenderEffectContext? _context;
 
     public override bool IsEnabled => pipeline.EnableEffects;
 
@@ -183,7 +182,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
     {
       base.OnBeginViewport(in frame, viewport);
 
-      _context ??= new PostProcessingContext(_effectTarget1, _effectTarget2);
+      _context ??= new RenderEffectContext(_effectTarget1, _effectTarget2);
       _context?.Reset();
     }
 

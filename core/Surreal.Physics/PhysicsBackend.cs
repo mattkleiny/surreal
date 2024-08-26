@@ -169,6 +169,11 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       return _bodies[handle].Position;
     }
 
+    public void SetBodyPosition(PhysicsHandle handle, Vector3 position)
+    {
+      _bodies[handle].Position = position;
+    }
+
     public void DeleteBody(PhysicsHandle handle)
     {
       _bodies.Remove(handle);

@@ -43,5 +43,6 @@ public interface IPhysicsWorld3d : IPhysicsWorld
   // bodies
   PhysicsHandle CreateBody(Vector3 initialPosition);
   Vector3 GetBodyPosition(PhysicsHandle handle);
+  void SetBodyPosition(PhysicsHandle handle, Vector3 position);
   void DeleteBody(PhysicsHandle handle);
 }

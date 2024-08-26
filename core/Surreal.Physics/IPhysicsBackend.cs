@@ -92,6 +92,10 @@ public interface IPhysicsBackend
         return Vector3.Zero;
       }
 
+      public void SetBodyPosition(PhysicsHandle handle, Vector3 position)
+      {
+      }
+
       public void DeleteBody(PhysicsHandle handle)
       {
       }
