@@ -13,8 +13,8 @@ public sealed class ScriptingModule : IServiceModule
 {
   public void RegisterServices(IServiceRegistry registry)
   {
-    registry.AddService<IScriptLanguage, LoxScriptLanguage>();
+    // registry.AddService<IScriptLanguage, LoxScriptLanguage>();
 
-    registry.AddService<IAssetLoader, ScriptModuleLoader>();
+    // registry.AddService<IAssetLoader, ScriptModuleLoader>();
   }
 }
