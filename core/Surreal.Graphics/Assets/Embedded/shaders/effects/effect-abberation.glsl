@@ -1,4 +1,4 @@
-﻿// A chromatic aberration shader that shifts the red and blue channels in opposite directions.
+﻿// An effect shader that shifts the red and blue channels in opposite directions.
 
 #version 330 core
 
