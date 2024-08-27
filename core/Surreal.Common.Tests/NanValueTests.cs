@@ -1,3 +1,5 @@
+using Surreal.Memory;
+
 namespace Surreal;
 
 public class NanBoxTests

@@ -1,4 +1,5 @@
 using Surreal.IO;
+using Surreal.Text;
 
 namespace Surreal.Scripting.Languages.Lox;
 
@@ -18,24 +19,85 @@ public sealed class LoxScriptLanguage : IScriptLanguage
 
   public async Task<ScriptModule> ParseAsync(TextReader reader)
   {
-    var scanner = new Scanner(reader);
-    var parser = new Parser(await scanner.ScanTokensAsync());
+    var scanner = new LoxScanner(reader);
+    var parser = new LoxParser(await scanner.ScanTokensAsync());
 
     return parser.ParseModule();
   }
 }
 
-file sealed class Scanner(TextReader reader)
+/// <summary>
+/// Scanner for the Lox language.
+/// </summary>
+file sealed class LoxScanner(TextReader reader)
 {
-  public Task<List<Token>> ScanTokensAsync()
+  public async Task<List<Token>> ScanTokensAsync()
+  {
+    var tokens = new List<Token>();
+    var currentLine = 0;
+
+    await foreach (var line in reader.ReadLinesAsync())
+    {
+      currentLine += 1;
+
+      tokens.AddRange(ScanLine(line, currentLine));
+    }
+
+    return tokens;
+  }
+
+  private IEnumerable<Token> ScanLine(StringSpan line, int currentLine)
   {
     throw new NotImplementedException();
   }
 }
 
-file sealed class Parser(List<Token> tokens)
+/// <summary>
+/// Parser for the Lox language.
+/// </summary>
+file sealed class LoxParser(List<Token> tokens)
 {
   public ScriptModule ParseModule()
+  {
+    throw new NotImplementedException();
+  }
+
+  private Statement ParseStatement()
+  {
+    throw new NotImplementedException();
+  }
+
+  private Expression ParseExpression()
+  {
+    throw new NotImplementedException();
+  }
+
+  private Expression ParsePrimary()
+  {
+    throw new NotImplementedException();
+  }
+
+  private Expression ParseUnary()
+  {
+    throw new NotImplementedException();
+  }
+
+  private Expression ParseBinary(Expression left, BinaryOp op)
+  {
+    throw new NotImplementedException();
+  }
+
+  private Expression ParseGrouping()
+  {
+    throw new NotImplementedException();
+  }
+
+  private Expression ParseLiteral()
+  {
+    throw new NotImplementedException();
+  }
+
+  private Expression ParseVariable()
   {
     throw new NotImplementedException();
   }
