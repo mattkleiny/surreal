@@ -1,6 +1,7 @@
 using Silk.NET.Core.Native;
 using Silk.NET.WebGPU;
 using Silk.NET.Windowing;
+using Surreal.Collections;
 using Surreal.Collections.Slices;
 using Surreal.Colors;
 using Surreal.Diagnostics.Logging;
@@ -35,6 +36,9 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   private Adapter* _adapter;
   private Device* _device;
   private readonly Queue* _queue;
+
+  private readonly Arena<BufferState> _buffers = [];
+  private readonly Arena<TextureState> _textures = [];
 
   public SilkGraphicsDeviceWGPU(IWindow window, GraphicsMode mode)
   {
@@ -137,13 +141,13 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       Buffer = wgpu.DeviceCreateBuffer(_device, &descriptor)
     };
 
-    return GraphicsHandle.FromObject(state);
+    return GraphicsHandle.FromArenaIndex(_buffers.Add(state));
   }
 
   public GraphicsTask<Memory<T>> ReadBufferDataAsync<T>(GraphicsHandle handle, BufferType type) where T : unmanaged
   {
     var task = GraphicsTask.Create<Memory<T>>();
-    var state = handle.AsObject<BufferState>();
+    var state = _buffers[handle];
 
     var size = (uint)wgpu.BufferGetSize(state.Buffer);
     var memory = new Memory<T>(GC.AllocateArray<T>((int)(size / sizeof(T))));
@@ -181,7 +185,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   public GraphicsTask WriteBufferDataAsync<T>(GraphicsHandle handle, BufferType type, uint offset, ReadOnlySpan<T> span, BufferUsage usage) where T : unmanaged
   {
     var task = GraphicsTask.Create();
-    var state = handle.AsObject<BufferState>();
+    var state = _buffers[handle];
 
     var currentSize = wgpu.BufferGetSize(state.Buffer);
     var targetSize = (nuint)(span.Length * sizeof(T));
@@ -232,7 +236,10 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void DeleteBuffer(GraphicsHandle handle)
   {
-    handle.Dispose();
+    if (_buffers.TryRemove(handle, out var state))
+    {
+      wgpu.BufferRelease(state.Buffer);
+    }
   }
 
   public GraphicsHandle CreateTexture(TextureFilterMode filterMode, TextureWrapMode wrapMode)
@@ -243,7 +250,7 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
       WrapMode = wrapMode
     };
 
-    return GraphicsHandle.FromObject(state);
+    return GraphicsHandle.FromArenaIndex(_textures.Add(state));
   }
 
   public GraphicsTask<Memory<T>> ReadTextureDataAsync<T>(GraphicsHandle handle, int mipLevel = 0) where T : unmanaged
@@ -268,21 +275,21 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
 
   public void SetTextureFilterMode(GraphicsHandle handle, TextureFilterMode mode)
   {
-    var state = handle.AsObject<TextureState>();
+    var state = _textures[handle];
 
     state.FilterMode = mode;
   }
 
   public void SetTextureWrapMode(GraphicsHandle handle, TextureWrapMode mode)
   {
-    var state = handle.AsObject<TextureState>();
+    var state = _textures[handle];
 
     state.WrapMode = mode;
   }
 
   public void DeleteTexture(GraphicsHandle handle)
   {
-    handle.Dispose();
+    _textures.Remove(handle);
   }
 
   public GraphicsHandle CreateMesh(GraphicsHandle vertices, GraphicsHandle indices, VertexDescriptorSet descriptors)
@@ -471,15 +478,6 @@ internal sealed unsafe class SilkGraphicsDeviceWGPU : IGraphicsDevice
   private sealed class BufferState
   {
     public required Buffer* Buffer { get; set; }
-  }
-
-  /// <summary>
-  /// Internal state for a shader.
-  /// </summary>
-  private sealed class ShaderState
-  {
-    public required ShaderModule* VertexModule { get; init; }
-    public required ShaderModule* FragmentModule { get; init; }
   }
 
   /// <summary>

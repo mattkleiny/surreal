@@ -3,20 +3,20 @@
 /// <summary>
 /// A safe index into an item in an <see cref="Arena{T}" />.
 /// </summary>
-public readonly record struct ArenaIndex(ushort Id, uint Generation)
+public readonly record struct ArenaIndex(uint Id, uint Generation)
 {
   public static ArenaIndex Invalid => default;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ArenaIndex FromUlong(ulong value)
   {
-    return new ArenaIndex((ushort)value, (uint)(value >> 32));
+    return new ArenaIndex((uint)value, (uint)(value >> 32));
   }
 
   public bool IsInvalid => Id == 0;
   public bool IsValid => Id != 0;
 
-  public int Offset => Id - 1;
+  public uint Offset => Id - 1;
 
   public override string ToString()
   {
