@@ -58,7 +58,7 @@ public class RingBufferTests
 
     var results = buffer.ToArray();
 
-    results.Should().BeEquivalentTo(new[] { 999, 998, 997 });
+    results.Should().BeEquivalentTo([999, 998, 997]);
   }
 
   [Test]

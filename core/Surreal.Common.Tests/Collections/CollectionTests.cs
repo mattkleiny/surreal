@@ -17,8 +17,8 @@ public class CollectionTests
   {
     var collection = new Collection<int> { 1, 2, 3, 4, 5 };
 
-    collection[..2].Should().BeEquivalentTo(new[] { 1, 2 });
-    collection[1..^1].Should().BeEquivalentTo(new[] { 2, 3, 4 });
+    collection[..2].Should().BeEquivalentTo([1, 2]);
+    collection[1..^1].Should().BeEquivalentTo([2, 3, 4]);
   }
 
   [Test]

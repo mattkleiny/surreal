@@ -8,7 +8,7 @@ namespace Surreal.Input;
 /// </summary>
 internal sealed class SilkInputBackend : IInputBackend
 {
-  private readonly List<IInputDevice> _devices = new();
+  private readonly List<IInputDevice> _devices = [];
 
   /// <summary>
   /// A <see cref="IInputBackend"/> implementation that uses Silk.NET.

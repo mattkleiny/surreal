@@ -47,7 +47,7 @@ public class ForwardRenderPipeline : MultiPassRenderPipeline
   /// <summary>
   /// A list of <see cref="IRenderEffect"/>s to apply.
   /// </summary>
-  public List<IRenderEffect> Effects { get; } = new();
+  public List<IRenderEffect> Effects { get; } = [];
 
   public override void Dispose()
   {

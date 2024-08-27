@@ -72,7 +72,7 @@ public interface IInputObserver
 /// </summary>
 public sealed class InputEventSubject : IInputObservable
 {
-  private readonly List<IInputObserver> _observers = new();
+  private readonly List<IInputObserver> _observers = [];
 
   /// <inheritdoc/>
   public void Subscribe(IInputObserver observer)

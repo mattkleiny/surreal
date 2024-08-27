@@ -103,13 +103,12 @@ public sealed class SpriteBatch : IDisposable
     // compute UV texture bounds
     var uv = region.UV;
 
-    AddQuad(color, uv, stackalloc Vector2[]
-    {
+    AddQuad(color, uv, [
       Vector2.Transform(new Vector2(-0.5f, -0.5f), transform),
       Vector2.Transform(new Vector2(-0.5f, 0.5f), transform),
       Vector2.Transform(new Vector2(0.5f, 0.5f), transform),
       Vector2.Transform(new Vector2(0.5f, -0.5f), transform)
-    });
+    ]);
   }
 
   /// <summary>
@@ -138,13 +137,12 @@ public sealed class SpriteBatch : IDisposable
     // compute UV texture bounds
     var uv = region.UV;
 
-    AddQuad(color, uv, stackalloc Vector2[4]
-    {
+    AddQuad(color, uv, [
       new(topLeft.X, bottomRight.Y),
       new(topLeft.X, topLeft.Y),
       new(bottomRight.X, topLeft.Y),
       new(bottomRight.X, bottomRight.Y)
-    });
+    ]);
   }
 
   /// <summary>

@@ -621,7 +621,7 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
       );
     }
 
-    gl.DrawBuffers(stackalloc GLEnum[] { GLEnum.ColorAttachment0 });
+    gl.DrawBuffers([GLEnum.ColorAttachment0]);
 
     if (gl.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != GLEnum.FramebufferComplete)
     {

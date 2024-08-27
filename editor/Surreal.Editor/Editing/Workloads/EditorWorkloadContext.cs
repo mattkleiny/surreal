@@ -8,10 +8,10 @@ namespace Surreal.Editing.Workloads;
 /// </summary>
 public sealed class EditorWorkloadContext : IEditorWorkloadConfiguration
 {
-  private readonly HashSet<Type> _documentTypes = new();
+  private readonly HashSet<Type> _documentTypes = [];
   private readonly Dictionary<Type, IEditorDocumentFormat> _formats = new();
   private readonly Dictionary<Type, Type> _documentEditors = new();
-  private readonly List<MenuCommand> _menuCommands = new();
+  private readonly List<MenuCommand> _menuCommands = [];
 
   public EditorWorkloadContext(EditorConfiguration configuration)
   {

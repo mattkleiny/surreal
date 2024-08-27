@@ -6,12 +6,11 @@ public class EnumerationTests
   public void it_should_build_a_valid_set_of_all_members()
   {
     TestValue.All.Count.Should().Be(3);
-    TestValue.All.Should().BeEquivalentTo(new[]
-    {
+    TestValue.All.Should().BeEquivalentTo([
       TestValue.One,
       TestValue.Two,
       TestValue.Three
-    });
+    ]);
   }
 
   [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
