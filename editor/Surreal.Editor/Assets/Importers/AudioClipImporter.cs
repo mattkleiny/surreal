@@ -1,7 +1,7 @@
 ﻿using Surreal.Audio.Clips;
 using Surreal.IO;
 
-namespace Surreal.Editing.Assets.Importers;
+namespace Surreal.Assets.Importers;
 
 internal sealed class AudioClipImporter : AssetImporter<AudioClip>
 {

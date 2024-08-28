@@ -1,8 +1,7 @@
-﻿using Surreal.Assets;
-using Surreal.IO;
+﻿using Surreal.IO;
 using Surreal.Utilities;
 
-namespace Surreal.Editing.Assets;
+namespace Surreal.Assets;
 
 /// <summary>
 /// An asset importer is capable of loading raw assets from disk.

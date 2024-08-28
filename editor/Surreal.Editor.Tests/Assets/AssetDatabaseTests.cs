@@ -1,4 +1,4 @@
-﻿using Surreal.Editing.Assets;
+﻿using Surreal.Build.Assets;
 using Surreal.IO;
 
 namespace Surreal.Assets;

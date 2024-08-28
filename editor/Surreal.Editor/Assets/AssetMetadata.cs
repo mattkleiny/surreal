@@ -1,4 +1,4 @@
-﻿namespace Surreal.Editing.Assets;
+﻿namespace Surreal.Assets;
 
 /// <summary>
 /// Metadata about how to read and process an asset.

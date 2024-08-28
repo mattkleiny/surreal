@@ -1,7 +1,7 @@
 ﻿using Surreal.Graphics.Textures;
 using Surreal.IO;
 
-namespace Surreal.Editing.Assets.Importers;
+namespace Surreal.Assets.Importers;
 
 internal sealed class TextureImporter : AssetImporter<Texture>
 {

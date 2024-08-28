@@ -1,10 +1,10 @@
-﻿using Surreal.Assets;
+﻿using Surreal.Build.Assets;
 using Surreal.Collections;
 using Surreal.Diagnostics.Logging;
 using Surreal.IO;
 using Surreal.Utilities;
 
-namespace Surreal.Editing.Assets;
+namespace Surreal.Assets;
 
 /// <summary>
 /// An asset database is a collection of files and folders that are used to create a game.

@@ -1,4 +1,4 @@
-﻿namespace Surreal.Editing.Assets;
+﻿namespace Surreal.Build.Assets;
 
 /// <summary>
 /// Possible targets for the <see cref="IAssetBaker"/> to bake to.

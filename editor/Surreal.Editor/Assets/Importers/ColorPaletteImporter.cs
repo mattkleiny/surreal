@@ -1,7 +1,7 @@
 ﻿using Surreal.Colors;
 using Surreal.IO;
 
-namespace Surreal.Editing.Assets.Importers;
+namespace Surreal.Assets.Importers;
 
 internal sealed class ColorPaletteImporter : AssetImporter<ColorPalette>
 {

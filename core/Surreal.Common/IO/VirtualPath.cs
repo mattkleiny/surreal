@@ -14,6 +14,16 @@ public readonly record struct VirtualPath(StringSpan Scheme, StringSpan Target)
   public string Extension => Path.GetExtension(Target.Source)!;
 
   /// <summary>
+  /// Combines the given path with the target.
+  /// <para/>
+  /// The scheme of the original path is preserved.
+  /// </summary>
+  public static VirtualPath Combine(VirtualPath path, string target)
+  {
+    return path with { Target = Path.Combine(path.Target.ToString(), target) };
+  }
+
+  /// <summary>
   /// Parses the given potential URI into a <see cref="VirtualPath" />.
   /// </summary>
   public static VirtualPath Parse(string uri)

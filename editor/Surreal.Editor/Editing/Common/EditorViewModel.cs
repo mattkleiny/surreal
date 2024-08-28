@@ -1,4 +1,4 @@
-﻿using Surreal.Editing.Assets;
+﻿using Surreal.Assets;
 using Surreal.Editing.Projects;
 
 namespace Surreal.Editing.Common;

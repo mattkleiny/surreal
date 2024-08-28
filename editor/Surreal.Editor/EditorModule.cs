@@ -1,5 +1,5 @@
-﻿using Surreal.Editing.Assets;
-using Surreal.Editing.Assets.Importers;
+﻿using Surreal.Assets;
+using Surreal.Assets.Importers;
 using Surreal.Services;
 
 namespace Surreal;
