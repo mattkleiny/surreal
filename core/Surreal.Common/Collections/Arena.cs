@@ -236,6 +236,11 @@ public sealed class Arena<T> : IEnumerable<T>
     return GetEnumerator();
   }
 
+  public IEnumerable<(ArenaIndex, T)> EnumerateWithId()
+  {
+    return new EnumeratorWithId(this);
+  }
+
   /// <summary>
   /// Manages a single entry in the <see cref="Arena{T}" />.
   /// </summary>
@@ -299,6 +304,68 @@ public sealed class Arena<T> : IEnumerable<T>
     public void Dispose()
     {
       // no-op
+    }
+  }
+
+  /// <summary>
+  /// Allows enumerating an <see cref="Arena{T}"/> with associated ids.
+  /// </summary>
+  public struct EnumeratorWithId : IEnumerator<(ArenaIndex, T)>, IEnumerable<(ArenaIndex, T)>
+  {
+    private readonly Arena<T> _arena;
+    private int _index;
+
+    public EnumeratorWithId(Arena<T> arena)
+      : this()
+    {
+      _arena = arena;
+      Reset();
+    }
+
+    public (ArenaIndex, T) Current
+    {
+      get
+      {
+        var (value, generation) = _arena._entries[_index];
+        var index = new ArenaIndex((uint)_index + 1, generation);
+
+        return (index, value);
+      }
+    }
+
+    object IEnumerator.Current => Current;
+
+    public bool MoveNext()
+    {
+      while (++_index < _arena._entries.Length)
+      {
+        if (_arena._entries[_index].IsOccupied)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    public void Reset()
+    {
+      _index = -1;
+    }
+
+    public void Dispose()
+    {
+      // no-op
+    }
+
+    public IEnumerator<(ArenaIndex, T)> GetEnumerator()
+    {
+      return this;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
     }
   }
 }
