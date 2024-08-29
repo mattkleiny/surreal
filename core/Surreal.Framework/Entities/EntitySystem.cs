@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+using System.Reflection.Emit;
 using Surreal.Collections;
 using Surreal.Collections.Slices;
 
@@ -21,41 +21,17 @@ public record struct EntityId(ulong Id)
 /// </summary>
 public sealed record ComponentType
 {
-  public static ComponentType FromType(Type type)
+  public static ComponentType FromType(Type type) => new()
   {
-    return new ComponentType(type.Name, ComponentTypeMask.FromType(type));
-  }
+    Name = type.Name
+  };
 
-  private ComponentType(string name, ComponentTypeMask mask)
+  public required string Name { get; init; }
+
+  public override string ToString()
   {
-    Name = name;
-    Mask = mask;
+    return $"ComponentType({Name})";
   }
-
-  /// <summary>
-  /// The name of the component type.
-  /// </summary>
-  public string Name { get; }
-
-  /// <summary>
-  /// The mask that represents this component type.
-  /// </summary>
-  internal ComponentTypeMask Mask { get; }
-
-  public override string ToString() => Name;
-}
-
-/// <summary>
-/// A mask that represents a set of component types.
-/// </summary>
-internal readonly record struct ComponentTypeMask(ulong Mask)
-{
-  public static ComponentTypeMask Empty => default;
-
-  public static ComponentTypeMask FromType(Type type) => new(1UL << type.GetHashCode());
-
-  public static ComponentTypeMask operator |(ComponentTypeMask left, ComponentTypeMask right) => new(left.Mask | right.Mask);
-  public static ComponentTypeMask operator &(ComponentTypeMask left, ComponentTypeMask right) => new(left.Mask & right.Mask);
 }
 
 /// <summary>
@@ -130,7 +106,7 @@ public interface IEntitySystem<TEvent> : IEntitySystem
   /// <summary>
   /// Executes the system with the given entity query provider in response to the given event.
   /// </summary>
-  void Execute(in TEvent @event, IEntityQueryProvider provider);
+  void Execute(in TEvent @event, EntityWorld world);
 }
 
 /// <summary>
@@ -140,15 +116,15 @@ public sealed class EntityQuery
 {
   public static EntityQuery Empty { get; } = new();
 
-  private ComponentTypeMask _includeMask;
-  private ComponentTypeMask _excludeMask;
+  private HashSet<ComponentType> _includeMask = [];
+  private HashSet<ComponentType> _excludeMask = [];
 
   public EntityQuery Include<TComponent>()
     where TComponent : IComponent => Include(TComponent.ComponentType);
 
   public EntityQuery Include(ComponentType type)
   {
-    _includeMask |= type.Mask;
+    _includeMask.Add(type);
     return this;
   }
 
@@ -157,36 +133,24 @@ public sealed class EntityQuery
 
   public EntityQuery Exclude(ComponentType type)
   {
-    _excludeMask |= type.Mask;
+    _excludeMask.Add(type);
     return this;
   }
 }
 
 /// <summary>
-/// A provider that can query entities.
-/// </summary>
-public interface IEntityQueryProvider
-{
-  /// <summary>
-  /// Matches entities based on the given query.
-  /// </summary>
-  ReadOnlySlice<EntityId> Query(EntityQuery query);
-
-  /// <summary>
-  /// Gets the component of the given type for the given entity.
-  /// </summary>
-  ref TComponent GetComponent<TComponent>(EntityId entity)
-    where TComponent : IComponent<TComponent>;
-}
-
-/// <summary>
 /// A world that contains entities and their components.
 /// </summary>
-public sealed class EntityWorld : IEntityQueryProvider
+public sealed class EntityWorld(IServiceProvider services)
 {
   private readonly Arena<Entity> _entities = new();
   private readonly Dictionary<ComponentType, IComponentStorage> _components = new();
   private readonly MultiDictionary<Type, IEntitySystem> _systems = new();
+
+  /// <summary>
+  /// The services available to the world.
+  /// </summary>
+  public IServiceProvider Services => services;
 
   public EntityId SpawnEntity()
   {
@@ -281,53 +245,64 @@ public sealed class EntityWorld : IEntityQueryProvider
 /// <summary>
 /// An <see cref="IEntitySystem"/> that processes entities based on a delegate.
 /// </summary>
-public sealed class DelegateEntitySystem<TEvent>(Delegate @delegate) : IEntitySystem<TEvent>
+internal sealed class DelegateEntitySystem<TEvent>(Delegate @delegate) : IEntitySystem<TEvent>
 {
-  private readonly EntityQuery _query = CreateQuery(@delegate);
+  private delegate void SystemDelegate(in TEvent @event, EntityWorld world);
 
-  public void Execute(in TEvent @event, IEntityQueryProvider provider)
+  // TODO: handle the case where there is no per-entity data
+
+  private readonly EntityQuery _query = CreateQuery(@delegate);
+  private readonly SystemDelegate _method = CreateMethod(@delegate);
+
+  public void Execute(in TEvent @event, EntityWorld world)
   {
-    // TODO: use an expression tree to compile the delegate instead
+    _method.Invoke(in @event, world);
+  }
+
+  private static SystemDelegate CreateMethod(Delegate @delegate)
+  {
+    // TODO: find a way to do this without emitting IL?
+    var method = new DynamicMethod(
+      name: "ExecuteSystem",
+      returnType: typeof(void),
+      parameterTypes: [typeof(TEvent), typeof(EntityWorld)],
+      owner: typeof(DelegateEntitySystem<TEvent>)
+    );
+
+    var builder = method.GetILGenerator();
     var parameterInfos = @delegate.Method.GetParameters();
-    var parameterFactory = new Func<EntityId, object?>[parameterInfos.Length];
 
     foreach (var parameterInfo in parameterInfos)
     {
-      // unwrap ref parameters
+      // unpack ref parameters
       var parameterType = parameterInfo.ParameterType;
-      if (parameterInfo.ParameterType.IsByRef)
+      if (parameterType.IsByRef)
       {
         parameterType = parameterType.GetElementType()!;
       }
 
-      if (parameterType == typeof(TEvent))
-      {
-        var copy = @event;
-        parameterFactory[parameterInfo.Position] = _ => copy;
-      }
-
+      // handle component inputs
       if (parameterType.IsAssignableTo(typeof(IComponent)))
       {
-        var callback =
-          typeof(IEntityQueryProvider)
-            .GetMethod(nameof(IEntityQueryProvider.GetComponent))!
-            .MakeGenericMethod(parameterType);
-
-        parameterFactory[parameterInfo.Position] = id => callback.Invoke(provider, [id]);
+        // inject the component
+      }
+      else if (parameterType == typeof(TEvent))
+      {
+        // inject the event
+      }
+      else if (parameterType == typeof(EntityWorld))
+      {
+        // inject the world
+      }
+      else
+      {
+        // inject the service
       }
     }
 
-    foreach (var entityId in provider.Query(_query))
-    {
-      var parameters = parameterFactory.Select(factory => factory(entityId)).ToArray();
-
-      @delegate.DynamicInvoke(parameters);
-    }
+    return (SystemDelegate)method.CreateDelegate(typeof(SystemDelegate));
   }
 
-  /// <summary>
-  /// Creates a <see cref="EntityQuery"/> for the parameters of the given delegate.
-  /// </summary>
   private static EntityQuery CreateQuery(Delegate @delegate)
   {
     var query = new EntityQuery();
