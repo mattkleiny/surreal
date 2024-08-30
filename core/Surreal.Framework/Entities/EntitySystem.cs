@@ -50,9 +50,6 @@ public interface IComponent
   static abstract ComponentType ComponentType { get; }
 }
 
-/// <summary>
-/// A strongly-typed <see cref="IComponent"/> that can be attached to an entity.
-/// </summary>
 public interface IComponent<TSelf> : IComponent
   where TSelf : IComponent<TSelf>
 {
@@ -71,11 +68,20 @@ public interface IComponent<TSelf> : IComponent
 /// <summary>
 /// Storage for components of a specific type.
 /// </summary>
-public interface IComponentStorage;
+public interface IComponentStorage
+{
+  /// <summary>
+  /// The type of component stored in this storage.
+  /// </summary>
+  ComponentType ComponentType { get; }
+}
 
 public interface IComponentStorage<TComponent> : IComponentStorage
   where TComponent : IComponent<TComponent>
 {
+  /// <inheritdoc/>
+  ComponentType IComponentStorage.ComponentType => TComponent.ComponentType;
+
   /// <summary>
   /// Determines if the given entity has a component of this type.
   /// </summary>
@@ -129,10 +135,19 @@ public sealed class SparseComponentStorage<TComponent> : IComponentStorage<TComp
 /// <summary>
 /// Represents a system that processes entities.
 /// </summary>
-public interface IEntitySystem;
+public interface IEntitySystem
+{
+  /// <summary>
+  /// The type of event that triggers this system.
+  /// </summary>
+  Type EventType { get; }
+}
 
 public interface IEntitySystem<TEvent> : IEntitySystem
 {
+  /// <inheritdoc/>
+  Type IEntitySystem.EventType => typeof(TEvent);
+
   /// <summary>
   /// Executes the system with the given entity query provider in response to the given event.
   /// </summary>
@@ -624,6 +639,5 @@ public static class EntityWorldExtensions
 
       return query;
     }
-
   }
 }
