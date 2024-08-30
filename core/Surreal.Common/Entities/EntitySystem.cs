@@ -1,5 +1,8 @@
 using Surreal.Collections;
 using Surreal.Collections.Slices;
+using Surreal.Diagnostics.Logging;
+using Surreal.Diagnostics.Profiling;
+using Surreal.Services;
 
 namespace Surreal.Entities;
 
@@ -138,6 +141,11 @@ public sealed class SparseComponentStorage<TComponent> : IComponentStorage<TComp
 public interface IEntitySystem
 {
   /// <summary>
+  /// The name of the system.
+  /// </summary>
+  string Name { get; }
+
+  /// <summary>
   /// The type of event that triggers this system.
   /// </summary>
   Type EventType { get; }
@@ -240,11 +248,34 @@ public sealed class EntityQuery
 /// <summary>
 /// A world that contains entities and their components.
 /// </summary>
-public sealed class EntityWorld(IServiceProvider services)
+public sealed class EntityWorld : IDisposable
 {
+  private static readonly ILog Log = LogFactory.GetLog<EntityWorld>();
+  private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<EntityWorld>();
+
   private readonly Arena<Entity> _entities = [];
   private readonly Dictionary<ComponentType, IComponentStorage> _components = [];
   private readonly MultiDictionary<Type, IEntitySystem> _systems = new();
+  private readonly IServiceProvider services;
+
+  /// <summary>
+  /// Builds a new <see cref="EntityWorld"/> from the given services.
+  /// <para/>
+  /// If <paramref name="includeRegisteredSystems"/> is true, all registered <see cref="IEntitySystem"/>s will be included.
+  /// </summary>
+  public EntityWorld(IServiceProvider services, bool includeRegisteredSystems = true)
+  {
+    this.services = services;
+
+    if (includeRegisteredSystems)
+    {
+      foreach (var system in services.GetServices<IEntitySystem>())
+      {
+        AddSystem(system);
+      }
+    }
+  }
+
 
   /// <summary>
   /// The services available to the world.
@@ -270,8 +301,11 @@ public sealed class EntityWorld(IServiceProvider services)
   public EntityId SpawnEntity()
   {
     var index = _entities.Add(new Entity());
+    var entity = EntityId.FromArenaIndex(index);
 
-    return EntityId.FromArenaIndex(index);
+    Log.Trace($"Spawned entity {entity}");
+
+    return entity;
   }
 
   /// <summary>
@@ -282,6 +316,8 @@ public sealed class EntityWorld(IServiceProvider services)
     if (_entities.TryGetValue(entityId, out var entity))
     {
       entity.IsAlive = false;
+
+      Log.Trace($"Marking entity {entityId} for despawn");
     }
   }
 
@@ -295,24 +331,30 @@ public sealed class EntityWorld(IServiceProvider services)
       if (!entity.IsAlive)
       {
         _entities.Remove(index);
+
+        Log.Trace($"Despawned entity {EntityId.FromArenaIndex(index)}");
       }
     }
   }
 
   /// <summary>
-  /// Adds a system to the world that processes the given <typeparamref name="TEvent"/>.
+  /// Adds a system to the world.
   /// </summary>
-  public void AddSystem<TEvent>(IEntitySystem system)
+  public void AddSystem(IEntitySystem system)
   {
-    _systems.Add(typeof(TEvent), system);
+    _systems.Add(system.EventType, system);
+
+    Log.Trace($"Added system {system.Name}");
   }
 
   /// <summary>
   /// Removes the given system from the world.
   /// </summary>
-  public void RemoveSystem<TEvent>(IEntitySystem system)
+  public void RemoveSystem(IEntitySystem system)
   {
-    _systems.Remove(typeof(TEvent), system);
+    _systems.Remove(system.EventType, system);
+
+    Log.Trace($"Removed system {system.Name}");
   }
 
   /// <summary>
@@ -320,9 +362,16 @@ public sealed class EntityWorld(IServiceProvider services)
   /// </summary>
   public void Execute<TEvent>(in TEvent @event)
   {
+    using var _ = Profiler.Track(nameof(TEvent));
+
     foreach (var system in _systems[typeof(TEvent)])
     {
-      var typedSystem = (IEntitySystem<TEvent>)system;
+      if (system is not IEntitySystem<TEvent> typedSystem)
+      {
+        throw new InvalidOperationException($"System {system.Name} does not process events of type {typeof(TEvent)}.");
+      }
+      
+      using var __ = Profiler.Track(system.Name);
 
       typedSystem.Execute(@event, this);
     }
@@ -388,6 +437,8 @@ public sealed class EntityWorld(IServiceProvider services)
     if (entity.ComponentTypes.Add(TComponent.ComponentType))
     {
       GetStorage<TComponent>().AddComponent(entityId, component);
+
+      Log.Trace($"Added component {TComponent.ComponentType} to entity {entityId}");
     }
   }
 
@@ -405,7 +456,33 @@ public sealed class EntityWorld(IServiceProvider services)
     if (entity.ComponentTypes.Remove(TComponent.ComponentType))
     {
       GetStorage<TComponent>().RemoveComponent(entityId);
+
+      Log.Trace($"Removed component {TComponent.ComponentType} from entity {entityId}");
     }
+  }
+
+  /// <inheritdoc/>
+  public void Dispose()
+  {
+    foreach (var system in _systems.Values)
+    {
+      if (system is IDisposable disposable)
+      {
+        disposable.Dispose();
+      }
+    }
+
+    foreach (var storage in _components.Values)
+    {
+      if (storage is IDisposable disposable)
+      {
+        disposable.Dispose();
+      }
+    }
+
+    _entities.Clear();
+    _components.Clear();
+    _systems.Clear();
   }
 
   /// <summary>
@@ -455,17 +532,25 @@ public sealed class EntityWorld(IServiceProvider services)
 public static class EntityWorldExtensions
 {
   /// <summary>
+  /// Registers a system that processes entities based on the given <see cref="Delegate"/>.
+  /// </summary>
+  public static void AddSystem<TEvent>(this IServiceRegistry registry, Delegate @delegate)
+  {
+    registry.AddService<IEntitySystem>(new DelegateEntitySystem<TEvent>(@delegate));
+  }
+
+  /// <summary>
   /// Adds a system to the world that processes entities based on the given <see cref="Delegate"/>.
   /// </summary>
   public static IDisposable AddSystem<TEvent>(this EntityWorld world, Delegate @delegate)
   {
     var system = new DelegateEntitySystem<TEvent>(@delegate);
 
-    world.AddSystem<TEvent>(system);
+    world.AddSystem(system);
 
     return Disposables.Anonymous(() =>
     {
-      world.RemoveSystem<TEvent>(system);
+      world.RemoveSystem(system);
     });
   }
 
@@ -480,6 +565,9 @@ public static class EntityWorldExtensions
     private delegate void SystemDelegate(in TEvent @event, EntityWorld world);
 
     private readonly SystemDelegate _method = BuildSystemDelegate(@delegate);
+
+    /// <inheritdoc/>
+    public string Name => @delegate.Method.Name;
 
     /// <inheritdoc/>
     public void Execute(in TEvent @event, EntityWorld world)

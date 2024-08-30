@@ -173,9 +173,9 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   }
 
   /// <summary>
-  /// Publishes an event to this node and its children.
+  /// Executes an event on this node and its children.
   /// </summary>
-  public void Publish<T>(T @event) where T : ISceneEvent
+  public void Execute<TEvent>(in TEvent @event) 
   {
     OnAwakeIfNecessary();
     OnEnterTreeIfNecessary();
@@ -188,7 +188,7 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
 
     foreach (var child in Children)
     {
-      child.Publish(@event);
+      child.Execute(@event);
     }
 
     DispatchMessagesToParents();
@@ -197,7 +197,7 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   /// <summary>
   /// Invoked when an event is sent to this node.
   /// </summary>
-  protected virtual void OnEventReceived<T>(T @event) where T: ISceneEvent
+  protected virtual void OnEventReceived<TEvent>(in TEvent @event)
   {
   }
 

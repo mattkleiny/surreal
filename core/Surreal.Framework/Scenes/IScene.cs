@@ -17,10 +17,9 @@ namespace Surreal.Scenes;
 public interface IScene : IRenderScene
 {
   /// <summary>
-  /// Sends an event to the scene.
+  /// Executes an event on the scene.
   /// </summary>
-  void Publish<T>(T @event)
-    where T : ISceneEvent;
+  void Execute<TEvent>(in TEvent @event);
 }
 
 /// <summary>

@@ -6,6 +6,8 @@ namespace Surreal.Scenes;
 
 public class SceneNodeTests
 {
+  private record struct TickEvent(DeltaTime DeltaTime);
+
   [Test]
   public void it_should_notify_node_of_attachment_to_active_tree()
   {
@@ -15,7 +17,7 @@ public class SceneNodeTests
       Services = new ServiceRegistry()
     };
 
-    scene.Publish(new TickEvent(DeltaTime.Default));
+    scene.Execute(new TickEvent(DeltaTime.Default));
 
     var node = new SceneNode();
 
@@ -35,7 +37,7 @@ public class SceneNodeTests
       Services = new ServiceRegistry()
     };
 
-    scene.Publish(new TickEvent(DeltaTime.Default));
+    scene.Execute(new TickEvent(DeltaTime.Default));
 
     var node = new SceneNode();
 
@@ -57,7 +59,7 @@ public class SceneNodeTests
       Services = new ServiceRegistry()
     };
 
-    scene.Publish(new TickEvent(DeltaTime.Default));
+    scene.Execute(new TickEvent(DeltaTime.Default));
 
     var node = new SceneNode();
 
@@ -86,7 +88,7 @@ public class SceneNodeTests
 
     node.IsReady.Should().BeFalse();
 
-    scene.Publish(new TickEvent(DeltaTime.Default));
+    scene.Execute(new TickEvent(DeltaTime.Default));
 
     node.IsReady.Should().BeTrue();
   }
@@ -116,7 +118,7 @@ public class SceneNodeTests
 
     scene.Children[0].Destroy();
 
-    scene.Publish(new TickEvent(DeltaTime.Default));
+    scene.Execute(new TickEvent(DeltaTime.Default));
   }
 
   [Test]

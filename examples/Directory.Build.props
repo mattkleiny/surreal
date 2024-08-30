@@ -19,6 +19,7 @@
     <Using Include="Surreal.Diagnostics.Gizmos" />
     <Using Include="Surreal.Diagnostics.Logging" />
     <Using Include="Surreal.Diagnostics.Profiling" />
+    <Using Include="Surreal.Entities" />
     <Using Include="Surreal.Graphics" />
     <Using Include="Surreal.Graphics.Images" />
     <Using Include="Surreal.Graphics.Materials" />
