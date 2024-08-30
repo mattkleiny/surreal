@@ -146,13 +146,47 @@ public sealed class EntityQuery
   /// </summary>
   public static EntityQuery Empty { get; } = new();
 
-  private HashSet<ComponentType> _includeMask = [];
-  private HashSet<ComponentType> _excludeMask = [];
+  private HashSet<ComponentType> _included = [];
+  private HashSet<ComponentType> _excluded = [];
 
   /// <summary>
   /// Determines if the query is empty.
   /// </summary>
-  public bool IsEmpty => _includeMask.Count == 0 && _excludeMask.Count == 0;
+  public bool IsEmpty => _included.Count == 0 && _excluded.Count == 0;
+
+  /// <summary>
+  /// Determines if the query includes entities with the given component type.
+  /// </summary>
+  public bool HasInclude(ComponentType type) => _included.Contains(type);
+
+  /// <summary>
+  /// Determines if the query excludes entities with the given component type.
+  /// </summary>
+  public bool HasExclude(ComponentType type) => _excluded.Contains(type);
+
+  /// <summary>
+  /// Determines if the query matches the given set of component types.
+  /// </summary>
+  public bool Matches(HashSet<ComponentType> componentTypes)
+  {
+    foreach (var include in _included)
+    {
+      if (!componentTypes.Contains(include))
+      {
+        return false;
+      }
+    }
+
+    foreach (var exclude in _excluded)
+    {
+      if (componentTypes.Contains(exclude))
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
 
   /// <summary>
   /// Adds a predicate to the query that includes entities with the given component type.
@@ -165,7 +199,7 @@ public sealed class EntityQuery
   /// </summary>
   public EntityQuery Include(ComponentType type)
   {
-    _includeMask.Add(type);
+    _included.Add(type);
     return this;
   }
 
@@ -180,7 +214,7 @@ public sealed class EntityQuery
   /// </summary>
   public EntityQuery Exclude(ComponentType type)
   {
-    _excludeMask.Add(type);
+    _excluded.Add(type);
     return this;
   }
 }
@@ -212,10 +246,7 @@ public sealed class EntityWorld(IServiceProvider services)
   /// </summary>
   public EntityId SpawnEntity()
   {
-    var index = _entities.Add(new Entity
-    {
-      IsAlive = true,
-    });
+    var index = _entities.Add(new Entity());
 
     return EntityId.FromArenaIndex(index);
   }
@@ -234,7 +265,7 @@ public sealed class EntityWorld(IServiceProvider services)
   /// <summary>
   /// Processes all deferred changes to the world.
   /// </summary>
-  public void FlushChanges() 
+  public void FlushChanges()
   {
     foreach (var (index, entity) in _entities.EnumerateWithId())
     {
@@ -275,54 +306,83 @@ public sealed class EntityWorld(IServiceProvider services)
   }
 
   /// <summary>
-  /// Determines if the given entity has a component of the given type.
-  /// </summary>
-  public bool HasComponent<TComponent>(EntityId entity)
-    where TComponent : IComponent<TComponent>
-  {
-    return GetStorage<TComponent>().HasComponent(entity);
-  }
-
-  /// <summary>
-  /// Gets the component of the given type for the given entity.
-  /// </summary>
-  public ref TComponent GetComponent<TComponent>(EntityId entity)
-    where TComponent : IComponent<TComponent>
-  {
-    return ref GetStorage<TComponent>().GetComponent(entity);
-  }
-
-  /// <summary>
-  /// Adds a component of the given type to the given entity.
-  /// </summary>
-  public void AddComponent<TComponent>(EntityId entity, TComponent component)
-    where TComponent : IComponent<TComponent>
-  {
-    GetStorage<TComponent>().AddComponent(entity, component);
-  }
-
-  /// <summary>
-  /// Removes the component of the given type from the given entity.
-  /// </summary>
-  public void RemoveComponent<TComponent>(EntityId entity)
-    where TComponent : IComponent<TComponent>
-  {
-    GetStorage<TComponent>().RemoveComponent(entity);
-  }
-
-  /// <summary>
   /// Queries for all entities that match the given query.
   /// </summary>
   public ReadOnlySlice<EntityId> Query(EntityQuery query)
   {
     var entityIds = new List<EntityId>();
 
-    foreach (var (index, _) in _entities.EnumerateWithId())
+    foreach (var (index, entity) in _entities.EnumerateWithId())
     {
-      entityIds.Add(EntityId.FromArenaIndex(index));
+      if (entity.IsMatch(query))
+      {
+        entityIds.Add(EntityId.FromArenaIndex(index));
+      }
     }
 
     return entityIds;
+  }
+
+  /// <summary>
+  /// Determines if the given entity has a component of the given type.
+  /// </summary>
+  public bool HasComponent<TComponent>(EntityId entityId)
+    where TComponent : IComponent<TComponent>
+  {
+    if (!_entities.Contains(entityId))
+    {
+      throw new InvalidOperationException($"Entity {entityId} does not exist.");
+    }
+
+    return GetStorage<TComponent>().HasComponent(entityId);
+  }
+
+  /// <summary>
+  /// Gets the component of the given type for the given entity.
+  /// </summary>
+  public ref TComponent GetComponent<TComponent>(EntityId entityId)
+    where TComponent : IComponent<TComponent>
+  {
+    if (!_entities.Contains(entityId))
+    {
+      throw new InvalidOperationException($"Entity {entityId} does not exist.");
+    }
+
+    return ref GetStorage<TComponent>().GetComponent(entityId);
+  }
+
+  /// <summary>
+  /// Adds a component of the given type to the given entity.
+  /// </summary>
+  public void AddComponent<TComponent>(EntityId entityId, TComponent component)
+    where TComponent : IComponent<TComponent>
+  {
+    if (!_entities.TryGetValue(entityId, out var entity))
+    {
+      throw new InvalidOperationException($"Entity {entityId} does not exist.");
+    }
+
+    if (entity.ComponentTypes.Add(TComponent.ComponentType))
+    {
+      GetStorage<TComponent>().AddComponent(entityId, component);
+    }
+  }
+
+  /// <summary>
+  /// Removes the component of the given type from the given entity.
+  /// </summary>
+  public void RemoveComponent<TComponent>(EntityId entityId)
+    where TComponent : IComponent<TComponent>
+  {
+    if (!_entities.TryGetValue(entityId, out var entity))
+    {
+      throw new InvalidOperationException($"Entity {entityId} does not exist.");
+    }
+
+    if (entity.ComponentTypes.Remove(TComponent.ComponentType))
+    {
+      GetStorage<TComponent>().RemoveComponent(entityId);
+    }
   }
 
   /// <summary>
@@ -344,9 +404,25 @@ public sealed class EntityWorld(IServiceProvider services)
   /// <summary>
   /// An entity in the world.
   /// </summary>
-  private sealed class Entity
+  private record struct Entity()
   {
-    public bool IsAlive { get; set; }
+    /// <summary>
+    /// True if this entity is still alive; false if it has been despawned and is pending removal.
+    /// </summary>
+    public bool IsAlive { get; set; } = true;
+
+    /// <summary>
+    /// All of the components attached to this entity.
+    /// </summary>
+    public HashSet<ComponentType> ComponentTypes { get; } = new();
+
+    /// <summary>
+    /// Determines if the entity matches the given query.
+    /// </summary>
+    public readonly bool IsMatch(EntityQuery query)
+    {
+      return query.Matches(ComponentTypes);
+    }
   }
 }
 

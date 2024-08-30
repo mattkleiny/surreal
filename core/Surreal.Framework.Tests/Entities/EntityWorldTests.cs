@@ -24,14 +24,14 @@ public class EntityWorldTests
     var entity = world.SpawnEntity();
 
     world.DespawnEntity(entity);
-    
+
     Assert.That(world.HasEntity(entity), Is.True);
-    
+
     world.FlushChanges();
 
     Assert.That(world.HasEntity(entity), Is.False);
   }
-  
+
   [Test]
   public void it_should_support_injection_of_manual_methods_with_optional_services()
   {
@@ -66,6 +66,34 @@ public class EntityWorldTests
     world.AddSystem<TickEvent>(SyncTransformAutomatic);
 
     world.Execute(new TickEvent(DeltaTime.Default));
+  }
+
+  [Test]
+  public void it_should_match_entities_based_on_inclusion_mask()
+  {
+    var services = new ServiceRegistry();
+    var world = new EntityWorld(services);
+
+    var entity = world.SpawnEntity();
+
+    world.AddComponent(entity, new Transform());
+
+    Assert.That(world.Query(new EntityQuery().Include<Transform>()), Has.Member(entity));
+    Assert.That(world.Query(new EntityQuery().Include<Rigidbody>()), Is.Empty);
+  }
+
+  [Test]
+  public void it_should_match_entities_based_on_exclusion_mask()
+  {
+    var services = new ServiceRegistry();
+    var world = new EntityWorld(services);
+
+    var entity = world.SpawnEntity();
+
+    world.AddComponent(entity, new Transform());
+
+    Assert.That(world.Query(new EntityQuery().Exclude<Transform>()), Is.Empty);
+    Assert.That(world.Query(new EntityQuery().Exclude<Rigidbody>()), Has.Member(entity));
   }
 
   private static readonly EntityQuery Query = new EntityQuery()
