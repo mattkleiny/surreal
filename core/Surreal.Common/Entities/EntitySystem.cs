@@ -8,6 +8,8 @@ using Surreal.Timing;
 namespace Surreal.Entities;
 
 // a bunch of built-in events that can be used to trigger systems
+public record struct Before<T>(T Event); // implicit before event wrapper
+public record struct After<T>(T Event); // implicit after event wrapper 
 public record struct TickEvent(DeltaTime DeltaTime);
 public record struct FixedTickEvent(DeltaTime DeltaTime);
 
@@ -366,6 +368,17 @@ public sealed class EntityWorld : IDisposable
   /// Executes the given event on all systems that process it.
   /// </summary>
   public void Execute<TEvent>(in TEvent @event)
+  {
+    // execute the event on all systems that process it
+    ExecuteEvent(new Before<TEvent>(@event));
+    ExecuteEvent(@event);
+    ExecuteEvent(new After<TEvent>(@event));
+  }
+
+  /// <summary>
+  /// Executes the given event on all systems that process it.
+  /// </summary>
+  private void ExecuteEvent<TEvent>(in TEvent @event)
   {
     using var _ = Profiler.Track(nameof(TEvent));
 
