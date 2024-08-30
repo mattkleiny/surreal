@@ -29,8 +29,6 @@ public interface IRenderPipeline : IDisposable
 /// </summary>
 public abstract class RenderPipeline(IGraphicsDevice device) : IRenderPipeline
 {
-  private readonly TimeStamp _startTime = TimeStamp.Now;
-
   /// <summary>
   /// The <see cref="RenderContextManager"/> for the pipeline.
   /// </summary>
@@ -41,11 +39,8 @@ public abstract class RenderPipeline(IGraphicsDevice device) : IRenderPipeline
   {
     var frame = new RenderFrame
     {
-      DeltaTime = deltaTime,
-      TotalTime = TimeStamp.Now - _startTime,
       Device = device,
       Contexts = Contexts,
-      Scene = scene,
       Viewport = device.GetViewportSize()
     };
 
