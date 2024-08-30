@@ -160,7 +160,7 @@ public sealed class ServiceRegistry : IServiceRegistry, IDisposable
 
   public void AddService(Type serviceType, Type implType, ServiceLifetime lifetime)
   {
-    Log.Trace($"Registering service {serviceType} with implementation {implType} and lifetime {lifetime}");
+    Log.Trace($"Registering service {serviceType} with {implType} lifetime {lifetime}");
 
     _registrations.Add(new ServiceRegistration
     {

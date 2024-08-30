@@ -26,7 +26,7 @@ public sealed class PhysicsModule : IServiceModule
 
   private void OnPhysicsTick(in FixedTick @event, IPhysicsWorld2d world)
   {
-    world.Tick(@event.DeltaTime);
+    world?.Tick(@event.DeltaTime);
   }
 
   private void SyncTransforms(in After<FixedTick> @event, ref Transform transform, Rigidbody rigidbody, IPhysicsWorld2d world)

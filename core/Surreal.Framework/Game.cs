@@ -246,13 +246,17 @@ public sealed class Game : IDisposable
 
       if (FixedTick != null)
       {
-        while (FixedTickRate <= time.DeltaTime)
+        var remainingTicks = time.DeltaTime;
+
+        while (remainingTicks > FixedTickRate)
         {
           FixedTick.Invoke(new GameTime
           {
             DeltaTime = FixedTickRate,
             TotalTime = time.TotalTime
           });
+
+          remainingTicks -= FixedTickRate;
         }
       }
     }

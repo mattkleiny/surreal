@@ -4,7 +4,6 @@ using Surreal.Graphics;
 using Surreal.Graphics.Images;
 using Surreal.Input;
 using Surreal.Services;
-using Surreal.Threading;
 using Surreal.Timing;
 
 namespace Surreal;
