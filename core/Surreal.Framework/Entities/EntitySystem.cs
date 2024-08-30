@@ -1,19 +1,24 @@
-using System.Reflection.Emit;
 using Surreal.Collections;
 using Surreal.Collections.Slices;
 
 namespace Surreal.Entities;
 
 /// <summary>
-/// Represents an entity in the world.
+/// Identifies an entity in the world.
 /// </summary>
 public record struct EntityId(ulong Id)
 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static EntityId FromArenaIndex(ArenaIndex index) => new(index);
+  public static EntityId FromArenaIndex(ArenaIndex index)
+  {
+    return new EntityId(index);
+  }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static implicit operator ArenaIndex(EntityId id) => ArenaIndex.FromUlong(id.Id);
+  public static implicit operator ArenaIndex(EntityId id)
+  {
+    return ArenaIndex.FromUlong(id.Id);
+  }
 }
 
 /// <summary>
@@ -24,17 +29,14 @@ public sealed record ComponentType
   /// <summary>
   /// Creates a new <see cref="ComponentType"/> from the given CLR type.
   /// </summary>
-  public static ComponentType FromType(Type type) => new()
-  {
-    Name = type.Name
-  };
+  public static ComponentType FromType(Type type) => new() { Name = type.Name };
 
+  /// <summary>
+  /// The name of the component type.
+  /// </summary>
   public required string Name { get; init; }
 
-  public override string ToString()
-  {
-    return $"ComponentType({Name})";
-  }
+  public override string ToString() => $"ComponentType({Name})";
 }
 
 /// <summary>
@@ -62,6 +64,7 @@ public interface IComponent<TSelf> : IComponent
     return new SparseComponentStorage<TSelf>();
   }
 
+  /// <inheritdoc/>
   static ComponentType IComponent.ComponentType => ComponentType.FromType(typeof(TSelf));
 }
 
@@ -569,7 +572,8 @@ public static class EntityWorldExtensions
           else if (parameterType == typeof(EntityId))
             continue; // ignore per-entity data, we'll populate that later
           else if (parameterType.IsAssignableTo(typeof(IComponent)))
-            continue; // ignore per-entity data, we'll populate that later
+            // build the generic method once, we'll populate the entity-specific data later
+            parameters[i] = typeof(EntityWorld).GetMethod(nameof(EntityWorld.GetComponent))!.MakeGenericMethod(parameterType);
           else
             parameters[i] = world.Services.GetService(parameterType);
         }
@@ -587,14 +591,8 @@ public static class EntityWorldExtensions
 
             if (parameterType == typeof(EntityId))
               parameters[i] = entity;
-            else if (parameterType.IsAssignableTo(typeof(IComponent)))
-            {
-              var genericMethod = typeof(EntityWorld)
-                .GetMethod(nameof(EntityWorld.GetComponent))!
-                .MakeGenericMethod(parameterType);
-
-              parameters[i] = genericMethod.Invoke(world, [entity]);
-            }
+            else if (parameterType.IsAssignableTo(typeof(IComponent)) && parameters[i] is MethodInfo getter)
+              parameters[i] = getter.Invoke(world, [entity]);
           }
 
           @delegate.DynamicInvoke(parameters);
