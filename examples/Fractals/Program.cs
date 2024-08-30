@@ -24,7 +24,7 @@ using var canvas = new PixelCanvas(graphics, 256, 144);
 var palette = await game.Assets.LoadAsync<ColorPalette>("resx://Fractals/Assets/Embedded/palettes/raspberry.pal");
 var constant = new Vector2(0.285f, 0.01f);
 
-game.Update += _ =>
+game.VariableTick += _ =>
 {
   if (keyboard.IsKeyPressed(Key.Escape))
   {

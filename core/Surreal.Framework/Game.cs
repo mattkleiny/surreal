@@ -130,6 +130,21 @@ public sealed class Game : IDisposable
   }
 
   /// <summary>
+  /// An event that is called every frame.
+  /// </summary>
+  public event Action<GameTime>? VariableTick;
+
+  /// <summary>
+  /// An event that is called at a fixed rate per frame.
+  /// </summary>
+  public event Action<GameTime>? FixedTick;
+
+  /// <summary>
+  /// An event that is called every frame to render the game.
+  /// </summary>
+  public event Action<GameTime>? Render;
+
+  /// <summary>
   /// The assets available to the game.
   /// </summary>
   public AssetManager Assets { get; } = new();
@@ -155,14 +170,9 @@ public sealed class Game : IDisposable
   public required IGraphicsDevice Graphics { get; init; }
 
   /// <summary>
-  /// A callback for updating the game.
+  /// The fixed tick rate for the game.
   /// </summary>
-  public event Action<GameTime>? Update;
-
-  /// <summary>
-  /// A callback for rendering the game.
-  /// </summary>
-  public event Action<GameTime>? Render;
+  public DeltaTime FixedTickRate { get; init; } = new DeltaTime(1f / 60f);
 
   /// <summary>
   /// Starts the game.
@@ -194,7 +204,19 @@ public sealed class Game : IDisposable
 
     if (Host.IsFocused)
     {
-      Update?.Invoke(time);
+      VariableTick?.Invoke(time);
+
+      if (FixedTick != null)
+      {
+        while (FixedTickRate <= time.DeltaTime)
+        {
+          FixedTick.Invoke(new GameTime
+          {
+            DeltaTime = FixedTickRate,
+            TotalTime = time.TotalTime
+          });
+        }
+      }
     }
   }
 

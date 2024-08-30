@@ -3,8 +3,13 @@ using Surreal.Collections.Slices;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Services;
+using Surreal.Timing;
 
 namespace Surreal.Entities;
+
+// a bunch of built-in events that can be used to trigger systems
+public record struct TickEvent(DeltaTime DeltaTime);
+public record struct FixedTickEvent(DeltaTime DeltaTime);
 
 /// <summary>
 /// Identifies an entity in the world.

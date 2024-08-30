@@ -24,7 +24,7 @@ var palette = await game.Assets.LoadAsync<ColorPalette>("resx://FallingSand/Asse
 
 using var canvas = new SandCanvas(graphics);
 
-game.Update += time =>
+game.FixedTick += time =>
 {
   var isLeftButtonDown = mouse.IsButtonDown(MouseButton.Left);
   var isRightButtonDown = mouse.IsButtonDown(MouseButton.Right);

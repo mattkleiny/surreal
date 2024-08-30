@@ -46,7 +46,7 @@ using var batch = new SpriteBatch(graphics)
 var bunnies = new List<Bunny>();
 var size = new Vector2(sprite.Value.Width, sprite.Value.Height);
 
-game.Update += time =>
+game.FixedTick += time =>
 {
   foreach (ref var bunny in bunnies.AsSpan())
   {
