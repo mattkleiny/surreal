@@ -25,15 +25,8 @@ public interface IPhysicsBackend
   [ExcludeFromCodeCoverage]
   private sealed class NullPhysicsBackend : IPhysicsBackend
   {
-    public IPhysicsWorld2d CreatePhysicsWorld2d()
-    {
-      return new NullPhysicsWorld2d();
-    }
-
-    public IPhysicsWorld3d CreatePhysicsWorld3d()
-    {
-      return new NullPhysicsWorld3d();
-    }
+    public IPhysicsWorld2d CreatePhysicsWorld2d() => new NullPhysicsWorld2d();
+    public IPhysicsWorld3d CreatePhysicsWorld3d() => new NullPhysicsWorld3d();
 
     /// <summary>
     /// A no-op implementation of <see cref="IPhysicsWorld2d"/>.
@@ -62,6 +55,15 @@ public interface IPhysicsBackend
       }
 
       public void SetBodyPosition(PhysicsHandle handle, Vector2 position)
+      {
+      }
+
+      public float GetBodyRotation(PhysicsHandle handle)
+      {
+        return 0;
+      }
+
+      public void SetBodyRotation(PhysicsHandle handle, float rotation)
       {
       }
 
@@ -97,6 +99,15 @@ public interface IPhysicsBackend
       }
 
       public void SetBodyPosition(PhysicsHandle handle, Vector3 position)
+      {
+      }
+
+      public Quaternion GetBodyRotation(PhysicsHandle handle)
+      {
+        return Quaternion.Identity;
+      }
+
+      public void SetBodyRotation(PhysicsHandle handle, Quaternion rotation)
       {
       }
 

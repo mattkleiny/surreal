@@ -30,6 +30,8 @@ public interface IPhysicsWorld2d : IPhysicsWorld
   PhysicsHandle CreateBody(Vector2 initialPosition);
   Vector2 GetBodyPosition(PhysicsHandle handle);
   void SetBodyPosition(PhysicsHandle handle, Vector2 position);
+  float GetBodyRotation(PhysicsHandle handle);
+  void SetBodyRotation(PhysicsHandle handle, float rotation);
   void DeleteBody(PhysicsHandle handle);
 }
 
@@ -45,5 +47,7 @@ public interface IPhysicsWorld3d : IPhysicsWorld
   PhysicsHandle CreateBody(Vector3 initialPosition);
   Vector3 GetBodyPosition(PhysicsHandle handle);
   void SetBodyPosition(PhysicsHandle handle, Vector3 position);
+  Quaternion GetBodyRotation(PhysicsHandle handle);
+  void SetBodyRotation(PhysicsHandle handle, Quaternion rotation);
   void DeleteBody(PhysicsHandle handle);
 }

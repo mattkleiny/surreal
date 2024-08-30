@@ -127,6 +127,16 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       _bodies[handle].CurrentPosition = position;
     }
 
+    public float GetBodyRotation(PhysicsHandle handle)
+    {
+      return _bodies[handle].CurrentRotation;
+    }
+
+    public void SetBodyRotation(PhysicsHandle handle, float rotation)
+    {
+      _bodies[handle].CurrentRotation = rotation;
+    }
+
     public void DeleteBody(PhysicsHandle handle)
     {
       _bodies.Remove(handle);
@@ -136,6 +146,8 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     {
       public Vector2 PreviousPosition;
       public Vector2 CurrentPosition;
+      public float PreviousRotation;
+      public float CurrentRotation;
     }
   }
 
@@ -179,6 +191,16 @@ internal sealed class PhysicsBackend : IPhysicsBackend
       _bodies[handle].Position = position;
     }
 
+    public Quaternion GetBodyRotation(PhysicsHandle handle)
+    {
+      return _bodies[handle].Rotation;
+    }
+
+    public void SetBodyRotation(PhysicsHandle handle, Quaternion rotation)
+    {
+      _bodies[handle].Rotation = rotation;
+    }
+
     public void DeleteBody(PhysicsHandle handle)
     {
       _bodies.Remove(handle);
@@ -187,6 +209,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     private sealed class Body
     {
       public Vector3 Position;
+      public Quaternion Rotation;
     }
   }
 }
