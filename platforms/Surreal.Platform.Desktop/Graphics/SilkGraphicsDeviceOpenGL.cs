@@ -204,7 +204,7 @@ internal sealed unsafe class SilkGraphicsDeviceOpenGL(GL gl) : IGraphicsDevice
     var textureFilterMode = ConvertTextureFilterMode(filterMode);
     var textureWrapMode = ConvertTextureWrapMode(wrapMode);
 
-    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.GenerateMipmapSgis, in 0);
+    gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.GenerateMipmapSgis, 0);
     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, in textureFilterMode);
     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, in textureFilterMode);
     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, in textureWrapMode);
