@@ -17,17 +17,13 @@ public class EntityWorldTests
   }
 
   [Test]
-  public void it_should_despawn_an_entity_in_deferred_manner()
+  public void it_should_despawn_an_entity()
   {
     var services = new ServiceRegistry();
     var world = new EntityWorld(services);
     var entity = world.SpawnEntity();
 
     world.DespawnEntity(entity);
-
-    Assert.That(world.HasEntity(entity), Is.True);
-
-    world.FlushChanges();
 
     Assert.That(world.HasEntity(entity), Is.False);
   }

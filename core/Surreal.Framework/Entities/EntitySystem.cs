@@ -234,11 +234,16 @@ public sealed class EntityWorld(IServiceProvider services)
   public IServiceProvider Services => services;
 
   /// <summary>
-  /// Determines if the world contains the given entity.
+  /// Determines if the world contains the given entity and it is still alive.
   /// </summary>
   public bool HasEntity(EntityId entityId)
   {
-    return _entities.Contains(entityId);
+    if (_entities.TryGetValue(entityId, out var entity))
+    {
+      return entity.IsAlive;
+    }
+
+    return false;
   }
 
   /// <summary>
@@ -404,7 +409,7 @@ public sealed class EntityWorld(IServiceProvider services)
   /// <summary>
   /// An entity in the world.
   /// </summary>
-  private record struct Entity()
+  private sealed record Entity
   {
     /// <summary>
     /// True if this entity is still alive; false if it has been despawned and is pending removal.
@@ -419,7 +424,7 @@ public sealed class EntityWorld(IServiceProvider services)
     /// <summary>
     /// Determines if the entity matches the given query.
     /// </summary>
-    public readonly bool IsMatch(EntityQuery query)
+    public bool IsMatch(EntityQuery query)
     {
       return query.Matches(ComponentTypes);
     }
