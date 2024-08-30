@@ -33,15 +33,14 @@ public sealed class GraphicsModule : IServiceModule
   /// </summary>
   private void OnRenderSprites(in RenderFrameEvent @event, Transform transform, Sprite sprite)
   {
-    if (@event.TryGetContext(out SpriteContext context))
-    {
-      context.Batch.DrawQuad(
-        region: sprite.Region,
-        position: transform.Position,
-        size: transform.Scale,
-        angle: transform.Rotation,
-        color: sprite.Tint
-      );
-    }
+    if (!@event.TryGetContext(out SpriteContext context)) return;
+
+    context.Batch.DrawQuad(
+      region: sprite.Region,
+      position: transform.Position,
+      size: transform.Scale,
+      angle: transform.Rotation,
+      color: sprite.Tint
+    );
   }
 }

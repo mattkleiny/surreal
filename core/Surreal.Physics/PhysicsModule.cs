@@ -18,18 +18,18 @@ public sealed class PhysicsModule : IServiceModule
   {
     registry.AddService(Backend);
 
-    registry.AddSystem<FixedTickEvent>(OnPhysicsTick);
-    registry.AddSystem<After<FixedTickEvent>>(SyncTransforms);
+    registry.AddSystem<FixedTick>(OnPhysicsTick);
+    registry.AddSystem<After<FixedTick>>(SyncTransforms);
     registry.AddSystem<Added<Rigidbody>>(OnRigidbodyAdded);
     registry.AddSystem<Removed<Rigidbody>>(OnRigidbodyRemoved);
   }
 
-  private void OnPhysicsTick(in FixedTickEvent @event, IPhysicsWorld2d world)
+  private void OnPhysicsTick(in FixedTick @event, IPhysicsWorld2d world)
   {
     world.Tick(@event.DeltaTime);
   }
 
-  private void SyncTransforms(in After<FixedTickEvent> @event, ref Transform transform, Rigidbody rigidbody, IPhysicsWorld2d world)
+  private void SyncTransforms(in After<FixedTick> @event, ref Transform transform, Rigidbody rigidbody, IPhysicsWorld2d world)
   {
     transform.Position = world.GetBodyPosition(rigidbody.Handle);
     transform.Rotation = world.GetBodyRotation(rigidbody.Handle);

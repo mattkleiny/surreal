@@ -3,19 +3,8 @@ using Surreal.Collections.Slices;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Services;
-using Surreal.Timing;
 
 namespace Surreal.Entities;
-
-// a bunch of built-in events that can be used to trigger systems
-public record struct Before<T>(T Event); // implicit before event wrapper
-public record struct After<T>(T Event); // implicit after event wrapper 
-public record struct VariableTickEvent(DeltaTime DeltaTime);
-public record struct FixedTickEvent(DeltaTime DeltaTime);
-public record struct Spawned(EntityId Entity);
-public record struct Despawned(EntityId Entity);
-public record struct Added<TComponent>(EntityId Entity, TComponent Component);
-public record struct Removed<TComponent>(EntityId Entity, TComponent Component);
 
 /// <summary>
 /// Identifies an entity in the world.
@@ -142,13 +131,13 @@ public sealed class SparseComponentStorage<TComponent> : IComponentStorage<TComp
 
   public TComponent RemoveComponent(EntityId entity)
   {
-    if (_components.TryGetValue(entity, out var component))
+    if (!_components.TryGetValue(entity, out var component))
     {
-      _components.Remove(entity);
-      return component;
+      return default!;
     }
-    
-    return default!;
+
+    _components.Remove(entity);
+    return component;
   }
 }
 
@@ -341,7 +330,7 @@ public sealed class EntityWorld : IDisposable
   /// <summary>
   /// Spawns a new entity in the world using the given template.
   /// </summary>
-  public EntityId SpawnEntity(IEntityTemplate template) 
+  public EntityId SpawnEntity(IEntityTemplate template)
   {
     var entity = SpawnEntity();
 

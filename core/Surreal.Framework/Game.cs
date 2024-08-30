@@ -191,18 +191,18 @@ public sealed class Game : IDisposable
   /// <summary>
   /// Starts the game with the given <see cref="EntityWorld"/>.
   /// </summary>
-  public async Task RunWorldAsync(EntityWorld world)
+  public async Task RunAsync(EntityWorld world)
   {
     using var contexts = new RenderContextManager();
 
     VariableTick += time =>
     {
-      world.Execute(new VariableTickEvent(time.DeltaTime));
+      world.Execute(new VariableTick(time.DeltaTime));
     };
 
     FixedTick += time =>
     {
-      world.Execute(new FixedTickEvent(time.DeltaTime));
+      world.Execute(new FixedTick(time.DeltaTime));
     };
 
     Render += time =>

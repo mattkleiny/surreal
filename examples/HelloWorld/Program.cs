@@ -24,7 +24,7 @@ var entity1 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384), Sp
 var entity2 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384), Sprite = texture.Value });
 var entity3 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384), Sprite = texture.Value });
 
-await game.RunWorldAsync(world);
+await game.RunAsync(world);
 
 /// <summary>
 /// A template for an actor entity.
@@ -35,7 +35,7 @@ internal sealed record Actor : IEntityTemplate
   public TextureRegion Sprite { get; set; }
   public Color32 Tint { get; set; } = Color32.White;
 
-  public void OnEntitySpawned(EntityWorld world, EntityId entityId)
+  void IEntityTemplate.OnEntitySpawned(EntityWorld world, EntityId entityId)
   {
     world.AddComponent(entityId, new Transform { Position = Position });
     world.AddComponent(entityId, new Sprite { Region = Sprite, Tint = Tint });
