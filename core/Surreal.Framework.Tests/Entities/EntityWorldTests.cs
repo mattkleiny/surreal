@@ -36,6 +36,9 @@ public class EntityWorldTests
   public void it_should_support_injection_of_manual_methods_with_optional_services()
   {
     var services = new ServiceRegistry();
+
+    services.AddService<IPhysicsService>(new PhysicsService());
+
     var world = new EntityWorld(services);
     var entity = world.SpawnEntity();
 
@@ -51,6 +54,9 @@ public class EntityWorldTests
   public void it_should_support_injection_of_automatic_methods_with_optional_services()
   {
     var services = new ServiceRegistry();
+
+    services.AddService<IPhysicsService>(new PhysicsService());
+
     var world = new EntityWorld(services);
     var entity = world.SpawnEntity();
 
@@ -99,7 +105,7 @@ public class EntityWorldTests
     Vector2 GetGravity();
   }
 
-  private class ExampleService : IPhysicsService
+  private sealed class PhysicsService : IPhysicsService
   {
     public Vector2 GetGravity()
     {

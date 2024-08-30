@@ -434,6 +434,7 @@ public static class EntityWorldExtensions
     /// </summary>
     private static SystemDelegate BuildDirectMethod(Delegate @delegate, ParameterInfo[] parameterInfos)
     {
+      // TODO: build an optimized method that doesn't use reflection
       var parameters = new object?[parameterInfos.Length];
 
       return (in TEvent @event, EntityWorld world) =>
@@ -466,29 +467,58 @@ public static class EntityWorldExtensions
     /// </summary>
     private static SystemDelegate BuildQueryMethod(Delegate @delegate, ParameterInfo[] parameterInfos)
     {
-      var method = new DynamicMethod(
-        name: "Query",
-        returnType: typeof(void),
-        parameterTypes: [typeof(TEvent), typeof(EntityWorld)],
-        owner: typeof(DelegateEntitySystem<TEvent>)
-      );
+      // TODO: build an optimized method that doesn't use reflection
+      var parameters = new object?[parameterInfos.Length];
 
-      var query = BuildQuery(@delegate);
-      var il = method.GetILGenerator();
-
-      foreach (var parameterInfo in parameterInfos)
+      return (in TEvent @event, EntityWorld world) =>
       {
-        var parameterType = parameterInfo.ParameterType;
-        if (parameterType.IsByRef)
-          parameterType = parameterType.GetElementType()!;
+        // populate root parameters
+        for (var i = 0; i < parameterInfos.Length; i++)
+        {
+          var parameterInfo = parameterInfos[i];
+          var parameterType = parameterInfo.ParameterType;
 
-        throw new NotImplementedException();
-      }
+          if (parameterType.IsByRef)
+            parameterType = parameterType.GetElementType()!;
 
-      il.Emit(OpCodes.Call, @delegate.Method);
-      il.Emit(OpCodes.Ret);
+          if (parameterType == typeof(TEvent))
+            parameters[i] = @event;
+          else if (parameterType == typeof(EntityWorld))
+            parameters[i] = world;
+          else if (parameterType == typeof(EntityId))
+            continue; // ignore per-entity data, we'll populate that later
+          else if (parameterType.IsAssignableTo(typeof(IComponent)))
+            continue; // ignore per-entity data, we'll populate that later
+          else
+            parameters[i] = world.Services.GetService(parameterType);
+        }
 
-      return (SystemDelegate)method.CreateDelegate(typeof(SystemDelegate));
+        foreach (var entity in world.Query(BuildQuery(@delegate)))
+        {
+          // populate per-entity parameters
+          for (var i = 0; i < parameterInfos.Length; i++)
+          {
+            var parameterInfo = parameterInfos[i];
+            var parameterType = parameterInfo.ParameterType;
+
+            if (parameterType.IsByRef)
+              parameterType = parameterType.GetElementType()!;
+
+            if (parameterType == typeof(EntityId))
+              parameters[i] = entity;
+            else if (parameterType.IsAssignableTo(typeof(IComponent)))
+            {
+              var genericMethod = typeof(EntityWorld)
+                .GetMethod(nameof(EntityWorld.GetComponent))!
+                .MakeGenericMethod(parameterType);
+
+              parameters[i] = genericMethod.Invoke(world, [entity]);
+            }
+          }
+
+          @delegate.DynamicInvoke(parameters);
+        }
+      };
     }
 
     /// <summary>
