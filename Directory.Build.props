@@ -34,12 +34,6 @@
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- shared package versions for the whole solution -->
-    <AvaloniaVersion>11.1.3</AvaloniaVersion>
-    <SilkVersion>2.21</SilkVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <!-- annotations for JetBrains IDEs -->
     <Using Include="JetBrains.Annotations" />

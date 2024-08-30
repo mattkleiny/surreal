@@ -3,10 +3,9 @@
     <Description>The editor host for the Surreal project.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Silk.NET.OpenGL" Version="$(SilkVersion)" PrivateAssets="compile"/>
+    <PackageReference Include="Avalonia" Version="11.1.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.1.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />
