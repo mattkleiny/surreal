@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Using Include="Surreal" />
+    <Using Include="Surreal.Assets" />
     <Using Include="Surreal.Audio" />
     <Using Include="Surreal.Audio.Clips" />
     <Using Include="Surreal.Collections" />
@@ -45,7 +46,8 @@
     <Using Include="Surreal.Timing" />
     <Using Include="Surreal.Utilities" />
 
-    <ProjectReference Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
+    <ProjectReference
+      Include="..\..\platforms\Surreal.Platform.Desktop\Surreal.Platform.Desktop.csproj" />
 
     <!-- automatically exclude example projects from code coverage -->
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />

@@ -6,6 +6,7 @@
     <PackageReference Include="Avalonia" Version="11.1.3" />
     <PackageReference Include="Avalonia.Desktop" Version="11.1.3" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.3" />
+    <PackageReference Include="Silk.NET.OpenGL" Version="2.21" PrivateAssets="compile" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Surreal.Common\Surreal.Common.csproj" />

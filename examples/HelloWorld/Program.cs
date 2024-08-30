@@ -13,9 +13,6 @@ using var game = Game.Create(new GameConfiguration
   }
 });
 
-var graphics = game.Services.GetServiceOrThrow<IGraphicsDevice>();
-var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
-
 using var world = new EntityWorld(game.Services);
 
 var texture = await game.Assets.LoadAsync<Texture>("Assets/sprites/bunny.png");
