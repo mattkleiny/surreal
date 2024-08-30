@@ -1,4 +1,3 @@
-using Surreal.Scenes;
 using Surreal.Services;
 using Surreal.Timing;
 
@@ -136,4 +135,6 @@ public class EntityWorldTests
       return new Vector2(0f, -9.81f);
     }
   }
+
+  private record struct TickEvent(DeltaTime DeltaTime);
 }
