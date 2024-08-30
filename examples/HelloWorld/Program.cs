@@ -20,7 +20,7 @@ var color1 = Random.Shared.Next<Color>();
 var color2 = Random.Shared.Next<Color>();
 var timer = 0f;
 
-game.Update += time =>
+game.VariableTick += time =>
 {
   timer += time.DeltaTime;
 

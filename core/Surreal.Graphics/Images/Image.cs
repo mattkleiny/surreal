@@ -45,7 +45,7 @@ public sealed class Image : IDisposable
     await using var stream = path.OpenInputStream();
 
     // load the image
-    var image = await SixLabors.ImageSharp.Image.LoadAsync(Configuration.Default, stream, cancellationToken);
+    var image = await SixLabors.ImageSharp.Image.LoadAsync(stream, cancellationToken);
     if (image is Image<Rgba32> rgba)
     {
       // we're already in the right format
@@ -94,12 +94,12 @@ public sealed class Image : IDisposable
   {
     get
     {
-      if (!_image.TryGetSinglePixelSpan(out var span))
+      if (!_image.DangerousTryGetSinglePixelMemory(out var memory))
       {
         throw new InvalidOperationException("The image span is not contiguous, unable to access pixels!");
       }
 
-      var pixels = MemoryMarshal.Cast<Rgba32, Color32>(span);
+      var pixels = MemoryMarshal.Cast<Rgba32, Color32>(memory.Span);
 
       return new SpanGrid<Color32>(pixels, Width);
     }
@@ -132,7 +132,7 @@ public sealed class Image : IDisposable
   {
     await using var stream = path.OpenInputStream();
 
-    var image = await SixLabors.ImageSharp.Image.LoadAsync(Configuration.Default, stream, cancellationToken);
+    var image = await SixLabors.ImageSharp.Image.LoadAsync(stream, cancellationToken);
     if (image is Image<Rgba32> rgba)
     {
       _image = rgba;
