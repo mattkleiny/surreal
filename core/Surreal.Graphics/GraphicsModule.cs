@@ -25,13 +25,13 @@ public sealed class GraphicsModule : IServiceModule
     registry.AddService<IAssetLoader, ShaderProgramLoader>();
     registry.AddService<IAssetLoader, TextureLoader>();
 
-    registry.AddSystem<RenderFrameEvent>(RenderSprites);
+    registry.AddSystem<RenderFrameEvent>(OnRenderSprites);
   }
 
   /// <summary>
   /// A system for rendering sprites.
   /// </summary>
-  private void RenderSprites(in RenderFrameEvent @event, Transform transform, Sprite sprite)
+  private void OnRenderSprites(in RenderFrameEvent @event, Transform transform, Sprite sprite)
   {
     if (@event.TryGetContext(out SpriteContext context))
     {

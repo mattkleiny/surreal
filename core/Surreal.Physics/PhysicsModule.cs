@@ -18,24 +18,28 @@ public sealed class PhysicsModule : IServiceModule
   {
     registry.AddService(Backend);
 
-    registry.AddSystem<FixedTickEvent>(UpdatePhysicsWorld);
-    registry.AddSystem<After<FixedTickEvent>>(SyncTransformsToRigidbodies);
+    registry.AddSystem<FixedTickEvent>(OnPhysicsTick);
+    registry.AddSystem<After<FixedTickEvent>>(SyncTransforms);
+    registry.AddSystem<Added<Rigidbody>>(OnRigidbodyAdded);
+    registry.AddSystem<Removed<Rigidbody>>(OnRigidbodyRemoved);
   }
 
-  /// <summary>
-  /// A system which updates the physics world.
-  /// </summary>
-  private void UpdatePhysicsWorld(in FixedTickEvent @event, IPhysicsWorld2d world)
+  private void OnPhysicsTick(in FixedTickEvent @event, IPhysicsWorld2d world)
   {
     world.Tick(@event.DeltaTime);
   }
 
-  /// <summary>
-  /// A system which synchronizes transforms to their associated rigidbodies.
-  /// </summary>
-  private void SyncTransformsToRigidbodies(in After<FixedTickEvent> @event, ref Transform transform, Rigidbody rigidbody, IPhysicsWorld2d world)
+  private void SyncTransforms(in After<FixedTickEvent> @event, ref Transform transform, Rigidbody rigidbody, IPhysicsWorld2d world)
   {
     transform.Position = world.GetBodyPosition(rigidbody.Handle);
     transform.Rotation = world.GetBodyRotation(rigidbody.Handle);
+  }
+
+  private void OnRigidbodyAdded(in Added<Rigidbody> @event, IPhysicsWorld2d world)
+  {
+  }
+
+  private void OnRigidbodyRemoved(in Removed<Rigidbody> @event, IPhysicsWorld2d world)
+  {
   }
 }
