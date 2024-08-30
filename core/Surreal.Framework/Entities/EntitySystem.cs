@@ -232,6 +232,20 @@ public sealed class EntityWorld(IServiceProvider services)
   }
 
   /// <summary>
+  /// Processes all deferred changes to the world.
+  /// </summary>
+  public void FlushChanges() 
+  {
+    foreach (var (index, entity) in _entities.EnumerateWithId())
+    {
+      if (!entity.IsAlive)
+      {
+        _entities.Remove(index);
+      }
+    }
+  }
+
+  /// <summary>
   /// Adds a system to the world that processes the given <typeparamref name="TEvent"/>.
   /// </summary>
   public void AddSystem<TEvent>(IEntitySystem system)
