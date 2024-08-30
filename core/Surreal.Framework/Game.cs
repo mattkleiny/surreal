@@ -2,7 +2,9 @@
 using Surreal.Audio;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
+using Surreal.Entities;
 using Surreal.Graphics;
+using Surreal.Graphics.Rendering;
 using Surreal.Input;
 using Surreal.Physics;
 using Surreal.Scripting;
@@ -184,6 +186,42 @@ public sealed class Game : IDisposable
     await Host.RunAsync();
 
     Log.Trace("Exiting main loop");
+  }
+
+  /// <summary>
+  /// Starts the game with the given <see cref="EntityWorld"/>.
+  /// </summary>
+  public async Task RunWorldAsync(EntityWorld world)
+  {
+    using var contexts = new RenderContextManager();
+
+    VariableTick += time =>
+    {
+      world.Execute(new VariableTickEvent(time.DeltaTime));
+    };
+
+    FixedTick += time =>
+    {
+      world.Execute(new FixedTickEvent(time.DeltaTime));
+    };
+
+    Render += time =>
+    {
+      var frame = new RenderFrame
+      {
+        Device = Graphics,
+        Contexts = contexts,
+        Viewport = Graphics.GetViewportSize()
+      };
+
+      world.Execute(new RenderFrameEvent(time.DeltaTime, frame));
+    };
+
+    Log.Trace("Starting main loop with world");
+
+    await Host.RunAsync();
+
+    Log.Trace("Exiting main loop with world");
   }
 
   /// <summary>

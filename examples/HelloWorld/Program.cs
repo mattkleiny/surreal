@@ -16,25 +16,28 @@ using var game = Game.Create(new GameConfiguration
 var graphics = game.Services.GetServiceOrThrow<IGraphicsDevice>();
 var keyboard = game.Services.GetServiceOrThrow<IKeyboardDevice>();
 
-var color1 = Random.Shared.Next<Color>();
-var color2 = Random.Shared.Next<Color>();
-var timer = 0f;
+using var world = new EntityWorld(game.Services);
 
-game.VariableTick += time =>
+var texture = await game.Assets.LoadAsync<Texture>("Assets/sprites/bunny.png");
+
+var entity1 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384), Sprite = texture.Value });
+var entity2 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384), Sprite = texture.Value });
+var entity3 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384), Sprite = texture.Value });
+
+await game.RunWorldAsync(world);
+
+/// <summary>
+/// A template for an actor entity.
+/// </summary>
+internal sealed record Actor : IEntityTemplate
 {
-  timer += time.DeltaTime;
+  public Vector2 Position { get; set; }
+  public TextureRegion Sprite { get; set; }
+  public Color32 Tint { get; set; } = Color32.White;
 
-  if (keyboard.IsKeyPressed(Key.Escape))
+  public void OnEntitySpawned(EntityWorld world, EntityId entityId)
   {
-    game.Exit();
+    world.AddComponent(entityId, new Transform { Position = Position });
+    world.AddComponent(entityId, new Sprite { Region = Sprite, Tint = Tint });
   }
-};
-
-game.Render += _ =>
-{
-  var color = Color.Lerp(color1, color2, MathE.PingPong(timer));
-
-  graphics.ClearColorBuffer(color);
-};
-
-await game.RunAsync();
+}

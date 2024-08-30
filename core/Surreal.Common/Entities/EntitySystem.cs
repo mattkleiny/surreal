@@ -10,8 +10,12 @@ namespace Surreal.Entities;
 // a bunch of built-in events that can be used to trigger systems
 public record struct Before<T>(T Event); // implicit before event wrapper
 public record struct After<T>(T Event); // implicit after event wrapper 
-public record struct TickEvent(DeltaTime DeltaTime);
+public record struct VariableTickEvent(DeltaTime DeltaTime);
 public record struct FixedTickEvent(DeltaTime DeltaTime);
+public record struct Spawned(EntityId Entity);
+public record struct Despawned(EntityId Entity);
+public record struct Added<TComponent>(EntityId Entity, TComponent Component);
+public record struct Removed<TComponent>(EntityId Entity, TComponent Component);
 
 /// <summary>
 /// Identifies an entity in the world.
@@ -110,7 +114,7 @@ public interface IComponentStorage<TComponent> : IComponentStorage
   /// <summary>
   /// Removes the component of this type from the given entity.
   /// </summary>
-  void RemoveComponent(EntityId entity);
+  TComponent RemoveComponent(EntityId entity);
 }
 
 /// <summary>
@@ -136,10 +140,27 @@ public sealed class SparseComponentStorage<TComponent> : IComponentStorage<TComp
     _components[entity] = component;
   }
 
-  public void RemoveComponent(EntityId entity)
+  public TComponent RemoveComponent(EntityId entity)
   {
-    _components.Remove(entity);
+    if (_components.TryGetValue(entity, out var component))
+    {
+      _components.Remove(entity);
+      return component;
+    }
+    
+    return default!;
   }
+}
+
+/// <summary>
+/// A template for spawning entities in the world.
+/// </summary>
+public interface IEntityTemplate
+{
+  /// <summary>
+  /// Spawns a new entity in the world.
+  /// </summary>
+  void OnEntitySpawned(EntityWorld world, EntityId entityId);
 }
 
 /// <summary>
@@ -312,6 +333,20 @@ public sealed class EntityWorld : IDisposable
 
     Log.Trace($"Spawned entity {entity}");
 
+    Execute(new Spawned(entity));
+
+    return entity;
+  }
+
+  /// <summary>
+  /// Spawns a new entity in the world using the given template.
+  /// </summary>
+  public EntityId SpawnEntity(IEntityTemplate template) 
+  {
+    var entity = SpawnEntity();
+
+    template.OnEntitySpawned(this, entity);
+
     return entity;
   }
 
@@ -323,6 +358,8 @@ public sealed class EntityWorld : IDisposable
     if (_entities.TryGetValue(entityId, out var entity))
     {
       entity.IsAlive = false;
+
+      Execute(new Despawned(entityId));
 
       Log.Trace($"Marking entity {entityId} for despawn");
     }
@@ -388,7 +425,7 @@ public sealed class EntityWorld : IDisposable
       {
         throw new InvalidOperationException($"System {system.Name} does not process events of type {typeof(TEvent)}.");
       }
-      
+
       using var __ = Profiler.Track(system.Name);
 
       typedSystem.Execute(@event, this);
@@ -456,6 +493,8 @@ public sealed class EntityWorld : IDisposable
     {
       GetStorage<TComponent>().AddComponent(entityId, component);
 
+      Execute(new Added<TComponent>(entityId, component));
+
       Log.Trace($"Added component {TComponent.ComponentType} to entity {entityId}");
     }
   }
@@ -473,7 +512,9 @@ public sealed class EntityWorld : IDisposable
 
     if (entity.ComponentTypes.Remove(TComponent.ComponentType))
     {
-      GetStorage<TComponent>().RemoveComponent(entityId);
+      var component = GetStorage<TComponent>().RemoveComponent(entityId);
+
+      Execute(new Removed<TComponent>(entityId, component));
 
       Log.Trace($"Removed component {TComponent.ComponentType} from entity {entityId}");
     }
