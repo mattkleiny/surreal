@@ -3,7 +3,7 @@ namespace Surreal.Entities;
 /// <summary>
 /// A transform component.
 /// </summary>
-public record struct Transform() : IComponent<Transform>
+public sealed record Transform : IComponent<Transform>
 {
   /// <summary>
   /// The position of the transform.

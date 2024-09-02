@@ -207,14 +207,13 @@ public sealed class Game : IDisposable
 
     Render += time =>
     {
-      var frame = new RenderFrame
+      world.Execute(new RenderFrame
       {
+        DeltaTime = time.DeltaTime,
         Device = Graphics,
         Contexts = contexts,
         Viewport = Graphics.GetViewportSize()
-      };
-
-      world.Execute(new RenderFrameEvent(time.DeltaTime, frame));
+      });
     };
 
     Log.Trace("Starting main loop with world");

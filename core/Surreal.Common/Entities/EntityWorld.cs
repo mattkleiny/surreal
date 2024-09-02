@@ -3,6 +3,7 @@ using Surreal.Collections.Slices;
 using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Services;
+using Surreal.Timing;
 
 namespace Surreal.Entities;
 
@@ -671,6 +672,7 @@ public static class EntityWorldExtensions
     {
       // TODO: build an optimized method that doesn't use reflection
       var parameters = new object?[parameterInfos.Length];
+      var deltaTimeClock = new DeltaTimeClock();
 
       return (in TEvent @event, EntityWorld world) =>
       {
@@ -686,6 +688,8 @@ public static class EntityWorldExtensions
             parameters[i] = @event;
           else if (parameterType == typeof(EntityWorld))
             parameters[i] = world;
+          else if (parameterType == typeof(DeltaTime))
+            parameters[i] = deltaTimeClock.Tick();
           else
             parameters[i] = world.Services.GetService(parameterType);
         }
@@ -704,6 +708,7 @@ public static class EntityWorldExtensions
     {
       // TODO: build an optimized method that doesn't use reflection
       var parameters = new object?[parameterInfos.Length];
+      var deltaTimeClock = new DeltaTimeClock();
 
       return (in TEvent @event, EntityWorld world) =>
       {
@@ -720,6 +725,8 @@ public static class EntityWorldExtensions
             parameters[i] = @event;
           else if (parameterType == typeof(EntityWorld))
             parameters[i] = world;
+          else if (parameterType == typeof(DeltaTime))
+            parameters[i] = deltaTimeClock.Tick();
           else if (parameterType == typeof(EntityId))
             continue; // ignore per-entity data, we'll populate that later
           else if (parameterType.IsAssignableTo(typeof(IComponent)))

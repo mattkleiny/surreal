@@ -107,7 +107,7 @@ public class EntityWorldTests
     }
   }
 
-  private static void SyncTransformAutomatic(in TickEvent @event, ref Transform transform, ref Rigidbody rigidbody, IPhysicsService service)
+  private static void SyncTransformAutomatic(in TickEvent @event, Transform transform, Rigidbody rigidbody, IPhysicsService service)
   {
     rigidbody.Velocity += service.GetGravity() * @event.DeltaTime;
     transform.Position += rigidbody.Velocity * @event.DeltaTime;

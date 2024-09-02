@@ -2,6 +2,7 @@
 using Surreal.Entities;
 using Surreal.Graphics.Images;
 using Surreal.Graphics.Materials;
+using Surreal.Graphics.Rendering;
 using Surreal.Graphics.Sprites;
 using Surreal.Graphics.Textures;
 using Surreal.Graphics.Utilities;
@@ -25,22 +26,23 @@ public sealed class GraphicsModule : IServiceModule
     registry.AddService<IAssetLoader, ShaderProgramLoader>();
     registry.AddService<IAssetLoader, TextureLoader>();
 
-    registry.AddSystem<RenderFrameEvent>(OnRenderSprites);
+    registry.AddSystem<RenderFrame>(RenderSprites);
   }
 
   /// <summary>
   /// A system for rendering sprites.
   /// </summary>
-  private void OnRenderSprites(in RenderFrameEvent @event, Transform transform, Sprite sprite)
+  private void RenderSprites(in RenderFrame @event, Transform transform, Sprite sprite)
   {
-    if (!@event.TryGetContext(out SpriteContext context)) return;
-
-    context.Batch.DrawQuad(
-      region: sprite.Region,
-      position: transform.Position,
-      size: transform.Scale,
-      angle: transform.Rotation,
-      color: sprite.Tint
-    );
+    if (@event.TryGetContext(out SpriteContext context))
+    {
+      context.Batch.DrawQuad(
+        region: sprite.Region,
+        position: transform.Position,
+        size: transform.Scale,
+        angle: transform.Rotation,
+        color: sprite.Tint
+      );
+    }
   }
 }

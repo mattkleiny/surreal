@@ -7,7 +7,7 @@ namespace Surreal.Graphics.Sprites;
 /// <summary>
 /// A sprite component.
 /// </summary>
-public record struct Sprite() : IComponent<Sprite>
+public sealed record Sprite : IComponent<Sprite>
 {
   /// <summary>
   /// The region of the texture to render.

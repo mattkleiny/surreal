@@ -15,22 +15,23 @@ using var game = Game.Create(new GameConfiguration
 
 using var world = new EntityWorld(game.Services);
 
-var entity1 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384) });
-var entity2 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384) });
-var entity3 = world.SpawnEntity(new Actor { Position = new Vector2(512, 384) });
+var color1 = Random.Shared.NextColor();
+var color2 = Random.Shared.NextColor();
+var totalTime = 0.0f;
+
+world.AddSystem<VariableTick>((IKeyboardDevice keyboard) =>
+{
+  if (keyboard.IsKeyPressed(Key.Escape))
+  {
+    game.Exit();
+  }
+});
+
+world.AddSystem<RenderFrame>((in RenderFrame @event) =>
+{
+  totalTime += @event.DeltaTime;
+
+  @event.Device.ClearColorBuffer(Color.Lerp(color1, color2, MathE.PingPong(totalTime)));
+});
 
 await game.RunAsync(world);
-
-/// <summary>
-/// A template for an actor entity.
-/// </summary>
-internal sealed record Actor : IEntityTemplate
-{
-  public Vector2 Position { get; set; }
-  public Color32 Tint { get; set; } = Color32.White;
-
-  void IEntityTemplate.OnEntitySpawned(EntityWorld world, EntityId entityId)
-  {
-    world.AddComponent(entityId, new Transform { Position = Position });
-  }
-}
