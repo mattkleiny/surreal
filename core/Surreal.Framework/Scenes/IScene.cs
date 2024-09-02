@@ -14,12 +14,10 @@ namespace Surreal.Scenes;
 /// so a scene could be a Scene Graph or an Actor Model or an Entity Component System,
 /// etc.
 /// </summary>
-public interface IScene : IRenderScene
+public interface IScene : IRenderScene, ISceneProvider, IEventPublisher
 {
-  /// <summary>
-  /// Executes an event on the scene.
-  /// </summary>
-  void Execute<TEvent>(in TEvent @event);
+  /// <inheritdoc/>
+  IScene ISceneProvider.CurrentScene => this;
 }
 
 /// <summary>

@@ -175,7 +175,7 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
   /// <summary>
   /// Executes an event on this node and its children.
   /// </summary>
-  public void Execute<TEvent>(in TEvent @event) 
+  public TEvent Publish<TEvent>(TEvent @event) 
   {
     OnAwakeIfNecessary();
     OnEnterTreeIfNecessary();
@@ -188,10 +188,12 @@ public class SceneNode : IEnumerable<SceneNode>, IDisposable
 
     foreach (var child in Children)
     {
-      child.Execute(@event);
+      child.Publish(@event);
     }
 
     DispatchMessagesToParents();
+
+    return @event;
   }
 
   /// <summary>

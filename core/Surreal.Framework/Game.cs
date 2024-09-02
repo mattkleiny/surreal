@@ -7,6 +7,7 @@ using Surreal.Graphics;
 using Surreal.Graphics.Rendering;
 using Surreal.Input;
 using Surreal.Physics;
+using Surreal.Scenes;
 using Surreal.Scripting;
 using Surreal.Services;
 using Surreal.Timing;
@@ -189,25 +190,25 @@ public sealed class Game : IDisposable
   }
 
   /// <summary>
-  /// Starts the game with the given <see cref="EntityWorld"/>.
+  /// Starts the game with the given <see cref="IEventPublisher"/>.
   /// </summary>
-  public async Task RunAsync(EntityWorld world)
+  public async Task RunAsync(IEventPublisher publisher)
   {
     using var contexts = new RenderContextManager();
 
     VariableTick += time =>
     {
-      world.Execute(new VariableTick(time.DeltaTime));
+      publisher.Publish(new VariableTick(time.DeltaTime));
     };
 
     FixedTick += time =>
     {
-      world.Execute(new FixedTick(time.DeltaTime));
+      publisher.Publish(new FixedTick(time.DeltaTime));
     };
 
     Render += time =>
     {
-      world.Execute(new RenderFrame
+      publisher.Publish(new RenderFrame
       {
         DeltaTime = time.DeltaTime,
         Device = Graphics,

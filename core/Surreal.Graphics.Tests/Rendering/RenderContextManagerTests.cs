@@ -1,4 +1,5 @@
 ﻿using Surreal.Assets;
+using Surreal.Timing;
 
 namespace Surreal.Graphics.Rendering;
 
@@ -12,6 +13,7 @@ public class RenderContextManagerTests
 
     var frame = new RenderFrame
     {
+      DeltaTime = DeltaTime.Default,
       Device = IGraphicsDevice.Null,
       Contexts = manager,
       Viewport = new Viewport(0, 0, 640, 480)

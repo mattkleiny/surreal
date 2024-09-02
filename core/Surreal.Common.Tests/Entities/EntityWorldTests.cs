@@ -42,7 +42,7 @@ public class EntityWorldTests
 
     world.AddSystem<TickEvent>(SyncTransformManual);
 
-    world.Execute(new TickEvent(DeltaTime.Default));
+    world.Publish(new TickEvent(DeltaTime.Default));
   }
 
   [Test]
@@ -60,7 +60,7 @@ public class EntityWorldTests
 
     world.AddSystem<TickEvent>(SyncTransformAutomatic);
 
-    world.Execute(new TickEvent(DeltaTime.Default));
+    world.Publish(new TickEvent(DeltaTime.Default));
   }
 
   [Test]

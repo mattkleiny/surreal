@@ -16,15 +16,21 @@ public delegate void EventListener<TEvent>(ref TEvent @event);
 public sealed class EventListenerAttribute : Attribute;
 
 /// <summary>
-/// A mechanism for publishing and subscribing to events.
+/// Represents a type capble of publishing events.
 /// </summary>
-public interface IEventBus
+public interface IEventPublisher
 {
   /// <summary>
-  /// Publishes an event to all subscribers.
+  /// Publishes an event.
   /// </summary>
-  T Publish<T>(T message);
+  TEvent Publish<TEvent>(TEvent @event);
+}
 
+/// <summary>
+/// A mechanism for publishing and subscribing to events.
+/// </summary>
+public interface IEventBus : IEventPublisher
+{
   /// <summary>
   /// Subscribes to events of a given type.
   /// </summary>
@@ -53,14 +59,14 @@ public sealed class EventBus(IEventBus? parent = null) : IEventBus
 {
   private readonly MultiDictionary<Type, Delegate> _listenerByType = new();
 
-  public T Publish<T>(T message)
+  public TEvent Publish<TEvent>(TEvent message)
   {
-    if (_listenerByType.TryGetValues(typeof(T), out var listeners))
+    if (_listenerByType.TryGetValues(typeof(TEvent), out var listeners))
     {
       // walk backwards so that we can remove listeners as we go
       for (var i = listeners.Length - 1; i >= 0; i--)
       {
-        var listener = Unsafe.As<EventListener<T>>(listeners[i]);
+        var listener = Unsafe.As<EventListener<TEvent>>(listeners[i]);
 
         listener.Invoke(ref message);
       }

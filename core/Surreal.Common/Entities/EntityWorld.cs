@@ -266,12 +266,12 @@ public sealed class EntityQuery
 /// <summary>
 /// A world that contains entities and their components.
 /// </summary>
-public sealed class EntityWorld : IDisposable
+public sealed class EntityWorld : IEventPublisher, IDisposable
 {
   private static readonly ILog Log = LogFactory.GetLog<EntityWorld>();
   private static readonly IProfiler Profiler = ProfilerFactory.GetProfiler<EntityWorld>();
 
-  private readonly Arena<Entity> _entities = [];
+  private readonly Arena<EntityMetadata> _entities = [];
   private readonly Dictionary<ComponentType, IComponentStorage> _components = [];
   private readonly MultiDictionary<Type, IEntitySystem> _systems = new();
   private readonly IServiceProvider services;
@@ -318,12 +318,12 @@ public sealed class EntityWorld : IDisposable
   /// </summary>
   public EntityId SpawnEntity()
   {
-    var index = _entities.Add(new Entity());
+    var index = _entities.Add(new EntityMetadata());
     var entity = EntityId.FromArenaIndex(index);
 
     Log.Trace($"Spawned entity {entity}");
 
-    Execute(new Spawned(entity));
+    Publish(new Spawned(entity));
 
     return entity;
   }
@@ -349,7 +349,7 @@ public sealed class EntityWorld : IDisposable
     {
       entity.IsAlive = false;
 
-      Execute(new Despawned(entityId));
+      Publish(new Despawned(entityId));
 
       Log.Trace($"Marking entity {entityId} for despawn");
     }
@@ -394,18 +394,20 @@ public sealed class EntityWorld : IDisposable
   /// <summary>
   /// Executes the given event on all systems that process it.
   /// </summary>
-  public void Execute<TEvent>(in TEvent @event)
+  public TEvent Publish<TEvent>(TEvent @event)
   {
     // execute the event on all systems that process it
-    ExecuteEvent(new Before<TEvent>(@event));
-    ExecuteEvent(@event);
-    ExecuteEvent(new After<TEvent>(@event));
+    PublishInner(new Before<TEvent>(@event));
+    PublishInner(@event);
+    PublishInner(new After<TEvent>(@event));
+
+    return @event;
   }
 
   /// <summary>
   /// Executes the given event on all systems that process it.
   /// </summary>
-  private void ExecuteEvent<TEvent>(in TEvent @event)
+  private void PublishInner<TEvent>(in TEvent @event)
   {
     using var _ = Profiler.Track(nameof(TEvent));
 
@@ -483,7 +485,7 @@ public sealed class EntityWorld : IDisposable
     {
       GetStorage<TComponent>().AddComponent(entityId, component);
 
-      Execute(new Added<TComponent>(entityId, component));
+      Publish(new Added<TComponent>(entityId, component));
 
       Log.Trace($"Added component {TComponent.ComponentType} to entity {entityId}");
     }
@@ -504,7 +506,7 @@ public sealed class EntityWorld : IDisposable
     {
       var component = GetStorage<TComponent>().RemoveComponent(entityId);
 
-      Execute(new Removed<TComponent>(entityId, component));
+      Publish(new Removed<TComponent>(entityId, component));
 
       Log.Trace($"Removed component {TComponent.ComponentType} from entity {entityId}");
     }
@@ -551,9 +553,12 @@ public sealed class EntityWorld : IDisposable
   }
 
   /// <summary>
-  /// An entity in the world.
+  /// Metadata about an entity in the world.
+  /// <para/>
+  /// An entity is nothing but a collection of components.
+  /// This metadata tracks the components attached to an entity.
   /// </summary>
-  private sealed record Entity
+  private sealed record EntityMetadata
   {
     /// <summary>
     /// True if this entity is still alive; false if it has been despawned and is pending removal.

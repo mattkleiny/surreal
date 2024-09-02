@@ -39,6 +39,7 @@ public abstract class RenderPipeline(IGraphicsDevice device) : IRenderPipeline
   {
     var frame = new RenderFrame
     {
+      DeltaTime = deltaTime,
       Device = device,
       Contexts = Contexts,
       Viewport = device.GetViewportSize()
