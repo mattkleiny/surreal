@@ -61,14 +61,14 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
       foreach (var body in _bodies)
       {
-        var delta = body.CurrentPosition - position;
+        var delta = body.Position - position;
         var distance = delta.Length();
 
         if (distance > WorldRadius - BodyRadius)
         {
           var normal = delta / distance;
 
-          body.CurrentPosition = position + normal * (distance - BodyRadius);
+          body.Position = position + normal * (distance - BodyRadius);
         }
       }
     }
@@ -81,7 +81,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
         if (a == b)
           continue;
 
-        var axis = a.CurrentPosition - b.CurrentPosition;
+        var axis = a.Position - b.Position;
         var distance = axis.Length();
 
         if (distance < BodyRadius)
@@ -89,8 +89,8 @@ internal sealed class PhysicsBackend : IPhysicsBackend
           var normal = axis / distance;
           var delta = BodyRadius - distance;
 
-          a.CurrentPosition += 0.5f * delta * normal;
-          b.CurrentPosition -= 0.5f * delta * normal;
+          a.Position += 0.5f * delta * normal;
+          b.Position -= 0.5f * delta * normal;
         }
       }
     }
@@ -99,10 +99,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     {
       foreach (var body in _bodies)
       {
-        var velocity = body.CurrentPosition - body.PreviousPosition;
-
-        body.PreviousPosition = body.CurrentPosition;
-        body.CurrentPosition += velocity + Gravity * (deltaTime * deltaTime);
+        body.Position += body.Velocity + Gravity * (deltaTime * deltaTime);
       }
     }
 
@@ -110,8 +107,7 @@ internal sealed class PhysicsBackend : IPhysicsBackend
     {
       var index = _bodies.Add(new Body
       {
-        CurrentPosition = initialPosition,
-        PreviousPosition = initialPosition
+        Position = initialPosition,
       });
 
       return PhysicsHandle.FromArenaIndex(index);
@@ -119,22 +115,22 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
     public Vector2 GetBodyPosition(PhysicsHandle handle)
     {
-      return _bodies[handle].CurrentPosition;
+      return _bodies[handle].Position;
     }
 
     public void SetBodyPosition(PhysicsHandle handle, Vector2 position)
     {
-      _bodies[handle].CurrentPosition = position;
+      _bodies[handle].Position = position;
     }
 
     public float GetBodyRotation(PhysicsHandle handle)
     {
-      return _bodies[handle].CurrentRotation;
+      return _bodies[handle].Rotation;
     }
 
     public void SetBodyRotation(PhysicsHandle handle, float rotation)
     {
-      _bodies[handle].CurrentRotation = rotation;
+      _bodies[handle].Rotation = rotation;
     }
 
     public void DeleteBody(PhysicsHandle handle)
@@ -144,10 +140,9 @@ internal sealed class PhysicsBackend : IPhysicsBackend
 
     private sealed class Body
     {
-      public Vector2 PreviousPosition;
-      public Vector2 CurrentPosition;
-      public float PreviousRotation;
-      public float CurrentRotation;
+      public Vector2 Position;
+      public float Rotation;
+      public Vector2 Velocity;
     }
   }
 

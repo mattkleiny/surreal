@@ -27,11 +27,11 @@ world.AddSystem<VariableTick>((IKeyboardDevice keyboard) =>
   }
 });
 
-world.AddSystem<RenderFrame>((in RenderFrame @event) =>
+world.AddSystem<RenderFrame>((RenderFrame frame) =>
 {
-  totalTime += @event.DeltaTime;
+  totalTime += frame.DeltaTime;
 
-  @event.Device.ClearColorBuffer(Color.Lerp(color1, color2, MathE.PingPong(totalTime)));
+  frame.Device.ClearColorBuffer(Color.Lerp(color1, color2, MathE.PingPong(totalTime)));
 });
 
 await game.RunAsync(world);

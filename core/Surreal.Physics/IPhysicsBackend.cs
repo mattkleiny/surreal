@@ -1,4 +1,5 @@
-﻿using Surreal.Timing;
+﻿using Surreal.Entities;
+using Surreal.Timing;
 
 namespace Surreal.Physics;
 
@@ -70,6 +71,15 @@ public interface IPhysicsBackend
       public void DeleteBody(PhysicsHandle handle)
       {
       }
+
+      public Vector2 GetBodySize(PhysicsHandle handle)
+      {
+        return Vector2.One;
+      }
+
+      public void SetBodySize(PhysicsHandle handle, Vector2 size)
+      {
+      }
     }
 
     /// <summary>
@@ -112,6 +122,15 @@ public interface IPhysicsBackend
       }
 
       public void DeleteBody(PhysicsHandle handle)
+      {
+      }
+
+      public Vector3 GetBodySize(PhysicsHandle handle)
+      {
+        return Vector3.One;
+      }
+
+      public void SetBodySize(PhysicsHandle handle, Vector3 size)
       {
       }
     }
