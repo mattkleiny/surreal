@@ -196,17 +196,36 @@ public sealed class Game : IDisposable
   {
     using var contexts = new RenderContextManager();
 
-    VariableTick += time =>
+    Log.Trace("Starting main loop with world");
+
+    try
+    {
+      VariableTick += OnVariableTick;
+      FixedTick += OnFixedTick;
+      Render += OnRender;
+
+      await Host.RunAsync();
+    }
+    finally
+    {
+      VariableTick -= OnVariableTick;
+      FixedTick -= OnFixedTick;
+      Render -= OnRender;
+    }
+
+    Log.Trace("Exiting main loop with world");
+
+    void OnVariableTick(GameTime time)
     {
       publisher.Publish(new VariableTick(time.DeltaTime));
-    };
+    }
 
-    FixedTick += time =>
+    void OnFixedTick(GameTime time)
     {
       publisher.Publish(new FixedTick(time.DeltaTime));
-    };
+    }
 
-    Render += time =>
+    void OnRender(GameTime time)
     {
       publisher.Publish(new RenderFrame
       {
@@ -215,13 +234,7 @@ public sealed class Game : IDisposable
         Contexts = contexts,
         Viewport = Graphics.GetViewportSize()
       });
-    };
-
-    Log.Trace("Starting main loop with world");
-
-    await Host.RunAsync();
-
-    Log.Trace("Exiting main loop with world");
+    }
   }
 
   /// <summary>
