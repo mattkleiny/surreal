@@ -4,6 +4,7 @@ using Surreal.Diagnostics.Logging;
 using Surreal.Diagnostics.Profiling;
 using Surreal.Services;
 using Surreal.Timing;
+using Surreal.Utilities;
 
 namespace Surreal.Entities;
 
@@ -621,7 +622,31 @@ public static class EntityWorldExtensions
     private readonly SystemDelegate _method = BuildSystemDelegate(@delegate);
 
     /// <inheritdoc/>
-    public string Name => @delegate.Method.Name;
+    public string Name
+    {
+      get
+      {
+        if (@delegate.Method.DeclaringType?.TryGetCustomAttribute(out CompilerGeneratedAttribute _) == true)
+        {
+          var parameters = @delegate.Method.GetParameters();
+          var builder = new StringBuilder();
+
+          for (var i = 0; i < parameters.Length; i++)
+          {
+            if (i > 0)
+            {
+              builder.Append(", ");
+            }
+
+            builder.Append(parameters[i].ParameterType.Name);
+          }
+
+          return $"Anonymous({builder})";
+        }
+
+        return @delegate.Method.Name;
+      }
+    }
 
     /// <inheritdoc/>
     public void Execute(in TEvent @event, EntityWorld world)
@@ -671,7 +696,7 @@ public static class EntityWorldExtensions
     /// <summary>
     /// Builds a system delegate that will execute the given 'direct' delegate (i.e. no loop unwrapping).
     /// <para/>
-    /// This method uses a reflection-based invocaion since the we're not building a hot loop over entities.
+    /// This method uses a reflection-based invocation since we're not building a hot loop over entities.
     /// </summary>
     private static SystemDelegate BuildDirectMethod(Delegate @delegate, ParameterInfo[] parameterInfos)
     {
@@ -706,8 +731,8 @@ public static class EntityWorldExtensions
     /// <summary>
     /// Builds a system delegate that will execute the given delegate method with the appropriate parameters.
     /// <para/>
-    /// This method builds a dynamic method that will execute the delegate method inside of a loop for each
-    /// entity that matches the query inferred by it's method parameters.
+    /// This method builds a dynamic method that will execute the delegate method inside a loop for each
+    /// entity that matches the query inferred by its method parameters.
     /// </summary>
     private static SystemDelegate BuildQueryMethod(Delegate @delegate, ParameterInfo[] parameterInfos)
     {
