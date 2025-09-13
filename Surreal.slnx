@@ -1,0 +1,58 @@
+<Solution>
+  <Folder Name="/(Solution Items)/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="global.json" />
+    <File Path="LICENSE.md" />
+    <File Path="README.md" />
+    <File Path="Surreal.proj" />
+  </Folder>
+  <Folder Name="/(Solution Items)/Workflows/">
+    <File Path=".github/workflows/build-master.yml" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="core/Surreal.Audio.Tests/Surreal.Audio.Tests.csproj" />
+    <Project Path="core/Surreal.Audio/Surreal.Audio.csproj" />
+    <Project Path="core/Surreal.Common.Tests/Surreal.Common.Tests.csproj" />
+    <Project Path="core/Surreal.Common/Surreal.Common.csproj" />
+    <Project Path="core/Surreal.Framework.Tests/Surreal.Framework.Tests.csproj" />
+    <Project Path="core/Surreal.Framework/Surreal.Framework.csproj" />
+    <Project Path="core/Surreal.Graphics.Tests/Surreal.Graphics.Tests.csproj" />
+    <Project Path="core/Surreal.Graphics/Surreal.Graphics.csproj" />
+    <Project Path="core/Surreal.Input.Tests/Surreal.Input.Tests.csproj" />
+    <Project Path="core/Surreal.Input/Surreal.Input.csproj" />
+    <Project Path="core/Surreal.Networking.Tests/Surreal.Networking.Tests.csproj" />
+    <Project Path="core/Surreal.Networking/Surreal.Networking.csproj" />
+    <Project Path="core/Surreal.Physics.Tests/Surreal.Physics.Tests.csproj" />
+    <Project Path="core/Surreal.Physics/Surreal.Physics.csproj" />
+    <Project Path="core/Surreal.Scripting.Tests/Surreal.Scripting.Tests.csproj" />
+    <Project Path="core/Surreal.Scripting/Surreal.Scripting.csproj" />
+  </Folder>
+  <Folder Name="/Editor/">
+    <Project Path="editor/Surreal.Editor.MSBuild/Surreal.Editor.MSBuild.csproj" />
+    <Project Path="editor/Surreal.Editor.Tests/Surreal.Editor.Tests.csproj" />
+    <Project Path="editor/Surreal.Editor/Surreal.Editor.csproj" />
+  </Folder>
+  <Folder Name="/Examples/">
+    <File Path="examples/Directory.Build.props" />
+    <Project Path="examples/Bunnymark/Bunnymark.csproj" />
+    <Project Path="examples/FallingSand/FallingSand.csproj" />
+    <Project Path="examples/Fractals/Fractals.csproj" />
+    <Project Path="examples/HelloEditor/HelloEditor.csproj" />
+    <Project Path="examples/HelloWorld/HelloWorld.csproj" />
+  </Folder>
+  <Folder Name="/Platforms/">
+    <Project Path="platforms/Surreal.Platform.Desktop/Surreal.Platform.Desktop.csproj" />
+    <Project Path="platforms/Surreal.Platform.Mobile/Surreal.Platform.Mobile.csproj" />
+    <Project Path="platforms/Surreal.Platform.Web/Surreal.Platform.Web.csproj" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <File Path="tools/Directory.Build.props" />
+    <File Path="tools/Directory.Build.targets" />
+    <Project Path="tools/Surreal.Analyzers/Surreal.Analyzers.csproj" />
+    <Project Path="tools/Surreal.Sdk/Surreal.Sdk.csproj" />
+  </Folder>
+</Solution>

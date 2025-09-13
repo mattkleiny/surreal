@@ -275,7 +275,6 @@ public sealed class EntityWorld : IEventPublisher, IDisposable
   private readonly Arena<EntityMetadata> _entities = [];
   private readonly Dictionary<ComponentType, IComponentStorage> _components = [];
   private readonly MultiDictionary<Type, IEntitySystem> _systems = new();
-  private readonly IServiceProvider services;
 
   /// <summary>
   /// Builds a new <see cref="EntityWorld"/> from the given services.
@@ -284,7 +283,7 @@ public sealed class EntityWorld : IEventPublisher, IDisposable
   /// </summary>
   public EntityWorld(IServiceProvider services, bool includeRegisteredSystems = true)
   {
-    this.services = services;
+    Services = services;
 
     if (includeRegisteredSystems)
     {
@@ -299,7 +298,7 @@ public sealed class EntityWorld : IEventPublisher, IDisposable
   /// <summary>
   /// The services available to the world.
   /// </summary>
-  public IServiceProvider Services => services;
+  public IServiceProvider Services { get; }
 
   /// <summary>
   /// Determines if the world contains the given entity and it is still alive.
@@ -567,7 +566,7 @@ public sealed class EntityWorld : IEventPublisher, IDisposable
     public bool IsAlive { get; set; } = true;
 
     /// <summary>
-    /// All of the components attached to this entity.
+    /// All the components attached to this entity.
     /// </summary>
     public HashSet<ComponentType> ComponentTypes { get; } = new();
 
